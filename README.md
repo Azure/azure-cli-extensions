@@ -3,13 +3,14 @@
 
 This repository serves two purposes and they are independent:
 
-1. An `index.json` where you can add your extension and make it available through Azure CLI.
+1. An index.json where you can add your extension and make it available through Azure CLI.
 2. A source code directory, `src`, to host your extension source code.
 
 For documentation on authoring an extension, see [Extension Documentation](https://github.com/Azure/azure-cli/tree/master/doc/extensions)
 
 ## About index.json
 
+- The index is at `src/index.json`.
 - Modify the index by creating a PR.
 - All extensions added to the index *are public* and will be available to *all* CLI users.
 - Your extension source code does not have to be in this repository to be available in the index.
