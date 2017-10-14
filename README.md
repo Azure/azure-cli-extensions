@@ -13,6 +13,7 @@ For documentation on authoring an extension, see [Extension Documentation](https
 - The index is at `src/index.json`.
 - Modify the index by creating a PR.
 - All extensions added to the index *are public* and will be available to *all* CLI users.
+- The index is synced to `https://aka.ms/azure-cli-extension-index-v1` every few minutes.
 - Your extension source code does not have to be in this repository to be available in the index.
 - If you don't want your extension to be part of the index, you can still host it externally and request users to install with `az extension add --source https://contoso.com/mywheel.whl`.
   * Users will not be able to add your extension by name, it will not be listed in the `az extension list-available` command and to update to a new version of your extension, the user has to first remove the currently installed extension and then add the new version.
