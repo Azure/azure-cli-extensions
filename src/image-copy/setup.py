@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -34,9 +34,9 @@ setup(
     license='MIT',
     author='Tamir Kamara',
     author_email='tamir.kamara@microsoft.com',
-    url='https://github.com/ORG/REPO',
+    url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    package_data={'azext_hello': ['azext_metadata.json']},
+    package_data={'azext_imagecopy': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

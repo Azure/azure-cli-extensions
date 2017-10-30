@@ -2,7 +2,7 @@ import sys
 import json
 
 from subprocess import check_output, STDOUT, CalledProcessError
-
+from azure.cli.core.util import CLIError
 import azure.cli.core.azlogging as azlogging
 
 logger = azlogging.get_az_logger(__name__)
@@ -11,22 +11,22 @@ logger = azlogging.get_az_logger(__name__)
 def run_cli_command(cmd, return_as_json=False):
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
-        logger.debug(cmd_output)
+        logger.debug('command: %s ended with output: %s', cmd, cmd_output)
 
         if return_as_json is True:
             if cmd_output:
                 json_output = json.loads(cmd_output)
                 return json_output
             else:
-                raise Exception("Command returned an unexpected empty string.")
+                raise CLIError("Command returned an unexpected empty string.")
         else:
             return cmd_output
     except CalledProcessError as ex:
-        print('command failed: ', cmd)
-        print('output: ', ex.output)
+        logger.error('command failed: %s', cmd)
+        logger.error('output: %s', ex.output)
         raise ex
     except:
-        print('command: ', cmd)
+        logger.error('command ended with an error: %s', cmd)
         raise
 
 def prepare_cli_command(cmd, output_as_json=True):

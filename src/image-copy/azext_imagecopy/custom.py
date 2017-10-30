@@ -16,11 +16,11 @@ def imagecopy(source_resource_group_name, source_object_name, target_location, \
         '--name', source_object_name, \
         '--resource-group', source_resource_group_name])
 
-    json_cmd_output = run_cli_command(cmd, True)
+    json_cmd_output = run_cli_command(cmd, return_as_json=True)
 
     source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
     source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']
-    logger.debug("source_os_disk_id: " + source_os_disk_id + " source_os_type: " + source_os_type)
+    logger.debug("source_os_disk_id: %s. source_os_type: %s", source_os_disk_id, source_os_type)
 
 
     # create source snapshots
@@ -41,10 +41,10 @@ def imagecopy(source_resource_group_name, source_object_name, target_location, \
         '--resource-group', source_resource_group_name, \
         '--duration-in-seconds', '3600'])
 
-    json_output = run_cli_command(cmd, True)
+    json_output = run_cli_command(cmd, return_as_json=True)
 
     source_os_disk_snapshot_url = json_output['accessSas']
-    logger.debug(source_os_disk_snapshot_url)
+    logger.debug("source os disk snapshot url: %s" , source_os_disk_snapshot_url)
 
 
     # Start processing in the target locations
@@ -52,20 +52,17 @@ def imagecopy(source_resource_group_name, source_object_name, target_location, \
     transient_resource_group_name = 'image-copy-rg'
     create_resource_group(transient_resource_group_name, 'eastus')
 
-    target_locations_list = target_location.split(',')
-    target_locations_count = len(target_locations_list)
-    logger.warn("Target location count: {0}".format(target_locations_count))
+    target_locations_count = len(target_location)
+    logger.warn("Target location count: %s", target_locations_count)
 
-    create_resource_group(target_resource_group_name, target_locations_list[0].strip())
+    create_resource_group(target_resource_group_name, target_location[0].strip())
 
     if parallel_degree == -1:
         pool = Pool(target_locations_count)
-    elif parallel_degree == 1:
-        pool = Pool(1)
     else:
         pool = Pool(min(parallel_degree, target_locations_count))
 
-    # try to get a handle on arm 409s
+    # try to get a handle on arm's 409s
     azure_pool_frequency = 5
     if target_locations_count >= 5:
         azure_pool_frequency = 15
@@ -73,7 +70,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location, \
         azure_pool_frequency = 10
 
     tasks = []
-    for location in target_location.split(','):
+    for location in target_location:
         location = location.strip()
         tasks.append((location, transient_resource_group_name, source_type, \
         source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url, \
@@ -88,16 +85,15 @@ def imagecopy(source_resource_group_name, source_object_name, target_location, \
         pool.close()
         pool.join()
     except KeyboardInterrupt:
-        print('xxx - parent')
         logger.warn('User cancelled the operation')
-        if 'true' in cleanup:
-            logger.warn('To cleanup temporary resources look for ones tagged with "image-copy-extension"')
+        if cleanup:
+            logger.warn('To cleanup temporary resources look for ones tagged with "image-copy-extension". \nYou can use the following command: az resource list --tag created_by=image-copy-extension')
         pool.terminate()
         return
 
 
     # Cleanup
-    if 'true' in cleanup:
+    if cleanup:
         logger.warn('Deleting transient resources')
 
         # Delete resource group
@@ -121,13 +117,13 @@ def imagecopy(source_resource_group_name, source_object_name, target_location, \
 def create_resource_group(resource_group_name, location):
     # check if target resource group exists
     cmd = prepare_cli_command(['group', 'exists', \
-        '--name', resource_group_name], False)
+        '--name', resource_group_name], output_as_json=False)
 
     cmd_output = run_cli_command(cmd)
 
     if 'false' in cmd_output:
         # create the target resource group
-        logger.warn("Creating resource group")
+        logger.warn("Creating resource group: %s", )
         cmd = prepare_cli_command(['group', 'create', \
             '--name', resource_group_name, \
             '--location', location])

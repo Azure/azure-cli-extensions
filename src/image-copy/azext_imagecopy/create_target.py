@@ -3,10 +3,12 @@ import datetime
 import time
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azure.cli.core.application import APPLICATION
+from azure.cli.core.util import CLIError
 import azure.cli.core.azlogging as azlogging
 
 logger = azlogging.get_az_logger(__name__)
 
+PROGRESS_LINE_LENGTH = 40
 
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name, \
     source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type, \
@@ -28,7 +30,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         '--location', location, \
         '--sku', 'Standard_LRS'])
 
-    json_output = run_cli_command(cmd, True)
+    json_output = run_cli_command(cmd, return_as_json=True)
     target_blob_endpoint = json_output['primaryEndpoints']['blob']
 
 
@@ -37,7 +39,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         '--account-name', target_storage_account_name, \
         '--resource-group', transient_resource_group_name])
 
-    json_output = run_cli_command(cmd, True)
+    json_output = run_cli_command(cmd, return_as_json=True)
 
     target_storage_account_key = json_output[0]['value']
     logger.debug(target_storage_account_key)
@@ -51,7 +53,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         '--expiry', expiry.strftime(expiry_format), \
         '--permissions', 'aclrpuw', '--resource-types', \
         'sco', '--services', 'b', '--https-only'], \
-        False)
+        output_as_json=False)
 
     sas_token = run_cli_command(cmd)
     sas_token = sas_token.rstrip("\n\r") #STRANGE
@@ -85,7 +87,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     start_datetime = datetime.datetime.now()
     wait_for_blob_copy_operation(blob_name, target_container_name, \
         target_storage_account_name, azure_pool_frequency, location)
-    msg = "{0} - Copy time: {1}".format(location, datetime.datetime.now()-start_datetime).ljust(40)
+    msg = "{0} - Copy time: {1}".format(location, datetime.datetime.now()-start_datetime).ljust(PROGRESS_LINE_LENGTH)
     logger.warn(msg)
 
 
@@ -99,7 +101,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         '--location', location, \
         '--source', target_blob_path])
 
-    json_output = run_cli_command(cmd, True)
+    json_output = run_cli_command(cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
 
     # Create the final image
@@ -130,13 +132,15 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
             '--container-name', target_container_name, \
             '--account-name', target_storage_account_name])
 
-        json_output = run_cli_command(cmd, True)
+        json_output = run_cli_command(cmd, return_as_json=True)
         copy_status = json_output["properties"]["copy"]["status"]
         copy_progress_1, copy_progress_2 = json_output["properties"]["copy"]["progress"].split("/")
         current_progress = round(int(copy_progress_1)/int(copy_progress_2), 1)
 
         if current_progress != prev_progress:
-            msg = "{0} - copy progress: {1}%".format(location, str(current_progress)).ljust(40) #need to justify since message overide each other
+            msg = "{0} - copy progress: {1}%"\
+                .format(location, str(current_progress))\
+                .ljust(PROGRESS_LINE_LENGTH) #need to justify since messages overide each other
             progress_controller.add(message=msg)
 
         prev_progress = current_progress
@@ -144,7 +148,6 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
         try:
             time.sleep(azure_pool_frequency)
         except KeyboardInterrupt:
-            print('xxx - child')
             progress_controller.stop()
             return
 
@@ -152,15 +155,13 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
     if copy_status == 'success':
         progress_controller.stop()
     else:
-        logger.error("The copy operation didn't succeed. Last status: " + copy_status)
-        raise Exception('Blob copy failed')
+        logger.error("The copy operation didn't succeed. Last status: %s", copy_status)
+        raise CLIError('Blob copy failed')
 
 
 def get_subscription_id():
-    logger.warn("Get subscription id")
-
     cmd = prepare_cli_command(['account', 'show'])
-    json_output = run_cli_command(cmd, True)
+    json_output = run_cli_command(cmd, return_as_json=True)
     subscription_id = json_output['id']
 
     # from azure.cli.core._profile import Profile
