@@ -14,7 +14,6 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type, \
     target_resource_group_name, azure_pool_frequency):
 
-    #from azure.cli.core.commands.client_factory import get_subscription_id
     subscription_id = get_subscription_id()
 
     subscription_hash = hashlib.sha1(subscription_id.encode("UTF-8")).hexdigest()
@@ -163,9 +162,5 @@ def get_subscription_id():
     cmd = prepare_cli_command(['account', 'show'])
     json_output = run_cli_command(cmd, return_as_json=True)
     subscription_id = json_output['id']
-
-    # from azure.cli.core._profile import Profile
-    # profile = Profile()
-    # _, subscription_id, _ = profile.get_login_credentials()
 
     return subscription_id
