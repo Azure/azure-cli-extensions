@@ -37,6 +37,5 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    package_data={'azext_imagecopy': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

@@ -37,7 +37,7 @@ def prepare_cli_command(cmd, output_as_json=True):
     else:
         full_cmd += ['--output', 'tsv']
 
-    # tag newly created resources
+    # tag newly created resources, containers don't have tags
     if 'create' in cmd and ('container' not in cmd):
         full_cmd += ['--tags', 'created_by=image-copy-extension']
 

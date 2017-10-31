@@ -123,7 +123,7 @@ def create_resource_group(resource_group_name, location):
 
     if 'false' in cmd_output:
         # create the target resource group
-        logger.warn("Creating resource group: %s", )
+        logger.warn("Creating resource group: %s", resource_group_name)
         cmd = prepare_cli_command(['group', 'create', \
             '--name', resource_group_name, \
             '--location', location])
