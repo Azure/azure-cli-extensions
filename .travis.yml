@@ -1,10 +1,15 @@
 dist: trusty
 sudo: off
 language: python
-python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
-install: true
-script:
-  - ls
+install:
+    - pip install pylint flake8
+jobs:
+  include:
+    - stage: verify
+      script: ./scripts/ci/test_static.sh
+      env: PURPOSE='VerifySource-StaticCheck'
+      python: 3.6
+    - stage: verify
+      script: ./scripts/ci/test_static.sh
+      env: PURPOSE='VerifySource-StaticCheck'
+      python: 2.7

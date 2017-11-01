@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import sys
 import json
 
@@ -28,6 +33,7 @@ def run_cli_command(cmd, return_as_json=False):
     except:
         logger.error('command ended with an error: %s', cmd)
         raise
+
 
 def prepare_cli_command(cmd, output_as_json=True):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
