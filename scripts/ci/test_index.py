@@ -9,6 +9,7 @@ import os
 import json
 import tempfile
 import unittest
+import zipfile
 import hashlib
 import shutil
 from util import get_repo_root
@@ -56,6 +57,47 @@ def get_sha256sum(a_file):
     return sha256.hexdigest()
 
 
+def get_extension_modname(ext_dir):
+    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L153
+    EXTENSIONS_MOD_PREFIX = 'azext_'
+    pos_mods = [n for n in os.listdir(ext_dir)
+                if n.startswith(EXTENSIONS_MOD_PREFIX) and os.path.isdir(os.path.join(ext_dir, n))]
+    return pos_mods[0]
+
+
+def get_azext_metadata(ext_dir):
+    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L109
+    AZEXT_METADATA_FILENAME = 'azext_metadata.json'
+    azext_metadata = None
+    ext_modname = get_extension_modname(ext_dir=ext_dir)
+    azext_metadata_filepath = os.path.join(ext_dir, ext_modname, AZEXT_METADATA_FILENAME)
+    if os.path.isfile(azext_metadata_filepath):
+        with open(azext_metadata_filepath) as f:
+            azext_metadata = json.load(f)
+    return azext_metadata
+
+
+def get_ext_metadata(ext_dir, ext_file, ext_name):
+    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L89
+    WHL_METADATA_FILENAME = 'metadata.json'
+    zip_ref = zipfile.ZipFile(ext_file, 'r')
+    zip_ref.extractall(ext_dir)
+    zip_ref.close()
+    metadata = {}
+    dist_info_dirs = [f for f in os.listdir(ext_dir) if f.endswith('.dist-info')]
+    azext_metadata = get_azext_metadata(ext_dir)
+    if azext_metadata:
+        metadata.update(azext_metadata)
+    for dist_info_dirname in dist_info_dirs:
+        parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
+        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name:
+            whl_metadata_filepath = os.path.join(ext_dir, dist_info_dirname, WHL_METADATA_FILENAME)
+            if os.path.isfile(whl_metadata_filepath):
+                with open(whl_metadata_filepath) as f:
+                    metadata.update(json.load(f))
+    return metadata
+
+
 class TestIndex(unittest.TestCase):
 
     @classmethod
@@ -87,8 +129,8 @@ class TestIndex(unittest.TestCase):
                                 "Filename {} must start with {}".format(item['filename'], ext_name))
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
-                universal_wheel = p.get('name') and p.get('pyver') == 'py2.py3' and p.get('abi') == 'none' \
-                                  and p.get('plat') == 'any'
+                self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))
+                universal_wheel = p.get('pyver') == 'py2.py3' and p.get('abi') == 'none' and p.get('plat') == 'any'
                 self.assertTrue(universal_wheel,
                                 "{} of {} not universal (platform independent) wheel. "
                                 "It should end in py2.py3-none-any.whl".format(item['filename'], ext_name))
@@ -124,13 +166,21 @@ class TestIndex(unittest.TestCase):
                                                                                    item['sha256Digest'],
                                                                                    item['filename']))
 
-    # @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
-    # def test_metadata(self):
-    #     tmp_dir = tempfile.mkdtemp()
-    #     for exts in self.index['extensions'].values():
-    #         for item in exts:
-    #             ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
-    #                                         self.whl_cache_dir, self.whl_cache)
+    @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
+    def test_metadata(self):
+        self.maxDiff = None
+        extensions_dir = tempfile.mkdtemp()
+        for ext_name, exts in self.index['extensions'].items():
+            for item in exts:
+                ext_dir = tempfile.mkdtemp(dir=extensions_dir)
+                ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
+                                            self.whl_cache_dir, self.whl_cache)
+                metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
+                self.assertDictEqual(metadata, item['metadata'],
+                                     "Metadata for {} in index doesn't match the expected of: \n"
+                                     "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
+                                                                              separators=(',', ': '))))
+        shutil.rmtree(extensions_dir)
 
 
 if __name__ == '__main__':
