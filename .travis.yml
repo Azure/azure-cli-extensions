@@ -2,14 +2,22 @@ dist: trusty
 sudo: off
 language: python
 install:
-    - pip install pylint flake8
+    - pip install pylint flake8 requests
 jobs:
   include:
     - stage: verify
+      env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
-      env: PURPOSE='VerifySource-StaticCheck'
       python: 3.6
     - stage: verify
+      env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
-      env: PURPOSE='VerifySource-StaticCheck'
+      python: 2.7
+    - stage: verify
+      env: PURPOSE='IndexVerify'
+      script: python ./scripts/ci/test_index.py -v
+      python: 3.6
+    - stage: verify
+      env: PURPOSE='IndexVerify'
+      script: python ./scripts/ci/test_index.py -v
       python: 2.7
