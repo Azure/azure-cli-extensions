@@ -8,16 +8,22 @@ jobs:
     - stage: verify
       env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
-      python: 3.6
+      python: 2.7
     - stage: verify
       env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
+      python: 3.6
+    - stage: verify
+      env: PURPOSE='SourceTests'
+      script: python ./scripts/ci/test_source.sh
       python: 2.7
     - stage: verify
-      env: PURPOSE='IndexVerify'
-      script: python ./scripts/ci/test_index.py -v
+      env: PURPOSE='SourceTests'
+      script: python ./scripts/ci/test_source.sh
       python: 3.6
     - stage: verify
       env: PURPOSE='IndexVerify'
       script: python ./scripts/ci/test_index.py -v
-      python: 2.7
+      python: 3.6
+  allow_failures:
+    - env: PURPOSE='SourceTests'
