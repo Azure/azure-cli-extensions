@@ -5,15 +5,19 @@ install:
     - pip install pylint flake8 requests
 jobs:
   include:
-    - stage: source-static
+    - stage: verify
+      env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
       python: 3.6
-    - stage: source-static
+    - stage: verify
+      env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
       python: 2.7
-    - stage: index-verify
+    - stage: verify
+      env: PURPOSE='IndexVerify'
       script: python ./scripts/ci/test_index.py -v
       python: 3.6
-    - stage: index-verify
+    - stage: verify
+      env: PURPOSE='IndexVerify'
       script: python ./scripts/ci/test_index.py -v
       python: 2.7
