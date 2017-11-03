@@ -23,7 +23,7 @@ jobs:
       python: 3.6
     - stage: verify
       env: PURPOSE='IndexVerify'
-      script: python ./scripts/ci/test_index.py -v
+      script: python ./scripts/ci/test_integration.py -v
       python: 3.6
   allow_failures:
     - env: PURPOSE='SourceTests'
