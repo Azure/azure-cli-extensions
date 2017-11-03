@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+""" Test the index and the wheels from both the index and from source extensions in repository """
+
 from __future__ import print_function
 
 import os
@@ -12,10 +14,15 @@ import unittest
 import zipfile
 import hashlib
 import shutil
+import subprocess
 from util import get_repo_root
 from wheel.install import WHEEL_INFO_RE
 
 INDEX_PATH = os.path.join(get_repo_root(), 'src', 'index.json')
+SRC_PATH = os.path.join(get_repo_root(), 'src')
+
+# Extensions to skip dep. check. Aim to keep this list empty.
+SKIP_DEP_CHECK = ['azure_cli_iot_ext']
 
 
 def catch_dup_keys(pairs):
@@ -62,6 +69,9 @@ def get_extension_modname(ext_dir):
     EXTENSIONS_MOD_PREFIX = 'azext_'
     pos_mods = [n for n in os.listdir(ext_dir)
                 if n.startswith(EXTENSIONS_MOD_PREFIX) and os.path.isdir(os.path.join(ext_dir, n))]
+    if len(pos_mods) != 1:
+        raise AssertionError("Expected 1 module to load starting with "
+                             "'{}': got {}".format(EXTENSIONS_MOD_PREFIX, pos_mods))
     return pos_mods[0]
 
 
@@ -180,7 +190,41 @@ class TestIndex(unittest.TestCase):
                                      "Metadata for {} in index doesn't match the expected of: \n"
                                      "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
                                                                               separators=(',', ': '))))
+                run_requires = metadata.get('run_requires')
+                if run_requires and ext_name not in SKIP_DEP_CHECK:
+                    deps = run_requires[0]['requires']
+                    self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
+                                    "Dependencies of {} use disallowed extension dependencies. "
+                                    "Remove these dependencies: {}".format(item['filename'], deps))
         shutil.rmtree(extensions_dir)
+
+
+class TestSourceWheels(unittest.TestCase):
+
+    def test_source_wheels(self):
+        # Test we can build all sources into wheels and that metadata from the wheel is valid
+        from subprocess import PIPE
+        built_whl_dir = tempfile.mkdtemp()
+        source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
+                             if os.path.isdir(os.path.join(SRC_PATH, n))]
+        for s in source_extensions:
+            try:
+                subprocess.check_call(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir],
+                                      cwd=s, stdout=PIPE, stderr=PIPE)
+            except subprocess.CalledProcessError as err:
+                self.fail("Unable to build extension {} : {}".format(s, err))
+        for filename in os.listdir(built_whl_dir):
+            ext_file = os.path.join(built_whl_dir, filename)
+            ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
+            ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
+            metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
+            run_requires = metadata.get('run_requires')
+            if run_requires and ext_name not in SKIP_DEP_CHECK:
+                deps = run_requires[0]['requires']
+                self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
+                                "Dependencies of {} use disallowed extension dependencies. "
+                                "Remove these dependencies: {}".format(filename, deps))
+        shutil.rmtree(built_whl_dir)
 
 
 if __name__ == '__main__':
