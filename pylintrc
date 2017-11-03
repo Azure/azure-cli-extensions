@@ -10,8 +10,8 @@ score=no
 disable=missing-docstring,locally-disabled,fixme,cyclic-import,too-many-arguments,invalid-name,duplicate-code
 
 [TYPECHECK]
-# For Azure CLI extensions, we ignore import errors for azure.cli as they'll be available in the environment of the CLI
-ignored-modules=azure.cli
+# For Azure CLI extensions, we ignore some import errors as they'll be available in the environment of the CLI
+ignored-modules=azure,azure.cli
 
 [FORMAT]
 max-line-length=120
