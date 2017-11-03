@@ -34,10 +34,7 @@ def run_cli_command(cmd, return_as_json=False):
         logger.error('command ended with an error: %s', cmd)
         raise
 
-<<<<<<< HEAD
-=======
 
->>>>>>> dc94a3bd618f74acdb3167141b26db31e0d06bee
 def prepare_cli_command(cmd, output_as_json=True):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
 
