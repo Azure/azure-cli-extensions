@@ -41,7 +41,7 @@ def main():
         file_itr = (os.path.join(current_dir, p) for p in files if p.endswith('.py'))
         for python_file in file_itr:
             with open(python_file, 'r') as f:
-                file_text = f.read()
+                file_text = f.read().replace('\r\n', '\n')
                 if file_text and (LICENSE_HEADER not in file_text and AUTOREST_LICENSE_HEADER not in file_text):
                     files_without_header.append(os.path.join(current_dir, python_file))
 
