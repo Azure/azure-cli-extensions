@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -150,6 +152,20 @@ class TestIndex(unittest.TestCase):
             for item in exts:
                 self.assertEqual(os.path.basename(item['downloadUrl']), item['filename'],
                                  "Filename must match last segment of downloadUrl")
+
+    def test_extension_url_pypi(self):
+        for exts in self.index['extensions'].values():
+            for item in exts:
+                url = item['downloadUrl']
+                pypi_url_prefix = 'https://pypi.python.org/packages/'
+                pythonhosted_url_prefix = 'https://files.pythonhosted.org/packages/'
+                if url.startswith(pypi_url_prefix):
+                    new_url = url.replace(pypi_url_prefix, pythonhosted_url_prefix)
+                    hash_pos = new_url.find('#')
+                    new_url = new_url if hash_pos == -1 else new_url[:hash_pos]
+                    self.fail("Replace {} with {}\n"
+                              "See for more info https://wiki.archlinux.org/index.php/Python_package_guidelines"
+                              "#PyPI_download_URLs".format(url, new_url))
 
     def test_filename_duplicates(self):
         filenames = []
