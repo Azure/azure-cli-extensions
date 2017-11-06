@@ -24,7 +24,7 @@ INDEX_PATH = os.path.join(get_repo_root(), 'src', 'index.json')
 SRC_PATH = os.path.join(get_repo_root(), 'src')
 
 # Extensions to skip dep. check. Aim to keep this list empty.
-SKIP_DEP_CHECK = ['azure_cli_iot_ext']
+SKIP_DEP_CHECK = ['azure-cli-iot-ext']
 
 
 def catch_dup_keys(pairs):
@@ -141,7 +141,8 @@ class TestIndex(unittest.TestCase):
                                 "Filename {} must end with .whl".format(item['filename']))
                 self.assertEqual(ext_name, item['metadata']['name'],
                                  "Extension name mismatch in extensions['{}']. "
-                                 "Found an extension in the list with name {}".format(ext_name, item['metadata']['name']))
+                                 "Found an extension in the list with name "
+                                 "{}".format(ext_name, item['metadata']['name']))
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
                 self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))
