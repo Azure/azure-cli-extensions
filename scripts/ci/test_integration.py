@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -22,7 +24,7 @@ INDEX_PATH = os.path.join(get_repo_root(), 'src', 'index.json')
 SRC_PATH = os.path.join(get_repo_root(), 'src')
 
 # Extensions to skip dep. check. Aim to keep this list empty.
-SKIP_DEP_CHECK = ['azure_cli_iot_ext']
+SKIP_DEP_CHECK = ['azure-cli-iot-ext']
 
 
 def catch_dup_keys(pairs):
@@ -100,7 +102,7 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
         metadata.update(azext_metadata)
     for dist_info_dirname in dist_info_dirs:
         parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
-        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name:
+        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name.replace('-', '_'):
             whl_metadata_filepath = os.path.join(ext_dir, dist_info_dirname, WHL_METADATA_FILENAME)
             if os.path.isfile(whl_metadata_filepath):
                 with open(whl_metadata_filepath) as f:
@@ -132,11 +134,15 @@ class TestIndex(unittest.TestCase):
 
     def test_extension_filenames(self):
         for ext_name, exts in self.index['extensions'].items():
+            self.assertEqual(ext_name.find('_'), -1, "Extension names should not contain underscores. "
+                                                     "Found {}".format(ext_name))
             for item in exts:
                 self.assertTrue(item['filename'].endswith('.whl'),
                                 "Filename {} must end with .whl".format(item['filename']))
-                self.assertTrue(item['filename'].startswith(ext_name),
-                                "Filename {} must start with {}".format(item['filename'], ext_name))
+                self.assertEqual(ext_name, item['metadata']['name'],
+                                 "Extension name mismatch in extensions['{}']. "
+                                 "Found an extension in the list with name "
+                                 "{}".format(ext_name, item['metadata']['name']))
                 parsed_filename = WHEEL_INFO_RE(item['filename'])
                 p = parsed_filename.groupdict()
                 self.assertTrue(p.get('name'), "Can't get name for {}".format(item['filename']))
@@ -150,6 +156,20 @@ class TestIndex(unittest.TestCase):
             for item in exts:
                 self.assertEqual(os.path.basename(item['downloadUrl']), item['filename'],
                                  "Filename must match last segment of downloadUrl")
+
+    def test_extension_url_pypi(self):
+        for exts in self.index['extensions'].values():
+            for item in exts:
+                url = item['downloadUrl']
+                pypi_url_prefix = 'https://pypi.python.org/packages/'
+                pythonhosted_url_prefix = 'https://files.pythonhosted.org/packages/'
+                if url.startswith(pypi_url_prefix):
+                    new_url = url.replace(pypi_url_prefix, pythonhosted_url_prefix)
+                    hash_pos = new_url.find('#')
+                    new_url = new_url if hash_pos == -1 else new_url[:hash_pos]
+                    self.fail("Replace {} with {}\n"
+                              "See for more info https://wiki.archlinux.org/index.php/Python_package_guidelines"
+                              "#PyPI_download_URLs".format(url, new_url))
 
     def test_filename_duplicates(self):
         filenames = []
@@ -208,6 +228,8 @@ class TestSourceWheels(unittest.TestCase):
         source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
                              if os.path.isdir(os.path.join(SRC_PATH, n))]
         for s in source_extensions:
+            if not os.path.isfile(os.path.join(s, 'setup.py')):
+                continue
             try:
                 subprocess.check_call(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir],
                                       cwd=s, stdout=PIPE, stderr=PIPE)
