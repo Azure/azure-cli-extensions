@@ -24,7 +24,10 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'azure-cli-core',
+    'isodate==0.6.0'
+]
 
 setup(
     name='servicebus-extension',
