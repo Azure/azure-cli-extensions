@@ -25,7 +25,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'isodate==0.6.0'
+    'isodate==0.6.0',
+    'msrest==0.4.22'
 ]
 
 setup(
