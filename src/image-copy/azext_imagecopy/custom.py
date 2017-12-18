@@ -5,9 +5,9 @@
 
 from multiprocessing import Pool
 
+import azure.cli.core.azlogging as azlogging
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azext_imagecopy.create_target import create_target_image
-import azure.cli.core.azlogging as azlogging
 
 logger = azlogging.get_az_logger(__name__)
 

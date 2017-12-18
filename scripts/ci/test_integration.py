@@ -17,8 +17,8 @@ import zipfile
 import hashlib
 import shutil
 import subprocess
-from util import get_repo_root
 from wheel.install import WHEEL_INFO_RE
+from util import get_repo_root
 
 INDEX_PATH = os.path.join(get_repo_root(), 'src', 'index.json')
 SRC_PATH = os.path.join(get_repo_root(), 'src')

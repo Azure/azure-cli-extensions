@@ -13,7 +13,7 @@ import azure.cli.core.azlogging as azlogging
 logger = azlogging.get_az_logger(__name__)
 
 
-def run_cli_command(cmd, return_as_json=False):
+def run_cli_command(cmd, return_as_json=False):  # pylint: disable=inconsistent-return-statements
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
         logger.debug('command: %s ended with output: %s', cmd, cmd_output)
