@@ -6,10 +6,10 @@
 import hashlib
 import datetime
 import time
-from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azure.cli.core.application import APPLICATION
 from azure.cli.core.util import CLIError
 import azure.cli.core.azlogging as azlogging
+from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 
 logger = azlogging.get_az_logger(__name__)
 
