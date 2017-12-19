@@ -17,17 +17,13 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
         super(ImageCopyCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                       custom_command_type=imagecopy_custom)
 
-    def load_command_table(self, args):
-        from azure.cli.core.commands import CliCommandType
-        imagecopy_custom = CliCommandType(
-            operations_tmpl='azext_imagecopy.custom#{}')
-
+    def load_command_table(self, _):
         with self.command_group('image') as g:
             g.custom_command('copy', 'imagecopy')
 
         return self.command_table
 
-    def load_arguments(self, command):
+    def load_arguments(self, _):
         with self.argument_context('image copy') as c:
             c.argument('source_resource_group_name', options_list=['--source-resource-group'],
                        help='Name of the resource group of the source resource')

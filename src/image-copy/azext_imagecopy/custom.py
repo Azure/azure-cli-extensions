@@ -5,7 +5,6 @@
 
 from multiprocessing import Pool
 
-import azure.cli.core.azlogging as azlogging
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azext_imagecopy.create_target import create_target_image
 
@@ -14,7 +13,7 @@ logger = get_logger(__name__)
 
 
 # pylint: disable=too-many-statements
-def imagecopy(cmd, source_resource_group_name, source_object_name, target_location,
+def imagecopy(source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, source_type='image', cleanup='false', parallel_degree=-1):
 
     # get the os disk id from source vm/image
