@@ -27,7 +27,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='servicebus',
+    name='servicebus-extension',
     version=VERSION,
     description='An Azure CLI Extension to manage servicebus resources',
     long_description='An Azure CLI Extension to manage servicebus resources',
