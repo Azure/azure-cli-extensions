@@ -142,8 +142,8 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
         copy_status = json_output["properties"]["copy"]["status"]
         copy_progress_1, copy_progress_2 = json_output["properties"]["copy"]["progress"].split(
             "/")
-        current_progress = round(
-            int(copy_progress_1) / int(copy_progress_2), 1)
+        current_progress = int(
+            int(copy_progress_1) / int(copy_progress_2) * 100)
 
         if current_progress != prev_progress:
             msg = "{0} - Copy progress: {1}%"\
