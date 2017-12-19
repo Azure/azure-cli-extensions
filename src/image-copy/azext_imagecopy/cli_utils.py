@@ -13,7 +13,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def run_cli_command(cmd, return_as_json=False):  # pylint: disable=inconsistent-return-statements
+def run_cli_command(cmd, return_as_json=False):
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
         logger.debug('command: %s ended with output: %s', cmd, cmd_output)
