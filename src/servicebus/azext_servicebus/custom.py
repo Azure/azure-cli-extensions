@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azext_servicebus._utils import accessrights_converter
+
 from knack.util import CLIError
 
 from azext_servicebus.servicebus.models import (
