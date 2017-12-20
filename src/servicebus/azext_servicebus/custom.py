@@ -6,7 +6,7 @@
 from azext_servicebus._utils import accessrights_converter
 from knack.util import CLIError
 
-from azure.mgmt.servicebus.models import (
+from azext_servicebus.servicebus.models import (
     SBNamespace,
     SBSku,
     SBQueue,

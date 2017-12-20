@@ -11,7 +11,7 @@ from azure.cli.core import AzCommandsLoader
 class ServicebusCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        from azure.cli.core.sdk.util import CliCommandType
+        from azure.cli.core.commands import CliCommandType
         servicebus_custom = CliCommandType(operations_tmpl='azext_servicebus.custom#{}')
         super(ServicebusCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=servicebus_custom,
                                                        min_profile="2017-03-10-profile")

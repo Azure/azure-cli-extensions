@@ -15,6 +15,7 @@ iso8601pattern = re.compile("^P(?!$)(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?=\\d)(\\
 
 def _validate_lock_duration(namespace):
     if namespace.lock_duration and not iso8601pattern.match(namespace.lock_duration):
+        print('Test-Lock Duration')
         raise CLIError('--lock-duration Value Error : {0} value is not in ISO 8601 timespan/duration format. e.g.'
                        ' PT10M for duration of 10 min'.format(namespace.lock_duration))
 

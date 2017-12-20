@@ -5,6 +5,48 @@
 
 from knack.help_files import helps
 
+helps['sb'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus namespace, queue, topic, subscription, rule and alias (Disaster Recovery Configuration)
+ 
+    """
+
+helps['sb namespace'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus namespace and authorization-rule
+
+    """
+
+helps['sb queue'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus queue and authorization-rule
+
+    """
+
+helps['sb topic'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus topic and authorization-rule
+
+    """
+
+helps['sb subscription'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus Subscription
+
+    """
+
+helps['sb rule'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus rule
+
+    """
+
+helps['sb alias'] = """
+    type: group
+    short-summary: Manage Azure ServiceBus Alias (Disaster Recovery Configuration)
+
+    """
+
 helps['sb namespace check-name-availability'] = """
     type: command
     short-summary: check for the availability of the given name for the Namespace
@@ -18,7 +60,7 @@ helps['sb namespace create'] = """
     short-summary: Creates the ServiceBus Namespace
     examples:
         - name: Create a new namespace.
-          text: helps['sb namespace create --resource-group myresourcegroup --name mynamespace --location westus
+          text: helps['az sb namespace create --resource-group myresourcegroup --name mynamespace --location westus
            --tags ['tag1: value1', 'tag2: value2'] --sku-name Standard --sku-tier Standard']
 
     """
@@ -28,7 +70,7 @@ helps['sb namespace show'] = """
     short-summary: shows the Namespace Details
     examples:
         - name: shows the Namespace details.
-          text: helps['sb namespace show --resource-group myresourcegroup --name mynamespace']
+          text: helps['az sb namespace show --resource-group myresourcegroup --name mynamespace']
 
     """
 
@@ -37,9 +79,9 @@ helps['sb namespace list'] = """
     short-summary: List the Namespaces by ResourceGroup or By subscription
     examples:
         - name: Get the Namespaces by resource Group.
-          text: helps['sb namespace list --resource-group myresourcegroup']
+          text: helps['az sb namespace list --resource-group myresourcegroup']
         - name: Get the Namespaces by Subscription.
-          text: helps['sb namespace list']
+          text: helps['az sb namespace list']
 
     """
 
@@ -48,7 +90,7 @@ helps['sb namespace delete'] = """
     short-summary: Deletes the Namespaces
     examples:
         - name: Deletes the Namespace
-          text: helps['sb namespace delete --resource-group myresourcegroup --name mynamespace']
+          text: helps['az sb namespace delete --resource-group myresourcegroup --name mynamespace']
 
     """
 
@@ -57,7 +99,7 @@ helps['sb namespace authorizationrule create'] = """
     short-summary: Creates Authorization rule for the given Namespace
     examples:
         - name: Creates Authorization rules
-          text: helps['sb namespace authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb namespace authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
            --name myauthorule --access-rights [Send, Listen]']
 
     """
@@ -67,7 +109,7 @@ helps['sb namespace authorizationrule get'] = """
     short-summary: Shows the details of AuthorizatioRule
     examples:
         - name: Shows the details of AuthorizatioRule
-          text: helps['sb namespace authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb namespace authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
            --name myauthorule']
 
     """
@@ -77,7 +119,7 @@ helps['sb namespace authorizationrule list'] = """
     short-summary: Shows the list of AuthorizatioRule by Namespace
     examples:
         - name: Shows the list of AuthorizatioRule by Namespace
-          text: helps['sb namespace authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace']
+          text: helps['az sb namespace authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace']
 
     """
 
@@ -86,7 +128,7 @@ helps['sb namespace authorizationrule list-keys'] = """
     short-summary: Shows the connectionstrings of AuthorizatioRule for the namespace
     examples:
         - name: Shows the connectionstrings of AuthorizatioRule for the namespace.
-          text: helps['sb namespace authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb namespace authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace
            --name myauthorule']
 
     """
@@ -96,7 +138,7 @@ helps['sb namespace authorizationrule regenerate-keys'] = """
     short-summary: Regenerate the connectionstrings of AuthorizatioRule for the namespace.
     examples:
         - name: Regenerate the connectionstrings of AuthorizatioRule for the namespace.
-          text: helps['sb namespace authorizationrule regenerate-keys --resource-group myresourcegroup
+          text: helps['az sb namespace authorizationrule regenerate-keys --resource-group myresourcegroup
            --namespace-name mynamespace --name myauthorule --key PrimaryKey']
 
     """
@@ -106,7 +148,7 @@ helps['sb namespace authorizationrule delete'] = """
     short-summary: Deletes the AuthorizatioRule of the namespace.
     examples:
         - name: Deletes the AuthorizatioRule of the namespace.
-          text: helps['sb namespace authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb namespace authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
            --name myauthorule']
 
     """
@@ -116,7 +158,7 @@ helps['sb queue create'] = """
     short-summary: Creates the ServiceBus Queue
     examples:
         - name: Create a new queue.
-          text: helps['sb queue create --resource-group myresourcegroup --namespace-name mynamespace --name myqueue']
+          text: helps['az sb queue create --resource-group myresourcegroup --namespace-name mynamespace --name myqueue']
 
     """
 
@@ -125,7 +167,7 @@ helps['sb queue show'] = """
     short-summary: shows the Queue Details
     examples:
         - name: Shows the Queue details.
-          text: helps['sb queue show --resource-group myresourcegroup --namespace-name mynamespace --name myqueue']
+          text: helps['az sb queue show --resource-group myresourcegroup --namespace-name mynamespace --name myqueue']
 
     """
 
@@ -134,7 +176,7 @@ helps['sb queue list'] = """
     short-summary: List the Queueby Namepsace
     examples:
         - name: Get the Queues by Namespace.
-          text: helps['sb queue list --resource-group myresourcegroup --namespace-name mynamespace']
+          text: helps['az sb queue list --resource-group myresourcegroup --namespace-name mynamespace']
 
     """
 
@@ -143,7 +185,7 @@ helps['sb queue delete'] = """
     short-summary: Deletes the Queue
     examples:
         - name: Deletes the queue
-          text: helps['sb queue delete --resource-group myresourcegroup --namespace-name mynamespace --name myqueue']
+          text: helps['az sb queue delete --resource-group myresourcegroup --namespace-name mynamespace --name myqueue']
 
     """
 
@@ -152,7 +194,7 @@ helps['sb queue authorizationrule create'] = """
     short-summary: Creates Authorization rule for the given Queue
     examples:
         - name: Creates Authorization rules
-          text: helps['sb queue authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb queue authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue
            --name myauthorule --access-rights [Listen]']
 
@@ -163,7 +205,7 @@ helps['sb queue authorizationrule show'] = """
     short-summary: shows the details of AuthorizatioRule
     examples:
         - name: shows the details of AuthorizatioRule
-          text: helps['sb queue authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb queue authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue
            --name myauthorule']
 
@@ -174,7 +216,7 @@ helps['sb queue authorizationrule list'] = """
     short-summary: shows the list of AuthorizatioRule by Queue
     examples:
         - name: shows the list of AuthorizatioRule by Queue
-          text: helps['sb queue authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb queue authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue']
 
     """
@@ -184,7 +226,7 @@ helps['sb queue authorizationrule list-keys'] = """
     short-summary: Shows the connectionstrings of AuthorizatioRule for the Queue.
     examples:
         - name: Shows the connectionstrings of AuthorizatioRule for the queue.
-          text: helps['sb queue authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb queue authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue
            --name myauthorule']
 
@@ -195,7 +237,7 @@ helps['sb queue authorizationrule regenerate-keys'] = """
     short-summary: Regenerate the connectionstrings of AuthorizatioRule for the namespace.
     examples:
         - name: Regenerate the connectionstrings of AuthorizatioRule for the namespace.
-          text: helps['sb queue authorizationrule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb queue authorizationrule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue
            --name myauthorule --key PrimaryKey']
 
@@ -206,7 +248,7 @@ helps['sb queue authorizationrule delete'] = """
     short-summary: Deletes the AuthorizatioRule of the Queue.
     examples:
         - name: Deletes the AuthorizatioRule of the queue.
-          text: helps['sb queue authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb queue authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue
            --name myauthorule']
 
@@ -217,7 +259,7 @@ helps['sb topic create'] = """
     short-summary: Creates the ServiceBus Topic
     examples:
         - name: Create a new queue.
-          text: helps['sb topic create --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}']
+          text: helps['az sb topic create --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}']
 
     """
 
@@ -226,7 +268,7 @@ helps['sb topic show'] = """
     short-summary: Shows the Topic Details
     examples:
         - name: Shows the Topic details.
-          text: helps['sb topic get --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}']
+          text: helps['az sb topic get --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}']
 
     """
 
@@ -235,7 +277,7 @@ helps['sb topic list'] = """
     short-summary: List the Topic by Namepsace
     examples:
         - name: Get the Topics by Namespace.
-          text: helps['sb topic list --resource-group myresourcegroup --namespace-name mynamespace']
+          text: helps['az sb topic list --resource-group myresourcegroup --namespace-name mynamespace']
 
     """
 
@@ -244,7 +286,7 @@ helps['sb topic delete'] = """
     short-summary: Deletes the Topic
     examples:
         - name: Deletes the topic
-          text: helps['sb topic delete --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}']
+          text: helps['az sb topic delete --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}']
 
     """
 
@@ -253,9 +295,8 @@ helps['sb topic authorizationrule create'] = """
     short-summary: Creates Authorization rule for the given Topic
     examples:
         - name: Creates Authorization rules
-          text: helps['sb topic authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname}
-           --name myauthorule --access-rights [Send, Listen]']
+          text: helps['az sb topic authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
+           --topic-name {topicname} --name myauthorule --access-rights [Send, Listen]']
 
     """
 
@@ -264,7 +305,7 @@ helps['sb topic authorizationrule show'] = """
     short-summary: Shows the details of AuthorizatioRule
     examples:
         - name: Shows the details of AuthorizatioRule
-          text: helps['sb topic authorizationrule get --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb topic authorizationrule get --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname}
            --name myauthorule']
 
@@ -275,7 +316,7 @@ helps['sb topic authorizationrule list'] = """
     short-summary: Gets the list of AuthorizatioRule by Topic
     examples:
         - name: Gets the list of AuthorizatioRule by Topic
-          text: helps['sb topic authorizationrule get --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb topic authorizationrule get --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname}']
 
     """
@@ -285,7 +326,7 @@ helps['sb topic authorizationrule list-keys'] = """
     short-summary: shows the connectionstrings of AuthorizatioRule for the Topic.
     examples:
         - name: Gets the connectionstrings of AuthorizatioRule for the topic.
-          text: helps['sb topic authorizationrule listkeys --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb topic authorizationrule listkeys --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname}
            --name myauthorule']
 
@@ -296,7 +337,7 @@ helps['sb topic authorizationrule regenerate-keys'] = """
     short-summary: Regenerate the connectionstrings of AuthorizatioRule for the Topic.
     examples:
         - name: Regenerate the connectionstrings of AuthorizatioRule for the Topic.
-          text: helps['sb topic authorizationrule regenerate_keys --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb topic authorizationrule regenerate_keys --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname}
            --name myauthorule --regeneratekey PrimaryKey']
 
@@ -307,7 +348,7 @@ helps['sb topic authorizationrule delete'] = """
     short-summary: Deletes the AuthorizatioRule of the Topic.
     examples:
         - name: Deletes the AuthorizatioRule of the topic
-          text: helps['sb topic authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb topic authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname}
            --name myauthorule']
 
@@ -317,7 +358,7 @@ helps['sb subscription create'] = """
     short-summary: Creates the ServiceBus Subscription
     examples:
         - name: Create a new Subscription.
-          text: helps['sb subscription create --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb subscription create --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname} --name {subscriptionname}']
 
     """
@@ -327,7 +368,7 @@ helps['sb subscription show'] = """
     short-summary: Shows the Subscription Details
     examples:
         - name: Shows the Subscription details.
-          text: helps['sb subscription get --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb subscription get --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname} --name {subscriptionname}']
 
     """
@@ -337,7 +378,7 @@ helps['sb subscription list'] = """
     short-summary: List the Subscription by Topic
     examples:
         - name: Shows the Subscription by Topic.
-          text: helps['sb subscription list --resource-group myresourcegroup --namespace-name mynamespace']
+          text: helps['az sb subscription list --resource-group myresourcegroup --namespace-name mynamespace']
 
     """
 
@@ -346,7 +387,7 @@ helps['sb subscription delete'] = """
     short-summary: Deletes the Subscription
     examples:
         - name: Deletes the Subscription
-          text: helps['sb subscription delete --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb subscription delete --resource-group myresourcegroup --namespace-name mynamespace
            --topic-name {topicname} --name {subscriptionname}']
 
     """
@@ -356,7 +397,7 @@ helps['sb rule create'] = """
     short-summary: Creates the ServiceBus Rule for Subscription
     examples:
         - name: Create a new Rule.
-          text: helps['sb rule create --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
+          text: helps['az sb rule create --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
            --subscription-name {subscriptionname} --name {rulename} --filter-sql-expression {sqlexpression}']
 
     """
@@ -366,7 +407,7 @@ helps['sb rule show'] = """
     short-summary: Shows the Rule Details
     examples:
         - name: Shows the Rule details.
-          text: helps['sb rule show --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
+          text: helps['az sb rule show --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
            --subscription-name {subscriptionname} --name {rulename}']
 
     """
@@ -376,7 +417,7 @@ helps['sb rule list'] = """
     short-summary: List the Rule by Subscription
     examples:
         - name: Shows the Rule by Subscription.
-          text: helps['sb rule list --resource-group myresourcegroup --namespace-name mynamespace
+          text: helps['az sb rule list --resource-group myresourcegroup --namespace-name mynamespace
            --subscription-name {subscriptionname}']
 
     """
@@ -386,7 +427,7 @@ helps['sb rule delete'] = """
     short-summary: Deletes the Rule
     examples:
         - name: Deletes the Rule
-          text: helps['sb rule delete --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
+          text: helps['az sb rule delete --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
            --subscription-name {subscriptionname} --name {rulename}']
 
     """
@@ -396,7 +437,7 @@ helps['sb alias check_name_availability'] = """
     short-summary: Check the availability of the Alias (Geo DR Configuration) Name
     examples:
         - name: Check the availability of the Alias (Geo DR Configuration) Name
-          text: helps['sb alias check_name_availability --resource-group myresourcegroup --namespace-name primarynamespace
+          text: helps['az sb alias check_name_availability --resource-group myresourcegroup --namespace-name primarynamespace
            --alias myaliasname']
 
     """
@@ -406,7 +447,7 @@ helps['sb alias create'] = """
     short-summary: Creats Alias (Geo DR Configuration) for the give Namespace
     examples:
         - name: Creats Alias (Geo DR Configuration) for the give Namespace
-          text: helps['sb alias create  --resource-group myresourcegroup --namespace-name primarynamespace
+          text: helps['az sb alias create  --resource-group myresourcegroup --namespace-name primarynamespace
            --alias myaliasname --partner-namespace {id}']
 
     """
@@ -416,10 +457,10 @@ helps['sb alias show'] = """
     short-summary: shows details of Alias (Geo DR Configuration) for Primay/Secondary Namespace
     examples:
         - name:  show details of Alias (Geo DR Configuration)  of the Primary Namespace
-          text: helps['sb alias show  --resource-group myresourcegroup --namespace-name primarynamespace
+          text: helps['az sb alias show  --resource-group myresourcegroup --namespace-name primarynamespace
            --alias myaliasname']
         - name:  Get details of Alias (Geo DR Configuration)  of the Secondary Namespace
-           text: helps['sb alias show  --resource-group myresourcegroup --namespace-name secondarynamespace
+           text: helps['az sb alias show  --resource-group myresourcegroup --namespace-name secondarynamespace
            --alias myaliasname']
 
     """
@@ -429,7 +470,7 @@ helps['sb alias break-pairing'] = """
     short-summary: Disables the Disaster Recovery and stops replicating changes from primary to secondary namespaces
     examples:
         - name:  Disables the Disaster Recovery and stops replicating changes from primary to secondary namespaces
-          text: helps['sb alias break-pairing  --resource-group myresourcegroup --namespace-name primarynamespace
+          text: helps['az sb alias break-pairing  --resource-group myresourcegroup --namespace-name primarynamespace
            --alias myaliasname']
 
     """
@@ -439,7 +480,7 @@ helps['sb alias fail-over'] = """
     short-summary: Envokes GEO DR failover and reconfigure the alias to point to the secondary namespace
     examples:
         - name:  Envokes GEO DR failover and reconfigure the alias to point to the secondary namespace
-          text: helps['sb alias fail-over  --resource-group myresourcegroup --namespace-name secondarynamespace
+          text: helps['az sb alias fail-over  --resource-group myresourcegroup --namespace-name secondarynamespace
            --alias myaliasname']
 
     """
@@ -449,7 +490,7 @@ helps['sb alias delete'] = """
     short-summary: Delete Alias(Disaster Recovery configuration) request accepted
     examples:
         - name:  Delete Alias(Disaster Recovery configuration) request accepted
-          text: helps['sb alias delete  --resource-group myresourcegroup --namespace-name secondarynamespace
+          text: helps['az sb alias delete  --resource-group myresourcegroup --namespace-name secondarynamespace
            --alias myaliasname']
 
     """

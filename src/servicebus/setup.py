@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.4"
+VERSION = "0.0.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -27,7 +27,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='servicebus-extension',
+    name='servicebus',
     version=VERSION,
     description='An Azure CLI Extension to manage servicebus resources',
     long_description='An Azure CLI Extension to manage servicebus resources',
