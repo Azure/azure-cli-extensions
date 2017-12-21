@@ -44,7 +44,7 @@ def load_arguments_namespace(self, _):
                    help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
     with self.argument_context('sb namespace authorizationrule regenerate-keys') as c:
-        c.argument('key_type', options_list=['--key'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
+        c.argument('key_type', options_list=['--key-name',], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
 def load_arguments_queue(self, _):
@@ -125,11 +125,10 @@ def load_arguments_queue(self, _):
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
     with self.argument_context('sb queue authorizationrule regenerate-keys') as c:
-        c.argument('key_type', options_list=['--key'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
-
-    #######
+        c.argument('key_type', options_list=['--key-name',], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
+# - Queue Region
 def load_arguments_topic(self, _):
     # region - Topic Create
     with self.argument_context('sb topic create') as c:
@@ -193,17 +192,14 @@ def load_arguments_topic(self, _):
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('topic_name', options_list=['--topic-name'], help='name of the Topic')
 
-    with self.argument_context('servicebus topic authorizationrule create') as c:
-        c.argument('accessrights', options_list=['--access-rights'],
-                   help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
+    with self.argument_context('sb topic authorizationrule create') as c:
+        c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('servicebus topic authorizationrule regeneratekeys') as c:
-        c.argument('key_type', options_list=['--key'],
-                   arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
-
-#######
+    with self.argument_context('sb topic authorizationrule regenerate-keys') as c:
+        c.argument('key_type', options_list=['--key-name',], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
+# Subscription Region
 def load_arguments_subscription(self, _):
     # region - Subscription Create
     with self.argument_context('sb subscription create') as c:
@@ -319,7 +315,7 @@ def load_arguments_geodr(self, _):
     with self.argument_context('sb alias check-name-availability') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
-        c.argument('name', options_list=['--alias'],
+        c.argument('name', options_list=['--name'],
                    help='Name of the Alias (Disaster Recovery) to check availability')
 
     with self.argument_context('sb alias create') as c:
@@ -328,7 +324,7 @@ def load_arguments_geodr(self, _):
         c.argument('alias', options_list=['--alias'], help='Name of the Alias (Disaster Recovery)')
         c.argument('partner_namespace', options_list=['--partner-namespace'],
                    help='ARM Id of the Primary/Secondary eventhub namespace name, which is part of'
-                        ' GEO DR pairning')
+                        ' GEO DR pairing')
         c.argument('alternate_name', options_list=['--alternate-name'],
                    help='Alternate Name for the Alias, when the Namespace name and Alias name are same')
 

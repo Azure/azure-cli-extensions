@@ -49,7 +49,8 @@ def load_command_table(self, _):
 
     sb_geodr_util = CliCommandType(
         operations_tmpl='azext_servicebus.servicebus.operations.disaster_recovery_configs_operations#DisasterRecoveryConfigsOperations.{}',
-        client_factory=disaster_recovery_mgmt_client_factory
+        client_factory=disaster_recovery_mgmt_client_factory,
+        client_arg_name='self'
     )
 
 # Namespace Region
@@ -113,7 +114,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
 
 # DisasterRecoveryConfigs Region
-    with self.command_group('sb alias', sb_geodr_util) as g:
+    with self.command_group('sb alias', sb_geodr_util, client_factory=disaster_recovery_mgmt_client_factory) as g:
         g.command('create', 'create_or_update')
         g.command('show', 'get')
         g.command('list', 'list')

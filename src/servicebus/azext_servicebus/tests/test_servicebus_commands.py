@@ -17,10 +17,8 @@ from azure.cli.testsdk import (
 
 
 class SBNamespaceCURDScenarioTest(ScenarioTest):
-
     @ResourceGroupPreparer(name_prefix='cli_test_sb_namespace')
     def test_sb_namespace(self, resource_group):
-
         self.kwargs.update({
             'loc': 'westus2',
             'rg': resource_group,
@@ -76,11 +74,12 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  ' --name {authoname}')
 
         # Regeneratekeys - Primary
-        self.cmd('sb namespace authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key {primary}')
+        self.cmd(
+            'sb namespace authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {primary}')
 
         # Regeneratekeys - Secondary
         self.cmd('sb namespace authorizationrule regenerate-keys --resource-group {rg}'
-                 ' --namespace-name {namespacename} --name {authoname} --key {secondary}')
+                 ' --namespace-name {namespacename} --name {authoname} --key-name {secondary}')
 
         # Delete AuthorizationRule
         self.cmd('sb namespace authorizationrule delete --resource-group {rg} --namespace-name {namespacename}'
@@ -145,13 +144,13 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Regeneratekeys - Primary
         regenrateprimarykeyresult = self.cmd(
-            'sb queue authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --queue-name {queuename} --name {authoname} --key {primary}')
+            'sb queue authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --queue-name {queuename} --name {authoname} --key-name {primary}')
         self.assertIsNotNone(regenrateprimarykeyresult)
 
         # Regeneratekeys - Secondary
         regenratesecondarykeyresult = self.cmd(
             'sb queue authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename}'
-            ' --queue-name {queuename} --name {authoname} --key {secondary}')
+            ' --queue-name {queuename} --name {authoname} --key-name {secondary}')
         self.assertIsNotNone(regenratesecondarykeyresult)
 
         # Delete Queue AuthorizationRule
@@ -211,8 +210,9 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  checks=[self.check('name', self.kwargs['authoname'])])
 
         # Get Create Authorization Rule
-        self.cmd('sb topic authorizationrule show --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {authoname}',
-                 checks=[self.check('name', self.kwargs['authoname'])])
+        self.cmd(
+            'sb topic authorizationrule show --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {authoname}',
+            checks=[self.check('name', self.kwargs['authoname'])])
 
         # Get Authorization Rule Listkeys
         self.cmd(
@@ -222,12 +222,12 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
         # Regeneratekeys - Primary
         self.cmd(
             'sb topic authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename}'
-            ' --topic-name {topicname} --name {authoname} --key {primary}')
+            ' --topic-name {topicname} --name {authoname} --key-name {primary}')
 
         # Regeneratekeys - Secondary
         self.cmd(
             'sb topic authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename}'
-            ' --topic-name {topicname} --name {authoname} --key {secondary}')
+            ' --topic-name {topicname} --name {authoname} --key-name {secondary}')
 
         # Delete Topic AuthorizationRule
         self.cmd(
@@ -236,9 +236,6 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Delete Topic
         self.cmd('sb topic delete --resource-group {rg} --namespace-name {namespacename} --name {topicname}')
-
-        # Delete Namespace
-        self.cmd('sb namespace delete --resource-group {rg} --name {namespacename}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_sb_subscription')
     def test_sb_subscription(self, resource_group):
@@ -361,17 +358,18 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  ' --subscription-name {subscriptionname}')
 
         # Delete create rule
-        self.cmd('sb rule delete --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --subscription-name {subscriptionname} --name {rulename}')
+        self.cmd(
+            'sb rule delete --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --subscription-name {subscriptionname} --name {rulename}')
 
         # Delete create Subscription
-        self.cmd('sb subscription delete --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {subscriptionname}')
+        self.cmd(
+            'sb subscription delete --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {subscriptionname}')
 
         # Delete Topic
         self.cmd('sb topic delete --resource-group {rg} --namespace-name {namespacename} --name {topicname}')
 
         # Delete Namespace
         self.cmd('sb namespace delete --resource-group {rg} --name {namespacename}')
-
     @ResourceGroupPreparer(name_prefix='cli_test_sb_alias')
     def test_sb_alias(self, resource_group):
 
@@ -426,7 +424,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # CheckNameAvailability - Alias
 
-        self.cmd('sb alias check-name-availability --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}', checks=[self.check('nameAvailable', True)])
+        self.cmd('sb alias check-name-availability --resource-group {rg} --namespace-name {namespacenameprimary} --name {aliasname}', checks=[self.check('nameAvailable', True)])
 
         # Create alias
         self.cmd('sb alias create  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname} --partner-namespace {id}')
@@ -487,6 +485,8 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Delete Alias
         self.cmd('sb alias delete  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}')
+
+        time.sleep(30)
 
         # Delete Namespace - primary
         self.cmd('sb namespace delete --resource-group {rg} --name {namespacenameprimary}')
