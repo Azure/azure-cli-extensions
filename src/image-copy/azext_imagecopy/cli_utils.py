@@ -13,12 +13,12 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def run_cli_command(cmd, return_as_json=False):
+def run_cli_command(cmd, return_as_json=False): # pylint: disable=inconsistent-return-statements
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
         logger.debug('command: %s ended with output: %s', cmd, cmd_output)
 
-        if return_as_json is True:
+        if return_as_json:
             if cmd_output:
                 json_output = json.loads(cmd_output)
                 return json_output
