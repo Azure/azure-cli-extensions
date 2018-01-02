@@ -4,19 +4,9 @@
 # --------------------------------------------------------------------------------------------
 from azext_servicebus._utils import accessrights_converter
 
-from knack.util import CLIError
+from azext_servicebus.servicebus.models import (SBNamespace, SBSku, SBQueue, SBTopic, SBSubscription, Rule, Action, SqlFilter, CorrelationFilter, ArmDisasterRecovery)
 
-from azext_servicebus.servicebus.models import (
-    SBNamespace,
-    SBSku,
-    SBQueue,
-    SBTopic,
-    SBSubscription,
-    Rule,
-    Action,
-    SqlFilter,
-    CorrelationFilter,
-    ArmDisasterRecovery)
+from knack.util import CLIError
 
 
 # Namespace Region
