@@ -226,8 +226,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Regeneratekeys - Secondary
         self.cmd(
-            'sb topic authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename}'
-            ' --topic-name {topicname} --name {authoname} --key-name {secondary}')
+            'sb topic authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {authoname} --key-name {secondary}')
 
         # Delete Topic AuthorizationRule
         self.cmd(
@@ -370,6 +369,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Delete Namespace
         self.cmd('sb namespace delete --resource-group {rg} --name {namespacename}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_sb_alias')
     def test_sb_alias(self, resource_group):
 

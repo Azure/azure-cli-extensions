@@ -44,7 +44,7 @@ def load_arguments_namespace(self, _):
                    help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
     with self.argument_context('sb namespace authorizationrule regenerate-keys') as c:
-        c.argument('key_type', options_list=['--key-name',], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
+        c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
 def load_arguments_queue(self, _):
@@ -125,7 +125,7 @@ def load_arguments_queue(self, _):
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
     with self.argument_context('sb queue authorizationrule regenerate-keys') as c:
-        c.argument('key_type', options_list=['--key-name',], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
+        c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
 # - Queue Region
@@ -196,7 +196,7 @@ def load_arguments_topic(self, _):
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
     with self.argument_context('sb topic authorizationrule regenerate-keys') as c:
-        c.argument('key_type', options_list=['--key-name',], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
+        c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
 # Subscription Region
