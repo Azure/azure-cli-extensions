@@ -2,6 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+
+# pylint: disable=line-too-long
+# pylint: disable=too-many-lines
+
 from azext_servicebus._utils import accessrights_converter
 
 from azext_servicebus.servicebus.models import (SBNamespace, SBSku, SBQueue, SBTopic, SBSubscription, Rule, Action, SqlFilter, CorrelationFilter, ArmDisasterRecovery)
