@@ -8,7 +8,7 @@ from knack.help_files import helps
 helps['sb'] = """
     type: group
     short-summary: Manage Azure ServiceBus namespace, queue, topic, subscription, rule and alias (Disaster Recovery Configuration)
- 
+
     """
 
 helps['sb namespace'] = """
@@ -53,6 +53,7 @@ helps['sb namespace check-name-availability'] = """
     examples:
         - name: Create a new topic.
           text: az sb namespace check_name_availability --name mynamespace
+
     """
 
 helps['sb namespace create'] = """
