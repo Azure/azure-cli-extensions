@@ -37,11 +37,11 @@
         ],
         "azure-cli-iot-ext": [
             {
-                "filename": "azure_cli_iot_ext-0.1.1-py2.py3-none-any.whl",
-                "sha256Digest": "28f5565fa0367da4694223bb8dfacd68be5213e6a49b3a463a10c2379c39da19",
-                "downloadUrl": "https://files.pythonhosted.org/packages/8e/69/6a10aa6be2ad1a054d874d93bd43c09aaca26a137bd0f8f961f03a249a9f/azure_cli_iot_ext-0.1.1-py2.py3-none-any.whl",
+                "filename": "azure_cli_iot_ext-0.3.1-py2.py3-none-any.whl",
+                "sha256Digest": "6932b46e39b5506b460ddc58723d9b2b2223e2a8894d2adda3b0007b4cdef445",
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.3.1/azure_cli_iot_ext-0.3.1-py2.py3-none-any.whl",
                 "metadata": {
-                    "azext.minCliVersion": "2.0.15+dev",
+                    "azext.minCliCoreVersion": "2.0.24",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -80,17 +80,13 @@
                     "run_requires": [
                         {
                             "requires": [
-                                "azure-cli-core",
-                                "azure-cli-iot (==0.1.11)",
-                                "azure-iothub-device-client",
-                                "azure-iothub-service-client",
-                                "azure-mgmt-iothub (==0.2.2)",
-                                "six"
+                                "msrestazure",
+                                "paho-mqtt (==1.3.1)"
                             ]
                         }
                     ],
                     "summary": "Azure IoT CLI Extension",
-                    "version": "0.1.1"
+                    "version": "0.3.1"
                 }
             }
         ],
