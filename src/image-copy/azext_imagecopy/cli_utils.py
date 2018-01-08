@@ -7,18 +7,19 @@ import sys
 import json
 
 from subprocess import check_output, STDOUT, CalledProcessError
-from azure.cli.core.util import CLIError
-import azure.cli.core.azlogging as azlogging
+from knack.util import CLIError
 
-logger = azlogging.get_az_logger(__name__)
+from knack.log import get_logger
+logger = get_logger(__name__)
 
 
+# pylint: disable=inconsistent-return-statements
 def run_cli_command(cmd, return_as_json=False):
     try:
         cmd_output = check_output(cmd, stderr=STDOUT, universal_newlines=True)
         logger.debug('command: %s ended with output: %s', cmd, cmd_output)
 
-        if return_as_json is True:
+        if return_as_json:
             if cmd_output:
                 json_output = json.loads(cmd_output)
                 return json_output

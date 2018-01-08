@@ -37,11 +37,11 @@
         ],
         "azure-cli-iot-ext": [
             {
-                "filename": "azure_cli_iot_ext-0.1.1-py2.py3-none-any.whl",
-                "sha256Digest": "28f5565fa0367da4694223bb8dfacd68be5213e6a49b3a463a10c2379c39da19",
-                "downloadUrl": "https://files.pythonhosted.org/packages/8e/69/6a10aa6be2ad1a054d874d93bd43c09aaca26a137bd0f8f961f03a249a9f/azure_cli_iot_ext-0.1.1-py2.py3-none-any.whl",
+                "filename": "azure_cli_iot_ext-0.3.1-py2.py3-none-any.whl",
+                "sha256Digest": "6932b46e39b5506b460ddc58723d9b2b2223e2a8894d2adda3b0007b4cdef445",
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.3.1/azure_cli_iot_ext-0.3.1-py2.py3-none-any.whl",
                 "metadata": {
-                    "azext.minCliVersion": "2.0.15+dev",
+                    "azext.minCliCoreVersion": "2.0.24",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -80,17 +80,13 @@
                     "run_requires": [
                         {
                             "requires": [
-                                "azure-cli-core",
-                                "azure-cli-iot (==0.1.11)",
-                                "azure-iothub-device-client",
-                                "azure-iothub-service-client",
-                                "azure-mgmt-iothub (==0.2.2)",
-                                "six"
+                                "msrestazure",
+                                "paho-mqtt (==1.3.1)"
                             ]
                         }
                     ],
                     "summary": "Azure IoT CLI Extension",
-                    "version": "0.1.1"
+                    "version": "0.3.1"
                 }
             }
         ],
@@ -136,6 +132,50 @@
                     "name": "image-copy-extension",
                     "summary": "An Azure CLI Extension that copies images from region to region.",
                     "version": "0.0.4"
+                }
+            },
+            {
+                "filename": "image_copy_extension-0.0.5-py2.py3-none-any.whl",
+                "sha256Digest": "23d3e197bcf9d1017117c3125dd8b86f7b8357bcae831c17a9e0f45f32f9d62b",
+                "downloadUrl": "https://files.pythonhosted.org/packages/af/d0/7a2d861df60b5d93512ed9341918c614fe6a067f47d47da5063bef7326f6/image_copy_extension-0.0.5-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.24",
+                    "classifiers": [
+                      "Development Status :: 4 - Beta",
+                      "Intended Audience :: Developers",
+                      "Intended Audience :: System Administrators",
+                      "Programming Language :: Python",
+                      "Programming Language :: Python :: 2",
+                      "Programming Language :: Python :: 2.7",
+                      "Programming Language :: Python :: 3",
+                      "Programming Language :: Python :: 3.4",
+                      "Programming Language :: Python :: 3.5",
+                      "Programming Language :: Python :: 3.6",
+                      "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                      "python.details": {
+                        "contacts": [
+                          {
+                            "email": "tamir.kamara@microsoft.com",
+                            "name": "Tamir Kamara",
+                            "role": "author"
+                          }
+                        ],
+                        "document_names": {
+                          "description": "DESCRIPTION.rst"
+                        },
+                        "project_urls": {
+                          "Home": "https://github.com/Azure/azure-cli-extensions"
+                        }
+                      }
+                    },
+                    "generator": "bdist_wheel (0.29.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "image-copy-extension",
+                    "summary": "An Azure CLI Extension that copies images from region to region.",
+                    "version": "0.0.5"
                 }
             }
         ]

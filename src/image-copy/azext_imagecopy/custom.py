@@ -7,9 +7,9 @@ from multiprocessing import Pool
 
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azext_imagecopy.create_target import create_target_image
-import azure.cli.core.azlogging as azlogging
 
-logger = azlogging.get_az_logger(__name__)
+from knack.log import get_logger
+logger = get_logger(__name__)
 
 
 # pylint: disable=too-many-statements
@@ -18,37 +18,39 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     # get the os disk id from source vm/image
     logger.warn("Getting os disk id of the source vm/image")
-    cmd = prepare_cli_command([source_type, 'show',
-                               '--name', source_object_name,
-                               '--resource-group', source_resource_group_name])
+    cli_cmd = prepare_cli_command([source_type, 'show',
+                                   '--name', source_object_name,
+                                   '--resource-group', source_resource_group_name])
 
-    json_cmd_output = run_cli_command(cmd, return_as_json=True)
+    json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
 
     source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
     source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']
-    logger.debug("source_os_disk_id: %s. source_os_type: %s", source_os_disk_id, source_os_type)
+    logger.debug("source_os_disk_id: %s. source_os_type: %s",
+                 source_os_disk_id, source_os_type)
 
     # create source snapshots
     logger.warn("Creating source snapshot")
     source_os_disk_snapshot_name = source_object_name + '_os_disk_snapshot'
-    cmd = prepare_cli_command(['snapshot', 'create',
-                               '--name', source_os_disk_snapshot_name,
-                               '--resource-group', source_resource_group_name,
-                               '--source', source_os_disk_id])
+    cli_cmd = prepare_cli_command(['snapshot', 'create',
+                                   '--name', source_os_disk_snapshot_name,
+                                   '--resource-group', source_resource_group_name,
+                                   '--source', source_os_disk_id])
 
-    run_cli_command(cmd)
+    run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
     logger.warn("Getting sas url for the source snapshot")
-    cmd = prepare_cli_command(['snapshot', 'grant-access',
-                               '--name', source_os_disk_snapshot_name,
-                               '--resource-group', source_resource_group_name,
-                               '--duration-in-seconds', '3600'])
+    cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
+                                   '--name', source_os_disk_snapshot_name,
+                                   '--resource-group', source_resource_group_name,
+                                   '--duration-in-seconds', '3600'])
 
-    json_output = run_cli_command(cmd, return_as_json=True)
+    json_output = run_cli_command(cli_cmd, return_as_json=True)
 
     source_os_disk_snapshot_url = json_output['accessSas']
-    logger.debug("source os disk snapshot url: %s", source_os_disk_snapshot_url)
+    logger.debug("source os disk snapshot url: %s",
+                 source_os_disk_snapshot_url)
 
     # Start processing in the target locations
 
@@ -58,7 +60,8 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     target_locations_count = len(target_location)
     logger.warn("Target location count: %s", target_locations_count)
 
-    create_resource_group(target_resource_group_name, target_location[0].strip())
+    create_resource_group(target_resource_group_name,
+                          target_location[0].strip())
 
     if parallel_degree == -1:
         pool = Pool(target_locations_count)
@@ -100,35 +103,37 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
         logger.warn('Deleting transient resources')
 
         # Delete resource group
-        cmd = prepare_cli_command(['group', 'delete', '--no-wait', '--yes',
-                                   '--name', transient_resource_group_name])
-        run_cli_command(cmd)
+        cli_cmd = prepare_cli_command(['group', 'delete', '--no-wait', '--yes',
+                                       '--name', transient_resource_group_name])
+        run_cli_command(cli_cmd)
 
         # Revoke sas for source snapshot
-        cmd = prepare_cli_command(['snapshot', 'revoke-access',
-                                   '--name', source_os_disk_snapshot_name,
-                                   '--resource-group', source_resource_group_name])
-        run_cli_command(cmd)
+        cli_cmd = prepare_cli_command(['snapshot', 'revoke-access',
+                                       '--name', source_os_disk_snapshot_name,
+                                       '--resource-group', source_resource_group_name])
+        run_cli_command(cli_cmd)
 
         # Delete source snapshot
-        cmd = prepare_cli_command(['snapshot', 'delete',
-                                   '--name', source_os_disk_snapshot_name,
-                                   '--resource-group', source_resource_group_name])
-        run_cli_command(cmd)
+        cli_cmd = prepare_cli_command(['snapshot', 'delete',
+                                       '--name', source_os_disk_snapshot_name,
+                                       '--resource-group', source_resource_group_name])
+        run_cli_command(cli_cmd)
 
 
 def create_resource_group(resource_group_name, location):
     # check if target resource group exists
-    cmd = prepare_cli_command(['group', 'exists',
-                               '--name', resource_group_name], output_as_json=False)
+    cli_cmd = prepare_cli_command(['group', 'exists',
+                                   '--name', resource_group_name], output_as_json=False)
 
-    cmd_output = run_cli_command(cmd)
+    cmd_output = run_cli_command(cli_cmd)
 
-    if 'false' in cmd_output:
-        # create the target resource group
-        logger.warn("Creating resource group: %s", resource_group_name)
-        cmd = prepare_cli_command(['group', 'create',
+    if 'true' in cmd_output:
+        return
+
+    # create the target resource group
+    logger.warn("Creating resource group: %s", resource_group_name)
+    cli_cmd = prepare_cli_command(['group', 'create',
                                    '--name', resource_group_name,
                                    '--location', location])
 
-        run_cli_command(cmd)
+    run_cli_command(cli_cmd)
