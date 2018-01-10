@@ -7,7 +7,7 @@ from knack.help_files import helps
 
 helps['servicebus'] = """
     type: group
-    short-summary: Manage Azure ServiceBus namespace, queue, topic, subscription, rule and alias (Disaster Recovery Configuration)
+    short-summary: Manage Azure ServiceBus namespace, queue, topic, subscription, rule and geo disaster recovery configuration - alias
 
     """
 
@@ -41,9 +41,9 @@ helps['servicebus rule'] = """
 
     """
 
-helps['servicebus alias'] = """
+helps['servicebus georecovery-alias'] = """
     type: group
-    short-summary: Manage Azure ServiceBus Alias (Disaster Recovery Configuration)
+    short-summary: Manage Azure ServiceBus Geo Disaster Recovery Configuration - Alias
 
     """
 
@@ -435,9 +435,9 @@ helps['servicebus rule delete'] = """
 
 helps['servicebus georecovery-alias check_name_availability'] = """
     type: command
-    short-summary: Check the availability of the Alias (Geo DR Configuration) Name
+    short-summary: Check the availability of the Geo Disaster Recovery configuration - Alias Name
     examples:
-        - name: Check the availability of the Alias (Geo DR Configuration) Name
+        - name: Check the availability of the Geo Disaster Recovery configuration - Alias Name
           text: helps['az servicebus georecovery-alias check_name_availability --resource-group myresourcegroup --namespace-name primarynamespace
            --alias myaliasname']
 
@@ -445,9 +445,9 @@ helps['servicebus georecovery-alias check_name_availability'] = """
 
 helps['servicebus georecovery-alias create'] = """
     type: command
-    short-summary: Creats Alias (Geo DR Configuration) for the give Namespace
+    short-summary: Creates Geo Disaster Recovery configuration - Alias for the give Namespace
     examples:
-        - name: Creats Alias (Geo DR Configuration) for the give Namespace
+        - name: Creates Geo Disaster Recovery configuration - Alias for the give Namespace
           text: helps['az servicebus georecovery-alias create  --resource-group myresourcegroup --namespace-name primarynamespace
            --alias myaliasname --partner-namespace {id}']
 
@@ -455,7 +455,7 @@ helps['servicebus georecovery-alias create'] = """
 
 helps['servicebus georecovery-alias show'] = """
     type: command
-    short-summary: shows details of Alias (Geo DR Configuration) for Primay/Secondary Namespace
+    short-summary: shows details of Geo Disaster Recovery configuration - Alias for Primay/Secondary Namespace
     examples:
         - name:  show details of Alias (Geo DR Configuration)  of the Primary Namespace
           text: helps['az servicebus georecovery-alias show  --resource-group myresourcegroup --namespace-name primarynamespace
@@ -468,7 +468,7 @@ helps['servicebus georecovery-alias show'] = """
 
 helps['servicebus georecovery-alias break-pairing'] = """
     type: command
-    short-summary: Disables the Disaster Recovery and stops replicating changes from primary to secondary namespaces
+    short-summary: Disables the Geo Disaster Recovery and stops replicating changes from primary to secondary namespaces
     examples:
         - name:  Disables the Disaster Recovery and stops replicating changes from primary to secondary namespaces
           text: helps['az servicebus georecovery-alias break-pairing  --resource-group myresourcegroup --namespace-name primarynamespace
@@ -478,9 +478,9 @@ helps['servicebus georecovery-alias break-pairing'] = """
 
 helps['servicebus georecovery-alias fail-over'] = """
     type: command
-    short-summary: Envokes GEO DR failover and reconfigure the alias to point to the secondary namespace
+    short-summary: Envokes Geo Disaster Recovery  failover and reconfigure the alias to point to the secondary namespace
     examples:
-        - name:  Envokes GEO DR failover and reconfigure the alias to point to the secondary namespace
+        - name:  Envokes Geo Disaster Recovery  failover and reconfigure the alias to point to the secondary namespace
           text: helps['az servicebus georecovery-alias fail-over  --resource-group myresourcegroup --namespace-name secondarynamespace
            --alias myaliasname']
 
@@ -488,7 +488,7 @@ helps['servicebus georecovery-alias fail-over'] = """
 
 helps['servicebus georecovery-alias delete'] = """
     type: command
-    short-summary: Delete Alias(Disaster Recovery configuration) request accepted
+    short-summary: Delete Geo Disaster Recovery configuration - Alias request accepted
     examples:
         - name:  Delete Alias(Disaster Recovery configuration) request accepted
           text: helps['az servicebus georecovery-alias delete  --resource-group myresourcegroup --namespace-name secondarynamespace
