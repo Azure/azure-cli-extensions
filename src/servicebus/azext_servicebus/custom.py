@@ -13,7 +13,6 @@ from azext_servicebus._utils import accessrights_converter
 from azext_servicebus.servicebus.models import (SBNamespace, SBSku, SBQueue, SBTopic, SBSubscription, Rule, Action, SqlFilter, CorrelationFilter, ArmDisasterRecovery)
 
 
-
 # Namespace Region
 def cli_namespace_create(client, resource_group_name, namespace_name, location, tags=None, sku='Standard', skutier=None,
                          capacity=None):
