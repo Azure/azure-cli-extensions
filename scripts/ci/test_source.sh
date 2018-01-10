@@ -17,7 +17,7 @@ for d in src/*/azext_*/tests;
     if [ -d $d ]; then
         export AZURE_EXTENSION_DIR=$(mktemp -d);
         pip install --upgrade --target $AZURE_EXTENSION_DIR/ext $d/../..;
-        python -m unittest discover -v $d;
+        python -m unittest discover -v $d/../..;
         rm -rf $AZURE_EXTENSION_DIR;
     else
         echo "Skipped $d as not a directory."
