@@ -20,18 +20,18 @@ interactions:
       cache-control: [no-cache]
       content-length: ['328']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:24:13 GMT']
+      date: ['Wed, 10 Jan 2018 03:34:53 GMT']
       expires: ['-1']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1197']
     status: {code: 201, message: Created}
 - request:
     body: 'b''{"name": "sb-nscli000002"}'''
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace check-name-availability]
+      CommandName: [servicebus namespace check-name-availability]
       Connection: [keep-alive]
       Content-Length: ['32']
       Content-Type: [application/json; charset=utf-8]
@@ -46,7 +46,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['53']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:24:14 GMT']
+      date: ['Wed, 10 Jan 2018 03:34:55 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -54,7 +54,7 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
     body: '{"location": "SouthCentralUS", "tags": {"{tag1: value1,": "", "tag2: value2}":
@@ -62,7 +62,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace create]
+      CommandName: [servicebus namespace create]
       Connection: [keep-alive]
       Content-Length: ['130']
       Content-Type: [application/json; charset=utf-8]
@@ -73,12 +73,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002","name":"sb-nscli000002","type":"Microsoft.ServiceBus/Namespaces","location":"South
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2017-12-21T17:24:19.56Z","updatedAt":"2017-12-21T17:24:19.56Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2018-01-10T03:34:56.037Z","updatedAt":"2018-01-10T03:34:56.037Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['712']
+      content-length: ['714']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:24:20 GMT']
+      date: ['Wed, 10 Jan 2018 03:34:56 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -86,14 +86,14 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace create]
+      CommandName: [servicebus namespace create]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -103,41 +103,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002","name":"sb-nscli000002","type":"Microsoft.ServiceBus/Namespaces","location":"South
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2017-12-21T17:24:19.56Z","updatedAt":"2017-12-21T17:24:19.56Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2018-01-10T03:34:56.037Z","updatedAt":"2018-01-10T03:34:56.037Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['712']
+      content-length: ['714']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:24:49 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
-      server-sb: [Service-Bus-Resource-Provider/SN1]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-    status: {code: 200, message: OK}
-- request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace create]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
-          msrest_azure/0.4.19 azure-mgmt-servicebus/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.24]
-      accept-language: [en-US]
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002?api-version=2017-04-01
-  response:
-    body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002","name":"sb-nscli000002","type":"Microsoft.ServiceBus/Namespaces","location":"South
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2017-12-21T17:24:19.56Z","updatedAt":"2017-12-21T17:25:07.13Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['710']
-      content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:25:20 GMT']
+      date: ['Wed, 10 Jan 2018 03:35:28 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -151,7 +122,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace show]
+      CommandName: [servicebus namespace create]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -161,12 +132,41 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002","name":"sb-nscli000002","type":"Microsoft.ServiceBus/Namespaces","location":"South
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2017-12-21T17:24:19.56Z","updatedAt":"2017-12-21T17:25:07.13Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2018-01-10T03:34:56.037Z","updatedAt":"2018-01-10T03:35:39.12Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['710']
+      content-length: ['711']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:25:26 GMT']
+      date: ['Wed, 10 Jan 2018 03:35:58 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [servicebus namespace show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-servicebus/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.24]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002","name":"sb-nscli000002","type":"Microsoft.ServiceBus/Namespaces","location":"South
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000002","createdAt":"2018-01-10T03:34:56.037Z","updatedAt":"2018-01-10T03:35:39.12Z","serviceBusEndpoint":"https://sb-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['711']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 10 Jan 2018 03:36:00 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -181,7 +181,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace create]
+      CommandName: [servicebus namespace create]
       Connection: [keep-alive]
       Content-Length: ['130']
       Content-Type: [application/json; charset=utf-8]
@@ -192,12 +192,71 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003","name":"sb-nscli000003","type":"Microsoft.ServiceBus/Namespaces","location":"North
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2017-12-21T17:25:26.78Z","updatedAt":"2017-12-21T17:25:26.78Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Activating"}}'}
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2018-01-10T03:36:00.627Z","updatedAt":"2018-01-10T03:36:00.627Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Activating"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['714']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 10 Jan 2018 03:36:02 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [servicebus namespace create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-servicebus/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.24]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003","name":"sb-nscli000003","type":"Microsoft.ServiceBus/Namespaces","location":"North
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2018-01-10T03:36:00.627Z","updatedAt":"2018-01-10T03:36:00.627Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Activating"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['714']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 10 Jan 2018 03:36:32 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [servicebus namespace create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-servicebus/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.24]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003","name":"sb-nscli000003","type":"Microsoft.ServiceBus/Namespaces","location":"North
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2018-01-10T03:36:00.627Z","updatedAt":"2018-01-10T03:36:46.497Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Active"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['712']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:25:26 GMT']
+      date: ['Wed, 10 Jan 2018 03:37:03 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -205,14 +264,13 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace create]
+      CommandName: [servicebus namespace show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -222,70 +280,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003","name":"sb-nscli000003","type":"Microsoft.ServiceBus/Namespaces","location":"North
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2017-12-21T17:25:26.78Z","updatedAt":"2017-12-21T17:25:26.78Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Activating"}}'}
+        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2018-01-10T03:36:00.627Z","updatedAt":"2018-01-10T03:36:46.497Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Active"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['712']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:25:56 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
-      server-sb: [Service-Bus-Resource-Provider/SN1]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-    status: {code: 200, message: OK}
-- request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace create]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
-          msrest_azure/0.4.19 azure-mgmt-servicebus/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.24]
-      accept-language: [en-US]
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003?api-version=2017-04-01
-  response:
-    body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003","name":"sb-nscli000003","type":"Microsoft.ServiceBus/Namespaces","location":"North
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2017-12-21T17:25:26.78Z","updatedAt":"2017-12-21T17:26:19.18Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Active"}}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['710']
-      content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:26:27 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
-      server-sb: [Service-Bus-Resource-Provider/SN1]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-    status: {code: 200, message: OK}
-- request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace show]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
-          msrest_azure/0.4.19 azure-mgmt-servicebus/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.24]
-      accept-language: [en-US]
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003?api-version=2017-04-01
-  response:
-    body: {string: '{"sku":{"name":"Premium","tier":"Premium","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003","name":"sb-nscli000003","type":"Microsoft.ServiceBus/Namespaces","location":"North
-        Central US","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:sb-nscli000003","createdAt":"2017-12-21T17:25:26.78Z","updatedAt":"2017-12-21T17:26:19.18Z","serviceBusEndpoint":"https://sb-nscli000003.servicebus.windows.net:443/","status":"Active"}}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['710']
-      content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:26:29 GMT']
+      date: ['Wed, 10 Jan 2018 03:37:04 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -299,7 +299,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace authorizationrule create]
+      CommandName: [servicebus namespace authorizationrule create]
       Connection: [keep-alive]
       Content-Length: ['36']
       Content-Type: [application/json; charset=utf-8]
@@ -315,7 +315,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['407']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:04 GMT']
+      date: ['Wed, 10 Jan 2018 03:37:37 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -330,7 +330,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace authorizationrule show]
+      CommandName: [servicebus namespace authorizationrule show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -345,7 +345,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['407']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:01 GMT']
+      date: ['Wed, 10 Jan 2018 03:37:38 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -359,7 +359,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias check-name-availability]
+      CommandName: [servicebus georecovery-alias check-name-availability]
       Connection: [keep-alive]
       Content-Length: ['32']
       Content-Type: [application/json; charset=utf-8]
@@ -374,7 +374,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['38']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:08 GMT']
+      date: ['Wed, 10 Jan 2018 03:37:39 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -382,14 +382,14 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1197']
     status: {code: 200, message: OK}
 - request:
     body: 'b''b\''{"properties": {"partnerNamespace": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003"}}\'''''
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias create]
+      CommandName: [servicebus georecovery-alias create]
       Connection: [keep-alive]
       Content-Length: ['245']
       Content-Type: [application/json; charset=utf-8]
@@ -404,7 +404,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:42 GMT']
+      date: ['Wed, 10 Jan 2018 03:38:12 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -419,7 +419,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -433,7 +433,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:44 GMT']
+      date: ['Wed, 10 Jan 2018 03:38:13 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -447,7 +447,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -461,7 +461,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['675']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:46 GMT']
+      date: ['Wed, 10 Jan 2018 03:38:14 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -475,7 +475,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -489,7 +489,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:27:48 GMT']
+      date: ['Wed, 10 Jan 2018 03:38:15 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -503,7 +503,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -517,7 +517,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:28:21 GMT']
+      date: ['Wed, 10 Jan 2018 03:38:45 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -531,7 +531,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -545,7 +545,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:28:51 GMT']
+      date: ['Wed, 10 Jan 2018 03:39:16 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -559,7 +559,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -573,7 +573,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:29:24 GMT']
+      date: ['Wed, 10 Jan 2018 03:39:47 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -587,7 +587,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -601,7 +601,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['674']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:29:58 GMT']
+      date: ['Wed, 10 Jan 2018 03:40:18 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -615,7 +615,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias break-pairing]
+      CommandName: [servicebus georecovery-alias break-pairing]
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
@@ -629,20 +629,20 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:29:56 GMT']
+      date: ['Wed, 10 Jan 2018 03:40:18 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
       server-sb: [Service-Bus-Resource-Provider/SN1]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -656,7 +656,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:29:58 GMT']
+      date: ['Wed, 10 Jan 2018 03:40:18 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -670,7 +670,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -684,7 +684,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:30:30 GMT']
+      date: ['Wed, 10 Jan 2018 03:40:49 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -698,7 +698,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -712,7 +712,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:31:02 GMT']
+      date: ['Wed, 10 Jan 2018 03:41:21 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -726,7 +726,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -740,7 +740,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['483']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:31:35 GMT']
+      date: ['Wed, 10 Jan 2018 03:41:52 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -754,7 +754,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias create]
+      CommandName: [servicebus georecovery-alias create]
       Connection: [keep-alive]
       Content-Length: ['245']
       Content-Type: [application/json; charset=utf-8]
@@ -769,7 +769,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:31:51 GMT']
+      date: ['Wed, 10 Jan 2018 03:42:08 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -777,14 +777,14 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1197']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -798,7 +798,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:31:55 GMT']
+      date: ['Wed, 10 Jan 2018 03:42:09 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -812,7 +812,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -826,7 +826,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:32:28 GMT']
+      date: ['Wed, 10 Jan 2018 03:42:40 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -840,7 +840,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -854,7 +854,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:32:57 GMT']
+      date: ['Wed, 10 Jan 2018 03:43:11 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -868,7 +868,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -882,7 +882,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['673']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:33:29 GMT']
+      date: ['Wed, 10 Jan 2018 03:43:41 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -896,7 +896,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -910,7 +910,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['674']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:34:04 GMT']
+      date: ['Wed, 10 Jan 2018 03:44:12 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -924,7 +924,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias fail-over]
+      CommandName: [servicebus georecovery-alias fail-over]
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
@@ -938,20 +938,20 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:34:02 GMT']
+      date: ['Wed, 10 Jan 2018 03:44:13 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
       server-sb: [Service-Bus-Resource-Provider/SN1]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1196']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -965,7 +965,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['675']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:34:04 GMT']
+      date: ['Wed, 10 Jan 2018 03:44:13 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -979,7 +979,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -993,7 +993,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['675']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:34:38 GMT']
+      date: ['Wed, 10 Jan 2018 03:44:43 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -1007,7 +1007,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1021,7 +1021,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['675']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:35:08 GMT']
+      date: ['Wed, 10 Jan 2018 03:45:14 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -1035,7 +1035,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias show]
+      CommandName: [servicebus georecovery-alias show]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1049,7 +1049,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['483']
       content-type: [application/json; charset=utf-8]
-      date: ['Thu, 21 Dec 2017 17:35:39 GMT']
+      date: ['Wed, 10 Jan 2018 03:45:45 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -1063,7 +1063,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb alias delete]
+      CommandName: [servicebus georecovery-alias delete]
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
@@ -1077,7 +1077,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:35:42 GMT']
+      date: ['Wed, 10 Jan 2018 03:45:46 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -1090,7 +1090,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
@@ -1104,7 +1104,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:36:13 GMT']
+      date: ['Wed, 10 Jan 2018 03:46:18 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002/operationresults/sb-nscli000002?api-version=2017-04-01']
       pragma: [no-cache]
@@ -1118,7 +1118,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1131,7 +1131,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:36:41 GMT']
+      date: ['Wed, 10 Jan 2018 03:46:49 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002/operationresults/sb-nscli000002?api-version=2017-04-01']
       pragma: [no-cache]
@@ -1144,7 +1144,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1157,7 +1157,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:37:16 GMT']
+      date: ['Wed, 10 Jan 2018 03:47:18 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000002/operationresults/sb-nscli000002?api-version=2017-04-01']
       pragma: [no-cache]
@@ -1170,7 +1170,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1183,7 +1183,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:37:44 GMT']
+      date: ['Wed, 10 Jan 2018 03:47:49 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -1195,7 +1195,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
@@ -1209,21 +1209,21 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:37:49 GMT']
+      date: ['Wed, 10 Jan 2018 03:47:53 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003/operationresults/sb-nscli000003?api-version=2017-04-01']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
       server-sb: [Service-Bus-Resource-Provider/SN1]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 202, message: Accepted}
 - request:
     body: null
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1236,7 +1236,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:38:20 GMT']
+      date: ['Wed, 10 Jan 2018 03:48:24 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003/operationresults/sb-nscli000003?api-version=2017-04-01']
       pragma: [no-cache]
@@ -1249,7 +1249,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1262,7 +1262,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:38:53 GMT']
+      date: ['Wed, 10 Jan 2018 03:48:55 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_sb_alias000001/providers/Microsoft.ServiceBus/namespaces/sb-nscli000003/operationresults/sb-nscli000003?api-version=2017-04-01']
       pragma: [no-cache]
@@ -1275,7 +1275,7 @@ interactions:
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
-      CommandName: [sb namespace delete]
+      CommandName: [servicebus namespace delete]
       Connection: [keep-alive]
       Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.3 (Windows-10-10.0.15063-SP0) requests/2.18.4 msrest/0.4.22
@@ -1288,7 +1288,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:39:20 GMT']
+      date: ['Wed, 10 Jan 2018 03:49:26 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -1315,11 +1315,11 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Thu, 21 Dec 2017 17:39:23 GMT']
+      date: ['Wed, 10 Jan 2018 03:49:27 GMT']
       expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZURVNUOjVGU0I6NUZBTElBUzNPVktLNEZXTDVFSlJZQTJLUlo1NzRHMnw1ODMzNTM3QjMyNzAxOThGLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZURVNUOjVGU0I6NUZBTElBU1hLRVVKV002RkZYSExEQU42UkROWFo3SXxBMkIxNjcxODE5Nzg3ODkzLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 202, message: Accepted}
 version: 1

@@ -11,10 +11,10 @@ from azext_servicebus._validators import _validate_auto_delete_on_idle, \
 
 # pylint: disable=line-too-long
 def load_arguments_namespace(self, _):
-    with self.argument_context('sb namespace check-name-availability') as c:
+    with self.argument_context('servicebus namespace check-name-availability') as c:
         c.argument('namespace_name', options_list=['--name'], help='name of the Namespace')
 
-    with self.argument_context('sb namespace create') as c:
+    with self.argument_context('servicebus namespace create') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--name'], help='name of the Namespace')
         c.argument('tags', options_list=['--tags', '-t'], arg_type=tags_type, help='tags for the namespace in '
@@ -25,31 +25,31 @@ def load_arguments_namespace(self, _):
         c.argument('capacity', options_list=['--capacity'], help='Capacity for Sku')
 
     # region Namespace Get
-    for scope in ['sb namespace show', 'sb namespace delete']:
+    for scope in ['servicebus namespace show', 'servicebus namespace delete']:
         with self.argument_context(scope) as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--name', '-n'], help='name of the Namespace')
 
-    with self.argument_context('sb namespace list') as c:
+    with self.argument_context('servicebus namespace list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
 
     # region Namespace Authorizationrule
-    with self.argument_context('sb namespace authorizationrule') as c:
+    with self.argument_context('servicebus namespace authorizationrule') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type,)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('authorization_rule_name', options_list=['--name'], help='name of the Namespace AuthorizationRule')
 
-    with self.argument_context('sb namespace authorizationrule create') as c:
+    with self.argument_context('servicebus namespace authorizationrule create') as c:
         c.argument('accessrights', options_list=['--access-rights'],
                    help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('sb namespace authorizationrule regenerate-keys') as c:
+    with self.argument_context('servicebus namespace authorizationrule regenerate-keys') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
 def load_arguments_queue(self, _):
     # region - Queue Create
-    with self.argument_context('sb queue create') as c:
+    with self.argument_context('servicebus queue create') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, required=True)
         c.argument('namespace_name', options_list=['--namespace-name'], required=True, help='name of the Namespace')
         c.argument('queue_name', options_list=['--name', '-n'], required=True, help='Queue Name')
@@ -104,34 +104,34 @@ def load_arguments_queue(self, _):
                                                                               ' Dead Letter message')
 
     # region Queue Get
-    for scope in ['sb queue show', 'sb queue delete']:
+    for scope in ['servicebus queue show', 'servicebus queue delete']:
         with self.argument_context(scope) as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
             c.argument('queue_name', options_list=['--name', '-n'], help='Queue Name')
 
     # region Queue Get
-    with self.argument_context('sb queue list') as c:
+    with self.argument_context('servicebus queue list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
 
     # region Queue Authorizationrule
-    with self.argument_context('sb queue authorizationrule') as c:
+    with self.argument_context('servicebus queue authorizationrule') as c:
         c.argument('authorization_rule_name', options_list=['--name'], help='name of the Queue AuthorizationRule')
         c.argument('namespace', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('queuename', options_list=['--queue-name'], help='name of the Queue')
 
-    with self.argument_context('sb queue authorizationrule create') as c:
+    with self.argument_context('servicebus queue authorizationrule create') as c:
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('sb queue authorizationrule regenerate-keys') as c:
+    with self.argument_context('servicebus queue authorizationrule regenerate-keys') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
-# - Queue Region
+# - Topic Region
 def load_arguments_topic(self, _):
     # region - Topic Create
-    with self.argument_context('sb topic create') as c:
+    with self.argument_context('servicebus topic create') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, required=True)
         c.argument('namespace_name', options_list=['--namespace-name'], required=True, help='name of the Namespace')
         c.argument('topic_name', options_list=['--name', '-n'], required=True, help='Topic Name')
@@ -173,7 +173,7 @@ def load_arguments_topic(self, _):
                         ' memory temporarily before writing it to persistent storage.')
 
     # region Topic Get
-    for scope in ['sb topic show', 'sb topic delete']:
+    for scope in ['servicebus topic show', 'servicebus topic delete']:
         with self.argument_context(scope) as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'],
@@ -181,28 +181,28 @@ def load_arguments_topic(self, _):
             c.argument('topic_name', options_list=['--name', '-n'],
                        help='Topic Name')
 
-    with self.argument_context('sb topic list') as c:
+    with self.argument_context('servicebus topic list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name', '-n'],
                    help='name of the Namespace')
 
     # region Topic Authorizationrule
-    with self.argument_context('sb topic authorizationrule') as c:
+    with self.argument_context('servicebus topic authorizationrule') as c:
         c.argument('authorization_rule_name', options_list=['--name'], help='name of the Topic AuthorizationRule')
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('topic_name', options_list=['--topic-name'], help='name of the Topic')
 
-    with self.argument_context('sb topic authorizationrule create') as c:
+    with self.argument_context('servicebus topic authorizationrule create') as c:
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('sb topic authorizationrule regenerate-keys') as c:
+    with self.argument_context('servicebus topic authorizationrule regenerate-keys') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
 # Subscription Region
 def load_arguments_subscription(self, _):
     # region - Subscription Create
-    with self.argument_context('sb subscription create') as c:
+    with self.argument_context('servicebus subscription create') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('topic_name', options_list=['--topic-name'], help='Topic Name')
@@ -242,13 +242,13 @@ def load_arguments_subscription(self, _):
                    help='Queue/Topic name to forward the Dead Letter message')
 
     # region Subscription Get
-    for scope in ['sb subscription show', 'sb subscription delete']:
+    for scope in ['servicebus subscription show', 'servicebus subscription delete']:
         with self.argument_context(scope) as c:
             c.argument('namespacename', options_list=['--namespace-name'], help='name of the Namespace')
             c.argument('topic_name', options_list=['--topic-name'], help='name of the Topic')
             c.argument('subscription_name', options_list=['--name'], help='name of the Subscription of Topic')
 
-    with self.argument_context('sb subscription list') as c:
+    with self.argument_context('servicebus subscription list') as c:
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('topic_name', options_list=['--topic-name'], help='name of the Topic')
 
@@ -259,7 +259,7 @@ def load_arguments_subscription(self, _):
 # Rules Create
 
 def load_arguments_rule(self, _):
-    with self.argument_context('sb rule create') as c:
+    with self.argument_context('servicebus rule create') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('topic_name', options_list=['--topic-name'], help='Topic Name')
@@ -290,7 +290,7 @@ def load_arguments_rule(self, _):
                    options_list=['--requires-preprocessing'],
                    help='Value that indicates whether the rule action requires preprocessing.')
 
-    for scope in ['sb rule show', 'sb rule delete']:
+    for scope in ['servicebus rule show', 'servicebus rule delete']:
         with self.argument_context(scope) as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'],
@@ -300,7 +300,7 @@ def load_arguments_rule(self, _):
                        help='Subscription Name')
             c.argument('rule_name', options_list=['--name'], help='Rule Name')
 
-    with self.argument_context('sb rules list') as c:
+    with self.argument_context('servicebus rules list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'],
                    help='name of the Namespace')
@@ -312,13 +312,13 @@ def load_arguments_rule(self, _):
 # # # # Geo DR - Disaster Recovery Configs - Alias  : Region
 
 def load_arguments_geodr(self, _):
-    with self.argument_context('sb alias check-name-availability') as c:
+    with self.argument_context('servicebus georecovery-alias check-name-availability') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('name', options_list=['--name'],
                    help='Name of the Alias (Disaster Recovery) to check availability')
 
-    with self.argument_context('sb alias create') as c:
+    with self.argument_context('servicebus georecovery-alias create') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('alias', options_list=['--alias'], help='Name of the Alias (Disaster Recovery)')
@@ -328,17 +328,17 @@ def load_arguments_geodr(self, _):
         c.argument('alternate_name', options_list=['--alternate-name'],
                    help='Alternate Name for the Alias, when the Namespace name and Alias name are same')
 
-    for scope in ['sb alias show', 'sb alias delete']:
+    for scope in ['servicebus georecovery-alias show', 'servicebus georecovery-alias delete']:
         with self.argument_context(scope) as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
             c.argument('alias', options_list=['--alias'], help='Name of the Alias (Disaster Recovery)')
 
-    with self.argument_context('sb alias list') as c:
+    with self.argument_context('servicebus georecovery-alias list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
 
-    for scope in ['sb alias break-pairing', 'sb alias fail_over', 'sb alias list-authorization-rules']:
+    for scope in ['servicebus georecovery-alias break-pairing', 'servicebus georecovery-alias fail_over', 'servicebus georecovery-alias list-authorization-rules']:
         with self.argument_context(scope)as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'],
@@ -346,7 +346,7 @@ def load_arguments_geodr(self, _):
             c.argument('alias', options_list=['--alias'],
                        help='Name of the Alias (Disaster Recovery)')
 
-    for scope in ['sb alias show-authorization-rule', 'sb alias list-keys']:
+    for scope in ['servicebus georecovery-alias show-authorization-rule', 'servicebus georecovery-alias list-keys']:
         with self.argument_context(scope)as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'],

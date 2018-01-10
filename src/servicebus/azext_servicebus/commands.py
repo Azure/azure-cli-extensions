@@ -54,14 +54,14 @@ def load_command_table(self, _):
     )
 
 # Namespace Region
-    with self.command_group('sb namespace', sb_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
+    with self.command_group('servicebus namespace', sb_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_namespace_create')
         g.command('show', 'get')
         g.custom_command('list', 'cli_namespace_list')
         g.command('delete', 'delete')
         g.command('check-name-availability', 'check_name_availability_method')
 
-    with self.command_group('sb namespace authorizationrule', sb_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
+    with self.command_group('servicebus namespace authorizationrule', sb_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_namespaceautho_create',)
         g.command('show', 'get_authorization_rule')
         g.command('list', 'list_authorization_rules')
@@ -70,13 +70,13 @@ def load_command_table(self, _):
         g.command('delete', 'delete_authorization_rule')
 
 # Queue Region
-    with self.command_group('sb queue', sb_queue_util, client_factory=queues_mgmt_client_factory) as g:
+    with self.command_group('servicebus queue', sb_queue_util, client_factory=queues_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbqueue_create')
         g.command('show', 'get')
         g.command('list', 'list_by_namespace')
         g.command('delete', 'delete')
 
-    with self.command_group('sb queue authorizationrule', sb_queue_util, client_factory=queues_mgmt_client_factory) as g:
+    with self.command_group('servicebus queue authorizationrule', sb_queue_util, client_factory=queues_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbqueueautho_create',)
         g.command('show', 'get_authorization_rule')
         g.command('list', 'list_authorization_rules')
@@ -85,13 +85,13 @@ def load_command_table(self, _):
         g.command('delete', 'delete_authorization_rule')
 
 # Topic Region
-    with self.command_group('sb topic', sb_topic_util, client_factory=topics_mgmt_client_factory) as g:
+    with self.command_group('servicebus topic', sb_topic_util, client_factory=topics_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbtopic_create')
         g.command('show', 'get')
         g.command('list', 'list_by_namespace')
         g.command('delete', 'delete')
 
-    with self.command_group('sb topic authorizationrule', sb_topic_util, client_factory=topics_mgmt_client_factory) as g:
+    with self.command_group('servicebus topic authorizationrule', sb_topic_util, client_factory=topics_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbtopicautho_create')
         g.command('show', 'get_authorization_rule')
         g.command('list', 'list_authorization_rules')
@@ -100,21 +100,21 @@ def load_command_table(self, _):
         g.command('delete', 'delete_authorization_rule')
 
 # Subscription Region
-    with self.command_group('sb subscription', sb_subscriptions_util, client_factory=subscriptions_mgmt_client_factory) as g:
+    with self.command_group('servicebus subscription', sb_subscriptions_util, client_factory=subscriptions_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbsubscription_create')
         g.command('show', 'get')
         g.command('list', 'list_by_topic')
         g.command('delete', 'delete')
 
 # Rules Region
-    with self.command_group('sb rule', sb_rule_util, client_factory=rules_mgmt_client_factory) as g:
+    with self.command_group('servicebus rule', sb_rule_util, client_factory=rules_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_rules_create')
         g.command('show', 'get')
         g.command('list', 'list_by_subscriptions')
         g.command('delete', 'delete')
 
 # DisasterRecoveryConfigs Region
-    with self.command_group('sb alias', sb_geodr_util, client_factory=disaster_recovery_mgmt_client_factory) as g:
+    with self.command_group('servicebus georecovery-alias', sb_geodr_util, client_factory=disaster_recovery_mgmt_client_factory) as g:
         g.command('create', 'create_or_update')
         g.command('show', 'get')
         g.command('list', 'list')
