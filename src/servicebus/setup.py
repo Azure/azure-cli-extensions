@@ -30,12 +30,12 @@ setup(
     name='servicebus',
     version=VERSION,
     description='An Azure CLI Extension to manage servicebus resources',
-    long_description='An Azure CLI Extension to manage servicebus resources',
+    long_description='An Azure CLI Extension to manage Service Bus resources',
     license='MIT',
     author='Ajit Navasare',
     author_email='v-ajnava@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )

@@ -409,12 +409,12 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Get Created Namespace - Secondary
         getnamespace2result = self.cmd('servicebus namespace show --resource-group {rg} --name {namespacenamesecondary}',
-                                       checks=[self.check('sku.name', self.kwargs['sku'])]).output
+                                       checks=[self.check('sku.name', self.kwargs['sku'])]).get_output_in_json()
 
         # Create Authoriazation Rule
         self.cmd('servicebus namespace authorizationrule create --resource-group {rg} --namespace-name {namespacenameprimary} --name {authoname} --access-rights {accessrights}', checks=[self.check('name', self.kwargs['authoname'])])
 
-        partnernamespaceid = json.loads(getnamespace2result)['id']
+        partnernamespaceid = getnamespace2result['id']
         self.kwargs.update({'id': partnernamespaceid})
         # Get Create Authorization Rule
         self.cmd('servicebus namespace authorizationrule show --resource-group {rg} --namespace-name {namespacenameprimary}'

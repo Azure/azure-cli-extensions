@@ -3,9 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core import AzCommandsLoader
-
 # pylint: disable=unused-import
+
+from azure.cli.core import AzCommandsLoader
+from azext_servicebus._help import helps
+
 
 
 class ServicebusCommandsLoader(AzCommandsLoader):

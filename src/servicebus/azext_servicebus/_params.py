@@ -279,7 +279,7 @@ def load_arguments_rule(self, _):
         c.argument('correlation_id', options_list=['--correlation-id'], help='Identifier of the correlation.')
         c.argument('message_id', options_list=['--message-id'], help='Identifier of the message.')
         c.argument('to', options_list=['--to'], help='Address to send to.')
-        c.argument('reply_to', options_list=['--reply_to'], help='Address of the queue to reply to.')
+        c.argument('reply_to', options_list=['--reply-to'], help='Address of the queue to reply to.')
         c.argument('label', options_list=['--label'], help='Application specific label.')
         c.argument('session_id', options_list=['--session-id'], help='Session identifier')
         c.argument('reply_to_session_d', options_list=['--reply-to-session-id'],
