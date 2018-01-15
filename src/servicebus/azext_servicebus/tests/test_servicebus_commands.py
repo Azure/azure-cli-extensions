@@ -34,7 +34,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Check for the NameSpace name Availability
 
-        self.cmd('servicebus namespace check-name-availability --name {namespacename}',
+        self.cmd('servicebus namespace exists --name {namespacename}',
                  checks=[self.check('nameAvailable', True)])
 
         # Create Namespace
@@ -69,14 +69,14 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  checks=[self.check('name', self.kwargs['defaultauthorizationrule'])])
 
         # Get Authorization Rule Listkeys
-        self.cmd('servicebus namespace authorizationrule list-keys --resource-group {rg} --namespace-name {namespacename}'
+        self.cmd('servicebus namespace authorizationrule keys list --resource-group {rg} --namespace-name {namespacename}'
                  ' --name {authoname}')
 
         # Regeneratekeys - Primary
-        self.cmd('servicebus namespace authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {primary}')
+        self.cmd('servicebus namespace authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {primary}')
 
         # Regeneratekeys - Secondary
-        self.cmd('servicebus namespace authorizationrule regenerate-keys --resource-group {rg}'
+        self.cmd('servicebus namespace authorizationrule keys renew --resource-group {rg}'
                  ' --namespace-name {namespacename} --name {authoname} --key-name {secondary}')
 
         # Delete AuthorizationRule
@@ -137,17 +137,17 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  checks=[self.check('name', self.kwargs['authoname'])])
 
         # Get Authorization Rule Listkeys
-        self.cmd('servicebus queue authorizationrule list-keys --resource-group {rg} --namespace-name {namespacename}'
+        self.cmd('servicebus queue authorizationrule keys list --resource-group {rg} --namespace-name {namespacename}'
                  ' --queue-name {queuename} --name {authoname}')
 
         # Regeneratekeys - Primary
         regenrateprimarykeyresult = self.cmd(
-            'servicebus queue authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --queue-name {queuename} --name {authoname} --key-name {primary}')
+            'servicebus queue authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --queue-name {queuename} --name {authoname} --key-name {primary}')
         self.assertIsNotNone(regenrateprimarykeyresult)
 
         # Regeneratekeys - Secondary
         regenratesecondarykeyresult = self.cmd(
-            'servicebus queue authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename}'
+            'servicebus queue authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename}'
             ' --queue-name {queuename} --name {authoname} --key-name {secondary}')
         self.assertIsNotNone(regenratesecondarykeyresult)
 
@@ -214,17 +214,16 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # Get Authorization Rule Listkeys
         self.cmd(
-            'servicebus topic authorizationrule list-keys --resource-group {rg} --namespace-name {namespacename}'
+            'servicebus topic authorizationrule keys list --resource-group {rg} --namespace-name {namespacename}'
             ' --topic-name {topicname} --name {authoname}')
 
         # Regeneratekeys - Primary
         self.cmd(
-            'servicebus topic authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename}'
-            ' --topic-name {topicname} --name {authoname} --key-name {primary}')
+            'servicebus topic authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {authoname} --key-name {primary}')
 
         # Regeneratekeys - Secondary
         self.cmd(
-            'servicebus topic authorizationrule regenerate-keys --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {authoname} --key-name {secondary}')
+            'servicebus topic authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --topic-name {topicname} --name {authoname} --key-name {secondary}')
 
         # Delete Topic AuthorizationRule
         self.cmd(
@@ -391,7 +390,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
             'test': ''
         })
 
-        self.cmd('servicebus namespace check-name-availability --name {namespacenameprimary}',
+        self.cmd('servicebus namespace exists --name {namespacenameprimary}',
                  checks=[self.check('nameAvailable', True)])
 
         # Create Namespace - Primary
@@ -403,8 +402,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  checks=[self.check('sku.name', self.kwargs['sku'])])
 
         # Create Namespace - Secondary
-        self.cmd('servicebus namespace create --resource-group {rg} --name {namespacenamesecondary}'
-                 ' --location {loc_north} --tags {tags} --sku-name {sku} --sku-tier {tier}',
+        self.cmd('servicebus namespace create --resource-group {rg} --name {namespacenamesecondary} --location {loc_north} --tags {tags} --sku-name {sku} --sku-tier {tier}',
                  checks=[self.check('sku.name', self.kwargs['sku'])])
 
         # Get Created Namespace - Secondary
@@ -422,7 +420,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
 
         # CheckNameAvailability - Alias
 
-        self.cmd('servicebus georecovery-alias check-name-availability --resource-group {rg} --namespace-name {namespacenameprimary} --name {aliasname}', checks=[self.check('nameAvailable', True)])
+        self.cmd('servicebus georecovery-alias exists --resource-group {rg} --namespace-name {namespacenameprimary} --name {aliasname}', checks=[self.check('nameAvailable', True)])
 
         # Create alias
         self.cmd('servicebus georecovery-alias create  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname} --partner-namespace {id}')
@@ -433,53 +431,55 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
         # get alias - Secondary
         self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}')
 
-        getaliasprimarynamespace = self.cmd(
-            'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').output
+        getaliasprimarynamespace = self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').get_output_in_json()
 
         # check for the Alias Provisioning succeeded
-        while json.loads(getaliasprimarynamespace)['provisioningState'] != ProvisioningStateDR.succeeded.value:
+        while getaliasprimarynamespace['provisioningState'] != ProvisioningStateDR.succeeded.value:
             time.sleep(30)
-            getaliasprimarynamespace = self.cmd(
-                'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').output
+            getaliasprimarynamespace = self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').get_output_in_json()
+
+        # Get Authorization Rule
+        self.cmd('servicebus georecovery-alias authorizationrule show --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname} --name {authoname}', checks=[self.check('name', self.kwargs['authoname'])])
+
+        # Get AuthorizationRule Keys
+        self.cmd('servicebus georecovery-alias authorizationrule keys list --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname} --name {authoname}')
+
+        # Get available AuthorizationRules
+        self.cmd('servicebus georecovery-alias authorizationrule list --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}')
 
         # Break Pairing
-        self.cmd('servicebus georecovery-alias break-pairing  --resource-group {rg} --namespace-name {namespacenameprimary}'
-                 ' --alias {aliasname}')
+        self.cmd('servicebus georecovery-alias break-pair  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}')
 
-        getaliasafterbreak = self.cmd(
-            'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').output
+        getaliasafterbreak = self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').get_output_in_json()
 
         # check for the Alias Provisioning succeeded
-        while json.loads(getaliasafterbreak)['provisioningState'] != ProvisioningStateDR.succeeded.value:
+        while getaliasafterbreak['provisioningState'] != ProvisioningStateDR.succeeded.value:
             time.sleep(30)
-            getaliasafterbreak = self.cmd(
-                'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').output
+            getaliasafterbreak = self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').get_output_in_json()
 
         # Create alias
         self.cmd('servicebus georecovery-alias create  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}'
                  ' --partner-namespace {id}')
 
         getaliasaftercreate = self.cmd(
-            'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').output
+            'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').get_output_in_json()
 
         # check for the Alias Provisioning succeeded
-        while json.loads(getaliasaftercreate)['provisioningState'] != ProvisioningStateDR.succeeded.value:
+        while getaliasaftercreate['provisioningState'] != ProvisioningStateDR.succeeded.value:
             time.sleep(30)
-            getaliasaftercreate = self.cmd(
-                'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').output
+            getaliasaftercreate = self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenameprimary} --alias {aliasname}').get_output_in_json()
 
         # FailOver
         self.cmd('servicebus georecovery-alias fail-over  --resource-group {rg} --namespace-name {namespacenamesecondary}'
                  ' --alias {aliasname}')
 
         getaliasafterfail = self.cmd(
-            'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}').output
+            'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}').get_output_in_json()
 
         # check for the Alias Provisioning succeeded
-        while json.loads(getaliasafterfail)['provisioningState'] != ProvisioningStateDR.succeeded.value:
+        while getaliasafterfail['provisioningState'] != ProvisioningStateDR.succeeded.value:
             time.sleep(30)
-            getaliasafterfail = self.cmd(
-                'servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}').output
+            getaliasafterfail = self.cmd('servicebus georecovery-alias show  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}').get_output_in_json()
 
         # Delete Alias
         self.cmd('servicebus georecovery-alias delete  --resource-group {rg} --namespace-name {namespacenamesecondary} --alias {aliasname}')

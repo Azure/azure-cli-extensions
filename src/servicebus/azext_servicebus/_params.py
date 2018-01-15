@@ -11,7 +11,7 @@ from azext_servicebus._validators import _validate_auto_delete_on_idle, \
 
 # pylint: disable=line-too-long
 def load_arguments_namespace(self, _):
-    with self.argument_context('servicebus namespace check-name-availability') as c:
+    with self.argument_context('servicebus namespace exists') as c:
         c.argument('namespace_name', options_list=['--name'], help='name of the Namespace')
 
     with self.argument_context('servicebus namespace create') as c:
@@ -43,7 +43,7 @@ def load_arguments_namespace(self, _):
         c.argument('accessrights', options_list=['--access-rights'],
                    help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('servicebus namespace authorizationrule regenerate-keys') as c:
+    with self.argument_context('servicebus namespace authorizationrule keys renew') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
@@ -124,7 +124,7 @@ def load_arguments_queue(self, _):
     with self.argument_context('servicebus queue authorizationrule create') as c:
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('servicebus queue authorizationrule regenerate-keys') as c:
+    with self.argument_context('servicebus queue authorizationrule keys renew') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
@@ -195,7 +195,7 @@ def load_arguments_topic(self, _):
     with self.argument_context('servicebus topic authorizationrule create') as c:
         c.argument('accessrights', options_list=['--access-rights'], help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
-    with self.argument_context('servicebus topic authorizationrule regenerate-keys') as c:
+    with self.argument_context('servicebus topic authorizationrule keys renew') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
 
 
@@ -312,7 +312,7 @@ def load_arguments_rule(self, _):
 # # # # Geo DR - Disaster Recovery Configs - Alias  : Region
 
 def load_arguments_geodr(self, _):
-    with self.argument_context('servicebus georecovery-alias check-name-availability') as c:
+    with self.argument_context('servicebus georecovery-alias exists') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
         c.argument('name', options_list=['--name'],
@@ -338,7 +338,7 @@ def load_arguments_geodr(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('namespace_name', options_list=['--namespace-name'], help='name of the Namespace')
 
-    for scope in ['servicebus georecovery-alias break-pairing', 'servicebus georecovery-alias fail_over', 'servicebus georecovery-alias list-authorization-rules']:
+    for scope in ['servicebus georecovery-alias break-pair', 'servicebus georecovery-alias fail-over', 'servicebus georecovery-alias authorizationrules list']:
         with self.argument_context(scope)as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'],
@@ -346,7 +346,7 @@ def load_arguments_geodr(self, _):
             c.argument('alias', options_list=['--alias'],
                        help='Name of the Alias (Disaster Recovery)')
 
-    for scope in ['servicebus georecovery-alias show-authorization-rule', 'servicebus georecovery-alias list-keys']:
+    for scope in ['servicebus georecovery-alias authorizationrule show', 'servicebus georecovery-alias authorizationrule keys list']:
         with self.argument_context(scope)as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type)
             c.argument('namespace_name', options_list=['--namespace-name'],
@@ -354,4 +354,4 @@ def load_arguments_geodr(self, _):
             c.argument('alias', options_list=['--alias'],
                        help='Name of the Alias (Disaster Recovery)')
             c.argument('authorization_rule_name', options_list=['--name'],
-                       help='name of the Topic AuthorizationRule')
+                       help='name of the Namespace AuthorizationRule')

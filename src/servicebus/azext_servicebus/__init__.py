@@ -6,8 +6,7 @@
 # pylint: disable=unused-import
 
 from azure.cli.core import AzCommandsLoader
-from azext_servicebus._help import helps
-
+from ._help import helps
 
 
 class ServicebusCommandsLoader(AzCommandsLoader):
