@@ -5,7 +5,6 @@
 
 # AZURE CLI SERVICEBUS - NAMESAPCE TEST DEFINITIONS
 
-import json
 import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azext_servicebus.servicebus.models import ProvisioningStateDR
