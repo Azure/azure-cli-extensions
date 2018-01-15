@@ -108,7 +108,7 @@ helps['servicebus namespace authorizationrule create'] = """
     type: command
     short-summary: Creates Authorizationrule for the given Service Bus Namespace
     examples:
-        - name: Creates Authorizationrule 'myauthorule' for the given Service Bus Namespace 'mynamepsace' in resourcegroup 
+        - name: Creates Authorizationrule 'myauthorule' for the given Service Bus Namespace 'mynamepsace' in resourcegroup
           text: az servicebus namespace authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
            --name myauthorule --access-rights [Send, Listen]
 """
@@ -200,7 +200,7 @@ helps['servicebus queue authorizationrule create'] = """
 
 helps['servicebus queue authorizationrule show'] = """
     type: command
-    short-summary: shows the details of AuthorizationRule 
+    short-summary: shows the details of AuthorizationRule
     examples:
         - name: shows the details of AuthorizationRule
           text: az servicebus queue authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
@@ -403,7 +403,7 @@ helps['servicebus rule delete'] = """
 
 helps['servicebus georecovery-alias exists'] = """
     type: command
-    short-summary: Checks if Geo Recovery Alias Name is available 
+    short-summary: Checks if Geo Recovery Alias Name is available
     examples:
         - name: Check the availability of the Geo Disaster Recovery configuration - Alias Name
           text: az servicebus georecovery-alias exists --resource-group myresourcegroup --namespace-name primarynamespace

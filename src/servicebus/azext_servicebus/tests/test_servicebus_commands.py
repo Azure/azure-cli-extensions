@@ -37,7 +37,7 @@ class SBNamespaceCURDScenarioTest(ScenarioTest):
                  checks=[self.check('nameAvailable', True)])
 
         # Create Namespace
-        self.cmd('servicebus namespace create --resource-group {rg} --name {namespacename} '
+        self.cmd('servicebus namespace create --resource-group {rg} --name {namespacename}'
                  '--location {loc} --tags {tags} --sku-name {sku} --sku-tier {tier}',
                  checks=[self.check('sku.name', self.kwargs['sku'])])
 
