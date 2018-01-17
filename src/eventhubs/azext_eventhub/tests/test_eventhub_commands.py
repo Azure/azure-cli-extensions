@@ -149,7 +149,6 @@ class EHNamespaceCURDScenarioTest(ScenarioTest):
         # Delete Namespace
         self.cmd('eventhubs namespace delete --resource-group {rg} --name {namespacename}')
 
-
     @ResourceGroupPreparer(name_prefix='cli_test_eh_consumergroup')
     def test_eh_consumergroup(self, resource_group):
         self.kwargs.update({
@@ -201,7 +200,6 @@ class EHNamespaceCURDScenarioTest(ScenarioTest):
 
         # Delete Namespace
         self.cmd('eventhubs namespace delete --resource-group {rg} --name {namespacename}')
-
 
     @ResourceGroupPreparer(name_prefix='cli_test_eh_alias')
     def test_eh_alias(self, resource_group):

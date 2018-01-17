@@ -10,6 +10,7 @@ from azure.cli.core import AzCommandsLoader
 
 from ._help import helps
 
+
 class EventhubCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):

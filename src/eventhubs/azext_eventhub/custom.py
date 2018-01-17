@@ -13,7 +13,6 @@ from azext_eventhub._utils import accessrights_converter
 from azext_eventhub.eventhub.models import (EHNamespace, Sku, Eventhub, CaptureDescription, Destination)
 
 
-
 # Namespace Region
 def cli_namespace_create(client, resource_group_name, namespace_name, location, tags=None, sku='Standard', skutier=None, capacity=None, is_auto_inflate_enabled=None, maximum_throughput_units=None):
     return client.create_or_update(resource_group_name, namespace_name, EHNamespace(location, tags,
