@@ -75,7 +75,7 @@ helps['servicebus namespace create'] = """
     examples:
         - name: Create a Service Bus Namespace.
           text: az servicebus namespace create --resource-group myresourcegroup --name mynamespace --location westus
-           --tags ['tag1' 'value1', 'tag2' 'value2'] --sku-name Standard --sku-tier Standard
+           --tags tag1=value1 tag2=value2 --sku-name Standard --sku-tier Standard
 """
 
 helps['servicebus namespace show'] = """
@@ -83,15 +83,15 @@ helps['servicebus namespace show'] = """
     short-summary: Shows the Service Bus Namespace details
     examples:
         - name: shows the Namespace details.
-          text: helps['az servicebus namespace show --resource-group myresourcegroup --name mynamespace']
+          text: az servicebus namespace show --resource-group myresourcegroup --name mynamespace
 """
 
 helps['servicebus namespace list'] = """
     type: command
-    short-summary: List the Service Bus Namespaces by ResourceGroup or by subscription
+    short-summary: List the Service Bus Namespaces
     examples:
-        - name: Get the Service Bus Namespaces by resource Group.
-          text: helps['az servicebus namespace list --resource-group myresourcegroup']
+        - name: Get the Service Bus Namespaces by resource group
+          text: az servicebus namespace list --resource-group myresourcegroup
         - name: Get the Service Bus Namespaces by Subscription.
           text: az servicebus namespace list
 """
@@ -110,7 +110,7 @@ helps['servicebus namespace authorizationrule create'] = """
     examples:
         - name: Creates Authorizationrule 'myauthorule' for the given Service Bus Namespace 'mynamepsace' in resourcegroup
           text: az servicebus namespace authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
-           --name myauthorule --access-rights [Send, Listen]
+           --name myauthorule --access-rights Send Listen
 """
 
 helps['servicebus namespace authorizationrule show'] = """
@@ -162,7 +162,7 @@ helps['sb queue create'] = """
     short-summary: Creates the Service Bus Queue
     examples:
         - name: Creates Service Bus Queue.
-          text: az sb queue create --resource-group myresourcegroup --namespace-name mynamespace --name myqueue
+          text: az servicebus queue create --resource-group myresourcegroup --namespace-name mynamespace --name myqueue
 """
 
 helps['servicebus queue show'] = """
@@ -195,7 +195,7 @@ helps['servicebus queue authorizationrule create'] = """
     examples:
         - name: Creates Authorization rules for Queue
           text: az servicebus queue authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
-           --queue-name myqueue --name myauthorule --access-rights [Listen]
+           --queue-name myqueue --name myauthorule --access-rights Listen
 """
 
 helps['servicebus queue authorizationrule show'] = """
@@ -248,7 +248,7 @@ helps['servicebus topic create'] = """
     short-summary: Creates the Service Bus Topic
     examples:
         - name: Create a new queue.
-          text: az servicebus topic create --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}
+          text: az servicebus topic create --resource-group myresourcegroup --namespace-name mynamespace --name mytopic
 """
 
 helps['sb topic show'] = """
@@ -256,7 +256,7 @@ helps['sb topic show'] = """
     short-summary: Shows the Service Bus Topic Details
     examples:
         - name: Shows the Topic details.
-          text: az sb topic get --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}
+          text: az servicebus topic show --resource-group myresourcegroup --namespace-name mynamespace --name mytopic
 """
 
 helps['servicebus topic list'] = """
@@ -272,7 +272,7 @@ helps['servicebus topic delete'] = """
     short-summary: Deletes the Service Bus Topic
     examples:
         - name: Deletes the topic
-          text: az servicebus topic delete --resource-group myresourcegroup --namespace-name mynamespace --name {topicname}
+          text: az servicebus topic delete --resource-group myresourcegroup --namespace-name mynamespace --name mytopic
 """
 
 helps['servicebus topic authorizationrule create'] = """
@@ -281,7 +281,7 @@ helps['servicebus topic authorizationrule create'] = """
     examples:
         - name: Creates Authorization rules
           text: az servicebus topic authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name myauthorule --access-rights [Send, Listen]
+           --topic-name mytopic --name myauthorule --access-rights Send Listen
 """
 
 helps['servicebus topic authorizationrule show'] = """
@@ -290,7 +290,7 @@ helps['servicebus topic authorizationrule show'] = """
     examples:
         - name: Shows the details of AuthorizationRule
           text: az servicebus topic authorizationrule get --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name myauthorule
+           --topic-name mytopic --name myauthorule
 """
 
 helps['servicebus topic authorizationrule list'] = """
@@ -299,7 +299,7 @@ helps['servicebus topic authorizationrule list'] = """
     examples:
         - name: shows list of AuthorizationRule by Topic
           text: az servicebus topic authorizationrule get --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname}
+           --topic-name mytopic
 """
 
 helps['servicebus topic authorizationrule keys list'] = """
@@ -308,7 +308,7 @@ helps['servicebus topic authorizationrule keys list'] = """
     examples:
         - name: shows connection strings of AuthorizationRule for the topic.
           text: az servicebus topic authorizationrule listkeys --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name myauthorule
+           --topic-name mytopic --name myauthorule
 """
 
 helps['servicebus topic authorizationrule keys renew'] = """
@@ -317,7 +317,7 @@ helps['servicebus topic authorizationrule keys renew'] = """
     examples:
         - name: Regenerate Primary/Secondary key of connection string for the Topic.
           text: az servicebus topic authorizationrule regenerate_keys --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name myauthorule --key PrimaryKey
+           --topic-name mytopic --name myauthorule --key PrimaryKey
 """
 
 helps['servicebus topic authorizationrule delete'] = """
@@ -326,7 +326,7 @@ helps['servicebus topic authorizationrule delete'] = """
     examples:
         - name: Deletes the AuthorizationRule of the topic
           text: az servicebus topic authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name myauthorule
+           --topic-name mytopic --name myauthorule
 """
 
 helps['servicebus subscription create'] = """
@@ -335,7 +335,7 @@ helps['servicebus subscription create'] = """
     examples:
         - name: Create a new Subscription.
           text: az servicebus subscription create --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name {subscriptionname}
+           --topic-name mytopic --name mysubscription
 
     """
 
@@ -345,7 +345,7 @@ helps['servicebus subscription show'] = """
     examples:
         - name: Shows the Subscription details.
           text: az servicebus subscription get --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name {subscriptionname}
+           --topic-name mytopic --name mysubscription
 """
 
 helps['servicebus subscription list'] = """
@@ -362,7 +362,7 @@ helps['servicebus subscription delete'] = """
     examples:
         - name: Deletes the Subscription
           text: az servicebus subscription delete --resource-group myresourcegroup --namespace-name mynamespace
-           --topic-name {topicname} --name {subscriptionname}
+           --topic-name mytopic --name mysubscription
 """
 
 helps['servicebus rule create'] = """
@@ -370,8 +370,8 @@ helps['servicebus rule create'] = """
     short-summary: Creates the ServiceBus Rule for Subscription
     examples:
         - name: Creates Rule.
-          text: az servicebus rule create --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
-           --subscription-name {subscriptionname} --name {rulename} --filter-sql-expression {sqlexpression}
+          text: az servicebus rule create --resource-group myresourcegroup --namespace-name mynamespace --topic-name mytopic
+           --subscription-name mysubscription --name myrule --filter-sql-expression mysqlexpression
 """
 
 helps['servicebus rule show'] = """
@@ -379,8 +379,8 @@ helps['servicebus rule show'] = """
     short-summary: Shows Rule Details
     examples:
         - name: Shows the Rule details.
-          text: az servicebus rule show --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
-           --subscription-name {subscriptionname} --name {rulename}
+          text: az servicebus rule show --resource-group myresourcegroup --namespace-name mynamespace --topic-name mytopic
+           --subscription-name mysubscription --name myrule
 """
 
 helps['sb rule list'] = """
@@ -388,8 +388,8 @@ helps['sb rule list'] = """
     short-summary: List the Rule by Subscription
     examples:
         - name: Shows the Rule by Subscription.
-          text: az sb rule list --resource-group myresourcegroup --namespace-name mynamespace
-           --subscription-name {subscriptionname}
+          text: az servicebus rule list --resource-group myresourcegroup --namespace-name mynamespace
+           --subscription-name mysubscription
 """
 
 helps['servicebus rule delete'] = """
@@ -397,8 +397,8 @@ helps['servicebus rule delete'] = """
     short-summary: Deletes the Rule
     examples:
         - name: Deletes the Rule
-          text: az servicebus rule delete --resource-group myresourcegroup --namespace-name mynamespace --topic-name {topicname}
-           --subscription-name {subscriptionname} --name {rulename}
+          text: az servicebus rule delete --resource-group myresourcegroup --namespace-name mynamespace --topic-name mytopic
+           --subscription-name mysubscription --name myrule
 """
 
 helps['servicebus georecovery-alias exists'] = """
