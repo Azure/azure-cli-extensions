@@ -157,7 +157,7 @@ helps['servicebus namespace authorizationrule delete'] = """
            --name myauthorule
 """
 
-helps['sb queue create'] = """
+helps['servicebus queue create'] = """
     type: command
     short-summary: Creates the Service Bus Queue
     examples:
@@ -218,9 +218,9 @@ helps['servicebus queue authorizationrule list'] = """
 
 helps['servicebus queue authorizationrule keys list'] = """
     type: command
-    short-summary: Shows the connectionstrings of AuthorizationRule for the Queue.
+    short-summary: Shows the connection strings of AuthorizationRule for the Queue.
     examples:
-        - name: Shows the connectionstrings of AuthorizationRule for the queue.
+        - name: Shows the connection strings of AuthorizationRule for the queue.
           text: az servicebus queue authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue --name myauthorule
 """
@@ -229,7 +229,7 @@ helps['servicebus queue authorizationrule keys renew'] = """
     type: command
     short-summary: Regenerate the connection strings of AuthorizationRule for the namespace.
     examples:
-        - name: Regenerate the connectionstrings of AuthorizationRule for the namespace.
+        - name: Regenerate the connection strings of AuthorizationRule for the namespace.
           text: az servicebus queue authorizationrule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace
            --queue-name myqueue --name myauthorule --key PrimaryKey
 """
@@ -251,7 +251,7 @@ helps['servicebus topic create'] = """
           text: az servicebus topic create --resource-group myresourcegroup --namespace-name mynamespace --name mytopic
 """
 
-helps['sb topic show'] = """
+helps['servicebus topic show'] = """
     type: command
     short-summary: Shows the Service Bus Topic Details
     examples:
@@ -383,7 +383,7 @@ helps['servicebus rule show'] = """
            --subscription-name mysubscription --name myrule
 """
 
-helps['sb rule list'] = """
+helps['servicebus rule list'] = """
     type: command
     short-summary: List the Rule by Subscription
     examples:
