@@ -36,6 +36,6 @@ setup(
     author_email='v-ajnava@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )

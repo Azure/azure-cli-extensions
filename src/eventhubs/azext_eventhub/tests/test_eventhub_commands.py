@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# AZURE CLI EventHub - NAMESAPCE TEST DEFINITIONS
+# AZURE CLI EventHub - NAMESPACE TEST DEFINITIONS
 
 import time
 
