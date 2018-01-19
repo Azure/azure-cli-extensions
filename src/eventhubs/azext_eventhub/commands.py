@@ -10,6 +10,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_eventhub._client_factory import (namespaces_mgmt_client_factory, event_hub_mgmt_client_factory,
                                             consumer_groups_mgmt_client_factory,
                                             disaster_recovery_mgmt_client_factory)
+from ._exception_handler import eventhubs_exception_handler
 
 
 def load_command_table(self, _):
@@ -17,24 +18,29 @@ def load_command_table(self, _):
     eh_namespace_util = CliCommandType(
         operations_tmpl='azext_eventhub.eventhub.operations.namespaces_operations#NamespacesOperations.{}',
         client_factory=namespaces_mgmt_client_factory,
+        exception_handler=eventhubs_exception_handler,
         client_arg_name='self'
+
     )
 
     eh_event_hub_util = CliCommandType(
         operations_tmpl='azext_eventhub.eventhub.operations.event_hubs_operations#EventHubsOperations.{}',
         client_factory=event_hub_mgmt_client_factory,
+        exception_handler=eventhubs_exception_handler,
         client_arg_name='self'
     )
 
     eh_consumer_groups_util = CliCommandType(
         operations_tmpl='azext_eventhub.eventhub.operations.consumer_groups_operations#ConsumerGroupsOperations.{}',
         client_factory=consumer_groups_mgmt_client_factory,
+        exception_handler=eventhubs_exception_handler,
         client_arg_name='self'
     )
 
     eh_geodr_util = CliCommandType(
         operations_tmpl='azext_eventhub.eventhub.operations.disaster_recovery_configs_operations#DisasterRecoveryConfigsOperations.{}',
         client_factory=disaster_recovery_mgmt_client_factory,
+        exception_handler=eventhubs_exception_handler,
         client_arg_name='self'
     )
 
