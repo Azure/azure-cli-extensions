@@ -44,7 +44,7 @@ helps['eventhubs namespace create'] = """
     examples:
         - name: Create a new namespace.
           text: az eventhubs namespace create --resource-group myresourcegroup --name mynamespace --location westus
-           --tags tag1=value1 tag2=value2 --sku-name Standard --sku-tier Standard' --is-auto-inflate-enabled False --maximum-throughput-units 30
+           --tags tag1=value1 tag2=value2 --sku-name Standard --sku-tier Standard --is-auto-inflate-enabled False --maximum-throughput-units 30
 """
 
 helps['eventhubs namespace show'] = """
@@ -247,7 +247,7 @@ helps['eventhubs georecovery-alias create'] = """
     short-summary: Creates a Geo Recovery - Alias for the give Namespace
     examples:
         - name: Creats Geo Recovery configuration - Alias for the give Namespace
-          text: az eventhubs georecovery-alias create  --resource-group myresourcegroup --namespace-name primarynamespace --alias myaliasname --partner-namespace recourcearmid
+          text: az eventhubs georecovery-alias create  --resource-group myresourcegroup --namespace-name primarynamespace --alias myaliasname --partner-namespace resourcearmid
 """
 
 helps['eventhubs georecovery-alias show'] = """

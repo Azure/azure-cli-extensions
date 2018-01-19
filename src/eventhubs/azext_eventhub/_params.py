@@ -36,11 +36,10 @@ def load_arguments_namespace(self, _):
             c.argument('authorization_rule_name', options_list=['--name', '-n'], help='name of the Namespace AuthorizationRule')
 
     with self.argument_context('eventhubs namespace authorizationrule create') as c:
-        c.argument('accessrights', options_list=['--access-rights'],
-                   help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
+        c.argument('accessrights', options_list=['--access-rights'], arg_type=get_enum_type(['Send', 'Listen', 'Manage']), help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
 
     with self.argument_context('eventhubs namespace authorizationrule keys renew') as c:
-        c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
+        c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']), help='specifies Primary or Secondary key needs to be reset')
 
 
 # region - Eventhub Create
@@ -51,11 +50,11 @@ def load_arguments_eventhub(self, _):
     with self.argument_context('eventhubs eventhub create') as c:
         c.argument('message_retention_in_days', options_list=['--message-retention-in-days'], type=int, help='Number of days to retain the events for this Event Hub, value should be 1 to 7 days')
         c.argument('partition_count', options_list=['--partition-count'], type=int, help='Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.')
-        c.argument('status', options_list=['--status'], arg_type=get_enum_type(['Active', 'Disabled', 'Restoring', 'SendDisabled', 'ReceiveDisabled', 'Creating', 'Deleting', 'Renaming', 'Unknown']))
-        c.argument('enabled', options_list=['--enabled'], help='A value that indicates whether capture description is enabled.')
+        c.argument('status', options_list=['--status'], arg_type=get_enum_type(['Active', 'Disabled', 'Restoring', 'SendDisabled', 'ReceiveDisabled', 'Creating', 'Deleting', 'Renaming', 'Unknown']), help='Status of Eventhub')
+        c.argument('enabled', options_list=['--enabled'], type=bool, help='A value that indicates whether capture description is enabled.')
         c.argument('encoding', options_list=['--encoding'], arg_type=get_enum_type(['Avro']), help='Enumerates the possible values for the encoding format of capture description.')
         c.argument('capture_interval_seconds', type=int, options_list=['--capture-interval-seconds'], help='The time window allows you to set the frequency with which the capture to Azure Blobs will happen, value should between 60 to 900 seconds')
-        c.argument('capture_size_bytes', type=int, options_list=['--capture-size-bytes'], help='The size window defines the amount of data built up in your Event Hub before an capture operation, value should be between 10485760 to 524288000 bytes')
+        c.argument('capture_size_limit_bytes', options_list=['--capture-size-limit-bytes'], type=int, help='The size window defines the amount of data built up in your Event Hub before an capture operation, value should be between 10485760 to 524288000 bytes')
         c.argument('destination_name', options_list=['--destination-name'], help='Name for capture destination')
         c.argument('storage_account_resource_id', options_list=['--storage-account-resource-id'], help='Resource id of the storage account to be used to create the blobs')
         c.argument('blob_container', options_list=['--blob-container'], help='Blob container Name')

@@ -7,7 +7,6 @@
 # pylint: disable=too-many-lines
 
 from knack.util import CLIError
-
 from azext_eventhub._utils import accessrights_converter
 
 from azext_eventhub.eventhub.models import (EHNamespace, Sku, Eventhub, CaptureDescription, Destination)
@@ -23,17 +22,12 @@ def cli_namespace_create(client, resource_group_name, namespace_name, location, 
 
 def cli_namespace_list(client, resource_group_name=None, namespace_name=None):
     cmd_result = None
-    if resource_group_name and namespace_name:
-        cmd_result = client.get(resource_group_name, namespace_name)
 
     if resource_group_name and not namespace_name:
-        cmd_result = client.list_by_resource_group(resource_group_name, namespace_name)
+        cmd_result = client.list_by_resource_group(resource_group_name)
 
     if not resource_group_name and not namespace_name:
-        cmd_result = client.list(resource_group_name, namespace_name)
-
-    if not cmd_result:
-        raise CLIError('--resource-group name required when namespace name is provided')
+        cmd_result = client.list()
 
     return cmd_result
 
@@ -79,3 +73,11 @@ def cli_eheventhubautho_create(client, resource_group_name, namespace_name, even
 
 def cli_ehconsumergroup_create(client, resource_group_name, namespace_name, event_hub_name, name, user_metadata):
     return client.create_or_update(resource_group_name, namespace_name, event_hub_name, name, user_metadata)
+
+
+# pylint: disable=inconsistent-return-statements
+def empty_on_404(ex):
+    from azext_eventhub.eventhub.models import ErrorResponseException
+    if isinstance(ex, ErrorResponseException) and ex.response.status_code == 404:
+        return None
+    raise ex
