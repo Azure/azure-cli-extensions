@@ -6,7 +6,6 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
-from knack.util import CLIError
 from azext_eventhub._utils import accessrights_converter
 
 from azext_eventhub.eventhub.models import (EHNamespace, Sku, Eventhub, CaptureDescription, Destination)

@@ -10,7 +10,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_eventhub._client_factory import (namespaces_mgmt_client_factory, event_hub_mgmt_client_factory,
                                             consumer_groups_mgmt_client_factory,
                                             disaster_recovery_mgmt_client_factory)
-from .custom import empty_on_404, empty_on_400
+from .custom import empty_on_404
 
 
 def load_command_table(self, _):
