@@ -19,14 +19,11 @@ def cli_namespace_create(client, resource_group_name, namespace_name, location, 
                                                                                         capacity), is_auto_inflate_enabled, maximum_throughput_units))
 
 
-def cli_namespace_list(client, resource_group_name=None, namespace_name=None):
+def cli_namespace_list(client, resource_group_name=None):
     cmd_result = None
 
-    if resource_group_name and not namespace_name:
+    if resource_group_name:
         cmd_result = client.list_by_resource_group(resource_group_name)
-
-    if not resource_group_name and not namespace_name:
-        cmd_result = client.list()
 
     return cmd_result
 

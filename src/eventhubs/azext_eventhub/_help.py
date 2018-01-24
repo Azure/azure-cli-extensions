@@ -15,9 +15,29 @@ helps['eventhubs namespace'] = """
     short-summary: Manage Azure Event Hubs namespace and authorizationrule
 """
 
+helps['eventhubs namespace authorizationrule'] = """
+    type: group
+    short-summary: Manage Azure Service Bus AuthorizationRule for Namespace
+"""
+
+helps['eventhubs namespace authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure AuthorizationRule connection strings for Namespace
+"""
+
 helps['eventhubs eventhub'] = """
     type: group
     short-summary: Manage Azure Event Hubs eventhub and authorization-rule
+"""
+
+helps['eventhubs eventhub authorizationrule'] = """
+    type: group
+    short-summary: Manage Azure Service Bus AuthorizationRule for Eventhub
+"""
+
+helps['eventhubs eventhub authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure AuthorizationRule connection strings for Eventhub
 """
 
 helps['eventhubs consumergroup'] = """
@@ -26,8 +46,8 @@ helps['eventhubs consumergroup'] = """
 """
 
 helps['eventhubs georecovery-alias'] = """
-    type: group
-    short-summary: Manage Azure Event Hubs Geo Recovery configuration - Alias
+    type:  group
+    short-summary: Manage Azure Event Hubs Geo Recovery configuration Alias
 """
 
 helps['eventhubs namespace exists'] = """
@@ -220,9 +240,9 @@ helps['eventhubs consumergroup show'] = """
 
 helps['eventhubs consumergroup list'] = """
     type: command
-    short-summary: List the ComsumerGroup by Eventhub
+    short-summary: List the ConsumerGroup by Eventhub
     examples:
-        - name: Shows the ComsumerGroup by Eventhub.
+        - name: Shows the ConsumerGroup by Eventhub.
           text: az eventhubs consumergroup get --resource-group myresourcegroup --namespace-name mynamespace --event-hub-name myeventhub
 """
 
@@ -252,12 +272,12 @@ helps['eventhubs georecovery-alias create'] = """
 
 helps['eventhubs georecovery-alias show'] = """
     type: command
-    short-summary: shows details of Geo Recovery configuration - Alias for Primay/Secondary Namespace
+    short-summary: shows details of Geo Recovery configuration - Alias for Primay or Secondary Namespace
     examples:
-        - name:  show details of Geo Recovery configuration - Alias  of the Primary Namespace
-          text: az eventhubs alias show  --resource-group myresourcegroup --namespace-name primarynamespace --alias myaliasname
-        - name:  Get details of Geo Recovery configuration - Alias  of the Secondary Namespace
-           text: az eventhubs georecovery-alias show  --resource-group myresourcegroup --namespace-name secondarynamespace --alias myaliasname
+        - name: Shows details of Geo Recovery configuration - Alias  of the Primary Namespace
+          text: az eventhubs georecovery-alias show  --resource-group myresourcegroup --namespace-name primarynamespace --alias myaliasname
+        - name: Shows details of Geo Recovery configuration - Alias  of the Secondary Namespace
+          text: az eventhubs georecovery-alias show  --resource-group myresourcegroup --namespace-name secondarynamespace --alias myaliasname
 """
 
 helps['eventhubs georecovery-alias authorizationrule show'] = """
@@ -268,12 +288,12 @@ helps['eventhubs georecovery-alias authorizationrule show'] = """
           text: az eventhubs georecovery-alias authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
 """
 
-helps['servicebus georecovery-alias authorizationrule list'] = """
+helps['eventhubs georecovery-alias authorizationrule list'] = """
     type: command
     short-summary: Shows the list of AuthorizationRule by Event Hubs Namespace
     examples:
         - name: Shows the list of AuthorizationRule by Event Hubs Namespace
-          text: az eventhubs georecovery-alias authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
+          text: az eventhubs georecovery-alias authorizationrule list --resource-group myresourcegroup --namespace-name mynamespace
 """
 
 helps['eventhubs georecovery-alias authorizationrule keys list'] = """
@@ -294,16 +314,16 @@ helps['eventhubs georecovery-alias break-pair'] = """
 
 helps['eventhubs georecovery-alias fail-over'] = """
     type: command
-    short-summary: Envokes Geo Recovery configuration - Alias to point to the secondary namespace
+    short-summary: Invokes Geo Recovery configuration - Alias to point to the secondary namespace
     examples:
-        - name:  Envokes GEO DR failover and reconfigure the alias to point to the secondary namespace
+        - name:  Invokes GEO DR failover and reconfigure the alias to point to the secondary namespace
           text: az eventhubs georecovery-alias fail-over  --resource-group myresourcegroup --namespace-name secondarynamespace --alias myaliasname
 """
 
 helps['eventhubs georecovery-alias delete'] = """
     type: command
-    short-summary: Delete Geo Recovery  - Alias
+    short-summary: Delete Geo Recovery - Alias
     examples:
-        - name:  Delete Geo Recovery configuration - Alias
+        - name: Delete Geo Recovery configuration - Alias
           text: az eventhubs georecovery-alias delete  --resource-group myresourcegroup --namespace-name secondarynamespace --alias myaliasname
 """
