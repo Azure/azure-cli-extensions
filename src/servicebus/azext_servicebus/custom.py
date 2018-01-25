@@ -158,6 +158,7 @@ def cli_alias_create(client, resource_group_name, namespace_name, alias, partner
     )
     return client.create_or_update(resource_group_name, namespace_name, alias, dr_params)
 
+
 # pylint: disable=inconsistent-return-statements
 def empty_on_404(ex):
     from azext_servicebus.servicebus.models import ErrorResponseException
