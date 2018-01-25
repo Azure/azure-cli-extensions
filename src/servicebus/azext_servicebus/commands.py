@@ -13,6 +13,7 @@ from azext_servicebus._client_factory import (namespaces_mgmt_client_factory,
                                               subscriptions_mgmt_client_factory,
                                               rules_mgmt_client_factory,
                                               disaster_recovery_mgmt_client_factory,)
+from .custom import empty_on_404
 
 
 def load_command_table(self, _):
@@ -56,15 +57,15 @@ def load_command_table(self, _):
 # Namespace Region
     with self.command_group('servicebus namespace', sb_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_namespace_create')
-        g.command('show', 'get')
-        g.custom_command('list', 'cli_namespace_list')
+        g.command('show', 'get', exception_handler=empty_on_404)
+        g.custom_command('list', 'cli_namespace_list', exception_handler=empty_on_404)
         g.command('delete', 'delete')
         g.command('exists', 'check_name_availability_method')
 
     with self.command_group('servicebus namespace authorizationrule', sb_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_namespaceautho_create',)
-        g.command('show', 'get_authorization_rule')
-        g.command('list', 'list_authorization_rules')
+        g.command('show', 'get_authorization_rule', exception_handler=empty_on_404)
+        g.command('list', 'list_authorization_rules', exception_handler=empty_on_404)
         g.command('keys list', 'list_keys')
         g.command('keys renew', 'regenerate_keys')
         g.command('delete', 'delete_authorization_rule')
@@ -72,14 +73,14 @@ def load_command_table(self, _):
 # Queue Region
     with self.command_group('servicebus queue', sb_queue_util, client_factory=queues_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbqueue_create')
-        g.command('show', 'get')
-        g.command('list', 'list_by_namespace')
+        g.command('show', 'get', exception_handler=empty_on_404)
+        g.command('list', 'list_by_namespace', exception_handler=empty_on_404)
         g.command('delete', 'delete')
 
     with self.command_group('servicebus queue authorizationrule', sb_queue_util, client_factory=queues_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbqueueautho_create',)
-        g.command('show', 'get_authorization_rule')
-        g.command('list', 'list_authorization_rules')
+        g.command('show', 'get_authorization_rule', exception_handler=empty_on_404)
+        g.command('list', 'list_authorization_rules', exception_handler=empty_on_404)
         g.command('keys list', 'list_keys')
         g.command('keys renew', 'regenerate_keys')
         g.command('delete', 'delete_authorization_rule')
@@ -87,14 +88,14 @@ def load_command_table(self, _):
 # Topic Region
     with self.command_group('servicebus topic', sb_topic_util, client_factory=topics_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbtopic_create')
-        g.command('show', 'get')
-        g.command('list', 'list_by_namespace')
+        g.command('show', 'get', exception_handler=empty_on_404)
+        g.command('list', 'list_by_namespace', exception_handler=empty_on_404)
         g.command('delete', 'delete')
 
     with self.command_group('servicebus topic authorizationrule', sb_topic_util, client_factory=topics_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbtopicautho_create')
-        g.command('show', 'get_authorization_rule')
-        g.command('list', 'list_authorization_rules')
+        g.command('show', 'get_authorization_rule', exception_handler=empty_on_404)
+        g.command('list', 'list_authorization_rules', exception_handler=empty_on_404)
         g.command('keys list', 'list_keys')
         g.command('keys renew', 'regenerate_keys')
         g.command('delete', 'delete_authorization_rule')
@@ -102,22 +103,22 @@ def load_command_table(self, _):
 # Subscription Region
     with self.command_group('servicebus subscription', sb_subscriptions_util, client_factory=subscriptions_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_sbsubscription_create')
-        g.command('show', 'get')
-        g.command('list', 'list_by_topic')
+        g.command('show', 'get', exception_handler=empty_on_404)
+        g.command('list', 'list_by_topic', exception_handler=empty_on_404)
         g.command('delete', 'delete')
 
 # Rules Region
     with self.command_group('servicebus rule', sb_rule_util, client_factory=rules_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_rules_create')
-        g.command('show', 'get')
-        g.command('list', 'list_by_subscriptions')
+        g.command('show', 'get', exception_handler=empty_on_404)
+        g.command('list', 'list_by_subscriptions', exception_handler=empty_on_404)
         g.command('delete', 'delete')
 
 # DisasterRecoveryConfigs Region
     with self.command_group('servicebus georecovery-alias', sb_geodr_util, client_factory=disaster_recovery_mgmt_client_factory) as g:
         g.command('create', 'create_or_update')
-        g.command('show', 'get')
-        g.command('list', 'list')
+        g.command('show', 'get', exception_handler=empty_on_404)
+        g.command('list', 'list', exception_handler=empty_on_404)
         g.command('break-pair', 'break_pairing')
         g.command('fail-over', 'fail_over')
         g.command('exists', 'check_name_availability_method')

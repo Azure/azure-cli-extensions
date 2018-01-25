@@ -8,42 +8,51 @@ from knack.help_files import helps
 helps['servicebus'] = """
     type: group
     short-summary: Manage Azure Service Bus namespace, queue, topic, subscription, rule and geo disaster recovery configuration - alias
-
-    """
+"""
 
 helps['servicebus namespace'] = """
     type: group
     short-summary: Manage Azure Service Bus Namespace
-
-    """
+"""
 
 helps['servicebus namespace authorizationrule'] = """
     type: group
     short-summary: Manage Azure Service Bus Namespace AuthorizationRule
+"""
 
-    """
+helps['servicebus namespace authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure AuthorizationRule connection strings for Namespace
+"""
 
 helps['servicebus queue'] = """
     type: group
     short-summary: Manage Azure Service Bus Queue and authorizationrule
-
-    """
+"""
 
 helps['servicebus queue authorizationrule'] = """
     type: group
     short-summary: Manage Azure Service Bus Queue AuthorizationRule
+"""
 
-    """
+helps['servicebus queue authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure AuthorizationRule connection strings for Service Bus Queue
+"""
 
 helps['servicebus topic'] = """
     type: group
     short-summary: Manage Azure Service Bus Topic and authorizationrule
-
-    """
+"""
 
 helps['servicebus topic authorizationrule'] = """
     type: group
     short-summary: Manage Azure Service Bus Topic AuthorizationRule
+"""
+
+helps['servicebus topic authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure AuthorizationRule connection strings for Service Bus Topic
 """
 
 helps['servicebus subscription'] = """
@@ -59,6 +68,16 @@ helps['servicebus rule'] = """
 helps['servicebus georecovery-alias'] = """
     type: group
     short-summary: Manage Azure Service Bus Geo Disaster Recovery Configuration - Alias
+"""
+
+helps['servicebus georecovery-alias authorizationrule'] = """
+    type: group
+    short-summary: Manage Azure Service Bus AuthorizationRule for Namespace with GeoDRAlias
+"""
+
+helps['servicebus georecovery-alias authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure AuthorizationRule connection strings for Service Bus Namespace
 """
 
 helps['servicebus namespace exists'] = """
@@ -416,7 +435,7 @@ helps['servicebus georecovery-alias create'] = """
     examples:
         - name: Creates Geo Disaster Recovery configuration - Alias for the give Namespace
           text: az servicebus georecovery-alias create  --resource-group myresourcegroup --namespace-name primarynamespace
-           --alias myaliasname --partner-namespace
+           --alias myaliasname --partner-namespace armresourceid
 """
 
 helps['servicebus georecovery-alias show'] = """
@@ -459,9 +478,9 @@ helps['servicebus georecovery-alias break-pairing'] = """
 
 helps['servicebus georecovery-alias fail-over'] = """
     type: command
-    short-summary: Envokes Service Bus Geo Recovery Alias failover and re-configure the alias to point to the secondary namespace
+    short-summary: Invokes Service Bus Geo Recovery Alias failover and re-configure the alias to point to the secondary namespace
     examples:
-        - name:  Envokes Geo Disaster Recovery  failover and reconfigure the alias to point to the secondary namespace
+        - name:  Invokes Geo Disaster Recovery  failover and reconfigure the alias to point to the secondary namespace
           text: az servicebus georecovery-alias fail-over  --resource-group myresourcegroup --namespace-name secondarynamespace
            --alias myaliasname
 """
