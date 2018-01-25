@@ -36,7 +36,7 @@ def load_arguments_namespace(self, _):
             c.argument('authorization_rule_name', options_list=['--name', '-n'], help='name of the Namespace AuthorizationRule')
 
     with self.argument_context('eventhubs namespace authorizationrule create') as c:
-        c.argument('accessrights', options_list=['--access-rights'], arg_type=get_enum_type(['Send', 'Listen', 'Manage']), help='Authorization rule rights of type list, allowed values are Send, Listen or Manage')
+        c.argument('accessrights', options_list=['--access-rights'], arg_type=get_enum_type(['Send', 'Listen', 'Manage']), help='Authorization rule rights of type list')
 
     with self.argument_context('eventhubs namespace authorizationrule keys renew') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']), help='specifies Primary or Secondary key needs to be reset')
@@ -67,7 +67,7 @@ def load_arguments_eventhub(self, _):
             c.argument('event_hub_name', options_list=['--event-hub-name'], help='name of the EventHub')
 
     with self.argument_context('eventhubs eventhub authorizationrule create') as c:
-        c.argument('accessrights', options_list=['--access-rights'], arg_type=get_enum_type(['Send', 'Listen', 'Manage']), help='AuthorizationRule rights of type list, allowed values are Send, Listen or Manage')
+        c.argument('accessrights', options_list=['--access-rights'], arg_type=get_enum_type(['Send', 'Listen', 'Manage']), help='AuthorizationRule rights of type list')
 
     with self.argument_context('eventhubs eventhub authorizationrule keys renew') as c:
         c.argument('key_type', options_list=['--key-name'], arg_type=get_enum_type(['PrimaryKey', 'SecondaryKey']))
