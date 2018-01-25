@@ -17,12 +17,12 @@ helps['eventhubs namespace'] = """
 
 helps['eventhubs namespace authorizationrule'] = """
     type: group
-    short-summary: Manage Azure Service Bus AuthorizationRule for Namespace
+    short-summary: Manage Azure Event Hubs AuthorizationRule for Namespace
 """
 
 helps['eventhubs namespace authorizationrule keys'] = """
     type: group
-    short-summary: Manage Azure AuthorizationRule connection strings for Namespace
+    short-summary: Manage Azure Event Hubs AuthorizationRule connection strings for Namespace
 """
 
 helps['eventhubs eventhub'] = """
@@ -48,6 +48,16 @@ helps['eventhubs consumergroup'] = """
 helps['eventhubs georecovery-alias'] = """
     type:  group
     short-summary: Manage Azure Event Hubs Geo Recovery configuration Alias
+"""
+
+helps['eventhubs georecovery-alias authorizationrule'] = """
+    type: group
+    short-summary: Manage Azure Event Hubs AuthorizationRule for Geo Recovery configuration Alias
+"""
+
+helps['eventhubs georecovery-alias authorizationrule keys'] = """
+    type: group
+    short-summary: Manage Azure Event Hubs AuthorizationRule connection strings for Geo Recovery configuration Alias
 """
 
 helps['eventhubs namespace exists'] = """
