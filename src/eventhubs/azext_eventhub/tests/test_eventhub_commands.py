@@ -310,5 +310,7 @@ class EHNamespaceCURDScenarioTest(ScenarioTest):
         # Delete Namespace - primary
         self.cmd('eventhubs namespace delete --resource-group {rg} --name {namespacenameprimary}')
 
+        time.sleep(30)
+
         # Delete Namespace - secondary
         self.cmd('eventhubs namespace delete --resource-group {rg} --name {namespacenamesecondary}')
