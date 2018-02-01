@@ -26,6 +26,7 @@ class AEMCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, _):
+        # pylint: disable=line-too-long
         from knack.arguments import CLIArgumentType
         from azure.cli.core.commands.parameters import get_resource_name_completion_list
         name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
