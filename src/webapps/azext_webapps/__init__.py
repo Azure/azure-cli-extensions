@@ -6,6 +6,8 @@
 from azure.cli.core import AzCommandsLoader
 import azext_webapps._help  # pylint: disable=unused-import
 
+# pylint: disable=line-too-long
+
 
 class WebappsExtCommandLoader(AzCommandsLoader):
 
