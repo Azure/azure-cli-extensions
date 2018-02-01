@@ -73,11 +73,11 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             node_version = data['version']
             version_used_create = get_node_runtime_version_toSet()
 
-    # ResourceGroup: check if default RG is set
+    # Resource group: check if default RG is set
     default_rg = cmd.cli_ctx.config.get('defaults', 'group')
     if (default_rg and check_resource_group_supports_linux(cmd, default_rg, location)):
         rg = default_rg
-        rg_mssg = "[Using default ResourceGroup]"
+        rg_mssg = "[Using default Resource group]"
     else:
         rg_mssg = ""
 
@@ -87,8 +87,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     dry_run_str = r""" {
             "name" : "%s",
-            "appServicePlan" : "%s",
-            "resourceGroup" : "%s",
+            "serverfarm" : "%s",
+            "resourcegroup" : "%s",
             "sku": "%s",
             "os": "%s",
             "location" : "%s",
@@ -105,15 +105,16 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             Web app will be created with the below configuration,
             re-run command without the --dryrun flag to create & deploy a new app
             """)
-        return logger.warning(create_json)
+        logger.warning(create_json)
+        return
 
     # create RG if the RG doesn't already exist
     if not check_resource_group_exists(cmd, rg):
-        logger.warning("Creating ResourceGroup '%s' ...", rg)
+        logger.warning("Creating Resource group '%s' ...", rg)
         create_resource_group(cmd, rg, location)
-        logger.warning("ResourceGroup creation complete")
+        logger.warning("Resource group creation complete")
     else:
-        logger.warning("Resource Group '%s' already exists.", rg)
+        logger.warning("Resource group '%s' already exists.", rg)
 
     # create asp
     if not check_if_asp_exists(cmd, rg, asp):
@@ -122,9 +123,9 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         plan_def = AppServicePlan(loc_name, app_service_plan_name=asp,
                                   sku=sku_def, reserved=True)
         client.app_service_plans.create_or_update(rg, asp, plan_def)
-        logger.warning("AppServicePlan creation complete")
+        logger.warning("App service plan creation complete")
     else:
-        logger.warning("AppServicePlan '%s' already exists.", asp)
+        logger.warning("App service plan '%s' already exists.", asp)
 
     # create the Linux app
     logger.warning("Creating app '%s' ....", name)
@@ -141,4 +142,5 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     logger.warning("Deploying and building contents to app. This operation can take some time to finish...")
     enable_zip_deploy(cmd, rg, name, zip_file_path)
-    return logger.warning("All done. %s", create_json)
+    logger.warning("All done. %s", create_json)
+    return None

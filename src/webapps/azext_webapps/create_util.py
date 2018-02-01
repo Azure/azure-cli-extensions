@@ -50,7 +50,7 @@ def is_node_application(path):
 def get_node_runtime_version_toSet():
     version_val = "8.0"
     # trunc_version = float(node_version[:3])
-    # TODO: call the list_runtimes once there is an API that returs the supported versions
+    # TODO: call the list_runtimes once there is an API that returns the supported versions
     return version_val
 
 
