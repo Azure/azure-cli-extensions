@@ -43,24 +43,23 @@ def verify_aem(cmd, resource_group_name, vm_name, wait_time_in_minutes=15, skip_
     aem = EnhancedMonitoring(cmd, resource_group_name, vm_name,
                              vm_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE),
                              storage_client=get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE))
-    aem.verify(skip_storage_check, wait_time_in_minutes)  # TODO: better name and set up the flag param
+    aem.verify(skip_storage_check, wait_time_in_minutes)
 
 
 class EnhancedMonitoring(object):
     def __init__(self, cmd, resource_group, vm_name, vm_client,
                  storage_client, skip_storage_analytics=None):
         self._vm_client = vm_client
-        self._storage_client = storage_client  # TODO: remove those amnd just leverage cmd
-        self.resource_group = resource_group
+        self._storage_client = storage_client
+        self._resource_group = resource_group
         self._cmd = cmd
-        self.vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
+        self._vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
         # TODO: put it under api-version check on 2016-04-30preview+
-        self._extension = (aem_extension_info['Linux'] if bool(self.vm.os_profile.linux_configuration)
+        self._extension = (aem_extension_info['Linux'] if bool(self._vm.os_profile.linux_configuration)
                            else aem_extension_info['Windows'])
         self._skip_storage_analytics = skip_storage_analytics
 
     def enable(self):
-        # TODO make sure we do need to handle such old vm sizes
         pub_cfg, pri_cfg = self._build_extension_cfgs(self._get_disk_info())
         VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension')
         existing_ext = self._get_aem_extension()
@@ -68,7 +67,7 @@ class EnhancedMonitoring(object):
             extension_instance_name = existing_ext.name
         else:
             extension_instance_name = self._extension['name']
-        existing_ext = VirtualMachineExtension(self.vm.location,
+        existing_ext = VirtualMachineExtension(self._vm.location,
                                                publisher=self._extension['publisher'],
                                                virtual_machine_extension_type=self._extension['name'],
                                                protected_settings={
@@ -79,63 +78,78 @@ class EnhancedMonitoring(object):
                                                    'cfg': [{'key': k, 'value': pub_cfg[k]} for k in pub_cfg]
                                                },
                                                auto_upgrade_minor_version=True)
-        return self._vm_client.virtual_machine_extensions.create_or_update(self.resource_group, self.vm.name,
+        return self._vm_client.virtual_machine_extensions.create_or_update(self._resource_group, self._vm.name,
                                                                            extension_instance_name, existing_ext)
 
     def delete(self):
         existing_ext = self._get_aem_extension()
         if not existing_ext:
             raise CLIError("'{}' is not installed".format(self._extension['name']))
-        return self._vm_client.virtual_machine_extensions.delete(self.resource_group, self.vm.name,
+        return self._vm_client.virtual_machine_extensions.delete(self._resource_group, self._vm.name,
                                                                  existing_ext.name)
 
     def verify(self, skip_storage_check, wait_time_in_minutes):
         import datetime
+        success = True
         aem_ext = self._get_aem_extension()
         result = {}
         succ_word, fail_word = 'OK', 'Not OK'
-        logger.info('Azure Enhanced Monitoring Extension for SAP Installation check: %s',
-                    succ_word if aem_ext else fail_word)
+        if aem_ext:
+            logger.warning('Azure Enhanced Monitoring Extension for SAP Installation check: %s', succ_word)
+        else:
+            raise CLIError('Azure Enhanced Monitoring Extension for SAP was not installed')
         disk_info = self._get_disk_info()
         managed_disk = disk_info['managed_disk']
         # os disk
-        logger.info('Storage Metrics check...')
+        logger.warning('Storage Metrics check...')
         if not skip_storage_check:
             unmanaged_disks = [] if managed_disk else [disk_info['os_disk']] + disk_info['data_disks']
             for disk in unmanaged_disks:
                 storage_account_name = disk['account_name']
-                logger.info("\tStorage Metrics check for '%s'...", storage_account_name)
+                logger.warning("\tStorage Metrics check for '%s'...", storage_account_name)
                 if disk['is_premium']:
-                    logger.info("\t\tStorage Metrics not available for Premium Storage account '%s'...",
-                        storage_account_name)
+                    logger.warning("\t\tStorage Metrics not available for Premium Storage account '%s'...",
+                                   storage_account_name)
                 else:
-                    logger.info("\t\tStorage Metrics configuration check for '%s'...", storage_account_name)
+                    logger.warning("\t\tStorage Metrics configuration check for '%s'...", storage_account_name)
                     storage_client = self._get_storage_client(storage_account_name, disk['key'])
                     service_properties = storage_client.get_blob_service_properties()
-                    storage_cfg_ok = self._check_storage_analytics(service_properties)
-                    logger.warning('Metrics configuration check: %s', succ_word if storage_cfg_ok else fail_word)
+                    storage_cfg_ok = EnhancedMonitoring._check_storage_analytics(service_properties)
                     if storage_cfg_ok:
+                        logger.warning('\t\tStorage Metrics configuration check: %s', succ_word)
+                    else:
+                        success = False
+                        logger.error('\t\tMetrics configuration check: %s', fail_word)
+                    if storage_cfg_ok:
+                        logger.warning("\t\tStorage Metrics data check for '%s'. Wait up to %s minutes ...",
+                                       storage_account_name, wait_time_in_minutes)
                         filter_str = "Timestamp gt datetime'{}'".format(
                             (datetime.datetime.utcnow() + datetime.timedelta(minutes=-5)).isoformat())
-
                         result = self._check_table_and_content(storage_account_name, disk['key'],
                                                                '$MetricsMinutePrimaryTransactionsBlob', filter_str,
-                                                               '.', wait_time_in_minutes)  # TODO: need to print ...
-                        step = 'Storage Metrics data check for {}'.format(storage_account_name)
-                        result[step] = result
+                                                               wait_time_in_minutes)
+                        if result:
+                            logger.warning("\t\tStorage Metrics data check '%s': %s", storage_account_name, succ_word)
+                        else:
+                            success = False
+                            logger.error("\t\tStorage Metrics data check '%s': %s", storage_account_name, fail_word)
 
         logger.warning('Azure Enhanced Monitoring Extension for SAP public configuration check...')
         extected, _ = self._build_extension_cfgs(disk_info)
-        public_cfg = {x['key']:x['value'] for x in self.vm.resources[0].settings['cfg']}  # TODO: exclude wad check?
-        diffs = {k:[extected[k], public_cfg.get(k, None)] for k in extected if extected[k] != public_cfg.get(k, None)}
+        public_cfg = {x['key']: x['value'] for x in self._vm.resources[0].settings['cfg']}
+        diffs = {k: [extected[k], public_cfg.get(k, None)] for k in extected if extected[k] != public_cfg.get(k, None)}
         if diffs:
+            success = False
             for err in diffs:
-                logger.error("\tError: Expected: '%s' Actual: '%s'", diffs[err][0], diffs[err][1])
+                logger.error("\tConfiguration Error: Expected: '%s' Actual: '%s'", diffs[err][0], diffs[err][1])
         else:
             logger.warning('Configuration OK')
 
+        if not success:
+            raise CLIError('Configuration Not OK.')
+
     def _build_extension_cfgs(self, disk_info):
-        vm_size = str(self.vm.hardware_profile.vm_size)
+        vm_size = str(self._vm.hardware_profile.vm_size)
         pub_cfg = pri_cfg = {}
         vm_size_mapping = {
             'ExtraSmall': 'ExtraSmall (A0)',
@@ -147,7 +161,7 @@ class EnhancedMonitoring(object):
             'ExtraLarge': 'ExtraLarge (A4)'
         }
         pub_cfg.update({
-            'vmsize': vm_size_mapping.get(vm_size, vm_size),  # TODO: should be 'vm.size'?
+            'vmsize': vm_size_mapping.get(vm_size, vm_size),
             'vm.role': 'IaaS',
             'vm.memory.isovercommitted': 0,
             'vm.cpu.isovercommitted': 1 if vm_size == 'ExtraSmall (A0)' else 0,
@@ -253,27 +267,27 @@ class EnhancedMonitoring(object):
 
     def _get_aem_extension(self):
         existing_ext = None
-        if self.vm.instance_view.extensions:
+        if self._vm.instance_view.extensions:
             full_type_name = '.'.join([self._extension['publisher'], self._extension['name']])
-            existing_ext = next((x for x in self.vm.instance_view.extensions
+            existing_ext = next((x for x in self._vm.instance_view.extensions
                                  if x.type and (x.type.lower() == full_type_name.lower())), None)
         return existing_ext
 
     def _get_disk_info(self):
         from msrestazure.tools import parse_resource_id
         disks_info = {}
-        disks_info['managed_disk'] = bool(getattr(self.vm.storage_profile.os_disk, 'managed_disk', None))
+        disks_info['managed_disk'] = bool(getattr(self._vm.storage_profile.os_disk, 'managed_disk', None))
         if disks_info['managed_disk']:
-            res_info = parse_resource_id(self.vm.storage_profile.os_disk.managed_disk.id)
+            res_info = parse_resource_id(self._vm.storage_profile.os_disk.managed_disk.id)
             disk = self._vm_client.disks.get(res_info['resource_group'], res_info['name'])
             disks_info['os_disk'] = {
                 'name': disk.name,
                 'size': disk.disk_size_gb,
                 'is_premium': disk.sku.tier.lower() == 'premium',
-                'caching': self.vm.storage_profile.os_disk.caching.value,
+                'caching': self._vm.storage_profile.os_disk.caching.value,
             }
             disks_info['data_disks'] = []
-            for data_disk in self.vm.storage_profile.data_disks:
+            for data_disk in self._vm.storage_profile.data_disks:
                 res_info = parse_resource_id(data_disk.managed_disk.id)
                 disk = self._vm_client.disks.get(res_info['resource_group'], res_info['name'])
                 disks_info['data_disks'].append({
@@ -285,19 +299,19 @@ class EnhancedMonitoring(object):
                 })
         else:
             storage_accounts = list(self._storage_client.storage_accounts.list())
-            blob_uri = self.vm.storage_profile.os_disk.vhd.uri
+            blob_uri = self._vm.storage_profile.os_disk.vhd.uri
             parts = list(filter(None, blob_uri.split('/')))
             storage_account_name = parts[1].split('.')[0]
             disk_name, container_name = parts[-1], parts[-2]
             storage_account = [x for x in storage_accounts if x.name.lower() == storage_account_name.lower()][0]
-            key = self._storage_client.storage_accounts.list_keys(parse_resource_id(storage_account.id)['resource_group'],
-                                                                  storage_account.name).keys[0].value
+            rg = parse_resource_id(storage_account.id)['resource_group']
+            key = self._storage_client.storage_accounts.list_keys(rg, storage_account.name).keys[0].value
             disks_info['os_disk'] = {
                 'name': disk_name,
                 'account_name': storage_account_name,
-                'table_endpoint': storage_account.primary_endpoints.table,  # TODO WARN if unavailable
+                'table_endpoint': storage_account.primary_endpoints.table,
                 'is_premium': storage_account.sku.tier.value.lower() == 'premium',
-                'caching': self.vm.storage_profile.os_disk.caching.value,
+                'caching': self._vm.storage_profile.os_disk.caching.value,
                 'key': key
             }
             if disks_info['os_disk']['is_premium']:
@@ -305,21 +319,21 @@ class EnhancedMonitoring(object):
                                                                     disk_name, key)
 
             disks_info['data_disks'] = []
-            for data_disk in self.vm.storage_profile.data_disks:
+            for data_disk in self._vm.storage_profile.data_disks:
                 blob_uri = data_disk.vhd.uri
                 parts = list(filter(None, blob_uri.split('/')))
                 storage_account_name = parts[1].split('.')[0]
-                disk_name, container_name = parts[-1], parts[-2]  # TODO: consider urlparse
+                disk_name, container_name = parts[-1], parts[-2]
                 storage_account = [x for x in storage_accounts if x.name.lower() == storage_account_name.lower()][0]
-                key = self._storage_client.storage_accounts.list_keys(parse_resource_id(storage_account.id)['resource_group'],
-                                                                      storage_account.name).keys[0].value
+                rg = parse_resource_id(storage_account.id)['resource_group']
+                key = self._storage_client.storage_accounts.list_keys(rg, storage_account.name).keys[0].value
                 is_premium = storage_account.sku.tier.value.lower() == 'premium'
                 disks_info['data_disks'].append({
                     'name': disk_name,
                     'account_name': storage_account_name,
                     'table_endpoint': storage_account.primary_endpoints.table,
                     'is_premium': is_premium,
-                    'caching': self.vm.storage_profile.os_disk.caching.value,
+                    'caching': self._vm.storage_profile.os_disk.caching.value,
                     'key': key,
                     'lun': data_disk.lun
                 })
@@ -334,7 +348,8 @@ class EnhancedMonitoring(object):
         return int(storage_client.get_blob_properties(container, blob).properties.content_length / (1 << 30))
 
     def _get_storage_client(self, storage_account_name, key):
-        BlockBlobService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob.blockblobservice#BlockBlobService')
+        BlockBlobService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE,
+                                   'blob.blockblobservice#BlockBlobService')
         return get_data_service_client(
             self._cmd.cli_ctx,
             BlockBlobService,
@@ -343,27 +358,27 @@ class EnhancedMonitoring(object):
             endpoint_suffix=self._cmd.cli_ctx.cloud.suffixes.storage_endpoint)  # pylint: disable=no-member
 
     def _enable_storage_analytics(self, storage_account_name, key):
-        # TODO: whether this checking is enough and WORKING
         storage_client = self._get_storage_client(storage_account_name, key)
         service_properties = storage_client.get_blob_service_properties()
-        if not self._check_storage_analytics(service_properties):
+        if not EnhancedMonitoring._check_storage_analytics(service_properties):
             t_logging, t_retention_policy, t_metrics = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_STORAGE, 'Logging',
                                                                'RetentionPolicy', 'Metrics', mod='common.models')
             retention_policy = t_retention_policy(enabled=True, days=13)
             logging = t_logging(delete=True, read=True, write=True, retention_policy=retention_policy)
             minute_metrics = t_metrics(enabled=True, include_apis=True, retention_policy=retention_policy)
-            if service_properties.hour_metrics:  # TODO ensure null reference
+            if getattr(service_properties, 'hour_metrics', None):
                 service_properties.hour_metrics.retention_policy.days = 13
             storage_client.set_blob_service_properties(logging, minute_metrics=minute_metrics,
                                                        hour_metrics=service_properties.hour_metrics)
 
-    def _check_storage_analytics(self, service_properties):
+    @staticmethod
+    def _check_storage_analytics(service_properties):
         return (service_properties and service_properties.logging and
                 service_properties.minute_metrics and service_properties.minute_metrics.include_apis and
                 service_properties.minute_metrics.retention_policy.days)
 
     def _check_table_and_content(self, storage_account_name, key, table_name,
-                                 filter_string, wait_char, timeout_in_minutes):
+                                 filter_string, timeout_in_minutes):
         import time
         TableService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_COSMOS_TABLE, 'table#TableService')
         table_client = get_data_service_client(
@@ -376,12 +391,11 @@ class EnhancedMonitoring(object):
         seconds = 60 * timeout_in_minutes
         waited = 0
         while waited < seconds:
-            try:
-                entities = table_client.query_entities(table_name, filter_string)
-                if entities:
-                    return True
-            except Exception as ex:
-                pass
+            entities = table_client.query_entities(table_name, filter_string)
+            if entities.items:
+                return True
+            logger.warning("\t\t\tWait %s seconds for table '%s' has date propagated ...",
+                           15, table_name)
             time.sleep(15)
             waited += 15
 
@@ -424,7 +438,6 @@ class EnhancedMonitoring(object):
 
     @staticmethod
     def _populate_vm_sla_mappings():
-        # TODO, figure out the deal for sizes not in the list
         mapping = {}
         mapping['Standard_DS1'] = {
             'IOPS': 3200,

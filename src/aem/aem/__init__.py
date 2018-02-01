@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
-import azext_imagecopy._help  # pylint: disable=unused-import
+import azext_aem._help  # pylint: disable=unused-import
 
 
 class AEMCommandsLoader(AzCommandsLoader):
@@ -33,4 +33,4 @@ class AEMCommandsLoader(AzCommandsLoader):
                        help='Time that should be waited for the Strorage Metrics or Diagnostics data to be available in minutes')
 
 
-COMMAND_LOADER_CLS = ImageCopyCommandsLoader
+COMMAND_LOADER_CLS = AEMCommandsLoader
