@@ -26,11 +26,22 @@ class AEMCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, _):
+        from knack.arguments import CLIArgumentType
+        from azure.cli.core.commands.parameters import get_resource_name_completion_list
+        name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
+        existing_vm_name = CLIArgumentType(overrides=name_arg_type,
+                                           configured_default='vm',
+                                           help="The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`",
+                                           completer=get_resource_name_completion_list('Microsoft.Compute/virtualMachines'), id_part='name')
+
         with self.argument_context('vm aem') as c:
+            c.argument('vm_name', existing_vm_name)
             c.argument('skip_storage_check', action='store_true',
                        help='Disables the test for table content')
+            c.argument('skip_storage_analytics', action='store_true',
+                       help='skip enabling analytics on storage accounts')
             c.argument('wait_time_in_minutes', type=int,
-                       help='Time that should be waited for the Strorage Metrics or Diagnostics data to be available in minutes')
+                       help='Maximum minutes to wait for the storage metrics to be available')
 
 
 COMMAND_LOADER_CLS = AEMCommandsLoader

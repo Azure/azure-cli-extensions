@@ -5,22 +5,22 @@
 
 from knack.help_files import helps
 
-helps['aem'] = """
-    type: command
+helps['vm aem'] = """
+    type: group
     short-summary: Manage Azure Enhanced Monitoring Extension for SAP
 """
 
-helps['aem set'] = """
+helps['vm aem set'] = """
     type: command
     short-summary: Configure Azure Enhanced Monitoring Extension
 """
 
-helps['aem delete'] = """
+helps['vm aem delete'] = """
     type: command
     short-summary: Remove Azure Enhanced Monitoring Extension
 """
 
-helps['aem verify'] = """
+helps['vm aem verify'] = """
     type: command
     short-summary: Verify Azure Enhanced Monitoring Extensions configured correctly
 """
