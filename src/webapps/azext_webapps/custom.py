@@ -106,7 +106,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             re-run command without the --dryrun flag to create & deploy a new app
             """)
         logger.warning(create_json)
-        return
+        return None
 
     # create RG if the RG doesn't already exist
     if not check_resource_group_exists(cmd, rg):
