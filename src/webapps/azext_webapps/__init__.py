@@ -4,9 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-import azext_webapps._help  # pylint: disable=unused-import
-
-# pylint: disable=line-too-long
+import azext_webapps._help
 
 
 class WebappsExtCommandLoader(AzCommandsLoader):
@@ -15,7 +13,9 @@ class WebappsExtCommandLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         webapps_custom = CliCommandType(
             operations_tmpl='azext_webapps.custom#{}')
-        super(WebappsExtCommandLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=webapps_custom, min_profile="2017-03-10-profile")
+        super(WebappsExtCommandLoader, self).__init__(cli_ctx=cli_ctx, 
+                                                      custom_command_type=webapps_custom, 
+                                                      min_profile="2017-03-10-profile")
 
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
