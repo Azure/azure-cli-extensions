@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+
+ # pylint: disable=unused-import
+
 import azext_webapps._help
 
 
@@ -13,8 +16,8 @@ class WebappsExtCommandLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         webapps_custom = CliCommandType(
             operations_tmpl='azext_webapps.custom#{}')
-        super(WebappsExtCommandLoader, self).__init__(cli_ctx=cli_ctx, 
-                                                      custom_command_type=webapps_custom, 
+        super(WebappsExtCommandLoader, self).__init__(cli_ctx=cli_ctx,
+                                                      custom_command_type=webapps_custom,
                                                       min_profile="2017-03-10-profile")
 
     def load_command_table(self, _):
@@ -26,7 +29,7 @@ class WebappsExtCommandLoader(AzCommandsLoader):
         with self.argument_context('webapp quickstart') as c:
             c.argument('name', options_list=['--name', '-n'], help='name of the new webapp')
             c.argument('dryrun',
-                       help="shows summary of the create operation instead of actually creating and deploying the app",
+                       help="shows summary of the create and deploy operation instead of executing it",
                        default=False, action='store_true')
 
 
