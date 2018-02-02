@@ -54,7 +54,6 @@ class EnhancedMonitoring(object):
         self._resource_group = resource_group
         self._cmd = cmd
         self._vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
-        # TODO: put it under api-version check on 2016-04-30preview+
         self._extension = (aem_extension_info['Linux'] if bool(self._vm.os_profile.linux_configuration)
                            else aem_extension_info['Windows'])
         self._skip_storage_analytics = skip_storage_analytics
@@ -63,10 +62,7 @@ class EnhancedMonitoring(object):
         pub_cfg, pri_cfg = self._build_extension_cfgs(self._get_disk_info())
         VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension')
         existing_ext = self._get_aem_extension()
-        if existing_ext:
-            extension_instance_name = existing_ext.name
-        else:
-            extension_instance_name = self._extension['name']
+        extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
         existing_ext = VirtualMachineExtension(self._vm.location,
                                                publisher=self._extension['publisher'],
                                                virtual_machine_extension_type=self._extension['name'],
@@ -79,7 +75,8 @@ class EnhancedMonitoring(object):
                                                },
                                                auto_upgrade_minor_version=True)
         return self._vm_client.virtual_machine_extensions.create_or_update(self._resource_group, self._vm.name,
-                                                                           extension_instance_name, existing_ext)
+                                                                           extension_instance_name,
+                                                                           existing_ext)
 
     def delete(self):
         existing_ext = self._get_aem_extension()
@@ -160,8 +157,9 @@ class EnhancedMonitoring(object):
             'Large': 'Large (A3)',
             'ExtraLarge': 'ExtraLarge (A4)'
         }
+        vm_size_mapping.get(vm_size, vm_size)
         pub_cfg.update({
-            'vmsize': vm_size_mapping.get(vm_size, vm_size),
+            'vmsize': vm_size,
             'vm.role': 'IaaS',
             'vm.memory.isovercommitted': 0,
             'vm.cpu.isovercommitted': 1 if vm_size == 'ExtraSmall (A0)' else 0,
@@ -242,8 +240,8 @@ class EnhancedMonitoring(object):
             for disk in unmanaged_disks:
                 account_name = disk['account_name']
                 if disk['is_premium']:
-                    logger.info('[INFO] %s is skipped - Storage Account Metrics are not available '
-                                'for Premium Type Storage.', disk['name'])
+                    logger.info("'%s' is skipped - Storage Account Metrics are not available "
+                                "for Premium Type Storage.", disk['name'])
                     pub_cfg.update({
                         account_name + '.hour.ispremium': 1,
                         account_name + '.minute.ispremium': 1,
@@ -303,7 +301,7 @@ class EnhancedMonitoring(object):
             parts = list(filter(None, blob_uri.split('/')))
             storage_account_name = parts[1].split('.')[0]
             disk_name, container_name = parts[-1], parts[-2]
-            storage_account = [x for x in storage_accounts if x.name.lower() == storage_account_name.lower()][0]
+            storage_account = next(x for x in storage_accounts if x.name.lower() == storage_account_name.lower())
             rg = parse_resource_id(storage_account.id)['resource_group']
             key = self._storage_client.storage_accounts.list_keys(rg, storage_account.name).keys[0].value
             disks_info['os_disk'] = {
@@ -324,7 +322,7 @@ class EnhancedMonitoring(object):
                 parts = list(filter(None, blob_uri.split('/')))
                 storage_account_name = parts[1].split('.')[0]
                 disk_name, container_name = parts[-1], parts[-2]
-                storage_account = [x for x in storage_accounts if x.name.lower() == storage_account_name.lower()][0]
+                storage_account = next(x for x in storage_accounts if x.name.lower() == storage_account_name.lower())
                 rg = parse_resource_id(storage_account.id)['resource_group']
                 key = self._storage_client.storage_accounts.list_keys(rg, storage_account.name).keys[0].value
                 is_premium = storage_account.sku.tier.value.lower() == 'premium'
@@ -345,6 +343,7 @@ class EnhancedMonitoring(object):
 
     def _get_blob_size(self, storage_account_name, container, blob, key):
         storage_client = self._get_storage_client(storage_account_name, key)
+        # convert to GB
         return int(storage_client.get_blob_properties(container, blob).properties.content_length / (1 << 30))
 
     def _get_storage_client(self, storage_account_name, key):
@@ -380,6 +379,7 @@ class EnhancedMonitoring(object):
     def _check_table_and_content(self, storage_account_name, key, table_name,
                                  filter_string, timeout_in_minutes):
         import time
+        sleep_period = 15
         TableService = get_sdk(self._cmd.cli_ctx, ResourceType.DATA_COSMOS_TABLE, 'table#TableService')
         table_client = get_data_service_client(
             self._cmd.cli_ctx,
@@ -395,9 +395,9 @@ class EnhancedMonitoring(object):
             if entities.items:
                 return True
             logger.warning("\t\t\tWait %s seconds for table '%s' has date propagated ...",
-                           15, table_name)
-            time.sleep(15)
-            waited += 15
+                           sleep_period, table_name)
+            time.sleep(sleep_period)
+            waited += sleep_period
 
         return False
 

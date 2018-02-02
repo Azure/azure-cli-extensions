@@ -18,7 +18,7 @@ class AEMCommandsLoader(AzCommandsLoader):
                                                 custom_command_type=aem_custom)
 
     def load_command_table(self, _):
-        with self.command_group('vm aem') as g:
+        with self.command_group('vm aem', min_api='2016-04-30-preview') as g:
             g.custom_command('set', 'set_aem')
             g.custom_command('delete', 'delete_aem')
             g.custom_command('verify', 'verify_aem')
