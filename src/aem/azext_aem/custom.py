@@ -60,7 +60,9 @@ class EnhancedMonitoring(object):
 
     def enable(self):
         pub_cfg, pri_cfg = self._build_extension_cfgs(self._get_disk_info())
-        VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension')
+        VirtualMachineExtension = self._cmd.get_models('VirtualMachineExtension',
+                                                       resource_type=ResourceType.MGMT_COMPUTE,
+                                                       operation_group='virtual_machine_extensions')
         existing_ext = self._get_aem_extension()
         extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
         existing_ext = VirtualMachineExtension(self._vm.location,

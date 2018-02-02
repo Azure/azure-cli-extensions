@@ -13,6 +13,7 @@ helps['vm aem'] = """
 helps['vm aem set'] = """
     type: command
     short-summary: Configure Azure Enhanced Monitoring Extension
+    long-summary: It can take up to 15 minutes for the monitoring data to appear in the SAP system
 """
 
 helps['vm aem delete'] = """
