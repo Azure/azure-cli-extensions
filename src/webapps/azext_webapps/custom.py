@@ -48,7 +48,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         location = available_locs[0]
 
     # Remove spaces from the location string, incase the GeoRegion string is used
-        loc_name = location.replace(" ", "")
+    loc_name = location.replace(" ", "")
 
     asp = "appsvc_asp_{}_{}".format(os_val, loc_name)
     rg = "appsvc_rg_{}_{}".format(os_val, loc_name)

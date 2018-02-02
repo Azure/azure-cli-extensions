@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
- # pylint: disable=unused-import
+# pylint: disable=unused-import
 
 import azext_webapps._help
 
