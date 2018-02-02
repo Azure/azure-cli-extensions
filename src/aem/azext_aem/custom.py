@@ -132,9 +132,10 @@ class EnhancedMonitoring(object):
                             logger.error("\t\tStorage Metrics data check '%s': %s", storage_account_name, fail_word)
 
         logger.warning('Azure Enhanced Monitoring Extension for SAP public configuration check...')
-        extected, _ = self._build_extension_cfgs(disk_info)
+        expected, _ = self._build_extension_cfgs(disk_info)
+        expected.pop('wad.isenabled')
         public_cfg = {x['key']: x['value'] for x in self._vm.resources[0].settings['cfg']}
-        diffs = {k: [extected[k], public_cfg.get(k, None)] for k in extected if extected[k] != public_cfg.get(k, None)}
+        diffs = {k: [expected[k], public_cfg.get(k, None)] for k in expected if expected[k] != public_cfg.get(k, None)}
         if diffs:
             success = False
             for err in diffs:
