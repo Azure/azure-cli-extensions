@@ -74,7 +74,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             version_used_create = get_node_runtime_version_toSet()
 
     # Resource group: check if default RG is set
-    default_rg = cmd.cli_ctx.config.get('defaults', 'group')
+    default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
     if (default_rg and check_resource_group_supports_linux(cmd, default_rg, location)):
         rg = default_rg
         rg_mssg = "[Using default Resource group]"
