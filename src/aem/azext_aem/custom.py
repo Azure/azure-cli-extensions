@@ -272,7 +272,7 @@ class EnhancedMonitoring(object):
         return existing_ext
 
     def _get_disk_info(self):
-        from msrestazure.tools import parse_resource_id
+        from msrestazure.tools import parse_resource_id  # pylint: disable=import-error
         disks_info = {}
         disks_info['managed_disk'] = bool(getattr(self._vm.storage_profile.os_disk, 'managed_disk', None))
         if disks_info['managed_disk']:

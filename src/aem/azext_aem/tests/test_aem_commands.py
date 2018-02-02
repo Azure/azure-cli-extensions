@@ -6,6 +6,8 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 # pylint: disable=unused-argument,too-few-public-methods
+
+
 class VMAEM(ScenarioTest):
 
     @ResourceGroupPreparer()
