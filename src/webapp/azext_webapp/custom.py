@@ -51,7 +51,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     loc_name = location.replace(" ", "")
 
     asp = "appsvc_asp_{}_{}".format(os_val, loc_name)
-    rg = "appsvc_rg_{}_{}".format(os_val, loc_name)
+    rg_name = "appsvc_rg_{}_{}".format(os_val, loc_name)
 
     # the code to deploy is expected to be the current directory the command is running from
     src_dir = os.getcwd()
@@ -75,15 +75,15 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     # Resource group: check if default RG is set
     default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
-    if (default_rg and check_resource_group_supports_linux(cmd, default_rg, location)):
-        rg = default_rg
+    if default_rg and check_resource_group_supports_linux(cmd, default_rg, location):
+        rg_name = default_rg
         rg_mssg = "[Using default Resource group]"
     else:
         rg_mssg = ""
 
     runtime_version = "{}|{}".format(language, version_used_create)
     src_path = "{} {}".format(src_dir.replace("\\", "\\\\"), str_no_contents_warn)
-    rg_str = "{} {}".format(rg, rg_mssg)
+    rg_str = "{} {}".format(rg_name, rg_mssg)
 
     dry_run_str = r""" {
             "name" : "%s",
@@ -101,46 +101,45 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     create_json = json.dumps(json.loads(dry_run_str), indent=4, sort_keys=True)
     if dryrun:
-        logger.warning("""
-            Web app will be created with the below configuration,
-            re-run command without the --dryrun flag to create & deploy a new app
-            """)
+        logger.warning("Web app will be created with the below configuration,re-run command "
+                       "without the --dryrun flag to create & deploy a new app")
         logger.warning(create_json)
         return None
 
     # create RG if the RG doesn't already exist
-    if not check_resource_group_exists(cmd, rg):
-        logger.warning("Creating Resource group '%s' ...", rg)
-        create_resource_group(cmd, rg, location)
+    if not check_resource_group_exists(cmd, rg_name):
+        logger.warning("Creating Resource group '%s' ...", rg_name)
+        create_resource_group(cmd, rg_name, location)
         logger.warning("Resource group creation complete")
     else:
-        logger.warning("Resource group '%s' already exists.", rg)
+        logger.warning("Resource group '%s' already exists.", rg_name)
 
     # create asp
-    if not check_if_asp_exists(cmd, rg, asp):
+    if not check_if_asp_exists(cmd, rg_name, asp):
         logger.warning("Creating App service plan '%s' ...", asp)
         sku_def = SkuDescription(tier=full_sku, name=sku, capacity=1)
         plan_def = AppServicePlan(loc_name, app_service_plan_name=asp,
                                   sku=sku_def, reserved=True)
-        client.app_service_plans.create_or_update(rg, asp, plan_def)
+        client.app_service_plans.create_or_update(rg_name, asp, plan_def)
         logger.warning("App service plan creation complete")
     else:
         logger.warning("App service plan '%s' already exists.", asp)
 
     # create the Linux app
     logger.warning("Creating app '%s' ....", name)
-    create_webapp(cmd, rg, name, asp, runtime_version)
+    create_webapp(cmd, rg_name, name, asp, runtime_version)
     logger.warning("Webapp creation complete")
 
     # setting to build after deployment
     logger.warning("Updating app settings to enable build after deployment")
-    update_app_settings(cmd, rg, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
+    update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
 
     # zip contents & deploy
     logger.warning("Creating zip with contents of dir %s ...", src_dir)
     zip_file_path = zip_contents_from_dir(src_dir)
 
-    logger.warning("Deploying and building contents to app. This operation can take some time to finish...")
-    enable_zip_deploy(cmd, rg, name, zip_file_path)
+    logger.warning("Deploying and building contents to app."
+                   "This operation can take some time to finish...")
+    enable_zip_deploy(cmd, rg_name, name, zip_file_path)
     logger.warning("All done. %s", create_json)
     return None
