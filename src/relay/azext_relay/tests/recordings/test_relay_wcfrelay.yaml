@@ -20,14 +20,14 @@ interactions:
       cache-control: [no-cache]
       content-length: ['328']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:49:45 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:14 GMT']
       expires: ['-1']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 201, message: Created}
 - request:
-    body: '{"location": "westus2", "tags": {"{tag2: value2,": "", "tag1: value1}":
+    body: '{"location": "westus2", "tags": {"{tag1: value1,": "", "tag2: value2}":
       ""}, "sku": {"name": "Standard", "tier": "Standard"}}'
     headers:
       Accept: [application/json]
@@ -43,12 +43,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
-        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:49:46.557Z","updatedAt":"2018-02-06T00:49:46.557Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
+        US 2","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T18:22:14.49Z","updatedAt":"2018-02-06T18:22:14.49Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['686']
+      content-length: ['684']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:49:48 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:16 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -56,7 +56,7 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
     body: null
@@ -73,12 +73,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
-        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:49:46.557Z","updatedAt":"2018-02-06T00:50:08.953Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+        US 2","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T18:22:14.49Z","updatedAt":"2018-02-06T18:22:37.4Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['684']
+      content-length: ['681']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:18 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:47 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -102,12 +102,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
   response:
     body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
-        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:49:46.557Z","updatedAt":"2018-02-06T00:50:08.953Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+        US 2","tags":{"{tag1: value1,":"","tag2: value2}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T18:22:14.49Z","updatedAt":"2018-02-06T18:22:37.4Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['684']
+      content-length: ['681']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:19 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:47 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -133,12 +133,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004?api-version=2017-04-01
   response:
     body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004","name":"relay-wcfrelaycli000004","type":"Microsoft.Relay/Namespaces/WcfRelays","location":"West
-        US 2","properties":{"createdAt":"2018-02-06T00:50:23.1574549Z","updatedAt":"2018-02-06T00:50:23.1574549Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}'}
+        US 2","properties":{"createdAt":"2018-02-06T18:22:50.1225314Z","updatedAt":"2018-02-06T18:22:50.1225314Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['605']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:22 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:49 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -146,7 +146,7 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
     body: null
@@ -163,12 +163,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004?api-version=2017-04-01
   response:
     body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004","name":"relay-wcfrelaycli000004","type":"Microsoft.Relay/Namespaces/WcfRelays","location":"West
-        US 2","properties":{"createdAt":"2018-02-06T00:50:23.1574549Z","updatedAt":"2018-02-06T00:50:23.1574549Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}'}
+        US 2","properties":{"createdAt":"2018-02-06T18:22:50.1225314Z","updatedAt":"2018-02-06T18:22:50.1225314Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['605']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:23 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:51 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -192,12 +192,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays?api-version=2017-04-01
   response:
     body: {string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004","name":"relay-wcfrelaycli000004","type":"Microsoft.Relay/Namespaces/WcfRelays","location":"West
-        US 2","properties":{"createdAt":"2018-02-06T00:50:23.1574549Z","updatedAt":"2018-02-06T00:50:23.1574549Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}]}'}
+        US 2","properties":{"createdAt":"2018-02-06T18:22:50.1225314Z","updatedAt":"2018-02-06T18:22:50.1225314Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}]}'}
     headers:
       cache-control: [no-cache]
       content-length: ['617']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:24 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:51 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -228,7 +228,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['448']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:26 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:52 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -236,7 +236,7 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
     body: null
@@ -258,7 +258,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['448']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:26 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:52 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -282,12 +282,12 @@ interactions:
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005/listKeys?api-version=2017-04-01
   response:
-    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=DPEvoUAUuzodIpDCty7TfcRbnzUE1PRQl4w+8pgPTQQ=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=;EntityPath=relay-wcfrelaycli000004","primaryKey":"DPEvoUAUuzodIpDCty7TfcRbnzUE1PRQl4w+8pgPTQQ=","secondaryKey":"wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=","keyName":"cliwcfrelayAutho000005"}'}
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=7ExCuPAj5dpt7kRr7NXkNAyUPrHieP3LyL3V8pK8S9c=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=vV7G1Vo/6jNMenbjrSxFKH87nj6Reyw8rRJGGa7ac9o=;EntityPath=relay-wcfrelaycli000004","primaryKey":"7ExCuPAj5dpt7kRr7NXkNAyUPrHieP3LyL3V8pK8S9c=","secondaryKey":"vV7G1Vo/6jNMenbjrSxFKH87nj6Reyw8rRJGGa7ac9o=","keyName":"cliwcfrelayAutho000005"}'}
     headers:
       cache-control: [no-cache]
       content-length: ['625']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:27 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:53 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -295,7 +295,7 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
     body: '{"keyType": "PrimaryKey"}'
@@ -312,12 +312,12 @@ interactions:
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005/regenerateKeys?api-version=2017-04-01
   response:
-    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=;EntityPath=relay-wcfrelaycli000004","primaryKey":"Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=","secondaryKey":"wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=","keyName":"cliwcfrelayAutho000005"}'}
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=IV5obExxGF7vhTujIikP51cAny630n/J/sMySuFKpU4=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=vV7G1Vo/6jNMenbjrSxFKH87nj6Reyw8rRJGGa7ac9o=;EntityPath=relay-wcfrelaycli000004","primaryKey":"IV5obExxGF7vhTujIikP51cAny630n/J/sMySuFKpU4=","secondaryKey":"vV7G1Vo/6jNMenbjrSxFKH87nj6Reyw8rRJGGa7ac9o=","keyName":"cliwcfrelayAutho000005"}'}
     headers:
       cache-control: [no-cache]
       content-length: ['625']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:28 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:54 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -325,7 +325,7 @@ interactions:
       strict-transport-security: [max-age=31536000; includeSubDomains]
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
     body: '{"keyType": "SecondaryKey"}'
@@ -342,12 +342,12 @@ interactions:
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005/regenerateKeys?api-version=2017-04-01
   response:
-    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=nNlT1/r6EBBuYw5mLAhNR25ThZJJ3Fwkf0rmBKE0NEs=;EntityPath=relay-wcfrelaycli000004","primaryKey":"Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=","secondaryKey":"nNlT1/r6EBBuYw5mLAhNR25ThZJJ3Fwkf0rmBKE0NEs=","keyName":"cliwcfrelayAutho000005"}'}
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=IV5obExxGF7vhTujIikP51cAny630n/J/sMySuFKpU4=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=/UYVY/nQsRtU0rYLax+oSwupymKcDYALmIj8KynwtMQ=;EntityPath=relay-wcfrelaycli000004","primaryKey":"IV5obExxGF7vhTujIikP51cAny630n/J/sMySuFKpU4=","secondaryKey":"/UYVY/nQsRtU0rYLax+oSwupymKcDYALmIj8KynwtMQ=","keyName":"cliwcfrelayAutho000005"}'}
     headers:
       cache-control: [no-cache]
       content-length: ['625']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 06 Feb 2018 00:50:29 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:55 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -376,13 +376,13 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 06 Feb 2018 00:50:29 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:56 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
       server-sb: [Service-Bus-Resource-Provider/SN1]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
     body: null
@@ -403,7 +403,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 06 Feb 2018 00:50:31 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:57 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -430,14 +430,14 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 06 Feb 2018 00:50:32 GMT']
+      date: ['Tue, 06 Feb 2018 18:22:59 GMT']
       expires: ['-1']
       location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/operationresults/relay-nscli000002?api-version=2017-04-01']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
       server-sb: [Service-Bus-Resource-Provider/SN1]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 202, message: Accepted}
 - request:
     body: null
@@ -457,7 +457,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 06 Feb 2018 00:51:02 GMT']
+      date: ['Tue, 06 Feb 2018 18:23:29 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
@@ -484,11 +484,11 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 06 Feb 2018 00:51:05 GMT']
+      date: ['Tue, 06 Feb 2018 18:23:31 GMT']
       expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZURVNUOjVGUkVMQVk6NUZXQ0ZSRUxBWTdCQVdWUVAyVFZBU05aVDdERnw3MDY5NTUzMTE0M0Q5NzI2LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZURVNUOjVGUkVMQVk6NUZXQ0ZSRUxBWUxSVkRJSUhURzM0QldMV0c3VHwyRTA3NzFFRjhDNkVFOEMwLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 202, message: Accepted}
 version: 1

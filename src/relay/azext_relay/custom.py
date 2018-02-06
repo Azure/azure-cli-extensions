@@ -60,7 +60,6 @@ def cli_hybridconnectionsautho_create(client, resource_group_name, namespace_nam
                                                       accessrights_converter(access_rights))
 
 
-
 # pylint: disable=inconsistent-return-statements
 def empty_on_404(ex):
     from azext_relay.relay.models import ErrorResponseException
