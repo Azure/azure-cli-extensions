@@ -14,6 +14,7 @@ def load_command_table(self, _):
     subscription_definition_util = CliCommandType(
         operations_tmpl='azext_subscription.subscription.operations.subscription_definitions_operations#SubscriptionDefinitionsOperations.{}',
         client_factory=subscription_definitions_mgmt_client_factory,
+        client_arg_name='self',
         exception_handler=subscription_exception_handler
     )
 
