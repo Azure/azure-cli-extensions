@@ -1,0 +1,493 @@
+interactions:
+- request:
+    body: '{"location": "westus", "tags": {"use": "az-test"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group create]
+      Connection: [keep-alive]
+      Content-Length: ['50']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_relay_hybridconnection000001?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001","name":"cli_test_relay_hybridconnection000001","location":"westus","tags":{"use":"az-test"},"properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['328']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:45:54 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 201, message: Created}
+- request:
+    body: '{"location": "westus2", "tags": {"{tag2: value2,": "", "tag1: value1}":
+      ""}, "sku": {"name": "Standard", "tier": "Standard"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace create]
+      Connection: [keep-alive]
+      Content-Length: ['125']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
+        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:45:55.403Z","updatedAt":"2018-02-06T00:45:55.403Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['686']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:45:56 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
+        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:45:55.403Z","updatedAt":"2018-02-06T00:46:20.813Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['684']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:26 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
+        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:45:55.403Z","updatedAt":"2018-02-06T00:46:20.813Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['684']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:28 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"requiresClientAuthorization": true, "userMetadata": "UserMetadata"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections create]
+      Connection: [keep-alive]
+      Content-Length: ['85']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004","name":"relay-hybridcli000004","type":"Microsoft.Relay/Namespaces/HybridConnections","location":"West
+        US 2","properties":{"createdAt":"2018-02-06T00:46:30.907445Z","updatedAt":"2018-02-06T00:46:30.907445Z","listenerCount":0,"requiresClientAuthorization":true,"userMetadata":"UserMetadata"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['547']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004","name":"relay-hybridcli000004","type":"Microsoft.Relay/Namespaces/HybridConnections","location":"West
+        US 2","properties":{"createdAt":"2018-02-06T00:46:30.907445Z","updatedAt":"2018-02-06T00:46:30.907445Z","listenerCount":0,"requiresClientAuthorization":true,"userMetadata":"UserMetadata"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['547']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:31 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections list]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections?api-version=2017-04-01
+  response:
+    body: {string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004","name":"relay-hybridcli000004","type":"Microsoft.Relay/Namespaces/HybridConnections","location":"West
+        US 2","properties":{"createdAt":"2018-02-06T00:46:30.907445Z","updatedAt":"2018-02-06T00:46:30.907445Z","listenerCount":0,"requiresClientAuthorization":true,"userMetadata":"UserMetadata"}}]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['559']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:32 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-inline-count: ['']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"rights": ["Listen"]}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections authorizationrule create]
+      Connection: [keep-alive]
+      Content-Length: ['38']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005","name":"clihybridAutho000005","type":"Microsoft.Relay/Namespaces/HybridConnections/AuthorizationRules","location":"West
+        US 2","properties":{"rights":["Listen"]}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['464']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:33 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections authorizationrule show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005","name":"clihybridAutho000005","type":"Microsoft.Relay/Namespaces/HybridConnections/AuthorizationRules","location":"West
+        US 2","properties":{"rights":["Listen"]}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['464']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:34 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections authorizationrule keys list]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005/listKeys?api-version=2017-04-01
+  response:
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=clihybridAutho000005;SharedAccessKey=m8u3AoirNXZ6VECJShOs3yRWczAM9VKh3hm6N07T5j4=;EntityPath=relay-hybridcli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=clihybridAutho000005;SharedAccessKey=nLe5el7LrlLGMZALWp94xhSv5UYamcLw2V8KwRRkKgA=;EntityPath=relay-hybridcli000004","primaryKey":"m8u3AoirNXZ6VECJShOs3yRWczAM9VKh3hm6N07T5j4=","secondaryKey":"nLe5el7LrlLGMZALWp94xhSv5UYamcLw2V8KwRRkKgA=","keyName":"clihybridAutho000005"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['625']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:34 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"keyType": "PrimaryKey"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections authorizationrule keys renew]
+      Connection: [keep-alive]
+      Content-Length: ['25']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005/regenerateKeys?api-version=2017-04-01
+  response:
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=clihybridAutho000005;SharedAccessKey=CM9OfgXztuss5egm5EPidJenQ40g0/K5pDGJHXHwiM8=;EntityPath=relay-hybridcli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=clihybridAutho000005;SharedAccessKey=nLe5el7LrlLGMZALWp94xhSv5UYamcLw2V8KwRRkKgA=;EntityPath=relay-hybridcli000004","primaryKey":"CM9OfgXztuss5egm5EPidJenQ40g0/K5pDGJHXHwiM8=","secondaryKey":"nLe5el7LrlLGMZALWp94xhSv5UYamcLw2V8KwRRkKgA=","keyName":"clihybridAutho000005"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['625']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:34 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"keyType": "SecondaryKey"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections authorizationrule keys renew]
+      Connection: [keep-alive]
+      Content-Length: ['27']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005/regenerateKeys?api-version=2017-04-01
+  response:
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=clihybridAutho000005;SharedAccessKey=CM9OfgXztuss5egm5EPidJenQ40g0/K5pDGJHXHwiM8=;EntityPath=relay-hybridcli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=clihybridAutho000005;SharedAccessKey=8ZVOee0sJyqFU6pU3CdcWbJRpOGdZlnySMbtJaU04OA=;EntityPath=relay-hybridcli000004","primaryKey":"CM9OfgXztuss5egm5EPidJenQ40g0/K5pDGJHXHwiM8=","secondaryKey":"8ZVOee0sJyqFU6pU3CdcWbJRpOGdZlnySMbtJaU04OA=","keyName":"clihybridAutho000005"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['625']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:46:36 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections authorizationrule delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004/authorizationRules/clihybridAutho000005?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:46:37 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay hybrid-connections delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/hybridConnections/relay-hybridcli000004?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:46:38 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:46:40 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/operationresults/relay-nscli000002?api-version=2017-04-01']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 202, message: Accepted}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace delete]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_hybridconnection000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/operationresults/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:47:09 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_relay_hybridconnection000001?api-version=2017-05-10
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:47:12 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZURVNUOjVGUkVMQVk6NUZIWUJSSURDT05ORUNUSU9ONkgyTkVKM1BYQXwxMUNGNkJFREYzREY1NTExLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 202, message: Accepted}
+version: 1

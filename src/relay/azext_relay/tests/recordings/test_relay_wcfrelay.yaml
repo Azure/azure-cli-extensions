@@ -1,0 +1,494 @@
+interactions:
+- request:
+    body: '{"location": "westus", "tags": {"use": "az-test"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group create]
+      Connection: [keep-alive]
+      Content-Length: ['50']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_relay_wcfrelay000001?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001","name":"cli_test_relay_wcfrelay000001","location":"westus","tags":{"use":"az-test"},"properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['328']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:49:45 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+    status: {code: 201, message: Created}
+- request:
+    body: '{"location": "westus2", "tags": {"{tag2: value2,": "", "tag1: value1}":
+      ""}, "sku": {"name": "Standard", "tier": "Standard"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace create]
+      Connection: [keep-alive]
+      Content-Length: ['125']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
+        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Created","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:49:46.557Z","updatedAt":"2018-02-06T00:49:46.557Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Activating"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['686']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:49:48 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
+        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:49:46.557Z","updatedAt":"2018-02-06T00:50:08.953Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['684']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:18 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: '{"sku":{"name":"Standard","tier":"Standard"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002","name":"relay-nscli000002","type":"Microsoft.Relay/Namespaces","location":"West
+        US 2","tags":{"{tag2: value2,":"","tag1: value1}":""},"properties":{"provisioningState":"Succeeded","metricId":"55f3dcd4-cac7-43b4-990b-a139d62a1eb2:relay-nscli000002","createdAt":"2018-02-06T00:49:46.557Z","updatedAt":"2018-02-06T00:50:08.953Z","serviceBusEndpoint":"https://relay-nscli000002.servicebus.windows.net:443/","status":"Active"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['684']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:19 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"relayType": "NetTcp", "requiresClientAuthorization": true,
+      "requiresTransportSecurity": true, "userMetadata": "UserMetadata"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay create]
+      Connection: [keep-alive]
+      Content-Length: ['143']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004","name":"relay-wcfrelaycli000004","type":"Microsoft.Relay/Namespaces/WcfRelays","location":"West
+        US 2","properties":{"createdAt":"2018-02-06T00:50:23.1574549Z","updatedAt":"2018-02-06T00:50:23.1574549Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['605']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:22 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004","name":"relay-wcfrelaycli000004","type":"Microsoft.Relay/Namespaces/WcfRelays","location":"West
+        US 2","properties":{"createdAt":"2018-02-06T00:50:23.1574549Z","updatedAt":"2018-02-06T00:50:23.1574549Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['605']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:23 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay list]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays?api-version=2017-04-01
+  response:
+    body: {string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004","name":"relay-wcfrelaycli000004","type":"Microsoft.Relay/Namespaces/WcfRelays","location":"West
+        US 2","properties":{"createdAt":"2018-02-06T00:50:23.1574549Z","updatedAt":"2018-02-06T00:50:23.1574549Z","listenerCount":0,"requiresClientAuthorization":true,"relayType":"NetTcp","requiresTransportSecurity":true,"isDynamic":false,"userMetadata":"UserMetadata"}}]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['617']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:24 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-inline-count: ['']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"rights": ["Listen"]}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay authorizationrule create]
+      Connection: [keep-alive]
+      Content-Length: ['38']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005","name":"cliwcfrelayAutho000005","type":"Microsoft.Relay/Namespaces/WcfRelays/AuthorizationRules","location":"West
+        US 2","properties":{"rights":["Listen"]}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['448']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:26 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay authorizationrule show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005?api-version=2017-04-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005","name":"cliwcfrelayAutho000005","type":"Microsoft.Relay/Namespaces/WcfRelays/AuthorizationRules","location":"West
+        US 2","properties":{"rights":["Listen"]}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['448']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:26 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay authorizationrule keys list]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005/listKeys?api-version=2017-04-01
+  response:
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=DPEvoUAUuzodIpDCty7TfcRbnzUE1PRQl4w+8pgPTQQ=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=;EntityPath=relay-wcfrelaycli000004","primaryKey":"DPEvoUAUuzodIpDCty7TfcRbnzUE1PRQl4w+8pgPTQQ=","secondaryKey":"wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=","keyName":"cliwcfrelayAutho000005"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['625']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:27 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"keyType": "PrimaryKey"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay authorizationrule keys renew]
+      Connection: [keep-alive]
+      Content-Length: ['25']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005/regenerateKeys?api-version=2017-04-01
+  response:
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=;EntityPath=relay-wcfrelaycli000004","primaryKey":"Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=","secondaryKey":"wlrCCExtDCeJDU5UDDMbn6XxrF3GElo6s0HZvCf8ng8=","keyName":"cliwcfrelayAutho000005"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['625']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:28 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"keyType": "SecondaryKey"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay authorizationrule keys renew]
+      Connection: [keep-alive]
+      Content-Length: ['27']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005/regenerateKeys?api-version=2017-04-01
+  response:
+    body: {string: '{"primaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=;EntityPath=relay-wcfrelaycli000004","secondaryConnectionString":"Endpoint=sb://relay-nscli000002.servicebus.windows.net/;SharedAccessKeyName=cliwcfrelayAutho000005;SharedAccessKey=nNlT1/r6EBBuYw5mLAhNR25ThZJJ3Fwkf0rmBKE0NEs=;EntityPath=relay-wcfrelaycli000004","primaryKey":"Pskc1NQ/vTKSHFPQERPMyEkwLL4riJfvdoun7sM/eoo=","secondaryKey":"nNlT1/r6EBBuYw5mLAhNR25ThZJJ3Fwkf0rmBKE0NEs=","keyName":"cliwcfrelayAutho000005"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['625']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 06 Feb 2018 00:50:29 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay authorizationrule delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004/authorizationRules/cliwcfrelayAutho000005?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:50:29 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay wcfrelay delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/wcfRelays/relay-wcfrelaycli000004?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:50:31 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:50:32 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/operationresults/relay-nscli000002?api-version=2017-04-01']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 202, message: Accepted}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [relay namespace delete]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 azure-mgmt-relay/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_relay_wcfrelay000001/providers/Microsoft.Relay/namespaces/relay-nscli000002/operationresults/relay-nscli000002?api-version=2017-04-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:51:02 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Service-Bus-Resource-Provider/SN1, Microsoft-HTTPAPI/2.0]
+      server-sb: [Service-Bus-Resource-Provider/SN1]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.22
+          msrest_azure/0.4.19 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.26]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_relay_wcfrelay000001?api-version=2017-05-10
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Tue, 06 Feb 2018 00:51:05 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTEk6NUZURVNUOjVGUkVMQVk6NUZXQ0ZSRUxBWTdCQVdWUVAyVFZBU05aVDdERnw3MDY5NTUzMTE0M0Q5NzI2LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 202, message: Accepted}
+version: 1
