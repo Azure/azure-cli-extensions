@@ -156,7 +156,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         zip_file_path = zip_contents_from_dir(src_dir)
 
         logger.warning("Deploying and building contents to app."
-                    "This operation can take some time to finish...")
+                       "This operation can take some time to finish...")
         enable_zip_deploy(cmd, rg_name, name, zip_file_path)
     else:
         logger.warning("No package.json found, skipping zip and deploy process")
