@@ -150,7 +150,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
     requests.get(scm_url + '/api/settings', headers=authorization)
 
-    if package_json_path == '':
+    if package_json_path != '':
         logger.warning("Creating zip with contents of dir %s ...", src_dir)
         # zip contents & deploy
         zip_file_path = zip_contents_from_dir(src_dir)
