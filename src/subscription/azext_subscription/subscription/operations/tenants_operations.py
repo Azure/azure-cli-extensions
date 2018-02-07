@@ -11,18 +11,19 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
 
-class SubscriptionDefinitionsOperationMetadataOperations(object):
-    """SubscriptionDefinitionsOperationMetadataOperations operations.
+class TenantsOperations(object):
+    """TenantsOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An objec model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Current version is 2015-06-01. Constant value: "2017-11-01-preview".
+    :ivar api_version: The API version to use for the operation. Constant value: "2016-06-01".
     """
 
     models = models
@@ -32,30 +33,29 @@ class SubscriptionDefinitionsOperationMetadataOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2017-11-01-preview"
+        self.api_version = "2016-06-01"
 
         self.config = config
 
     def list(
             self, custom_headers=None, raw=False, **operation_config):
-        """Lists all of the available Microsoft.Subscription API operations.
+        """Gets the tenants for your account.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of Operation
+        :return: An iterator like instance of TenantIdDescription
         :rtype:
-         ~azure.mgmt.subscription.models.OperationPaged[~azure.mgmt.subscription.models.Operation]
-        :raises:
-         :class:`ErrorResponseException<azure.mgmt.subscription.models.ErrorResponseException>`
+         ~azure.mgmt.subscription.models.TenantIdDescriptionPaged[~azure.mgmt.subscription.models.TenantIdDescription]
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/providers/Microsoft.Subscription/operations'
+                url = '/tenants'
 
                 # Construct parameters
                 query_parameters = {}
@@ -81,16 +81,18 @@ class SubscriptionDefinitionsOperationMetadataOperations(object):
                 request, header_parameters, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.ErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 
         # Deserialize response
-        deserialized = models.OperationPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.TenantIdDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.OperationPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.TenantIdDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized

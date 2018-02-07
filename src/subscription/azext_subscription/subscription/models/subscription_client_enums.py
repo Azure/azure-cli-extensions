@@ -9,10 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .subscription_client import SubscriptionClient
-from .version import VERSION
+from enum import Enum
 
-__all__ = ['SubscriptionClient']
 
-__version__ = VERSION
+class SubscriptionState(Enum):
 
+    enabled = "Enabled"
+    warned = "Warned"
+    past_due = "PastDue"
+    disabled = "Disabled"
+    deleted = "Deleted"
+
+
+class SpendingLimit(Enum):
+
+    on = "On"
+    off = "Off"
+    current_period_off = "CurrentPeriodOff"
