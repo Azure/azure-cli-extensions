@@ -83,3 +83,11 @@ def check_if_asp_exists(cmd, rg_name, asp_name):
         if item.name == asp_name:
             return True
     return False
+
+
+def check_app_exists(cmd, rg_name, app_name):
+    client = web_client_factory(cmd.cli_ctx)
+    for item in list(client.web_apps.list_by_resource_group(rg_name)):
+        if item.name == app_name:
+            return True
+    return False

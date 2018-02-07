@@ -12,6 +12,8 @@ from azure.cli.command_modules.appservice.custom import (
     enable_zip_deploy,
     create_webapp,
     update_app_settings,
+    _get_site_credential,
+    _get_scm_url,
     _get_sku_name)
 
 from .create_util import (
@@ -22,6 +24,7 @@ from .create_util import (
     check_resource_group_exists,
     check_resource_group_supports_linux,
     check_if_asp_exists,
+    check_app_exists,
     web_client_factory
 )
 
@@ -126,20 +129,37 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         logger.warning("App service plan '%s' already exists.", asp)
 
     # create the Linux app
-    logger.warning("Creating app '%s' ....", name)
-    create_webapp(cmd, rg_name, name, asp, runtime_version)
-    logger.warning("Webapp creation complete")
+    if not check_app_exists(cmd, rg_name, name):
+        logger.warning("Creating app '%s' ....", name)
+        create_webapp(cmd, rg_name, name, asp, runtime_version)
+        logger.warning("Webapp creation complete")
+    else:
+        logger.warning("App '%s' already exists", name)
 
     # setting to build after deployment
     logger.warning("Updating app settings to enable build after deployment")
     update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
+    # work around until the timeout limits issue for linux is investigated & fixed
+    # wakeup kudu, by making an SCM call
 
-    # zip contents & deploy
-    logger.warning("Creating zip with contents of dir %s ...", src_dir)
-    zip_file_path = zip_contents_from_dir(src_dir)
+    import requests
+    # work around until the timeout limits issue for linux is investigated & fixed
+    user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
+    scm_url = _get_scm_url(cmd, rg_name, name)
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    requests.get(scm_url + '/api/settings', headers=authorization)
 
-    logger.warning("Deploying and building contents to app."
-                   "This operation can take some time to finish...")
-    enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+    if package_json_path != '':
+        logger.warning("Creating zip with contents of dir %s ...", src_dir)
+        # zip contents & deploy
+        zip_file_path = zip_contents_from_dir(src_dir)
+
+        logger.warning("Deploying and building contents to app."
+                       "This operation can take some time to finish...")
+        enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+    else:
+        logger.warning("No package.json found, skipping zip and deploy process")
+
     logger.warning("All done. %s", create_json)
     return None
