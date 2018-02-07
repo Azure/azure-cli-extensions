@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-import
+# pylint: disable=line-too-long
 
 from azure.cli.core import AzCommandsLoader
 from ._help import helps
