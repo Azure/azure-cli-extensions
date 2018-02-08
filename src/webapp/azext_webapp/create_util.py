@@ -121,11 +121,11 @@ def get_lang_from_content(src_path):
     return runtime_details_dict
 
 
-def parse_netcore_version(file_path):
+def parse_netcore_version(file):
     import xml.etree.ElementTree as ET
     import re
     version_detected = ['0.0']
-    parsed_file = ET.parse(file_path)
+    parsed_file = ET.parse(file)
     root = parsed_file.getroot()
     for target_ver in root.iter('TargetFramework'):
         version_detected = re.findall(r"\d+\.\d+", target_ver.text)
@@ -168,7 +168,6 @@ def detect_node_version_tocreate(detected_ver):
     elif major_ver >= 6 and major_ver < 8:
         return '6.9'
     return NODE_VERSION_DEFAULT
-
 
 def find_key_in_json(json_data, key):
     for k, v in json_data.items():
