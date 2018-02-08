@@ -54,8 +54,8 @@ class EnhancedMonitoring(object):
         self._resource_group = resource_group
         self._cmd = cmd
         self._vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
-        self._extension = (aem_extension_info['Linux'] if bool(self._vm.os_profile.linux_configuration)
-                           else aem_extension_info['Windows'])
+        os_type = self._vm.storage_profile.os_disk.os_type.value.lower()
+        self._extension = aem_extension_info['Linux'] if (os_type == 'linux') else aem_extension_info['Windows']
         self._skip_storage_analytics = skip_storage_analytics
 
     def enable(self):
@@ -268,10 +268,10 @@ class EnhancedMonitoring(object):
 
     def _get_aem_extension(self):
         existing_ext = None
-        if self._vm.instance_view.extensions:
-            full_type_name = '.'.join([self._extension['publisher'], self._extension['name']])
-            existing_ext = next((x for x in self._vm.instance_view.extensions
-                                 if x.type and (x.type.lower() == full_type_name.lower())), None)
+        if self._vm.resources:
+            existing_ext = next((x for x in self._vm.resources
+                                 if x.virtual_machine_extension_type.lower() == self._extension['name'].lower() and
+                                 x.publisher.lower() == self._extension['publisher'].lower()), None)
         return existing_ext
 
     def _get_disk_info(self):
