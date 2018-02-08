@@ -54,8 +54,8 @@ class EnhancedMonitoring(object):
         self._resource_group = resource_group
         self._cmd = cmd
         self._vm = vm_client.virtual_machines.get(resource_group, vm_name, expand='instanceView')
-        self._extension = (aem_extension_info['Linux'] if (self._vm.storage_profile.os_disk.os_type.value.lower() == 'linux')
-                           else aem_extension_info['Windows'])
+        os_type = self._vm.storage_profile.os_disk.os_type.value.lower()
+        self._extension = aem_extension_info['Linux'] if (os_type == 'linux') else aem_extension_info['Windows']
         self._skip_storage_analytics = skip_storage_analytics
 
     def enable(self):
