@@ -15,27 +15,27 @@ helps['relay namespace'] = """
     short-summary: Manage Azure Relay Namespace and AuthorizationRule
 """
 
-helps['relay namespace authorizationrule'] = """
+helps['relay namespace authorization-rule'] = """
     type: group
     short-summary: Manage Azure Relay AuthorizationRule for Namespace
 """
 
-helps['relay namespace authorizationrule keys'] = """
+helps['relay namespace authorization-rule keys'] = """
     type: group
     short-summary: Manage Azure Relay AuthorizationRule connection strings for Namespace
 """
 
-helps['relay wcfrelay'] = """
+helps['relay wcf-relay'] = """
     type: group
     short-summary: Manage Azure Relay's WCF Relays and AuthorizationRule
 """
 
-helps['relay wcfrelay authorizationrule'] = """
+helps['relay wcf-relay authorization-rule'] = """
     type: group
     short-summary: Manage Azure Relay AuthorizationRule for WCF Relay
 """
 
-helps['relay wcfrelay authorizationrule keys'] = """
+helps['relay wcf-relay authorization-rule keys'] = """
     type: group
     short-summary: Manage Azure AuthorizationRule connection strings for WCF Relay
 """
@@ -45,12 +45,12 @@ helps['relay hybrid-connections'] = """
     short-summary: Manage Azure Relay's Hybrid Connections and AuthorizationRule
 """
 
-helps['relay hybrid-connections authorizationrule'] = """
+helps['relay hybrid-connections authorization-rule'] = """
     type: group
     short-summary: Manage Azure Relay AuthorizationRule for Hybrid Connections
 """
 
-helps['relay hybrid-connections authorizationrule keys'] = """
+helps['relay hybrid-connections authorization-rule keys'] = """
     type: group
     short-summary: Manage Azure AuthorizationRule connection strings for Hybrid Connections
 """
@@ -97,132 +97,132 @@ helps['relay namespace delete'] = """
           text: az relay namespace delete --resource-group myresourcegroup --name mynamespace
 """
 
-helps['relay namespace authorizationrule create'] = """
+helps['relay namespace authorization-rule create'] = """
     type: command
     short-summary: Creates AuthorizationRule for the given Namespace
     examples:
         - name: Creates Authorization rules
-          text: az relay namespace authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule --access-rights Send Listen
+          text: az relay namespace authorization-rule create --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule --access-rights Send Listen
 """
 
-helps['relay namespace authorizationrule show'] = """
+helps['relay namespace authorization-rule show'] = """
     type: command
     short-summary: Shows the details of AuthorizationRule
     examples:
         - name: Shows the details of AuthorizationRule
-          text: az relay namespace authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule
+          text: az relay namespace authorization-rule show --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule
 """
 
-helps['relay namespace authorizationrule list'] = """
+helps['relay namespace authorization-rule list'] = """
     type: command
     short-summary: Shows the list of AuthorizationRule by Namespace
     examples:
         - name: Shows the list of AuthorizationRule by Namespace
-          text: az relay namespace authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace
+          text: az relay namespace authorization-rule show --resource-group myresourcegroup --namespace-name mynamespace
 """
 
-helps['relay namespace authorizationrule keys list'] = """
+helps['relay namespace authorization-rule keys list'] = """
     type: command
     short-summary: Shows the connection strings for namespace
     examples:
         - name: Shows the connectionstrings of AuthorizationRule for the namespace.
-          text: az relay namespace authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule
+          text: az relay namespace authorization-rule list-keys --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule
 """
 
-helps['relay namespace authorizationrule keys renew'] = """
+helps['relay namespace authorization-rule keys renew'] = """
     type: command
-    short-summary: Regenerate the connectionstrings of AuthorizationRule for the namespace.
+    short-summary: Regenerate the connection strings of AuthorizationRule for the namespace.
     examples:
         - name: Regenerate the connectionstrings of AuthorizationRule for the namespace.
-          text: az relay namespace authorizationrule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule --key PrimaryKey
+          text: az relay namespace authorization-rule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule --key PrimaryKey
 """
 
-helps['relay namespace authorizationrule delete'] = """
+helps['relay namespace authorization-rule delete'] = """
     type: command
     short-summary: Deletes the AuthorizationRule of the namespace.
     examples:
         - name: Deletes the AuthorizationRule of the namespace.
-          text: az relay namespace authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule
+          text: az relay namespace authorization-rule delete --resource-group myresourcegroup --namespace-name mynamespace --name myauthorule
 """
 
-helps['relay wcfrelay create'] = """
+helps['relay wcf-relay create'] = """
     type: command
     short-summary: Creates the Relay's WCF Relays
     examples:
         - name: Create a new WCF Relays.
-          text: az relay wcfrelay create --resource-group myresourcegroup --namespace-name mynamespace --name mywcfrelay --relay-type NetTcp --requires-client-authorization true --requires-transport-security true --user-metadata 'User Metadata'
+          text: az relay wcf-relay create --resource-group myresourcegroup --namespace-name mynamespace --name mywcfrelay --relay-type NetTcp --requires-client-authorization true --requires-transport-security true --user-metadata 'User Metadata'
 """
 
-helps['relay wcfrelay show'] = """
+helps['relay wcf-relay show'] = """
     type: command
     short-summary: shows the WCF Relays Details
     examples:
         - name: Shows the WCF Relays details.
-          text: az relay wcfrelay show --resource-group myresourcegroup --namespace-name mynamespace --name mywcfrelay
+          text: az relay wcf-relay show --resource-group myresourcegroup --namespace-name mynamespace --name mywcfrelay
 """
 
-helps['relay wcfrelay list'] = """
+helps['relay wcf-relay list'] = """
     type: command
     short-summary: List the WCF Relays by Namepsace
     examples:
         - name: Get the WCF Relays by Namespace.
-          text: az relay wcfrelay list --resource-group myresourcegroup --namespace-name mynamespace
+          text: az relay wcf-relay list --resource-group myresourcegroup --namespace-name mynamespace
 """
 
-helps['relay wcfrelay delete'] = """
+helps['relay wcf-relay delete'] = """
     type: command
     short-summary: Deletes the WCF Relays
     examples:
         - name: Deletes the WCF Relays
-          text: az relay wcfrelay delete --resource-group myresourcegroup --namespace-name mynamespace --name mywcfrelay
+          text: az relay wcf-relay delete --resource-group myresourcegroup --namespace-name mynamespace --name mywcfrelay
 """
 
-helps['relay wcfrelay authorizationrule create'] = """
+helps['relay wcf-relay authorization-rule create'] = """
     type: command
     short-summary: Creates Authorization rule for the given WCF Relays
     examples:
         - name: Creates Authorization rules
-          text: az relay wcfrelay authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule --access-rights Listen
+          text: az relay wcf-relay authorization-rule create --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule --access-rights Listen
 """
 
-helps['relay wcfrelay authorizationrule show'] = """
+helps['relay wcf-relay authorization-rule show'] = """
     type: command
     short-summary: shows the details of AuthorizationRule
     examples:
         - name: shows the details of AuthorizationRule
-          text: az relay wcfrelay authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule
+          text: az relay wcf-relay authorization-rule show --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule
 """
 
-helps['relay wcfrelay authorizationrule list'] = """
+helps['relay wcf-relay authorization-rule list'] = """
     type: command
     short-summary: shows the list of AuthorizationRule by WCF Relays
     examples:
         - name: shows the list of AuthorizationRule by WCF Relays
-          text: az relay wcfrelay authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay
+          text: az relay wcf-relay authorization-rule show --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay
 """
 
-helps['relay wcfrelay authorizationrule  keys list'] = """
+helps['relay wcf-relay authorization-rule  keys list'] = """
     type: command
     short-summary: Shows the connection strings of AuthorizationRule for the WCF Relays.
     examples:
         - name: Shows the connection strings of AuthorizationRule for the WCF Relays.
-          text: az relay wcfrelay authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule
+          text: az relay wcf-relay authorization-rule list-keys --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule
 """
 
-helps['relay wcfrelay authorizationrule  keys renew'] = """
+helps['relay wcf-relay authorization-rule  keys renew'] = """
     type: command
     short-summary: Regenerate the connection strings of AuthorizationRule for the namespace.
     examples:
         - name: Regenerate the connection strings of AuthorizationRule for the namespace.
-          text: az relay wcfrelay authorizationrule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule --key PrimaryKey
+          text: az relay wcf-relay authorization-rule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule --key PrimaryKey
 """
 
-helps['relay wcfrelay authorizationrule delete'] = """
+helps['relay wcf-relay authorization-rule delete'] = """
     type: command
     short-summary: Deletes the AuthorizationRule of the WCF Relays
     examples:
         - name: Deletes the AuthorizationRule of the WCF Relays
-          text: az relay wcfrelay authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule
+          text: az relay wcf-relay authorization-rule delete --resource-group myresourcegroup --namespace-name mynamespace --wcfrelay-name mywcfrelay --name myauthorule
 """
 
 helps['relay hybrid-connections create'] = """
@@ -257,50 +257,50 @@ helps['relay hybrid-connections delete'] = """
           text: az relay hybrid-connections delete --resource-group myresourcegroup --namespace-name mynamespace --name myhybridconnection
 """
 
-helps['relay hybrid-connections authorizationrule create'] = """
+helps['relay hybrid-connections authorization-rule create'] = """
     type: command
     short-summary: Creates Authorization rule for the given Hybrid Connections
     examples:
         - name: Creates Authorization rules
-          text: az relay hybrid-connections authorizationrule create --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule --access-rights Listen
+          text: az relay hybrid-connections authorization-rule create --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule --access-rights Listen
 """
 
-helps['relay hybrid-connections authorizationrule show'] = """
+helps['relay hybrid-connections authorization-rule show'] = """
     type: command
     short-summary: shows the details of AuthorizationRule
     examples:
         - name: shows the details of AuthorizationRule
-          text: az relay hybrid-connection authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule
+          text: az relay hybrid-connection authorization-rule show --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule
 """
 
-helps['relay hybrid-connection authorizationrule list'] = """
+helps['relay hybrid-connection authorization-rule list'] = """
     type: command
     short-summary: shows the list of AuthorizationRule by Hybrid Connections
     examples:
         - name: shows the list of AuthorizationRule by Hybrid Connections
-          text: az relay hybrid-connections authorizationrule show --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection
+          text: az relay hybrid-connections authorization-rule show --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection
 """
 
-helps['relay hybrid-connections authorizationrule  keys list'] = """
+helps['relay hybrid-connections authorization-rule  keys list'] = """
     type: command
     short-summary: Shows the connection strings of AuthorizationRule for the Hybrid Connections.
     examples:
         - name: Shows the connection strings of AuthorizationRule for the Hybrid Connections.
-          text: az relay hybrid-connections authorizationrule list-keys --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule
+          text: az relay hybrid-connections authorization-rule list-keys --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule
 """
 
-helps['relay hybrid-connections authorizationrule  keys renew'] = """
+helps['relay hybrid-connections authorization-rule  keys renew'] = """
     type: command
-    short-summary: Regenerate the connectionstrings of AuthorizationRule for the namespace.
+    short-summary: Regenerate the connection strings of AuthorizationRule for the namespace.
     examples:
-        - name: Regenerate the connectionstrings of AuthorizationRule for the namespace.
-          text: az relay hybrid-connections authorizationrule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule --key PrimaryKey
+        - name: Regenerate the connection strings of AuthorizationRule for the namespace.
+          text: az relay hybrid-connections authorization-rule regenerate-keys --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule --key PrimaryKey
 """
 
-helps['relay hybrid-connections authorizationrule delete'] = """
+helps['relay hybrid-connections authorization-rule delete'] = """
     type: command
     short-summary: Deletes the AuthorizationRule of the Hybrid Connections.
     examples:
         - name: Deletes the AuthorizationRule of the Hybrid Connections.
-          text: az relay hybrid-connections authorizationrule delete --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule
+          text: az relay hybrid-connections authorization-rule delete --resource-group myresourcegroup --namespace-name mynamespace --hybrid-connection-name myhybridconnection --name myauthorule
 """

@@ -39,7 +39,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.command('exists', 'check_name_availability_method')
 
-    with self.command_group('relay namespace authorizationrule', relay_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
+    with self.command_group('relay namespace authorization-rule', relay_namespace_util, client_factory=namespaces_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_namespaceautho_create')
         g.command('show', 'get_authorization_rule', exception_handler=empty_on_404)
         g.command('list', 'list_authorization_rules', exception_handler=empty_on_404)
@@ -48,13 +48,13 @@ def load_command_table(self, _):
         g.command('delete', 'delete_authorization_rule')
 
 # WcfRelay Region
-    with self.command_group('relay wcfrelay', relay_wcf_relay_util, client_factory=wcfrelay_mgmt_client_factory) as g:
+    with self.command_group('relay wcf-relay', relay_wcf_relay_util, client_factory=wcfrelay_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_wcfrelay_create')
         g.command('show', 'get', exception_handler=empty_on_404)
         g.command('list', 'list_by_namespace', exception_handler=empty_on_404)
         g.command('delete', 'delete')
 
-    with self.command_group('relay wcfrelay authorizationrule', relay_wcf_relay_util, client_factory=wcfrelay_mgmt_client_factory) as g:
+    with self.command_group('relay wcf-relay authorization-rule', relay_wcf_relay_util, client_factory=wcfrelay_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_wcfrelayautho_create')
         g.command('show', 'get_authorization_rule', exception_handler=empty_on_404)
         g.command('list', 'list_authorization_rules', exception_handler=empty_on_404)
@@ -69,7 +69,7 @@ def load_command_table(self, _):
         g.command('list', 'list_by_namespace', exception_handler=empty_on_404)
         g.command('delete', 'delete')
 
-    with self.command_group('relay hybrid-connections authorizationrule', relay_hybrid_connections_util, client_factory=hydrid_connections_mgmt_client_factory) as g:
+    with self.command_group('relay hybrid-connections authorization-rule', relay_hybrid_connections_util, client_factory=hydrid_connections_mgmt_client_factory) as g:
         g.custom_command('create', 'cli_hybridconnectionsautho_create')
         g.command('show', 'get_authorization_rule', exception_handler=empty_on_404)
         g.command('list', 'list_authorization_rules', exception_handler=empty_on_404)

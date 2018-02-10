@@ -24,10 +24,8 @@ class RelayCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from ._params import load_arguments_namespace, load_arguments_wcfrelay, load_arguments_hybridconnections
-        load_arguments_namespace(self, command)
-        load_arguments_wcfrelay(self, command)
-        load_arguments_hybridconnections(self, command)
+        from ._params import load_arguments_relayparams
+        load_arguments_relayparams(self, command)
 
 
 COMMAND_LOADER_CLS = RelayCommandsLoader

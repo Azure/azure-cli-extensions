@@ -7,14 +7,15 @@
 # pylint: disable=too-many-lines
 # pylint: disable=inconsistent-return-statements
 
-from azext_relay._utils import accessrights_converter
-
-from azext_relay.relay.models import (RelayNamespace, Sku, WcfRelay)
-
 
 # Namespace Region
 def cli_namespace_create(client, resource_group_name, namespace_name, location, tags=None, skutier=None):
-    return client.create_or_update(resource_group_name, namespace_name, RelayNamespace(location, tags, Sku(skutier)))
+    from azext_relay.relay.models import RelayNamespace, Sku
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        namespace_name=namespace_name,
+        parameters=RelayNamespace(location, tags, Sku(skutier))
+    )
 
 
 def cli_namespace_list(client, resource_group_name=None):
@@ -27,13 +28,21 @@ def cli_namespace_list(client, resource_group_name=None):
 
 
 # Namespace Authorization rule:
-def cli_namespaceautho_create(client, resource_group_name, namespace_name, name, accessrights=None):
-    return client.create_or_update_authorization_rule(resource_group_name, namespace_name, name,
-                                                      accessrights_converter(accessrights))
+def cli_namespaceautho_create(client, resource_group_name, namespace_name, name, access_rights=None):
+    from azext_relay._utils import accessrights_converter
+    if not access_rights:
+        access_rights = access_rights.split()
+    return client.create_or_update_authorization_rule(
+        resource_group_name=resource_group_name,
+        namespace_name=namespace_name,
+        authorization_rule_name=name,
+        rights=accessrights_converter(access_rights)
+    )
 
 
 # WcfRelay Region
 def cli_wcfrelay_create(client, resource_group_name, namespace_name, name, relay_type=None, requires_client_authorization=None, requires_transport_security=None, user_metadata=None):
+    from azext_relay.relay.models import WcfRelay
     wcfrelayparameter1 = WcfRelay()
     if relay_type:
         wcfrelayparameter1.relay_type = relay_type
@@ -47,17 +56,34 @@ def cli_wcfrelay_create(client, resource_group_name, namespace_name, name, relay
     if user_metadata:
         wcfrelayparameter1.user_metadata = user_metadata
 
-    return client.create_or_update(resource_group_name, namespace_name, name, wcfrelayparameter1)
+    return client.create_or_update(
+        resource_group_name=resource_group_name,
+        namespace_name=namespace_name,
+        relay_name=name,
+        parameters=wcfrelayparameter1
+    )
 
 
 def cli_wcfrelayautho_create(client, resource_group_name, namespace_name, wcfrelay_name, name, access_rights=None):
-    return client.create_or_update_authorization_rule(resource_group_name, namespace_name, wcfrelay_name, name,
-                                                      accessrights_converter(access_rights))
+    from azext_relay._utils import accessrights_converter
+    return client.create_or_update_authorization_rule(
+        resource_group_name=resource_group_name,
+        namespace_name=namespace_name,
+        relay_name=wcfrelay_name,
+        authorization_rule_name=name,
+        rights=accessrights_converter(access_rights)
+    )
 
 
 def cli_hybridconnectionsautho_create(client, resource_group_name, namespace_name, hybrid_connection_name, name, access_rights=None):
-    return client.create_or_update_authorization_rule(resource_group_name, namespace_name, hybrid_connection_name, name,
-                                                      accessrights_converter(access_rights))
+    from azext_relay._utils import accessrights_converter
+    return client.create_or_update_authorization_rule(
+        resource_group_name=resource_group_name,
+        namespace_name=namespace_name,
+        hybrid_connection_name=hybrid_connection_name,
+        authorization_rule_name=name,
+        rights=accessrights_converter(access_rights)
+    )
 
 
 # pylint: disable=inconsistent-return-statements

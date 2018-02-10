@@ -53,36 +53,36 @@ class RelayScenarioTest(ScenarioTest):
 
         # Create Authoriazation Rule
         self.cmd(
-            'relay namespace authorizationrule create --resource-group {rg} --namespace-name {namespacename} --name {authoname} --access-rights {accessrights}',
+            'relay namespace authorization-rule create --resource-group {rg} --namespace-name {namespacename} --name {authoname} --access-rights {accessrights}',
             checks=[self.check('name', self.kwargs['authoname'])])
 
         # Get Authorization Rule
         self.cmd(
-            'relay namespace authorizationrule show --resource-group {rg} --namespace-name {namespacename} --name {authoname}',
+            'relay namespace authorization-rule show --resource-group {rg} --namespace-name {namespacename} --name {authoname}',
             checks=[self.check('name', self.kwargs['authoname'])])
 
         # Get Default Authorization Rule
         self.cmd(
-            'relay namespace authorizationrule show --resource-group {rg} --namespace-name {namespacename} --name {defaultauthorizationrule}',
+            'relay namespace authorization-rule show --resource-group {rg} --namespace-name {namespacename} --name {defaultauthorizationrule}',
             checks=[self.check('name', self.kwargs['defaultauthorizationrule'])])
 
         # Get Authorization Rule Listkeys
         self.cmd(
-            'relay namespace authorizationrule keys list --resource-group {rg} --namespace-name {namespacename} --name {authoname}')
+            'relay namespace authorization-rule keys list --resource-group {rg} --namespace-name {namespacename} --name {authoname}')
 
         # Regeneratekeys - Primary
         self.cmd(
-            'relay namespace authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {primary}')
+            'relay namespace authorization-rule keys renew --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {primary}')
 
         # Regeneratekeys - Secondary
         self.cmd(
-            'relay namespace authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {secondary}')
+            'relay namespace authorization-rule keys renew --resource-group {rg} --namespace-name {namespacename} --name {authoname} --key-name {secondary}')
 
         # Delete AuthorizationRule
         self.cmd(
-            'relay namespace authorizationrule delete --resource-group {rg} --namespace-name {namespacename} --name {authoname}')
+            'relay namespace authorization-rule delete --resource-group {rg} --namespace-name {namespacename} --name {authoname}')
 
-        # Delete Namespace list by ResourceGroup
+        # Delete Namespace
         self.cmd('relay namespace delete --resource-group {rg} --name {namespacename}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_relay_wcfrelay')
@@ -96,7 +96,7 @@ class RelayScenarioTest(ScenarioTest):
             'tier': 'Standard',
             'authoname': self.create_random_name(prefix='cliAutho', length=20),
             'defaultauthorizationrule': 'RootManageSharedAccessKey',
-            'accessrights': 'Listen',
+            'accessrights': 'Send',
             'primary': 'PrimaryKey',
             'secondary': 'SecondaryKey',
             'wcfrelayname': self.create_random_name(prefix='relay-wcfrelaycli', length=25),
@@ -118,47 +118,47 @@ class RelayScenarioTest(ScenarioTest):
 
         # Create WCFRelay
         self.cmd(
-            'relay wcfrelay create --resource-group {rg} --namespace-name {namespacename} --name {wcfrelayname} --relay-type {relaytype} --requires-client-authorization {requiresclientauthorization} --requires-transport-security {requirestransportsecurity} --user-metadata {usermetadata}',
+            'relay wcf-relay create --resource-group {rg} --namespace-name {namespacename} --name {wcfrelayname} --relay-type {relaytype} --requires-client-authorization {requiresclientauthorization} --requires-transport-security {requirestransportsecurity} --user-metadata {usermetadata}',
             checks=[self.check('name', self.kwargs['wcfrelayname'])])
 
         # Get WCFRelay
-        self.cmd('relay wcfrelay show --resource-group {rg} --namespace-name {namespacename} --name {wcfrelayname}',
+        self.cmd('relay wcf-relay show --resource-group {rg} --namespace-name {namespacename} --name {wcfrelayname}',
                  checks=[self.check('name', self.kwargs['wcfrelayname'])])
 
         # WCFRelay List
-        listwcfrelay = self.cmd('relay wcfrelay list --resource-group {rg} --namespace-name {namespacename}').output
+        listwcfrelay = self.cmd('relay wcf-relay list --resource-group {rg} --namespace-name {namespacename}').output
         self.assertGreater(len(listwcfrelay), 0)
 
         # Create Authoriazation Rule
         self.cmd(
-            'relay wcfrelay authorizationrule create --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname} --access-rights {accessrights}',
+            'relay wcf-relay authorization-rule create --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname} --access-rights {accessrights}',
             checks=[self.check('name', self.kwargs['wcfrelayauthoname'])])
 
         # Get Create Authorization Rule
         self.cmd(
-            'relay wcfrelay authorizationrule show --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname}',
+            'relay wcf-relay authorization-rule show --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname}',
             checks=[self.check('name', self.kwargs['wcfrelayauthoname'])])
 
         # Get Authorization Rule Listkeys
         self.cmd(
-            'relay wcfrelay authorizationrule keys list --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname}')
+            'relay wcf-relay authorization-rule keys list --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname}')
 
         # Regeneratekeys - Primary
         regenrateprimarykeyresult = self.cmd(
-            'relay wcfrelay authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname} --key-name {primary}')
+            'relay wcf-relay authorization-rule keys renew --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname} --key-name {primary}')
         self.assertIsNotNone(regenrateprimarykeyresult)
 
         # Regeneratekeys - Secondary
         regenratesecondarykeyresult = self.cmd(
-            'relay wcfrelay authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname} --key-name {secondary}')
+            'relay wcf-relay authorization-rule keys renew --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname} --key-name {secondary}')
         self.assertIsNotNone(regenratesecondarykeyresult)
 
         # Delete WCFRelay AuthorizationRule
         self.cmd(
-            'relay wcfrelay authorizationrule delete --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname}')
+            'relay wcf-relay authorization-rule delete --resource-group {rg} --namespace-name {namespacename} --wcfrelay-name {wcfrelayname} --name {wcfrelayauthoname}')
 
         # Delete WCFRelay
-        self.cmd('relay wcfrelay delete --resource-group {rg} --namespace-name {namespacename} --name {wcfrelayname}')
+        self.cmd('relay wcf-relay delete --resource-group {rg} --namespace-name {namespacename} --name {wcfrelayname}')
 
         # Delete Namespace
         self.cmd('relay namespace delete --resource-group {rg} --name {namespacename}')
@@ -174,7 +174,7 @@ class RelayScenarioTest(ScenarioTest):
             'tier': 'Standard',
             'authoname': self.create_random_name(prefix='cliAutho', length=20),
             'defaultauthorizationrule': 'RootManageSharedAccessKey',
-            'accessrights': 'Listen',
+            'accessrights': 'Send',
             'primary': 'PrimaryKey',
             'secondary': 'SecondaryKey',
             'hybridconnectionname': self.create_random_name(prefix='relay-hybridcli', length=25),
@@ -202,24 +202,24 @@ class RelayScenarioTest(ScenarioTest):
         self.assertGreater(len(listhybirdconnection), 0)
 
         # Create Authoriazation Rule
-        self.cmd('relay hybrid-connections authorizationrule create --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname} --access-rights {accessrights}', checks=[self.check('name', self.kwargs['hybridconnectionauthoname'])])
+        self.cmd('relay hybrid-connections authorization-rule create --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname} --access-rights {accessrights}', checks=[self.check('name', self.kwargs['hybridconnectionauthoname'])])
 
         # Get Create Authorization Rule
-        self.cmd('relay hybrid-connections authorizationrule show --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname}', checks=[self.check('name', self.kwargs['hybridconnectionauthoname'])])
+        self.cmd('relay hybrid-connections authorization-rule show --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname}', checks=[self.check('name', self.kwargs['hybridconnectionauthoname'])])
 
         # Get Authorization Rule Listkeys
-        self.cmd('relay hybrid-connections authorizationrule keys list --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname}')
+        self.cmd('relay hybrid-connections authorization-rule keys list --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname}')
 
         # Regeneratekeys - Primary
-        regenrateprimarykeyresult = self.cmd('relay hybrid-connections authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname} --key-name {primary}')
+        regenrateprimarykeyresult = self.cmd('relay hybrid-connections authorization-rule keys renew --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname} --key-name {primary}')
         self.assertIsNotNone(regenrateprimarykeyresult)
 
         # Regeneratekeys - Secondary
-        regenratesecondarykeyresult = self.cmd('relay hybrid-connections authorizationrule keys renew --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname} --key-name {secondary}')
+        regenratesecondarykeyresult = self.cmd('relay hybrid-connections authorization-rule keys renew --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname} --key-name {secondary}')
         self.assertIsNotNone(regenratesecondarykeyresult)
 
         # Delete Hybrid Connections AuthorizationRule
-        self.cmd('relay hybrid-connections authorizationrule delete --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname}')
+        self.cmd('relay hybrid-connections authorization-rule delete --resource-group {rg} --namespace-name {namespacename} --hybrid-connection-name {hybridconnectionname} --name {hybridconnectionauthoname}')
 
         # Delete Hybrid Connections
         self.cmd('relay hybrid-connections delete --resource-group {rg} --namespace-name {namespacename} --name {hybridconnectionname}')
