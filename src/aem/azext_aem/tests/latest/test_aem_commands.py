@@ -15,7 +15,7 @@ class VMAEM(ScenarioTest):
         self.kwargs.update({
             'vm': 'vm1',
         })
-        self.cmd('vm create -g {rg} -n {vm} --image centos')
+        self.cmd('vm create -g {rg} -n {vm} --image centos --generate-ssh-keys')
         self.cmd('vm aem set -g {rg} -n {vm}')
         self.cmd('vm aem verify -g {rg} -n {vm}')
         self.cmd('vm aem delete -g {rg} -n {vm}')
