@@ -3,8 +3,8 @@
 
 This repository serves two purposes and they are independent:
 
-1. An index.json where you can add your extension and make it available through Azure CLI.
-2. A source code directory, `src`, to host your extension source code.
+1. A source code directory, `src`, to host your extension source code.
+2. An index.json where you can add your extension and make it available through Azure CLI.
 
 For documentation on authoring an extension, see [Extension Documentation](https://github.com/Azure/azure-cli/tree/master/doc/extensions)
 
