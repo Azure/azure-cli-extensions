@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.2"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -27,16 +27,15 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='aem',
+    name='subscription',
     version=VERSION,
-    description='CLI Extension to managed Azure Enhanced Monitoring Extension for SAP',
-    long_description='N/A',
+    description='An Azure CLI Extension to manage Subscription Definitions',
+    long_description='An Azure CLI Extension to manage Subscription Definitions',
     license='MIT',
-    author='Yugang Wang',
-    author_email='yugangw@microsoft.com',
+    author='Wilco Bauwer',
+    author_email='wilcob@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_aem': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )

@@ -4,9 +4,9 @@ set -e
 proc_number=`python -c 'import multiprocessing; print(multiprocessing.cpu_count())'`
 
 # Run pylint/flake8 on extensions
-# - We ignore 'models', 'operations' and files with suffix '_management_client.py' as they typically come from vendored Azure SDKs
-pylint ./src/*/azext_*/ --ignore=models,operations,service_bus_management_client --ignore-patterns=[a-zA-Z_]+_management_client.py --rcfile=./pylintrc -j $proc_number
-flake8 --statistics --exclude=models,operations,*_management_client.py --append-config=./.flake8 ./src/*/azext_*/
+# - We ignore 'models', 'operations' and files with suffix '_client.py' as they typically come from vendored Azure SDKs
+pylint ./src/*/azext_*/ --ignore=models,operations,service_bus_management_client,subscription_client --ignore-patterns=[a-zA-Z_]+_client.py --rcfile=./pylintrc -j $proc_number
+flake8 --statistics --exclude=models,operations,*_client.py --append-config=./.flake8 ./src/*/azext_*/
 
 # Run pylint/flake8 on CI files
 pylint ./scripts/ci/*.py  --rcfile=./pylintrc
