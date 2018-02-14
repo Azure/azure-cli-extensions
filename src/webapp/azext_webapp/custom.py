@@ -18,15 +18,17 @@ from azure.cli.command_modules.appservice.custom import (
 
 from .create_util import (
     zip_contents_from_dir,
-    is_node_application,
-    get_node_runtime_version_toSet,
+    get_runtime_version_details,
     create_resource_group,
     check_resource_group_exists,
-    check_resource_group_supports_linux,
+    check_resource_group_supports_os,
     check_if_asp_exists,
     check_app_exists,
+    get_lang_from_content,
     web_client_factory
 )
+
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT)
 
 logger = get_logger(__name__)
 
@@ -38,10 +40,31 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     import json
 
     client = web_client_factory(cmd.cli_ctx)
-    sku = "S1"
-    os_val = "Linux"
-    language = "node"
-    full_sku = _get_sku_name(sku)
+    # the code to deploy is expected to be the current directory the command is running from
+    src_dir = os.getcwd()
+
+    # if dir is empty, show a message in dry run
+    do_deployment = False if os.listdir(src_dir) == [] else True
+
+    # determine the details for app to be created from src contents
+    lang_details = get_lang_from_content(src_dir)
+    # we support E2E create and deploy for Node & dotnetcore, any other stack, set defaults for os & runtime
+    # and skip deployment
+    if lang_details['language'] is None:
+        do_deployment = False
+        sku = 'F1'
+        os_val = OS_DEFAULT
+        detected_version = '-'
+        runtime_version = '-'
+    else:
+        sku = lang_details.get("default_sku")
+        language = lang_details.get("language")
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME else OS_DEFAULT
+        # detect the version
+        data = get_runtime_version_details(lang_details.get('file_loc'), language)
+        version_used_create = data.get('to_create')
+        detected_version = data.get('detected')
+        runtime_version = "{}|{}".format(language, version_used_create)
 
     if location is None:
         locs = client.list_geo_regions(sku, True)
@@ -49,42 +72,27 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         for loc in locs:
             available_locs.append(loc.geo_region_name)
         location = available_locs[0]
-
     # Remove spaces from the location string, incase the GeoRegion string is used
     loc_name = location.replace(" ", "")
+    full_sku = _get_sku_name(sku)
+
+    is_linux = True if os_val == 'Linux' else False
 
     asp = "appsvc_asp_{}_{}".format(os_val, loc_name)
     rg_name = "appsvc_rg_{}_{}".format(os_val, loc_name)
-
-    # the code to deploy is expected to be the current directory the command is running from
-    src_dir = os.getcwd()
-
-    # if dir is empty, show a message in dry run
-    do_deployment = False if os.listdir(src_dir) == [] else True
-    package_json_path = is_node_application(src_dir)
 
     str_no_contents_warn = ""
     if not do_deployment:
         str_no_contents_warn = "[Empty directory, no deployment will be triggered]"
 
-    if package_json_path == '':
-        node_version = "[No package.json file found in root directory, not a Node app?]"
-        version_used_create = "8.0"
-    else:
-        with open(package_json_path) as data_file:
-            data = json.load(data_file)
-            node_version = data['version']
-            version_used_create = get_node_runtime_version_toSet()
-
     # Resource group: check if default RG is set
     default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
-    if default_rg and check_resource_group_supports_linux(cmd, default_rg, location):
+    if default_rg and check_resource_group_supports_os(cmd, default_rg, location, is_linux):
         rg_name = default_rg
         rg_mssg = "[Using default Resource group]"
     else:
         rg_mssg = ""
 
-    runtime_version = "{}|{}".format(language, version_used_create)
     src_path = "{} {}".format(src_dir.replace("\\", "\\\\"), str_no_contents_warn)
     rg_str = "{} {}".format(rg_name, rg_mssg)
 
@@ -100,7 +108,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             "version_to_create": "%s"
             }
             """ % (name, asp, rg_str, full_sku, os_val, location, src_path,
-                   node_version, runtime_version)
+                   detected_version, runtime_version)
 
     create_json = json.dumps(json.loads(dry_run_str), indent=4, sort_keys=True)
     if dryrun:
@@ -120,46 +128,46 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     # create asp
     if not check_if_asp_exists(cmd, rg_name, asp):
         logger.warning("Creating App service plan '%s' ...", asp)
-        sku_def = SkuDescription(tier=full_sku, name=sku, capacity=1)
+        sku_def = SkuDescription(tier=full_sku, name=sku, capacity=(1 if is_linux else None))
         plan_def = AppServicePlan(loc_name, app_service_plan_name=asp,
-                                  sku=sku_def, reserved=True)
+                                  sku=sku_def, reserved=(is_linux or None))
         client.app_service_plans.create_or_update(rg_name, asp, plan_def)
         logger.warning("App service plan creation complete")
     else:
         logger.warning("App service plan '%s' already exists.", asp)
 
-    # create the Linux app
+    # create the app
     if not check_app_exists(cmd, rg_name, name):
         logger.warning("Creating app '%s' ....", name)
-        create_webapp(cmd, rg_name, name, asp, runtime_version)
+        create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
         logger.warning("Webapp creation complete")
     else:
         logger.warning("App '%s' already exists", name)
 
-    # setting to build after deployment
-    logger.warning("Updating app settings to enable build after deployment")
-    update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
-    # work around until the timeout limits issue for linux is investigated & fixed
-    # wakeup kudu, by making an SCM call
+    if do_deployment:
+        # setting to build after deployment
+        logger.warning("Updating app settings to enable build after deployment")
+        update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
+        # work around until the timeout limits issue for linux is investigated & fixed
+        # wakeup kudu, by making an SCM call
 
-    import requests
-    # work around until the timeout limits issue for linux is investigated & fixed
-    user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
-    scm_url = _get_scm_url(cmd, rg_name, name)
-    import urllib3
-    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
-    requests.get(scm_url + '/api/settings', headers=authorization)
+        import requests
+        # work around until the timeout limits issue for linux is investigated & fixed
+        user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
+        scm_url = _get_scm_url(cmd, rg_name, name)
+        import urllib3
+        authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+        requests.get(scm_url + '/api/settings', headers=authorization)
 
-    if package_json_path != '':
         logger.warning("Creating zip with contents of dir %s ...", src_dir)
         # zip contents & deploy
-        zip_file_path = zip_contents_from_dir(src_dir)
+        zip_file_path = zip_contents_from_dir(src_dir, language)
 
         logger.warning("Deploying and building contents to app."
                        "This operation can take some time to finish...")
         enable_zip_deploy(cmd, rg_name, name, zip_file_path)
     else:
-        logger.warning("No package.json found, skipping zip and deploy process")
+        logger.warning("No 'NODE' or 'DOTNETCORE' package detected, skipping zip and deploy process")
 
     logger.warning("All done. %s", create_json)
     return None
