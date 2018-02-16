@@ -23,7 +23,7 @@ def _register_rp(cli_ctx, subscription_id=None):
             break
 
 
-def _get_subscription_id_from_subscription(cli_ctx, subscription):
+def _get_subscription_id_from_subscription(cli_ctx, subscription):  # pylint: disable=inconsistent-return-statements
     profile = Profile(cli_ctx=cli_ctx)
     subscriptions_list = profile.load_cached_subscriptions()
     for sub in subscriptions_list:
@@ -31,6 +31,7 @@ def _get_subscription_id_from_subscription(cli_ctx, subscription):
             return sub['id']
     from azure.cli.core.util import CLIError
     raise CLIError("Subscription not found in the current context.")
+
 
 def cli_managementgroups_group_list(cmd, client):
     _register_rp(cmd.cli_ctx)
