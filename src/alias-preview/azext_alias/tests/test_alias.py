@@ -12,12 +12,12 @@ from knack.util import CLIError
 from ddt import ddt, data
 
 from azext_alias import alias
-from _const import (DEFAULT_MOCK_ALIAS_STRING,
-                    COLLISION_MOCK_ALIAS_STRING,
-                    TEST_RESERVED_COMMANDS,
-                    DUP_SECTION_MOCK_ALIAS_STRING,
-                    DUP_OPTION_MOCK_ALIAS_STRING,
-                    MALFORMED_MOCK_ALIAS_STRING)
+from azext_alias.tests._const import (DEFAULT_MOCK_ALIAS_STRING,
+                                      COLLISION_MOCK_ALIAS_STRING,
+                                      TEST_RESERVED_COMMANDS,
+                                      DUP_SECTION_MOCK_ALIAS_STRING,
+                                      DUP_OPTION_MOCK_ALIAS_STRING,
+                                      MALFORMED_MOCK_ALIAS_STRING)
 
 @ddt
 class TestAlias(unittest.TestCase):

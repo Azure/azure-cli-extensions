@@ -29,6 +29,7 @@ class AliasExtensionLoader(AzCommandsLoader):
     def load_arguments(self, _):
         pass
 
+
 def alias_event_handler(_, **kwargs):
     """ An event handler for alias transformation when EVENT_INVOKER_PRE_TRUNCATE_CMD_TBL event is invoked """
     import timeit

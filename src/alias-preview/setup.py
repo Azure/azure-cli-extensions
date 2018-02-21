@@ -5,6 +5,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from codecs import open
 from setuptools import setup, find_packages
 
 VERSION = "0.0.1"
@@ -23,7 +24,10 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'ddt==1.1.1',
+    'configparser==3.5.0'
+]
 
 setup(
     name='azure-cli-alias-extension',
@@ -35,6 +39,7 @@ setup(
     author_email='t-chwong@microsoft.com',
     url='https://github.com/chewong/azure-cli-alias-extension',
     classifiers=CLASSIFIERS,
+    package_data={'azext_alias': ['azext_metadata.json']},
     packages=find_packages(exclude=["test"]),
     install_requires=DEPENDENCIES
 )
