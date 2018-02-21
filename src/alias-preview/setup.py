@@ -5,7 +5,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 VERSION = "0.0.1"
 
@@ -35,6 +35,6 @@ setup(
     author_email='t-chwong@microsoft.com',
     url='https://github.com/chewong/azure-cli-alias-extension',
     classifiers=CLASSIFIERS,
-    packages=['azext_alias', 'azext_alias.telemetry'],
+    packages=find_packages(exclude=["test"]),
     install_requires=DEPENDENCIES
 )
