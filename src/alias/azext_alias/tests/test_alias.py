@@ -158,7 +158,7 @@ class MockAliasManager(alias.AliasManager):
                 # Python 2.x implementation
                 from StringIO import StringIO
                 self.alias_table.readfp(StringIO(self.alias_config_str))
-            except ModuleNotFoundError:
+            except Exception:  # pylint: disable=broad-except
                 # Python 3.x implementation
                 self.alias_table = ConfigParser()
                 self.alias_table.read_string(self.alias_config_str)
