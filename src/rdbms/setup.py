@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='rdbms',
     version=VERSION,
-    description='An Azure CLI extension to manage Azure MySQL and Azure PostgreSQL resources',
-    long_description='An Azure CLI extension to manage Azure MySQL and Azure PostgreSQL resources',
+    description='An Azure CLI Extension to manage Azure MySQL and Azure PostgreSQL resources',
+    long_description='An Azure CLI Extension to manage Azure MySQL and Azure PostgreSQL resources',
     license='MIT',
     author='Rohit Joy',
     author_email='rohitjoy@microsoft.com',
