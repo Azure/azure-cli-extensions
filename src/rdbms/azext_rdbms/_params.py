@@ -83,7 +83,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
             c.argument('capacity', options_list=['--vcore'], type=int, required=False, help='Number of vcore.')
             c.argument('family', options_list=['--family'], arg_type=get_enum_type(['Gen4', 'Gen5']), required=False, help='Hardware generation.')
             c.argument('storage_mb', options_list=['--storage-size'], type=int, help='The max storage size of the server, unit is MB.')
-            c.argument('backup_retention_days', options_list=['--backup-retention-days'], type=int, help='The max days of retention, unit is days.')
+            c.argument('backup_retention_days', options_list=['--backup-retention'], type=int, help='The max days of retention, unit is days.')
             c.argument('tags', tags_type)
 
     for scope in ['mysql server-logs', 'postgres server-logs']:
