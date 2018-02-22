@@ -10,8 +10,7 @@ from knack.log import get_logger
 from azure.cli.core import telemetry as telemetry_core
 from azure.cli.core.telemetry import _remove_cmd_chars, _remove_symbols, _get_stack_trace
 from azure.cli.core._environment import get_config_dir
-from azext_alias import VERSION as alias_extension_version
-
+import azext_alias
 
 EXTENSION_NAME = 'azure-cli-alias-extension'
 ALIAS_EXTENSION_PREFIX = 'Context.Default.Extension.Alias.'
@@ -57,7 +56,7 @@ class AliasExtensionTelemetrySession(object):
         properties = dict()
         self.set_custom_properties(properties, 'StartTime', str(self.start_time))
         self.set_custom_properties(properties, 'EndTime', str(self.end_time))
-        self.set_custom_properties(properties, 'Version', alias_extension_version)
+        self.set_custom_properties(properties, 'Version', azext_alias.VERSION)
         self.set_custom_properties(properties, 'ExecutionTimeMs', self.execution_time)
         self.set_custom_properties(properties, 'FullCommandTableLoaded', str(self.full_command_table_loaded))
         self.set_custom_properties(properties, 'CollidedAliases', ','.join(self.collided_aliases))

@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: skip-file
-
 import os
 import unittest
 
@@ -18,6 +16,7 @@ from azext_alias.tests._const import (DEFAULT_MOCK_ALIAS_STRING,
                                       DUP_SECTION_MOCK_ALIAS_STRING,
                                       DUP_OPTION_MOCK_ALIAS_STRING,
                                       MALFORMED_MOCK_ALIAS_STRING)
+
 
 @ddt
 class TestAlias(unittest.TestCase):
@@ -128,9 +127,9 @@ class TestAlias(unittest.TestCase):
         alias_manager.alias_config_str = ''
         self.assertTrue(alias_manager.detect_alias_config_change())
 
-    ##########################
-    #### Helper functions ####
-    ##########################
+    """
+    Helper functions
+    """
     def get_alias_manager(self, mock_alias_str=DEFAULT_MOCK_ALIAS_STRING, reserved_commands=None):
         alias_manager = MockAliasManager(mock_alias_str=mock_alias_str)
         alias_manager.reserved_commands = reserved_commands if reserved_commands else []
@@ -176,6 +175,7 @@ class MockAliasManager(alias.AliasManager):
 
     def write_collided_alias(self):
         pass
+
 
 if __name__ == '__main__':
     test_suite = unittest.TestLoader().loadTestsFromTestCase(TestAlias)

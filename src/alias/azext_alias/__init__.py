@@ -3,20 +3,24 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import timeit
+
 from knack.log import get_logger
 
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.commands import CliCommandType
+from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE
+from azext_alias.alias import AliasManager
+from azext_alias._const import DEBUG_MSG_WITH_TIMING
+from azext_alias.telemetry import telemetry
 
 logger = get_logger(__name__)
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 
 
 class AliasExtensionLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        from azure.cli.core.commands import CliCommandType
-        from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE
-
         super(AliasExtensionLoader, self).__init__(cli_ctx=cli_ctx,
                                                    min_profile='2017-03-10-profile',
                                                    custom_command_type=CliCommandType())
@@ -32,11 +36,6 @@ class AliasExtensionLoader(AzCommandsLoader):
 
 def alias_event_handler(_, **kwargs):
     """ An event handler for alias transformation when EVENT_INVOKER_PRE_TRUNCATE_CMD_TBL event is invoked """
-    import timeit
-    from azext_alias.alias import AliasManager
-    from azext_alias._const import DEBUG_MSG_WITH_TIMING
-    from azext_alias.telemetry import telemetry
-
     try:
         telemetry.start()
 

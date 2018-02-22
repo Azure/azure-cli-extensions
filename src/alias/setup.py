@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -25,21 +25,21 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'ddt==1.1.1',
-    'configparser==3.5.0'
+    'ddt~=1.1.1',
+    'configparser~=3.5.0'
 ]
 
 setup(
-    name='azure-cli-alias-extension',
+    name='alias',
     version=VERSION,
-    description='azure-cli-alias-extension',
-    long_description='azure-cli-alias-extension',
+    description='Azure CLI Alias Extension',
+    long_description='An Azure CLI extension that provides command alias functionality',
     license='MIT',
     author='Ernest Wong',
     author_email='t-chwong@microsoft.com',
     url='https://github.com/chewong/azure-cli-alias-extension',
     classifiers=CLASSIFIERS,
     package_data={'azext_alias': ['azext_metadata.json']},
-    packages=find_packages(exclude=["test"]),
+    packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
