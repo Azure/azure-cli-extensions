@@ -40,6 +40,13 @@ class TestExtensionSourceMeta(type):
                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
                             os.path.join(self.ext_dir, 'ext'), ext_path]
                 check_call(pip_args)
+
+                ext_name = ext_path.split('/')[-1]
+                requires_txt_path = os.path.join(ext_path, '{}.egg-info/requires.txt'.format(ext_name))
+                # Install any dependencies in ext_path as pip_args only install dependencies in the temp folder
+                if os.path.exists(requires_txt_path):
+                    check_call([sys.executable, '-m', 'pip', 'install', '-r', requires_txt_path, '--target', ext_path])
+
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 check_call(unittest_args)
             return test

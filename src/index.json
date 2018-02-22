@@ -551,7 +551,7 @@
         "alias": [
             {
                 "filename": "alias-0.1.0-py2.py3-none-any.whl",
-                "sha256Digest": "e62bd621e4e794a2b1826392e384850dafa15f1fa025cee7a77a14f53648d998",
+                "sha256Digest": "416aac72e341c25d8f118ae61ddc08c5a4622fa7d66931c45028ae63c9874e22",
                 "downloadUrl": "https://github.com/chewong/azure-cli-alias-extension/releases/download/0.1.0/alias-0.1.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.28",
@@ -585,11 +585,20 @@
                             }
                         }
                     },
+                    "extras": [],
                     "generator": "bdist_wheel (0.29.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "alias",
-                    "summary": "An Azure CLI extension that provides command alias functionality",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "configparser (~=3.5.0)",
+                                "ddt (~=1.1.1)"
+                            ]
+                        }
+                    ],
+                    "summary": "Azure CLI Alias Extension",
                     "version": "0.1.0"
                 }
             }
