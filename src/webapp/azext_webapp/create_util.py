@@ -105,11 +105,12 @@ def check_app_exists(cmd, rg_name, app_name):
 
 
 def get_lang_from_content(src_path):
+    import glob
     # NODE: package.json should exisit in the application root dir
     # NETCORE: NETCORE.csproj should exist in the root dir
     runtime_details_dict = dict.fromkeys(['language', 'file_loc', 'default_sku'])
     package_json_file = os.path.join(src_path, 'package.json')
-    package_netcore_file = os.path.join(src_path, 'netcore.csproj')
+    package_netcore_file = os.path.join(src_path, glob.glob("*.csproj")[0])
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
