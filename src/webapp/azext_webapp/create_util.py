@@ -106,16 +106,17 @@ def check_app_exists(cmd, rg_name, app_name):
 
 def get_lang_from_content(src_path):
     import glob
-    # NODE: package.json should exisit in the application root dir
-    # NETCORE: NETCORE.csproj should exist in the root dir
+    # NODE: package.json should exist in the application root dir
+    # NETCORE: *.csproj should exist in the application root dir
     runtime_details_dict = dict.fromkeys(['language', 'file_loc', 'default_sku'])
     package_json_file = os.path.join(src_path, 'package.json')
-    package_netcore_file = os.path.join(src_path, glob.glob("*.csproj")[0])
+    package_netcore_glob = glob.glob("*.csproj")
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
         runtime_details_dict['default_sku'] = 'S1'
-    elif os.path.isfile(package_netcore_file):
+    elif package_netcore_glob:
+        package_netcore_file = os.path.join(src_path, package_netcore_glob[0])
         runtime_details_dict['language'] = NETCORE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_netcore_file
         runtime_details_dict['default_sku'] = 'F1'
@@ -138,7 +139,6 @@ def parse_netcore_version(file_path):
 def parse_node_version(file_path):
     import json
     import re
-    version_detected = ['0.0']
     with open(file_path) as data_file:
         data = []
         for d in find_key_in_json(json.load(data_file), 'node'):
@@ -148,7 +148,7 @@ def parse_node_version(file_path):
             # reduce the version to '6.0' from '6.0.0'
             data.append(c[:3])
         version_detected = sorted(data, key=float, reverse=True)
-    return version_detected
+    return version_detected or ['0.0']
 
 
 def detect_netcore_version_tocreate(detected_ver):
