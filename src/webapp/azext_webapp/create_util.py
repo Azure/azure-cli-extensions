@@ -139,7 +139,6 @@ def parse_netcore_version(file_path):
 def parse_node_version(file_path):
     import json
     import re
-    version_detected = ['0.0']
     with open(file_path) as data_file:
         data = []
         for d in find_key_in_json(json.load(data_file), 'node'):
@@ -149,7 +148,7 @@ def parse_node_version(file_path):
             # reduce the version to '6.0' from '6.0.0'
             data.append(c[:3])
         version_detected = sorted(data, key=float, reverse=True)
-    return version_detected
+    return version_detected if len(version_detected) > 0 else ['0.0']
 
 
 def detect_netcore_version_tocreate(detected_ver):
