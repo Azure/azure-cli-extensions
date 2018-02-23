@@ -116,7 +116,7 @@ def get_lang_from_content(src_path):
         runtime_details_dict['file_loc'] = package_json_file
         runtime_details_dict['default_sku'] = 'S1'
     elif len(package_netcore_glob) > 0:
-        package_netcore_file = os.path.join(src_path, package_netcore_glob)
+        package_netcore_file = os.path.join(src_path, package_netcore_glob[0])
         runtime_details_dict['language'] = NETCORE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_netcore_file
         runtime_details_dict['default_sku'] = 'F1'
