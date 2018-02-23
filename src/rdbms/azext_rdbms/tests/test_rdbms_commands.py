@@ -26,7 +26,7 @@ SERVER_NAME_MAX_LENGTH = 63
 class ServerPreparer(AbstractPreparer, SingleValueReplacer):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, engine_type='mysql', engine_parameter_name='database_engine',
-                 name_prefix=SERVER_NAME_PREFIX, parameter_name='server', location='centralus',
+                 name_prefix=SERVER_NAME_PREFIX, parameter_name='server', location='brazilsouth',
                  admin_user='cloudsa', admin_password='SecretPassword123',
                  resource_group_parameter_name='resource_group', skip_delete=True,
                  sku_name='GP_Gen4_2'):
@@ -88,7 +88,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
         skuname = '{}_{}_{}'.format("GP", family, old_cu)
 
         rg = resource_group_1
-        loc = 'centralus'
+        loc = 'brazilsouth'
 
         # test create server
         self.cmd('{} server create -g {} --name {} -l {} '
