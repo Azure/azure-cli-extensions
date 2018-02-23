@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+from azext_alias.version import VERSION
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,10 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'ddt~=1.1.1',
-    'configparser~=3.5.0'
-]
+DEPENDENCIES = []
 
 setup(
     name='alias',
@@ -37,9 +34,9 @@ setup(
     license='MIT',
     author='Ernest Wong',
     author_email='t-chwong@microsoft.com',
-    url='https://github.com/chewong/azure-cli-alias-extension',
+    url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     package_data={'azext_alias': ['azext_metadata.json']},
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["azext_alias.tests"]),
     install_requires=DEPENDENCIES
 )

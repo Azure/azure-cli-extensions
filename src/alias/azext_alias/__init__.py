@@ -12,25 +12,23 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE
 from azext_alias.alias import AliasManager
 from azext_alias._const import DEBUG_MSG_WITH_TIMING
-from azext_alias.telemetry import telemetry
+from azext_alias import telemetry
 
 logger = get_logger(__name__)
-VERSION = '0.1.0'
 
 
 class AliasExtensionLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         super(AliasExtensionLoader, self).__init__(cli_ctx=cli_ctx,
-                                                   min_profile='2017-03-10-profile',
                                                    custom_command_type=CliCommandType())
 
         self.cli_ctx.register_event(EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE, alias_event_handler)
 
-    def load_command_table(self, _):  # pylint: disable=no-self-use
+    def load_command_table(self, _):  # pylint:disable=no-self-use
         return {}
 
-    def load_arguments(self, _):
+    def load_arguments(self, _):  # pylint:disable=no-self-use
         pass
 
 

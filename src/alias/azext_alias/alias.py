@@ -7,12 +7,12 @@ import os
 import re
 import hashlib
 import json
-from configparser import ConfigParser
+from six.moves import configparser
 
 from knack.log import get_logger
 from knack.util import CLIError
 
-from azext_alias.telemetry import telemetry
+from azext_alias import telemetry
 from azext_alias._const import (
     GLOBAL_CONFIG_DIR,
     ALIAS_FILE_NAME,
@@ -24,7 +24,8 @@ from azext_alias._const import (
     INSUFFICIENT_POS_ARG_ERROR,
     DEBUG_MSG,
     POS_ARG_DEBUG_MSG,
-    COLLISION_CHECK_LEVEL_DEPTH)
+    COLLISION_CHECK_LEVEL_DEPTH
+)
 
 GLOBAL_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_FILE_NAME)
 GLOBAL_ALIAS_HASH_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_HASH_FILE_NAME)
@@ -36,7 +37,7 @@ logger = get_logger(__name__)
 class AliasManager(object):
 
     def __init__(self, **kwargs):
-        self.alias_table = ConfigParser()
+        self.alias_table = configparser.ConfigParser()
         self.kwargs = kwargs
         self.collided_alias = dict()
         self.reserved_commands = []
@@ -58,7 +59,7 @@ class AliasManager(object):
             telemetry.set_number_of_aliases_registered(len(self.alias_table.sections()))
         except Exception as exception:  # pylint: disable=broad-except
             logger.warning(CONFIG_PARSING_ERROR, AliasManager.process_exception_message(exception))
-            self.alias_table = ConfigParser()
+            self.alias_table = configparser.ConfigParser()
             telemetry.set_exception(exception)
 
     def load_alias_hash(self):
@@ -78,7 +79,10 @@ class AliasManager(object):
         open_mode = 'r+' if os.path.exists(GLOBAL_COLLIDED_ALIAS_PATH) else 'w+'
         with open(GLOBAL_COLLIDED_ALIAS_PATH, open_mode) as collided_alias_file:
             collided_alias_str = collided_alias_file.read()
-            self.collided_alias = json.loads(collided_alias_str if collided_alias_str else '{}')
+            try:
+                self.collided_alias = json.loads(collided_alias_str if collided_alias_str else '{}')
+            except Exception:   # pylint: disable=broad-except
+                self.collided_alias = {}
 
     def detect_alias_config_change(self):
         """

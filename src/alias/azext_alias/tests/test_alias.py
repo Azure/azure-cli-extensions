@@ -3,15 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,import-error,no-self-use,import-error,deprecated-method,pointless-string-statement
+# pylint: disable=line-too-long,import-error,no-self-use,import-error,deprecated-method,pointless-string-statement,relative-import,no-member
 
+import sys
 import os
 import unittest
+from six.moves import configparser
 
 from knack.util import CLIError
-from ddt import ddt, data
 
 from azext_alias import alias
+from azext_alias.tests.ddt import ddt, data
 from azext_alias.tests._const import (DEFAULT_MOCK_ALIAS_STRING,
                                       COLLISION_MOCK_ALIAS_STRING,
                                       TEST_RESERVED_COMMANDS,
@@ -113,9 +115,14 @@ class TestAlias(unittest.TestCase):
         alias_manager = self.get_alias_manager()
         self.assertFalse(alias_manager.parse_error())
 
-    @data(DUP_SECTION_MOCK_ALIAS_STRING, DUP_OPTION_MOCK_ALIAS_STRING,
-          MALFORMED_MOCK_ALIAS_STRING, 'Malformed alias config file string')
-    def test_parse_error(self, value):
+    @data(DUP_SECTION_MOCK_ALIAS_STRING, DUP_OPTION_MOCK_ALIAS_STRING)
+    def test_parse_error_python_3(self, value):
+        if sys.version_info.major == 3:
+            alias_manager = self.get_alias_manager(value)
+            self.assertTrue(alias_manager.parse_error())
+
+    @data(MALFORMED_MOCK_ALIAS_STRING, 'Malformed alias config file string')
+    def test_parse_error_python_2_3(self, value):
         alias_manager = self.get_alias_manager(value)
         self.assertTrue(alias_manager.parse_error())
 
@@ -150,20 +157,18 @@ class TestAlias(unittest.TestCase):
 class MockAliasManager(alias.AliasManager):
 
     def load_alias_table(self):
-        from configparser import ConfigParser
 
         self.alias_config_str = self.kwargs.get('mock_alias_str', '')
         try:
-            try:
+            if sys.version_info.major == 3:
+                # Python 3.x implementation
+                self.alias_table.read_string(self.alias_config_str)
+            else:
                 # Python 2.x implementation
                 from StringIO import StringIO
                 self.alias_table.readfp(StringIO(self.alias_config_str))
-            except Exception:  # pylint: disable=broad-except
-                # Python 3.x implementation
-                self.alias_table = ConfigParser()
-                self.alias_table.read_string(self.alias_config_str)
         except Exception:  # pylint: disable=broad-except
-            self.alias_table = ConfigParser()
+            self.alias_table = configparser.ConfigParser()
 
     def load_alias_hash(self):
         import hashlib
