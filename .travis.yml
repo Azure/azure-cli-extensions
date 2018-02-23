@@ -23,7 +23,11 @@ jobs:
       python: 3.6
     - stage: verify
       env: PURPOSE='IndexVerify'
-      script: python ./scripts/ci/test_integration.py -v
+      script: python ./scripts/ci/test_index.py -v
+      python: 3.6
+    - stage: verify
+      env: PURPOSE='IndexRefDocVerify'
+      script: ./scripts/ci/test_index_ref_doc.sh
       python: 3.6
   fast_finish: true
   allow_failures:
