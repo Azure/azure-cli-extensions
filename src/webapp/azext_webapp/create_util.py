@@ -115,7 +115,7 @@ def get_lang_from_content(src_path):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
         runtime_details_dict['default_sku'] = 'S1'
-    elif len(package_netcore_glob) > 0:
+    elif package_netcore_glob:
         package_netcore_file = os.path.join(src_path, package_netcore_glob[0])
         runtime_details_dict['language'] = NETCORE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_netcore_file
@@ -148,7 +148,7 @@ def parse_node_version(file_path):
             # reduce the version to '6.0' from '6.0.0'
             data.append(c[:3])
         version_detected = sorted(data, key=float, reverse=True)
-    return version_detected if len(version_detected) > 0 else ['0.0']
+    return version_detected or ['0.0']
 
 
 def detect_netcore_version_tocreate(detected_ver):
