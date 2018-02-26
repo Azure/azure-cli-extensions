@@ -30,8 +30,6 @@ AUTOREST_LICENSE_HEADER = """# -------------------------------------------------
 # --------------------------------------------------------------------------
 """
 
-IGNORE_FILES = ['ddt.py']
-
 
 def main():
     env_path = os.path.join(REPO_ROOT, 'env')
@@ -40,7 +38,7 @@ def main():
     for current_dir, _, files in os.walk(get_repo_root()):
         if current_dir.startswith(env_path):
             continue
-        file_itr = (os.path.join(current_dir, p) for p in files if p.endswith('.py') and p not in IGNORE_FILES)
+        file_itr = (os.path.join(current_dir, p) for p in files if p.endswith('.py'))
         for python_file in file_itr:
             with open(python_file, 'r') as f:
                 file_text = f.read().replace('\r\n', '\n')
