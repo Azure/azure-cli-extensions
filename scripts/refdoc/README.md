@@ -23,3 +23,4 @@ Scripts for reference documentation generation for Azure CLI Extensions using [s
 2. Inside the Python virtual environment, run `pip install sphinx==1.7.0`
 3. Set the environment variable `AZ_EXT_REF_DOC_OUT_DIR` to an empty directory that exists.
 4. Run the following script to generate sphinx output for the latest versions of all extensions in the index - `python ./scripts/ci/index_ref_doc.py -v`
+5. The sphinx output will be in the directory pointed to by the `AZ_EXT_REF_DOC_OUT_DIR` environment variable.
