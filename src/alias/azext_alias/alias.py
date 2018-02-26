@@ -121,7 +121,7 @@ class AliasManager(object):
         # Only load the entire command table if it detects changes in the alias config
         if self.detect_alias_config_change():
             self.load_full_command_table()
-            self.build_collision_table(COLLISION_CHECK_LEVEL_DEPTH)
+            self.build_collision_table()
         else:
             self.load_collided_alias()
 
@@ -167,7 +167,7 @@ class AliasManager(object):
 
         return self.post_transform(transformed_commands)
 
-    def build_collision_table(self, levels):
+    def build_collision_table(self, levels=COLLISION_CHECK_LEVEL_DEPTH):
         """
         Build the collision table according to the alias configuration file against the entire command table.
 
