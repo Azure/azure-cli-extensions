@@ -13,50 +13,10 @@ import os
 import json
 import tempfile
 import unittest
-import zipfile
 import hashlib
 import shutil
-import subprocess
 from wheel.install import WHEEL_INFO_RE
-from util import get_repo_root
-
-INDEX_PATH = os.path.join(get_repo_root(), 'src', 'index.json')
-SRC_PATH = os.path.join(get_repo_root(), 'src')
-
-# Extensions to skip dep. check. Aim to keep this list empty.
-SKIP_DEP_CHECK = ['azure-cli-iot-ext']
-
-
-def catch_dup_keys(pairs):
-    seen = {}
-    for k, v in pairs:
-        if k in seen:
-            raise ValueError("duplicate key {}".format(k))
-        seen[k] = v
-    return seen
-
-
-def get_index_data():
-    try:
-        with open(INDEX_PATH) as f:
-            return json.load(f, object_pairs_hook=catch_dup_keys)
-    except ValueError as err:
-        raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
-
-
-def get_whl_from_url(url, filename, tmp_dir, whl_cache):
-    if url in whl_cache:
-        return whl_cache[url]
-    import requests
-    r = requests.get(url, stream=True)
-    assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
-    ext_file = os.path.join(tmp_dir, filename)
-    with open(ext_file, 'wb') as f:
-        for chunk in r.iter_content(chunk_size=1024):
-            if chunk:  # ignore keep-alive new chunks
-                f.write(chunk)
-    whl_cache[url] = ext_file
-    return ext_file
+from util import get_ext_metadata, get_whl_from_url, get_index_data, SKIP_DEP_CHECK
 
 
 def get_sha256sum(a_file):
@@ -64,50 +24,6 @@ def get_sha256sum(a_file):
     with open(a_file, 'rb') as f:
         sha256.update(f.read())
     return sha256.hexdigest()
-
-
-def get_extension_modname(ext_dir):
-    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L153
-    EXTENSIONS_MOD_PREFIX = 'azext_'
-    pos_mods = [n for n in os.listdir(ext_dir)
-                if n.startswith(EXTENSIONS_MOD_PREFIX) and os.path.isdir(os.path.join(ext_dir, n))]
-    if len(pos_mods) != 1:
-        raise AssertionError("Expected 1 module to load starting with "
-                             "'{}': got {}".format(EXTENSIONS_MOD_PREFIX, pos_mods))
-    return pos_mods[0]
-
-
-def get_azext_metadata(ext_dir):
-    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L109
-    AZEXT_METADATA_FILENAME = 'azext_metadata.json'
-    azext_metadata = None
-    ext_modname = get_extension_modname(ext_dir=ext_dir)
-    azext_metadata_filepath = os.path.join(ext_dir, ext_modname, AZEXT_METADATA_FILENAME)
-    if os.path.isfile(azext_metadata_filepath):
-        with open(azext_metadata_filepath) as f:
-            azext_metadata = json.load(f)
-    return azext_metadata
-
-
-def get_ext_metadata(ext_dir, ext_file, ext_name):
-    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L89
-    WHL_METADATA_FILENAME = 'metadata.json'
-    zip_ref = zipfile.ZipFile(ext_file, 'r')
-    zip_ref.extractall(ext_dir)
-    zip_ref.close()
-    metadata = {}
-    dist_info_dirs = [f for f in os.listdir(ext_dir) if f.endswith('.dist-info')]
-    azext_metadata = get_azext_metadata(ext_dir)
-    if azext_metadata:
-        metadata.update(azext_metadata)
-    for dist_info_dirname in dist_info_dirs:
-        parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
-        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name.replace('-', '_'):
-            whl_metadata_filepath = os.path.join(ext_dir, dist_info_dirname, WHL_METADATA_FILENAME)
-            if os.path.isfile(whl_metadata_filepath):
-                with open(whl_metadata_filepath) as f:
-                    metadata.update(json.load(f))
-    return metadata
 
 
 class TestIndex(unittest.TestCase):
@@ -217,36 +133,6 @@ class TestIndex(unittest.TestCase):
                                     "Dependencies of {} use disallowed extension dependencies. "
                                     "Remove these dependencies: {}".format(item['filename'], deps))
         shutil.rmtree(extensions_dir)
-
-
-class TestSourceWheels(unittest.TestCase):
-
-    def test_source_wheels(self):
-        # Test we can build all sources into wheels and that metadata from the wheel is valid
-        from subprocess import PIPE
-        built_whl_dir = tempfile.mkdtemp()
-        source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
-                             if os.path.isdir(os.path.join(SRC_PATH, n))]
-        for s in source_extensions:
-            if not os.path.isfile(os.path.join(s, 'setup.py')):
-                continue
-            try:
-                subprocess.check_call(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir],
-                                      cwd=s, stdout=PIPE, stderr=PIPE)
-            except subprocess.CalledProcessError as err:
-                self.fail("Unable to build extension {} : {}".format(s, err))
-        for filename in os.listdir(built_whl_dir):
-            ext_file = os.path.join(built_whl_dir, filename)
-            ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
-            ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
-            metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
-            run_requires = metadata.get('run_requires')
-            if run_requires and ext_name not in SKIP_DEP_CHECK:
-                deps = run_requires[0]['requires']
-                self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
-                                "Dependencies of {} use disallowed extension dependencies. "
-                                "Remove these dependencies: {}".format(filename, deps))
-        shutil.rmtree(built_whl_dir)
 
 
 if __name__ == '__main__':

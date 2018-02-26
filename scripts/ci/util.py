@@ -4,6 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import json
+import zipfile
+from wheel.install import WHEEL_INFO_RE
+
+# Extensions to skip dep. check. Aim to keep this list empty.
+SKIP_DEP_CHECK = ['azure-cli-iot-ext']
 
 
 def get_repo_root():
@@ -11,3 +17,85 @@ def get_repo_root():
     while not os.path.exists(os.path.join(current_dir, 'CONTRIBUTING.rst')):
         current_dir = os.path.dirname(current_dir)
     return current_dir
+
+
+def _get_extension_modname(ext_dir):
+    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L153
+    EXTENSIONS_MOD_PREFIX = 'azext_'
+    pos_mods = [n for n in os.listdir(ext_dir)
+                if n.startswith(EXTENSIONS_MOD_PREFIX) and os.path.isdir(os.path.join(ext_dir, n))]
+    if len(pos_mods) != 1:
+        raise AssertionError("Expected 1 module to load starting with "
+                             "'{}': got {}".format(EXTENSIONS_MOD_PREFIX, pos_mods))
+    return pos_mods[0]
+
+
+def _get_azext_metadata(ext_dir):
+    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L109
+    AZEXT_METADATA_FILENAME = 'azext_metadata.json'
+    azext_metadata = None
+    ext_modname = _get_extension_modname(ext_dir=ext_dir)
+    azext_metadata_filepath = os.path.join(ext_dir, ext_modname, AZEXT_METADATA_FILENAME)
+    if os.path.isfile(azext_metadata_filepath):
+        with open(azext_metadata_filepath) as f:
+            azext_metadata = json.load(f)
+    return azext_metadata
+
+
+def get_ext_metadata(ext_dir, ext_file, ext_name):
+    # Modification of https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/extension.py#L89
+    WHL_METADATA_FILENAME = 'metadata.json'
+    zip_ref = zipfile.ZipFile(ext_file, 'r')
+    zip_ref.extractall(ext_dir)
+    zip_ref.close()
+    metadata = {}
+    dist_info_dirs = [f for f in os.listdir(ext_dir) if f.endswith('.dist-info')]
+    azext_metadata = _get_azext_metadata(ext_dir)
+    if azext_metadata:
+        metadata.update(azext_metadata)
+    for dist_info_dirname in dist_info_dirs:
+        parsed_dist_info_dir = WHEEL_INFO_RE(dist_info_dirname)
+        if parsed_dist_info_dir and parsed_dist_info_dir.groupdict().get('name') == ext_name.replace('-', '_'):
+            whl_metadata_filepath = os.path.join(ext_dir, dist_info_dirname, WHL_METADATA_FILENAME)
+            if os.path.isfile(whl_metadata_filepath):
+                with open(whl_metadata_filepath) as f:
+                    metadata.update(json.load(f))
+    return metadata
+
+
+def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
+    if not whl_cache:
+        whl_cache = {}
+    if url in whl_cache:
+        return whl_cache[url]
+    import requests
+    r = requests.get(url, stream=True)
+    assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
+    ext_file = os.path.join(tmp_dir, filename)
+    with open(ext_file, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:  # ignore keep-alive new chunks
+                f.write(chunk)
+    whl_cache[url] = ext_file
+    return ext_file
+
+
+SRC_PATH = os.path.join(get_repo_root(), 'src')
+INDEX_PATH = os.path.join(SRC_PATH, 'index.json')
+
+
+def _catch_dup_keys(pairs):
+    seen = {}
+    for k, v in pairs:
+        if k in seen:
+            raise ValueError("duplicate key {}".format(k))
+        seen[k] = v
+    return seen
+
+
+def get_index_data():
+    try:
+        with open(INDEX_PATH) as f:
+            return json.load(f, object_pairs_hook=_catch_dup_keys)
+    except ValueError as err:
+        raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))

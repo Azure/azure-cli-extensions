@@ -12,20 +12,19 @@ import sys
 import tempfile
 import unittest
 import shutil
-from subprocess import check_call
+from subprocess import check_call, CalledProcessError, PIPE
 
 import mock
+from wheel.install import WHEEL_INFO_RE
 from six import with_metaclass
 
-from util import get_repo_root
+from util import get_ext_metadata, SRC_PATH, SKIP_DEP_CHECK
 
-
-SOURCES = os.path.join(get_repo_root(), 'src')
 
 ALL_TESTS = []
 
-for src_d in os.listdir(SOURCES):
-    src_d_full = os.path.join(SOURCES, src_d)
+for src_d in os.listdir(SRC_PATH):
+    src_d_full = os.path.join(SRC_PATH, src_d)
     if os.path.isdir(src_d_full):
         pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
         # Find the package and check it has tests
@@ -61,6 +60,35 @@ class TestExtensionSource(with_metaclass(TestExtensionSourceMeta, unittest.TestC
     def tearDown(self):
         self.mock_env.stop()
         shutil.rmtree(self.ext_dir)
+
+
+class TestSourceWheels(unittest.TestCase):
+
+    def test_source_wheels(self):
+        # Test we can build all sources into wheels and that metadata from the wheel is valid
+        built_whl_dir = tempfile.mkdtemp()
+        source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
+                             if os.path.isdir(os.path.join(SRC_PATH, n))]
+        for s in source_extensions:
+            if not os.path.isfile(os.path.join(s, 'setup.py')):
+                continue
+            try:
+                check_call(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir],
+                           cwd=s, stdout=PIPE, stderr=PIPE)
+            except CalledProcessError as err:
+                self.fail("Unable to build extension {} : {}".format(s, err))
+        for filename in os.listdir(built_whl_dir):
+            ext_file = os.path.join(built_whl_dir, filename)
+            ext_dir = tempfile.mkdtemp(dir=built_whl_dir)
+            ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
+            metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
+            run_requires = metadata.get('run_requires')
+            if run_requires and ext_name not in SKIP_DEP_CHECK:
+                deps = run_requires[0]['requires']
+                self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
+                                "Dependencies of {} use disallowed extension dependencies. "
+                                "Remove these dependencies: {}".format(filename, deps))
+        shutil.rmtree(built_whl_dir)
 
 
 if __name__ == '__main__':
