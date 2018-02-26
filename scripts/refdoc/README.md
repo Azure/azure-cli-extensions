@@ -17,7 +17,7 @@ Scripts for reference documentation generation for Azure CLI Extensions using [s
 
 1. By default, the XML output is stored in `ref-doc-out-*/ind.xml`
 
-## Generating Sphinx output for the latest version of all extensions in index ##
+## Generating Sphinx output for the latest versions of all extensions in index ##
 
 1. Ensure the CLI is installed in your Python virtual environment.
 2. Inside the Python virtual environment, run `pip install sphinx==1.7.0`
