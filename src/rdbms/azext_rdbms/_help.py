@@ -25,10 +25,10 @@ def add_helps(command_group, server_type):
                       text: az {1} server create -l northeurope -g testgroup -n testsvr -u username -p password
                     - name: Create a {0} server with a Standard performance tier and 2 vcore in North Europe.
                       text: az {1} server create -l northeurope -g testgroup -n testsvr -u username -p password \\
-                            --performance-tier Standard --vcore 2
+                            --sku-name GP_Gen4_2
                     - name: Create a {0} server with all paramaters set.
                       text: az {1} server create -l northeurope -g testgroup -n testsvr -u username -p password \\
-                            --performance-tier Basic --vcore 2 --ssl-enforcement Disabled \\
+                            --sku-name B_Gen4_2 --ssl-enforcement Disabled \\
                             --storage-size 51200 --tags "key=value" --version {{server-version}}
                 """.format(server_type, command_group)
     helps['{} server restore'.format(command_group)] = """
