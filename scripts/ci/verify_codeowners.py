@@ -19,7 +19,7 @@ def get_src_dir_codeowners():
     contents = []
     with open(CODEOWNERS) as f:
         contents = [x.strip() for x in f.readlines()]
-    return dict([x.split(' ') for x in contents if x.startswith('/src/') and x.split(' ')[0].endswith('/')])
+    return dict([x.split(' ', 1) for x in contents if x.startswith('/src/') and x.split(' ')[0].endswith('/')])
 
 
 def main():
