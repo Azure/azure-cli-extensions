@@ -33,7 +33,6 @@ def generate(ext_file, output_dir):
                    ext_file, '--disable-pip-version-check', '--no-cache-dir']
         print_status('Executing "{}"'.format(' '.join(pip_cmd)))
         check_call(pip_cmd)
-        # TODO-DEREK Check these. It's running the correct script?
         sphinx_cmd = ['sphinx-build', '-b', 'xml', os.path.dirname(os.path.realpath(__file__)), output_dir]
         env = copy.copy(os.environ)
         env[ENV_KEY_AZURE_EXTENSION_DIR] = temp_extension_dir
