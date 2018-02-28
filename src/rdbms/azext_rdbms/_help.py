@@ -81,6 +81,28 @@ def add_helps(command_group, server_type):
                     - name: List all {0} servers in a resource group.
                       text: az {1} server list -g testgroup
                 """.format(server_type, command_group)
+    helps['mysql server replica'] = """
+                type: group
+                short-summary: Manage cloud replication.
+                """
+    helps['mysql server replica create'] = """
+                type: command
+                short-summary: Create a replica for a server.
+                examples:
+                    - name: Create replica for server testsvr.
+                      text: az mysql server replica create -n testreplsvr -g testgroup -s testsvr
+                    - name: Create replica testreplsvr for server testsvr2, where 'testreplsvr' is in a different resource group.
+                      text: |
+                        az mysql server replica create -n testreplsvr -g testgroup \\
+                            -s "/subscriptions/${{SubID}}/resourceGroups/${{ResourceGroup}}/providers/Microsoft.DBforMySQL/servers/testsvr2"
+                """
+    helps['mysql server replica promote'] = """
+                type: command
+                short-summary: Promote Replica to being an individual server.
+                examples:
+                    - name: Promote a replica server testsvr to an individual server.
+                      text: az mysql server replica promote -g testgroup -n testsvr
+                """
     helps['{} server firewall-rule'.format(command_group)] = """
                 type: group
                 short-summary: Manage firewall rules for a server.

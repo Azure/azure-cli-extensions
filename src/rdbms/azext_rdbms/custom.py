@@ -18,18 +18,7 @@ SKU_TIER_MAP = {'Basic': 'b', 'GeneralPurpose': 'gp', 'MemoryOptimized': 'mo'}
 # arguments and validators
 def _server_restore(cmd, client, resource_group_name, server_name, parameters, no_wait=False, **kwargs):
     source_server = kwargs['source_server_id']
-
-    if not is_valid_resource_id(source_server):
-        if len(source_server.split('/')) == 1:
-            provider = 'Microsoft.DBForMySQL' if isinstance(client, ServersOperations) else 'Microsoft.DBforPostgreSQL'
-            source_server = resource_id(subscription=get_subscription_id(cmd.cli_ctx),
-                                        resource_group=resource_group_name,
-                                        namespace=provider,
-                                        type='servers',
-                                        name=source_server)
-        else:
-            raise ValueError('The provided source-server {} is invalid.'.format(source_server))
-
+    source_server = __check_server_id(cmd, client, resource_group_name, source_server)
     parameters.properties.source_server_id = source_server
 
     # Here is a workaround that we don't support cross-region restore currently,
@@ -49,18 +38,7 @@ def _server_restore(cmd, client, resource_group_name, server_name, parameters, n
 # auguments and validators
 def _server_georestore(cmd, client, resource_group_name, server_name, parameters, no_wait=False, **kwargs):
     source_server = kwargs['source_server_id']
-
-    if not is_valid_resource_id(source_server):
-        if len(source_server.split('/')) == 1:
-            provider = 'Microsoft.DBForMySQL' if isinstance(client, ServersOperations) else 'Microsoft.DBforPostgreSQL'
-            source_server = resource_id(subscription=get_subscription_id(cmd.cli_ctx),
-                                        resource_group=resource_group_name,
-                                        namespace=provider,
-                                        type='servers',
-                                        name=source_server)
-        else:
-            raise ValueError('The provided source-server {} is invalid.'.format(source_server))
-
+    source_server = __check_server_id(cmd, client, resource_group_name, source_server)
     parameters.properties.source_server_id = source_server
 
     id_parts = parse_resource_id(source_server)
@@ -107,6 +85,46 @@ def _server_update_custom_func(instance,
                                     tags=tags)
 
     return params
+
+
+# Custom functions for replicas #
+def _replica_create(cmd, client, resource_group_name, server_name, parameters, no_wait=False, **kwargs):
+    # Set source server id
+    source_server = kwargs['source_server_id']
+    source_server = __check_server_id(cmd, client, resource_group_name, source_server)
+    parameters.properties.source_server_id = source_server
+
+    # Here is a workaround that we don't support cross-region restore currently,
+    # so the location must be set as the same as source server (not the resource group)
+    id_parts = parse_resource_id(source_server)
+    try:
+        source_server_object = client.get(id_parts['resource_group'], id_parts['name'])
+        parameters.location = source_server_object.location
+        # Here is a workaround that if not provide sku name, replica cannot be created.
+        parameters.sku.name = source_server_object.sku.name
+    except Exception as e:
+        raise ValueError('Unable to get source server: {}.'.format(str(e)))
+
+    return client.create(resource_group_name, server_name, parameters, raw=no_wait)
+
+
+def _replica_promote(client, resource_group_name, server_name):
+    try:
+        server_object = client.get(resource_group_name, server_name)
+    except Exception as e:
+        raise ValueError('Unable to get server: {}.'.format(str(e)))
+
+    if server_object.replication_role != "Replica":
+        raise ValueError('Server {} is not a replica server.'.format(server_name))
+
+    from importlib import import_module
+    server_module_path = server_object.__module__
+    module = import_module(server_module_path.replace('server', 'server_update_parameters'))
+    ServerUpdateParameters = getattr(module, 'ServerUpdateParameters')
+
+    params = ServerUpdateParameters(replication_role='None')
+
+    return client.update(resource_group_name, server_name, params)
 
 
 def _server_mysql_get(cmd, resource_group_name, server_name):
@@ -201,3 +219,19 @@ def _server_list_custom_func(client, resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
     return client.list()
+
+
+# Private functions #
+def __check_server_id(cmd, client, resource_group_name, source_server):
+    if not is_valid_resource_id(source_server):
+        if len(source_server.split('/')) == 1:
+            provider = 'Microsoft.DBForMySQL' if isinstance(client, ServersOperations) else 'Microsoft.DBforPostgreSQL'
+            return resource_id(subscription=get_subscription_id(cmd.cli_ctx),
+                               resource_group=resource_group_name,
+                               namespace=provider,
+                               type='servers',
+                               name=source_server)
+        else:
+            raise ValueError('The provided source-server {} is invalid.'.format(source_server))
+    else:
+        return source_server

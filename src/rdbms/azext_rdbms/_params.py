@@ -56,6 +56,19 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
 
             c.argument('source_server_id', options_list=['--source-server', '-s'], help='The name or ID of the source server to restore from.')
 
+        with self.argument_context('mysql server replica create') as c:
+            # Need to add sku.name in request to bypass the backend bug
+            c.expand('sku', engine.models.Sku)
+            c.ignore('name', 'size', 'family', 'tier', 'capacity')
+
+            c.expand('properties', mysql.models.ServerPropertiesForReplica)
+            c.ignore('version', 'ssl_enforcement', 'storage_profile')
+
+            c.expand('parameters', mysql.models.ServerForCreate)
+            c.ignore('tags', 'location')
+
+            c.argument('source_server_id', options_list=['--source-server', '-s'], help='The name or ID of the primary server to create replica for.')
+
         with self.argument_context('{} server configuration set'.format(command_group)) as c:
             c.argument('value', help='Value of the configuration. If not provided, configuration value will be set to default.', validator=configuration_value_validator)
             c.ignore('source')
@@ -108,3 +121,6 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         with self.argument_context(scope) as c:
             c.argument('server_name', options_list=['--server-name', '-s'])
             c.argument('configuration_name', id_part='child_name_1', options_list=['--name', '-n'])
+
+    with self.argument_context('mysql server replica list') as c:
+        c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the primary server.')

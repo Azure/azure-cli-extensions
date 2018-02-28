@@ -11,6 +11,7 @@ from azext_rdbms._client_factory import (
     cf_mysql_firewall_rules,
     cf_mysql_config,
     cf_mysql_log,
+    cf_mysql_replica,
     cf_postgres_servers,
     cf_postgres_db,
     cf_postgres_firewall_rules,
@@ -33,6 +34,12 @@ def load_command_table(self, _):
         operations_tmpl='azext_rdbms.postgresql.operations.servers_operations#ServersOperations.{}',
         client_arg_name='self',
         client_factory=cf_postgres_servers
+    )
+
+    mysql_replica_sdk = CliCommandType(
+        operations_tmpl='azext_rdbms.mysql.operations.replicas_operations#ReplicasOperations.{}',
+        client_arg_name='self',
+        client_factory=cf_mysql_replica
     )
 
     mysql_firewall_rule_sdk = CliCommandType(
@@ -108,6 +115,12 @@ def load_command_table(self, _):
                                  setter_name='_server_update_set', setter_type=rdbms_custom, setter_arg_name='parameters',
                                  custom_func_name='_server_update_custom_func')
         g.generic_wait_command('wait', getter_name='_server_postgresql_get', getter_type=rdbms_custom)
+
+    with self.command_group('mysql server replica', mysql_replica_sdk, client_factory=cf_mysql_servers) as g:
+        g.custom_command('create', '_replica_create', no_wait_param='no_wait')
+        g.custom_command('promote', '_replica_promote')
+        g.command('list', 'list_by_server')
+        g.generic_wait_command('wait', getter_name='_server_mysql_get', getter_type=rdbms_custom)
 
     with self.command_group('mysql server firewall-rule', mysql_firewall_rule_sdk) as g:
         g.command('create', 'create_or_update')
