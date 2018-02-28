@@ -133,6 +133,9 @@ def set_number_of_aliases_registered(num_aliases):
 
 @decorators.suppress_all_exceptions(raise_in_diagnostics=True)
 def conclude():
+    if not _session.aliases_hit:
+        return
+
     _session.end_time = datetime.datetime.now()
     for properties in _session.generate_payload():
         telemetry_core.add_extension_event(EXTENSION_NAME, properties)
