@@ -8,7 +8,8 @@ from knack.help_files import helps
 
 helps['webapp new'] = """
     type: command
-    short-summary: Create and deploy a node web app
+    short-summary: Experimental command to create and deploy a web app.
+                   Current supports Node on Linux & .NET Core on Windows.
     examples:
         - name: Create a web app with the default configuration.
           text: >
