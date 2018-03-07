@@ -109,13 +109,12 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             }
             """ % (name, asp, rg_str, full_sku, os_val, location, src_path,
                    detected_version, runtime_version)
+    create_json = json.loads(dry_run_str)
 
-    create_json = json.dumps(json.loads(dry_run_str), indent=4, sort_keys=True)
     if dryrun:
         logger.warning("Web app will be created with the below configuration,re-run command "
                        "without the --dryrun flag to create & deploy a new app")
-        logger.warning(create_json)
-        return None
+        return create_json
 
     # create RG if the RG doesn't already exist
     if not check_resource_group_exists(cmd, rg_name):
@@ -139,7 +138,10 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     # create the app
     if not check_app_exists(cmd, rg_name, name):
         logger.warning("Creating app '%s' ....", name)
-        create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
+        app_created = create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
+        # update create_json to include the app_url
+        url = app_created.enabled_host_names[0]  # picks the custom domain URL incase a domain is assigned
+        url = 'https://' + url
         logger.warning("Webapp creation complete")
     else:
         logger.warning("App '%s' already exists", name)
@@ -166,8 +168,13 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         logger.warning("Deploying and building contents to app."
                        "This operation can take some time to finish...")
         enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+        # Remove the file afer deployment, handling exception if user removed the file manually
+        try:
+            os.remove(zip_file_path)
+        except OSError:
+            pass
     else:
         logger.warning("No 'NODE' or 'DOTNETCORE' package detected, skipping zip and deploy process")
-
-    logger.warning("All done. %s", create_json)
-    return None
+    create_json.update({'app_url': url})
+    logger.warning("All done.")
+    return create_json
