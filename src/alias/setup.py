@@ -29,7 +29,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'jinja2~=2.10'
+]
 
 setup(
     name='alias',
