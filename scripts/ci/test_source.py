@@ -40,6 +40,8 @@ class TestExtensionSourceMeta(type):
                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
                             os.path.join(self.ext_dir, 'ext'), ext_path]
                 check_call(pip_args)
+                install_dependencies_args = [sys.executable, '-m', 'pip', 'install', '-e', ext_path]
+                check_call(install_dependencies_args)
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 check_call(unittest_args)
             return test
