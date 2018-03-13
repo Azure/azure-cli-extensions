@@ -11,10 +11,6 @@ ALIAS_HASH_FILE_NAME = 'alias.sha1'
 COLLIDED_ALIAS_FILE_NAME = 'collided_alias'
 COLLISION_CHECK_LEVEL_DEPTH = 4
 
-POS_ARG_NAME_REGEX = r'{{\s*([a-zA-Z0-9_]+)\s*}}'
-EXPRESSION_REGEX = r'{{\s*([a-zA-Z0-9_]+.*?)\s*}}'
-NUMBER_PLACEHOLDER_REGEX = r'{{\s*\d+\s*}}'
-
 INSUFFICIENT_POS_ARG_ERROR = 'alias: "{}" takes exactly {} positional argument{} ({} given)'
 CONFIG_PARSING_ERROR = 'alias: Error parsing the configuration file - {}. Please fix the problem manually.'
 DEBUG_MSG = 'Alias Manager: Transforming "%s" to "%s"'
@@ -23,3 +19,4 @@ POS_ARG_DEBUG_MSG = 'Alias Manager: Transforming "%s" to "%s", with the followin
 DUPLICATED_PLACEHOLDER_ERROR = 'alias: Duplicated placeholders found when transforming "{}"'
 RENDER_TEMPLATE_ERROR = 'alias: Encounted the following error when injecting positional arguments to "{}" - {}'
 PLACEHOLDER_EVAL_ERROR = 'alias: Encounted the following error when evaluating "{}" - {}'
+PLACEHOLDER_BRACKETS_ERROR = 'alias: Brackets in "{}" are not enclosed properly'

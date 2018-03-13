@@ -223,7 +223,7 @@ class AliasManager(object):
         Perform a full load of the command table to get all the reserved command words.
         """
         load_cmd_tbl_func = self.kwargs.get('load_cmd_tbl_func', None)
-        if callable(load_cmd_tbl_func):
+        if load_cmd_tbl_func is not None:
             self.reserved_commands = list(load_cmd_tbl_func([]).keys())
             telemetry.set_full_command_table_loaded()
 
