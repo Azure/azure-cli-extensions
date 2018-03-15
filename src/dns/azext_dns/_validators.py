@@ -15,7 +15,7 @@ def validate_metadata(namespace):
         namespace.metadata = dict(x.split('=', 1) for x in namespace.metadata)
 
 def get_vnet_validator(dest):
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from msrestazure.tools import is_valid_resource_id, resource_id  # pylint:disable=import-error
 
     def _validate_vnet_name_or_id(cmd, namespace):
         SubResource = cmd.get_models('SubResource')
