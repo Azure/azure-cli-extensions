@@ -5,12 +5,14 @@
 
 import os
 import re
-import hashlib
+import sys
 import json
+import shlex
+import hashlib
+from collections import defaultdict
 from six.moves import configparser
 
 from knack.log import get_logger
-from knack.util import CLIError
 
 from azext_alias import telemetry
 from azext_alias._const import (
@@ -18,14 +20,16 @@ from azext_alias._const import (
     ALIAS_FILE_NAME,
     ALIAS_HASH_FILE_NAME,
     COLLIDED_ALIAS_FILE_NAME,
-    PLACEHOLDER_REGEX,
-    INCONSISTENT_INDEXING_ERROR,
     CONFIG_PARSING_ERROR,
-    INSUFFICIENT_POS_ARG_ERROR,
     DEBUG_MSG,
-    POS_ARG_DEBUG_MSG,
-    COLLISION_CHECK_LEVEL_DEPTH
+    COLLISION_CHECK_LEVEL_DEPTH,
+    POS_ARG_DEBUG_MSG
 )
+from azext_alias.argument import (
+    build_pos_args_table,
+    render_template
+)
+
 
 GLOBAL_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_FILE_NAME)
 GLOBAL_ALIAS_HASH_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_HASH_FILE_NAME)
@@ -34,12 +38,24 @@ GLOBAL_COLLIDED_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, COLLIDED_ALIAS_FILE
 logger = get_logger(__name__)
 
 
+def get_config_parser():
+    """
+    Disable configparser's interpolation function and return an instance of config parser.
+
+    Returns:
+        An instance of config parser with interpolation disabled.
+    """
+    if sys.version_info.major == 3:
+        return configparser.ConfigParser(interpolation=None)  # pylint: disable=unexpected-keyword-arg
+    return configparser.ConfigParser()
+
+
 class AliasManager(object):
 
     def __init__(self, **kwargs):
-        self.alias_table = configparser.ConfigParser()
+        self.alias_table = get_config_parser()
         self.kwargs = kwargs
-        self.collided_alias = dict()
+        self.collided_alias = defaultdict(list)
         self.reserved_commands = []
         self.alias_config_str = ''
         self.alias_config_hash = ''
@@ -81,7 +97,7 @@ class AliasManager(object):
             collided_alias_str = collided_alias_file.read()
             try:
                 self.collided_alias = json.loads(collided_alias_str if collided_alias_str else '{}')
-            except Exception:   # pylint: disable=broad-except
+            except Exception:  # pylint: disable=broad-except
                 self.collided_alias = {}
 
     def detect_alias_config_change(self):
@@ -136,34 +152,25 @@ class AliasManager(object):
                 continue
 
             full_alias = self.get_full_alias(alias)
-            num_pos_args = AliasManager.count_positional_args(full_alias)
 
             if self.alias_table.has_option(full_alias, 'command'):
                 cmd_derived_from_alias = self.alias_table.get(full_alias, 'command')
-                if not num_pos_args:
-                    logger.debug(DEBUG_MSG, alias, cmd_derived_from_alias)
                 telemetry.set_alias_hit(full_alias)
             else:
                 transformed_commands.append(alias)
                 continue
 
-            if num_pos_args:
-                # Take arguments indexed from alias_index to alias_index + num_pos_args and inject
-                # them as positional arguments into the command
-                pos_args_iter = AliasManager.pos_args_iter(alias, args, alias_index, num_pos_args)
-                pos_arg_debug_msg = POS_ARG_DEBUG_MSG.format(alias, cmd_derived_from_alias)
-                for placeholder, pos_arg in pos_args_iter:
-                    if placeholder not in full_alias:
-                        raise CLIError(INCONSISTENT_INDEXING_ERROR.format(placeholder, full_alias))
+            pos_args_table = build_pos_args_table(full_alias, args, alias_index)
+            if pos_args_table:
+                logger.debug(POS_ARG_DEBUG_MSG, full_alias, cmd_derived_from_alias, pos_args_table)
+                transformed_commands += render_template(cmd_derived_from_alias, pos_args_table)
 
-                    cmd_derived_from_alias = cmd_derived_from_alias.replace(placeholder, pos_arg)
-                    pos_arg_debug_msg += "({}: {}) ".format(placeholder, pos_arg)
-                    # Skip the next arg because it has been already consumed as a positional argument above
+                # Skip the next arg(s) because they have been already consumed as a positional argument above
+                for pos_arg in pos_args_table:  # pylint: disable=unused-variable
                     next(alias_iter)
-                logger.debug(pos_arg_debug_msg)
-
-            # Invoke split() because the command derived from the alias might contain spaces
-            transformed_commands += cmd_derived_from_alias.split()
+            else:
+                logger.debug(DEBUG_MSG, full_alias, cmd_derived_from_alias)
+                transformed_commands += shlex.split(cmd_derived_from_alias)
 
         return self.post_transform(transformed_commands)
 
@@ -171,7 +178,7 @@ class AliasManager(object):
         """
         Build the collision table according to the alias configuration file against the entire command table.
 
-        if the word collided with a reserved command. self.collided_alias is structured as:
+        self.collided_alias is structured as:
         {
             'collided_alias': [the command level at which collision happens]
         }
@@ -193,8 +200,6 @@ class AliasManager(object):
             for level in range(1, levels + 1):
                 collision_regex = r'^{}{}($|\s)'.format(r'([a-z\-]*\s)' * (level - 1), word.lower())
                 if list(filter(re.compile(collision_regex).match, self.reserved_commands)):
-                    if word not in self.collided_alias:
-                        self.collided_alias[word] = []
                     self.collided_alias[word].append(level)
         telemetry.set_collided_aliases(list(self.collided_alias.keys()))
 
@@ -210,16 +215,16 @@ class AliasManager(object):
         """
         if query in self.alias_table.sections():
             return query
+
         return next((section for section in self.alias_table.sections() if section.split()[0] == query), '')
 
     def load_full_command_table(self):
         """
         Perform a full load of the command table to get all the reserved command words.
         """
-        load_cmd_tbl_func = self.kwargs.get('load_cmd_tbl_func', None)
-        if load_cmd_tbl_func:
-            self.reserved_commands = list(load_cmd_tbl_func([]).keys())
-            telemetry.set_full_command_table_loaded()
+        load_cmd_tbl_func = self.kwargs.get('load_cmd_tbl_func', lambda _: {})
+        self.reserved_commands = list(load_cmd_tbl_func([]).keys())
+        telemetry.set_full_command_table_loaded()
 
     def post_transform(self, args):
         """
@@ -233,9 +238,6 @@ class AliasManager(object):
 
         post_transform_commands = []
         for arg in args:
-            # Trim leading and trailing quotes
-            if arg and arg[0] == arg[-1] and arg[0] in '\'"':
-                arg = arg[1:-1]
             post_transform_commands.append(os.path.expandvars(arg))
 
         self.write_alias_config_hash()
@@ -291,36 +293,3 @@ class AliasManager(object):
         for replace_char in ['\t', '\n', '\\n']:
             exception_message = exception_message.replace(replace_char, '' if replace_char != '\t' else ' ')
         return exception_message.replace('section', 'alias')
-
-    @staticmethod
-    def pos_args_iter(alias, args, start_index, num_pos_args):
-        """
-        Generate an tuple iterator ([0], [1]) where the [0] is the positional argument
-        placeholder and [1] is the argument value. e.g. ('{0}', pos_arg_1) -> ('{1}', pos_arg_2) -> ...
-
-        Args:
-            alias: The current alias we are processing.
-            args: The list of input commands.
-            start_index: The index where we start selecting the positional arguments
-                (one-index instead of zero-index).
-            num_pos_args: The number of positional arguments that this alias has.
-        """
-        pos_args = args[start_index: start_index + num_pos_args]
-        if len(pos_args) != num_pos_args:
-            raise CLIError(INSUFFICIENT_POS_ARG_ERROR.format(alias, num_pos_args, len(pos_args)))
-
-        for i, pos_arg in enumerate(pos_args):
-            yield ('{{{}}}'.format(i), pos_arg)
-
-    @staticmethod
-    def count_positional_args(arg):
-        """
-        Count how many positional arguments ({0}, {1} ...) there are.
-
-        Args:
-            arg: The word which this function performs counting on.
-
-        Returns:
-            The number of placeholders in arg.
-        """
-        return len(re.findall(PLACEHOLDER_REGEX, arg))

@@ -11,11 +11,12 @@ ALIAS_HASH_FILE_NAME = 'alias.sha1'
 COLLIDED_ALIAS_FILE_NAME = 'collided_alias'
 COLLISION_CHECK_LEVEL_DEPTH = 4
 
-PLACEHOLDER_REGEX = r'\s+{\d+}'
-
-INCONSISTENT_INDEXING_ERROR = 'alias: Placeholder indexing should be zero-indexed, but {} is missing in "{}"'
-INSUFFICIENT_POS_ARG_ERROR = 'alias: "{}" takes exactly {} argument(s) ({} given)'
-CONFIG_PARSING_ERROR = 'alias: Error parsing the configuration file - %s. Please fix the problem manually.'
+INSUFFICIENT_POS_ARG_ERROR = 'alias: "{}" takes exactly {} positional argument{} ({} given)'
+CONFIG_PARSING_ERROR = 'alias: Error parsing the configuration file - {}. Please fix the problem manually.'
 DEBUG_MSG = 'Alias Manager: Transforming "%s" to "%s"'
 DEBUG_MSG_WITH_TIMING = 'Alias Manager: Transformed args to %s in %.3fms'
-POS_ARG_DEBUG_MSG = 'Alias Manager: Transforming "{}" to "{}", with the following positional arguments: '
+POS_ARG_DEBUG_MSG = 'Alias Manager: Transforming "%s" to "%s", with the following positional arguments: %s'
+DUPLICATED_PLACEHOLDER_ERROR = 'alias: Duplicated placeholders found when transforming "{}"'
+RENDER_TEMPLATE_ERROR = 'alias: Encounted the following error when injecting positional arguments to "{}" - {}'
+PLACEHOLDER_EVAL_ERROR = 'alias: Encounted the following error when evaluating "{}" - {}'
+PLACEHOLDER_BRACKETS_ERROR = 'alias: Brackets in "{}" are not enclosed properly'

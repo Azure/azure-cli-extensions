@@ -7,6 +7,7 @@
 
 import sys
 import os
+import shlex
 import unittest
 from six.moves import configparser
 
@@ -24,7 +25,6 @@ from azext_alias.tests._const import (DEFAULT_MOCK_ALIAS_STRING,
 TEST_TRANSFORM_ALIAS = 'test_transform_alias'
 TEST_TRANSFORM_COLLIDED_ALIAS = 'test_transform_collided_alias'
 TEST_TRANSFORM_EMPTY_STRING = 'test_transform_empty_string'
-TEST_POST_TRANSFORM_REMOVE_QUOTES = 'test_post_transform_remove_quotes'
 TEST_POST_TRANSFORM_ENV_VAR = 'test_post_transform_env_var'
 TEST_INCONSISTENT_PLACEHOLDER_INDEX = 'test_inconsistent_placeholder_index'
 TEST_PARSE_ERROR_PYTHON_3 = 'test_parse_error_python_3'
@@ -41,16 +41,18 @@ TEST_DATA = {
         ('-h', '-h'),
         ('storage-connect test1 test2', 'storage account connection-string -g test1 -n test2 -otsv'),
         ('', ''),
+        ('test --json \'{"test": "arg"}\'', 'test --json \'{"test": "arg"}\''),
         ('ac set -s test', 'account set -s test'),
         ('vm ls -g test -otable', 'vm list -otable -g test -otable'),
         ('cp test1 test2', 'storage blob copy start-batch --source-uri test1 --destination-container test2'),
         ('pos-arg-1 test1 test2', 'iot test1test test2test'),
-        ('pos-arg-2', 'ad {0} {1}'),
-        ('pos-arg-3 test1 test2', 'sf test1 test1 test2 test2'),
-        ('show-ext-1 test-ext', 'extension show -n {1}'),
+        ('pos-arg-2 test1 test2', 'sf test1 test1 test2 test2'),
+        ('pos-arg-json \'{"test": "arg"}\'', 'test --json \'{"test": "arg"}\''),
         ('cp test1 test2 -o tsv', 'storage blob copy start-batch --source-uri test1 --destination-container test2 -o tsv'),
         ('create-vm --image ubtuntults --generate-ssh-key --no-wait', 'vm create -g test-group -n test-vm --image ubtuntults --generate-ssh-key --no-wait'),
-        ('cp mn diag', 'storage blob copy start-batch --source-uri mn --destination-container diag')
+        ('cp mn diag', 'storage blob copy start-batch --source-uri mn --destination-container diag'),
+        ('storage-ls azurecliprod.blob.core.windows.net/cli-extensions', 'storage blob list --account-name azurecliprod --container-name cli-extensions'),
+        ('storage-ls-2 https://azurecliprod.blob.core.windows.net/cli-extensions', 'storage blob list --account-name azurecliprod --container-name cli-extensions')
     ],
     TEST_TRANSFORM_COLLIDED_ALIAS: [
         ('account list -otable', 'account list -otable'),
@@ -61,20 +63,14 @@ TEST_DATA = {
     ],
     TEST_TRANSFORM_EMPTY_STRING: [
         ('network vnet update -g test -n test --dns-servers ""', 'network vnet update -g test -n test --dns-servers'),
-        ('test1 test2 --query \'\'', 'test1 test2 --query')
-    ],
-    TEST_POST_TRANSFORM_REMOVE_QUOTES: [
-        (['test', '--json', '\'{"parameters": {"location": {"value": "westus"}, "name": {"value": "azure-cli-deploy-test-nsg1"}}}\''], ['test', '--json', '{"parameters": {"location": {"value": "westus"}, "name": {"value": "azure-cli-deploy-test-nsg1"}}}']),
-        (['test', '--query', '"query with spaces"'], ['test', '--query', 'query with spaces']),
-        (['test', '--query', '"[].id"'], ['test', '--query', '[].id'], ['test', '--query', '\'[].id\''], ['test', '--query', '[].id'])
+        ('test1 test2 --query ""', 'test1 test2 --query')
     ],
     TEST_POST_TRANSFORM_ENV_VAR: [
         ('group create -n test --tags tag1=$tag1 tag2=$tag2 tag3=$non-existing-env-var', 'group create -n test --tags tag1=test-env-var-1 tag2=test-env-var-2 tag3=$non-existing-env-var')
     ],
     TEST_INCONSISTENT_PLACEHOLDER_INDEX: [
         ['cp'],
-        ['cp', 'test'],
-        ['show-ext-2', 'test-ext']
+        ['cp', 'test']
     ],
     TEST_PARSE_ERROR_PYTHON_3: [
         DUP_SECTION_MOCK_ALIAS_STRING,
@@ -94,21 +90,15 @@ def test_transform_alias(self, test_case):
 def test_transform_collided_alias(self, test_case):
     alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
     alias_manager.build_collision_table()
-    self.assertEqual(test_case[1].split(), alias_manager.transform(test_case[0].split()))
+    self.assertEqual(shlex.split(test_case[1]), alias_manager.transform(shlex.split(test_case[0])))
 
 
 def test_transform_empty_string(self, test_case):
     alias_manager = self.get_alias_manager()
-    transformed_args = alias_manager.transform(test_case[0].split())
-    expected_args = test_case[1].split()
+    transformed_args = alias_manager.transform(shlex.split(test_case[0]))
+    expected_args = shlex.split(test_case[1])
     self.assertEqual(expected_args, transformed_args[:-1])
     self.assertEqual('', transformed_args[-1])
-
-
-def test_post_transform_remove_quotes(self, test_case):
-    alias_manager = self.get_alias_manager()
-    transformed_args = alias_manager.post_transform(test_case[0])
-    self.assertListEqual(test_case[1], transformed_args)
 
 
 def test_post_transform_env_var(self, test_case):
@@ -144,7 +134,6 @@ TEST_FN = {
     TEST_TRANSFORM_ALIAS: test_transform_alias,
     TEST_TRANSFORM_COLLIDED_ALIAS: test_transform_collided_alias,
     TEST_TRANSFORM_EMPTY_STRING: test_transform_empty_string,
-    TEST_POST_TRANSFORM_REMOVE_QUOTES: test_post_transform_remove_quotes,
     TEST_POST_TRANSFORM_ENV_VAR: test_post_transform_env_var,
     TEST_INCONSISTENT_PLACEHOLDER_INDEX: test_inconsistent_placeholder_index,
     TEST_PARSE_ERROR_PYTHON_3: test_parse_error_python_3,
@@ -188,12 +177,11 @@ class TestAlias(unittest.TestCase):
     def assertAlias(self, value):
         """ Assert the alias with the default alias config file """
         alias_manager = self.get_alias_manager()
-        self.assertEqual(value[1].split(), alias_manager.transform(value[0].split()))
+        self.assertEqual(shlex.split(value[1]), alias_manager.transform(shlex.split(value[0])))
 
     def assertPostTransform(self, value, mock_alias_str=DEFAULT_MOCK_ALIAS_STRING):
         alias_manager = self.get_alias_manager(mock_alias_str=mock_alias_str)
-        self.assertEqual(value[1].split(),
-                         alias_manager.post_transform(value[0].split()))
+        self.assertEqual(shlex.split(value[1]), alias_manager.post_transform(shlex.split(value[0])))
 
 
 class MockAliasManager(alias.AliasManager):
@@ -233,5 +221,4 @@ for test_type, test_cases in TEST_DATA.items():
 
 
 if __name__ == '__main__':
-    test_suite = unittest.TestLoader().loadTestsFromTestCase(TestAlias)
-    unittest.TextTestRunner(verbosity=2).run(test_suite)
+    unittest.main()
