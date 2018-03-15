@@ -42,7 +42,9 @@ class TestExtensionSourceMeta(type):
                             ext_install_dir, ext_path]
                 check_call(pip_args)
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
-                check_call(unittest_args, env={'PYTHONPATH': ext_install_dir})
+                check_call(unittest_args, env={
+                    'PYTHONPATH': '{}{}:'.format(os.environ.get('PYTHONPATH', ''), ext_install_dir)
+                })
             return test
 
         for tname, ext_path in ALL_TESTS:
