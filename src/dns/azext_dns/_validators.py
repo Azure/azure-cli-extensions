@@ -5,14 +5,17 @@
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 
+
 # pylint: disable=inconsistent-return-statements
 def dns_zone_name_type(value):
     if value:
         return value[:-1] if value[-1] == '.' else value
 
+
 def validate_metadata(namespace):
     if namespace.metadata:
         namespace.metadata = dict(x.split('=', 1) for x in namespace.metadata)
+
 
 def get_vnet_validator(dest):
     from msrestazure.tools import is_valid_resource_id, resource_id  # pylint:disable=import-error

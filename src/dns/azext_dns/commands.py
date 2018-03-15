@@ -6,6 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 from azext_dns._client_factory import (cf_dns_mgmt_zones)
 
+
 def load_command_table(self, _):
 
     network_dns_zone_sdk = CliCommandType(
