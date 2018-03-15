@@ -65,14 +65,14 @@ def get_placeholders(arg, check_duplicates=False):
 
 def normalize_placeholders(arg, inject_quotes=False):
     """
-    Normalize  names so that the template can be ingested into Jinja template engine
+    Normalize placeholders' names so that the template can be ingested into Jinja template engine.
     - Jinja does not accept numbers as placeholder names, so add a "_"
-        before the number to make them valid placeholder names.
+        before the numbers to make them valid placeholder names.
     - Surround placeholders expressions with "" so we can preserve spaces inside the positional arguments.
 
     Args:
         arg: The string to process.
-        inject_qoutes: True if we want to surround placeholders with a pair of quotes
+        inject_qoutes: True if we want to surround placeholders with a pair of quotes.
 
     Returns:
         A processed string where placeholders are surrounded by "" and
@@ -88,12 +88,12 @@ def normalize_placeholders(arg, inject_quotes=False):
 
 def build_pos_args_table(full_alias, args, start_index):
     """
-    Build a dictionary of position argument.
+    Build a dictionary where the key is placeholder name and the value is the position argument value.
 
     Args:
         full_alias: The full alias (including any placeholders).
         args: The arguments that the user inputs in the terminal.
-        start_index: The index at which we start taking position arguments.
+        start_index: The index at which we start ingesting position arguments.
 
     Returns:
         A dictionary with the key beign the name of the placeholder and its value
@@ -136,8 +136,8 @@ def render_template(cmd_derived_from_alias, pos_args_table):
         rendered = shlex.split(template.render(pos_args_table))
 
         # Manually check if there is any runtime error (such as index out of range)
-        # since Jinja template engine only checks for compile error
-        # Only check for runtime errors if there is an empty string in rendered
+        # since Jinja template engine only checks for compile time error.
+        # Only check for runtime errors if there is an empty string in rendered.
         if '' in rendered:
             check_runtime_errors(cmd_derived_from_alias, pos_args_table)
 
@@ -147,7 +147,7 @@ def render_template(cmd_derived_from_alias, pos_args_table):
         if isinstance(exception, CLIError):
             raise
 
-        # Template has some sort of compile errors
+        # The template has some sort of compile time errors
         split_exception_message = str(exception).split()
 
         # Check if the error message provides the index of the erroneous character
