@@ -23,9 +23,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'msrestazure>=0.4.22'
-]
+DEPENDENCIES = []
 
 setup(
     name='dns',
