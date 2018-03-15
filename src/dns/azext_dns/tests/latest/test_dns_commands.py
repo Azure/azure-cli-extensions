@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
 import os
 import unittest
 
@@ -14,7 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class DnsScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_dns')
-    def test_dns(self, resource_group):
+    def test_dns(self, resource_group): # pylint: disable=unused-argument
 
         self.kwargs['zone'] = 'myzone.com'
 
@@ -87,7 +88,7 @@ class DnsScenarioTest(ScenarioTest):
                  checks=self.is_empty())
 
     @ResourceGroupPreparer(name_prefix='cli_test_dns')
-    def test_private_dns(self, resource_group):
+    def test_private_dns(self, resource_group): # pylint: disable=unused-argument
 
         self.kwargs['zone'] = 'myprivatezone.com'
         self.kwargs['regvnet'] = 'regvnet'
