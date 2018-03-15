@@ -23,6 +23,8 @@ helps['network dns zone create'] = """
     parameters:
         - name: --if-none-match
           short-summary: Only create a DNS zone if one doesn't exist that matches the given name.
+        - name: --tags
+          short-summary: Resource tags for the DNS zone.
         - name: --zone-type
           short-summary: Type of the zone to be created. Valid values are 'Public' and 'Private'.
         - name: --registration-vnets
@@ -41,6 +43,8 @@ helps['network dns zone update'] = """
     parameters:
         - name: --if-match
           short-summary: Update only if the resource with the same ETAG exists.
+        - name: --tags
+          short-summary: Resource tags for the DNS zone.
         - name: --registration-vnets
           short-summary: Space-separated names or IDs of virtual networks that register hostnames in this DNS zone. Only applies to 'Private' zones.
         - name: --resolution-vnets
