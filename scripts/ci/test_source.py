@@ -37,16 +37,12 @@ class TestExtensionSourceMeta(type):
 
         def gen_test(ext_path):
             def test(self):
+                ext_install_dir = os.path.join(self.ext_dir, 'ext')
                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
-                            os.path.join(self.ext_dir, 'ext'), ext_path]
+                            ext_install_dir, ext_path]
                 check_call(pip_args)
-                test_requirements = os.path.join(ext_path, 'test_requirements.txt')
-                if os.path.isfile(test_requirements):
-                    install_test_dep_args = [sys.executable, '-m', 'pip', 'install', '--upgrade',
-                                             '-r', test_requirements, '--target', ext_path]
-                    check_call(install_test_dep_args)
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
-                check_call(unittest_args)
+                check_call(unittest_args, env={'PYTHONPATH': ext_install_dir})
             return test
 
         for tname, ext_path in ALL_TESTS:
