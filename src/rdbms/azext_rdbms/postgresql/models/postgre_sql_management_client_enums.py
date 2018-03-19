@@ -12,39 +12,39 @@
 from enum import Enum
 
 
-class ServerVersion(str, Enum):
+class ServerVersion(Enum):
 
     nine_full_stop_five = "9.5"
     nine_full_stop_six = "9.6"
 
 
-class SslEnforcementEnum(str, Enum):
+class SslEnforcementEnum(Enum):
 
     enabled = "Enabled"
     disabled = "Disabled"
 
 
-class ServerState(str, Enum):
+class ServerState(Enum):
 
     ready = "Ready"
     dropping = "Dropping"
     disabled = "Disabled"
 
 
-class GeoRedundantBackup(str, Enum):
+class GeoRedundantBackup(Enum):
 
     enabled = "Enabled"
     disabled = "Disabled"
 
 
-class SkuTier(str, Enum):
+class SkuTier(Enum):
 
     basic = "Basic"
     general_purpose = "GeneralPurpose"
     memory_optimized = "MemoryOptimized"
 
 
-class OperationOrigin(str, Enum):
+class OperationOrigin(Enum):
 
     not_specified = "NotSpecified"
     user = "user"

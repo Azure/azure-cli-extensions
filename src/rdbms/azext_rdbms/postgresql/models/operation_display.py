@@ -42,8 +42,8 @@ class OperationDisplay(Model):
         'description': {'key': 'description', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(OperationDisplay, self).__init__(**kwargs)
+    def __init__(self):
+        super(OperationDisplay, self).__init__()
         self.provider = None
         self.resource = None
         self.operation = None
