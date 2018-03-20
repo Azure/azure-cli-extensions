@@ -40,7 +40,8 @@ class GeoRedundantBackup(Enum):
 class SkuTier(Enum):
 
     basic = "Basic"
-    standard = "Standard"
+    general_purpose = "GeneralPurpose"
+    memory_optimized = "MemoryOptimized"
 
 
 class OperationOrigin(Enum):
