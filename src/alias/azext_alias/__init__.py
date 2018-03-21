@@ -74,8 +74,9 @@ def alias_event_handler(_, **kwargs):
 
         # Cache the reserved commands for validation later
         if args[:2] == ['alias', 'create']:
+            load_cmd_tbl_func = kwargs.get('load_cmd_tbl_func', lambda _: {})
             global cached_reserved_commands  # pylint: disable=global-statement
-            cached_reserved_commands = alias_manager.reserved_commands if alias_manager.reserved_commands else kwargs.get('load_cmd_tbl_func')([]).keys()
+            cached_reserved_commands = alias_manager.reserved_commands if alias_manager.reserved_commands else load_cmd_tbl_func([]).keys()
 
         elapsed_time = (timeit.default_timer() - start_time) * 1000
         logger.debug(DEBUG_MSG_WITH_TIMING, args, elapsed_time)
