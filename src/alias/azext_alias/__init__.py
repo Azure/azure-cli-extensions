@@ -3,37 +3,65 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+
 import timeit
 
 from knack.log import get_logger
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.commands import CliCommandType
+from azure.cli.core.decorators import Completer
 from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE
-from azext_alias.alias import AliasManager
+from azext_alias.alias import (
+    GLOBAL_ALIAS_PATH,
+    AliasManager,
+    get_config_parser
+)
 from azext_alias._const import DEBUG_MSG_WITH_TIMING
 from azext_alias import telemetry
+from azext_alias import _help  # pylint: disable=unused-import
 
 logger = get_logger(__name__)
+cached_reserved_commands = []
 
 
-class AliasExtensionLoader(AzCommandsLoader):
+class AliasCommandLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        super(AliasExtensionLoader, self).__init__(cli_ctx=cli_ctx,
-                                                   custom_command_type=CliCommandType())
-
+        from azure.cli.core.commands import CliCommandType
+        custom_command_type = CliCommandType(operations_tmpl='azext_alias.custom#{}')
+        super(AliasCommandLoader, self).__init__(cli_ctx=cli_ctx,
+                                                 custom_command_type=custom_command_type)
         self.cli_ctx.register_event(EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE, alias_event_handler)
 
-    def load_command_table(self, _):  # pylint:disable=no-self-use
-        return {}
+    def load_command_table(self, _):
+        with self.command_group('alias') as g:
+            g.custom_command('create', 'create_alias')
+            g.custom_command('list', 'list_alias')
+            g.custom_command('remove', 'remove_alias')
 
-    def load_arguments(self, _):  # pylint:disable=no-self-use
-        pass
+        return self.command_table
+
+    def load_arguments(self, _):
+        with self.argument_context('alias') as c:
+            c.argument('alias_name', options_list=['--name', '-n'], help='The name of the alias.', completer=get_alias_completer)
+            c.argument('alias_command', options_list=['--command', '-c'], help='The command that the alias points to.')
+
+
+@Completer
+def get_alias_completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
+    try:
+        alias_table = get_config_parser()
+        alias_table.read(GLOBAL_ALIAS_PATH)
+        return alias_table.sections()
+    except Exception:  # pylint: disable=broad-except
+        return []
 
 
 def alias_event_handler(_, **kwargs):
-    """ An event handler for alias transformation when EVENT_INVOKER_PRE_TRUNCATE_CMD_TBL event is invoked """
+    """
+    An event handler for alias transformation when EVENT_INVOKER_PRE_TRUNCATE_CMD_TBL event is invoked
+    """
     try:
         telemetry.start()
 
@@ -43,6 +71,11 @@ def alias_event_handler(_, **kwargs):
 
         # [:] will keep the reference of the original args
         args[:] = alias_manager.transform(args)
+
+        # Cache the reserved commands for validation later
+        if args[:2] == ['alias', 'create']:
+            global cached_reserved_commands  # pylint: disable=global-statement
+            cached_reserved_commands = alias_manager.reserved_commands if alias_manager.reserved_commands else kwargs.get('load_cmd_tbl_func')([]).keys()
 
         elapsed_time = (timeit.default_timer() - start_time) * 1000
         logger.debug(DEBUG_MSG_WITH_TIMING, args, elapsed_time)
@@ -55,4 +88,4 @@ def alias_event_handler(_, **kwargs):
         telemetry.conclude()
 
 
-COMMAND_LOADER_CLS = AliasExtensionLoader
+COMMAND_LOADER_CLS = AliasCommandLoader
