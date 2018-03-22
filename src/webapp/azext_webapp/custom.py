@@ -14,7 +14,7 @@ from azure.cli.command_modules.appservice.custom import (
     update_app_settings,
     _get_site_credential,
     _get_scm_url,
-    _get_sku_name)
+    get_sku_name)
 
 from .create_util import (
     zip_contents_from_dir,
@@ -74,7 +74,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         location = available_locs[0]
     # Remove spaces from the location string, incase the GeoRegion string is used
     loc_name = location.replace(" ", "")
-    full_sku = _get_sku_name(sku)
+    full_sku = get_sku_name(sku)
 
     is_linux = True if os_val == 'Linux' else False
 
