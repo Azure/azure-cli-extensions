@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,anomalous-backslash-in-string
 
 import os
 import shutil
@@ -46,6 +46,20 @@ class AliasTests(ScenarioTest):
             self.check('[0].command', '{alias_command}'),
             self.check('length(@)', 1)
         ])
+
+    def test_create_and_list_alias_env_var(self):
+        self.kwargs.update({
+            'alias_name': 'mkrgrp',
+            'alias_command': 'group create -n test --tags owner=\$USER'
+        })
+        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
+        self.cmd('az alias list', checks=[
+            self.check('[0].alias', '{alias_name}'),
+            self.check('[0].command', '{alias_command}'),
+            self.check('length(@)', 1)
+        ])
+        alias_command = self.cmd('az alias list').get_output_in_json()[0]['command']
+        assert '\\$USER' in alias_command
 
     def test_create_and_list_alias_with_pos_arg(self):
         self.kwargs.update({

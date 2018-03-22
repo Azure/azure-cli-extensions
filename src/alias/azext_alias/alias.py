@@ -212,8 +212,12 @@ class AliasManager(object):
         args = args[1:] if args and args[0] == 'az' else args
 
         post_transform_commands = []
-        for arg in args:
-            post_transform_commands.append(os.path.expandvars(arg))
+        for i, arg in enumerate(args):
+            # Do not translate environment variables for command argument
+            if args[:2] == ['alias', 'create'] and i > 0 and args[i - 1] in ['-c', '--command']:
+                post_transform_commands.append(arg)
+            else:
+                post_transform_commands.append(os.path.expandvars(arg))
 
         AliasManager.write_alias_config_hash(self.alias_config_hash)
         AliasManager.write_collided_alias(self.collided_alias)
