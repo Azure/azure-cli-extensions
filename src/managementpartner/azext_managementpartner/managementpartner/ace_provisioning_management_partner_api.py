@@ -39,7 +39,7 @@ class ACEProvisioningManagementPartnerAPIConfiguration(AzureConfiguration):
 
         super(ACEProvisioningManagementPartnerAPIConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('aceprovisioningmanagementpartnerapi/{}'.format(VERSION))
+        self.add_user_agent('azure-mgmt-managementpartner/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
@@ -52,9 +52,9 @@ class ACEProvisioningManagementPartnerAPI(object):
     :vartype config: ACEProvisioningManagementPartnerAPIConfiguration
 
     :ivar partner: Partner operations
-    :vartype partner: managementpartner.operations.PartnerOperations
+    :vartype partner: azure.mgmt.managementpartner.operations.PartnerOperations
     :ivar operation: Operation operations
-    :vartype operation: managementpartner.operations.OperationOperations
+    :vartype operation: azure.mgmt.managementpartner.operations.OperationOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
