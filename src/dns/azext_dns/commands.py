@@ -8,6 +8,7 @@ from azure.cli.core.util import empty_on_404
 from azext_dns._client_factory import (cf_dns_mgmt_zones)
 from azext_dns._format import (transform_dns_zone_table_output)
 
+
 def load_command_table(self, _):
 
     network_dns_zone_sdk = CliCommandType(
