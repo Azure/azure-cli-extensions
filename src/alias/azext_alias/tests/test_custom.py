@@ -24,7 +24,7 @@ class AliasCustomCommandTest(unittest.TestCase):
 
     @classmethod
     def setUp(cls):
-        azext_alias.cached_reserved_commands = TEST_RESERVED_COMMANDS
+        azext_alias.AliasCache.reserved_commands = TEST_RESERVED_COMMANDS
         azext_alias.custom._commit_change = Mock()
 
     def test_create_alias(self):

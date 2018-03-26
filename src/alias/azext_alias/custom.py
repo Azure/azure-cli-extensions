@@ -9,7 +9,7 @@ import hashlib
 
 from knack.util import CLIError
 
-import azext_alias
+from azext_alias import AliasCache
 from azext_alias.argument import get_placeholders
 from azext_alias._const import (
     COLLISION_CHECK_LEVEL_DEPTH,
@@ -110,7 +110,7 @@ def _commit_change(alias_table):
         alias_config_hash = hashlib.sha1(alias_config_file.read().encode('utf-8')).hexdigest()
         AliasManager.write_alias_config_hash(alias_config_hash)
 
-    collided_alias = AliasManager.build_collision_table(alias_table.sections(), azext_alias.cached_reserved_commands)
+    collided_alias = AliasManager.build_collision_table(alias_table.sections(), AliasCache.reserved_commands)
     AliasManager.write_collided_alias(collided_alias)
 
 
@@ -148,7 +148,7 @@ def _validate_alias_command(alias_command):
 
     # Extract possible CLI commands and validate
     command_to_validate = ' '.join(split_command[:boundary_index]).lower()
-    for command in azext_alias.cached_reserved_commands:
+    for command in AliasCache.reserved_commands:
         if re.match(r'([a-z\-]*\s)*{}($|\s)'.format(command_to_validate), command):
             return
 
@@ -187,13 +187,13 @@ def _validate_alias_command_level(alias, command):
         alias: The name of the alias.
         command: The command that the alias points to.
     """
-    alias_collision_table = AliasManager.build_collision_table([alias], azext_alias.cached_reserved_commands)
+    alias_collision_table = AliasManager.build_collision_table([alias], AliasCache.reserved_commands)
 
     # Alias is not a reserved command, so it can point to any command
     if not alias_collision_table:
         return
 
-    command_collision_table = AliasManager.build_collision_table([command], azext_alias.cached_reserved_commands)
+    command_collision_table = AliasManager.build_collision_table([command], AliasCache.reserved_commands)
     alias_collision_levels = alias_collision_table.get(alias.split()[0], [])
     command_collision_levels = command_collision_table.get(command.split()[0], [])
 

@@ -14,6 +14,7 @@ from six.moves import configparser
 
 from knack.log import get_logger
 
+import azext_alias
 from azext_alias import telemetry
 from azext_alias._const import (
     GLOBAL_CONFIG_DIR,
@@ -56,7 +57,6 @@ class AliasManager(object):
         self.alias_table = get_config_parser()
         self.kwargs = kwargs
         self.collided_alias = defaultdict(list)
-        self.reserved_commands = []
         self.alias_config_str = ''
         self.alias_config_hash = ''
         self.load_alias_table()
@@ -138,22 +138,21 @@ class AliasManager(object):
         if self.detect_alias_config_change():
             self.load_full_command_table()
             self.collided_alias = AliasManager.build_collision_table(self.alias_table.sections(),
-                                                                     self.reserved_commands)
+                                                                     azext_alias.AliasCache.reserved_commands)
         else:
             self.load_collided_alias()
 
         transformed_commands = []
         alias_iter = enumerate(args, 1)
-        ignore_next_iter = False
         for alias_index, alias in alias_iter:
-            # Directly append invalid alias or collided alias
-            if not alias or alias[0] == '-' or ignore_next_iter or (alias in self.collided_alias and
-                                                                    alias_index in self.collided_alias[alias]):
+            is_collided_alias = alias in self.collided_alias and alias_index in self.collided_alias[alias]
+            # Check if the current alias is a named argument
+            # index - 2 because alias_iter starts counting at index 1
+            is_named_arg = alias_index > 1 and args[alias_index - 2].startswith('-')
+            is_named_arg_flag = alias.startswith('-')
+            if not alias or is_collided_alias or is_named_arg or is_named_arg_flag:
                 transformed_commands.append(alias)
-                ignore_next_iter = alias and alias[0] == '-'
                 continue
-            else:
-                ignore_next_iter = False
 
             full_alias = self.get_full_alias(alias)
 
@@ -198,7 +197,7 @@ class AliasManager(object):
         Perform a full load of the command table to get all the reserved command words.
         """
         load_cmd_tbl_func = self.kwargs.get('load_cmd_tbl_func', lambda _: {})
-        self.reserved_commands = list(load_cmd_tbl_func([]).keys())
+        azext_alias.AliasCache.reserved_commands = list(load_cmd_tbl_func([]).keys())
         telemetry.set_full_command_table_loaded()
 
     def post_transform(self, args):

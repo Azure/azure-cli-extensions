@@ -14,6 +14,7 @@ from six.moves import configparser
 
 from knack.util import CLIError
 
+import azext_alias
 from azext_alias import alias
 from azext_alias.tests._const import (DEFAULT_MOCK_ALIAS_STRING,
                                       COLLISION_MOCK_ALIAS_STRING,
@@ -91,7 +92,7 @@ def test_transform_alias(self, test_case):
 
 def test_transform_collided_alias(self, test_case):
     alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-    alias_manager.collided_alias = alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), alias_manager.reserved_commands)
+    alias_manager.collided_alias = alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.AliasCache.reserved_commands)
     self.assertEqual(shlex.split(test_case[1]), alias_manager.transform(shlex.split(test_case[0])))
 
 
@@ -152,12 +153,12 @@ class TestAlias(unittest.TestCase):
 
     def test_build_empty_collision_table(self):
         alias_manager = self.get_alias_manager(DEFAULT_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-        test_case = alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), alias_manager.reserved_commands)
+        test_case = alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.AliasCache.reserved_commands)
         self.assertDictEqual(dict(), test_case)
 
     def test_build_non_empty_collision_table(self):
         alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-        test_case = alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), alias_manager.reserved_commands, levels=2)
+        test_case = alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.AliasCache.reserved_commands, levels=2)
         self.assertDictEqual({'account': [1, 2], 'dns': [2], 'list-locations': [2]}, test_case)
 
     def test_non_parse_error(self):
@@ -179,7 +180,7 @@ class TestAlias(unittest.TestCase):
     """
     def get_alias_manager(self, mock_alias_str=DEFAULT_MOCK_ALIAS_STRING, reserved_commands=None):
         alias_manager = MockAliasManager(mock_alias_str=mock_alias_str)
-        alias_manager.reserved_commands = reserved_commands if reserved_commands else []
+        azext_alias.AliasCache.reserved_commands = reserved_commands if reserved_commands else []
         return alias_manager
 
     def assertAlias(self, value):
