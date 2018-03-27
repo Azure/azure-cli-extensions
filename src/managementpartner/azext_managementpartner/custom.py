@@ -10,6 +10,7 @@ def print_managementpartner(partnerresponse):
     partner["partnerId"] = partnerresponse.partner_id
     partner["tenantId"] = partnerresponse.tenant_id
     partner["state"] = partnerresponse.state
+    partner["partnerName"] = partnerresponse.partner_name
     return partner
 
 

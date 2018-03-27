@@ -17,7 +17,7 @@ class ExtendedErrorInfo(Model):
 
     :param code: this is the error response code. Possible values include:
      'NotFound', 'Conflict', 'BadRequest'
-    :type code: str or ~managementpartner.models.enum
+    :type code: str or ~azure.mgmt.managementpartner.models.enum
     :param message: this is the extended error info message
     :type message: str
     """

@@ -17,7 +17,7 @@ class Error(Model):
     """this is the management partner operations error.
 
     :param error: this is the ExtendedErrorInfo property
-    :type error: ~managementpartner.models.ExtendedErrorInfo
+    :type error: ~azure.mgmt.managementpartner.models.ExtendedErrorInfo
     """
 
     _attribute_map = {

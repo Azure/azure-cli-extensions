@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.2"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='managementpartner',
     version=VERSION,
-    description='An Azure CLI Extension for Management Partner',
-    long_description='An Azure CLI Extension for Management Partner',
+    description='Support for Management Partner preview',
+    long_description='Support for Management Partner preview',
     license='MIT',
     author='Jeffrey Li',
     author_email='jefl@microsoft.com',
