@@ -11,14 +11,14 @@ from knack.help_files import helps
 def add_helps(command_group, server_type):
     helps['{} server georestore'.format(command_group)] = """
                 type: command
-                short-summary: Restore a server from backup.
+                short-summary: Georestore a server from backup.
                 examples:
-                    - name: Restore 'testsvr' as 'testsvrnew'.
-                      text: az {0} server restore -g testgroup -n testsvrnew --source-server testsvr --restore-point-in-time "2017-06-15T13:10:00Z"
-                    - name: Restore 'testsvr2' to 'testsvrnew', where 'testsvrnew' is in a different resource group than the backup.
+                    - name: Georestore 'testsvr' as 'testsvrnew'.
+                      text: az {0} server georestore -g testgroup -n testsvrnew --source-server testsvr -l westus2"
+                    - name: Georestore 'testsvr2' to 'testsvrnew', where 'testsvrnew' is in the same resource group as the original server but in a different location.
                       text: |
                         az {0} server georestore -g testgroup -n testsvrnew \\
-                            -s "/subscriptions/${{SubID}}/resourceGroups/${{ResourceGroup}}/providers/Microsoft.DBfor{1}/servers/testsvr2""
+                            -s "/subscriptions/${{SubID}}/resourceGroups/${{ResourceGroup}}/providers/Microsoft.DBfor{1}/servers/testsvr2" --sku-name GP_Gen5_2 "
                 """.format(command_group, server_type)
 
 

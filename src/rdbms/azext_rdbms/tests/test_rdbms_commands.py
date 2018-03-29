@@ -26,10 +26,10 @@ SERVER_NAME_MAX_LENGTH = 63
 class ServerPreparer(AbstractPreparer, SingleValueReplacer):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, engine_type='mysql', engine_parameter_name='database_engine',
-                 name_prefix=SERVER_NAME_PREFIX, parameter_name='server', location='brazilsouth',
+                 name_prefix=SERVER_NAME_PREFIX, parameter_name='server', location='westus',
                  admin_user='cloudsa', admin_password='SecretPassword123',
                  resource_group_parameter_name='resource_group', skip_delete=True,
-                 sku_name='GP_Gen4_2'):
+                 sku_name='GP_Gen5_2'):
         super(ServerPreparer, self).__init__(name_prefix, SERVER_NAME_MAX_LENGTH)
         from azure.cli.testsdk import TestCli
         self.cli_ctx = TestCli()
@@ -71,24 +71,26 @@ class ServerMgmtScenarioTest(ScenarioTest):
     def test_mysql_server_mgmt(self, resource_group_1, resource_group_2):
         self._test_server_mgmt('mysql', resource_group_1, resource_group_2)
 
-    @ResourceGroupPreparer(parameter_name='resource_group_1')
-    @ResourceGroupPreparer(parameter_name='resource_group_2')
-    def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
-        self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
+    # @ResourceGroupPreparer(parameter_name='resource_group_1')
+    # @ResourceGroupPreparer(parameter_name='resource_group_2')
+    # def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
+    #     self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
 
     def _test_server_mgmt(self, database_engine, resource_group_1, resource_group_2):
         servers = [self.create_random_name(SERVER_NAME_PREFIX, SERVER_NAME_MAX_LENGTH),
-                   self.create_random_name('azuredbclirestore', SERVER_NAME_MAX_LENGTH)]
+                   self.create_random_name('azuredbclirestore', SERVER_NAME_MAX_LENGTH),
+                   self.create_random_name('azuredbcligeorestore', SERVER_NAME_MAX_LENGTH)]
         admin_login = 'cloudsa'
         admin_passwords = ['SecretPassword123', 'SecretPassword456']
         edition = 'GeneralPurpose'
         old_cu = 2
         new_cu = 4
-        family = 'Gen4'
+        family = 'Gen5'
         skuname = '{}_{}_{}'.format("GP", family, old_cu)
 
         rg = resource_group_1
-        loc = 'brazilsouth'
+        loc = 'westus'
+        geoloc = 'westus2'
 
         # test create server
         self.cmd('{} server create -g {} --name {} -l {} '
@@ -191,7 +193,22 @@ class ServerMgmtScenarioTest(ScenarioTest):
                      JMESPathCheck('sku.tier', edition),
                      JMESPathCheck('administratorLogin', admin_login)])
 
+        # test georestore to a new server, make sure wait at least 10 min after server created.
+        sleep(300)
+
+        self.cmd('{} server georestore -g {} --name {} -l {} --source-server {} --sku-name '
+                 .format(database_engine, resource_group_1, servers[2], geoloc, result['id']),
+                 checks=[
+                     JMESPathCheck('name', servers[1]),
+                     JMESPathCheck('resourceGroup', resource_group_1),
+                     JMESPathCheck('location', geoloc),
+                     JMESPathCheck('sku.tier', edition),
+                     JMESPathCheck('administratorLogin', admin_login)])
+
         # test list servers
+        self.cmd('{} server list -g {}'.format(database_engine, resource_group_1),
+                 checks=[JMESPathCheck('type(@)', 'array')])
+
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_2),
                  checks=[JMESPathCheck('type(@)', 'array')])
 
@@ -202,8 +219,14 @@ class ServerMgmtScenarioTest(ScenarioTest):
         # test delete server
         self.cmd('{} server delete -g {} --name {} --yes'
                  .format(database_engine, rg, servers[0]), checks=NoneCheck())
+
+        # test delete restored server
         self.cmd('{} server delete -g {} -n {} --yes'
                  .format(database_engine, resource_group_2, servers[1]), checks=NoneCheck())
+
+        # test delete georestored server
+        self.cmd('{} server delete -g {} -n {} --yes'
+                 .format(database_engine, resource_group_1, servers[2]), checks=NoneCheck())
 
         # test list server should be 0
         self.cmd('{} server list -g {}'.format(database_engine, rg), checks=[NoneCheck()])
@@ -211,21 +234,21 @@ class ServerMgmtScenarioTest(ScenarioTest):
 
 class ProxyResourcesMgmtScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
-    @ServerPreparer(engine_type='mysql')
-    def test_mysql_proxy_resources_mgmt(self, resource_group, server, database_engine):
-        self._test_firewall_mgmt(resource_group, server, database_engine)
-        self._test_db_mgmt(resource_group, server, database_engine)
-        self._test_configuration_mgmt(resource_group, server, database_engine)
-        self._test_log_file_mgmt(resource_group, server, database_engine)
+    # @ResourceGroupPreparer()
+    # @ServerPreparer(engine_type='mysql')
+    # def test_mysql_proxy_resources_mgmt(self, resource_group, server, database_engine):
+    #     self._test_firewall_mgmt(resource_group, server, database_engine)
+    #     self._test_db_mgmt(resource_group, server, database_engine)
+    #     self._test_configuration_mgmt(resource_group, server, database_engine)
+    #     self._test_log_file_mgmt(resource_group, server, database_engine)
 
-    @ResourceGroupPreparer()
-    @ServerPreparer(engine_type='postgres')
-    def test_postgres_proxy_resources_mgmt(self, resource_group, server, database_engine):
-        self._test_firewall_mgmt(resource_group, server, database_engine)
-        self._test_db_mgmt(resource_group, server, database_engine)
-        self._test_configuration_mgmt(resource_group, server, database_engine)
-        self._test_log_file_mgmt(resource_group, server, database_engine)
+    # @ResourceGroupPreparer()
+    # @ServerPreparer(engine_type='postgres')
+    # def test_postgres_proxy_resources_mgmt(self, resource_group, server, database_engine):
+    #     self._test_firewall_mgmt(resource_group, server, database_engine)
+    #     self._test_db_mgmt(resource_group, server, database_engine)
+    #     self._test_configuration_mgmt(resource_group, server, database_engine)
+    #     self._test_log_file_mgmt(resource_group, server, database_engine)
 
     def _test_firewall_mgmt(self, resource_group, server, database_engine):
         firewall_rule_1 = 'rule1'
