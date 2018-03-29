@@ -54,7 +54,7 @@ def main():
     gh_repo.create_pull(
         title='Update CLI extensions available doc',
         body=commit_msg,
-        head='{}:{}'.format(user.login, local_branch.name),
+        head='{}'.format(local_branch.name),
         base='master')
 
 if __name__ == '__main__':
