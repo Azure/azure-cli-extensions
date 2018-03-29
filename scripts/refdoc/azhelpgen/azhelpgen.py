@@ -94,8 +94,11 @@ class AzHelpGenDirective(Directive):
                     if arg.choices:
                         yield '{}:values: {}'.format(DOUBLEINDENT, ', '.join(sorted([str(x) for x in arg.choices])))
                     if arg.default and arg.default != argparse.SUPPRESS:
-                        if arg.default.startswith(USER_HOME):
-                            arg.default = arg.default.replace(USER_HOME, '~').replace('\\', '/')
+                        try:
+                            if arg.default.startswith(USER_HOME):
+                                arg.default = arg.default.replace(USER_HOME, '~').replace('\\', '/')
+                        except Exception:
+                            pass
                         try:
                             arg.default = arg.default.replace("\\", "\\\\")
                         except Exception:
