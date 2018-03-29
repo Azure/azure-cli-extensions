@@ -5,12 +5,10 @@
 
 import os
 import re
-import sys
 import json
 import shlex
 import hashlib
 from collections import defaultdict
-from six.moves import configparser
 
 from knack.log import get_logger
 
@@ -26,10 +24,8 @@ from azext_alias._const import (
     COLLISION_CHECK_LEVEL_DEPTH,
     POS_ARG_DEBUG_MSG
 )
-from azext_alias.argument import (
-    build_pos_args_table,
-    render_template
-)
+from azext_alias.argument import build_pos_args_table, render_template
+from azext_alias.util import is_alias_create_command, cache_reserved_commands, get_config_parser
 
 
 GLOBAL_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_FILE_NAME)
@@ -37,18 +33,6 @@ GLOBAL_ALIAS_HASH_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_HASH_FILE_NAME)
 GLOBAL_COLLIDED_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, COLLIDED_ALIAS_FILE_NAME)
 
 logger = get_logger(__name__)
-
-
-def get_config_parser():
-    """
-    Disable configparser's interpolation function and return an instance of config parser.
-
-    Returns:
-        An instance of config parser with interpolation disabled.
-    """
-    if sys.version_info.major == 3:
-        return configparser.ConfigParser(interpolation=None)  # pylint: disable=unexpected-keyword-arg
-    return configparser.ConfigParser()
 
 
 class AliasManager(object):
@@ -75,7 +59,7 @@ class AliasManager(object):
             telemetry.set_number_of_aliases_registered(len(self.alias_table.sections()))
         except Exception as exception:  # pylint: disable=broad-except
             logger.warning(CONFIG_PARSING_ERROR, AliasManager.process_exception_message(exception))
-            self.alias_table = configparser.ConfigParser()
+            self.alias_table = get_config_parser()
             telemetry.set_exception(exception)
 
     def load_alias_hash(self):
@@ -138,7 +122,7 @@ class AliasManager(object):
         if self.detect_alias_config_change():
             self.load_full_command_table()
             self.collided_alias = AliasManager.build_collision_table(self.alias_table.sections(),
-                                                                     azext_alias.AliasCache.reserved_commands)
+                                                                     azext_alias.cached_reserved_commands)
         else:
             self.load_collided_alias()
 
@@ -197,7 +181,7 @@ class AliasManager(object):
         Perform a full load of the command table to get all the reserved command words.
         """
         load_cmd_tbl_func = self.kwargs.get('load_cmd_tbl_func', lambda _: {})
-        azext_alias.AliasCache.reserved_commands = list(load_cmd_tbl_func([]).keys())
+        cache_reserved_commands(load_cmd_tbl_func)
         telemetry.set_full_command_table_loaded()
 
     def post_transform(self, args):
@@ -213,7 +197,7 @@ class AliasManager(object):
         post_transform_commands = []
         for i, arg in enumerate(args):
             # Do not translate environment variables for command argument
-            if args[:2] == ['alias', 'create'] and i > 0 and args[i - 1] in ['-c', '--command']:
+            if is_alias_create_command(args) and i > 0 and args[i - 1] in ['-c', '--command']:
                 post_transform_commands.append(arg)
             else:
                 post_transform_commands.append(os.path.expandvars(arg))
