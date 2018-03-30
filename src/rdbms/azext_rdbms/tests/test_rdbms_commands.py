@@ -109,8 +109,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
                      JMESPathCheck('sku.capacity', old_cu),
                      JMESPathCheck('sku.tier', edition),
                      JMESPathCheck('storageProfile.backupRetentionDays', backupRetention),
-                     JMESPathCheck('storageProfile.geoRedundantBackup', geoRedundantBackup)
-                     ])
+                     JMESPathCheck('storageProfile.geoRedundantBackup', geoRedundantBackup)])
 
         # test show server
         result = self.cmd('{} server show -g {} --name {}'
@@ -124,8 +123,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
                               JMESPathCheck('sku.capacity', old_cu),
                               JMESPathCheck('sku.tier', edition),
                               JMESPathCheck('storageProfile.backupRetentionDays', backupRetention),
-                              JMESPathCheck('storageProfile.geoRedundantBackup', geoRedundantBackup)
-                              ]).get_output_in_json()
+                              JMESPathCheck('storageProfile.geoRedundantBackup', geoRedundantBackup)]).get_output_in_json()  # pylint: disable=line-too-long
 
         # test georestore server
         with self.assertRaises(CLIError) as exception:
@@ -140,8 +138,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
                          JMESPathCheck('administratorLogin', admin_login),
                          JMESPathCheck('location', geoloc),
                          JMESPathCheck('storageProfile.backupRetentionDays', geoBackupRetention),
-                         JMESPathCheck('storageProfile.geoRedundantBackup', geoGeoRedundantBackup)
-                         ])
+                         JMESPathCheck('storageProfile.geoRedundantBackup', geoGeoRedundantBackup)])
         self.assertTrue(' does not have the server ' in '{}'.format(exception.exception))
 
         # test list servers
