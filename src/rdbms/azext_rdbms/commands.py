@@ -27,8 +27,8 @@ def load_command_table(self, _):
 
     with self.command_group('mysql server', mysql_servers_sdk, client_factory=cf_mysql_servers) as g:
         g.custom_command('create', '_server_create')
-        g.custom_command('georestore', '_server_georestore', no_wait_param='no_wait')
+        g.custom_command('georestore', '_server_georestore', supports_no_wait=True)
 
     with self.command_group('postgres server', postgres_servers_sdk, client_factory=cf_postgres_servers) as g:
         g.custom_command('create', '_server_create')
-        g.custom_command('georestore', '_server_georestore', no_wait_param='no_wait')
+        g.custom_command('georestore', '_server_georestore', supports_no_wait=True)

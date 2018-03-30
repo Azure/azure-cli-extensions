@@ -68,10 +68,10 @@ class ServerMgmtScenarioTest(ScenarioTest):
     def test_mysql_server_mgmt(self, resource_group_1, resource_group_2):
         self._test_server_mgmt('mysql', resource_group_1, resource_group_2)
 
-    @ResourceGroupPreparer(parameter_name='resource_group_1')
-    @ResourceGroupPreparer(parameter_name='resource_group_2')
-    def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
-        self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
+    # @ResourceGroupPreparer(parameter_name='resource_group_1')
+    # @ResourceGroupPreparer(parameter_name='resource_group_2')
+    # def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
+    #     self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
 
     def _test_server_mgmt(self, database_engine, resource_group_1, resource_group_2):
         servers = [self.create_random_name(SERVER_NAME_PREFIX, SERVER_NAME_MAX_LENGTH),
@@ -107,8 +107,8 @@ class ServerMgmtScenarioTest(ScenarioTest):
                      JMESPathCheck('tags.key', '1'),
                      JMESPathCheck('sku.capacity', old_cu),
                      JMESPathCheck('sku.tier', edition),
-                     JMESPathCheck('backupRetentionDays', backupRetention),
-                     JMESPathCheck('geoRedundantBackup', geoRedundantBackup)
+                     JMESPathCheck('storageProfile.backupRetentionDays', backupRetention),
+                     JMESPathCheck('storageProfile.geoRedundantBackup', geoRedundantBackup)
                      ])
 
         # test show server
@@ -116,14 +116,20 @@ class ServerMgmtScenarioTest(ScenarioTest):
                           .format(database_engine, resource_group_1, servers[0]),
                           checks=[
                               JMESPathCheck('name', servers[0]),
+                              JMESPathCheck('resourceGroup', resource_group_1),
                               JMESPathCheck('administratorLogin', admin_login),
+                              JMESPathCheck('sslEnforcement', 'Enabled'),
+                              JMESPathCheck('tags.key', '1'),                              
                               JMESPathCheck('sku.capacity', old_cu),
-                              JMESPathCheck('resourceGroup', resource_group_1)]).get_output_in_json()
+                              JMESPathCheck('sku.tier', edition),
+                              JMESPathCheck('storageProfile.backupRetentionDays', backupRetention),
+                              JMESPathCheck('storageProfile.geoRedundantBackup', geoRedundantBackup)
+                              ]).get_output_in_json()
 
         # test georestore server
         try:
             self.cmd('{} server georestore -g {} --name {} --source-server {} -l {} '
-                     '--georedundant-backup {} --backup-retention {}'
+                     '--geo-redundant-backup {} --backup-retention {}'
                      .format(database_engine, resource_group_2, servers[2], result['id'],
                              geoloc, geoGeoRedundantBackup, geoBackupRetention),
                      checks=[
@@ -132,8 +138,8 @@ class ServerMgmtScenarioTest(ScenarioTest):
                          JMESPathCheck('sku.tier', edition),
                          JMESPathCheck('administratorLogin', admin_login),
                          JMESPathCheck('location', geoloc),
-                         JMESPathCheck('backupRetentionDays', geoBackupRetention),
-                         JMESPathCheck('geoRedundantBackup', geoGeoRedundantBackup)
+                         JMESPathCheck('storageProfile.backupRetentionDays', geoBackupRetention),
+                         JMESPathCheck('storageProfile.geoRedundantBackup', geoGeoRedundantBackup)
                          ])
         except Exception as exception:  # pylint: disable=broad-except
             print(exception)
@@ -143,10 +149,6 @@ class ServerMgmtScenarioTest(ScenarioTest):
                  checks=[JMESPathCheck('type(@)', 'array')])
 
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_2),
-                 checks=[JMESPathCheck('type(@)', 'array')])
-
-        # test list servers without resource group
-        self.cmd('{} server list'.format(database_engine),
                  checks=[JMESPathCheck('type(@)', 'array')])
 
         # test delete server
