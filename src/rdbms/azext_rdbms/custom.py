@@ -8,7 +8,6 @@
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import resource_id, is_valid_resource_id, parse_resource_id  # pylint: disable=import-error
 from azext_rdbms.mysql.operations.servers_operations import ServersOperations
-from ._client_factory import get_mysql_management_client, get_postgresql_management_client
 
 SKU_TIER_MAP = {'Basic': 'b', 'GeneralPurpose': 'gp', 'MemoryOptimized': 'mo'}
 
@@ -50,12 +49,13 @@ def _server_create(cmd, client, resource_group_name, server_name, sku_name, no_w
             tags=tags)
 
     return client.create(resource_group_name, server_name, parameters)
-    
+
 
 # need to replace source server name with source server id, so customer server georestore function
 # The parameter list should be the same as that in factory to use the ParametersContext
 # auguments and validators
-def _server_georestore(cmd, client, resource_group_name, server_name, sku_name, location, source_server, backup_retention=None, no_wait=False, **kwargs):
+def _server_georestore(cmd, client, resource_group_name, server_name, sku_name, location, source_server,
+                       backup_retention=None, no_wait=False, **kwargs):
     provider = 'Microsoft.DBForMySQL' if isinstance(client, ServersOperations) else 'Microsoft.DBforPostgreSQL'
     parameters = None
     if provider == 'Microsoft.DBForMySQL':

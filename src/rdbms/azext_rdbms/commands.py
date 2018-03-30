@@ -13,8 +13,6 @@ from azext_rdbms._client_factory import (
 # pylint: disable=too-many-locals, too-many-statements, line-too-long
 def load_command_table(self, _):
 
-    rdbms_custom = CliCommandType(operations_tmpl='azext_rdbms.custom#{}')
-
     mysql_servers_sdk = CliCommandType(
         operations_tmpl='azext_rdbms.mysql.operations.servers_operations#ServersOperations.{}',
         client_arg_name='self',
