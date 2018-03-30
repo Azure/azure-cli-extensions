@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.util import CLIError
 from azure.cli.testsdk.base import execute
 from azure.cli.testsdk.exceptions import CliTestError   # pylint: disable=unused-import
 from azure.cli.testsdk import (
@@ -68,10 +69,10 @@ class ServerMgmtScenarioTest(ScenarioTest):
     def test_mysql_server_mgmt(self, resource_group_1, resource_group_2):
         self._test_server_mgmt('mysql', resource_group_1, resource_group_2)
 
-    # @ResourceGroupPreparer(parameter_name='resource_group_1')
-    # @ResourceGroupPreparer(parameter_name='resource_group_2')
-    # def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
-    #     self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
+    @ResourceGroupPreparer(parameter_name='resource_group_1')
+    @ResourceGroupPreparer(parameter_name='resource_group_2')
+    def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
+        self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
 
     def _test_server_mgmt(self, database_engine, resource_group_1, resource_group_2):
         servers = [self.create_random_name(SERVER_NAME_PREFIX, SERVER_NAME_MAX_LENGTH),
@@ -127,7 +128,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
                               ]).get_output_in_json()
 
         # test georestore server
-        try:
+        with self.assertRaises(CLIError) as exception:
             self.cmd('{} server georestore -g {} --name {} --source-server {} -l {} '
                      '--geo-redundant-backup {} --backup-retention {}'
                      .format(database_engine, resource_group_2, servers[2], result['id'],
@@ -141,8 +142,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
                          JMESPathCheck('storageProfile.backupRetentionDays', geoBackupRetention),
                          JMESPathCheck('storageProfile.geoRedundantBackup', geoGeoRedundantBackup)
                          ])
-        except Exception as exception:  # pylint: disable=broad-except
-            print(exception)
+        self.assertTrue(' does not have the server ' in '{}'.format(exception.exception))
 
         # test list servers
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_1),
@@ -155,12 +155,9 @@ class ServerMgmtScenarioTest(ScenarioTest):
         self.cmd('{} server delete -g {} --name {} --yes'
                  .format(database_engine, resource_group_1, servers[0]), checks=NoneCheck())
 
-        try:
-            self.cmd('{} server delete -g {} --name {} --yes'
-                     .format(database_engine, resource_group_2, servers[2]), checks=NoneCheck())
-        except Exception as exception:  # pylint: disable=broad-except
-            print(exception)
-
+        self.cmd('{} server delete -g {} --name {} --yes'
+                 .format(database_engine, resource_group_2, servers[2]), checks=NoneCheck())
+ 
         # test list server should be 0
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_1), checks=[NoneCheck()])
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_2), checks=[NoneCheck()])
