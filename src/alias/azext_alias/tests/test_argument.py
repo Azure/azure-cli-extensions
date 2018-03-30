@@ -55,9 +55,6 @@ class TestArgument(unittest.TestCase):
     def test_normalize_placeholders_number(self):
         self.assertEqual('"{{_0}}" "{{_1}}"', normalize_placeholders('{{ 0 }} {{ 1 }}', inject_quotes=True))
 
-    def test_normalize_placeholders_no_quotes(self):
-        self.assertEqual('{{_0}} {{_1}}', normalize_placeholders('{{ 0 }} {{ 1 }}'))
-
     def test_normalize_placeholders_number_no_quotes(self):
         self.assertEqual('{{_0}} {{_1}}', normalize_placeholders('{{ 0 }} {{ 1 }}'))
 
