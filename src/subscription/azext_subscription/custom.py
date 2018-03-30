@@ -83,6 +83,6 @@ def cli_subscription_create(cmd, client, enrollment_account_name, offer_type,
     creation_parameters = SubscriptionCreationParameters(
         display_name=display_name,
         offer_type=offer_type,
-        owners=[AdPrincipal(object_id=object_id) for object_id in owners])
+        owners=[AdPrincipal(object_id=x) for x in owners])
 
     return client.create_subscription_in_enrollment_account(enrollment_account_name, creation_parameters)
