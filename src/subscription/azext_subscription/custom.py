@@ -76,10 +76,10 @@ def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
 
 def cli_subscription_create(cmd, client, enrollment_account_name, offer_type,
                             display_name=None, object_id="", spn="", upn=""):
-    owners = [_object_id_args_helper(cmd.cli_ctx, object_id) for object_id
+    owners = [_object_id_args_helper(cmd.cli_ctx, object_id=x) for x
               in object_id.split(',') if object_id] + \
-             [_object_id_args_helper(cmd.cli_ctx, spn) for spn in spn.split(',') if spn] + \
-             [_object_id_args_helper(cmd.cli_ctx, upn) for upn in upn.split(',') if upn]
+             [_object_id_args_helper(cmd.cli_ctx, spn=x) for x in spn.split(',') if spn] + \
+             [_object_id_args_helper(cmd.cli_ctx, upn=x) for x in upn.split(',') if upn]
     creation_parameters = SubscriptionCreationParameters(
         display_name=display_name,
         offer_type=offer_type,
