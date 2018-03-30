@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='subscription',
     version=VERSION,
-    description='An Azure CLI Extension to manage Subscriptions',
-    long_description='An Azure CLI Extension to manage Subscriptions',
+    description='Support for subscription management preview.',
+    long_description='Support for subscription management preview.',
     license='MIT',
     author='Wilco Bauwer',
     author_email='wilcob@microsoft.com',
