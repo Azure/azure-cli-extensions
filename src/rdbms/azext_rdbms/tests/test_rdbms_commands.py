@@ -71,10 +71,10 @@ class ServerMgmtScenarioTest(ScenarioTest):
     def test_mysql_server_mgmt(self, resource_group_1, resource_group_2):
         self._test_server_mgmt('mysql', resource_group_1, resource_group_2)
 
-    # @ResourceGroupPreparer(parameter_name='resource_group_1')
-    # @ResourceGroupPreparer(parameter_name='resource_group_2')
-    # def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
-    #     self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
+    @ResourceGroupPreparer(parameter_name='resource_group_1')
+    @ResourceGroupPreparer(parameter_name='resource_group_2')
+    def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
+        self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
 
     def _test_server_mgmt(self, database_engine, resource_group_1, resource_group_2):
         servers = [self.create_random_name(SERVER_NAME_PREFIX, SERVER_NAME_MAX_LENGTH),
@@ -196,7 +196,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
         # test georestore to a new server, make sure wait at least 10 min after server created.
         sleep(300)
 
-        self.cmd('{} server georestore -g {} --name {} -l {} --source-server {} --sku-name '
+        self.cmd('{} server georestore -g {} --name {} -l {} --source-server {}'
                  .format(database_engine, resource_group_1, servers[2], geoloc, result['id']),
                  checks=[
                      JMESPathCheck('name', servers[1]),
@@ -234,21 +234,21 @@ class ServerMgmtScenarioTest(ScenarioTest):
 
 class ProxyResourcesMgmtScenarioTest(ScenarioTest):
 
-    # @ResourceGroupPreparer()
-    # @ServerPreparer(engine_type='mysql')
-    # def test_mysql_proxy_resources_mgmt(self, resource_group, server, database_engine):
-    #     self._test_firewall_mgmt(resource_group, server, database_engine)
-    #     self._test_db_mgmt(resource_group, server, database_engine)
-    #     self._test_configuration_mgmt(resource_group, server, database_engine)
-    #     self._test_log_file_mgmt(resource_group, server, database_engine)
+    @ResourceGroupPreparer()
+    @ServerPreparer(engine_type='mysql')
+    def test_mysql_proxy_resources_mgmt(self, resource_group, server, database_engine):
+        self._test_firewall_mgmt(resource_group, server, database_engine)
+        self._test_db_mgmt(resource_group, server, database_engine)
+        self._test_configuration_mgmt(resource_group, server, database_engine)
+        self._test_log_file_mgmt(resource_group, server, database_engine)
 
-    # @ResourceGroupPreparer()
-    # @ServerPreparer(engine_type='postgres')
-    # def test_postgres_proxy_resources_mgmt(self, resource_group, server, database_engine):
-    #     self._test_firewall_mgmt(resource_group, server, database_engine)
-    #     self._test_db_mgmt(resource_group, server, database_engine)
-    #     self._test_configuration_mgmt(resource_group, server, database_engine)
-    #     self._test_log_file_mgmt(resource_group, server, database_engine)
+    @ResourceGroupPreparer()
+    @ServerPreparer(engine_type='postgres')
+    def test_postgres_proxy_resources_mgmt(self, resource_group, server, database_engine):
+        self._test_firewall_mgmt(resource_group, server, database_engine)
+        self._test_db_mgmt(resource_group, server, database_engine)
+        self._test_configuration_mgmt(resource_group, server, database_engine)
+        self._test_log_file_mgmt(resource_group, server, database_engine)
 
     def _test_firewall_mgmt(self, resource_group, server, database_engine):
         firewall_rule_1 = 'rule1'

@@ -13,6 +13,45 @@ from ._client_factory import get_mysql_management_client, get_postgresql_managem
 SKU_TIER_MAP = {'Basic': 'b', 'GeneralPurpose': 'gp', 'MemoryOptimized': 'mo'}
 
 
+def _server_create(cmd, client, resource_group_name, server_name, sku_name, no_wait=False,
+                   location=None, administrator_login=None, administrator_login_password=None, backup_retention=None,
+                   geo_redundant_backup=None, ssl_enforcement=None, storage_size=None, tags=None, version=None):
+    provider = 'Microsoft.DBForMySQL' if isinstance(client, ServersOperations) else 'Microsoft.DBforPostgreSQL'
+    parameters = None
+    if provider == 'Microsoft.DBForMySQL':
+        from azure.mgmt.rdbms import mysql
+        parameters = mysql.models.ServerForCreate(
+            sku=mysql.models.Sku(name=sku_name),
+            properties=mysql.models.ServerPropertiesForDefaultCreate(
+                administrator_login=administrator_login,
+                administrator_login_password=administrator_login_password,
+                version=version,
+                ssl_enforcement=ssl_enforcement,
+                storage_profile=mysql.models.StorageProfile(
+                    backup_retention_days=backup_retention,
+                    geo_redundant_backup=geo_redundant_backup,
+                    storage_mb=storage_size)),
+            location=location,
+            tags=tags)
+    elif provider == 'Microsoft.DBforPostgreSQL':
+        from azure.mgmt.rdbms import postgresql
+        parameters = postgresql.models.ServerForCreate(
+            sku=postgresql.models.Sku(name=sku_name),
+            properties=postgresql.models.ServerPropertiesForDefaultCreate(
+                administrator_login=administrator_login,
+                administrator_login_password=administrator_login_password,
+                version=version,
+                ssl_enforcement=ssl_enforcement,
+                storage_profile=postgresql.models.StorageProfile(
+                    backup_retention_days=backup_retention,
+                    geo_redundant_backup=geo_redundant_backup,
+                    storage_mb=storage_size)),
+            location=location,
+            tags=tags)
+
+    return client.create(resource_group_name, server_name, parameters)
+    
+
 # need to replace source server name with source server id, so customer server georestore function
 # The parameter list should be the same as that in factory to use the ParametersContext
 # auguments and validators
@@ -23,15 +62,18 @@ def _server_georestore(cmd, client, resource_group_name, server_name, sku_name, 
         from azext_rdbms import mysql
         parameters = mysql.models.ServerForCreate(
             sku=mysql.models.Sku(name=sku_name),
-            properties=mysql.models.ServerPropertiesForGeoRestore(
+            properties=mysql.models.ServerPropertiesForGeoRestore(),
+            storage_profile=mysql.models.StorageProfile(
                 backup_retention_days=backup_retention
-            ),
-            storage_profile=mysql.models.StorageProfile())
+            ))
     elif provider == 'Microsoft.DBforPostgreSQL':
         from azext_rdbms import postgresql
         parameters = postgresql.models.ServerForCreate(
             sku=postgresql.models.Sku(name=sku_name),
-            properties=postgresql.models.ServerPropertiesForGeoRestore())
+            properties=postgresql.models.ServerPropertiesForGeoRestore(),
+            storage_profile=mysql.models.StorageProfile(
+                backup_retention_days=backup_retention
+            ))
 
     if not is_valid_resource_id(source_server):
         if len(source_server.split('/')) == 1:
