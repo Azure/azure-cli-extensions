@@ -5,15 +5,14 @@
 
 import os
 import re
-import sys
 import json
 import shlex
 import hashlib
 from collections import defaultdict
-from six.moves import configparser
 
 from knack.log import get_logger
 
+import azext_alias
 from azext_alias import telemetry
 from azext_alias._const import (
     GLOBAL_CONFIG_DIR,
@@ -25,10 +24,8 @@ from azext_alias._const import (
     COLLISION_CHECK_LEVEL_DEPTH,
     POS_ARG_DEBUG_MSG
 )
-from azext_alias.argument import (
-    build_pos_args_table,
-    render_template
-)
+from azext_alias.argument import build_pos_args_table, render_template
+from azext_alias.util import is_alias_create_command, cache_reserved_commands, get_config_parser
 
 
 GLOBAL_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_FILE_NAME)
@@ -38,25 +35,12 @@ GLOBAL_COLLIDED_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, COLLIDED_ALIAS_FILE
 logger = get_logger(__name__)
 
 
-def get_config_parser():
-    """
-    Disable configparser's interpolation function and return an instance of config parser.
-
-    Returns:
-        An instance of config parser with interpolation disabled.
-    """
-    if sys.version_info.major == 3:
-        return configparser.ConfigParser(interpolation=None)  # pylint: disable=unexpected-keyword-arg
-    return configparser.ConfigParser()
-
-
 class AliasManager(object):
 
     def __init__(self, **kwargs):
         self.alias_table = get_config_parser()
         self.kwargs = kwargs
         self.collided_alias = defaultdict(list)
-        self.reserved_commands = []
         self.alias_config_str = ''
         self.alias_config_hash = ''
         self.load_alias_table()
@@ -75,7 +59,7 @@ class AliasManager(object):
             telemetry.set_number_of_aliases_registered(len(self.alias_table.sections()))
         except Exception as exception:  # pylint: disable=broad-except
             logger.warning(CONFIG_PARSING_ERROR, AliasManager.process_exception_message(exception))
-            self.alias_table = configparser.ConfigParser()
+            self.alias_table = get_config_parser()
             telemetry.set_exception(exception)
 
     def load_alias_hash(self):
@@ -131,23 +115,26 @@ class AliasManager(object):
         """
         if self.parse_error():
             # Write an empty hash so next run will check the config file against the entire command table again
-            self.write_alias_config_hash(True)
+            AliasManager.write_alias_config_hash(empty_hash=True)
             return args
 
         # Only load the entire command table if it detects changes in the alias config
         if self.detect_alias_config_change():
             self.load_full_command_table()
-            self.build_collision_table()
+            self.collided_alias = AliasManager.build_collision_table(self.alias_table.sections(),
+                                                                     azext_alias.cached_reserved_commands)
         else:
             self.load_collided_alias()
 
         transformed_commands = []
         alias_iter = enumerate(args, 1)
-
         for alias_index, alias in alias_iter:
-            # Directly append invalid alias or collided alias
-            if not alias or alias[0] == '-' or (alias in self.collided_alias and
-                                                alias_index in self.collided_alias[alias]):
+            is_collided_alias = alias in self.collided_alias and alias_index in self.collided_alias[alias]
+            # Check if the current alias is a named argument
+            # index - 2 because alias_iter starts counting at index 1
+            is_named_arg = alias_index > 1 and args[alias_index - 2].startswith('-')
+            is_named_arg_flag = alias.startswith('-')
+            if not alias or is_collided_alias or is_named_arg or is_named_arg_flag:
                 transformed_commands.append(alias)
                 continue
 
@@ -174,35 +161,6 @@ class AliasManager(object):
 
         return self.post_transform(transformed_commands)
 
-    def build_collision_table(self, levels=COLLISION_CHECK_LEVEL_DEPTH):
-        """
-        Build the collision table according to the alias configuration file against the entire command table.
-
-        self.collided_alias is structured as:
-        {
-            'collided_alias': [the command level at which collision happens]
-        }
-        For example:
-        {
-            'account': [1, 2]
-        }
-        This means that 'account' is a reserved command in level 1 and level 2 of the command tree because
-        (az account ...) and (az storage account ...)
-             lvl 1                        lvl 2
-
-        Args:
-            levels: the amount of levels we tranverse through the command table tree.
-        """
-        for alias in self.alias_table.sections():
-            # Only care about the first word in the alias because alias
-            # cannot have spaces (unless they have positional arguments)
-            word = alias.split()[0]
-            for level in range(1, levels + 1):
-                collision_regex = r'^{}{}($|\s)'.format(r'([a-z\-]*\s)' * (level - 1), word.lower())
-                if list(filter(re.compile(collision_regex).match, self.reserved_commands)):
-                    self.collided_alias[word].append(level)
-        telemetry.set_collided_aliases(list(self.collided_alias.keys()))
-
     def get_full_alias(self, query):
         """
         Get the full alias given a search query.
@@ -223,7 +181,7 @@ class AliasManager(object):
         Perform a full load of the command table to get all the reserved command words.
         """
         load_cmd_tbl_func = self.kwargs.get('load_cmd_tbl_func', lambda _: {})
-        self.reserved_commands = list(load_cmd_tbl_func([]).keys())
+        cache_reserved_commands(load_cmd_tbl_func)
         telemetry.set_full_command_table_loaded()
 
     def post_transform(self, args):
@@ -237,34 +195,17 @@ class AliasManager(object):
         args = args[1:] if args and args[0] == 'az' else args
 
         post_transform_commands = []
-        for arg in args:
-            post_transform_commands.append(os.path.expandvars(arg))
+        for i, arg in enumerate(args):
+            # Do not translate environment variables for command argument
+            if is_alias_create_command(args) and i > 0 and args[i - 1] in ['-c', '--command']:
+                post_transform_commands.append(arg)
+            else:
+                post_transform_commands.append(os.path.expandvars(arg))
 
-        self.write_alias_config_hash()
-        self.write_collided_alias()
+        AliasManager.write_alias_config_hash(self.alias_config_hash)
+        AliasManager.write_collided_alias(self.collided_alias)
 
         return post_transform_commands
-
-    def write_alias_config_hash(self, empty_hash=False):
-        """
-        Write self.alias_config_hash to the alias hash file.
-
-        Args:
-            empty_hash: True if we want to write an empty string into the file. Empty string in the alias hash file
-                means that we have to perform a full load of the command table in the next run.
-        """
-        with open(GLOBAL_ALIAS_HASH_PATH, 'w') as alias_config_hash_file:
-            alias_config_hash_file.write('' if empty_hash else self.alias_config_hash)
-
-    def write_collided_alias(self):
-        """
-        Write the collided aliases string into the collided alias file.
-        """
-        # w+ creates the alias config file if it does not exist
-        open_mode = 'r+' if os.path.exists(GLOBAL_COLLIDED_ALIAS_PATH) else 'w+'
-        with open(GLOBAL_COLLIDED_ALIAS_PATH, open_mode) as collided_alias_file:
-            collided_alias_file.truncate()
-            collided_alias_file.write(json.dumps(self.collided_alias))
 
     def parse_error(self):
         """
@@ -277,6 +218,62 @@ class AliasManager(object):
             True if there is an error parsing the alias configuration file. Otherwises, false.
         """
         return not self.alias_table.sections() and self.alias_config_str
+
+    @staticmethod
+    def build_collision_table(aliases, reserved_commands, levels=COLLISION_CHECK_LEVEL_DEPTH):
+        """
+        Build the collision table according to the alias configuration file against the entire command table.
+
+        self.collided_alias is structured as:
+        {
+            'collided_alias': [the command level at which collision happens]
+        }
+        For example:
+        {
+            'account': [1, 2]
+        }
+        This means that 'account' is a reserved command in level 1 and level 2 of the command tree because
+        (az account ...) and (az storage account ...)
+             lvl 1                        lvl 2
+
+        Args:
+            levels: the amount of levels we tranverse through the command table tree.
+        """
+        collided_alias = defaultdict(list)
+        for alias in aliases:
+            # Only care about the first word in the alias because alias
+            # cannot have spaces (unless they have positional arguments)
+            word = alias.split()[0]
+            for level in range(1, levels + 1):
+                collision_regex = r'^{}{}($|\s)'.format(r'([a-z\-]*\s)' * (level - 1), word.lower())
+                if list(filter(re.compile(collision_regex).match, reserved_commands)):
+                    collided_alias[word].append(level)
+
+        telemetry.set_collided_aliases(list(collided_alias.keys()))
+        return collided_alias
+
+    @staticmethod
+    def write_alias_config_hash(alias_config_hash='', empty_hash=False):
+        """
+        Write self.alias_config_hash to the alias hash file.
+
+        Args:
+            empty_hash: True if we want to write an empty string into the file. Empty string in the alias hash file
+                means that we have to perform a full load of the command table in the next run.
+        """
+        with open(GLOBAL_ALIAS_HASH_PATH, 'w') as alias_config_hash_file:
+            alias_config_hash_file.write('' if empty_hash else alias_config_hash)
+
+    @staticmethod
+    def write_collided_alias(collided_alias_dict):
+        """
+        Write the collided aliases string into the collided alias file.
+        """
+        # w+ creates the alias config file if it does not exist
+        open_mode = 'r+' if os.path.exists(GLOBAL_COLLIDED_ALIAS_PATH) else 'w+'
+        with open(GLOBAL_COLLIDED_ALIAS_PATH, open_mode) as collided_alias_file:
+            collided_alias_file.truncate()
+            collided_alias_file.write(json.dumps(collided_alias_dict))
 
     @staticmethod
     def process_exception_message(exception):

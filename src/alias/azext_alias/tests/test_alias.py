@@ -5,15 +5,16 @@
 
 # pylint: disable=line-too-long,import-error,no-self-use,deprecated-method,pointless-string-statement,relative-import,no-member,redefined-outer-name,too-many-return-statements
 
-import sys
 import os
+import sys
 import shlex
 import unittest
+from mock import Mock
 from six.moves import configparser
 
 from knack.util import CLIError
 
-from azext_alias import alias
+import azext_alias
 from azext_alias.tests._const import (DEFAULT_MOCK_ALIAS_STRING,
                                       COLLISION_MOCK_ALIAS_STRING,
                                       TEST_RESERVED_COMMANDS,
@@ -38,6 +39,7 @@ TEST_DATA = {
         ('mn diag', 'monitor diagnostic-settings create'),
         ('create-vm', 'vm create -g test-group -n test-vm'),
         ('ac-ls', 'ac ls'),
+        ('-n ac', '-n ac'),
         ('-h', '-h'),
         ('storage-connect test1 test2', 'storage account connection-string -g test1 -n test2 -otsv'),
         ('', ''),
@@ -89,7 +91,7 @@ def test_transform_alias(self, test_case):
 
 def test_transform_collided_alias(self, test_case):
     alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-    alias_manager.build_collision_table()
+    alias_manager.collided_alias = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.cached_reserved_commands)
     self.assertEqual(shlex.split(test_case[1]), alias_manager.transform(shlex.split(test_case[0])))
 
 
@@ -143,14 +145,20 @@ TEST_FN = {
 
 class TestAlias(unittest.TestCase):
 
+    @classmethod
+    def setUp(cls):
+        azext_alias.alias.AliasManager.write_alias_config_hash = Mock()
+        azext_alias.alias.AliasManager.write_collided_alias = Mock()
+
     def test_build_empty_collision_table(self):
         alias_manager = self.get_alias_manager(DEFAULT_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-        self.assertDictEqual(dict(), alias_manager.collided_alias)
+        test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.cached_reserved_commands)
+        self.assertDictEqual(dict(), test_case)
 
     def test_build_non_empty_collision_table(self):
         alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-        alias_manager.build_collision_table(levels=2)
-        self.assertDictEqual({'account': [1, 2], 'dns': [2], 'list-locations': [2]}, alias_manager.collided_alias)
+        test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.cached_reserved_commands, levels=2)
+        self.assertDictEqual({'account': [1, 2], 'dns': [2], 'list-locations': [2]}, test_case)
 
     def test_non_parse_error(self):
         alias_manager = self.get_alias_manager()
@@ -158,7 +166,7 @@ class TestAlias(unittest.TestCase):
 
     def test_detect_alias_config_change(self):
         alias_manager = self.get_alias_manager()
-        alias.alias_config_str = DEFAULT_MOCK_ALIAS_STRING
+        azext_alias.alias.alias_config_str = DEFAULT_MOCK_ALIAS_STRING
         self.assertFalse(alias_manager.detect_alias_config_change())
 
         alias_manager = self.get_alias_manager()
@@ -171,7 +179,7 @@ class TestAlias(unittest.TestCase):
     """
     def get_alias_manager(self, mock_alias_str=DEFAULT_MOCK_ALIAS_STRING, reserved_commands=None):
         alias_manager = MockAliasManager(mock_alias_str=mock_alias_str)
-        alias_manager.reserved_commands = reserved_commands if reserved_commands else []
+        azext_alias.cached_reserved_commands = reserved_commands if reserved_commands else []
         return alias_manager
 
     def assertAlias(self, value):
@@ -184,7 +192,7 @@ class TestAlias(unittest.TestCase):
         self.assertEqual(shlex.split(value[1]), alias_manager.post_transform(shlex.split(value[0])))
 
 
-class MockAliasManager(alias.AliasManager):
+class MockAliasManager(azext_alias.alias.AliasManager):
 
     def load_alias_table(self):
 
@@ -205,12 +213,6 @@ class MockAliasManager(alias.AliasManager):
         self.alias_config_hash = hashlib.sha1(self.alias_config_str.encode('utf-8')).hexdigest()
 
     def load_collided_alias(self):
-        pass
-
-    def write_alias_config_hash(self, empty_hash=False):
-        pass
-
-    def write_collided_alias(self):
         pass
 
 
