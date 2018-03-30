@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.log import get_logger
-from azure.cli.core._profile import Profile
+from knack.util import CLIError
 from azext_subscription.subscription.models import (SubscriptionCreationParameters, AdPrincipal)
 
 logger = get_logger(__name__)
@@ -22,6 +22,7 @@ def _get_object_id_by_spn(graph_client, spn):
         return None
     return accounts[0].object_id
 
+
 def _get_object_id_by_upn(graph_client, upn):
     accounts = list(graph_client.users.list(filter="userPrincipalName eq '{}'".format(upn)))
     if not accounts:
@@ -32,6 +33,7 @@ def _get_object_id_by_upn(graph_client, upn):
                        "You can avoid this by specifying object id.", upn)
         return None
     return accounts[0].object_id
+
 
 def _get_object_id_from_subscription(graph_client, subscription):
     if subscription['user']:
@@ -46,13 +48,15 @@ def _get_object_id_from_subscription(graph_client, subscription):
                        'Azure Key Vault does not work with certificate credentials.')
     return None
 
+
 def _get_object_id(graph_client, subscription=None, spn=None, upn=None):
     if spn:
         return _get_object_id_by_spn(graph_client, spn)
     if upn:
         return _get_object_id_by_upn(graph_client, upn)
     return _get_object_id_from_subscription(graph_client, subscription)
-    
+
+
 def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
     if not object_id:
         from azure.cli.core._profile import Profile
@@ -69,8 +73,11 @@ def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
             raise CLIError('Unable to get object id from principal name.')
     return object_id
 
-def cli_subscription_create(cmd, client, enrollment_account_name, offer_type, display_name=None, object_id="", spn="", upn=""):
-    owners = [_object_id_args_helper(cmd.cli_ctx, object_id=object_id) for object_id in object_id.split(',') if object_id] + \
+
+def cli_subscription_create(cmd, client, enrollment_account_name, offer_type,
+                            display_name=None, object_id="", spn="", upn=""):
+    owners = [_object_id_args_helper(cmd.cli_ctx, object_id=object_id) for object_id
+              in object_id.split(',') if object_id] + \
              [_object_id_args_helper(cmd.cli_ctx, spn=spn) for spn in spn.split(',') if spn] + \
              [_object_id_args_helper(cmd.cli_ctx, upn=upn) for upn in upn.split(',') if upn]
     creation_parameters = SubscriptionCreationParameters(

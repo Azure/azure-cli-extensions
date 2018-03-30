@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-few-public-methods
 
 from azure.cli.testsdk import ScenarioTest
 
