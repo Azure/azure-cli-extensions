@@ -120,7 +120,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
                               JMESPathCheck('resourceGroup', resource_group_1),
                               JMESPathCheck('administratorLogin', admin_login),
                               JMESPathCheck('sslEnforcement', 'Enabled'),
-                              JMESPathCheck('tags.key', '1'),                              
+                              JMESPathCheck('tags.key', '1'),
                               JMESPathCheck('sku.capacity', old_cu),
                               JMESPathCheck('sku.tier', edition),
                               JMESPathCheck('storageProfile.backupRetentionDays', backupRetention),
@@ -157,7 +157,7 @@ class ServerMgmtScenarioTest(ScenarioTest):
 
         self.cmd('{} server delete -g {} --name {} --yes'
                  .format(database_engine, resource_group_2, servers[2]), checks=NoneCheck())
- 
+
         # test list server should be 0
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_1), checks=[NoneCheck()])
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_2), checks=[NoneCheck()])
