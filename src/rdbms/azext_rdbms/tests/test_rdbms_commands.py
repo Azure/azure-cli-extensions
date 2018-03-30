@@ -64,53 +64,85 @@ class ServerPreparer(AbstractPreparer, SingleValueReplacer):
 class ServerMgmtScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(parameter_name='resource_group_1')
-    def test_mysql_server_mgmt(self, resource_group_1):
-        self._test_server_mgmt('mysql', resource_group_1)
+    @ResourceGroupPreparer(parameter_name='resource_group_2')
+    def test_mysql_server_mgmt(self, resource_group_1, resource_group_2):
+        self._test_server_mgmt('mysql', resource_group_1, resource_group_2)
 
     @ResourceGroupPreparer(parameter_name='resource_group_1')
-    def test_postgres_server_mgmt(self, resource_group_1):
-        self._test_server_mgmt('postgres', resource_group_1)
+    @ResourceGroupPreparer(parameter_name='resource_group_2')
+    def test_postgres_server_mgmt(self, resource_group_1, resource_group_2):
+        self._test_server_mgmt('postgres', resource_group_1, resource_group_2)
 
-    def _test_server_mgmt(self, database_engine, resource_group_1):
+    def _test_server_mgmt(self, database_engine, resource_group_1, resource_group_2):
         servers = [self.create_random_name(SERVER_NAME_PREFIX, SERVER_NAME_MAX_LENGTH),
                    self.create_random_name('azuredbclirestore', SERVER_NAME_MAX_LENGTH),
                    self.create_random_name('azuredbcligeorestore', SERVER_NAME_MAX_LENGTH)]
         admin_login = 'cloudsa'
         admin_passwords = ['SecretPassword123', 'SecretPassword456']
         edition = 'GeneralPurpose'
+        backupRetention = 10
+        geoRedundantBackup = 'Enabled'
         old_cu = 2
         family = 'Gen5'
         skuname = '{}_{}_{}'.format("GP", family, old_cu)
-
-        rg = resource_group_1
         loc = 'westus'
+
+        geoGeoRedundantBackup = 'Disabled'
+        geoBackupRetention = 20
+        geoloc = 'koreasouth'
 
         # test create server
         self.cmd('{} server create -g {} --name {} -l {} '
                  '--admin-user {} --admin-password {} '
-                 '--sku-name {} --tags key=1'
-                 .format(database_engine, rg, servers[0], loc,
-                         admin_login, admin_passwords[0], skuname),
+                 '--sku-name {} --tags key=1 --geo-redundant-backup {} '
+                 '--backup-retention {}'
+                 .format(database_engine, resource_group_1, servers[0], loc,
+                         admin_login, admin_passwords[0], skuname,
+                         geoRedundantBackup, backupRetention),
                  checks=[
                      JMESPathCheck('name', servers[0]),
-                     JMESPathCheck('resourceGroup', rg),
+                     JMESPathCheck('resourceGroup', resource_group_1),
                      JMESPathCheck('administratorLogin', admin_login),
                      JMESPathCheck('sslEnforcement', 'Enabled'),
                      JMESPathCheck('tags.key', '1'),
                      JMESPathCheck('sku.capacity', old_cu),
-                     JMESPathCheck('sku.tier', edition)])
+                     JMESPathCheck('sku.tier', edition),
+                     JMESPathCheck('backupRetentionDays', backupRetention),
+                     JMESPathCheck('geoRedundantBackup', geoRedundantBackup)
+                     ])
 
         # test show server
-        self.cmd('{} server show -g {} --name {}'
-                 .format(database_engine, rg, servers[0]),
-                 checks=[
-                     JMESPathCheck('name', servers[0]),
-                     JMESPathCheck('administratorLogin', admin_login),
-                     JMESPathCheck('sku.capacity', old_cu),
-                     JMESPathCheck('resourceGroup', rg)]).get_output_in_json()
+        result = self.cmd('{} server show -g {} --name {}'
+                          .format(database_engine, resource_group_1, servers[0]),
+                          checks=[
+                              JMESPathCheck('name', servers[0]),
+                              JMESPathCheck('administratorLogin', admin_login),
+                              JMESPathCheck('sku.capacity', old_cu),
+                              JMESPathCheck('resourceGroup', resource_group_1)]).get_output_in_json()
+
+        # test georestore server
+        try:
+            self.cmd('{} server georestore -g {} --name {} --source-server {} -l {} '
+                     '--georedundant-backup {} --backup-retention {}'
+                     .format(database_engine, resource_group_2, servers[2], result['id'],
+                             geoloc, geoGeoRedundantBackup, geoBackupRetention),
+                     checks=[
+                         JMESPathCheck('name', servers[2]),
+                         JMESPathCheck('resourceGroup', resource_group_2),
+                         JMESPathCheck('sku.tier', edition),
+                         JMESPathCheck('administratorLogin', admin_login),
+                         JMESPathCheck('location', geoloc),
+                         JMESPathCheck('backupRetentionDays', geoBackupRetention),
+                         JMESPathCheck('geoRedundantBackup', geoGeoRedundantBackup)
+                         ])
+        except Exception as exception:  # pylint: disable=broad-except
+            print(exception)
 
         # test list servers
         self.cmd('{} server list -g {}'.format(database_engine, resource_group_1),
+                 checks=[JMESPathCheck('type(@)', 'array')])
+
+        self.cmd('{} server list -g {}'.format(database_engine, resource_group_2),
                  checks=[JMESPathCheck('type(@)', 'array')])
 
         # test list servers without resource group
@@ -119,7 +151,14 @@ class ServerMgmtScenarioTest(ScenarioTest):
 
         # test delete server
         self.cmd('{} server delete -g {} --name {} --yes'
-                 .format(database_engine, rg, servers[0]), checks=NoneCheck())
+                 .format(database_engine, resource_group_1, servers[0]), checks=NoneCheck())
+
+        try:
+            self.cmd('{} server delete -g {} --name {} --yes'
+                     .format(database_engine, resource_group_2, servers[2]), checks=NoneCheck())
+        except Exception as exception:  # pylint: disable=broad-except
+            print(exception)
 
         # test list server should be 0
-        self.cmd('{} server list -g {}'.format(database_engine, rg), checks=[NoneCheck()])
+        self.cmd('{} server list -g {}'.format(database_engine, resource_group_1), checks=[NoneCheck()])
+        self.cmd('{} server list -g {}'.format(database_engine, resource_group_2), checks=[NoneCheck()])

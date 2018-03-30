@@ -34,6 +34,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
             c.argument('sku_name', options_list=['--sku-name'], required=False, help='The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.')
             c.argument('source_server', options_list=['--source-server', '-s'], required=True, help='The name or ID of the source server to restore from.')
             c.argument('backup_retention', options_list=['--backup-retention'], type=int, help='The max days of retention, unit is days.')
+            c.argument('geo_redundant_backup', options_list=['--geo-redundant-backup'], help='Enable Geo-redundant or not for server backup.')
 
         with self.argument_context('{} server wait'.format(command_group)) as c:
             c.ignore('created', 'deleted', 'updated')

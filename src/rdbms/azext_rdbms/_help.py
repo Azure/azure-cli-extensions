@@ -26,12 +26,12 @@ def add_helps(command_group, server_type):
                 type: command
                 short-summary: Georestore a server from backup.
                 examples:
-                    - name: Georestore 'testsvr' as 'testsvrnew'.
-                      text: az {0} server georestore -g testgroup -n testsvrnew --source-server testsvr -l westus2"
-                    - name: Georestore 'testsvr2' to 'testsvrnew', where 'testsvrnew' is in the same resource group as the original server but in a different location.
+                    - name: Georestore 'testsvr' as 'testsvrnew' where 'testsvrnew' is in same resource group as 'testsvr'.
+                      text: az {0} server georestore -g testgroup -n testsvrnew --source-server testsvr -l westus2
+                    - name: Georestore 'testsvr2' to 'testsvrnew', where 'testsvrnew' is in the different resource group as the original server.
                       text: |
                         az {0} server georestore -g testgroup -n testsvrnew \\
-                            -s "/subscriptions/${{SubID}}/resourceGroups/${{ResourceGroup}}/providers/Microsoft.DBfor{1}/servers/testsvr2" -l westus2 --sku-name GP_Gen5_2 "
+                            -s "/subscriptions/${{SubID}}/resourceGroups/${{ResourceGroup}}/providers/Microsoft.DBfor{1}/servers/testsvr2" -l westus2 --sku-name GP_Gen5_2
                 """.format(command_group, server_type)
 
 
