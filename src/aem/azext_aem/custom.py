@@ -65,7 +65,7 @@ class EnhancedMonitoring(object):
                                                        operation_group='virtual_machine_extensions')
         existing_ext = self._get_aem_extension()
         extension_instance_name = existing_ext.name if existing_ext else self._extension['name']
-        existing_ext = VirtualMachineExtension(self._vm.location,
+        existing_ext = VirtualMachineExtension(location=self._vm.location,
                                                publisher=self._extension['publisher'],
                                                virtual_machine_extension_type=self._extension['name'],
                                                protected_settings={
