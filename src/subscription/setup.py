@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='subscription',
     version=VERSION,
-    description='An Azure CLI Extension to manage Subscription Definitions',
-    long_description='An Azure CLI Extension to manage Subscription Definitions',
+    description='Support for subscription management preview.',
+    long_description='Support for subscription management preview.',
     license='MIT',
     author='Wilco Bauwer',
     author_email='wilcob@microsoft.com',

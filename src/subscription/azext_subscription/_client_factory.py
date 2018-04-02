@@ -11,5 +11,5 @@ def cf_subscription(cli_ctx, **_):
     return client
 
 
-def subscription_definitions_mgmt_client_factory(cli_ctx, kwargs):
-    return cf_subscription(cli_ctx, **kwargs).subscription_definitions
+def subscription_factory(cli_ctx, kwargs):
+    return cf_subscription(cli_ctx, **kwargs).subscription_factory

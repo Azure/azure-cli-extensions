@@ -6,19 +6,17 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import subscription_definitions_mgmt_client_factory
+from ._client_factory import subscription_factory
 from ._exception_handler import subscription_exception_handler
 
 
 def load_command_table(self, _):
-    subscription_definition_util = CliCommandType(
-        operations_tmpl='azext_subscription.subscription.operations.subscription_definitions_operations#SubscriptionDefinitionsOperations.{}',
-        client_factory=subscription_definitions_mgmt_client_factory,
+    subscription_util = CliCommandType(
+        operations_tmpl='azext_subscription.subscription.operations.subscription_factory_operations#SubscriptionFactoryOperations.{}',
+        client_factory=subscription_factory,
         client_arg_name='self',
         exception_handler=subscription_exception_handler
     )
 
-    with self.command_group('account subscription-definition', subscription_definition_util, client_factory=subscription_definitions_mgmt_client_factory) as g:
-        g.command('list', 'list')
-        g.command('show', 'get')
-        g.custom_command('create', 'cli_subscription_create_subscription_definition')
+    with self.command_group('account', subscription_util, client_factory=subscription_factory) as g:
+        g.custom_command('create', 'cli_subscription_create')
