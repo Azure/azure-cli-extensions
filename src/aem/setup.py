@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,7 +29,7 @@ DEPENDENCIES = []
 setup(
     name='aem',
     version=VERSION,
-    description='CLI Extension to managed Azure Enhanced Monitoring Extension for SAP',
+    description='Manage Azure Enhanced Monitoring Extensions for SAP',
     long_description='N/A',
     license='MIT',
     author='Yugang Wang',
