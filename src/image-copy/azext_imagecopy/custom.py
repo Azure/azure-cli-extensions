@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import datetime
+
 from multiprocessing import Pool
 
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
@@ -23,34 +25,55 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
                                    '--resource-group', source_resource_group_name])
 
     json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
-
-    source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
-    source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']
-    logger.debug("source_os_disk_id: %s. source_os_type: %s",
-                 source_os_disk_id, source_os_type)
-
-    # create source snapshots
-    logger.warn("Creating source snapshot")
+    source_os_disk_snapshot_url = ''
     source_os_disk_snapshot_name = source_object_name + '_os_disk_snapshot'
-    cli_cmd = prepare_cli_command(['snapshot', 'create',
-                                   '--name', source_os_disk_snapshot_name,
-                                   '--resource-group', source_resource_group_name,
-                                   '--source', source_os_disk_id])
+    source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']
 
-    run_cli_command(cli_cmd)
+    is_blob_disk = json_cmd_output['storageProfile']['osDisk']['managedDisk'] is None
 
-    # Get SAS URL for the snapshotName
-    logger.warn("Getting sas url for the source snapshot")
-    cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
-                                   '--name', source_os_disk_snapshot_name,
-                                   '--resource-group', source_resource_group_name,
-                                   '--duration-in-seconds', '3600'])
+    if not is_blob_disk:
+        source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
+        logger.debug("source_os_disk_id: %s. source_os_type: %s", source_os_disk_id, source_os_type)
 
-    json_output = run_cli_command(cli_cmd, return_as_json=True)
+        # create source snapshots
+        logger.warn("Creating source snapshot")
+        cli_cmd = prepare_cli_command(['snapshot', 'create',
+                                       '--name', source_os_disk_snapshot_name,
+                                       '--resource-group', source_resource_group_name,
+                                       '--source', source_os_disk_id])
 
-    source_os_disk_snapshot_url = json_output['accessSas']
-    logger.debug("source os disk snapshot url: %s",
-                 source_os_disk_snapshot_url)
+        run_cli_command(cli_cmd)
+
+        # Get SAS URL for the snapshotName
+        logger.warn("Getting sas url for the source snapshot")
+        cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
+                                       '--name', source_os_disk_snapshot_name,
+                                       '--resource-group', source_resource_group_name,
+                                       '--duration-in-seconds', '3600'])
+
+        json_output = run_cli_command(cli_cmd, return_as_json=True)
+
+        source_os_disk_snapshot_url = json_output['accessSas']
+        logger.debug("source os disk snapshot url: %s", source_os_disk_snapshot_url)
+    else:
+        logger.warn("Getting sas url for the source blob")
+        blob_uri = json_cmd_output['storageProfile']['osDisk']['blobUri'].replace('https://', '')
+        logger.debug("source blob uri: %s" % blob_uri)
+        blob_account = blob_uri.split('.', 1)[0]
+        blob_uri_components = blob_uri.split('/',)
+        blob_container = blob_uri_components[1]
+        blob_name = blob_uri_components[2]
+        expiry_date = ((datetime.datetime.utcnow() + datetime.timedelta(days=1))
+                       .isoformat().split('.', 1)[0]+'Z')
+        cli_cmd = prepare_cli_command(['storage', 'blob', 'generate-sas',
+                                       '--https-only',
+                                       '--expiry', expiry_date,
+                                       '--permissions=r',
+                                       '--account-name', blob_account,
+                                       '--container-name', blob_container,
+                                       '--name', blob_name])
+        sas = run_cli_command(cli_cmd, return_as_json=False).strip().replace('"', '')
+        source_os_disk_snapshot_url = 'https://%s?%s' % (blob_uri, sas)
 
     # Start processing in the target locations
 
@@ -107,17 +130,18 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
                                        '--name', transient_resource_group_name])
         run_cli_command(cli_cmd)
 
-        # Revoke sas for source snapshot
-        cli_cmd = prepare_cli_command(['snapshot', 'revoke-access',
-                                       '--name', source_os_disk_snapshot_name,
-                                       '--resource-group', source_resource_group_name])
-        run_cli_command(cli_cmd)
+        if not is_blob_disk:
+            # Revoke sas for source snapshot
+            cli_cmd = prepare_cli_command(['snapshot', 'revoke-access',
+                                           '--name', source_os_disk_snapshot_name,
+                                           '--resource-group', source_resource_group_name])
+            run_cli_command(cli_cmd)
 
-        # Delete source snapshot
-        cli_cmd = prepare_cli_command(['snapshot', 'delete',
-                                       '--name', source_os_disk_snapshot_name,
-                                       '--resource-group', source_resource_group_name])
-        run_cli_command(cli_cmd)
+            # Delete source snapshot
+            cli_cmd = prepare_cli_command(['snapshot', 'delete',
+                                           '--name', source_os_disk_snapshot_name,
+                                           '--resource-group', source_resource_group_name])
+            run_cli_command(cli_cmd)
 
 
 def create_resource_group(resource_group_name, location):
