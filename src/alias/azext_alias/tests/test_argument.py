@@ -30,24 +30,29 @@ class TestArgument(unittest.TestCase):
         self.assertListEqual(['_0', '_1', 'arg_1', 'arg_2'], get_placeholders('{{ 0 }} {{ 1 }} {{ arg_1 }} {{ arg_2 }}'))
 
     def test_get_placeholders_duplicate(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             get_placeholders('{{ arg_1 }} {{ arg_1 }}', check_duplicates=True)
+        self.assertEqual(str(cm.exception), 'alias: Duplicated placeholders found when transforming "{{ arg_1 }} {{ arg_1 }}"')
 
     def test_get_placeholders_no_opening_bracket(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             get_placeholders('arg_1 }}')
+        self.assertEqual(str(cm.exception), 'alias: Brackets in "arg_1 }}" are not enclosed properly')
 
     def test_get_placeholders_double_opening_bracket(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             get_placeholders('{{ {{ arg_1')
+        self.assertEqual(str(cm.exception), 'alias: Brackets in "{{ {{ arg_1" are not enclosed properly')
 
     def test_get_placeholders_double_closing_bracket(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             get_placeholders('{{ arg_1 }} }}')
+        self.assertEqual(str(cm.exception), 'alias: Brackets in "{{ arg_1 }} }}" are not enclosed properly')
 
     def test_get_placeholders_no_closing_bracket(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             get_placeholders('{{ arg_1 ')
+        self.assertEqual(str(cm.exception), 'alias: Brackets in "{{ arg_1 " are not enclosed properly')
 
     def test_normalize_placeholders(self):
         self.assertEqual('"{{ arg_1 }}" "{{ arg_2 }}"', normalize_placeholders('{{ arg_1 }} {{ arg_2 }}', inject_quotes=True))
@@ -75,8 +80,9 @@ class TestArgument(unittest.TestCase):
         self.assertDictEqual(expected, build_pos_args_table('{{ 0 }} {{ arg_1 }} {{ arg_2 }} {{ arg_3 }}', ['{"test": "test"}', 'test1 test2', 'arg with spaces', '"azure cli"'], 0))
 
     def test_build_pos_args_table_not_enough_arguments(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             build_pos_args_table('{{ arg_1 }} {{ arg_2 }}', ['test_1', 'test_2'], 1)
+        self.assertEqual(str(cm.exception), 'alias: "{{ arg_1 }} {{ arg_2 }}" takes exactly 2 positional arguments (1 given)')
 
     def test_render_template(self):
         pos_args_table = {
@@ -105,12 +111,13 @@ class TestArgument(unittest.TestCase):
         self.assertListEqual(['argument with spaces'.upper()], render_template('{{ arg_1.upper() }}', pos_args_table))
 
     def test_render_template_error(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             pos_args_table = {
                 'arg_1': 'test_1',
                 'arg_2': 'test_2'
             }
             render_template('{{ arg_1 }} {{ arg_2 }', pos_args_table)
+        self.assertEqual(str(cm.exception), 'alias: Encounted the following error when injecting positional arguments to ""{{ arg_1 }}" "{{ arg_2 }" - unexpected \'}\'')
 
     def test_check_runtime_errors_no_error(self):
         pos_args_table = {
@@ -120,12 +127,13 @@ class TestArgument(unittest.TestCase):
         check_runtime_errors('{{ arg_1.split("_")[0] }} {{ arg_2.split("_")[1] }}', pos_args_table)
 
     def test_check_runtime_errors_has_error(self):
-        with self.assertRaises(CLIError):
+        with self.assertRaises(CLIError) as cm:
             pos_args_table = {
                 'arg_1': 'test_1',
                 'arg_2': 'test_2'
             }
             check_runtime_errors('{{ arg_1.split("_")[2] }} {{ arg_2.split("_")[1] }}', pos_args_table)
+        self.assertEqual(str(cm.exception), 'alias: Encounted the following error when evaluating "arg_1.split("_")[2]" - list index out of range')
 
 
 if __name__ == '__main__':

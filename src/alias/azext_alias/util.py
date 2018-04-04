@@ -3,10 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
 import sys
+import shlex
 from six.moves import configparser
 
 import azext_alias
+from azext_alias._const import COLLISION_CHECK_LEVEL_DEPTH
 
 
 def get_config_parser():
@@ -52,3 +55,21 @@ def cache_reserved_commands(load_cmd_tbl_func):
     """
     if not azext_alias.cached_reserved_commands:
         azext_alias.cached_reserved_commands = list(load_cmd_tbl_func([]).keys())
+
+
+def remove_pos_arg_placeholders(alias_command):
+    """
+    Remove positional argument placeholders from alias_command.
+
+    Args:
+        alias_command: The alias command to remove from.
+    """
+    # Boundary index is the index at which named argument or positional argument starts
+    split_command = shlex.split(alias_command)
+    boundary_index = len(split_command)
+    for i, subcommand in enumerate(split_command):
+        if not re.match('^[a-z]', subcommand.lower()) or i > COLLISION_CHECK_LEVEL_DEPTH:
+            boundary_index = i
+            break
+
+    return ' '.join(split_command[:boundary_index]).lower()

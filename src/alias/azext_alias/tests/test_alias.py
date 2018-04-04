@@ -111,9 +111,9 @@ def test_post_transform_env_var(self, test_case):
 
 def test_inconsistent_placeholder_index(self, test_case):
     alias_manager = self.get_alias_manager()
-    with self.assertRaises(CLIError):
+    with self.assertRaises(CLIError) as cm:
         alias_manager.transform(test_case)
-
+    self.assertEqual(str(cm.exception), 'alias: "cp {{ arg_1 }} {{ arg_2 }}" takes exactly 2 positional arguments (%s given)' % str(len(test_case) - 1))
 
 def test_parse_error_python_3(self, test_case):
     if sys.version_info.major == 3:

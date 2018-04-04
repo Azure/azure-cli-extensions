@@ -133,7 +133,7 @@ def set_number_of_aliases_registered(num_aliases):
 
 @decorators.suppress_all_exceptions(raise_in_diagnostics=True)
 def conclude():
-    if not _session.aliases_hit:
+    if not _session.aliases_hit and not _session.exceptions:
         return
 
     _session.end_time = datetime.datetime.now()
