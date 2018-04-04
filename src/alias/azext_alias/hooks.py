@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import json
 import timeit
 
 from knack.log import get_logger
@@ -14,9 +15,9 @@ from azext_alias.util import (
     is_alias_create_command,
     cache_reserved_commands,
     get_alias_table,
-    remove_pos_arg_placeholders
+    filter_aliases
 )
-from azext_alias._const import DEBUG_MSG_WITH_TIMING
+from azext_alias._const import DEBUG_MSG_WITH_TIMING, GLOBAL_ALIAS_TAB_COMP_TABLE_PATH
 
 logger = get_logger(__name__)
 
@@ -54,10 +55,6 @@ def enable_aliases_autocomplete(_, **kwargs):
     """
     Enable aliases autocomplete by injecting aliases into Azure CLI tab completion list.
     """
-    parser = kwargs.get('parser', None)
-    if not parser:
-        return
-
     external_completions = kwargs.get('external_completions', [])
     prefix = kwargs.get('cword_prefix', [])
     cur_commands = kwargs.get('comp_words', [])
@@ -66,9 +63,8 @@ def enable_aliases_autocomplete(_, **kwargs):
     # so parser can get the correct subparser when chaining aliases
     _transform_cur_commands(cur_commands, alias_table=alias_table)
 
-    for alias, alias_command in _filter_aliases(alias_table):
-        if alias.startswith(prefix) and alias.strip() != prefix and \
-            _is_autocomplete_valid(parser, cur_commands, alias_command):
+    for alias, alias_command in filter_aliases(alias_table):
+        if alias.startswith(prefix) and alias.strip() != prefix and _is_autocomplete_valid(cur_commands, alias_command):
             # Only autocomplete the first word because alias is space-delimited
             external_completions.append(alias)
 
@@ -102,13 +98,13 @@ def enable_aliases_autocomplete_interactive(_, **kwargs):
     if not subtree or not hasattr(subtree, 'children'):
         return
 
-    for alias, alias_command in _filter_aliases(get_alias_table()):
+    for alias, alias_command in filter_aliases(get_alias_table()):
         # Only autocomplete the first word because alias is space-delimited
         if subtree.in_tree(alias_command.split()):
             subtree.add_child(CommandBranch(alias))
 
 
-def _is_autocomplete_valid(parser, cur_commands, alias_command):
+def _is_autocomplete_valid(cur_commands, alias_command):
     """
     Determine whether autocomplete can be performed at the current state.
 
@@ -120,20 +116,13 @@ def _is_autocomplete_valid(parser, cur_commands, alias_command):
     Returns:
         True if autocomplete can be performed.
     """
-    # Remove the first word because comp_words always start with 'az'
-    cur_command_tuple = tuple(cur_commands[1:])
-
-    if cur_command_tuple not in parser.subparsers:
-        return False
-    elif cur_command_tuple == ():
-        # Autocomplete is always valid for first-level command
-        # because there is no need to check its subparser
-        return True
-
-    subparser = parser.subparsers[cur_command_tuple]
-    # Check if alias_command is a valid command under the subparser
-    # Only check the first word due to limitations of subparser
-    return alias_command.split()[0] in subparser.choices
+    parent_command = ' '.join(cur_commands[1:])
+    with open(GLOBAL_ALIAS_TAB_COMP_TABLE_PATH, 'r') as tab_completion_table_file:
+        try:
+            tab_completion_table = json.loads(tab_completion_table_file.read())
+            return alias_command in tab_completion_table and parent_command in tab_completion_table[alias_command]
+        except Exception:  # pylint: disable=broad-except
+            return False
 
 
 def _transform_cur_commands(cur_commands, alias_table=None):
@@ -152,19 +141,3 @@ def _transform_cur_commands(cur_commands, alias_table=None):
         else:
             transformed.append(cmd)
     cur_commands[:] = transformed
-
-
-def _filter_aliases(alias_table):
-    """
-    Filter aliases that does not have a command field in the configuration file.
-
-    Args:
-        alias_table: The alias table.
-
-    Yield:
-        A tuple with [0] being the first word of the alias and
-        [1] being the command that the alias points to.
-    """
-    for alias in alias_table.sections():
-        if alias_table.has_option(alias, 'command'):
-            yield (alias.split()[0], remove_pos_arg_placeholders(alias_table.get(alias, 'command')))

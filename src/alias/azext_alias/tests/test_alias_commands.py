@@ -11,14 +11,12 @@ import tempfile
 import unittest
 
 from azure.cli.testsdk import ScenarioTest
-from azext_alias import (
-    alias,
-    custom
-)
+from azext_alias import alias, custom, util
 from azext_alias._const import (
     ALIAS_FILE_NAME,
     ALIAS_HASH_FILE_NAME,
-    COLLIDED_ALIAS_FILE_NAME
+    COLLIDED_ALIAS_FILE_NAME,
+    ALIAS_TAB_COMP_TABLE_FILE_NAME
 )
 
 
@@ -30,6 +28,7 @@ class AliasTests(ScenarioTest):
         alias.GLOBAL_ALIAS_PATH = os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)
         alias.GLOBAL_ALIAS_HASH_PATH = os.path.join(self.mock_config_dir, ALIAS_HASH_FILE_NAME)
         alias.GLOBAL_COLLIDED_ALIAS_PATH = os.path.join(self.mock_config_dir, COLLIDED_ALIAS_FILE_NAME)
+        util.GLOBAL_ALIAS_TAB_COMP_TABLE_PATH = os.path.join(self.mock_config_dir, ALIAS_TAB_COMP_TABLE_FILE_NAME)
         custom.GLOBAL_ALIAS_PATH = os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)
 
     def tearDown(self):

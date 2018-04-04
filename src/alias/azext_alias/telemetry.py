@@ -51,6 +51,7 @@ class AliasExtensionTelemetrySession(object):
                 'Reserved.DataModel.Fault.Exception.StackTrace': _get_stack_trace(),
             }
             self.set_custom_properties(properties, 'ActionType', 'Exception')
+            self.set_custom_properties(properties, 'Version', VERSION)
             events.append(properties)
 
         return events

@@ -91,7 +91,7 @@ def test_transform_alias(self, test_case):
 
 def test_transform_collided_alias(self, test_case):
     alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-    alias_manager.collided_alias = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.cached_reserved_commands)
+    alias_manager.collided_alias = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections())
     self.assertEqual(shlex.split(test_case[1]), alias_manager.transform(shlex.split(test_case[0])))
 
 
@@ -114,6 +114,7 @@ def test_inconsistent_placeholder_index(self, test_case):
     with self.assertRaises(CLIError) as cm:
         alias_manager.transform(test_case)
     self.assertEqual(str(cm.exception), 'alias: "cp {{ arg_1 }} {{ arg_2 }}" takes exactly 2 positional arguments (%s given)' % str(len(test_case) - 1))
+
 
 def test_parse_error_python_3(self, test_case):
     if sys.version_info.major == 3:
@@ -152,12 +153,12 @@ class TestAlias(unittest.TestCase):
 
     def test_build_empty_collision_table(self):
         alias_manager = self.get_alias_manager(DEFAULT_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-        test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.cached_reserved_commands)
+        test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections())
         self.assertDictEqual(dict(), test_case)
 
     def test_build_non_empty_collision_table(self):
         alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
-        test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), azext_alias.cached_reserved_commands, levels=2)
+        test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), levels=2)
         self.assertDictEqual({'account': [1, 2], 'dns': [2], 'list-locations': [2]}, test_case)
 
     def test_non_parse_error(self):
