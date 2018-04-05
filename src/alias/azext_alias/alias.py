@@ -225,7 +225,7 @@ class AliasManager(object):
         return not self.alias_table.sections() and self.alias_config_str
 
     @staticmethod
-    def build_collision_table(aliases, levels=COLLISION_CHECK_LEVEL_DEPTH, enable_telemetry=True):
+    def build_collision_table(aliases, levels=COLLISION_CHECK_LEVEL_DEPTH):
         """
         Build the collision table according to the alias configuration file against the entire command table.
 
@@ -255,9 +255,7 @@ class AliasManager(object):
                         and level not in collided_alias[word]:
                     collided_alias[word].append(level)
 
-        if enable_telemetry:
-            telemetry.set_collided_aliases(list(collided_alias.keys()))
-
+        telemetry.set_collided_aliases(list(collided_alias.keys()))
         return collided_alias
 
     @staticmethod

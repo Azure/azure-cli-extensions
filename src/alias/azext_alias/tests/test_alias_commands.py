@@ -9,9 +9,10 @@ import os
 import shutil
 import tempfile
 import unittest
+import mock
 
 from azure.cli.testsdk import ScenarioTest
-from azext_alias import alias, custom, util
+from azext_alias import alias
 from azext_alias._const import (
     ALIAS_FILE_NAME,
     ALIAS_HASH_FILE_NAME,
@@ -24,14 +25,19 @@ class AliasTests(ScenarioTest):
 
     def setUp(self):
         self.mock_config_dir = tempfile.mkdtemp()
-        alias.GLOBAL_CONFIG_DIR = self.mock_config_dir
-        alias.GLOBAL_ALIAS_PATH = os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)
-        alias.GLOBAL_ALIAS_HASH_PATH = os.path.join(self.mock_config_dir, ALIAS_HASH_FILE_NAME)
-        alias.GLOBAL_COLLIDED_ALIAS_PATH = os.path.join(self.mock_config_dir, COLLIDED_ALIAS_FILE_NAME)
-        util.GLOBAL_ALIAS_TAB_COMP_TABLE_PATH = os.path.join(self.mock_config_dir, ALIAS_TAB_COMP_TABLE_FILE_NAME)
-        custom.GLOBAL_ALIAS_PATH = os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)
+        self.patchers = []
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_CONFIG_DIR', self.mock_config_dir))
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_ALIAS_PATH', os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_ALIAS_HASH_PATH', os.path.join(self.mock_config_dir, ALIAS_HASH_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_COLLIDED_ALIAS_PATH', os.path.join(self.mock_config_dir, COLLIDED_ALIAS_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.util.GLOBAL_ALIAS_TAB_COMP_TABLE_PATH', os.path.join(self.mock_config_dir, ALIAS_TAB_COMP_TABLE_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.custom.GLOBAL_ALIAS_PATH', os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)))
+        for patcher in self.patchers:
+            patcher.start()
 
     def tearDown(self):
+        for patcher in self.patchers:
+            patcher.stop()
         shutil.rmtree(self.mock_config_dir)
 
     def test_create_and_list_alias(self):
