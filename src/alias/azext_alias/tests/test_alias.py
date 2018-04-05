@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,import-error,no-self-use,deprecated-method,pointless-string-statement,relative-import,no-member,redefined-outer-name,too-many-return-statements
+# pylint: disable=line-too-long,import-error,no-self-use,deprecated-method,pointless-string-statement,relative-import,no-member,redefined-outer-name,too-many-return-statements,,anomalous-backslash-in-string
 
 import os
 import sys
@@ -54,7 +54,8 @@ TEST_DATA = {
         ('create-vm --image ubtuntults --generate-ssh-key --no-wait', 'vm create -g test-group -n test-vm --image ubtuntults --generate-ssh-key --no-wait'),
         ('cp mn diag', 'storage blob copy start-batch --source-uri mn --destination-container diag'),
         ('storage-ls azurecliprod.blob.core.windows.net/cli-extensions', 'storage blob list --account-name azurecliprod --container-name cli-extensions'),
-        ('storage-ls-2 https://azurecliprod.blob.core.windows.net/cli-extensions', 'storage blob list --account-name azurecliprod --container-name cli-extensions')
+        ('storage-ls-2 https://azurecliprod.blob.core.windows.net/cli-extensions', 'storage blob list --account-name azurecliprod --container-name cli-extensions'),
+        ('alias create -n mkrgrp -c "group create -n test --tags owner=\\$USER"', 'alias create -n mkrgrp -c "group create -n test --tags owner=\\$USER"')
     ],
     TEST_TRANSFORM_COLLIDED_ALIAS: [
         ('account list -otable', 'account list -otable'),
