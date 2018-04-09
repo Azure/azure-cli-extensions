@@ -130,7 +130,11 @@ class TestIndex(unittest.TestCase):
                 # 0.29.0, 0.30.0 are the two previous versions before that release.
                 supported_generators = ['bdist_wheel (0.29.0)', 'bdist_wheel (0.30.0)']
                 self.assertIn(metadata.get('generator'), supported_generators,
-                              "'generator' should be one of {}. Build the extension with a different version of the 'wheel' package (e.g. `pip install wheel==0.30.0`). This is due to https://github.com/pypa/wheel/issues/195".format(supported_generators))
+                              "{}: 'generator' should be one of {}. "
+                              "Build the extension with a different version of the 'wheel' package "
+                              "(e.g. `pip install wheel==0.30.0`). "
+                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
+                                                                                               supported_generators))
                 run_requires = metadata.get('run_requires')
                 if run_requires and ext_name not in SKIP_DEP_CHECK:
                     deps = run_requires[0]['requires']
