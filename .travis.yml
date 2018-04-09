@@ -4,7 +4,7 @@ language: python
 services:
   - docker
 install:
-    - pip install pylint flake8 requests -q
+    - pip install pylint flake8 requests wheel==0.30.0 -q
 jobs:
   include:
     - stage: verify
