@@ -107,13 +107,13 @@ def _validate_alias_command_level(alias, command):
         alias: The name of the alias.
         command: The command that the alias points to.
     """
-    alias_collision_table = AliasManager.build_collision_table([alias], azext_alias.cached_reserved_commands)
+    alias_collision_table = AliasManager.build_collision_table([alias])
 
     # Alias is not a reserved command, so it can point to any command
     if not alias_collision_table:
         return
 
-    command_collision_table = AliasManager.build_collision_table([command], azext_alias.cached_reserved_commands)
+    command_collision_table = AliasManager.build_collision_table([command])
     alias_collision_levels = alias_collision_table.get(alias.split()[0], [])
     command_collision_levels = command_collision_table.get(command.split()[0], [])
 

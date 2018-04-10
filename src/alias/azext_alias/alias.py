@@ -25,7 +25,12 @@ from azext_alias._const import (
     POS_ARG_DEBUG_MSG
 )
 from azext_alias.argument import build_pos_args_table, render_template
-from azext_alias.util import is_alias_create_command, cache_reserved_commands, get_config_parser
+from azext_alias.util import (
+    is_alias_create_command,
+    cache_reserved_commands,
+    get_config_parser,
+    build_tab_completion_table
+)
 
 
 GLOBAL_ALIAS_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_FILE_NAME)
@@ -121,8 +126,8 @@ class AliasManager(object):
         # Only load the entire command table if it detects changes in the alias config
         if self.detect_alias_config_change():
             self.load_full_command_table()
-            self.collided_alias = AliasManager.build_collision_table(self.alias_table.sections(),
-                                                                     azext_alias.cached_reserved_commands)
+            self.collided_alias = AliasManager.build_collision_table(self.alias_table.sections())
+            build_tab_completion_table(self.alias_table)
         else:
             self.load_collided_alias()
 
@@ -220,7 +225,7 @@ class AliasManager(object):
         return not self.alias_table.sections() and self.alias_config_str
 
     @staticmethod
-    def build_collision_table(aliases, reserved_commands, levels=COLLISION_CHECK_LEVEL_DEPTH):
+    def build_collision_table(aliases, levels=COLLISION_CHECK_LEVEL_DEPTH):
         """
         Build the collision table according to the alias configuration file against the entire command table.
 
@@ -246,7 +251,8 @@ class AliasManager(object):
             word = alias.split()[0]
             for level in range(1, levels + 1):
                 collision_regex = r'^{}{}($|\s)'.format(r'([a-z\-]*\s)' * (level - 1), word.lower())
-                if list(filter(re.compile(collision_regex).match, reserved_commands)):
+                if list(filter(re.compile(collision_regex).match, azext_alias.cached_reserved_commands)) \
+                        and level not in collided_alias[word]:
                     collided_alias[word].append(level)
 
         telemetry.set_collided_aliases(list(collided_alias.keys()))

@@ -84,4 +84,4 @@ aodfgojadofgjaojdfog
 
 TEST_RESERVED_COMMANDS = ['account list-locations',
                           'network dns',
-                          'storage account']
+                          'storage account create']
