@@ -11,7 +11,6 @@ import tempfile
 import unittest
 import mock
 
-import azext_alias
 from azext_alias.util import remove_pos_arg_placeholders, build_tab_completion_table, get_config_parser
 from azext_alias._const import ALIAS_TAB_COMP_TABLE_FILE_NAME
 from azext_alias.tests._const import TEST_RESERVED_COMMANDS
@@ -21,12 +20,15 @@ class TestUtil(unittest.TestCase):
 
     def setUp(self):
         self.mock_config_dir = tempfile.mkdtemp()
-        self.patcher = mock.patch('azext_alias.util.GLOBAL_ALIAS_TAB_COMP_TABLE_PATH', os.path.join(self.mock_config_dir, ALIAS_TAB_COMP_TABLE_FILE_NAME))
-        self.patcher.start()
-        azext_alias.cached_reserved_commands = TEST_RESERVED_COMMANDS
+        self.patchers = []
+        self.patchers.append(mock.patch('azext_alias.util.GLOBAL_ALIAS_TAB_COMP_TABLE_PATH', os.path.join(self.mock_config_dir, ALIAS_TAB_COMP_TABLE_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.cached_reserved_commands', TEST_RESERVED_COMMANDS))
+        for patcher in self.patchers:
+            patcher.start()
 
     def tearDown(self):
-        self.patcher.stop()
+        for patcher in self.patchers:
+            patcher.stop()
         shutil.rmtree(self.mock_config_dir)
 
     def test_remove_pos_arg_placeholders(self):

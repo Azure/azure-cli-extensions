@@ -9,13 +9,22 @@ import os
 import sys
 import tempfile
 import unittest
+from mock import patch
 
 from knack.util import CLIError
 
 from azext_alias._validators import process_alias_create_namespace, process_alias_import_namespace
+from azext_alias.tests._const import TEST_RESERVED_COMMANDS
 
 
 class TestValidators(unittest.TestCase):
+
+    def setUp(self):
+        self.patcher = patch('azext_alias.cached_reserved_commands', TEST_RESERVED_COMMANDS)
+        self.patcher.start()
+
+    def tearDown(self):
+        self.patcher.stop()
 
     def test_process_alias_create_namespace_non_existing_command(self):
         with self.assertRaises(CLIError) as cm:

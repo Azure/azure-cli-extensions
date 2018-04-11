@@ -9,7 +9,7 @@ import os
 import sys
 import shlex
 import unittest
-from mock import Mock
+from mock import Mock, patch
 from six.moves import configparser
 
 from knack.util import CLIError
@@ -91,7 +91,7 @@ def test_transform_alias(self, test_case):
 
 
 def test_transform_collided_alias(self, test_case):
-    alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
+    alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING)
     alias_manager.collided_alias = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections())
     self.assertEqual(shlex.split(test_case[1]), alias_manager.transform(shlex.split(test_case[0])))
 
@@ -147,18 +147,22 @@ TEST_FN = {
 
 class TestAlias(unittest.TestCase):
 
-    @classmethod
-    def setUp(cls):
+    def setUp(self):
         azext_alias.alias.AliasManager.write_alias_config_hash = Mock()
         azext_alias.alias.AliasManager.write_collided_alias = Mock()
+        self.patcher = patch('azext_alias.cached_reserved_commands', TEST_RESERVED_COMMANDS)
+        self.patcher.start()
+
+    def tearDown(self):
+        self.patcher.stop()
 
     def test_build_empty_collision_table(self):
-        alias_manager = self.get_alias_manager(DEFAULT_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
+        alias_manager = self.get_alias_manager(DEFAULT_MOCK_ALIAS_STRING)
         test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections())
         self.assertDictEqual(dict(), test_case)
 
     def test_build_non_empty_collision_table(self):
-        alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING, TEST_RESERVED_COMMANDS)
+        alias_manager = self.get_alias_manager(COLLISION_MOCK_ALIAS_STRING)
         test_case = azext_alias.alias.AliasManager.build_collision_table(alias_manager.alias_table.sections(), levels=2)
         self.assertDictEqual({'account': [1, 2], 'dns': [2], 'list-locations': [2]}, test_case)
 
@@ -179,9 +183,8 @@ class TestAlias(unittest.TestCase):
     """
     Helper functions
     """
-    def get_alias_manager(self, mock_alias_str=DEFAULT_MOCK_ALIAS_STRING, reserved_commands=None):
+    def get_alias_manager(self, mock_alias_str=DEFAULT_MOCK_ALIAS_STRING):
         alias_manager = MockAliasManager(mock_alias_str=mock_alias_str)
-        azext_alias.cached_reserved_commands = reserved_commands if reserved_commands else []
         return alias_manager
 
     def assertAlias(self, value):
