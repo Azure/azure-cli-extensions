@@ -26,7 +26,7 @@ from azext_alias._const import (
 )
 from azext_alias.argument import build_pos_args_table, render_template
 from azext_alias.util import (
-    is_alias_create_command,
+    is_alias_command,
     cache_reserved_commands,
     get_config_parser,
     build_tab_completion_table
@@ -139,7 +139,8 @@ class AliasManager(object):
             # index - 2 because alias_iter starts counting at index 1
             is_named_arg = alias_index > 1 and args[alias_index - 2].startswith('-')
             is_named_arg_flag = alias.startswith('-')
-            if not alias or is_collided_alias or is_named_arg or is_named_arg_flag:
+            excluded_commands = is_alias_command(['remove', 'export'], transformed_commands)
+            if not alias or is_collided_alias or is_named_arg or is_named_arg_flag or excluded_commands:
                 transformed_commands.append(alias)
                 continue
 
@@ -202,7 +203,7 @@ class AliasManager(object):
         post_transform_commands = []
         for i, arg in enumerate(args):
             # Do not translate environment variables for command argument
-            if is_alias_create_command(args) and i > 0 and args[i - 1] in ['-c', '--command']:
+            if is_alias_command(['create'], args) and i > 0 and args[i - 1] in ['-c', '--command']:
                 post_transform_commands.append(arg)
             else:
                 post_transform_commands.append(os.path.expandvars(arg))

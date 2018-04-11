@@ -3,15 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=wrong-import-order,import-error,relative-import
+
 import re
 import sys
 import json
 import shlex
 from collections import defaultdict
 from six.moves import configparser
+from six.moves.urllib.parse import urlparse
+from six.moves.urllib.request import urlretrieve
+
+from knack.util import CLIError
 
 import azext_alias
-from azext_alias._const import COLLISION_CHECK_LEVEL_DEPTH, GLOBAL_ALIAS_TAB_COMP_TABLE_PATH
+from azext_alias._const import COLLISION_CHECK_LEVEL_DEPTH, GLOBAL_ALIAS_TAB_COMP_TABLE_PATH, ALIAS_FILE_URL_ERROR
 
 
 def get_config_parser():
@@ -38,14 +44,25 @@ def get_alias_table():
         return get_config_parser()
 
 
-def is_alias_create_command(args):
+def is_alias_command(subcommands, args):
     """
-    Check if the user is invoking 'az alias create'.
+    Check if the user is invoking one of the comments in 'subcommands' in the  from az alias .
+
+    Args:
+        subcommands: The list of subcommands to check through.
+        args: The CLI arguments to process.
 
     Returns:
-        True if the user is invoking 'az alias create'.
+        True if the user is invoking 'az alias {command}'.
     """
-    return args and args[:2] == ['alias', 'create']
+    if not args:
+        return False
+
+    for subcommand in subcommands:
+        if args[:2] == ['alias', subcommand]:
+            return True
+
+    return False
 
 
 def cache_reserved_commands(load_cmd_tbl_func):
@@ -54,6 +71,9 @@ def cache_reserved_commands(load_cmd_tbl_func):
     for alias and command validation when the user invokes alias create).
     This cache saves the entire command table globally so custom.py can have access to it.
     Alter this cache through cache_reserved_commands(load_cmd_tbl_func) in util.py.
+
+    Args:
+        load_cmd_tbl_func: The function to load the entire command table.
     """
     if not azext_alias.cached_reserved_commands:
         azext_alias.cached_reserved_commands = list(load_cmd_tbl_func([]).keys())
@@ -65,6 +85,9 @@ def remove_pos_arg_placeholders(alias_command):
 
     Args:
         alias_command: The alias command to remove from.
+
+    Returns:
+        The alias command string without positional argument placeholder.
     """
     # Boundary index is the index at which named argument or positional argument starts
     split_command = shlex.split(alias_command)
@@ -130,3 +153,73 @@ def build_tab_completion_table(alias_table):
         f.write(json.dumps(tab_completion_table))
 
     return tab_completion_table
+
+
+def is_url(s):
+    """
+    Check if the argument is an URL.
+
+    Returns:
+        True if the argument is an URL.
+    """
+    return urlparse(s).scheme in ('http', 'https')
+
+
+def reduce_alias_table(alias_table):
+    """
+    Reduce the alias table to a tuple that contains the alias and the command that the alias points to.
+
+    Args:
+        The alias table to be reduced.
+
+    Yields
+        A tuple that contains the alias and the command that the alias points to.
+    """
+    for alias in alias_table.sections():
+        if alias_table.has_option(alias, 'command'):
+            yield (alias, alias_table.get(alias, 'command'))
+
+
+def retrieve_file_from_url(url):
+    """
+    Retrieve a file from an URL
+
+    Args:
+        url: The URL to retrieve the file from.
+
+    Returns:
+        The absolute path of the downloaded file.
+    """
+    try:
+        alias_source, _ = urlretrieve(url)
+        # Check for HTTPError in Python 2.x
+        with open(alias_source, 'r') as f:
+            content = f.read()
+            if content[:3].isdigit():
+                raise CLIError(ALIAS_FILE_URL_ERROR.format(url, content.strip()))
+    except Exception as exception:
+        if isinstance(exception, CLIError):
+            raise
+
+        # Python 3.x
+        raise CLIError(ALIAS_FILE_URL_ERROR.format(url, exception))
+
+    return alias_source
+
+
+def filter_alias_create_namespace(namespace):
+    """
+    Filter alias name and alias command inside alias create namespace to appropriate strings.
+
+    Args
+        namespace: The alias create namespace.
+
+    Returns:
+        Filtered namespace where excessive whitespaces are removed in strings.
+    """
+    def filter_string(s):
+        return ' '.join(s.strip().split())
+
+    namespace.alias_name = filter_string(namespace.alias_name)
+    namespace.alias_command = filter_string(namespace.alias_command)
+    return namespace

@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
 import re
 import shlex
 
@@ -10,13 +11,25 @@ from knack.util import CLIError
 
 import azext_alias
 from azext_alias.argument import get_placeholders
+from azext_alias.util import (
+    get_config_parser,
+    is_url,
+    reduce_alias_table,
+    filter_alias_create_namespace,
+    retrieve_file_from_url
+)
 from azext_alias._const import (
     COLLISION_CHECK_LEVEL_DEPTH,
     INVALID_ALIAS_COMMAND_ERROR,
     EMPTY_ALIAS_ERROR,
     INVALID_STARTING_CHAR_ERROR,
     INCONSISTENT_ARG_ERROR,
-    COMMAND_LVL_ERROR
+    COMMAND_LVL_ERROR,
+    CONFIG_PARSING_ERROR,
+    ALIAS_FILE_NOT_FOUND_ERROR,
+    ALIAS_FILE_DIR_ERROR,
+    FILE_ALREADY_EXISTS_ERROR,
+    ALIAS_FILE_NAME
 )
 from azext_alias.alias import AliasManager
 
@@ -28,10 +41,47 @@ def process_alias_create_namespace(namespace):
     Args:
         namespace: argparse namespace object.
     """
+    namespace = filter_alias_create_namespace(namespace)
     _validate_alias_name(namespace.alias_name)
     _validate_alias_command(namespace.alias_command)
     _validate_alias_command_level(namespace.alias_name, namespace.alias_command)
     _validate_pos_args_syntax(namespace.alias_name, namespace.alias_command)
+
+
+def process_alias_import_namespace(namespace):
+    """
+    Validate input arguments when the user invokes 'az alias import'.
+
+    Args:
+        namespace: argparse namespace object.
+    """
+    if is_url(namespace.alias_source):
+        alias_source = retrieve_file_from_url(namespace.alias_source)
+
+        _validate_alias_file_content(alias_source, url=namespace.alias_source)
+    else:
+        namespace.alias_source = os.path.abspath(namespace.alias_source)
+        _validate_alias_file_path(namespace.alias_source)
+        _validate_alias_file_content(namespace.alias_source)
+
+
+def process_alias_export_namespace(namespace):
+    """
+    Validate input arguments when the user invokes 'az alias export'.
+
+    Args:
+        namespace: argparse namespace object.
+    """
+    namespace.export_path = os.path.abspath(namespace.export_path)
+    if os.path.isfile(namespace.export_path):
+        raise CLIError(FILE_ALREADY_EXISTS_ERROR.format(namespace.export_path))
+
+    export_path_dir = os.path.dirname(namespace.export_path)
+    if not os.path.isdir(export_path_dir):
+        os.makedirs(export_path_dir)
+
+    if os.path.isdir(namespace.export_path):
+        namespace.export_path = os.path.join(namespace.export_path, ALIAS_FILE_NAME)
 
 
 def _validate_alias_name(alias_name):
@@ -120,3 +170,38 @@ def _validate_alias_command_level(alias, command):
     # Check if there is a command level conflict
     if set(alias_collision_levels) & set(command_collision_levels):
         raise CLIError(COMMAND_LVL_ERROR.format(alias, command))
+
+
+def _validate_alias_file_path(alias_file_path):
+    """
+    Make sure the alias file path is neither non-existant nor a directory
+
+    Args:
+        The alias file path to import aliases from.
+    """
+    if not os.path.exists(alias_file_path):
+        raise CLIError(ALIAS_FILE_NOT_FOUND_ERROR)
+
+    if os.path.isdir(alias_file_path):
+        raise CLIError(ALIAS_FILE_DIR_ERROR.format(alias_file_path))
+
+
+def _validate_alias_file_content(alias_file_path, url=''):
+    """
+    Make sure the alias name and alias command in the alias file is in valid format.
+
+    Args:
+        The alias file path to import aliases from.
+    """
+    alias_table = get_config_parser()
+    try:
+        alias_table.read(alias_file_path)
+        for alias_name, alias_command in reduce_alias_table(alias_table):
+            _validate_alias_name(alias_name)
+            _validate_alias_command(alias_command)
+            _validate_alias_command_level(alias_name, alias_command)
+            _validate_pos_args_syntax(alias_name, alias_command)
+    except Exception as exception:  # pylint: disable=broad-except
+        error_msg = CONFIG_PARSING_ERROR % AliasManager.process_exception_message(exception)
+        error_msg = error_msg.replace(alias_file_path, url or alias_file_path)
+        raise CLIError(error_msg)

@@ -74,7 +74,7 @@ class AliasCustomCommandTest(unittest.TestCase):
         mock_alias_table.set('ac', 'command', 'account')
         azext_alias.custom.get_alias_table = Mock(return_value=mock_alias_table)
         with self.assertRaises(CLIError) as cm:
-            remove_alias('dns')
+            remove_alias(['dns'])
         self.assertEqual(str(cm.exception), 'alias: "dns" alias not found')
 
 

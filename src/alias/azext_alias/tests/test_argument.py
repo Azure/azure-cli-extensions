@@ -117,7 +117,7 @@ class TestArgument(unittest.TestCase):
                 'arg_2': 'test_2'
             }
             render_template('{{ arg_1 }} {{ arg_2 }', pos_args_table)
-        self.assertEqual(str(cm.exception), 'alias: Encounted the following error when injecting positional arguments to ""{{ arg_1 }}" "{{ arg_2 }" - unexpected \'}\'')
+        self.assertEqual(str(cm.exception), 'alias: Encounted error when injecting positional arguments to ""{{ arg_1 }}" "{{ arg_2 }". Error detail: unexpected \'}\'')
 
     def test_check_runtime_errors_no_error(self):
         pos_args_table = {
@@ -133,7 +133,7 @@ class TestArgument(unittest.TestCase):
                 'arg_2': 'test_2'
             }
             check_runtime_errors('{{ arg_1.split("_")[2] }} {{ arg_2.split("_")[1] }}', pos_args_table)
-        self.assertEqual(str(cm.exception), 'alias: Encounted the following error when evaluating "arg_1.split("_")[2]" - list index out of range')
+        self.assertEqual(str(cm.exception), 'alias: Encounted error when evaluating "arg_1.split("_")[2]". Error detail: list index out of range')
 
 
 if __name__ == '__main__':
