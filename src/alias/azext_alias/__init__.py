@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from argcomplete.completers import FilesCompleter
+from argcomplete.completers import FilesCompleter  # pylint: disable=import-error
 
 from knack.prompting import prompt_y_n
 
