@@ -108,7 +108,6 @@ def _validate_alias_command(alias_command):
     if not alias_command:
         raise CLIError(EMPTY_ALIAS_ERROR)
 
-    # Boundary index is the index at which named argument or positional argument starts
     split_command = shlex.split(alias_command)
     boundary_index = len(split_command)
     for i, subcommand in enumerate(split_command):
@@ -122,7 +121,7 @@ def _validate_alias_command(alias_command):
         if re.match(r'([a-z\-]*\s)*{}($|\s)'.format(command_to_validate), command):
             return
 
-    raise CLIError(INVALID_ALIAS_COMMAND_ERROR.format(command_to_validate if command_to_validate else alias_command))
+    _validate_positional_arguments(shlex.split(alias_command))
 
 
 def _validate_pos_args_syntax(alias_name, alias_command):
@@ -205,3 +204,36 @@ def _validate_alias_file_content(alias_file_path, url=''):
         error_msg = CONFIG_PARSING_ERROR % AliasManager.process_exception_message(exception)
         error_msg = error_msg.replace(alias_file_path, url or alias_file_path)
         raise CLIError(error_msg)
+
+
+def _validate_positional_arguments(args):
+    """
+    To validate the positional argument feature - https://github.com/Azure/azure-cli/pull/6055.
+    Assuming that unknown commands are positional arguments immediately
+    led by words that only appear at the end of the commands
+
+    Slight modification of
+    https://github.com/Azure/azure-cli/blob/dev/src/azure-cli-core/azure/cli/core/commands/__init__.py#L356-L373
+
+    Args:
+        args: The arguments that the user inputs in the terminal.
+
+    Returns:
+        Rudimentary parsed arguments.
+    """
+    nouns = []
+    for arg in args:
+        if not arg.startswith('-') or not arg.startswith('{{'):
+            nouns.append(arg)
+        else:
+            break
+
+    while nouns:
+        search = ' '.join(nouns)
+        # Since the command name may be immediately followed by a positional arg, strip those off
+        if not next((x for x in azext_alias.cached_reserved_commands if x.endswith(search)), False):
+            del nouns[-1]
+        else:
+            return
+
+    raise CLIError(INVALID_ALIAS_COMMAND_ERROR.format(' '.join(args)))

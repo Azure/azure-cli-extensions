@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,no-self-use
+# pylint: disable=line-too-long,no-self-use,too-many-public-methods
 
 import os
 import sys
@@ -44,7 +44,7 @@ class TestValidators(unittest.TestCase):
     def test_process_alias_create_namespace_non_existing_commands_with_pos_arg(self):
         with self.assertRaises(CLIError) as cm:
             process_alias_create_namespace(MockAliasCreateNamespace('test {{ arg }}', 'account list {{ arg }}'))
-        self.assertEqual(str(cm.exception), 'alias: Invalid Azure CLI command "account list"')
+        self.assertEqual(str(cm.exception), 'alias: Invalid Azure CLI command "account list {{ arg }}"')
 
     def test_process_alias_create_namespace_inconsistent_pos_arg_name(self):
         with self.assertRaises(CLIError) as cm:
@@ -76,6 +76,23 @@ class TestValidators(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             process_alias_create_namespace(MockAliasCreateNamespace('account {{ test }}', 'dns {{ test }}'))
         self.assertEqual(str(cm.exception), 'alias: "account {{ test }}" is a reserved command and cannot be used to represent "dns {{ test }}"')
+
+    def test_process_alias_create_namespace_pos_arg_1(self):
+        process_alias_create_namespace(MockAliasCreateNamespace('test', 'group delete resourceGroupName'))
+
+    def test_process_alias_create_namespace_pos_arg_2(self):
+        process_alias_create_namespace(MockAliasCreateNamespace('test', 'delete resourceGroupName'))
+
+    def test_process_alias_create_namespace_pos_arg_3(self):
+        process_alias_create_namespace(MockAliasCreateNamespace('test', 'group delete resourceGroupName -p param'))
+
+    def test_process_alias_create_namespace_pos_arg_4(self):
+        with self.assertRaises(CLIError) as cm:
+            process_alias_create_namespace(MockAliasCreateNamespace('test', 'group resourceGroupName'))
+        self.assertEqual(str(cm.exception), 'alias: Invalid Azure CLI command "group resourceGroupName"')
+
+    def test_process_alias_create_namespace_pos_arg_5(self):
+        process_alias_create_namespace(MockAliasCreateNamespace('test', 'group delete -p param resourceGroupName'))
 
     def test_process_alias_import_namespace(self):
         process_alias_import_namespace(MockAliasImportNamespace('https://raw.githubusercontent.com/chewong/azure-cli-alias-extension/test/azext_alias/tests/alias'))
