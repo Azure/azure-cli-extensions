@@ -5,7 +5,7 @@
 
 """Custom operations for storage account commands"""
 
-from ._client_factory import storage_client_factory
+from .._client_factory import storage_client_factory
 
 
 def create_storage_account(cmd, resource_group_name, account_name, sku=None, location=None, kind=None,

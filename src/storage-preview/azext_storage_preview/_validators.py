@@ -9,10 +9,10 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import ResourceType, get_sdk
 
-from azure.cli.command_modules.storage._client_factory import get_storage_data_service_client
-from azure.cli.command_modules.storage.util import glob_files_locally, guess_content_type
-from azure.cli.command_modules.storage.sdkutil import get_table_data_type
-from azure.cli.command_modules.storage.url_quote_util import encode_for_url
+from ._client_factory import get_storage_data_service_client
+from .util import glob_files_locally, guess_content_type
+from .sdkutil import get_table_data_type
+from .url_quote_util import encode_for_url
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 
@@ -926,7 +926,7 @@ def page_blob_tier_validator(cmd, namespace):
     try:
         namespace.tier = getattr(cmd.get_models('blob.models#PremiumPageBlobTier'), namespace.tier)
     except AttributeError:
-        from azure.cli.command_modules.storage.sdkutil import get_blob_tier_names
+        from .sdkutil import get_blob_tier_names
         raise ValueError('Unknown premium page blob tier name. Choose among {}'.format(', '.join(
             get_blob_tier_names(cmd.cli_ctx, 'PremiumPageBlobTier'))))
 
@@ -941,7 +941,7 @@ def block_blob_tier_validator(cmd, namespace):
     try:
         namespace.tier = getattr(cmd.get_models('blob.models#StandardBlobTier'), namespace.tier)
     except AttributeError:
-        from azure.cli.command_modules.storage.sdkutil import get_blob_tier_names
+        from .sdkutil import get_blob_tier_names
         raise ValueError('Unknown block blob tier name. Choose among {}'.format(', '.join(
             get_blob_tier_names(cmd.cli_ctx, 'StandardBlobTier'))))
 

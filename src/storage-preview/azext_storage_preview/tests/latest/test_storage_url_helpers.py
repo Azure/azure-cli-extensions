@@ -9,7 +9,7 @@ from knack import CLI
 from azure.cli.core._config import GLOBAL_CONFIG_DIR, ENV_VAR_PREFIX
 from azure.cli.core.cloud import get_active_cloud
 
-from .storage_url_helpers import StorageResourceIdentifier
+from ...storage_url_helpers import StorageResourceIdentifier
 
 
 class MockCLI(CLI):

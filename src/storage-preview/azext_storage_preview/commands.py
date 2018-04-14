@@ -3,12 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.command_modules.storage._client_factory import (cf_sa, cf_blob_container_mgmt, blob_data_service_factory,
-                                                               page_blob_service_factory, file_data_service_factory,
-                                                               queue_data_service_factory, table_data_service_factory,
-                                                               cloud_storage_account_service_factory,
-                                                               multi_service_properties_factory)
-from azure.cli.command_modules.storage.sdkutil import cosmosdb_table_exists
+from ._client_factory import (cf_sa, blob_data_service_factory,
+                              page_blob_service_factory, file_data_service_factory,
+                              queue_data_service_factory, table_data_service_factory,
+                              cloud_storage_account_service_factory,
+                              multi_service_properties_factory)
+from .sdkutil import cosmosdb_table_exists
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.profiles import ResourceType
 
@@ -21,7 +21,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     )
 
     storage_account_custom_type = CliCommandType(
-        operations_tmpl='azure.cli.command_modules.storage.operations.account#{}',
+        operations_tmpl='azext_storage_preview.operations.account#{}',
         client_factory=cf_sa)
 
     cloud_data_plane_sdk = CliCommandType(
@@ -34,7 +34,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         This is useful when the command is not defined in the default 'custom' module but instead in a module under
         'operations' package."""
         return CliCommandType(
-            operations_tmpl='azure.cli.command_modules.storage.operations.{}#'.format(custom_module) + '{}',
+            operations_tmpl='azext_storage_preview.operations.{}#'.format(custom_module) + '{}',
             client_factory=client_factory,
             resource_type=resource_type
         )
@@ -153,11 +153,9 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage container', command_type=block_blob_sdk,
                             custom_command_type=get_custom_sdk('acl', blob_data_service_factory)) as g:
-        from azure.cli.command_modules.storage._transformers import (transform_storage_list_output,
-                                                                     transform_container_permission_output,
-                                                                     transform_acl_list_output)
-        from azure.cli.command_modules.storage._format import (transform_container_list, transform_boolean_for_table,
-                                                               transform_container_show)
+        from ._transformers import (transform_storage_list_output, transform_container_permission_output,
+                                    transform_acl_list_output)
+        from ._format import (transform_container_list, transform_boolean_for_table, transform_container_show)
 
         g.storage_command('list', 'list_containers', transform=transform_storage_list_output,
                           table_transformer=transform_container_list)
@@ -186,30 +184,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command('policy update', 'set_acl_policy', min_api='2017-04-17')
         g.storage_custom_command('policy show', 'get_acl_policy', exception_handler=g.get_handler_suppress_404())
         g.storage_custom_command('policy list', 'list_acl_policies', table_transformer=transform_acl_list_output)
-
-    blob_container_mgmt_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.storage.operations.blob_containers_operations#BlobContainersOperations.{}',
-        client_factory=cf_blob_container_mgmt,
-        resource_type=ResourceType.MGMT_STORAGE
-    )
-
-    # storage_account_custom_type = CliCommandType(
-    #     operations_tmpl='azure.cli.command_modules.storage.operations.account#{}',
-    #     client_factory=cf_sa)
-
-    with self.command_group('storage container immutability-policy', command_type=blob_container_mgmt_sdk) as g:
-        g.command('show', 'get_immutability_policy')
-        g.command('create', 'create_or_update_immutability_policy')
-        g.command('delete', 'delete_immutability_policy')
-        g.command('lock', 'lock_immutability_policy')
-        g.command('extend', 'extend_immutability_policy')
-
-    with self.command_group('storage container legal-hold', command_type=blob_container_mgmt_sdk) as g:
-        g.command('set', 'set_legal_hold')
-        g.command('clear', 'clear_legal_hold')
-
-    with self.command_group('storage container mgmt', command_type=blob_container_mgmt_sdk) as g:
-        g.command('show', 'get')
 
     file_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.file.fileservice#FileService.{}',
