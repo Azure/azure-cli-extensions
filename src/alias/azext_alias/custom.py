@@ -7,6 +7,7 @@ import os
 import hashlib
 
 from knack.util import CLIError
+from knack.log import get_logger
 
 from azext_alias._const import ALIAS_NOT_FOUND_ERROR, POST_EXPORT_ALIAS_MSG, ALIAS_FILE_NAME
 from azext_alias.alias import GLOBAL_ALIAS_PATH, AliasManager
@@ -17,6 +18,8 @@ from azext_alias.util import (
     get_config_parser,
     retrieve_file_from_url
 )
+
+logger = get_logger(__name__)
 
 
 def create_alias(alias_name, alias_command):
@@ -51,7 +54,7 @@ def export_aliases(export_path=os.path.abspath(ALIAS_FILE_NAME), exclusions=None
         alias_table.remove_section(exclusion)
 
     _commit_change(alias_table, export_path=export_path, post_commit=False)
-    print(POST_EXPORT_ALIAS_MSG.format(export_path))  # pylint: disable=superfluous-parens
+    logger.warning(POST_EXPORT_ALIAS_MSG, export_path)  # pylint: disable=superfluous-parens
 
 
 def import_aliases(alias_source):

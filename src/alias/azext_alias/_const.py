@@ -33,5 +33,5 @@ COMMAND_LVL_ERROR = 'alias: "{}" is a reserved command and cannot be used to rep
 ALIAS_FILE_NOT_FOUND_ERROR = 'alias: File not found'
 ALIAS_FILE_DIR_ERROR = 'alias: {} is a directory'
 ALIAS_FILE_URL_ERROR = 'alias: Encounted error when retrieving alias file from {}. Error detail: {}'
-POST_EXPORT_ALIAS_MSG = 'alias: Exported alias configuration file to {}.'
+POST_EXPORT_ALIAS_MSG = 'alias: Exported alias configuration file to %s.'
 FILE_ALREADY_EXISTS_ERROR = 'alias: {} already exists.'

@@ -5,8 +5,6 @@
 
 from argcomplete.completers import FilesCompleter  # pylint: disable=import-error
 
-from knack.prompting import prompt_y_n
-
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.decorators import Completer
 from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE, EVENT_INVOKER_ON_TAB_COMPLETION
@@ -51,16 +49,14 @@ class AliasExtCommandLoader(AzCommandsLoader):
 
     def load_command_table(self, _):
 
-        def remove_all_confirmation(_):
-            return bool(prompt_y_n('Are you sure you want to remove all registered aliases?'))
-
         with self.command_group('alias') as g:
             g.custom_command('create', 'create_alias', validator=process_alias_create_namespace)
             g.custom_command('export', 'export_aliases', validator=process_alias_export_namespace)
             g.custom_command('import', 'import_aliases', validator=process_alias_import_namespace)
             g.custom_command('list', 'list_alias')
             g.custom_command('remove', 'remove_alias')
-            g.custom_command('remove-all', 'remove_all_aliases', confirmation=remove_all_confirmation)
+            g.custom_command('remove-all', 'remove_all_aliases',
+                             confirmation='Are you sure you want to remove all registered aliases?')
 
         return self.command_table
 
