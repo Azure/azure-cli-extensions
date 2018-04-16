@@ -12,7 +12,8 @@ from knack.util import CLIError
 from knack.log import get_logger
 logger = get_logger(__name__)
 
-PROGRESS_LINE_LENGTH = 40
+STORAGE_ACCOUNT_NAME_LENGTH = 24
+DISK_SNAPSHOT_NAME_LENGTH = 80
 
 
 # pylint: disable=too-many-locals
@@ -24,7 +25,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     subscription_hash = hashlib.sha1(
         subscription_id.encode("UTF-8")).hexdigest()
-    unique_subscription_string = subscription_hash[:7]
+    unique_subscription_string = subscription_hash[:(STORAGE_ACCOUNT_NAME_LENGTH-len(location))]
 
     # create the target storage account
     logger.warn(
@@ -92,7 +93,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     wait_for_blob_copy_operation(blob_name, target_container_name,
                                  target_storage_account_name, azure_pool_frequency, location)
     msg = "{0} - Copy time: {1}".format(
-        location, datetime.datetime.now() - start_datetime).ljust(PROGRESS_LINE_LENGTH)
+        location, datetime.datetime.now() - start_datetime)
     logger.warn(msg)
 
     # Create the snapshot in the target region from the copied blob
@@ -147,8 +148,7 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
 
         if current_progress != prev_progress:
             msg = "{0} - Copy progress: {1}%"\
-                .format(location, str(current_progress))\
-                .ljust(PROGRESS_LINE_LENGTH)  # need to justify since messages overide each other
+                .format(location, str(current_progress))
             logger.warn(msg)
 
         prev_progress = current_progress
