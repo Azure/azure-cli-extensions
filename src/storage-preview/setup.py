@@ -29,14 +29,14 @@ DEPENDENCIES = []
 setup(
     name='storage-preview',
     version=VERSION,
-    description='An Azure CLI Extension for storage preview features.',
-    long_description='An Azure CLI Extension for storage preview features.',
+    description='Provides a preview for upcoming storage features.',
+    long_description='An Azure CLI Extension for storage preview features. This will replace the full storage module.',
     license='MIT',
-    author='Willie Xu',
-    author_email='wilx@microsoft.com',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     package_data={'azext_storage_preview': ['azext_metadata.json']},
-    packages=find_packages(),
+    packages=find_packages(exclude=["azext_storage_preview.tests"]),
     install_requires=DEPENDENCIES
 )
