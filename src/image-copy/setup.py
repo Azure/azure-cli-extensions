@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='image-copy-extension',
     version=VERSION,
-    description='An Azure CLI Extension that copies images from region to region.',
-    long_description='An Azure CLI Extension that copies images from region to region.',
+    description='Support for copying managed vm images between regions',
+    long_description='Support for copying managed vm images between regions',
     license='MIT',
     author='Tamir Kamara',
     author_email='tamir.kamara@microsoft.com',
