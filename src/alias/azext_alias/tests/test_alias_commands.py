@@ -3,22 +3,21 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,anomalous-backslash-in-string
+# pylint: disable=line-too-long
 
 import os
 import shutil
 import tempfile
 import unittest
+import mock
 
 from azure.cli.testsdk import ScenarioTest
-from azext_alias import (
-    alias,
-    custom
-)
+from azext_alias import alias
 from azext_alias._const import (
     ALIAS_FILE_NAME,
     ALIAS_HASH_FILE_NAME,
-    COLLIDED_ALIAS_FILE_NAME
+    COLLIDED_ALIAS_FILE_NAME,
+    ALIAS_TAB_COMP_TABLE_FILE_NAME
 )
 
 
@@ -26,13 +25,19 @@ class AliasTests(ScenarioTest):
 
     def setUp(self):
         self.mock_config_dir = tempfile.mkdtemp()
-        alias.GLOBAL_CONFIG_DIR = self.mock_config_dir
-        alias.GLOBAL_ALIAS_PATH = os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)
-        alias.GLOBAL_ALIAS_HASH_PATH = os.path.join(self.mock_config_dir, ALIAS_HASH_FILE_NAME)
-        alias.GLOBAL_COLLIDED_ALIAS_PATH = os.path.join(self.mock_config_dir, COLLIDED_ALIAS_FILE_NAME)
-        custom.GLOBAL_ALIAS_PATH = os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)
+        self.patchers = []
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_CONFIG_DIR', self.mock_config_dir))
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_ALIAS_PATH', os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_ALIAS_HASH_PATH', os.path.join(self.mock_config_dir, ALIAS_HASH_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.alias.GLOBAL_COLLIDED_ALIAS_PATH', os.path.join(self.mock_config_dir, COLLIDED_ALIAS_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.util.GLOBAL_ALIAS_TAB_COMP_TABLE_PATH', os.path.join(self.mock_config_dir, ALIAS_TAB_COMP_TABLE_FILE_NAME)))
+        self.patchers.append(mock.patch('azext_alias.custom.GLOBAL_ALIAS_PATH', os.path.join(self.mock_config_dir, ALIAS_FILE_NAME)))
+        for patcher in self.patchers:
+            patcher.start()
 
     def tearDown(self):
+        for patcher in self.patchers:
+            patcher.stop()
         shutil.rmtree(self.mock_config_dir)
 
     def test_create_and_list_alias(self):
@@ -40,47 +45,11 @@ class AliasTests(ScenarioTest):
             'alias_name': 'c',
             'alias_command': 'create'
         })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
+        self.cmd('az alias create -n "{alias_name}" -c "{alias_command}"')
         self.cmd('az alias list', checks=[
             self.check('[0].alias', '{alias_name}'),
             self.check('[0].command', '{alias_command}'),
             self.check('length(@)', 1)
-        ])
-
-    def test_create_and_list_alias_env_var(self):
-        self.kwargs.update({
-            'alias_name': 'mkrgrp',
-            'alias_command': 'group create -n test --tags owner=\$USER'
-        })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
-        self.cmd('az alias list', checks=[
-            self.check('[0].alias', '{alias_name}'),
-            self.check('[0].command', '{alias_command}'),
-            self.check('length(@)', 1)
-        ])
-        alias_command = self.cmd('az alias list').get_output_in_json()[0]['command']
-        assert '\\$USER' in alias_command
-
-    def test_create_and_list_alias_with_pos_arg(self):
-        self.kwargs.update({
-            'alias_name': 'list-vm {{ resource_group }}',
-            'alias_command': 'vm list - -resource-group {{ resource_group }}'
-        })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
-        self.cmd('az alias list', checks=[
-            self.check('[0].alias', '{alias_name}'),
-            self.check('[0].command', '{alias_command}'),
-            self.check('length(@)', 1)
-        ])
-        self.kwargs.update({
-            'alias_name': 'storage-ls {{ url }}',
-            'alias_command': 'storage blob list --account-name {{ url.replace("https://", "").split(".")[0] }} --container-name {{ url.replace("https://", "").split("/")[1] }}'
-        })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
-        self.cmd('az alias list', checks=[
-            self.check('[1].alias', '{alias_name}'),
-            self.check('[1].command', '{alias_command}'),
-            self.check('length(@)', 2)
         ])
 
     def test_create_alias_error(self):
@@ -88,7 +57,7 @@ class AliasTests(ScenarioTest):
             'alias_name': 'c',
             'alias_command': 'will_fail'
         })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'', expect_failure=True)
+        self.cmd('az alias create -n "{alias_name}" -c "{alias_command}"', expect_failure=True)
         self.cmd('az alias list', checks=[
             self.check('length(@)', 0)
         ])
@@ -98,7 +67,7 @@ class AliasTests(ScenarioTest):
             'alias_name': 'c',
             'alias_command': 'create'
         })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
+        self.cmd('az alias create -n "{alias_name}" -c "{alias_command}"')
         self.cmd('az alias list', checks=[
             self.check('[0].alias', '{alias_name}'),
             self.check('[0].command', '{alias_command}'),
@@ -123,7 +92,7 @@ class AliasTests(ScenarioTest):
             'alias_name': 'c',
             'alias_command': 'create'
         })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
+        self.cmd('az alias create -n "{alias_name}" -c "{alias_command}"')
         expected_alias_string = '''[c]
 command = create
 
@@ -136,7 +105,7 @@ command = create
             'alias_name': 'c',
             'alias_command': 'create'
         })
-        self.cmd('az alias create -n \'{alias_name}\' -c \'{alias_command}\'')
+        self.cmd('az alias create -n "{alias_name}" -c "{alias_command}"')
         self.cmd('az alias list', checks=[
             self.check('[0].alias', '{alias_name}'),
             self.check('[0].command', '{alias_command}'),

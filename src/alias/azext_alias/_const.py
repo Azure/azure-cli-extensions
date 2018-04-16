@@ -3,12 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import os
+
 from azure.cli.core._environment import get_config_dir
 
 GLOBAL_CONFIG_DIR = get_config_dir()
 ALIAS_FILE_NAME = 'alias'
 ALIAS_HASH_FILE_NAME = 'alias.sha1'
 COLLIDED_ALIAS_FILE_NAME = 'collided_alias'
+ALIAS_TAB_COMP_TABLE_FILE_NAME = 'alias_tab_completion'
+GLOBAL_ALIAS_TAB_COMP_TABLE_PATH = os.path.join(GLOBAL_CONFIG_DIR, ALIAS_TAB_COMP_TABLE_FILE_NAME)
 COLLISION_CHECK_LEVEL_DEPTH = 5
 
 INSUFFICIENT_POS_ARG_ERROR = 'alias: "{}" takes exactly {} positional argument{} ({} given)'

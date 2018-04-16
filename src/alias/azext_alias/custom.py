@@ -7,10 +7,9 @@ import hashlib
 
 from knack.util import CLIError
 
-import azext_alias
 from azext_alias._const import ALIAS_NOT_FOUND_ERROR
 from azext_alias.alias import GLOBAL_ALIAS_PATH, AliasManager
-from azext_alias.util import get_alias_table
+from azext_alias.util import get_alias_table, build_tab_completion_table
 
 
 def create_alias(alias_name, alias_command):
@@ -78,6 +77,6 @@ def _commit_change(alias_table):
         alias_config_hash = hashlib.sha1(alias_config_file.read().encode('utf-8')).hexdigest()
         AliasManager.write_alias_config_hash(alias_config_hash)
 
-    collided_alias = AliasManager.build_collision_table(alias_table.sections(),
-                                                        azext_alias.cached_reserved_commands)
+    collided_alias = AliasManager.build_collision_table(alias_table.sections())
     AliasManager.write_collided_alias(collided_alias)
+    build_tab_completion_table(alias_table)
