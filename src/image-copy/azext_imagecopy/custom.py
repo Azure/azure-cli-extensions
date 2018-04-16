@@ -8,6 +8,7 @@ from multiprocessing import Pool
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azext_imagecopy.create_target import create_target_image
 
+from knack.util import CLIError
 from knack.log import get_logger
 logger = get_logger(__name__)
 
@@ -23,6 +24,13 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
                                    '--resource-group', source_resource_group_name])
 
     json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
+
+    if 'id' not in json_cmd_output['storageProfile']['osDisk']['managedDisk']:
+        logger.error("It looks like the source resource isn't backed by a managed OS disk. Quitting...")
+        raise CLIError('Source with no Managed OS disk')
+
+    if 'dataDisks' in json_cmd_output['storageProfile']:
+        logger.warn("Data disks in the source are ignored by this extension!")
 
     source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
     source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']
