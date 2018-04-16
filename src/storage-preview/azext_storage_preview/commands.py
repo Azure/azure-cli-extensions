@@ -3,14 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands import CliCommandType
+from azure.cli.core.profiles import ResourceType
 from ._client_factory import (cf_sa, blob_data_service_factory,
                               page_blob_service_factory, file_data_service_factory,
                               queue_data_service_factory, table_data_service_factory,
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
-from azure.cli.core.commands import CliCommandType
-from azure.cli.core.profiles import ResourceType
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
