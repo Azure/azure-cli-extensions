@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long,no-self-use,protected-access
 
 import unittest
-from mock import Mock
+from mock import Mock, patch
 
 from knack.util import CLIError
 
@@ -22,10 +22,13 @@ from azext_alias.custom import (
 
 class AliasCustomCommandTest(unittest.TestCase):
 
-    @classmethod
-    def setUp(cls):
-        azext_alias.cached_reserved_commands = TEST_RESERVED_COMMANDS
+    def setUp(self):
+        self.patcher = patch('azext_alias.cached_reserved_commands', TEST_RESERVED_COMMANDS)
+        self.patcher.start()
         azext_alias.custom._commit_change = Mock()
+
+    def tearDown(self):
+        self.patcher.stop()
 
     def test_create_alias(self):
         create_alias('ac', 'account')
@@ -74,7 +77,7 @@ class AliasCustomCommandTest(unittest.TestCase):
         mock_alias_table.set('ac', 'command', 'account')
         azext_alias.custom.get_alias_table = Mock(return_value=mock_alias_table)
         with self.assertRaises(CLIError) as cm:
-            remove_alias('dns')
+            remove_alias(['dns'])
         self.assertEqual(str(cm.exception), 'alias: "dns" alias not found')
 
 

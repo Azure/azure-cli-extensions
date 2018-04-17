@@ -39,6 +39,18 @@ helps['alias create'] = """
 """
 
 
+helps['alias export'] = """
+    type: command
+    short-summary: Export all registered aliases to a given path, as an INI configuration file.
+"""
+
+
+helps['alias import'] = """
+    type: command
+    short-summary: Import aliases from an INI configuration file or an URL.
+"""
+
+
 helps['alias list'] = """
     type: command
     short-summary: List the registered aliases.
@@ -47,5 +59,11 @@ helps['alias list'] = """
 
 helps['alias remove'] = """
     type: command
-    short-summary: Remove an alias.
+    short-summary: Remove one or more aliases. Aliases to be removed are space-delimited.
+"""
+
+
+helps['alias remove-all'] = """
+    type: command
+    short-summary: Remove all registered aliases.
 """

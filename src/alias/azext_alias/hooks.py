@@ -12,7 +12,7 @@ from azure.cli.command_modules.interactive.azclishell.command_tree import Comman
 from azext_alias import telemetry
 from azext_alias.alias import AliasManager
 from azext_alias.util import (
-    is_alias_create_command,
+    is_alias_command,
     cache_reserved_commands,
     get_alias_table,
     filter_aliases
@@ -36,7 +36,7 @@ def alias_event_handler(_, **kwargs):
         # [:] will keep the reference of the original args
         args[:] = alias_manager.transform(args)
 
-        if is_alias_create_command(args):
+        if is_alias_command(['create', 'import'], args):
             load_cmd_tbl_func = kwargs.get('load_cmd_tbl_func', lambda _: {})
             cache_reserved_commands(load_cmd_tbl_func)
 
