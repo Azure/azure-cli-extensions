@@ -122,10 +122,6 @@ class TestIndex(unittest.TestCase):
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                             self.whl_cache_dir, self.whl_cache)
                 metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
-                self.assertDictEqual(metadata, item['metadata'],
-                                     "Metadata for {} in index doesn't match the expected of: \n"
-                                     "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
-                                                                              separators=(',', ': '))))
                 # Due to https://github.com/pypa/wheel/issues/195 we prevent whls built with 0.31.0 or greater.
                 # 0.29.0, 0.30.0 are the two previous versions before that release.
                 supported_generators = ['bdist_wheel (0.29.0)', 'bdist_wheel (0.30.0)']
@@ -135,6 +131,10 @@ class TestIndex(unittest.TestCase):
                               "(e.g. `pip install wheel==0.30.0`). "
                               "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
                                                                                                supported_generators))
+                self.assertDictEqual(metadata, item['metadata'],
+                                     "Metadata for {} in index doesn't match the expected of: \n"
+                                     "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
+                                                                              separators=(',', ': '))))
                 run_requires = metadata.get('run_requires')
                 if run_requires and ext_name not in SKIP_DEP_CHECK:
                     deps = run_requires[0]['requires']
