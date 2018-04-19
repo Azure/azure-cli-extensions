@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from six.moves.urllib.parse import quote  # pylint: disable=import-error
+import re
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
@@ -13,7 +14,15 @@ from azext_eventgrid.mgmt.eventgrid.models import (
     EventSubscription,
     EventSubscriptionUpdateParameters,
     WebHookEventSubscriptionDestination,
+    Topic,
+    JsonInputSchemaMapping,
+    JsonField,
+    JsonFieldWithDefault,
+    RetryPolicy,
     EventHubEventSubscriptionDestination,
+    StorageQueueEventSubscriptionDestination,
+    HybridConnectionEventSubscriptionDestination,
+    StorageBlobDeadLetterDestination,
     EventSubscriptionFilter)
 
 logger = get_logger(__name__)
@@ -25,6 +34,11 @@ RESOURCE_GROUPS = "resourcegroups"
 EVENTGRID_TOPICS = "topics"
 WEBHOOK_DESTINATION = "webhook"
 EVENTHUB_DESTINATION = "eventhub"
+STORAGEQUEUE_DESTINATION = "storagequeue"
+HYBRIDCONNECTION_DESTINATION = "hybridconnection"
+EVENTGRID_SCHEMA = "eventgridschema"
+CUSTOM_SCHEMA = "customeventschema"
+CLOUDEVENTV01_SCHEMA = "cloudeventv01schema"
 
 
 def cli_topic_list(
@@ -34,6 +48,39 @@ def cli_topic_list(
         return client.list_by_resource_group(resource_group_name)
 
     return client.list_by_subscription()
+
+
+def cli_topic_create_or_update(
+        client,
+        resource_group_name,
+        topic_name,
+        location,
+        tags=None,
+        input_schema=EVENTGRID_SCHEMA,
+        input_mapping_fields=None,
+        input_mapping_default_values=None):
+    if input_schema is EVENTGRID_SCHEMA or input_schema is CLOUDEVENTV01_SCHEMA:
+        # Ensure that custom input mappings are not specified
+        if input_mapping_fields is not None or input_mapping_default_values is not None:
+            raise CLIError('input_mapping_default_values and input_mapping_fields are applicable only when input_schema is set to customeventschema.')
+
+    if input_schema is CUSTOM_SCHEMA:
+        # Ensure that custom input mappings are specified
+        if input_mapping_fields is not None and input_mapping_default_values is not None:
+            raise CLIError('Either input_mapping_default_values or input_mapping_fields must be specified when input_schema is set to customeventschema.')
+
+    input_schema_mapping = get_input_schema_mapping(
+        input_mapping_fields,
+        input_mapping_default_values)
+
+    topic_info = Topic(location, tags, input_schema, input_schema_mapping)
+
+    async_topic_create = client.create_or_update(
+        resource_group_name,
+        topic_name,
+        topic_info)
+    created_topic = async_topic_create.result()
+    return created_topic
 
 
 def cli_eventgrid_event_subscription_create(
@@ -49,6 +96,10 @@ def cli_eventgrid_event_subscription_create(
         subject_begins_with=None,
         subject_ends_with=None,
         is_subject_case_sensitive=False,
+        max_delivery_attempts=30,
+        event_ttl=1440,
+        event_delivery_schema=EVENTGRID_SCHEMA,
+        deadletter_endpoint=None,
         labels=None):
     scope = _get_scope_for_event_subscription(cmd.cli_ctx, resource_id, topic_name, resource_group_name)
 
@@ -56,13 +107,43 @@ def cli_eventgrid_event_subscription_create(
         destination = WebHookEventSubscriptionDestination(endpoint)
     elif endpoint_type.lower() == EVENTHUB_DESTINATION.lower():
         destination = EventHubEventSubscriptionDestination(endpoint)
+    elif endpoint_type.lower() == HYBRIDCONNECTION_DESTINATION.lower():
+        destination = HybridConnectionEventSubscriptionDestination(endpoint)
+    elif endpoint_type.lower() == STORAGEQUEUE_DESTINATION.lower():
+        # Supplied endpoint would be in the format /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/queueServices/default/queues/{queueName}))
+        # and we need to break it up into /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1 and queueName
+        storage_queue_items = re.split(
+            "/queueServices/default/queues/", endpoint, flags=re.IGNORECASE)
+
+        if len(storage_queue_items) != 2 or storage_queue_items[0] is None or storage_queue_items[1] is None:
+            raise CLIError("Argument Error: Expected format of Storage queue endpoint is: /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/queueServices/default/queues/queueName")
+
+        destination = StorageQueueEventSubscriptionDestination(
+            storage_queue_items[0], storage_queue_items[1])
 
     event_subscription_filter = EventSubscriptionFilter(
         subject_begins_with,
         subject_ends_with,
         included_event_types,
         is_subject_case_sensitive)
-    event_subscription_info = EventSubscription(destination, event_subscription_filter, labels)
+
+    retry_policy = RetryPolicy(max_delivery_attempts, event_ttl)
+
+    if deadlettter_endpoint is not None:
+        storage_blob_items = re.split(
+            "/blobServices/default/containers/", endpoint, flags=re.IGNORECASE)
+
+        if len(storage_blob_items) != 2 or storage_blob_items[0] is None or storage_blob_items[1] is None:
+            raise CLIError("Argument Error: Expected format of deadletter destination is: /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName")
+
+        deadletter_destination = StorageBlobDeadLetterDestination(
+            storage_blob_items[0], storage_blob_items[1])
+
+    event_subscription_info = EventSubscription(
+        destination, event_subscription_filter, labels, event_delivery_schema, retry_policy, deadletter_destination)
+
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and "azure" not in endpoint and "hookbin" not in endpoint:
+        print("If the endpoint doesn't support subscription validation response, please visit the validation URL manually to complete the validation handshake.")
 
     async_event_subscription_create = client.create_or_update(
         scope,
@@ -249,6 +330,48 @@ def event_subscription_getter(
     scope = _get_scope_for_event_subscription(cmd.cli_ctx, resource_id, topic_name, resource_group_name)
     retrieved_event_subscription = client.get(scope, event_subscription_name)
     return retrieved_event_subscription
+
+
+def get_input_schema_mapping(
+       input_mapping_fields=None,
+       input_mapping_default_values=None):
+   input_schema_mapping = None
+
+   if input_mapping_fields is not None or input_mapping_default_values is not None:
+       input_schema_mapping = JsonInputSchemaMapping()
+
+       input_schema_mapping.id = JsonField()
+       input_schema_mapping.topic = JsonField()
+       input_schema_mapping.event_time = JsonField()
+       input_schema_mapping.subject = JsonFieldWithDefault()
+       input_schema_mapping.event_type = JsonFieldWithDefault()
+       input_schema_mapping.data_version = JsonFieldWithDefault()
+
+       for key_value_pair in input_mapping_fields:
+           split_key_value_pairs = key_value_pair.split("=")
+           if split_key_value_pairs[0].lower() == "id":
+               input_schema_mapping.id.source_field = split_key_value_pairs[1]
+           elif split_key_value_pairs[0].lower() == "eventtime":
+               input_schema_mapping.event_time.source_field = split_key_value_pairs[1]
+           elif split_key_value_pairs[0].lower() == "topic":
+               input_schema_mapping.topic.source_field = split_key_value_pairs[1]
+           elif split_key_value_pairs[0].lower() == "subject":
+               input_schema_mapping.subject.source_field = split_key_value_pairs[1]
+           elif split_key_value_pairs[0].lower() == "dataversion":
+               input_schema_mapping.data_version.source_field = split_key_value_pairs[1]
+           elif split_key_value_pairs[0].lower() == "eventtype":
+               input_schema_mapping.event_type.source_field = split_key_value_pairs[1]
+
+       for key_value_pair2 in input_mapping_default_values:
+           split_key_value_pairs2 = key_value_pair2.split("=")
+           if split_key_value_pairs2[0].lower() == "subject":
+               input_schema_mapping.subject.default_value = split_key_value_pairs2[1]
+           elif split_key_value_pairs2[0].lower() == "dataversion":
+               input_schema_mapping.data_version.default_value = split_key_value_pairs2[1]
+           elif split_key_value_pairs2[0].lower() == "eventtype":
+               input_schema_mapping.event_type.default_value = split_key_value_pairs2[1]
+
+   return input_schema_mapping
 
 
 def update_event_subscription(
