@@ -13,10 +13,10 @@ _replacements = {
 _code_file_header="""# pylint: disable-all
 
 # ---------------------------------------------------------------------------------
-# The code for this extension file is pulled from the {} repo
-# and modified to run inside a cli extension.  Changes may cause incorrect behavior
-# and will be lost if the code is regenerated. Please see the readme.md at the base
-# of the keyvault extension for details.
+# The code for this extension file is pulled from the {} repo and
+# modified to run inside a cli extension.  Changes may cause incorrect behavior and
+# will be lost if the code is regenerated. Please see the readme.md at the base of
+# the keyvault extension for details.
 # ---------------------------------------------------------------------------------
 
 """
@@ -40,7 +40,13 @@ def copy_file(src, dst, repo_name, replacements=None):
     if extension.lower() == '.py':
         with open(src, mode='r') as s:
             with open(dst, mode='w') as d:
-                d.write(_code_file_header.format(repo_name))
+                first_line = s.readline()
+                if first_line.startswith('# coding='):
+                    d.write(first_line)
+                    d.write(_code_file_header.format(repo_name))
+                else:
+                    d.write(_code_file_header.format(repo_name))
+                    d.write(first_line)
                 if replacements:
                     old = s.readline()
                     while(old):
