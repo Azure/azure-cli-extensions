@@ -24,8 +24,8 @@ class EventSubscriptionsOperations(object):
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
-    :param deserializer: An objec model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-01-01".
+    :param deserializer: An object model deserializer.
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-05-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class EventSubscriptionsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-01-01"
+        self.api_version = "2018-05-01-preview"
 
         self.config = config
 
@@ -64,12 +64,12 @@ class EventSubscriptionsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: EventSubscription or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.EventSubscription or
+        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.EventSubscription or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'
+        url = self.get.metadata['url']
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'eventSubscriptionName': self._serialize.url("event_subscription_name", event_subscription_name, 'str')
@@ -109,12 +109,13 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    get.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
 
     def _create_or_update_initial(
             self, scope, event_subscription_name, event_subscription_info, custom_headers=None, raw=False, **operation_config):
         # Construct URL
-        url = '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'
+        url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'eventSubscriptionName': self._serialize.url("event_subscription_name", event_subscription_name, 'str')
@@ -185,14 +186,14 @@ class EventSubscriptionsOperations(object):
         :param event_subscription_info: Event subscription properties
          containing the destination and filter information
         :type event_subscription_info:
-         ~azure.mgmt.eventgrid.models.EventSubscription
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :return: An instance of AzureOperationPoller that returns
          EventSubscription or ClientRawResponse if raw=true
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -242,12 +243,13 @@ class EventSubscriptionsOperations(object):
         return AzureOperationPoller(
             long_running_send, get_long_running_output,
             get_long_running_status, long_running_operation_timeout)
+    create_or_update.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
 
     def _delete_initial(
             self, scope, event_subscription_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
-        url = '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'
+        url = self.delete.metadata['url']
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'eventSubscriptionName': self._serialize.url("event_subscription_name", event_subscription_name, 'str')
@@ -350,12 +352,13 @@ class EventSubscriptionsOperations(object):
         return AzureOperationPoller(
             long_running_send, get_long_running_output,
             get_long_running_status, long_running_operation_timeout)
+    delete.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
 
     def _update_initial(
             self, scope, event_subscription_name, event_subscription_update_parameters, custom_headers=None, raw=False, **operation_config):
         # Construct URL
-        url = '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'
+        url = self.update.metadata['url']
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'eventSubscriptionName': self._serialize.url("event_subscription_name", event_subscription_name, 'str')
@@ -418,19 +421,19 @@ class EventSubscriptionsOperations(object):
          for an EventGrid topic.
         :type scope: str
         :param event_subscription_name: Name of the event subscription to be
-         created
+         updated
         :type event_subscription_name: str
         :param event_subscription_update_parameters: Updated event
          subscription information
         :type event_subscription_update_parameters:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionUpdateParameters
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :return: An instance of AzureOperationPoller that returns
          EventSubscription or ClientRawResponse if raw=true
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -480,6 +483,7 @@ class EventSubscriptionsOperations(object):
         return AzureOperationPoller(
             long_running_send, get_long_running_output,
             get_long_running_status, long_running_operation_timeout)
+    update.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
     def get_full_url(
             self, scope, event_subscription_name, custom_headers=None, raw=False, **operation_config):
@@ -506,12 +510,13 @@ class EventSubscriptionsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: EventSubscriptionFullUrl or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.EventSubscriptionFullUrl or
+        :rtype:
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionFullUrl or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}/getFullUrl'
+        url = self.get_full_url.metadata['url']
         path_format_arguments = {
             'scope': self._serialize.url("scope", scope, 'str', skip_quote=True),
             'eventSubscriptionName': self._serialize.url("event_subscription_name", event_subscription_name, 'str')
@@ -551,6 +556,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    get_full_url.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}/getFullUrl'}
 
     def list_global_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -567,14 +573,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/eventSubscriptions'
+                url = self.list_global_by_subscription.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
@@ -619,6 +625,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_global_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/eventSubscriptions'}
 
     def list_global_by_subscription_for_topic_type(
             self, topic_type_name, custom_headers=None, raw=False, **operation_config):
@@ -636,14 +643,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventSubscriptions'
+                url = self.list_global_by_subscription_for_topic_type.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'topicTypeName': self._serialize.url("topic_type_name", topic_type_name, 'str')
@@ -689,6 +696,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_global_by_subscription_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_global_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
@@ -708,14 +716,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/eventSubscriptions'
+                url = self.list_global_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str')
@@ -761,6 +769,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_global_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/eventSubscriptions'}
 
     def list_global_by_resource_group_for_topic_type(
             self, resource_group_name, topic_type_name, custom_headers=None, raw=False, **operation_config):
@@ -782,14 +791,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventSubscriptions'
+                url = self.list_global_by_resource_group_for_topic_type.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -836,6 +845,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_global_by_resource_group_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_regional_by_subscription(
             self, location, custom_headers=None, raw=False, **operation_config):
@@ -853,14 +863,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/locations/{location}/eventSubscriptions'
+                url = self.list_regional_by_subscription.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'location': self._serialize.url("location", location, 'str')
@@ -906,6 +916,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_regional_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/locations/{location}/eventSubscriptions'}
 
     def list_regional_by_resource_group(
             self, resource_group_name, location, custom_headers=None, raw=False, **operation_config):
@@ -927,14 +938,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/locations/{location}/eventSubscriptions'
+                url = self.list_regional_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -981,6 +992,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_regional_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/locations/{location}/eventSubscriptions'}
 
     def list_regional_by_subscription_for_topic_type(
             self, location, topic_type_name, custom_headers=None, raw=False, **operation_config):
@@ -1001,14 +1013,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/locations/{location}/topicTypes/{topicTypeName}/eventSubscriptions'
+                url = self.list_regional_by_subscription_for_topic_type.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'location': self._serialize.url("location", location, 'str'),
@@ -1055,6 +1067,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_regional_by_subscription_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/locations/{location}/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_regional_by_resource_group_for_topic_type(
             self, resource_group_name, location, topic_type_name, custom_headers=None, raw=False, **operation_config):
@@ -1078,14 +1091,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/locations/{location}/topicTypes/{topicTypeName}/eventSubscriptions'
+                url = self.list_regional_by_resource_group_for_topic_type.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -1133,6 +1146,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_regional_by_resource_group_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/locations/{location}/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_by_resource(
             self, resource_group_name, provider_namespace, resource_type_name, resource_name, custom_headers=None, raw=False, **operation_config):
@@ -1157,14 +1171,14 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerNamespace}/{resourceTypeName}/{resourceName}/providers/Microsoft.EventGrid/eventSubscriptions'
+                url = self.list_by_resource.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -1213,3 +1227,4 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_resource.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerNamespace}/{resourceTypeName}/{resourceName}/providers/Microsoft.EventGrid/eventSubscriptions'}

@@ -20,6 +20,14 @@ class EventSubscriptionProvisioningState(Enum):
     succeeded = "Succeeded"
     canceled = "Canceled"
     failed = "Failed"
+    awaiting_manual_action = "AwaitingManualAction"
+
+
+class EventDeliverySchema(Enum):
+
+    event_grid_schema = "EventGridSchema"
+    input_event_schema = "InputEventSchema"
+    cloud_event_v01_schema = "CloudEventV01Schema"
 
 
 class TopicProvisioningState(Enum):
@@ -30,6 +38,13 @@ class TopicProvisioningState(Enum):
     succeeded = "Succeeded"
     canceled = "Canceled"
     failed = "Failed"
+
+
+class InputSchema(Enum):
+
+    event_grid_schema = "EventGridSchema"
+    custom_event_schema = "CustomEventSchema"
+    cloud_event_v01_schema = "CloudEventV01Schema"
 
 
 class ResourceRegionType(Enum):

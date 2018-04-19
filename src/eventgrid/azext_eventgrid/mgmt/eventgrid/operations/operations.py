@@ -22,8 +22,8 @@ class Operations(object):
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
-    :param deserializer: An objec model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-01-01".
+    :param deserializer: An object model deserializer.
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-05-01-preview".
     """
 
     models = models
@@ -33,7 +33,7 @@ class Operations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-01-01"
+        self.api_version = "2018-05-01-preview"
 
         self.config = config
 
@@ -51,14 +51,14 @@ class Operations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Operation
         :rtype:
-         ~azure.mgmt.eventgrid.models.OperationPaged[~azure.mgmt.eventgrid.models.Operation]
+         ~azext_eventgrid.mgmt.eventgrid.models.OperationPaged[~azext_eventgrid.mgmt.eventgrid.models.Operation]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/providers/Microsoft.EventGrid/operations'
+                url = self.list.metadata['url']
 
                 # Construct parameters
                 query_parameters = {}
@@ -99,3 +99,4 @@ class Operations(object):
             return client_raw_response
 
         return deserialized
+    list.metadata = {'url': '/providers/Microsoft.EventGrid/operations'}

@@ -32,9 +32,20 @@ class Topic(TrackedResource):
      include: 'Creating', 'Updating', 'Deleting', 'Succeeded', 'Canceled',
      'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.eventgrid.models.TopicProvisioningState
+     ~azext_eventgrid.mgmt.eventgrid.models.TopicProvisioningState
     :ivar endpoint: Endpoint for the topic.
     :vartype endpoint: str
+    :param input_schema: This determines the format that Event Grid should
+     expect for incoming events published to the topic. Possible values
+     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventV01Schema'
+    :type input_schema: str or
+     ~azext_eventgrid.mgmt.eventgrid.models.InputSchema
+    :param input_schema_mapping: This enables publishing using custom event
+     schemas. An InputSchemaMapping can be specified to map various properties
+     of a source schema to various required properties of the EventGridEvent
+     schema.
+    :type input_schema_mapping:
+     ~azext_eventgrid.mgmt.eventgrid.models.InputSchemaMapping
     """
 
     _validation = {
@@ -54,9 +65,13 @@ class Topic(TrackedResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'endpoint': {'key': 'properties.endpoint', 'type': 'str'},
+        'input_schema': {'key': 'properties.inputSchema', 'type': 'str'},
+        'input_schema_mapping': {'key': 'properties.inputSchemaMapping', 'type': 'InputSchemaMapping'},
     }
 
-    def __init__(self, location, tags=None):
+    def __init__(self, location, tags=None, input_schema=None, input_schema_mapping=None):
         super(Topic, self).__init__(location=location, tags=tags)
         self.provisioning_state = None
         self.endpoint = None
+        self.input_schema = input_schema
+        self.input_schema_mapping = input_schema_mapping

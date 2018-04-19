@@ -47,7 +47,7 @@ class EventGridManagementClientConfiguration(AzureConfiguration):
 
         super(EventGridManagementClientConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('azure-mgmt-eventgrid/{}'.format(VERSION))
+        self.add_user_agent('azext_eventgrid-mgmt-eventgrid/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
@@ -61,13 +61,13 @@ class EventGridManagementClient(object):
     :vartype config: EventGridManagementClientConfiguration
 
     :ivar event_subscriptions: EventSubscriptions operations
-    :vartype event_subscriptions: azure.mgmt.eventgrid.operations.EventSubscriptionsOperations
+    :vartype event_subscriptions: azext_eventgrid.mgmt.eventgrid.operations.EventSubscriptionsOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.eventgrid.operations.Operations
+    :vartype operations: azext_eventgrid.mgmt.eventgrid.operations.Operations
     :ivar topics: Topics operations
-    :vartype topics: azure.mgmt.eventgrid.operations.TopicsOperations
+    :vartype topics: azext_eventgrid.mgmt.eventgrid.operations.TopicsOperations
     :ivar topic_types: TopicTypes operations
-    :vartype topic_types: azure.mgmt.eventgrid.operations.TopicTypesOperations
+    :vartype topic_types: azext_eventgrid.mgmt.eventgrid.operations.TopicTypesOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -86,7 +86,7 @@ class EventGridManagementClient(object):
         self._client = ServiceClient(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-01-01'
+        self.api_version = '2018-05-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 

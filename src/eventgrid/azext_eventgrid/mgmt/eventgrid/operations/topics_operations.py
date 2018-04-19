@@ -24,8 +24,8 @@ class TopicsOperations(object):
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
-    :param deserializer: An objec model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-01-01".
+    :param deserializer: An object model deserializer.
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-05-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class TopicsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-01-01"
+        self.api_version = "2018-05-01-preview"
 
         self.config = config
 
@@ -56,12 +56,12 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Topic or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.Topic or
+        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.Topic or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
+        url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -102,14 +102,13 @@ class TopicsOperations(object):
             return client_raw_response
 
         return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'}
 
 
     def _create_or_update_initial(
-            self, resource_group_name, topic_name, location, tags=None, custom_headers=None, raw=False, **operation_config):
-        topic_info = models.Topic(location=location, tags=tags)
-
+            self, resource_group_name, topic_name, topic_info, custom_headers=None, raw=False, **operation_config):
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
+        url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -156,7 +155,7 @@ class TopicsOperations(object):
         return deserialized
 
     def create_or_update(
-            self, resource_group_name, topic_name, location, tags=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, topic_name, topic_info, custom_headers=None, raw=False, **operation_config):
         """Create a topic.
 
         Asynchronously creates a new topic with the specified parameters.
@@ -166,25 +165,22 @@ class TopicsOperations(object):
         :type resource_group_name: str
         :param topic_name: Name of the topic
         :type topic_name: str
-        :param location: Location of the resource
-        :type location: str
-        :param tags: Tags of the resource
-        :type tags: dict[str, str]
+        :param topic_info: Topic information
+        :type topic_info: ~azext_eventgrid.mgmt.eventgrid.models.Topic
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :return: An instance of AzureOperationPoller that returns Topic or
          ClientRawResponse if raw=true
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.Topic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.mgmt.eventgrid.models.Topic]
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
             topic_name=topic_name,
-            location=location,
-            tags=tags,
+            topic_info=topic_info,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -227,12 +223,13 @@ class TopicsOperations(object):
         return AzureOperationPoller(
             long_running_send, get_long_running_output,
             get_long_running_status, long_running_operation_timeout)
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'}
 
 
     def _delete_initial(
             self, resource_group_name, topic_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
+        url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -328,6 +325,7 @@ class TopicsOperations(object):
         return AzureOperationPoller(
             long_running_send, get_long_running_output,
             get_long_running_status, long_running_operation_timeout)
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'}
 
 
     def _update_initial(
@@ -335,7 +333,7 @@ class TopicsOperations(object):
         topic_update_parameters = models.TopicUpdateParameters(tags=tags)
 
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
+        url = self.update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -400,7 +398,7 @@ class TopicsOperations(object):
         :return: An instance of AzureOperationPoller that returns Topic or
          ClientRawResponse if raw=true
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.Topic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.mgmt.eventgrid.models.Topic]
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -450,6 +448,7 @@ class TopicsOperations(object):
         return AzureOperationPoller(
             long_running_send, get_long_running_output,
             get_long_running_status, long_running_operation_timeout)
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -464,14 +463,14 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Topic
         :rtype:
-         ~azure.mgmt.eventgrid.models.TopicPaged[~azure.mgmt.eventgrid.models.Topic]
+         ~azext_eventgrid.mgmt.eventgrid.models.TopicPaged[~azext_eventgrid.mgmt.eventgrid.models.Topic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/topics'
+                url = self.list_by_subscription.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
@@ -516,6 +515,7 @@ class TopicsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/topics'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
@@ -533,14 +533,14 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Topic
         :rtype:
-         ~azure.mgmt.eventgrid.models.TopicPaged[~azure.mgmt.eventgrid.models.Topic]
+         ~azext_eventgrid.mgmt.eventgrid.models.TopicPaged[~azext_eventgrid.mgmt.eventgrid.models.Topic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics'
+                url = self.list_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str')
@@ -586,6 +586,7 @@ class TopicsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics'}
 
     def list_shared_access_keys(
             self, resource_group_name, topic_name, custom_headers=None, raw=False, **operation_config):
@@ -604,12 +605,12 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.TopicSharedAccessKeys or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.TopicSharedAccessKeys
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}/listKeys'
+        url = self.list_shared_access_keys.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -650,6 +651,7 @@ class TopicsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_shared_access_keys.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}/listKeys'}
 
     def regenerate_key(
             self, resource_group_name, topic_name, key_name, custom_headers=None, raw=False, **operation_config):
@@ -670,14 +672,14 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.TopicSharedAccessKeys or
-         ~msrest.pipeline.ClientRawResponse
+        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.TopicSharedAccessKeys
+         or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         regenerate_key_request = models.TopicRegenerateKeyRequest(key_name=key_name)
 
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}/regenerateKey'
+        url = self.regenerate_key.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -722,6 +724,7 @@ class TopicsOperations(object):
             return client_raw_response
 
         return deserialized
+    regenerate_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}/regenerateKey'}
 
     def list_event_types(
             self, resource_group_name, provider_namespace, resource_type_name, resource_name, custom_headers=None, raw=False, **operation_config):
@@ -745,14 +748,14 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventType
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventTypePaged[~azure.mgmt.eventgrid.models.EventType]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventTypePaged[~azext_eventgrid.mgmt.eventgrid.models.EventType]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerNamespace}/{resourceTypeName}/{resourceName}/providers/Microsoft.EventGrid/eventTypes'
+                url = self.list_event_types.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -801,3 +804,4 @@ class TopicsOperations(object):
             return client_raw_response
 
         return deserialized
+    list_event_types.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerNamespace}/{resourceTypeName}/{resourceName}/providers/Microsoft.EventGrid/eventTypes'}

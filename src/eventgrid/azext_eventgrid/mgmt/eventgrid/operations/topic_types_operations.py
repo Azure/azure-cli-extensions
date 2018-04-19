@@ -22,8 +22,8 @@ class TopicTypesOperations(object):
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
-    :param deserializer: An objec model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-01-01".
+    :param deserializer: An object model deserializer.
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-05-01-preview".
     """
 
     models = models
@@ -33,7 +33,7 @@ class TopicTypesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-01-01"
+        self.api_version = "2018-05-01-preview"
 
         self.config = config
 
@@ -50,14 +50,14 @@ class TopicTypesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of TopicTypeInfo
         :rtype:
-         ~azure.mgmt.eventgrid.models.TopicTypeInfoPaged[~azure.mgmt.eventgrid.models.TopicTypeInfo]
+         ~azext_eventgrid.mgmt.eventgrid.models.TopicTypeInfoPaged[~azext_eventgrid.mgmt.eventgrid.models.TopicTypeInfo]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/providers/Microsoft.EventGrid/topicTypes'
+                url = self.list.metadata['url']
 
                 # Construct parameters
                 query_parameters = {}
@@ -98,6 +98,7 @@ class TopicTypesOperations(object):
             return client_raw_response
 
         return deserialized
+    list.metadata = {'url': '/providers/Microsoft.EventGrid/topicTypes'}
 
     def get(
             self, topic_type_name, custom_headers=None, raw=False, **operation_config):
@@ -113,12 +114,12 @@ class TopicTypesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicTypeInfo or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.eventgrid.models.TopicTypeInfo or
+        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.TopicTypeInfo or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = '/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}'
+        url = self.get.metadata['url']
         path_format_arguments = {
             'topicTypeName': self._serialize.url("topic_type_name", topic_type_name, 'str')
         }
@@ -157,6 +158,7 @@ class TopicTypesOperations(object):
             return client_raw_response
 
         return deserialized
+    get.metadata = {'url': '/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}'}
 
     def list_event_types(
             self, topic_type_name, custom_headers=None, raw=False, **operation_config):
@@ -173,14 +175,14 @@ class TopicTypesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventType
         :rtype:
-         ~azure.mgmt.eventgrid.models.EventTypePaged[~azure.mgmt.eventgrid.models.EventType]
+         ~azext_eventgrid.mgmt.eventgrid.models.EventTypePaged[~azext_eventgrid.mgmt.eventgrid.models.EventType]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = '/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventTypes'
+                url = self.list_event_types.metadata['url']
                 path_format_arguments = {
                     'topicTypeName': self._serialize.url("topic_type_name", topic_type_name, 'str')
                 }
@@ -225,3 +227,4 @@ class TopicTypesOperations(object):
             return client_raw_response
 
         return deserialized
+    list_event_types.metadata = {'url': '/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventTypes'}
