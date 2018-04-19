@@ -26,7 +26,7 @@ CLASSIFIERS = [
 setup(
     name='signalr',
     version=VERSION,
-    description='Microsoft Azure Command-Line Extensions for SignalR Service',
+    description='Support for signalr management preview.',
     long_description='Microsoft Azure Command-Line Extensions for SignalR Service',
     license='MIT',
     author='Visual Studio China SignalR Team',
