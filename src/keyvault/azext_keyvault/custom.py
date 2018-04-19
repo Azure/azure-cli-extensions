@@ -1,9 +1,12 @@
-# pylint: skip-file
-# ---------------------------------------------------------------------------
-# The code for this extension file is pulled from the azure-cli repo. Changes may 
-# cause incorrect behavior and will be lost if the code is regenerated.
-# Please see the readme.md at the base of the keyvault extension for details.
-# ---------------------------------------------------------------------------
+# pylint: disable-all
+
+# ---------------------------------------------------------------------------------
+# The code for this extension file is pulled from the azure-cli repo
+# and modified to run inside a cli extension.  Changes may cause incorrect behavior
+# and will be lost if the code is regenerated. Please see the readme.md at the base
+# of the keyvault extension for details.
+# ---------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -537,7 +540,8 @@ def create_key(client, vault_base_url, key_name, destination, key_size=None, key
         vault_base_url, key_name, destination, key_size, key_ops, key_attrs, tags)
 
 
-def backup_key(client, vault_base_url, key_name, file_path):
+def backup_key(client, file_path, vault_base_url=None,
+               key_name=None, identifier=None):  # pylint: disable=unused-argument
     backup = client.backup_key(vault_base_url, key_name).value
     with open(file_path, 'wb') as output:
         output.write(backup)
@@ -629,8 +633,8 @@ def import_key(client, vault_base_url, key_name, destination=None, key_ops=None,
 
 
 # region KeyVault Secret
-def download_secret(client, vault_base_url, secret_name, file_path, encoding=None,
-                    secret_version=''):
+def download_secret(client, file_path, vault_base_url=None, secret_name=None, encoding=None,
+                    secret_version='', identifier=None):  # pylint: disable=unused-argument
     """ Download a secret from a KeyVault. """
     if os.path.isfile(file_path) or os.path.isdir(file_path):
         raise CLIError("File or directory named '{}' already exists.".format(file_path))
@@ -662,7 +666,8 @@ def download_secret(client, vault_base_url, secret_name, file_path, encoding=Non
         raise ex
 
 
-def backup_secret(client, vault_base_url, secret_name, file_path):
+def backup_secret(client, file_path, vault_base_url=None,
+                  secret_name=None, identifier=None):  # pylint: disable=unused-argument
     backup = client.backup_secret(vault_base_url, secret_name).value
     with open(file_path, 'wb') as output:
         output.write(backup)
@@ -793,8 +798,8 @@ def import_certificate(client, vault_base_url, certificate_name, certificate_dat
     return result
 
 
-def download_certificate(client, vault_base_url, certificate_name, file_path,
-                         encoding='PEM', certificate_version=''):
+def download_certificate(client, file_path, vault_base_url=None, certificate_name=None,
+                         identifier=None, encoding='PEM', certificate_version=''):   # pylint: disable=unused-argument
     """ Download a certificate from a KeyVault. """
     if os.path.isfile(file_path) or os.path.isdir(file_path):
         raise CLIError("File or directory named '{}' already exists.".format(file_path))
@@ -940,7 +945,8 @@ def delete_certificate_issuer_admin(client, vault_base_url, issuer_name, email):
 # region storage_account
 
 
-def backup_storage_account(client, vault_base_url, storage_account_name, file_path):
+def backup_storage_account(client, file_path, vault_base_url=None,
+                           storage_account_name=None, identifier=None):  # pylint: disable=unused-argument
     backup = client.backup_storage_account(vault_base_url, storage_account_name).value
     with open(file_path, 'wb') as output:
         output.write(backup)

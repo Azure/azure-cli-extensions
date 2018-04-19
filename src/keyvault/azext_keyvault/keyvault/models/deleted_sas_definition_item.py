@@ -1,9 +1,12 @@
-# pylint: skip-file
-# ---------------------------------------------------------------------------
-# The code for this extension file is pulled from the azure-sdk-for-python repo. Changes may 
-# cause incorrect behavior and will be lost if the code is regenerated.
-# Please see the readme.md at the base of the keyvault extension for details.
-# ---------------------------------------------------------------------------
+# pylint: disable-all
+
+# ---------------------------------------------------------------------------------
+# The code for this extension file is pulled from the azure-sdk-for-python repo
+# and modified to run inside a cli extension.  Changes may cause incorrect behavior
+# and will be lost if the code is regenerated. Please see the readme.md at the base
+# of the keyvault extension for details.
+# ---------------------------------------------------------------------------------
+
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.

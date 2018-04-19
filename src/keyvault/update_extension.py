@@ -10,12 +10,15 @@ _replacements = {
     'azure.mgmt.keyvault': 'azext_keyvault.mgmt.keyvault',
     'azure.cli.command_modules.keyvault': 'azext_keyvault'
 }
-_code_file_header="""# pylint: skip-file
-# ---------------------------------------------------------------------------
-# The code for this extension file is pulled from the {} repo. Changes may 
-# cause incorrect behavior and will be lost if the code is regenerated.
-# Please see the readme.md at the base of the keyvault extension for details.
-# ---------------------------------------------------------------------------
+_code_file_header="""# pylint: disable-all
+
+# ---------------------------------------------------------------------------------
+# The code for this extension file is pulled from the {} repo
+# and modified to run inside a cli extension.  Changes may cause incorrect behavior
+# and will be lost if the code is regenerated. Please see the readme.md at the base
+# of the keyvault extension for details.
+# ---------------------------------------------------------------------------------
+
 """
 
 def file_in_repo(path, file):
@@ -66,7 +69,7 @@ def copy_files(src, dst, repo_name, replacements=None):
                 print(dst_file)
                 if not os.path.exists(os.path.dirname(dst_file)):
                     os.makedirs(os.path.dirname(dst_file))
-                copy_file(src_file, dst_file, repo_nameg, replacements)
+                copy_file(src_file, dst_file, repo_name, replacements)
 
 
 def copy_repo_files(src, dst, repo_name, replacements=None):

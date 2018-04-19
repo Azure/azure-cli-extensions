@@ -1,9 +1,12 @@
-# pylint: skip-file
-# ---------------------------------------------------------------------------
-# The code for this extension file is pulled from the azure-cli repo. Changes may 
-# cause incorrect behavior and will be lost if the code is regenerated.
-# Please see the readme.md at the base of the keyvault extension for details.
-# ---------------------------------------------------------------------------
+# pylint: disable-all
+
+# ---------------------------------------------------------------------------------
+# The code for this extension file is pulled from the azure-cli repo
+# and modified to run inside a cli extension.  Changes may cause incorrect behavior
+# and will be lost if the code is regenerated. Please see the readme.md at the base
+# of the keyvault extension for details.
+# ---------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -196,6 +199,10 @@ class KeyVaultKeyScenarioTest(ScenarioTest):
         self.cmd('keyvault key show --vault-name {kv} -n {key} -v {version1}',
                  checks=self.check('key.kid', '{kid1}'))
 
+        # show key (by id)
+        self.cmd('keyvault key show --id {kid1}',
+                 checks=self.check('key.kid', '{kid1}'))
+
         # set key attributes
         self.cmd('keyvault key set-attributes --vault-name {kv} -n {key} --enabled true', checks=[
             self.check('key.kid', '{kid2}'),
@@ -291,6 +298,10 @@ class KeyVaultSecretScenarioTest(ScenarioTest):
 
         # show secret (specific version)
         self.cmd('keyvault secret show --vault-name {kv} -n {sec} -v {ver1}',
+                 checks=self.check('id', '{sid1}'))
+
+        # show secret (by id)
+        self.cmd('keyvault secret show --id {sid1}',
                  checks=self.check('id', '{sid1}'))
 
         # set secret attributes
@@ -566,6 +577,11 @@ class KeyVaultCertificateScenarioTest(ScenarioTest):
         cert_version = versions[0].rsplit('/', 1)[1]
         self.kwargs['ver1'] = cert_version
         self.cmd('keyvault certificate show --vault-name {kv} -n cert1 -v {ver1}',
+                 checks=self.check('id', versions[0]))
+
+        # show certificate (by id)
+        self.kwargs.update({'cert_id': versions[0]})
+        self.cmd('keyvault certificate show --id {cert_id}',
                  checks=self.check('id', versions[0]))
 
         # update certificate attributes

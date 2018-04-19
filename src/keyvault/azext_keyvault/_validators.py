@@ -1,9 +1,12 @@
-# pylint: skip-file
-# ---------------------------------------------------------------------------
-# The code for this extension file is pulled from the azure-cli repo. Changes may 
-# cause incorrect behavior and will be lost if the code is regenerated.
-# Please see the readme.md at the base of the keyvault extension for details.
-# ---------------------------------------------------------------------------
+# pylint: disable-all
+
+# ---------------------------------------------------------------------------------
+# The code for this extension file is pulled from the azure-cli repo
+# and modified to run inside a cli extension.  Changes may cause incorrect behavior
+# and will be lost if the code is regenerated. Please see the readme.md at the base
+# of the keyvault extension for details.
+# ---------------------------------------------------------------------------------
+
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -243,3 +246,22 @@ def validate_subnet(cmd, namespace):
             child_name_1=subnet)
     else:
         raise CLIError('incorrect usage: [--subnet ID | --subnet NAME --vnet-name NAME]')
+
+
+def validate_vault_id(entity_type):
+
+    def _validate(ns):
+        from azext_keyvault.keyvault.custom.key_vault_id import KeyVaultIdentifier
+        name = getattr(ns, entity_type + '_name', None)
+        vault = getattr(ns, 'vault_base_url', None)
+        identifier = getattr(ns, 'identifier', None)
+
+        if identifier:
+            ident = KeyVaultIdentifier(uri=identifier, collection=entity_type + 's')
+            setattr(ns, entity_type + '_name', ident.name)
+            setattr(ns, 'vault_base_url', ident.vault)
+            setattr(ns, entity_type + '_version', ident.version)
+        elif not (name and vault):
+            raise CLIError('incorrect usage: --id ID | --vault-name VAULT --name NAME [--version VERSION]')
+
+    return _validate
