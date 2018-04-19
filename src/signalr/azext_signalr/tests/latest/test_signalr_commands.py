@@ -78,5 +78,3 @@ class AzureSignalRServiceScenarioTest(ScenarioTest):
             self.exists('primaryKey'),
             self.exists('secondaryKey')
         ])
-
-
