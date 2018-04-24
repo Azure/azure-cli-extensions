@@ -50,7 +50,7 @@ helps['signalr show'] = """
     type: command
     short-summary: Get the details of a SignalR Service.
     examples:
-        - name: Get the sku for a SignalR Service..
+        - name: Get the sku for a SignalR Service.
           text: >
             az signalr show -n MySignalR -g MyResourceGroup --query sku
 """
@@ -59,11 +59,8 @@ helps['signalr key list'] = """
     type: command
     short-summary: List the access keys for a SignalR Service.
     examples:
-        - name: List the access keys for a SignalR Service..
-          text: >
-            az signalr key list -n MySignalR -g MyResourceGroup
         - name: Get the primary key for a SignalR Service.
-          test: >
+          text: >
             az signalr key list -n MySignalR -g MyResourceGroup --query primaryKey -o tsv
 """
 

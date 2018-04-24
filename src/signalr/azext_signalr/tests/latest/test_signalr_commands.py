@@ -32,13 +32,12 @@ class AzureSignalRServiceScenarioTest(ScenarioTest):
                      self.check('name', '{signalr_name}'),
                      self.check('location', '{location}'),
                      self.check('provisioningState', 'Succeeded'),
-                     self.check('signalrsku.name', '{sku}'),
-                     self.check('signalrsku.capacity', '{unit_count}'),
+                     self.check('sku.name', '{sku}'),
+                     self.check('sku.capacity', '{unit_count}'),
                      self.check('tags.{}'.format(tags_key), tags_val),
                      self.exists('hostName'),
                      self.exists('publicPort'),
                      self.exists('serverPort'),
-
                  ])
 
         # Test show
@@ -46,8 +45,8 @@ class AzureSignalRServiceScenarioTest(ScenarioTest):
             self.check('name', '{signalr_name}'),
             self.check('location', '{location}'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('signalrsku.name', '{sku}'),
-            self.check('signalrsku.capacity', '{unit_count}'),
+            self.check('sku.name', '{sku}'),
+            self.check('sku.capacity', '{unit_count}'),
             self.exists('hostName'),
             self.exists('publicPort'),
             self.exists('serverPort'),
@@ -59,8 +58,8 @@ class AzureSignalRServiceScenarioTest(ScenarioTest):
             self.check('[0].name', '{signalr_name}'),
             self.check('[0].location', '{location}'),
             self.check('[0].provisioningState', 'Succeeded'),
-            self.check('[0].signalrsku.name', '{sku}'),
-            self.check('[0].signalrsku.capacity', '{unit_count}'),
+            self.check('[0].sku.name', '{sku}'),
+            self.check('[0].sku.capacity', '{unit_count}'),
             self.exists('[0].hostName'),
             self.exists('[0].publicPort'),
             self.exists('[0].serverPort'),

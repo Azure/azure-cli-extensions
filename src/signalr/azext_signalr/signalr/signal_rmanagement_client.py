@@ -9,11 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.service_client import ServiceClient
+from msrest.service_client import SDKClient
 from msrest import Serializer, Deserializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
-from .operations.signalr_operations import SignalrOperations
+from .operations.operations import Operations
+from .operations.signal_roperations import SignalROperations
 from . import models
 
 
@@ -51,14 +52,16 @@ class SignalRManagementClientConfiguration(AzureConfiguration):
         self.subscription_id = subscription_id
 
 
-class SignalRManagementClient(object):
+class SignalRManagementClient(SDKClient):
     """REST API for Azure SignalR Service
 
     :ivar config: Configuration for client.
     :vartype config: SignalRManagementClientConfiguration
 
-    :ivar signalr: Signalr operations
-    :vartype signalr: azure.mgmt.signalr.operations.SignalrOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.signalr.operations.Operations
+    :ivar signal_r: SignalR operations
+    :vartype signal_r: azure.mgmt.signalr.operations.SignalROperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -74,12 +77,14 @@ class SignalRManagementClient(object):
             self, credentials, subscription_id, base_url=None):
 
         self.config = SignalRManagementClientConfiguration(credentials, subscription_id, base_url)
-        self._client = ServiceClient(self.config.credentials, self.config)
+        super(SignalRManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self.api_version = '2018-03-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.signalr = SignalrOperations(
+        self.operations = Operations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.signal_r = SignalROperations(
             self._client, self.config, self._serialize, self._deserialize)

@@ -18,7 +18,8 @@ from azure.cli.core.commands.parameters import (
 
 from ._constants import (
     SIGNALR_SKU,
-    SIGNALR_RESOURCE_TYPE
+    SIGNALR_RESOURCE_TYPE,
+    SIGNALR_KEY_TYPE
 )
 
 
@@ -41,4 +42,4 @@ def load_arguments(self, _):
         c.argument('unit_count', help='The number of signalr service unit count', type=int)
 
     with self.argument_context('signalr key renew') as c:
-        c.argument('key_type', help='The name of access key to regenerate', choices=['primary', 'secondary'])
+        c.argument('key_type', help='The name of access key to regenerate', choices=SIGNALR_KEY_TYPE)

@@ -6,3 +6,4 @@
 
 SIGNALR_SKU = ['Basic_DS2']
 SIGNALR_RESOURCE_TYPE = 'Microsoft.SignalRService/SignalR'
+SIGNALR_KEY_TYPE = ['primary', 'secondary']

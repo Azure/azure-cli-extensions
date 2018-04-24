@@ -11,4 +11,4 @@ def _signalr_client_factory(cli_ctx, *_):
 
 
 def cf_signalr(cli_ctx, *_):
-    return _signalr_client_factory(cli_ctx).signalr
+    return _signalr_client_factory(cli_ctx).signal_r
