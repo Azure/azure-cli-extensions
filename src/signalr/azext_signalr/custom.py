@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 
-from azure.cli.core.util import sdk_no_wait
 from azext_signalr.signalr.models import (ResourceSku, SignalRCreateOrUpdateProperties, SignalRCreateParameters)
 
 
@@ -21,8 +20,7 @@ def signalr_create(client, signalr_name, resource_group_name, sku, unit_count=1,
 
 
 def signalr_delete(client, signalr_name, resource_group_name):
-    # return sdk_no_wait(True, client.delete, resource_group_name, signalr_name)
-    return client.delete(resource_group_name, signalr_name, polling=False)
+    return client.delete(resource_group_name, signalr_name)
 
 
 def signalr_list(client, resource_group_name=None):
