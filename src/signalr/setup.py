@@ -33,6 +33,6 @@ setup(
     author_email='vscsignalr@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_webapp': ['azext_metadata.json']},
+    package_data={'azext_signalr': ['azext_metadata.json']},
     packages=find_packages(exclude=['tests'])
 )
