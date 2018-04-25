@@ -39,7 +39,7 @@ def create_alias(alias_name, alias_command):
     _commit_change(alias_table)
 
 
-def export_aliases(export_path=os.path.abspath(ALIAS_FILE_NAME), exclusions=None):
+def export_aliases(export_path=None, exclusions=None):
     """
     Export all registered aliases to a given path, as an INI configuration file.
 
@@ -47,6 +47,9 @@ def export_aliases(export_path=os.path.abspath(ALIAS_FILE_NAME), exclusions=None
         export_path: The path of the alias configuration file to export to.
         exclusions: Space-separated aliases excluded from export.
     """
+    if not export_path:
+        export_path = os.path.abspath(ALIAS_FILE_NAME)
+
     alias_table = get_alias_table()
     for exclusion in exclusions or []:
         if exclusion not in alias_table.sections():
