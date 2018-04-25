@@ -43,7 +43,7 @@ helps['alias create'] = """
 
 helps['alias export'] = """
     type: command
-    short-summary: Export all registered aliases to a given path, as an INI configuration file. If no export path is specified, the alias configuration file is export to the current working directory.
+    short-summary: Export all registered aliases to a given path, as an INI configuration file. If no export path is specified, the alias configuration file is exported to the current working directory.
 """
 
 
