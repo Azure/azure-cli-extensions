@@ -182,6 +182,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     logger.warning("All done.")
     return create_json
 
+
 def list_webapp_snapshots(cmd, resource_group, name, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     if slot is None:
@@ -189,9 +190,10 @@ def list_webapp_snapshots(cmd, resource_group, name, slot=None):
     else:
         return client.web_apps.list_snapshots_slot(resource_group, name, slot)
 
+
 def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_config=False, source_resource_group=None, source_name=None, source_slot=None):
     client = web_client_factory(cmd.cli_ctx)
-    
+
     if all([source_resource_group, source_name]):
         sub_id = get_subscription_id(cmd.cli_ctx)
         target_id = "/subscriptions/" + sub_id + "/resourceGroups/" + resource_group + "/providers/Microsoft.Web/sites/" + name

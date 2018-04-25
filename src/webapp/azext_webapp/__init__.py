@@ -47,4 +47,5 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('source_name', options_list=['--source-webapp-name'], help='Name of the webapp to retrieve snapshot from.')
             c.argument('source_slot', options_list=['--source-slot'], help='Name of the webapp slot to retrieve snapshot from.')
 
+
 COMMAND_LOADER_CLS = WebappExtCommandLoader

@@ -24,7 +24,7 @@ helps['webapp config snapshot list'] = """
     examples:
         - name: List the snapshots available for a web app named MyApp.
           text: >
-            az webapp config snapshot list -g Default-Web-WestUS -n MyApp 
+            az webapp config snapshot list -g Default-Web-WestUS -n MyApp
 """
 
 helps['webapp config snapshot restore'] = """
