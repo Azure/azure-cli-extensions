@@ -275,7 +275,7 @@ class EventGridTests(ScenarioTest):
         event_subscription_name2 = 'eventsubscription2'
         storagequeue_endpoint_id = '/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourcegroups/kalstest/providers/Microsoft.Storage/storageAccounts/kalsdemo/queueservices/default/queues/kalsdemoqueue'
         deadletter_endpoint_id = '/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourcegroups/kalstest/providers/Microsoft.Storage/storageAccounts/kalsdemo/blobServices/default/containers/dlq'
-        hybridconnection_endpoint_id = '/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourcegroups/kalstest/providers/Microsoft.Relay/namespaces/kalsdemo'
+        hybridconnection_endpoint_id = '/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourcegroups/kalstest/providers/Microsoft.Relay/namespaces/kalsdemo/hybridConnections/kalstest'
 
         self.kwargs.update({
             'event_subscription_name1': event_subscription_name1,
