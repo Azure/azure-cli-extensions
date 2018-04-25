@@ -46,17 +46,17 @@ def load_arguments(self, _):
 
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
-        c.argument('input_mapping_fields', arg_type=tags_type, help="This must be specified only when input_schema is customeventschema. This is used for specifying input mappings based on field names. Space separated values in 'key=value' format. Allowed key names are 'id', 'topic', 'eventtime', 'subject', 'eventtype', 'dataversion'.")
-        c.argument('input_mapping_default_values', arg_type=tags_type, help="This must be specified only when input_schema is customeventschema. This is used for specifying input mappings based on field names. Space separated tags in 'key=value' format. Allowed key names are 'subject', 'eventtype', 'dataversion'.")
+        c.argument('input_mapping_fields', arg_type=tags_type, help="When input-schema is specified as customeventschema, this parameter is used to specify input mappings based on field names. Specify space separated mappings in 'key=value' format. Allowed key names are 'id', 'topic', 'eventtime', 'subject', 'eventtype', 'dataversion'. The corresponding value names should specify the names of the fields in the custom input schema.")
+        c.argument('input_mapping_default_values', arg_type=tags_type, help="When input-schema is specified as customeventschema, this parameter is used to specify input mappings based on default values. Specify space separated mappings in 'key=value' format. Allowed key names are 'subject', 'eventtype', 'dataversion'. The corresponding value names should specify the default values to be used for the mapping.")
         c.argument('input_schema', arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventv01schema'], default='eventgridschema'), help='Schema in which incoming events will be published for this topic. If customeventschema is specified, either input_mapping_default_values or input_mapping_fields must be specified as well.')
 
     with self.argument_context('eventgrid event-subscription') as c:
         c.argument('topic_name', help='Name of the Event Grid topic', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
-        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'inputeventschema', 'cloudeventv01schema'], default='eventgridschema'), help='Schema in which events should be delivered for this event subscription.')
+        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'inputeventschema', 'cloudeventv01schema'], default='eventgridschema'), help='Schema in which events should be delivered for this event subscription. If inputeventschema is specified, events will be delivered in the same schema as the published event schema. If cloudeventv01schema is specified, events will be delivered in the Cloud Events V0.1 schema.')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
         c.argument('event_ttl', help="Event time to live (in minutes). Must be a number between 1 and 1440.")
-        c.argument('deadletter_endpoint', help="Endpoint where EventGrid should deliver events that cannot be delivered for this event subscription.")
+        c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
 
     with self.argument_context('eventgrid event-subscription create') as c:
         c.argument('topic_name', help='Name of the Event Grid topic to which the event subscription needs to be created.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))

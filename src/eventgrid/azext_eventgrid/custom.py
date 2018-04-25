@@ -41,6 +41,13 @@ CLOUDEVENTV01_SCHEMA = "CloudEventV01Schema"
 CUSTOM_EVENT_SCHEMA = "CustomEventSchema"
 INPUT_EVENT_SCHEMA = "InputEventSchema"
 
+# Constants for the target field names of the mapping
+TOPIC = "topic"
+SUBJECT = "subject"
+ID = "id"
+EVENTTIME = "eventtime"
+EVENTTYPE = "eventtype"
+DATAVERSION = "dataversion"
 
 def cli_topic_list(
         client,
@@ -363,45 +370,51 @@ def event_subscription_getter(
 
 
 def get_input_schema_mapping(
-       input_mapping_fields=None,
-       input_mapping_default_values=None):
-   input_schema_mapping = None
+        input_mapping_fields=None,
+        input_mapping_default_values=None):
+    input_schema_mapping = None
 
-   if input_mapping_fields is not None or input_mapping_default_values is not None:
-       input_schema_mapping = JsonInputSchemaMapping()
+    if input_mapping_fields is not None or input_mapping_default_values is not None:
+        input_schema_mapping = JsonInputSchemaMapping()
 
-       input_schema_mapping.id = JsonField()
-       input_schema_mapping.topic = JsonField()
-       input_schema_mapping.event_time = JsonField()
-       input_schema_mapping.subject = JsonFieldWithDefault()
-       input_schema_mapping.event_type = JsonFieldWithDefault()
-       input_schema_mapping.data_version = JsonFieldWithDefault()
+        input_schema_mapping.id = JsonField()
+        input_schema_mapping.topic = JsonField()
+        input_schema_mapping.event_time = JsonField()
+        input_schema_mapping.subject = JsonFieldWithDefault()
+        input_schema_mapping.event_type = JsonFieldWithDefault()
+        input_schema_mapping.data_version = JsonFieldWithDefault()
 
-       for key_value_pair in input_mapping_fields:
-           split_key_value_pairs = key_value_pair.split("=")
-           if split_key_value_pairs[0].lower() == "id":
-               input_schema_mapping.id.source_field = split_key_value_pairs[1]
-           elif split_key_value_pairs[0].lower() == "eventtime":
-               input_schema_mapping.event_time.source_field = split_key_value_pairs[1]
-           elif split_key_value_pairs[0].lower() == "topic":
-               input_schema_mapping.topic.source_field = split_key_value_pairs[1]
-           elif split_key_value_pairs[0].lower() == "subject":
-               input_schema_mapping.subject.source_field = split_key_value_pairs[1]
-           elif split_key_value_pairs[0].lower() == "dataversion":
-               input_schema_mapping.data_version.source_field = split_key_value_pairs[1]
-           elif split_key_value_pairs[0].lower() == "eventtype":
-               input_schema_mapping.event_type.source_field = split_key_value_pairs[1]
+        for field_mapping_pair in input_mapping_fields:
+            field_mapping = field_mapping_pair.split("=")
+            target = field_mapping[0]
+            source = field_mapping[1]
 
-       for key_value_pair2 in input_mapping_default_values:
-           split_key_value_pairs2 = key_value_pair2.split("=")
-           if split_key_value_pairs2[0].lower() == "subject":
-               input_schema_mapping.subject.default_value = split_key_value_pairs2[1]
-           elif split_key_value_pairs2[0].lower() == "dataversion":
-               input_schema_mapping.data_version.default_value = split_key_value_pairs2[1]
-           elif split_key_value_pairs2[0].lower() == "eventtype":
-               input_schema_mapping.event_type.default_value = split_key_value_pairs2[1]
+            if target.lower() == ID.lower():
+                input_schema_mapping.id.source_field = source
+            elif target.lower() == EVENTTIME.lower():
+                input_schema_mapping.event_time.source_field = source
+            elif target.lower() == TOPIC.lower():
+                input_schema_mapping.topic.source_field = source
+            elif target.lower() == SUBJECT.lower():
+                input_schema_mapping.subject.source_field = source
+            elif target.lower() == DATAVERSION.lower():
+                input_schema_mapping.data_version.source_field = source
+            elif target.lower() == EVENTTYPE.lower():
+                input_schema_mapping.event_type.source_field = source
 
-   return input_schema_mapping
+        for default_value_mapping_pair in input_mapping_default_values:
+            default_value_mapping = default_value_mapping_pair.split("=")
+            target = default_value_mapping[0]
+            source = default_value_mapping[1]
+
+            if target.lower() == SUBJECT.lower():
+                input_schema_mapping.subject.default_value = source
+            elif target.lower() == DATAVERSION.lower():
+                input_schema_mapping.data_version.default_value = source
+            elif target.lower() == EVENTTYPE.lower():
+                input_schema_mapping.event_type.default_value = source
+
+    return input_schema_mapping
 
 
 def update_event_subscription(
