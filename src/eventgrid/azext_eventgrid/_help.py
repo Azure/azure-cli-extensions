@@ -21,6 +21,10 @@ helps['eventgrid topic create'] = """
     examples:
         - name: Create a new topic.
           text: az eventgrid topic create -g rg1 --name topic1 -l westus2
+        - name: Create a new topic with custom input mappings.
+          text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
+        - name: Create a new topic that accepts CloudEvents V0.1.
+          text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventv01
     """
 helps['eventgrid topic update'] = """
     type: command
@@ -104,6 +108,13 @@ helps['eventgrid event-subscription create'] = """
           text: |
             az eventgrid event-subscription create --name es2 --endpoint-type eventhub \\
                 --endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.EventHub/namespaces/ContosoNamespace/eventhubs/EH1
+        - name: Create a new event subscription for a subscription, using default filters, and an Azure Storage queue as a destination.
+          text: |
+            az eventgrid event-subscription create --name es2 --endpoint-type storagequeue \\
+                --endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/queueservices/default/queues/queue1
+        - name: Create a new event subscription for a subscription, using default filters, and CloudEventV01 as the delivery schema.
+          text: |
+            az eventgrid event-subscription create --name es2 --endpoint https://contoso.azurewebsites.net/api/f1?code=code --event-delivery-schema cloudeventv01schema
     """
 helps['eventgrid event-subscription update'] = """
     type: command

@@ -36,9 +36,10 @@ WEBHOOK_DESTINATION = "webhook"
 EVENTHUB_DESTINATION = "eventhub"
 STORAGEQUEUE_DESTINATION = "storagequeue"
 HYBRIDCONNECTION_DESTINATION = "hybridconnection"
-EVENTGRID_SCHEMA = "eventgridschema"
-CUSTOM_SCHEMA = "customeventschema"
-CLOUDEVENTV01_SCHEMA = "cloudeventv01schema"
+EVENTGRID_SCHEMA = "EventGridSchema"
+CLOUDEVENTV01_SCHEMA = "CloudEventV01Schema"
+CUSTOM_EVENT_SCHEMA = "CustomEventSchema"
+INPUT_EVENT_SCHEMA = "InputEventSchema"
 
 
 def cli_topic_list(
@@ -59,15 +60,25 @@ def cli_topic_create_or_update(
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
         input_mapping_default_values=None):
-    if input_schema is EVENTGRID_SCHEMA or input_schema is CLOUDEVENTV01_SCHEMA:
+    if input_schema.lower() == EVENTGRID_SCHEMA.lower():
+        input_schema = EVENTGRID_SCHEMA
+    elif input_schema.lower() == CUSTOM_EVENT_SCHEMA.lower():
+        input_schema = CUSTOM_EVENT_SCHEMA
+    elif input_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
+        input_schema = CLOUDEVENTV01_SCHEMA
+    else:
+        raise CLIError('The provided input_schema is not a valid value. The supported values are: ' +
+            EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
+
+    if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
         # Ensure that custom input mappings are not specified
         if input_mapping_fields is not None or input_mapping_default_values is not None:
-            raise CLIError('input_mapping_default_values and input_mapping_fields are applicable only when input_schema is set to customeventschema.')
+            raise CLIError('input-mapping-default-values and input-mapping-fields should be specified only when input-schema is set to customeventschema.')
 
-    if input_schema is CUSTOM_SCHEMA:
+    if input_schema == CUSTOM_EVENT_SCHEMA:
         # Ensure that custom input mappings are specified
-        if input_mapping_fields is not None and input_mapping_default_values is not None:
-            raise CLIError('Either input_mapping_default_values or input_mapping_fields must be specified when input_schema is set to customeventschema.')
+        if input_mapping_fields is None and input_mapping_default_values is None:
+            raise CLIError('Either input-mapping-default-values or input-mapping-fields must be specified when input-schema is set to customeventschema.')
 
     input_schema_mapping = get_input_schema_mapping(
         input_mapping_fields,
@@ -101,7 +112,26 @@ def cli_eventgrid_event_subscription_create(
         event_delivery_schema=EVENTGRID_SCHEMA,
         deadletter_endpoint=None,
         labels=None):
+    max_delivery_attempts = int(max_delivery_attempts)
+    if max_delivery_attempts < 1 or max_delivery_attempts > 30:
+        raise CLIError('Max delivery attempts should be a number between 1 and 30.')
+
+    event_ttl = int(event_ttl)
+    if event_ttl < 1 or event_ttl > 1440:
+        raise CLIError('Event TTL should be a number between 1 and 1440.')
+
+    if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
+        event_delivery_schema = EVENTGRID_SCHEMA
+    elif event_delivery_schema.lower() == INPUT_EVENT_SCHEMA.lower():
+        event_delivery_schema = INPUT_EVENT_SCHEMA
+    elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
+        event_delivery_schema = CLOUDEVENTV01_SCHEMA
+    else:
+        raise CLIError('The provided event delivery schema is not a valid value. The supported values are' +
+            EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
+
     scope = _get_scope_for_event_subscription(cmd.cli_ctx, resource_id, topic_name, resource_group_name)
+    deadletter_destination = None
 
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
         destination = WebHookEventSubscriptionDestination(endpoint)
@@ -129,9 +159,9 @@ def cli_eventgrid_event_subscription_create(
 
     retry_policy = RetryPolicy(max_delivery_attempts, event_ttl)
 
-    if deadlettter_endpoint is not None:
+    if deadletter_endpoint is not None:
         storage_blob_items = re.split(
-            "/blobServices/default/containers/", endpoint, flags=re.IGNORECASE)
+            "/blobServices/default/containers/", deadletter_endpoint, flags=re.IGNORECASE)
 
         if len(storage_blob_items) != 2 or storage_blob_items[0] is None or storage_blob_items[1] is None:
             raise CLIError("Argument Error: Expected format of deadletter destination is: /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName")
@@ -142,7 +172,7 @@ def cli_eventgrid_event_subscription_create(
     event_subscription_info = EventSubscription(
         destination, event_subscription_filter, labels, event_delivery_schema, retry_policy, deadletter_destination)
 
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and "azure" not in endpoint and "hookbin" not in endpoint:
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and "azure" not in endpoint.lower() and "hookbin" not in endpoint.lower():
         print("If the endpoint doesn't support subscription validation response, please visit the validation URL manually to complete the validation handshake.")
 
     async_event_subscription_create = client.create_or_update(

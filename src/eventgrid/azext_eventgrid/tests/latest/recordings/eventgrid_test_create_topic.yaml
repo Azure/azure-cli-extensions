@@ -1,0 +1,704 @@
+interactions:
+- request:
+    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
+      "date": "2018-04-19T22:46:26Z"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group create]
+      Connection: [keep-alive]
+      Content-Length: ['110']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2018-04-19T22:46:26Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['384']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:27 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1081']
+    status: {code: 201, message: Created}
+- request:
+    body: '{"location": "eastus2euap"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic create]
+      Connection: [keep-alive]
+      Content-Length: ['27']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"provisioningState":"Creating","endpoint":null},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'}
+    headers:
+      azure-asyncoperation: ['https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/DB27681F-6900-4AB3-A4DB-92AEFBEF98F7?api-version=2018-01-01']
+      cache-control: [no-cache]
+      content-length: ['414']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:28 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1144']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic create]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/DB27681F-6900-4AB3-A4DB-92AEFBEF98F7?api-version=2018-01-01
+  response:
+    body: {string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/DB27681F-6900-4AB3-A4DB-92AEFBEF98F7?api-version=2018-01-01","name":"db27681f-6900-4ab3-a4db-92aefbef98f7","status":"Succeeded"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['284']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:39 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic create]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.eastus2euap-1.eventgrid.azure.net/api/events"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['506']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:40 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.eastus2euap-1.eventgrid.azure.net/api/events"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['506']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:41 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.eastus2euap-1.eventgrid.azure.net/api/events"},"location":"eastus2euap","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['506']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:42 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"tags": {"Dept": "IT"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic update]
+      Connection: [keep-alive]
+      Content-Length: ['24']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"provisioningState":"Updating","endpoint":"https://cli000002.eastus2euap-1.eventgrid.azure.net/api/events"},"location":"eastus2euap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'}
+    headers:
+      azure-asyncoperation: ['https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/3363BBEB-A687-4574-9474-EAFCFF97B7D3?api-version=2018-01-01']
+      cache-control: [no-cache]
+      content-length: ['514']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:43 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1176']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic update]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/3363BBEB-A687-4574-9474-EAFCFF97B7D3?api-version=2018-01-01
+  response:
+    body: {string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/3363BBEB-A687-4574-9474-EAFCFF97B7D3?api-version=2018-01-01","name":"3363bbeb-a687-4574-9474-eafcff97b7d3","status":"Succeeded"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['284']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:54 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic update]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.eastus2euap-1.eventgrid.azure.net/api/events"},"location":"eastus2euap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['515']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:55 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic list]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics?api-version=2018-01-01
+  response:
+    body: {string: '{"value":[{"properties":{"provisioningState":"Succeeded","endpoint":"https://cli000002.eastus2euap-1.eventgrid.azure.net/api/events"},"location":"eastus2euap","tags":{"Dept":"IT"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002","name":"cli000002","type":"Microsoft.EventGrid/topics"}]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['527']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:56 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic key list]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/listKeys?api-version=2018-01-01
+  response:
+    body: {string: '{"key1":"t1EZk5Chk1+3/ZoJ5xgvFgRFrswomaFES3L13sQelAo=","key2":"NlbcvQdn2yaPMxlkFKxz0bTCQRHZ7Ec3FjEk4rrhpXA="}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['109']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:57 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1163']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"keyName": "key1"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic key regenerate]
+      Connection: [keep-alive]
+      Content-Length: ['19']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/regenerateKey?api-version=2018-01-01
+  response:
+    body: {string: '{"key1":"P8+DXIs8/FHVVvBKl0lpIBMXaA48g6g2EkFRxjqu+zo=","key2":"NlbcvQdn2yaPMxlkFKxz0bTCQRHZ7Ec3FjEk4rrhpXA="}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['109']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:58 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1173']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"keyName": "key2"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid topic key regenerate]
+      Connection: [keep-alive]
+      Content-Length: ['19']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/regenerateKey?api-version=2018-01-01
+  response:
+    body: {string: '{"key1":"P8+DXIs8/FHVVvBKl0lpIBMXaA48g6g2EkFRxjqu+zo=","key2":"js8JtMptcmkAPZIz/lOO0xxDjFOuU89qVOpOV2byHyc="}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['109']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:46:58 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1158']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"destination": {"endpointType": "WebHook", "properties":
+      {"endpointUrl": "https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=69AbujfvYn77Ccf5OySDcTk9CYM1b9Ua2lO37ayoWb97fGRWELGbnA=="}},
+      "filter": {"isSubjectCaseSensitive": false}}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription create]
+      Connection: [keep-alive]
+      Content-Length: ['260']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Creating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      azure-asyncoperation: ['https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/B725263F-1D92-4E88-B3E7-F9B31EF7FB31?api-version=2018-01-01']
+      cache-control: [no-cache]
+      content-length: ['874']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:00 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1175']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription create]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/B725263F-1D92-4E88-B3E7-F9B31EF7FB31?api-version=2018-01-01
+  response:
+    body: {string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/B725263F-1D92-4E88-B3E7-F9B31EF7FB31?api-version=2018-01-01","name":"b725263f-1d92-4e88-b3e7-f9b31ef7fb31","status":"Succeeded"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['284']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:10 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription create]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['947']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:11 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['947']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:12 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['947']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:13 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription show]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003/getFullUrl?api-version=2018-01-01
+  response:
+    body: {string: '{"endpointUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=69AbujfvYn77Ccf5OySDcTk9CYM1b9Ua2lO37ayoWb97fGRWELGbnA=="}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['138']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:14 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1118']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['947']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:14 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"destination": {"endpointType": "WebHook", "properties": {"endpointUrl":
+      "https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=69AbujfvYn77Ccf5OySDcTk9CYM1b9Ua2lO37ayoWb97fGRWELGbnA=="}},
+      "filter": {"subjectBeginsWith": "", "subjectEndsWith": "", "includedEventTypes":
+      ["All"]}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription update]
+      Connection: [keep-alive]
+      Content-Length: ['290']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Updating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      azure-asyncoperation: ['https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/D2BB5053-5AEF-4C9C-9F82-552AC1846DA2?api-version=2018-01-01']
+      cache-control: [no-cache]
+      content-length: ['946']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:15 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1091']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription update]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/D2BB5053-5AEF-4C9C-9F82-552AC1846DA2?api-version=2018-01-01
+  response:
+    body: {string: '{"id":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.EventGrid/locations/eastus2euap/operationsStatus/D2BB5053-5AEF-4C9C-9F82-552AC1846DA2?api-version=2018-01-01","name":"d2bb5053-5aef-4c9c-9f82-552ac1846da2","status":"Succeeded"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['284']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:25 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription update]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003?api-version=2018-01-01
+  response:
+    body: {string: '{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Succeeded","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['947']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:27 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [eventgrid event-subscription list]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 azure-mgmt-eventgrid/0.4.0 Azure-SDK-For-Python AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions?api-version=2018-01-01
+  response:
+    body: {string: '{"value":[{"properties":{"topic":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.eventgrid/topics/cli000002","provisioningState":"Updating","destination":{"properties":{"endpointUrl":null,"endpointBaseUrl":"https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1"},"endpointType":"WebHook"},"filter":{"subjectBeginsWith":"","subjectEndsWith":"","includedEventTypes":["All"]},"labels":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.EventGrid/topics/cli000002/providers/Microsoft.EventGrid/eventSubscriptions/cli000003","name":"cli000003","type":"Microsoft.EventGrid/eventSubscriptions"}]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['958']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 19 Apr 2018 22:47:27 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.1 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.28
+          msrest_azure/0.4.27 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.31]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Thu, 19 Apr 2018 22:47:28 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkczN1FMSzRLRDQySFBRWktXN0pYSlg0UTdGVkpJTVE0UkZBQXwyREVDMUVDNjlCNTMzNzNFLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1162']
+    status: {code: 202, message: Accepted}
+version: 1
