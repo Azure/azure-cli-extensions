@@ -37,5 +37,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
+    package_data={'azext_eventgrid': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
