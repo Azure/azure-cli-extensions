@@ -74,18 +74,20 @@ def cli_topic_create_or_update(
     elif input_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
         input_schema = CLOUDEVENTV01_SCHEMA
     else:
-        raise CLIError('The provided input_schema is not a valid value. The supported values are: ' +
-            EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
+        raise CLIError('The provided input_schema is not valid. The supported values are: ' +
+                       EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
 
     if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
         # Ensure that custom input mappings are not specified
         if input_mapping_fields is not None or input_mapping_default_values is not None:
-            raise CLIError('input-mapping-default-values and input-mapping-fields should be specified only when input-schema is set to customeventschema.')
+            raise CLIError('input-mapping-default-values and input-mapping-fields should be '+
+                           'specified only when input-schema is set to customeventschema.')
 
     if input_schema == CUSTOM_EVENT_SCHEMA:
         # Ensure that custom input mappings are specified
         if input_mapping_fields is None and input_mapping_default_values is None:
-            raise CLIError('Either input-mapping-default-values or input-mapping-fields must be specified when input-schema is set to customeventschema.')
+            raise CLIError('Either input-mapping-default-values or input-mapping-fields must be '+
+                           'specified when input-schema is set to customeventschema.')
 
     input_schema_mapping = get_input_schema_mapping(
         input_mapping_fields,
@@ -101,7 +103,7 @@ def cli_topic_create_or_update(
     return created_topic
 
 
-def cli_eventgrid_event_subscription_create(
+def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
         cmd,
         client,
         event_subscription_name,
@@ -134,10 +136,15 @@ def cli_eventgrid_event_subscription_create(
     elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
         event_delivery_schema = CLOUDEVENTV01_SCHEMA
     else:
-        raise CLIError('The provided event delivery schema is not a valid value. The supported values are' +
-            EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
+        raise CLIError('The provided event delivery schema is not valid. The supported '
+                       ' values are:' + EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA +
+                       ',' + CLOUDEVENTV01_SCHEMA)
 
-    scope = _get_scope_for_event_subscription(cmd.cli_ctx, resource_id, topic_name, resource_group_name)
+    scope = _get_scope_for_event_subscription(
+        cmd.cli_ctx,
+        resource_id,
+        topic_name,
+        resource_group_name)
     deadletter_destination = None
 
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
@@ -147,13 +154,17 @@ def cli_eventgrid_event_subscription_create(
     elif endpoint_type.lower() == HYBRIDCONNECTION_DESTINATION.lower():
         destination = HybridConnectionEventSubscriptionDestination(endpoint)
     elif endpoint_type.lower() == STORAGEQUEUE_DESTINATION.lower():
-        # Supplied endpoint would be in the format /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/queueServices/default/queues/{queueName}))
-        # and we need to break it up into /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1 and queueName
+        # Supplied endpoint would be in the following format:
+        # /subscriptions/.../storageAccounts/sa1/queueServices/default/queues/{queueName}))
+        # and we need to break it up into:
+        # /subscriptions/.../storageAccounts/sa1 and queueName
         storage_queue_items = re.split(
             "/queueServices/default/queues/", endpoint, flags=re.IGNORECASE)
 
         if len(storage_queue_items) != 2 or storage_queue_items[0] is None or storage_queue_items[1] is None:
-            raise CLIError("Argument Error: Expected format of Storage queue endpoint is: /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/queueServices/default/queues/queueName")
+            raise CLIError('Argument Error: Expected format of Storage queue endpoint is:' +
+                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/'+
+                           'storageAccounts/sa1/queueServices/default/queues/queueName')
 
         destination = StorageQueueEventSubscriptionDestination(
             storage_queue_items[0], storage_queue_items[1])
@@ -171,23 +182,33 @@ def cli_eventgrid_event_subscription_create(
             "/blobServices/default/containers/", deadletter_endpoint, flags=re.IGNORECASE)
 
         if len(storage_blob_items) != 2 or storage_blob_items[0] is None or storage_blob_items[1] is None:
-            raise CLIError("Argument Error: Expected format of deadletter destination is: /subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName")
+            raise CLIError('Argument Error: Expected format of deadletter destination is:'+
+                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/'+
+                           'storageAccounts/sa1/blobServices/default/containers/containerName')
 
         deadletter_destination = StorageBlobDeadLetterDestination(
             storage_blob_items[0], storage_blob_items[1])
 
     event_subscription_info = EventSubscription(
-        destination, event_subscription_filter, labels, event_delivery_schema, retry_policy, deadletter_destination)
+        destination,
+        event_subscription_filter,
+        labels,
+        event_delivery_schema,
+        retry_policy,
+        deadletter_destination)
 
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and "azure" not in endpoint.lower() and "hookbin" not in endpoint.lower():
-        print("If the endpoint doesn't support subscription validation response, please visit the validation URL manually to complete the validation handshake.")
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
+       "azure" not in endpoint.lower() and \
+       "hookbin" not in endpoint.lower():
+        print("If the provided endpoint doesn't support subscription validation handshake, "+
+              "navigate to the validation URL that you receive in the webhook destination, "+
+              "in order to complete the event subscription creation.")
 
     async_event_subscription_create = client.create_or_update(
         scope,
         event_subscription_name,
         event_subscription_info)
-    created_event_subscription = async_event_subscription_create.result()
-    return created_event_subscription
+    return async_event_subscription_create.result()
 
 
 def event_subscription_setter(

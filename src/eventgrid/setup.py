@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='eventgrid',
     version=VERSION,
-    description='An Azure CLI Extension providing support for Azure EventGrid preview version.',
-    long_description='An Azure CLI Extension providing support for Azure EventGrid preview version.',
+    description='Support for Azure EventGrid 2018-05-01-preview features',
+    long_description='Support for Azure EventGrid features in 2018-05-01-preview version.',
     license='MIT',
     author='J. Kalyana Sundaram',
     author_email='kalyanaj@microsoft.com',
