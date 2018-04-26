@@ -75,20 +75,20 @@ def cli_topic_create_or_update(
     elif input_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
         input_schema = CLOUDEVENTV01_SCHEMA
     else:
-        raise CLIError('The provided input_schema is not valid. The supported values are: ' +
+        raise CLIError('The provided --input-schema is not valid. The supported values are: ' +
                        EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
 
     if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
         # Ensure that custom input mappings are not specified
         if input_mapping_fields is not None or input_mapping_default_values is not None:
-            raise CLIError('input-mapping-default-values and input-mapping-fields should be ' +
-                           'specified only when input-schema is set to customeventschema.')
+            raise CLIError('--input-mapping-default-values and --input-mapping-fields should be ' +
+                           'specified only when --input-schema is set to customeventschema.')
 
     if input_schema == CUSTOM_EVENT_SCHEMA:
         # Ensure that custom input mappings are specified
         if input_mapping_fields is None and input_mapping_default_values is None:
-            raise CLIError('Either input-mapping-default-values or input-mapping-fields must be ' +
-                           'specified when input-schema is set to customeventschema.')
+            raise CLIError('Either --input-mapping-default-values or --input-mapping-fields must be ' +
+                           'specified when --input-schema is set to customeventschema.')
 
     input_schema_mapping = get_input_schema_mapping(
         input_mapping_fields,
@@ -124,11 +124,11 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
         labels=None):
     max_delivery_attempts = int(max_delivery_attempts)
     if max_delivery_attempts < 1 or max_delivery_attempts > 30:
-        raise CLIError('Max delivery attempts should be a number between 1 and 30.')
+        raise CLIError('--max-delivery-attempts should be a number between 1 and 30.')
 
     event_ttl = int(event_ttl)
     if event_ttl < 1 or event_ttl > 1440:
-        raise CLIError('Event TTL should be a number between 1 and 1440.')
+        raise CLIError('--event-ttl should be a number between 1 and 1440.')
 
     if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
         event_delivery_schema = EVENTGRID_SCHEMA
@@ -137,7 +137,7 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
     elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
         event_delivery_schema = CLOUDEVENTV01_SCHEMA
     else:
-        raise CLIError('The provided event delivery schema is not valid. The supported '
+        raise CLIError('The provided --event-delivery-schema is not valid. The supported '
                        ' values are:' + EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA +
                        ',' + CLOUDEVENTV01_SCHEMA)
 
@@ -163,7 +163,7 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
             "/queueServices/default/queues/", endpoint, flags=re.IGNORECASE)
 
         if len(storage_queue_items) != 2 or storage_queue_items[0] is None or storage_queue_items[1] is None:
-            raise CLIError('Argument Error: Expected format of Storage queue endpoint is:' +
+            raise CLIError('Argument Error: Expected format of --endpoint for storage queue is:' +
                            '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
                            'storageAccounts/sa1/queueServices/default/queues/queueName')
 
@@ -183,7 +183,7 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
             "/blobServices/default/containers/", deadletter_endpoint, flags=re.IGNORECASE)
 
         if len(storage_blob_items) != 2 or storage_blob_items[0] is None or storage_blob_items[1] is None:
-            raise CLIError('Argument Error: Expected format of deadletter destination is:' +
+            raise CLIError('Argument Error: Expected format of --deadletter-endpoint is:' +
                            '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
                            'storageAccounts/sa1/blobServices/default/containers/containerName')
 
@@ -201,9 +201,9 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
        "azure" not in endpoint.lower() and \
        "hookbin" not in endpoint.lower():
-        print("If the provided endpoint doesn't support subscription validation handshake, " +
-              "navigate to the validation URL that you receive in the webhook destination, " +
-              "in order to complete the event subscription creation.")
+        logger.warning("If the provided endpoint doesn't support subscription validation handshake, " +
+                       "navigate to the validation URL that you receive in the webhook destination, " +
+                       "in order to complete the event subscription creation.")
 
     async_event_subscription_create = client.create_or_update(
         scope,
@@ -269,7 +269,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     if resource_id:
         # Resource ID is specified, we need to list only for the particular resource.
         if resource_group_name is not None or topic_name is not None:
-            raise CLIError('Since ResourceId is specified, topic-name and resource-group-name should not be specified.')
+            raise CLIError('Since --resource-id is specified, --topic-name and --resource-group-name should not be specified.')
 
         id_parts = parse_resource_id(resource_id)
         rg_name = id_parts['resource_group']
@@ -285,7 +285,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
 
     if topic_name:
         if resource_group_name is None:
-            raise CLIError('Since topic-name is specified, resource-group-name must also be specified.')
+            raise CLIError('Since --topic-name is specified, --resource-group-name must also be specified.')
 
         return client.list_by_resource(
             resource_group_name,
@@ -367,7 +367,7 @@ def _get_scope_for_event_subscription(
     elif topic_name:
         # Topic name is provided, use the topic and resource group to build a scope for the user topic
         if resource_group_name is None:
-            raise CLIError("When topic name is specified, the resource group name must also be specified.")
+            raise CLIError("When --topic-name is specified, the --resource-group-name must also be specified.")
 
         scope = _get_scope(cli_ctx, resource_group_name, EVENTGRID_NAMESPACE, EVENTGRID_TOPICS, topic_name)
     elif resource_group_name:
