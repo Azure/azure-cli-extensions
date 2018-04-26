@@ -1,15 +1,13 @@
-#!/usr/bin/env python
-
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from codecs import open
+
 from setuptools import setup, find_packages
 
-VERSION = "0.2.1"
 
+VERSION = "0.1.0"
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -24,19 +22,17 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
 
 setup(
-    name='webapp',
+    name='signalr',
     version=VERSION,
-    description='An Azure CLI Extension to manage appservice resources',
-    long_description='An Azure CLI Extension to manage appservice resources',
+    description='Support for signalr management preview.',
+    long_description='Microsoft Azure Command-Line Extensions for SignalR Service',
     license='MIT',
-    author='Sisira Panchagnula',
-    author_email='sisirap@microsoft.com',
+    author='Visual Studio China SignalR Team',
+    author_email='vscsignalr@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_webapp': ['azext_metadata.json']},
-    packages=find_packages(exclude=["tests"]),
-    install_requires=DEPENDENCIES
+    package_data={'azext_signalr': ['azext_metadata.json']},
+    packages=find_packages(exclude=['tests'])
 )

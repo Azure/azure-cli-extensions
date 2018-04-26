@@ -3,4 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-VERSION = '0.5.1'
+
+SIGNALR_SKU = ['Basic_DS2']
+SIGNALR_RESOURCE_TYPE = 'Microsoft.SignalRService/SignalR'
+SIGNALR_KEY_TYPE = ['primary', 'secondary']
