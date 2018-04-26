@@ -8,6 +8,7 @@ import unittest
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer
 from knack.util import CLIError
 
+
 class EventGridTests(ScenarioTest):
     @unittest.skip("Temporarily disabled as this is not yet enabled with the 2018-05-01-preview API version")
     def test_topic_types(self):
@@ -60,15 +61,15 @@ class EventGridTests(ScenarioTest):
 
         # Test various failure conditions
         # Input mappings cannot be provided when input schema is not customeventschema
-        with self.assertRaises(CLIError) as ex1:
+        with self.assertRaises(CLIError):
             self.cmd('az eventgrid topic create --name {topic_name2} --resource-group {rg} --location {location} --input-schema CloudEventV01Schema --input-mapping-fields topic=myTopicField')
 
         # Input mappings cannot be provided when input schema is not customeventschema
-        with self.assertRaises(CLIError) as ex2:
+        with self.assertRaises(CLIError):
             self.cmd('az eventgrid topic create --name {topic_name2} --resource-group {rg} --location {location} --input-schema eventgridschema --input-mapping-fields topic=myTopicField')
 
         # Input mappings must be provided when input schema is customeventschema
-        with self.assertRaises(CLIError) as ex3:
+        with self.assertRaises(CLIError):
             self.cmd('az eventgrid topic create --name {topic_name2} --resource-group {rg} --location {location} --input-schema customeventschema')
 
         self.cmd('az eventgrid topic create --name {topic_name2} --resource-group {rg} --location {location} --input-schema CloudEventV01Schema', checks=[
@@ -268,7 +269,6 @@ class EventGridTests(ScenarioTest):
         ])
         self.cmd('az eventgrid event-subscription delete --resource-group {rg} --name {event_subscription_name}')
 
-
     @ResourceGroupPreparer()
     def test_create_event_subscriptions_with_20180501_features(self, resource_group):
         event_subscription_name1 = 'eventsubscription1'
@@ -287,11 +287,11 @@ class EventGridTests(ScenarioTest):
 
         # Failure cases
         # Invalid Event TTL value
-        with self.assertRaises(CLIError) as ex2:
+        with self.assertRaises(CLIError):
             self.cmd('az eventgrid event-subscription create -g {rg} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --event-ttl 2000 --deadletter-endpoint {deadletter_endpoint_id}')
 
         # Invalid max delivery attempts value
-        with self.assertRaises(CLIError) as ex3:
+        with self.assertRaises(CLIError):
             self.cmd('az eventgrid event-subscription create -g {rg} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --max-delivery-attempts 31 --deadletter-endpoint {deadletter_endpoint_id}')
 
         # Create a storage queue destination based event subscription with cloud event schema as the delivery schema

@@ -49,6 +49,7 @@ EVENTTIME = "eventtime"
 EVENTTYPE = "eventtype"
 DATAVERSION = "dataversion"
 
+
 def cli_topic_list(
         client,
         resource_group_name=None):
@@ -80,13 +81,13 @@ def cli_topic_create_or_update(
     if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
         # Ensure that custom input mappings are not specified
         if input_mapping_fields is not None or input_mapping_default_values is not None:
-            raise CLIError('input-mapping-default-values and input-mapping-fields should be '+
+            raise CLIError('input-mapping-default-values and input-mapping-fields should be ' +
                            'specified only when input-schema is set to customeventschema.')
 
     if input_schema == CUSTOM_EVENT_SCHEMA:
         # Ensure that custom input mappings are specified
         if input_mapping_fields is None and input_mapping_default_values is None:
-            raise CLIError('Either input-mapping-default-values or input-mapping-fields must be '+
+            raise CLIError('Either input-mapping-default-values or input-mapping-fields must be ' +
                            'specified when input-schema is set to customeventschema.')
 
     input_schema_mapping = get_input_schema_mapping(
@@ -163,7 +164,7 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
 
         if len(storage_queue_items) != 2 or storage_queue_items[0] is None or storage_queue_items[1] is None:
             raise CLIError('Argument Error: Expected format of Storage queue endpoint is:' +
-                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/'+
+                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
                            'storageAccounts/sa1/queueServices/default/queues/queueName')
 
         destination = StorageQueueEventSubscriptionDestination(
@@ -182,8 +183,8 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
             "/blobServices/default/containers/", deadletter_endpoint, flags=re.IGNORECASE)
 
         if len(storage_blob_items) != 2 or storage_blob_items[0] is None or storage_blob_items[1] is None:
-            raise CLIError('Argument Error: Expected format of deadletter destination is:'+
-                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/'+
+            raise CLIError('Argument Error: Expected format of deadletter destination is:' +
+                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
                            'storageAccounts/sa1/blobServices/default/containers/containerName')
 
         deadletter_destination = StorageBlobDeadLetterDestination(
@@ -200,8 +201,8 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
        "azure" not in endpoint.lower() and \
        "hookbin" not in endpoint.lower():
-        print("If the provided endpoint doesn't support subscription validation handshake, "+
-              "navigate to the validation URL that you receive in the webhook destination, "+
+        print("If the provided endpoint doesn't support subscription validation handshake, " +
+              "navigate to the validation URL that you receive in the webhook destination, " +
               "in order to complete the event subscription creation.")
 
     async_event_subscription_create = client.create_or_update(
