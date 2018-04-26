@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
@@ -41,7 +43,7 @@ helps['alias create'] = """
 
 helps['alias export'] = """
     type: command
-    short-summary: Export all registered aliases to a given path, as an INI configuration file.
+    short-summary: Export all registered aliases to a given path, as an INI configuration file. If no export path is specified, the alias configuration file is exported to the current working directory.
 """
 
 
