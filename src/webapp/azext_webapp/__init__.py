@@ -23,6 +23,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
             g.custom_command('up', 'create_deploy_webapp')
+            g.custom_command('tunnel create','create_tunnel')
         return self.command_table
 
     def load_arguments(self, _):
@@ -31,6 +32,8 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('dryrun',
                        help="shows summary of the create and deploy operation instead of executing it",
                        default=False, action='store_true')
+        with self.argument_contect('webapp tunnel create') as c:
+            c.argument('port',options_list=['--port', '-p'], help='Port for the remote connection', type=int)
 
 
 COMMAND_LOADER_CLS = WebappExtCommandLoader
