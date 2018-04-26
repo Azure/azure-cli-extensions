@@ -206,7 +206,7 @@ def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_
         else:
             return client.web_apps.recover(source_resource_group, source_name, request)
     elif any([source_resource_group, source_name]):
-        raise CLIError('usage error: source-resource_group and source-name must both be specified if one is used')
+        raise CLIError('usage error: --source-resource-group and --source-name must both be specified if one is used')
     else:
         request = SnapshotRecoveryRequest(True, snapshot_time=time, recover_configuration=restore_config)
         if slot:
