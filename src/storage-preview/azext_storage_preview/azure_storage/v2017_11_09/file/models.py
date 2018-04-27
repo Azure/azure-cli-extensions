@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from azure.storage.common._common_conversion import _to_str
+from ..common._common_conversion import _to_str
 
 
 class Share(object):

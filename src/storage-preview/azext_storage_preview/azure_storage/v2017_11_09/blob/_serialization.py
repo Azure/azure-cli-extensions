@@ -9,11 +9,11 @@ try:
     from xml.etree import cElementTree as ETree
 except ImportError:
     from xml.etree import ElementTree as ETree
-from azure.storage.common._common_conversion import (
+from ..common._common_conversion import (
     _encode_base64,
     _str,
 )
-from azure.storage.common._error import (
+from ..common._error import (
     _validate_not_none,
     _ERROR_START_END_NEEDED_FOR_MD5,
     _ERROR_RANGE_TOO_LARGE_FOR_MD5,

@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------
 import threading
 
-from azure.storage.common._error import _ERROR_NO_SINGLE_THREAD_CHUNKING
+from ..common._error import _ERROR_NO_SINGLE_THREAD_CHUNKING
 
 
 def _download_blob_chunks(blob_service, container_name, blob_name, snapshot,

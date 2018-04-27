@@ -18,7 +18,7 @@ try:
 except ImportError:
     from xml.etree import ElementTree as ETree
 
-from azure.storage.common._common_conversion import (
+from ..common._common_conversion import (
     _str,
 )
 from ._encryption import (

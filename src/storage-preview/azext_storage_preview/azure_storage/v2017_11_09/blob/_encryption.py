@@ -12,14 +12,14 @@ from os import urandom
 
 from cryptography.hazmat.primitives.padding import PKCS7
 
-from azure.storage.common._encryption import (
+from ..common._encryption import (
     _generate_encryption_data_dict,
     _generate_AES_CBC_cipher,
     _dict_to_encryption_data,
     _validate_and_unwrap_cek,
     _EncryptionAlgorithm,
 )
-from azure.storage.common._error import (
+from ..common._error import (
     _validate_not_none,
     _validate_key_encryption_key_wrap,
     _ERROR_DATA_NOT_ENCRYPTED,

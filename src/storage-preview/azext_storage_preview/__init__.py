@@ -4,19 +4,22 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import ResourceType
+from azure.cli.core.profiles import ResourceType, register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
+from .profiles import CUSTOM_DATA_STORAGE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
+        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
+
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    resource_type=ResourceType.DATA_STORAGE,
+                                                    resource_type=CUSTOM_DATA_STORAGE,
                                                     custom_command_type=storage_custom,
                                                     command_group_cls=StorageCommandGroup,
                                                     argument_context_cls=StorageArgumentContext)
@@ -147,8 +150,9 @@ class StorageCommandGroup(AzCommandGroup):
             from azure.cli.core.profiles import get_sdk
 
             t_error = get_sdk(self.command_loader.cli_ctx,
-                              ResourceType.DATA_STORAGE,
+                              CUSTOM_DATA_STORAGE,
                               'common._error#AzureMissingResourceHttpError')
+            print(t_error)
             if isinstance(ex, t_error):
                 return None
             raise ex

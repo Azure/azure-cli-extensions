@@ -14,10 +14,10 @@ from .models import (
     Queue,
     QueueMessage,
 )
-from azure.storage.common.models import (
+from ..common.models import (
     _list,
 )
-from azure.storage.common._deserialization import (
+from ..common._deserialization import (
     _to_int,
     _parse_metadata,
 )

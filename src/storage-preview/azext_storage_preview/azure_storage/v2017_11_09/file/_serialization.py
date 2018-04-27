@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from azure.storage.common._common_conversion import _str
-from azure.storage.common._error import (
+from ..common._common_conversion import _str
+from ..common._error import (
     _validate_not_none,
     _ERROR_START_END_NEEDED_FOR_MD5,
     _ERROR_RANGE_TOO_LARGE_FOR_MD5,

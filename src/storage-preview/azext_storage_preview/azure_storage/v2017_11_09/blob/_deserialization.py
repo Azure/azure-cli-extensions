@@ -10,12 +10,12 @@ try:
     from xml.etree import cElementTree as ETree
 except ImportError:
     from xml.etree import ElementTree as ETree
-from azure.storage.common._common_conversion import (
+from ..common._common_conversion import (
     _decode_base64_to_text,
     _to_str,
     _get_content_md5
 )
-from azure.storage.common._deserialization import (
+from ..common._deserialization import (
     _parse_properties,
     _to_int,
     _parse_metadata,
@@ -37,8 +37,8 @@ from .models import (
     BlobPrefix,
 )
 from ._encryption import _decrypt_blob
-from azure.storage.common.models import _list
-from azure.storage.common._error import (
+from ..common.models import _list
+from ..common._error import (
     _validate_content_match,
     _ERROR_DECRYPTION_FAILURE,
 )

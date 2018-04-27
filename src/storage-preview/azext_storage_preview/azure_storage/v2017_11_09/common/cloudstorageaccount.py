@@ -9,13 +9,13 @@
 # ie. we don't want 'import azure.storage' to trigger an automatic import
 # of blob/queue/file packages.
 
-from azure.storage.common._error import _validate_not_none
-from azure.storage.common.models import (
+from ._error import _validate_not_none
+from .models import (
     ResourceTypes,
     Services,
     AccountPermissions,
 )
-from azure.storage.common.sharedaccesssignature import (
+from .sharedaccesssignature import (
     SharedAccessSignature,
 )
 

@@ -3,10 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_data_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, _get_add_headers_callback
 from azure.cli.core.profiles import ResourceType, get_sdk
+from knack.util import CLIError
+from knack.log import get_logger
 
 from .sdkutil import get_table_data_type
+from .profiles import CUSTOM_DATA_STORAGE
 
 NO_CREDENTIALS_ERROR_MESSAGE = """
 No credentials specified to access storage service. Please provide any of the following:
@@ -17,6 +20,34 @@ No credentials specified to access storage service. Please provide any of the fo
     (3) account name and SAS token (--sas-token option used with either the --account-name
         option or AZURE_STORAGE_ACCOUNT environment variable)
 """
+
+logger = get_logger(__name__)
+
+
+# edited from azure.cli.core.commands.client_factory
+def get_data_service_client(cli_ctx, service_type, account_name, account_key, connection_string=None,
+                            sas_token=None, socket_timeout=None, endpoint_suffix=None):
+    logger.debug('Getting data service client service_type=%s', service_type.__name__)
+    try:
+        client_kwargs = {'account_name': account_name,
+                         'account_key': account_key,
+                         'connection_string': connection_string,
+                         'sas_token': sas_token}
+        if socket_timeout:
+            client_kwargs['socket_timeout'] = socket_timeout
+        if endpoint_suffix:
+            client_kwargs['endpoint_suffix'] = endpoint_suffix
+        client = service_type(**client_kwargs)
+    except ValueError as exc:
+        _ERROR_STORAGE_MISSING_INFO = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE,
+                                              'common._error#_ERROR_STORAGE_MISSING_INFO')
+        if _ERROR_STORAGE_MISSING_INFO in str(exc):
+            raise ValueError(exc)
+        else:
+            raise CLIError('Unable to obtain data client. Check your connection parameters.')
+    # TODO: enable Fiddler
+    client.request_callback = _get_add_headers_callback(cli_ctx)
+    return client
 
 
 def get_storage_data_service_client(cli_ctx, service, name=None, key=None, connection_string=None, sas_token=None,
@@ -32,7 +63,7 @@ def generic_data_service_factory(cli_ctx, service, name=None, key=None, connecti
         return get_storage_data_service_client(cli_ctx, service, name, key, connection_string, sas_token,
                                                socket_timeout)
     except ValueError as val_exception:
-        _ERROR_STORAGE_MISSING_INFO = get_sdk(cli_ctx, ResourceType.DATA_STORAGE,
+        _ERROR_STORAGE_MISSING_INFO = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE,
                                               'common._error#_ERROR_STORAGE_MISSING_INFO')
         message = str(val_exception)
         if message == _ERROR_STORAGE_MISSING_INFO:
@@ -46,7 +77,7 @@ def storage_client_factory(cli_ctx, **_):
 
 
 def file_data_service_factory(cli_ctx, kwargs):
-    t_file_svc = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'file#FileService')
+    t_file_svc = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'file#FileService')
     return generic_data_service_factory(cli_ctx, t_file_svc, kwargs.pop('account_name', None),
                                         kwargs.pop('account_key', None),
                                         connection_string=kwargs.pop('connection_string', None),
@@ -54,7 +85,7 @@ def file_data_service_factory(cli_ctx, kwargs):
 
 
 def page_blob_service_factory(cli_ctx, kwargs):
-    t_page_blob_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'blob.pageblobservice#PageBlobService')
+    t_page_blob_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'blob.pageblobservice#PageBlobService')
     return generic_data_service_factory(cli_ctx, t_page_blob_service, kwargs.pop('account_name', None),
                                         kwargs.pop('account_key', None),
                                         connection_string=kwargs.pop('connection_string', None),
@@ -65,6 +96,8 @@ def blob_data_service_factory(cli_ctx, kwargs):
     from .sdkutil import get_blob_service_by_type
     blob_type = kwargs.get('blob_type')
     blob_service = get_blob_service_by_type(cli_ctx, blob_type) or get_blob_service_by_type(cli_ctx, 'block')
+
+    print("service", blob_service, blob_type)
 
     return generic_data_service_factory(cli_ctx, blob_service, kwargs.pop('account_name', None),
                                         kwargs.pop('account_key', None),
@@ -83,7 +116,7 @@ def table_data_service_factory(cli_ctx, kwargs):
 
 
 def queue_data_service_factory(cli_ctx, kwargs):
-    t_queue_service = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'queue#QueueService')
+    t_queue_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'queue#QueueService')
     return generic_data_service_factory(
         cli_ctx, t_queue_service,
         kwargs.pop('account_name', None),
@@ -93,7 +126,7 @@ def queue_data_service_factory(cli_ctx, kwargs):
 
 
 def cloud_storage_account_service_factory(cli_ctx, kwargs):
-    t_cloud_storage_account = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
+    t_cloud_storage_account = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#CloudStorageAccount')
     account_name = kwargs.pop('account_name', None)
     account_key = kwargs.pop('account_key', None)
     sas_token = kwargs.pop('sas_token', None)
@@ -105,7 +138,7 @@ def multi_service_properties_factory(cli_ctx, kwargs):
     """Create multiple data services properties instance based on the services option"""
     from .services_wrapper import ServiceProperties
 
-    t_base_blob_service, t_file_service, t_queue_service, = get_sdk(cli_ctx, ResourceType.DATA_STORAGE,
+    t_base_blob_service, t_file_service, t_queue_service, = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE,
                                                                     'blob.baseblobservice#BaseBlobService',
                                                                     'file#FileService', 'queue#QueueService')
 

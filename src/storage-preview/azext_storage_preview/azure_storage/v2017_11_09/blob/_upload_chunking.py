@@ -7,9 +7,9 @@ from io import (BytesIO, IOBase, SEEK_CUR, SEEK_END, SEEK_SET, UnsupportedOperat
 from math import ceil
 from threading import Lock
 
-from azure.storage.common._common_conversion import _encode_base64
-from azure.storage.common._error import _ERROR_VALUE_SHOULD_BE_SEEKABLE_STREAM
-from azure.storage.common._serialization import (
+from ..common._common_conversion import _encode_base64
+from ..common._error import _ERROR_VALUE_SHOULD_BE_SEEKABLE_STREAM
+from ..common._serialization import (
     url_quote,
     _get_data_bytes_only,
     _len_plus

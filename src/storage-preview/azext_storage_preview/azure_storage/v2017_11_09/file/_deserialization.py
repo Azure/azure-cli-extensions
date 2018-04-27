@@ -18,15 +18,15 @@ from .models import (
     ShareProperties,
     DirectoryProperties,
 )
-from azure.storage.common.models import (
+from ..common.models import (
     _list,
 )
-from azure.storage.common._deserialization import (
+from ..common._deserialization import (
     _parse_properties,
     _parse_metadata,
 )
-from azure.storage.common._error import _validate_content_match
-from azure.storage.common._common_conversion import (
+from ..common._error import _validate_content_match
+from ..common._common_conversion import (
     _get_content_md5,
     _to_str,
 )

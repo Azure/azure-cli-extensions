@@ -19,6 +19,7 @@ from ..._validators import (get_permission_validator, get_datetime_type,
 from azure.cli.testsdk import api_version_constraint
 from ..._validators import (get_source_file_or_blob_service_client, validate_encryption_source,
                             validate_encryption_services)
+from ...profiles import CUSTOM_DATA_STORAGE
 
 
 class MockCLI(CLI):
@@ -34,7 +35,7 @@ class MockLoader(object):
 
     def get_models(self, *attr_args, **_):
         from azure.cli.core.profiles import get_sdk
-        return get_sdk(self.ctx, ResourceType.DATA_STORAGE, *attr_args, mod='models')
+        return get_sdk(self.ctx, CUSTOM_DATA_STORAGE, *attr_args, mod='models')
 
 
 class MockCmd(object):
@@ -43,7 +44,7 @@ class MockCmd(object):
         self.loader = MockLoader(self.cli_ctx)
 
     def get_models(self, *attr_args, **kwargs):
-        return get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, *attr_args, **kwargs)
+        return get_sdk(self.cli_ctx, CUSTOM_DATA_STORAGE, *attr_args, **kwargs)
 
 
 class TestStorageValidators(unittest.TestCase):
@@ -56,7 +57,7 @@ class TestStorageValidators(unittest.TestCase):
         self.io.close()
 
     def test_permission_validator(self):
-        t_container_permissions = get_sdk(self.cli, ResourceType.DATA_STORAGE, 'blob.models#ContainerPermissions')
+        t_container_permissions = get_sdk(self.cli, CUSTOM_DATA_STORAGE, 'blob.models#ContainerPermissions')
 
         ns1 = Namespace(permission='rwdl')
         ns2 = Namespace(permission='abc')
@@ -118,8 +119,8 @@ class TestStorageValidators(unittest.TestCase):
     def test_services_type(self):
         input = "ttfqbqtf"
         actual = str(services_type(self.loader)(input))
-        if supported_api_version(self.cli, ResourceType.DATA_STORAGE, max_api='2016-05-31') or \
-           supported_api_version(self.cli, ResourceType.DATA_STORAGE, min_api='2017-07-29'):
+        if supported_api_version(self.cli, CUSTOM_DATA_STORAGE, max_api='2016-05-31') or \
+           supported_api_version(self.cli, CUSTOM_DATA_STORAGE, min_api='2017-07-29'):
             expected = "bqtf"
         else:
             expected = "bqf"

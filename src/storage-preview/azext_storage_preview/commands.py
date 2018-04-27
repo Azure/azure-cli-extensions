@@ -11,6 +11,7 @@ from ._client_factory import (cf_sa, blob_data_service_factory,
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
+from .profiles import CUSTOM_DATA_STORAGE
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -29,7 +30,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         client_factory=cloud_storage_account_service_factory
     )
 
-    def get_custom_sdk(custom_module, client_factory, resource_type=ResourceType.DATA_STORAGE):
+    def get_custom_sdk(custom_module, client_factory, resource_type=CUSTOM_DATA_STORAGE):
         """Returns a CliCommandType instance with specified operation template based on the given custom module name.
         This is useful when the command is not defined in the default 'custom' module but instead in a module under
         'operations' package."""
@@ -41,7 +42,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage account', storage_account_sdk, resource_type=ResourceType.MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
-        g.custom_command('test', 'test')
         g.command('check-name', 'check_name_availability')
         g.custom_command('create', 'create_storage_account', min_api='2016-01-01')
         g.command('delete', 'delete', confirmation=True)
@@ -79,12 +79,12 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
         client_factory=blob_data_service_factory,
-        resource_type=ResourceType.DATA_STORAGE)
+        resource_type=CUSTOM_DATA_STORAGE)
 
     base_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.baseblobservice#BaseBlobService.{}',
         client_factory=blob_data_service_factory,
-        resource_type=ResourceType.DATA_STORAGE)
+        resource_type=CUSTOM_DATA_STORAGE)
 
     with self.command_group('storage blob', command_type=block_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', blob_data_service_factory)) as g:
@@ -130,14 +130,14 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage blob incremental-copy',
                             operations_tmpl='azure.multiapi.storage.blob.pageblobservice#PageBlobService.{}',
                             client_factory=page_blob_service_factory,
-                            resource_type=ResourceType.DATA_STORAGE,
+                            resource_type=CUSTOM_DATA_STORAGE,
                             min_api='2016-05-31') as g:
         g.storage_command('start', 'incremental_copy_blob')
 
     with self.command_group('storage blob incremental-copy',
                             operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
                             client_factory=page_blob_service_factory,
-                            resource_type=ResourceType.DATA_STORAGE,
+                            resource_type=CUSTOM_DATA_STORAGE,
                             min_api='2016-05-31') as g:
         g.storage_command('cancel', 'abort_copy_blob')
 
@@ -189,7 +189,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     file_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.file.fileservice#FileService.{}',
         client_factory=file_data_service_factory,
-        resource_type=ResourceType.DATA_STORAGE)
+        resource_type=CUSTOM_DATA_STORAGE)
 
     with self.command_group('storage share', command_type=file_sdk,
                             custom_command_type=get_custom_sdk('acl', file_data_service_factory)) as g:
@@ -270,7 +270,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     queue_sdk = CliCommandType(operations_tmpl='azure.multiapi.storage.queue.queueservice#QueueService.{}',
                                client_factory=queue_data_service_factory,
-                               resource_type=ResourceType.DATA_STORAGE)
+                               resource_type=CUSTOM_DATA_STORAGE)
 
     with self.command_group('storage queue', queue_sdk,
                             custom_command_type=get_custom_sdk('acl', queue_data_service_factory)) as g:

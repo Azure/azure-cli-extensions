@@ -8,29 +8,29 @@ from os import path
 
 from azure.common import AzureHttpError
 
-from azure.storage.common._auth import (
+from ..common._auth import (
     _StorageSharedKeyAuthentication,
     _StorageSASAuthentication,
 )
-from azure.storage.common._common_conversion import (
+from ..common._common_conversion import (
     _int_to_str,
     _to_str,
     _get_content_md5,
 )
-from azure.storage.common._connection import _ServiceParameters
-from azure.storage.common._constants import (
+from ..common._connection import _ServiceParameters
+from ..common._constants import (
     SERVICE_HOST_BASE,
     DEFAULT_PROTOCOL,
     DEV_ACCOUNT_NAME,
 )
-from azure.storage.common._deserialization import (
+from ..common._deserialization import (
     _convert_xml_to_service_properties,
     _convert_xml_to_signed_identifiers,
     _parse_metadata,
     _parse_properties,
     _parse_length_from_content_range,
 )
-from azure.storage.common._error import (
+from ..common._error import (
     _dont_fail_not_exist,
     _dont_fail_on_exist,
     _validate_not_none,
@@ -41,15 +41,15 @@ from azure.storage.common._error import (
     _ERROR_PARALLEL_NOT_SEEKABLE,
     _validate_access_policies,
 )
-from azure.storage.common._http import HTTPRequest
-from azure.storage.common._serialization import (
+from ..common._http import HTTPRequest
+from ..common._serialization import (
     _get_request_body,
     _get_data_bytes_only,
     _convert_signed_identifiers_to_xml,
     _convert_service_properties_to_xml,
     _add_metadata_headers,
 )
-from azure.storage.common.models import (
+from ..common.models import (
     Services,
     ListGenerator,
     _OperationContext,
@@ -57,7 +57,7 @@ from azure.storage.common.models import (
 from .sharedaccesssignature import (
     FileSharedAccessSignature,
 )
-from azure.storage.common.storageclient import StorageClient
+from ..common.storageclient import StorageClient
 from ._deserialization import (
     _convert_xml_to_shares,
     _convert_xml_to_directories_and_files,
@@ -480,7 +480,7 @@ class FileService(StorageClient):
             You can include up to five CorsRule elements in the 
             list. If an empty list is specified, all CORS rules will be deleted, 
             and CORS will be disabled for the service.
-        :type cors: list(:class:`~azure.storage.common.models.CorsRule`)
+        :type cors: list(:class:`~..common.models.CorsRule`)
         :param int timeout:
             The timeout parameter is expressed in seconds.
         '''
@@ -507,7 +507,7 @@ class FileService(StorageClient):
             The timeout parameter is expressed in seconds.
         :return: The file service properties.
         :rtype:
-            :class:`~azure.storage.common.models.ServiceProperties`
+            :class:`~..common.models.ServiceProperties`
         '''
         request = HTTPRequest()
         request.method = 'GET'
@@ -816,7 +816,7 @@ class FileService(StorageClient):
         :param int timeout:
             The timeout parameter is expressed in seconds.
         :return: A dictionary of access policies associated with the share.
-        :rtype: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
+        :rtype: dict(str, :class:`~..common.models.AccessPolicy`)
         '''
         _validate_not_none('share_name', share_name)
         request = HTTPRequest()
@@ -842,7 +842,7 @@ class FileService(StorageClient):
             A dictionary of access policies to associate with the share. The 
             dictionary may contain up to 5 elements. An empty dictionary 
             will clear the access policies set on the service. 
-        :type signed_identifiers: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
+        :type signed_identifiers: dict(str, :class:`~..common.models.AccessPolicy`)
         :param int timeout:
             The timeout parameter is expressed in seconds.
         '''

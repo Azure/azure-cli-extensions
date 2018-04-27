@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------
 import sys
 
-from azure.storage.common._error import (
+from ..common._error import (
     _validate_type_bytes,
 )
 
