@@ -104,7 +104,7 @@ def cli_topic_create_or_update(
     return created_topic
 
 
-def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
+def cli_eventgrid_event_subscription_create(
         cmd,
         client,
         event_subscription_name,
@@ -122,53 +122,16 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
         event_delivery_schema=EVENTGRID_SCHEMA,
         deadletter_endpoint=None,
         labels=None):
+    # Construct RetryPolicy based on max_delivery_attempts and event_ttl
     max_delivery_attempts = int(max_delivery_attempts)
-    if max_delivery_attempts < 1 or max_delivery_attempts > 30:
-        raise CLIError('--max-delivery-attempts should be a number between 1 and 30.')
-
     event_ttl = int(event_ttl)
-    if event_ttl < 1 or event_ttl > 1440:
-        raise CLIError('--event-ttl should be a number between 1 and 1440.')
+    _validate_retry_policy(max_delivery_attempts, event_ttl)
+    retry_policy = RetryPolicy(max_delivery_attempts, event_ttl)
 
-    if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
-        event_delivery_schema = EVENTGRID_SCHEMA
-    elif event_delivery_schema.lower() == INPUT_EVENT_SCHEMA.lower():
-        event_delivery_schema = INPUT_EVENT_SCHEMA
-    elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
-        event_delivery_schema = CLOUDEVENTV01_SCHEMA
-    else:
-        raise CLIError('The provided --event-delivery-schema is not valid. The supported '
-                       ' values are:' + EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA +
-                       ',' + CLOUDEVENTV01_SCHEMA)
+    # Get event_delivery_schema in the right case
+    event_delivery_schema = _get_event_delivery_schema(event_delivery_schema)
 
-    scope = _get_scope_for_event_subscription(
-        cmd.cli_ctx,
-        resource_id,
-        topic_name,
-        resource_group_name)
-    deadletter_destination = None
-
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
-        destination = WebHookEventSubscriptionDestination(endpoint)
-    elif endpoint_type.lower() == EVENTHUB_DESTINATION.lower():
-        destination = EventHubEventSubscriptionDestination(endpoint)
-    elif endpoint_type.lower() == HYBRIDCONNECTION_DESTINATION.lower():
-        destination = HybridConnectionEventSubscriptionDestination(endpoint)
-    elif endpoint_type.lower() == STORAGEQUEUE_DESTINATION.lower():
-        # Supplied endpoint would be in the following format:
-        # /subscriptions/.../storageAccounts/sa1/queueServices/default/queues/{queueName}))
-        # and we need to break it up into:
-        # /subscriptions/.../storageAccounts/sa1 and queueName
-        storage_queue_items = re.split(
-            "/queueServices/default/queues/", endpoint, flags=re.IGNORECASE)
-
-        if len(storage_queue_items) != 2 or storage_queue_items[0] is None or storage_queue_items[1] is None:
-            raise CLIError('Argument Error: Expected format of --endpoint for storage queue is:' +
-                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
-                           'storageAccounts/sa1/queueServices/default/queues/queueName')
-
-        destination = StorageQueueEventSubscriptionDestination(
-            storage_queue_items[0], storage_queue_items[1])
+    destination = _get_endpoint_destination(endpoint_type, endpoint)
 
     event_subscription_filter = EventSubscriptionFilter(
         subject_begins_with,
@@ -176,19 +139,15 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
         included_event_types,
         is_subject_case_sensitive)
 
-    retry_policy = RetryPolicy(max_delivery_attempts, event_ttl)
-
+    deadletter_destination = None
     if deadletter_endpoint is not None:
-        storage_blob_items = re.split(
-            "/blobServices/default/containers/", deadletter_endpoint, flags=re.IGNORECASE)
+        deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
 
-        if len(storage_blob_items) != 2 or storage_blob_items[0] is None or storage_blob_items[1] is None:
-            raise CLIError('Argument Error: Expected format of --deadletter-endpoint is:' +
-                           '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
-                           'storageAccounts/sa1/blobServices/default/containers/containerName')
-
-        deadletter_destination = StorageBlobDeadLetterDestination(
-            storage_blob_items[0], storage_blob_items[1])
+    scope = _get_scope_for_event_subscription(
+        cmd.cli_ctx,
+        resource_id,
+        topic_name,
+        resource_group_name)
 
     event_subscription_info = EventSubscription(
         destination,
@@ -198,12 +157,7 @@ def cli_eventgrid_event_subscription_create(  # pylint: disable=too-many-locals
         retry_policy,
         deadletter_destination)
 
-    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
-       "azure" not in endpoint.lower() and \
-       "hookbin" not in endpoint.lower():
-        logger.warning("If the provided endpoint doesn't support subscription validation handshake, " +
-                       "navigate to the validation URL that you receive in the webhook destination, " +
-                       "in order to complete the event subscription creation.")
+    _warn_if_manual_handshake_needed(endpoint_type, endpoint)
 
     async_event_subscription_create = client.create_or_update(
         scope,
@@ -446,16 +400,25 @@ def update_event_subscription(
         subject_begins_with=None,
         subject_ends_with=None,
         included_event_types=None,
-        labels=None):
+        labels=None,
+        deadletter_endpoint=None):
     event_subscription_destination = None
+    deadletter_destination = None
     event_subscription_labels = instance.labels
     event_subscription_filter = instance.filter
 
+    # TODO: These are not currently updatable, make them updatable.
+    event_delivery_schema = instance.event_delivery_schema
+    retry_policy = instance.retry_policy
+
+    if event_delivery_schema is None:
+        event_delivery_schema = EVENTGRID_SCHEMA
+
     if endpoint is not None:
-        if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
-            event_subscription_destination = WebHookEventSubscriptionDestination(endpoint)
-        elif endpoint_type.lower() == EVENTHUB_DESTINATION.lower():
-            event_subscription_destination = EventHubEventSubscriptionDestination(endpoint)
+        event_subscription_destination = _get_endpoint_destination(endpoint_type, endpoint)
+
+    if deadletter_endpoint is not None:
+        deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
 
     if subject_begins_with is not None:
         event_subscription_filter.subject_begins_with = subject_begins_with
@@ -472,7 +435,91 @@ def update_event_subscription(
     params = EventSubscriptionUpdateParameters(
         destination=event_subscription_destination,
         filter=event_subscription_filter,
-        labels=event_subscription_labels
+        labels=event_subscription_labels,
+        retry_policy=instance.retry_policy,
+        dead_letter_destination=deadletter_destination,
+        event_delivery_schema=event_delivery_schema
     )
 
     return params
+
+def _get_endpoint_destination(endpoint_type, endpoint):
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
+        destination = WebHookEventSubscriptionDestination(endpoint)
+    elif endpoint_type.lower() == EVENTHUB_DESTINATION.lower():
+        destination = EventHubEventSubscriptionDestination(endpoint)
+    elif endpoint_type.lower() == HYBRIDCONNECTION_DESTINATION.lower():
+        destination = HybridConnectionEventSubscriptionDestination(endpoint)
+    elif endpoint_type.lower() == STORAGEQUEUE_DESTINATION.lower():
+        destination = _get_storage_queue_destination(endpoint)
+
+    return destination
+
+def _get_storage_queue_destination(endpoint):
+    # Supplied endpoint would be in the following format:
+    # /subscriptions/.../storageAccounts/sa1/queueServices/default/queues/{queueName}))
+    # and we need to break it up into:
+    # /subscriptions/.../storageAccounts/sa1 and queueName
+    queue_items = re.split(
+        "/queueServices/default/queues/", endpoint, flags=re.IGNORECASE)
+
+    if len(queue_items) != 2 or queue_items[0] is None or queue_items[1] is None:
+        raise CLIError('Argument Error: Expected format of --endpoint for storage queue is:' +
+                        '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
+                        'storageAccounts/sa1/queueServices/default/queues/queueName')
+
+    destination = StorageQueueEventSubscriptionDestination(
+        queue_items[0], queue_items[1])
+
+    return destination
+
+def _get_deadletter_destination(deadletter_endpoint):
+    blob_items = re.split(
+        "/blobServices/default/containers/", deadletter_endpoint, flags=re.IGNORECASE)
+
+    if len(blob_items) != 2 or blob_items[0] is None or blob_items[1] is None:
+        raise CLIError('Argument Error: Expected format of --deadletter-endpoint is:' +
+                        '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
+                        'storageAccounts/sa1/blobServices/default/containers/containerName')
+
+    deadletter_destination = StorageBlobDeadLetterDestination(
+        blob_items[0], blob_items[1])
+
+    return deadletter_destination
+
+def _validate_retry_policy(max_delivery_attempts, event_ttl):
+    if max_delivery_attempts < 1 or max_delivery_attempts > 30:
+        raise CLIError('--max-delivery-attempts should be a number between 1 and 30.')
+
+    if event_ttl < 1 or event_ttl > 1440:
+        raise CLIError('--event-ttl should be a number between 1 and 1440.')
+
+def _get_event_delivery_schema(event_delivery_schema):
+    if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
+        event_delivery_schema = EVENTGRID_SCHEMA
+    elif event_delivery_schema.lower() == INPUT_EVENT_SCHEMA.lower():
+        event_delivery_schema = INPUT_EVENT_SCHEMA
+    elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
+        event_delivery_schema = CLOUDEVENTV01_SCHEMA
+    else:
+        raise CLIError('The provided --event-delivery-schema is not valid. The supported '
+                       ' values are:' + EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA +
+                       ',' + CLOUDEVENTV01_SCHEMA)
+
+    return event_delivery_schema
+
+def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
+    # If the endpoint belongs to a service that we know implements the subscription validation
+    # handshake, there's no need to show this message, hence we check for those services
+    # before showing this message. This list includes Azure Automation, EventGrid Trigger based
+    # Azure functions, and Azure Logic Apps.
+    if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
+       "azure-automation" not in endpoint.lower() and \
+       "eventgridextension" not in endpoint.lower() and \
+       "logic.azure.com" not in endpoint.lower() and \
+       "hookbin" not in endpoint.lower():
+        logger.warning("If the provided endpoint doesn't support subscription validation " +
+                       "handshake, navigate to the validation URL that you receive in the " +
+                       "subscription validation event, in order to complete the event " +
+                       "subscription creation or update. For more details, " +
+                       "please visit http://aka.ms/esvalidation")

@@ -23,7 +23,7 @@ helps['eventgrid topic create'] = """
           text: az eventgrid topic create -g rg1 --name topic1 -l westus2
         - name: Create a new topic with custom input mappings.
           text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
-        - name: Create a new topic that accepts CloudEvents V0.1.
+        - name: Create a new topic that accepts events published in CloudEvents V0.1 schema.
           text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventv01
     """
 helps['eventgrid topic update'] = """
