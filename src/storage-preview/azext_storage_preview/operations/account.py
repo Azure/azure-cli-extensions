@@ -7,6 +7,12 @@
 
 from .._client_factory import storage_client_factory
 
+def test(willie, stuff):
+    from azext_storage_preview.azure_storage import blob
+    print(blob)
+    print("willie: ", willie)
+    print("stuff: ", stuff)
+
 
 def create_storage_account(cmd, resource_group_name, account_name, sku=None, location=None, kind=None,
                            tags=None, custom_domain=None, encryption_services=None, access_tier=None, https_only=None,
