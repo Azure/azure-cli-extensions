@@ -436,12 +436,13 @@ def update_event_subscription(
         destination=event_subscription_destination,
         filter=event_subscription_filter,
         labels=event_subscription_labels,
-        retry_policy=instance.retry_policy,
+        retry_policy=retry_policy,
         dead_letter_destination=deadletter_destination,
         event_delivery_schema=event_delivery_schema
     )
 
     return params
+
 
 def _get_endpoint_destination(endpoint_type, endpoint):
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
@@ -455,6 +456,7 @@ def _get_endpoint_destination(endpoint_type, endpoint):
 
     return destination
 
+
 def _get_storage_queue_destination(endpoint):
     # Supplied endpoint would be in the following format:
     # /subscriptions/.../storageAccounts/sa1/queueServices/default/queues/{queueName}))
@@ -465,13 +467,14 @@ def _get_storage_queue_destination(endpoint):
 
     if len(queue_items) != 2 or queue_items[0] is None or queue_items[1] is None:
         raise CLIError('Argument Error: Expected format of --endpoint for storage queue is:' +
-                        '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
-                        'storageAccounts/sa1/queueServices/default/queues/queueName')
+                       '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
+                       'storageAccounts/sa1/queueServices/default/queues/queueName')
 
     destination = StorageQueueEventSubscriptionDestination(
         queue_items[0], queue_items[1])
 
     return destination
+
 
 def _get_deadletter_destination(deadletter_endpoint):
     blob_items = re.split(
@@ -479,13 +482,14 @@ def _get_deadletter_destination(deadletter_endpoint):
 
     if len(blob_items) != 2 or blob_items[0] is None or blob_items[1] is None:
         raise CLIError('Argument Error: Expected format of --deadletter-endpoint is:' +
-                        '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
-                        'storageAccounts/sa1/blobServices/default/containers/containerName')
+                       '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
+                       'storageAccounts/sa1/blobServices/default/containers/containerName')
 
     deadletter_destination = StorageBlobDeadLetterDestination(
         blob_items[0], blob_items[1])
 
     return deadletter_destination
+
 
 def _validate_retry_policy(max_delivery_attempts, event_ttl):
     if max_delivery_attempts < 1 or max_delivery_attempts > 30:
@@ -493,6 +497,7 @@ def _validate_retry_policy(max_delivery_attempts, event_ttl):
 
     if event_ttl < 1 or event_ttl > 1440:
         raise CLIError('--event-ttl should be a number between 1 and 1440.')
+
 
 def _get_event_delivery_schema(event_delivery_schema):
     if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
@@ -507,6 +512,7 @@ def _get_event_delivery_schema(event_delivery_schema):
                        ',' + CLOUDEVENTV01_SCHEMA)
 
     return event_delivery_schema
+
 
 def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
     # If the endpoint belongs to a service that we know implements the subscription validation
