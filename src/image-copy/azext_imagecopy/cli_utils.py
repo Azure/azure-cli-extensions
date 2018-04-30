@@ -12,6 +12,8 @@ from knack.util import CLIError
 from knack.log import get_logger
 logger = get_logger(__name__)
 
+EXTENSION_TAG_STRING = 'created_by=image-copy-extension'
+
 
 # pylint: disable=inconsistent-return-statements
 def run_cli_command(cmd, return_as_json=False):
@@ -36,7 +38,7 @@ def run_cli_command(cmd, return_as_json=False):
         raise
 
 
-def prepare_cli_command(cmd, output_as_json=True):
+def prepare_cli_command(cmd, output_as_json=True, tags=None):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
 
     if output_as_json:
@@ -46,6 +48,9 @@ def prepare_cli_command(cmd, output_as_json=True):
 
     # tag newly created resources, containers don't have tags
     if 'create' in cmd and ('container' not in cmd):
-        full_cmd += ['--tags', 'created_by=image-copy-extension']
+        full_cmd += ['--tags', EXTENSION_TAG_STRING]
+
+        if tags is not None:
+            full_cmd += tags.split()
 
     return full_cmd

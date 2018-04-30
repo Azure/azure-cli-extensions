@@ -13,19 +13,19 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 STORAGE_ACCOUNT_NAME_LENGTH = 24
-DISK_SNAPSHOT_NAME_LENGTH = 80
 
 
 # pylint: disable=too-many-locals
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
-                        target_resource_group_name, azure_pool_frequency):
+                        target_resource_group_name, azure_pool_frequency, tags, target_name):
 
     subscription_id = get_subscription_id()
 
     subscription_hash = hashlib.sha1(
         subscription_id.encode("UTF-8")).hexdigest()
-    unique_subscription_string = subscription_hash[:(STORAGE_ACCOUNT_NAME_LENGTH-len(location))]
+    unique_subscription_string = subscription_hash[:(
+        STORAGE_ACCOUNT_NAME_LENGTH - len(location))]
 
     # create the target storage account
     logger.warn(
@@ -113,10 +113,13 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     # Create the final image
     logger.warn("%s - Creating final image", location)
-    target_image_name = source_object_name
-    if source_type != 'image':
-        target_image_name += '-image'
-    target_image_name += '-' + location
+    if target_name is None:
+        target_image_name = source_object_name
+        if source_type != 'image':
+            target_image_name += '-image'
+        target_image_name += '-' + location
+    else:
+        target_image_name = target_name
 
     cli_cmd = prepare_cli_command(['image', 'create',
                                    '--resource-group', target_resource_group_name,
@@ -124,8 +127,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--location', location,
                                    '--source', target_blob_path,
                                    '--os-type', source_os_type,
-                                   '--source', target_snapshot_id])
-
+                                   '--source', target_snapshot_id], tags=tags)
+    logger.warn("command: %s", cli_cmd)
     run_cli_command(cli_cmd)
 
 
