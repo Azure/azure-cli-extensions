@@ -39,6 +39,8 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
                        help='Number of parallel copy operations')
             c.argument('cleanup', options_list=['--cleanup'], action='store_true', default=False,
                        help='Include this switch to delete temporary resources upon completion')
+            c.argument('target_name', options_list=['--target-name'],
+                       help='Name of the final image that will be created')
 
 
 COMMAND_LOADER_CLS = ImageCopyCommandsLoader
