@@ -42,4 +42,5 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
             c.argument('target_name', options_list=['--target-name'],
                        help='Name of the final image that will be created')
 
+
 COMMAND_LOADER_CLS = ImageCopyCommandsLoader
