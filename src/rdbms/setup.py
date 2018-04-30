@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='rdbms',
     version=VERSION,
-    description='An Azure CLI Extension to manage Azure MySQL and Azure PostgreSQL resources',
-    long_description='An Azure CLI Extension to manage Azure MySQL and Azure PostgreSQL resources',
+    description='An Azure CLI Extension providing support for Azure MySQL and Azure PostgreSQL.',
+    long_description='An Azure CLI Extension providing support for Azure MySQL and Azure PostgreSQL.',
     license='MIT',
     author='Rohit Joy',
     author_email='rohitjoy@microsoft.com',

@@ -36,8 +36,8 @@ DEPENDENCIES = [
 setup(
     name='alias',
     version=VERSION,
-    description='Azure CLI Alias Extension',
-    long_description='An Azure CLI extension that provides command alias functionality',
+    description='Support for command aliases',
+    long_description='An Azure CLI extension that provides command aliases functionality',
     license='MIT',
     author='Ernest Wong',
     author_email='t-chwong@microsoft.com',

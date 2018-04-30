@@ -5,7 +5,10 @@
 
 from __future__ import print_function
 from knack.log import get_logger
+from azext_dns.dns.dns_management_client import DnsManagementClient
 from azext_dns.dns.models import (Zone)
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
 
 logger = get_logger(__name__)
 
@@ -41,3 +44,10 @@ def update_dns_zone(instance, tags=None, zone_type=None, resolution_vnets=None, 
         instance.registration_virtual_networks = registration_vnets
 
     return instance
+
+
+def list_dns_zones(cmd, resource_group_name=None):
+    ncf = get_mgmt_service_client(cmd.cli_ctx, DnsManagementClient).zones
+    if resource_group_name:
+        return ncf.list_by_resource_group(resource_group_name)
+    return ncf.list()

@@ -5,8 +5,11 @@
 
 from __future__ import print_function
 from knack.log import get_logger
+from knack.util import CLIError
 
-from azure.mgmt.web.models import (AppServicePlan, SkuDescription)
+from azure.mgmt.web.models import (AppServicePlan, SkuDescription, SnapshotRecoveryRequest, SnapshotRecoveryTarget)
+
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from azure.cli.command_modules.appservice.custom import (
     enable_zip_deploy,
@@ -178,3 +181,35 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     create_json.update({'app_url': url})
     logger.warning("All done.")
     return create_json
+
+
+def list_webapp_snapshots(cmd, resource_group, name, slot=None):
+    client = web_client_factory(cmd.cli_ctx)
+    if slot is None:
+        return client.web_apps.list_snapshots(resource_group, name)
+    else:
+        return client.web_apps.list_snapshots_slot(resource_group, name, slot)
+
+
+def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_config=False, source_resource_group=None, source_name=None, source_slot=None):
+    client = web_client_factory(cmd.cli_ctx)
+
+    if all([source_resource_group, source_name]):
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        target_id = "/subscriptions/" + sub_id + "/resourceGroups/" + resource_group + "/providers/Microsoft.Web/sites/" + name
+        if slot:
+            target_id = target_id + "/slots/" + slot
+        target = SnapshotRecoveryTarget(id=target_id)
+        request = SnapshotRecoveryRequest(False, snapshot_time=time, recovery_target=target, recover_configuration=restore_config)
+        if source_slot:
+            return client.web_apps.recover_slot(source_resource_group, source_name, request, source_slot)
+        else:
+            return client.web_apps.recover(source_resource_group, source_name, request)
+    elif any([source_resource_group, source_name]):
+        raise CLIError('usage error: --source-resource-group and --source-name must both be specified if one is used')
+    else:
+        request = SnapshotRecoveryRequest(True, snapshot_time=time, recover_configuration=restore_config)
+        if slot:
+            return client.web_apps.recover_slot(resource_group, name, request, slot)
+        else:
+            return client.web_apps.recover(resource_group, name, request)
