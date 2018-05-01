@@ -128,7 +128,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--source', target_blob_path,
                                    '--os-type', source_os_type,
                                    '--source', target_snapshot_id], tags=tags)
-    logger.warn("command: %s", cli_cmd)
+
     run_cli_command(cli_cmd)
 
 
