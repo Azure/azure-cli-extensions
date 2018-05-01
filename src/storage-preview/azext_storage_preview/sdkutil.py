@@ -25,8 +25,6 @@ def get_table_data_type(cli_ctx, module_name, *type_names):
 
 
 def get_blob_service_by_type(cli_ctx, blob_type):
-    print("here")
-    print(get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'BlockBlobService', mod='blob'))
     type_to_service = {
         'block': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE, 'BlockBlobService', mod='blob'),
         'page': lambda ctx: get_sdk(ctx, CUSTOM_DATA_STORAGE, 'PageBlobService', mod='blob'),

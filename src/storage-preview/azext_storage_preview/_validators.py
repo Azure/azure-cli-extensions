@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=protected-access
-
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -13,6 +12,7 @@ from ._client_factory import get_storage_data_service_client
 from .util import glob_files_locally, guess_content_type
 from .sdkutil import get_table_data_type
 from .url_quote_util import encode_for_url
+from .oauth_token_util import TokenUpdater
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 
@@ -43,6 +43,20 @@ def _query_account_key(cli_ctx, account_name):
         raise ValueError("Storage account '{}' not found.".format(account_name))
 
 
+def _create_token_credential(cli_ctx):
+    from knack.cli import EVENT_CLI_POST_EXECUTE
+    from .profiles import CUSTOM_DATA_STORAGE
+
+    TokenCredential = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#TokenCredential')
+
+    token_credential = TokenCredential(None)
+    updater = TokenUpdater(token_credential, cli_ctx)
+    def _cancel_timer_event_handler(_, **__):
+        updater.cancel()
+    cli_ctx.register_event(EVENT_CLI_POST_EXECUTE, _cancel_timer_event_handler)
+    return token_credential
+
+
 # region PARAMETER VALIDATORS
 
 def validate_table_payload_format(cmd, namespace):
@@ -61,7 +75,13 @@ def validate_bypass(namespace):
         namespace.bypass = ', '.join(namespace.bypass) if isinstance(namespace.bypass, list) else namespace.bypass
 
 
-def validate_client_parameters(cmd, namespace):
+def select_correct_validator(oauth):
+    def func(cmd, namespace):
+        validate_client_parameters(cmd, namespace, oauth=oauth)
+    return func
+
+
+def validate_client_parameters(cmd, namespace, oauth=False):
     """ Retrieves storage connection parameters from environment variables and parses out connection string into
     account name and key """
     n = namespace
@@ -97,7 +117,10 @@ def validate_client_parameters(cmd, namespace):
 
     # if account name is specified but no key, attempt to query
     if n.account_name and not n.account_key and not n.sas_token:
-        n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
+        if oauth:
+            n.token_credential = _create_token_credential(cmd.cli_ctx)
+        else:
+            n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
 
 
 def process_blob_source_uri(cmd, namespace):

@@ -130,21 +130,26 @@ class StorageArgumentContext(AzArgumentContext):
 
 
 class StorageCommandGroup(AzCommandGroup):
-    def storage_command(self, name, method_name=None, command_type=None, **kwargs):
+    def storage_command(self, name, method_name=None, command_type=None, oauth=False, **kwargs):
         """ Registers an Azure CLI Storage Data Plane command. These commands always include the four parameters which
         can be used to obtain a storage client: account-name, account-key, connection-string, and sas-token. """
         if command_type:
             command_name = self.command(name, method_name, command_type=command_type, **kwargs)
         else:
             command_name = self.command(name, method_name, **kwargs)
-        self._register_data_plane_account_arguments(command_name)
+        self._register_data_plane_account_arguments(command_name, oauth)
 
-    def storage_custom_command(self, name, method_name, **kwargs):
+    def storage_command_oauth(self, *args, **kwargs):
+        self.storage_command(*args, oauth=True, **kwargs)
+
+    def storage_custom_command(self, name, method_name, oauth=False, **kwargs):
         command_name = self.custom_command(name, method_name, **kwargs)
-        self._register_data_plane_account_arguments(command_name)
+        self._register_data_plane_account_arguments(command_name, oauth)
+
+    def storage_custom_command_oauth(self, *args, **kwargs):
+        self.storage_custom_command(*args, oauth=True, **kwargs)
 
     def get_handler_suppress_404(self):
-
         # pylint: disable=inconsistent-return-statements
         def handler(ex):
             from azure.cli.core.profiles import get_sdk
@@ -152,16 +157,15 @@ class StorageCommandGroup(AzCommandGroup):
             t_error = get_sdk(self.command_loader.cli_ctx,
                               CUSTOM_DATA_STORAGE,
                               'common._error#AzureMissingResourceHttpError')
-            print(t_error)
             if isinstance(ex, t_error):
                 return None
             raise ex
 
         return handler
 
-    def _register_data_plane_account_arguments(self, command_name):
+    def _register_data_plane_account_arguments(self, command_name, oauth):
         """ Add parameters required to create a storage client """
-        from ._validators import validate_client_parameters
+        from ._validators import select_correct_validator
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
@@ -179,7 +183,7 @@ class StorageCommandGroup(AzCommandGroup):
                              help='Storage account key. Must be used in conjunction with storage account name. '
                                   'Environment variable: AZURE_STORAGE_KEY')
         command.add_argument('connection_string', '--connection-string', required=False, default=None,
-                             validator=validate_client_parameters, arg_group=group_name,
+                             validator=select_correct_validator(oauth), arg_group=group_name,
                              help='Storage account connection string. Environment variable: '
                                   'AZURE_STORAGE_CONNECTION_STRING')
         command.add_argument('sas_token', '--sas-token', required=False, default=None,
