@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.6"
+VERSION = "0.2.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -27,16 +27,16 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='image-copy-extension',
+    name='eventgrid',
     version=VERSION,
-    description='Support for copying managed vm images between regions',
-    long_description='Support for copying managed vm images between regions',
+    description='Support for Azure EventGrid 2018-05-01-preview features',
+    long_description='Support for Azure EventGrid features in 2018-05-01-preview version.',
     license='MIT',
-    author='Tamir Kamara',
-    author_email='tamir.kamara@microsoft.com',
+    author='J. Kalyana Sundaram',
+    author_email='kalyanaj@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_imagecopy': ['azext_metadata.json']},
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
+    package_data={'azext_eventgrid': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

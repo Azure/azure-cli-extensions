@@ -6,7 +6,6 @@
 from __future__ import print_function
 
 import sys
-import datetime
 import collections
 from pkg_resources import parse_version
 
@@ -20,12 +19,11 @@ description: A complete list of the officially supported extensions for the Azur
 author: derekbekoe
 ms.author: debekoe
 manager: routlaw
-ms.date: {{ date }}
+ms.date: 04/27/2018
 ms.topic: article
 ms.prod: azure
-ms.technology: azure
-ms.devlang: azurecli
-ms.service: multiple
+ms.technology: azure-cli
+ms.devlang: azure-cli
 ---
 
 # Available extensions for the Azure CLI 2.0
@@ -62,9 +60,8 @@ def get_extensions():
 
 def main():
     extensions = get_extensions()
-    now = datetime.datetime.now()
     template = Template(DOC_TEMPLATE)
-    print(template.render(extensions=extensions, date=now.strftime("%m/%d/%Y")), file=sys.stdout)
+    print(template.render(extensions=extensions), file=sys.stdout)
 
 
 if __name__ == '__main__':
