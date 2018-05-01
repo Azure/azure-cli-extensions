@@ -25,7 +25,7 @@ helps['bot update'] = """
     examples:
         - name: Update description on a bot
           text: |-
-            az bot update -n botname -g resource_group_name --set properties.description="some description"
+            az bot update -n botName -g MyResourceGroup --set properties.description="some description"
 """
 helps['bot publish'] = """
     type: command 
@@ -49,7 +49,7 @@ helps['bot email create'] = """
     examples:
         - name: Add Email Channel for a Bot
           text: |-
-            az bot email create -n botname -g resource_group_name -a abc@outlook.com
+            az bot email create -n botName -g MyResourceGroup -a abc@outlook.com
             -p password --enable
 """
 helps['bot msteams create'] = """
@@ -58,7 +58,7 @@ helps['bot msteams create'] = """
     examples:
         - name: Add MsTeams Channel for a Bot with messaging and video enabled
           text: |-
-            az bot msteams -n botname -g resource_group_name --enable-messaging
+            az bot msteams -n botName -g MyResourceGroup --enable-messaging
             --enable-video --enable
 """
 helps['bot skype create'] = """
@@ -67,7 +67,7 @@ helps['bot skype create'] = """
     examples:
         - name: Add Skype Channel for a Bot with messaging and screen sharing enabled
           text: |-
-            az bot msteams -n botname -g resource_group_name --enable-messaging
+            az bot msteams -n botName -g MyResourceGroup --enable-messaging
             --enable-screen-sharing --enable
 """
 helps['bot kik create'] = """
@@ -76,7 +76,7 @@ helps['bot kik create'] = """
     examples:
         - name: Add Kik Channel for a Bot.
           text: |-
-            az bot kik create -n botname -g resource_group_name -u mykikname
+            az bot kik create -n botName -g MyResourceGroup -u mykikname
             -p password --key key --is-validated --enable
 """
 helps['bot webchat create'] = """
@@ -85,7 +85,7 @@ helps['bot webchat create'] = """
     examples:
         - name: Add WebChat Channel for a Bot.
           text: |-
-            az bot webchat create -n botname -g resource_group_name --enablev3 --enable
+            az bot webchat create -n botName -g MyResourceGroup --enablev3 --enable
 """
 helps['bot directline create'] = """
     type: command 
@@ -93,7 +93,7 @@ helps['bot directline create'] = """
     examples:
         - name: Add DirectLine Channel for a Bot.
           text: |-
-            az bot webchat create -n botname -g resource_group_name --enablev3 --enable
+            az bot webchat create -n botName -g MyResourceGroup --enablev3 --enable
 """
 helps['bot telegram create'] = """
     type: command 
@@ -101,7 +101,7 @@ helps['bot telegram create'] = """
     examples:
         - name: Add Telegram Channel for a Bot.
           text: |-
-            az bot telegram create -n botname -g resource_group_name --access-token token
+            az bot telegram create -n botName -g MyResourceGroup --access-token token
             --is-validated --enable
 """
 helps['bot sms create'] = """
@@ -110,7 +110,7 @@ helps['bot sms create'] = """
     examples:
         - name: Add Sms Channel for a Bot.
           text: |-
-            az bot sms create -n botname -g resource_group_name --account-sid sid
+            az bot sms create -n botName -g MyResourceGroup --account-sid sid
             --auth-token token --is-validated --enable
 """
 helps['bot slack create'] = """

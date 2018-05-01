@@ -3,7 +3,6 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_bot._help import helps #pylint: disable=unused-import
-import pdb
 from azext_bot._client_factory import get_botservice_management_client
 
 class BotServiceCommandsLoader(AzCommandsLoader):

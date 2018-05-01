@@ -11,6 +11,10 @@ from azure.cli.command_modules.resource.custom import deploy_arm_template
 from azure.cli.core._profile import Profile
 import json
 import adal
+import os
+import shutil
+
+logger = get_logger(__name__)
 
 def provisionConvergedApp(bot_name):
     botfirstpartyid = 'f3723d34-6ff5-4ceb-a148-d99dcd2511fc'
@@ -29,7 +33,7 @@ def provisionConvergedApp(bot_name):
         client_id = aadclientid,
     )
 
-    print(code['message'])
+    logger.warning(code['message'])
 
     token = context.acquire_token_with_device_code(
         resource = botfirstpartyid,
@@ -45,7 +49,7 @@ def provisionConvergedApp(bot_name):
         headers=headers
     )
     if response.status_code not in [201]:
-        raise CLIError('unable to provision appid and password for supplied credentials')
+        raise CLIError('Unable to provision appid and password for supplied credentials')
     response_content = json.loads(response.content.decode('utf-8'))
     msa_app_id = response_content['AppId']
     password = response_content['Password']
@@ -60,12 +64,12 @@ def create(cmd, client, resource_group_name, resource_name, kind, description=No
 
     if not msa_app_id:
         msa_app_id, password = provisionConvergedApp(resource_name)
-        print('obtained msa app id and password. Provisioning bot now.')
+        logger.warning('obtained msa app id and password. Provisioning bot now.')
 
     if kind == 'registration':
         kind = 'bot'
         if not endpoint or not msa_app_id:
-            raise CLIError('endpoint and msa app id are required for creating a registration bot')
+            raise CLIError('Endpoint and msa app id are required for creating a registration bot')
         parameters = Bot(
             location='global',
             sku= sku.Sku(sku_name),
@@ -197,13 +201,11 @@ def create_app(cmd, client,resource_group_name, resource_name, description, kind
     }
     params = {k: {'value' : v} for k,v in paramsdict.items()}
 
-    import os
-    import json
     dir_path = os.path.dirname(os.path.realpath(__file__))
     deploy_result = deploy_arm_template(
         cmd = cmd,
         resource_group_name = resource_group_name,
-        template_file = '{0}\\{1}'.format(dir_path, template_name),
+        template_file = os.path.join(dir_path, template_name),
         parameters = [[json.dumps(params)]],
         deployment_name = resource_name,
         mode = 'Incremental'
@@ -227,17 +229,14 @@ def publish_app(cmd, client, resource_group_name, resource_name, giturl = None, 
 
     #since there is no git url it's definitely publish from local
     if not code_dir:
-        import os
         code_dir = os.getcwd()
     
     if code_dir:
-        import os
         if not os.path.isdir(code_dir):
-            raise CLIError('please supply a valid directory path containing your source code')
+            raise CLIError('Please supply a valid directory path containing your source code')
         #ensure that the directory contains appropriate post deploy scripts folder
         if 'PostDeployScripts' not in os.listdir(code_dir):
-            raise CLIError('not a valid azure publish directory. missing post deploy scripts')
-        import shutil
+            raise CLIError('Not a valid azure publish directory. missing post deploy scripts')
         shutil.make_archive('upload', 'zip',code_dir)
         output = enable_zip_deploy(cmd, resource_group_name, resource_name, 'upload.zip')
         os.remove('upload.zip')
@@ -250,14 +249,13 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
         resource_name = resource_name
     )
     if(raw_bot_properties.properties.kind == 'bot'):
-        raise CLIError('source download is not supported for registration only bots')
-    import os
+        raise CLIError('Source download is not supported for registration only bots')
     file_save_path = file_save_path or os.getcwd()
     if not os.path.isdir(file_save_path):
-        raise CLIError('path name not valid')
+        raise CLIError('Path name not valid')
     folder_path = os.path.join(file_save_path,resource_name)
     if os.path.exists(folder_path):
-        raise CLIError('the path {0} already exists. Please delete it or specify an alternate path'.format(folder_path))
+        raise CLIError('The path {0} already exists. Please delete it or specify an alternate path'.format(folder_path))
     os.mkdir(folder_path)
     
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, resource_name, None)
@@ -273,7 +271,6 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
         'dir' : 'site\wwwroot'
     }
 
-    import json
     import requests
     response = requests.post(scm_url + '/api/command', data = json.dumps(payload), headers = headers)
     if response.status_code != 200:

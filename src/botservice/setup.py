@@ -38,7 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='azurebotextension',
+    name='botservice',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Bot Services Extension',
     long_description=README + '\n\n' + HISTORY,
