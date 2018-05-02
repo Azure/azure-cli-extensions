@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import os
 import sys
+import argparse
 
 from util import get_repo_root
 
@@ -31,12 +32,14 @@ AUTOREST_LICENSE_HEADER = """# -------------------------------------------------
 """
 
 
-def main():
-    env_path = os.path.join(REPO_ROOT, 'env')
+def main(args):
+    excluded_paths = args.excluded_paths
+    excluded_paths.append('env')
+    excluded_paths = tuple([os.path.join(REPO_ROOT, relative_path) for relative_path in excluded_paths])
 
     files_without_header = []
     for current_dir, _, files in os.walk(get_repo_root()):
-        if current_dir.startswith(env_path):
+        if current_dir.startswith(excluded_paths):
             continue
         file_itr = (os.path.join(current_dir, p) for p in files if p.endswith('.py'))
         for python_file in file_itr:
@@ -52,4 +55,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('excluded_paths', nargs='*')
+    main(parser.parse_args())
