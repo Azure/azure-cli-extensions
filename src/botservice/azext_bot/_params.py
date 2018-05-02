@@ -21,17 +21,18 @@ def load_arguments(self, _):
         c.argument('resource_name', options_list=['--name', '-n'], help='the Resouce Name of the bot.', arg_type=name_arg_type)
 
     with self.argument_context('bot create') as c:
-        c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['F0', 'S1']), help='the Sku of the Bot')
-        c.argument('kind', options_list=['--kind', '-k'], arg_type=get_enum_type(['registration', 'function', 'webapp']), help='the Kind of the Bot.')
-        c.argument('display_name', help='the Display Name of the bot.If not specified, defaults to the name of the bot.')
-        c.argument('description', options_list=['--description', '-d'], help='the Description of the bot.')
-        c.argument('endpoint', options_list=['-e', '--endpoint'], help='the Messaging Endpoint of the bot.')
+        c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['F0', 'S1']), help='the Sku of the Bot', arg_group='Registration Bot Specific')
+        c.argument('kind', options_list=['--kind', '-k'], arg_type=get_enum_type(['registration', 'function', 'webapp']), help='The Kind of the Bot.')
+        c.argument('display_name', help='the Display Name of the bot.If not specified, defaults to the name of the bot.', arg_group='Registration Bot Specific')
+        c.argument('description', options_list=['--description', '-d'], help='the Description of the bot.', arg_group='Registration Bot Specific')
+        c.argument('endpoint', options_list=['-e', '--endpoint'], help='the Messaging Endpoint of the bot.', arg_group='Registration Bot Specific')
         c.argument('msa_app_id', options_list=['--appid'], help='the msa account id to be used with the bot.')
         c.argument('password', options_list=['-p', '--password'], help='the msa password for the bot from developer portal.')
-        c.argument('storageAccountName', options_list=['-s', '--storage'], help='Storage Account Name to be used with the bot.If one is not provided, a new account will be created.')
+        c.argument('storageAccountName', options_list=['-s', '--storage'], help='Storage Account Name to be used with the bot.If one is not provided, a new account will be created.', arg_group='Web/Function Bot Specific')
         c.argument('tags', help='set of tags to add to the bot.')
         c.argument('bot_json', options_list=['--msbot'], help='show the output as json compatible with a .bot file', arg_type=get_three_state_flag())
-        c.argument('language', help='The language to be used to create the bot.', options_list=['--lang'], arg_type=get_enum_type(['Csharp', 'Node']))
+        c.argument('language', help='The language to be used to create the bot.', options_list=['--lang'], arg_type=get_enum_type(['Csharp', 'Node']), arg_group='Web/Function Bot Specific')
+        c.argument('appInsightsLocation', help='The location for the app insights to be used with the bot.', options_list=['--insights'], arg_group='Web/Function Bot Specific')
 
     with self.argument_context('bot publish') as c:
         c.argument('code_dir', options_list=['--code-dir'], help='The root directory to which the code will be downloaded.')
