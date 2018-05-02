@@ -76,7 +76,7 @@ def validate_bypass(namespace):
         namespace.bypass = ', '.join(namespace.bypass) if isinstance(namespace.bypass, list) else namespace.bypass
 
 
-def select_correct_validator(oauth):
+def get_client_parameters_validator(oauth):
     def func(cmd, namespace):
         validate_client_parameters(cmd, namespace, oauth=oauth)
     return func

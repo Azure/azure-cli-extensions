@@ -165,7 +165,7 @@ class StorageCommandGroup(AzCommandGroup):
 
     def _register_data_plane_account_arguments(self, command_name, oauth):
         """ Add parameters required to create a storage client """
-        from ._validators import select_correct_validator
+        from ._validators import get_client_parameters_validator
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
@@ -183,7 +183,7 @@ class StorageCommandGroup(AzCommandGroup):
                              help='Storage account key. Must be used in conjunction with storage account name. '
                                   'Environment variable: AZURE_STORAGE_KEY')
         command.add_argument('connection_string', '--connection-string', required=False, default=None,
-                             validator=select_correct_validator(oauth), arg_group=group_name,
+                             validator=get_client_parameters_validator(oauth), arg_group=group_name,
                              help='Storage account connection string. Environment variable: '
                                   'AZURE_STORAGE_CONNECTION_STRING')
         command.add_argument('sas_token', '--sas-token', required=False, default=None,
