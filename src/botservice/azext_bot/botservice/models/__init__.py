@@ -15,6 +15,7 @@ from .bot_properties import BotProperties
 from .bot import Bot
 from .channel import Channel
 from .bot_channel import BotChannel
+from .facebook_page import FacebookPage
 from .facebook_channel_properties import FacebookChannelProperties
 from .facebook_channel import FacebookChannel
 from .email_channel_properties import EmailChannelProperties
@@ -60,6 +61,7 @@ __all__ = [
     'Bot',
     'Channel',
     'BotChannel',
+    'FacebookPage',
     'FacebookChannelProperties',
     'FacebookChannel',
     'EmailChannelProperties',

@@ -14,7 +14,6 @@ from msrest import Serializer, Deserializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
 from .operations.bots_operations import BotsOperations
-from .operations.bot_services_operations import BotServicesOperations
 from .operations.channels_operations import ChannelsOperations
 from .operations.operations import Operations
 from . import models
@@ -60,8 +59,6 @@ class AzureBotService(object):
 
     :ivar bots: Bots operations
     :vartype bots: azure.mgmt.botservice.operations.BotsOperations
-    :ivar bot_services: BotServices operations
-    :vartype bot_services: azure.mgmt.botservice.operations.BotServicesOperations
     :ivar channels: Channels operations
     :vartype channels: azure.mgmt.botservice.operations.ChannelsOperations
     :ivar operations: Operations operations
@@ -87,8 +84,6 @@ class AzureBotService(object):
         self._deserialize = Deserializer(client_models)
 
         self.bots = BotsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.bot_services = BotServicesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.channels = ChannelsOperations(
             self._client, self.config, self._serialize, self._deserialize)
