@@ -233,16 +233,13 @@ def create_tunnel(cmd, resource_group_name, name, port, slot=None):
     import threading
     from .tunnel import TunnelServer
     tunnel_server = TunnelServer('', port, name, user_name, user_password)
-
     config = get_site_configs(cmd, resource_group_name, name, slot)
 
+    t = threading.Thread()
+    t.daemon = True
+    t.start()
     if not _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
         print('Tunnel is not ready yet, please wait (may take up to 1 minute)')
-
-        t = threading.Thread()
-        t.daemon = True
-        t.start()
-
         while True:
             time.sleep(1)
             print('.')
