@@ -243,7 +243,7 @@ def create_tunnel(cmd, resource_group_name, name, port, slot=None):
         while True:
             time.sleep(1)
             logger.warning('.')
-            if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, slot):
+            if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
                 break
     logger.warning('Tunnel is ready! Creating on port %s', port)
     tunnel_server.start_server()
