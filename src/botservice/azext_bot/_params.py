@@ -18,7 +18,7 @@ name_arg_type = CLIArgumentType(metavar='NAME', configured_default='botname')
 def load_arguments(self, _):
     with self.argument_context('bot') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('resource_name', options_list=['--name', '-n'], help='the Resouce Name of the bot', arg_type=name_arg_type)
+        c.argument('resource_name', options_list=['--name', '-n'], help='the Resouce Name of the bot.', arg_type=name_arg_type)
 
     with self.argument_context('bot create') as c:
         c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['F0', 'S1']), help='the Sku of the Bot')
@@ -32,6 +32,14 @@ def load_arguments(self, _):
         c.argument('tags', help='set of tags to add to the bot.')
         c.argument('bot_json', options_list=['--msbot'], help='show the output as json compatible with a .bot file', arg_type=get_three_state_flag())
         c.argument('language', help='The language to be used to create the bot.', options_list=['--lang'], arg_type=get_enum_type(['Csharp', 'Node']))
+
+    with self.argument_context('bot publish') as c:
+        c.argument('code_dir', options_list=['--code-dir'], help='The root directory to which the code will be downloaded.')
+        c.argument('git_url', options_list=['--git-url'], help='Url to the git repo containing the code to be published.')
+        c.argument('branch', options_list=['--branch'], help='Git branch from which code will be published.')
+
+    with self.argument_context('bot download') as c:
+        c.argument('file_save_path', options_list=['--save_path'], help='the root directory to which the file should be saved to.')
 
     with self.argument_context('bot show') as c:
         c.argument('bot_json', options_list=['--msbot'], help='show the output as json compatible with a .bot file', arg_type=get_three_state_flag())

@@ -225,14 +225,14 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         return create_bot_json(cmd, client, resource_group_name, resource_name, app_password=password)
 
 
-def publish_app(cmd, client, resource_group_name, resource_name, giturl=None, git_token=None, git_branch='master', code_dir=None):
+def publish_app(cmd, client, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master', code_dir=None):
     # if given msbot json, use that to update environment settings like luis settings
-    if giturl:
+    if git_url:
         return config_source_control(
             cmd=cmd,
             name=resource_name,
             resource_group_name=resource_group_name,
-            repo_url=giturl,
+            repo_url=git_url,
             branch=git_branch,
             git_token=git_token
         )
