@@ -32,7 +32,7 @@ setup(
     description='An Azure CLI Extension to manage appservice resources',
     long_description='An Azure CLI Extension to manage appservice resources',
     license='MIT',
-    author='Sisira Panchagnula',
+    author='Sisira Panchagnula, Lukasz Stempniewicz',
     author_email='sisirap@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,

@@ -184,38 +184,6 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     logger.warning("All done.")
     return create_json
 
-def _check_for_ready_tunnel(cmd, resource_group_name, name, remote_debugging, tunnel_server, slot=None):
-    from .tunnel import TunnelServer
-    default_port = tunnel_server.is_port_set_to_default()
-    if default_port is not remote_debugging:
-        return True
-    return False
-
-def create_tunnel(cmd, resource_group_name, name, port, slot=None):
-    profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
-    user_name = next(p['userName'] for p in profiles)
-    user_password = next(p['userPWD'] for p in profiles)
-    import time
-    import threading
-    from .tunnel import TunnelServer
-    tunnel_server = TunnelServer('', port, name, user_name, user_password)
-
-    config = get_site_configs(cmd, resource_group_name, name, slot)
-
-    if not _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
-        print('Tunnel is not ready yet, please wait (may take up to 1 minute)')
-
-        t = threading.Thread()
-        t.daemon = True
-        t.start()
-    
-        while True:
-            time.sleep(1)
-            print('.')
-            if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, slot):
-                break
-    print('Tunnel is ready! Creating on port {}'.format(port))
-    tunnel_server.start_server()
 
 def list_webapp_snapshots(cmd, resource_group, name, slot=None):
     client = web_client_factory(cmd.cli_ctx)
@@ -247,3 +215,38 @@ def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_
             return client.web_apps.recover_slot(resource_group, name, request, slot)
         else:
             return client.web_apps.recover(resource_group, name, request)
+
+
+def _check_for_ready_tunnel(cmd, resource_group_name, name, remote_debugging, tunnel_server, slot=None):
+    from .tunnel import TunnelServer
+    default_port = tunnel_server.is_port_set_to_default()
+    if default_port is not remote_debugging:
+        return True
+    return False
+
+
+def create_tunnel(cmd, resource_group_name, name, port, slot=None):
+    profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
+    user_name = next(p['userName'] for p in profiles)
+    user_password = next(p['userPWD'] for p in profiles)
+    import time
+    import threading
+    from .tunnel import TunnelServer
+    tunnel_server = TunnelServer('', port, name, user_name, user_password)
+
+    config = get_site_configs(cmd, resource_group_name, name, slot)
+
+    if not _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
+        print('Tunnel is not ready yet, please wait (may take up to 1 minute)')
+
+        t = threading.Thread()
+        t.daemon = True
+        t.start()
+
+        while True:
+            time.sleep(1)
+            print('.')
+            if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, slot):
+                break
+    print('Tunnel is ready! Creating on port {}'.format(port))
+    tunnel_server.start_server()

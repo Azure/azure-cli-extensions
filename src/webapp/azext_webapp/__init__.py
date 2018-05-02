@@ -23,7 +23,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
             g.custom_command('up', 'create_deploy_webapp')
-            g.custom_command('tunnel create','create_tunnel')
+            g.custom_command('remote-connection create', 'create_tunnel')
             g.custom_command('config snapshot list', 'list_webapp_snapshots')
             g.custom_command('config snapshot restore', 'restore_webapp_snapshot')
         return self.command_table
@@ -34,8 +34,8 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('dryrun',
                        help="shows summary of the create and deploy operation instead of executing it",
                        default=False, action='store_true')
-        with self.argument_contect('webapp tunnel create') as c:
-            c.argument('port',options_list=['--port', '-p'], help='Port for the remote connection', type=int)
+        with self.argument_context('webapp remote-connection create') as c:
+            c.argument('port', options_list=['--port', '-p'], help='Port for the remote connection', type=int)
         with self.argument_context('webapp config snapshot list') as c:
             c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of resource group.')
             c.argument('name', options_list=['--webapp-name', '-n'], help='Name of the webapp.')
