@@ -9,6 +9,7 @@ import socket
 import time
 import traceback
 import websocket
+import logging as logs
 
 from contextlib import closing
 from threading import Thread
@@ -90,6 +91,8 @@ class TunnelServer(object):
             raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(url, r.status, r.reason))
         msg = r.read().decode('utf-8')
         logger.info('Status response message: %s', msg)
+        if 'FAIL' in msg.upper():
+            logger.warning('WARNING - Remote debugging may not be setup properly. Reponse content: %s', msg)
         if '2222' in msg:
             return True
         return False
@@ -103,7 +106,14 @@ class TunnelServer(object):
             self.client.settimeout(60)
             host = 'wss://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx')
             basic_auth_header = 'Authorization: Basic {}'.format(basic_auth_string)
-            websocket.enableTrace(True)
+            cli_logger = get_logger()  # get CLI logger which has the level set through command lines
+            is_verbose = any(handler.level <= logs.INFO for handler in cli_logger.handlers)
+            if is_verbose:
+                logger.info('Websocket tracing enabled')
+                websocket.enableTrace(True)
+            else:
+                logger.warning('Websocket tracing disabled, use --verbose flag to enable')
+                websocket.enableTrace(False)
             self.ws = create_connection(host,
                                         sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
                                         class_=TunnelWebSocket,
@@ -119,11 +129,11 @@ class TunnelServer(object):
             debugger_thread.start()
             web_socket_thread.start()
             logger.info('Both debugger and websocket threads started...')
-            print('Successfully started local server..')
+            logger.warning('Successfully started local server..')
             debugger_thread.join()
             web_socket_thread.join()
             logger.info('Both debugger and websocket threads stopped...')
-            print('Stopped local server..')
+            logger.warning('Stopped local server..')
 
     def listen_to_web_socket(self, client, ws_socket, index):
         while True:
@@ -172,5 +182,5 @@ class TunnelServer(object):
                 return False
 
     def start_server(self):
-        print('Starting local server..')
+        logger.warning('Starting local server..')
         self.listen()

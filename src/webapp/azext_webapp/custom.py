@@ -239,11 +239,11 @@ def create_tunnel(cmd, resource_group_name, name, port, slot=None):
     t.daemon = True
     t.start()
     if not _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
-        print('Tunnel is not ready yet, please wait (may take up to 1 minute)')
+        logger.warning('Tunnel is not ready yet, please wait (may take up to 1 minute)')
         while True:
             time.sleep(1)
-            print('.')
+            logger.warning('.')
             if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, slot):
                 break
-    print('Tunnel is ready! Creating on port {}'.format(port))
+    logger.warning('Tunnel is ready! Creating on port %s', port)
     tunnel_server.start_server()

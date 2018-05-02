@@ -18,12 +18,12 @@ helps['webapp up'] = """
 """
 helps['webapp remote-connection'] = """
     type: group
-    short-summary: Create a remote connection using a tcp tunnel to your app
+    short-summary: Create a remote connection using a tcp tunnel to your web app
 """
 
 helps['webapp remote-connection create'] = """
     type: command
-    short-summary: Create a remote connection using a tcp tunnel to your app
+    short-summary: Creates a remote connection using a tcp tunnel to your web app
 """
 
 helps['webapp config snapshot list'] = """
