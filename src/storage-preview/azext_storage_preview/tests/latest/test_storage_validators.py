@@ -11,7 +11,7 @@ from knack import CLI
 
 from azure.cli.core._config import GLOBAL_CONFIG_DIR, ENV_VAR_PREFIX
 from azure.cli.core.cloud import get_active_cloud
-from azure.cli.core.profiles import get_sdk, ResourceType, supported_api_version
+from azure.cli.core.profiles import get_sdk, ResourceType, supported_api_version, register_resource_type
 
 from ..._validators import (get_permission_validator, get_datetime_type,
                             ipv4_range_type, resource_type_type, services_type,
@@ -32,6 +32,7 @@ class MockCLI(CLI):
 class MockLoader(object):
     def __init__(self, ctx):
         self.ctx = ctx
+        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
 
     def get_models(self, *attr_args, **_):
         from azure.cli.core.profiles import get_sdk

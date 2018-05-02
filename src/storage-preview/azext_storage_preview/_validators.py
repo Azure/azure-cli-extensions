@@ -51,6 +51,7 @@ def _create_token_credential(cli_ctx):
 
     token_credential = TokenCredential(None)
     updater = TokenUpdater(token_credential, cli_ctx)
+
     def _cancel_timer_event_handler(_, **__):
         updater.cancel()
     cli_ctx.register_event(EVENT_CLI_POST_EXECUTE, _cancel_timer_event_handler)
