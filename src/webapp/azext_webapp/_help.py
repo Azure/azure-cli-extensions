@@ -16,6 +16,15 @@ helps['webapp up'] = """
             az webapp up -n MyUniqueAppName --dryrun \n
             az webapp up -n MyUniqueAppName -l locationName
 """
+helps['webapp remote-connection'] = """
+    type: group
+    short-summary: Create a remote connection using a tcp tunnel to your web app
+"""
+
+helps['webapp remote-connection create'] = """
+    type: command
+    short-summary: Creates a remote connection using a tcp tunnel to your web app
+"""
 
 helps['webapp config snapshot list'] = """
     type: command
