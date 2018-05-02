@@ -3,6 +3,7 @@
 
 from knack.util import CLIError
 
+
 def bot_exception_handler(ex):
     from azext_bot.botservice.models import ErrorException
     from msrestazure.azure_exceptions import CloudError

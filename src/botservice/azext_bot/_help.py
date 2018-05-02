@@ -8,19 +8,19 @@ helps['bot'] = """
     short-summary: Manage Bot Services.
 """
 helps['bot create'] = """
-    type: command 
+    type: command
     short-summary: Create a new Bot Service.
 """
 helps['bot show'] = """
-    type: command 
+    type: command
     short-summary: get an existing Bot Service.
 """
 helps['bot delete'] = """
-    type: command 
+    type: command
     short-summary: delete an existing Bot Service.
 """
 helps['bot update'] = """
-    type: command 
+    type: command
     short-summary: update an existing Bot Service.
     examples:
         - name: Update description on a bot
@@ -28,23 +28,23 @@ helps['bot update'] = """
             az bot update -n botName -g MyResourceGroup --set properties.description="some description"
 """
 helps['bot publish'] = """
-    type: command 
+    type: command
     short-summary: publish to an existing Bot Service.
     long-summary: publish your github or zip code to a bot service.
                   This lets you overwrite the existing template code on a bot.
 """
 helps['bot download'] = """
-    type: command 
+    type: command
     short-summary: download an existing Bot Service.
     long-summary: download the code deployed to your web/function app for your bot.
                   You can then make changes to it and publish it back to your app.
 """
 helps['bot facebook create'] = """
-    type: command 
+    type: command
     short-summary: Create Facebook Channel on a Bot.
 """
 helps['bot email create'] = """
-    type: command 
+    type: command
     short-summary: Create Email Channel on a Bot.
     examples:
         - name: Add Email Channel for a Bot
@@ -53,7 +53,7 @@ helps['bot email create'] = """
             -p password --enable
 """
 helps['bot msteams create'] = """
-    type: command 
+    type: command
     short-summary: Create MsTeams Channel on a Bot.
     examples:
         - name: Add MsTeams Channel for a Bot with messaging and video enabled
@@ -62,7 +62,7 @@ helps['bot msteams create'] = """
             --enable-video --enable
 """
 helps['bot skype create'] = """
-    type: command 
+    type: command
     short-summary: Create Skype Channel on a Bot.
     examples:
         - name: Add Skype Channel for a Bot with messaging and screen sharing enabled
@@ -71,7 +71,7 @@ helps['bot skype create'] = """
             --enable-screen-sharing --enable
 """
 helps['bot kik create'] = """
-    type: command 
+    type: command
     short-summary: Create Kik Channel on a Bot.
     examples:
         - name: Add Kik Channel for a Bot.
@@ -80,7 +80,7 @@ helps['bot kik create'] = """
             -p password --key key --is-validated --enable
 """
 helps['bot webchat create'] = """
-    type: command 
+    type: command
     short-summary: Create WebChat Channel on a Bot.
     examples:
         - name: Add WebChat Channel for a Bot.
@@ -88,7 +88,7 @@ helps['bot webchat create'] = """
             az bot webchat create -n botName -g MyResourceGroup --enablev3 --enable
 """
 helps['bot directline create'] = """
-    type: command 
+    type: command
     short-summary: Create DirectLine Channel on a Bot.
     examples:
         - name: Add DirectLine Channel for a Bot.
@@ -96,7 +96,7 @@ helps['bot directline create'] = """
             az bot webchat create -n botName -g MyResourceGroup --enablev3 --enable
 """
 helps['bot telegram create'] = """
-    type: command 
+    type: command
     short-summary: Create Telegram Channel on a Bot.
     examples:
         - name: Add Telegram Channel for a Bot.
@@ -105,7 +105,7 @@ helps['bot telegram create'] = """
             --is-validated --enable
 """
 helps['bot sms create'] = """
-    type: command 
+    type: command
     short-summary: Create Sms Channel on a Bot.
     examples:
         - name: Add Sms Channel for a Bot.
@@ -114,7 +114,7 @@ helps['bot sms create'] = """
             --auth-token token --is-validated --enable
 """
 helps['bot slack create'] = """
-    type: command 
+    type: command
     short-summary: Create Slack Channel on a Bot.
 """
 
@@ -129,6 +129,6 @@ for channel in ['facebook', 'email', 'msteams', 'skype', 'kik', 'webchat', 'dire
         short-summary: Get details of {0} Channel on a Bot
     """.format(channelTitle)
     helps['bot {0}'.format(channel)] = """
-        type: group 
+        type: group
         short-summary: Manage {0} Channel on a Bot.
     """.format(channelTitle)
