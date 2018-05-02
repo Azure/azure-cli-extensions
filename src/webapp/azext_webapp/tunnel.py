@@ -61,10 +61,10 @@ class TunnelServer(object):
         is_port_open = False
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             if sock.connect_ex(('', self.local_port)) == 0:
-                logger.info('Port %s is open', self.local_port)
-                is_port_open = True
+                logger.info('Port %s is NOT open', self.local_port)
             else:
-                logger.warning('Port %s is NOT open', self.local_port)
+                logger.warning('Port %s is open', self.local_port)
+                is_port_open = True
             return is_port_open
 
     def is_port_set_to_default(self):
@@ -88,7 +88,9 @@ class TunnelServer(object):
         )
         if r.status != 200:
             raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(url, r.status, r.reason))
-        if '2222' in r.text:
+        msg = r.read().decode('utf-8')
+        logger.info('Status response message: %s', msg)
+        if '2222' in msg:
             return True
         return False
 
@@ -117,9 +119,11 @@ class TunnelServer(object):
             debugger_thread.start()
             web_socket_thread.start()
             logger.info('Both debugger and websocket threads started...')
+            print('Successfully started local server..')
             debugger_thread.join()
             web_socket_thread.join()
             logger.info('Both debugger and websocket threads stopped...')
+            print('Stopped local server..')
 
     def listen_to_web_socket(self, client, ws_socket, index):
         while True:
@@ -168,4 +172,5 @@ class TunnelServer(object):
                 return False
 
     def start_server(self):
+        print('Starting local server..')
         self.listen()
