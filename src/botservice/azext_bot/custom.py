@@ -192,7 +192,6 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         "kind": kind,
         "sku": sku,
         "siteName": resource_name,
-        "description": description,
         "appId": appid,
         "appSecret": password,
         "storageAccountResourceId": "",
@@ -208,6 +207,8 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         "azureWebJobsBotFrameworkDirectLineSecret": "",
         "botId": resource_name
     }
+    if description:
+        paramsdict['description'] = description
     params = {k: {'value': v} for k, v in paramsdict.items()}
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -315,11 +316,11 @@ def create_channel(client, channel, channel_name, resource_group_name, resource_
     )
 
 
-def facebook_create(client, resource_group_name, resource_name, page_id, app_id, app_secret, is_disabled=None, access_token=None):
-    from azext_bot.botservice.models import FacebookChannel, FacebookChannelProperties
+def facebook_create(client, resource_group_name, resource_name, page_id, app_id, app_secret, access_token, is_disabled=None):
+    from azext_bot.botservice.models import FacebookChannel, FacebookChannelProperties, FacebookPage
     channel = FacebookChannel(
         properties=FacebookChannelProperties(
-            page_id=page_id,
+            pages=[FacebookPage(id=page_id, access_token=access_token)],
             app_id=app_id,
             app_secret=app_secret,
             access_token=access_token,
@@ -403,15 +404,15 @@ def webchat_create(client, resource_group_name, resource_name, is_disabled=None,
     return create_channel(client, channel, 'WebChatChannel', resource_group_name, resource_name)
 
 
-def directline_create(client, resource_group_name, resource_name, is_disabled=None, is_v1_enabled=None, is_v3_enabled=None, site_name='default'):
+def directline_create(client, resource_group_name, resource_name, is_disabled=None, is_v1_disabled=None, is_v3_disabled=None, site_name='default'):
     from azext_bot.botservice.models import DirectLineChannel, DirectLineChannelProperties, DirectLineSite
     channel = DirectLineChannel(
         properties=DirectLineChannelProperties(
             sites=[DirectLineSite(
                 site_name=site_name,
                 is_enabled=not is_disabled,
-                is_v1_enabled=is_v1_enabled,
-                is_v3_enabled=is_v3_enabled
+                is_v1_enabled=not is_v1_disabled,
+                is_v3_enabled=not is_v3_disabled
             )]
         )
     )

@@ -47,7 +47,7 @@ def load_arguments(self, _):
 
     with self.argument_context('bot facebook create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag(), help='add the channel in a disabled state')
-        c.argument('page_id', options_list=['--page-id'], help='the facebook page id.')
+        c.argument('page_id', options_list=['--page-id'], help='page id of the facebook page to be used for the bot.')
         c.argument('app_id', options_list=['--appid'], help='the facebook application id.')
         c.argument('app_secret', options_list=['--secret'], help='the facebook application secret.')
         c.argument('access_token', options_list=['--token'], help='the facebook application access token.')
@@ -90,8 +90,8 @@ def load_arguments(self, _):
     with self.argument_context('bot directline create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag(), help='add the channel in a disabled state')
         c.argument('site_name', options_list=['-s', '--site-name'], help='name of the webchat channel site')
-        c.argument('is_v1_enabled', options_list=['--enablev1'], action='store_true', help='Enable v1 channel protocol')
-        c.argument('is_v3_enabled', options_list=['--enablev3'], action='store_true', help='Enable v3 channel protocol')
+        c.argument('is_v1_disabled', options_list=['--disablev1'], action='store_true', help='Enable v1 channel protocol', arg_type=get_three_state_flag())
+        c.argument('is_v3_disabled', options_list=['--disablev3'], action='store_true', help='Enable v3 channel protocol', arg_type=get_three_state_flag())
 
     with self.argument_context('bot telegram create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag())

@@ -69,7 +69,7 @@ helps['bot skype create'] = """
     examples:
         - name: Add Skype Channel for a Bot with messaging and screen sharing enabled
           text: |-
-            az bot msteams -n botName -g MyResourceGroup --enable-messaging
+            az bot skype -n botName -g MyResourceGroup --enable-messaging
             --enable-screen-sharing --enable
 """
 helps['bot kik create'] = """
