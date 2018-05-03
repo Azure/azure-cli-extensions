@@ -19,7 +19,10 @@ from azure.cli.command_modules.appservice.custom import (
     _get_scm_url,
     get_sku_name,
     list_publish_profiles,
-    get_site_configs)
+    get_site_configs,
+    config_diagnostics)
+
+from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 
 from .create_util import (
     zip_contents_from_dir,
@@ -33,7 +36,7 @@ from .create_util import (
     web_client_factory
 )
 
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
 
 logger = get_logger(__name__)
 
@@ -64,12 +67,14 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     else:
         sku = lang_details.get("default_sku")
         language = lang_details.get("language")
-        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME else OS_DEFAULT
+        is_java = language.lower() == JAVA_RUNTIME_NAME
+        is_skip_build = is_java or language.lower() == STATIC_RUNTIME_NAME
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME or is_java else OS_DEFAULT
         # detect the version
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')
         detected_version = data.get('detected')
-        runtime_version = "{}|{}".format(language, version_used_create)
+        runtime_version = "{}|{}".format(language, version_used_create) if version_used_create != "-" else version_used_create
 
     if location is None:
         locs = client.list_geo_regions(sku, True)
@@ -92,7 +97,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     # Resource group: check if default RG is set
     default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
-    if default_rg and check_resource_group_supports_os(cmd, default_rg, location, is_linux):
+    if default_rg and check_resource_group_exists(cmd, default_rg) and check_resource_group_supports_os(cmd, default_rg, location, is_linux):
         rg_name = default_rg
         rg_mssg = "[Using default Resource group]"
     else:
@@ -100,7 +105,6 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     src_path = "{} {}".format(src_dir.replace("\\", "\\\\"), str_no_contents_warn)
     rg_str = "{} {}".format(rg_name, rg_mssg)
-
     dry_run_str = r""" {
             "name" : "%s",
             "serverfarm" : "%s",
@@ -143,43 +147,48 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     # create the app
     if not check_app_exists(cmd, rg_name, name):
         logger.warning("Creating app '%s' ....", name)
-        app_created = create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
-        # update create_json to include the app_url
-        url = app_created.enabled_host_names[0]  # picks the custom domain URL incase a domain is assigned
-        url = 'https://' + url
+        create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
         logger.warning("Webapp creation complete")
     else:
         logger.warning("App '%s' already exists", name)
+    # update create_json to include the app_url
+    url = _get_app_url(cmd, rg_name, name)  # picks the custom domain URL incase a domain is assigned
 
     if do_deployment:
-        # setting to build after deployment
-        logger.warning("Updating app settings to enable build after deployment")
-        update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
-        # work around until the timeout limits issue for linux is investigated & fixed
-        # wakeup kudu, by making an SCM call
+        if not is_skip_build:
+            # setting to build after deployment
+            logger.warning("Updating app settings to enable build after deployment")
+            update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
+            # work around until the timeout limits issue for linux is investigated & fixed
+            # wakeup kudu, by making an SCM call
 
         import requests
         # work around until the timeout limits issue for linux is investigated & fixed
         user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
         scm_url = _get_scm_url(cmd, rg_name, name)
+
         import urllib3
         authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
         requests.get(scm_url + '/api/settings', headers=authorization)
 
-        logger.warning("Creating zip with contents of dir %s ...", src_dir)
-        # zip contents & deploy
-        zip_file_path = zip_contents_from_dir(src_dir, language)
+        if is_java:
+            zip_file_path = src_path + '\\\\' + lang_details.get('file_loc')[0]
+        else:
+            logger.warning("Creating zip with contents of dir %s ...", src_dir)
+            # zip contents & deploy
+            zip_file_path = zip_contents_from_dir(src_dir, language)
 
-        logger.warning("Deploying and building contents to app."
-                       "This operation can take some time to finish...")
+        logger.warning("Deploying %s contents to app."
+                       "This operation can take some time to finish...", '' if is_skip_build else 'and building')
         enable_zip_deploy(cmd, rg_name, name, zip_file_path)
-        # Remove the file afer deployment, handling exception if user removed the file manually
-        try:
-            os.remove(zip_file_path)
-        except OSError:
-            pass
+        if not is_java:
+            # Remove the file afer deployment, handling exception if user removed the file manually
+            try:
+                os.remove(zip_file_path)
+            except OSError:
+                pass
     else:
-        logger.warning("No 'NODE' or 'DOTNETCORE' package detected, skipping zip and deploy process")
+        logger.warning("No known package (Node, ASP.NET, .NETCORE, Java or Static Html) found skipping zip and deploy process")
     create_json.update({'app_url': url})
     logger.warning("All done.")
     return create_json
@@ -247,3 +256,8 @@ def create_tunnel(cmd, resource_group_name, name, port, slot=None):
                 break
     logger.warning('Tunnel is ready! Creating on port %s', port)
     tunnel_server.start_server()
+
+
+def _get_app_url(cmd, rg_name, app_name):
+    site = _generic_site_operation(cmd.cli_ctx, rg_name, app_name, 'get')
+    return "https://" + site.enabled_host_names[0]

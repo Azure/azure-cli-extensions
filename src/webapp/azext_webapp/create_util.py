@@ -13,7 +13,12 @@ from ._constants import (
     NODE_VERSION_DEFAULT,
     NODE_VERSIONS,
     NETCORE_RUNTIME_NAME,
-    NODE_RUNTIME_NAME)
+    NODE_RUNTIME_NAME,
+    DOTNET_RUNTIME_NAME,
+    DOTNET_VERSION_DEFAULT,
+    DOTNET_VERSIONS,
+    JAVA_RUNTIME_NAME,
+    STATIC_RUNTIME_NAME)
 
 
 def _resource_client_factory(cli_ctx, **_):
@@ -57,9 +62,16 @@ def get_runtime_version_details(file_path, lang_name):
         # method returns list in DESC, pick the first
         version_detected = parse_netcore_version(file_path)[0]
         version_to_create = detect_netcore_version_tocreate(version_detected)
+    elif lang_name.lower() == DOTNET_RUNTIME_NAME:
+        # method returns list in DESC, pick the first
+        version_detected = parse_dotnet_version(file_path)
+        version_to_create = detect_dotnet_version_tocreate(version_detected)
     elif lang_name.lower() == NODE_RUNTIME_NAME:
         version_detected = parse_node_version(file_path)[0]
         version_to_create = detect_node_version_tocreate(version_detected)
+    elif lang_name.lower() == STATIC_RUNTIME_NAME:
+        version_detected = "-"
+        version_to_create = "-"
     return {'detected': version_detected, 'to_create': version_to_create}
 
 
@@ -107,20 +119,63 @@ def check_app_exists(cmd, rg_name, app_name):
 def get_lang_from_content(src_path):
     import glob
     # NODE: package.json should exist in the application root dir
-    # NETCORE: *.csproj should exist in the application root dir
+    # NETCORE & DOTNET: *.csproj should exist in the application dir
+    # NETCORE: <TargetFramework>netcoreapp2.0</TargetFramework>
+    # DOTNET: <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     runtime_details_dict = dict.fromkeys(['language', 'file_loc', 'default_sku'])
     package_json_file = os.path.join(src_path, 'package.json')
-    package_netcore_glob = glob.glob("*.csproj")
+    package_netlang_glob = glob.glob("**/*.csproj", recursive=True)
+    runtime_java_file = glob.glob("**/*.war", recursive=True)
+    static_html_file = glob.glob("**/*.html", recursive=True)
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
         runtime_details_dict['default_sku'] = 'S1'
-    elif package_netcore_glob:
-        package_netcore_file = os.path.join(src_path, package_netcore_glob[0])
-        runtime_details_dict['language'] = NETCORE_RUNTIME_NAME
+    elif package_netlang_glob:
+        package_netcore_file = os.path.join(src_path, package_netlang_glob[0])
+        runtime_lang = detect_dotnet_lang(package_netcore_file)
+        runtime_details_dict['language'] = runtime_lang
         runtime_details_dict['file_loc'] = package_netcore_file
         runtime_details_dict['default_sku'] = 'F1'
+    elif runtime_java_file:
+        runtime_details_dict['language'] = JAVA_RUNTIME_NAME
+        runtime_details_dict['file_loc'] = runtime_java_file
+        runtime_details_dict['default_sku'] = 'S1'
+    elif static_html_file:
+        runtime_details_dict['language'] = STATIC_RUNTIME_NAME
+        runtime_details_dict['file_loc'] = static_html_file[0]
+        runtime_details_dict['default_sku'] = 'F1'
     return runtime_details_dict
+
+
+def detect_dotnet_lang(csproj_path):
+    import xml.etree.ElementTree as ET
+    import re
+    parsed_file = ET.parse(csproj_path)
+    root = parsed_file.getroot()
+    version_lang = ''
+    for target_ver in root.iter('TargetFramework'):
+        version_lang = re.sub(r'([^a-zA-Z\s]+?)', '', target_ver.text)
+    if 'netcore' in version_lang.lower():
+        return NETCORE_RUNTIME_NAME
+    else:
+        return DOTNET_RUNTIME_NAME
+
+
+def parse_dotnet_version(file_path):
+    from xml.dom import minidom
+    import re
+    xmldoc = minidom.parse(file_path)
+    framework_ver = xmldoc.getElementsByTagName('TargetFrameworkVersion')
+    version_detected = ['4.7']
+    target_ver = framework_ver[0].firstChild.data
+    non_decimal = re.compile(r'[^\d.]+')
+    # reduce the version to '5.7.4' from '5.7'
+    if target_ver is not None:
+        # remove the string from the beginning of the version value
+        c = non_decimal.sub('', target_ver)
+        version_detected = c[:3]
+    return version_detected
 
 
 def parse_netcore_version(file_path):
@@ -155,6 +210,15 @@ def detect_netcore_version_tocreate(detected_ver):
     if detected_ver in NETCORE_VERSIONS:
         return detected_ver
     return NETCORE_VERSION_DEFAULT
+
+
+def detect_dotnet_version_tocreate(detected_ver):
+    min_ver = DOTNET_VERSIONS[0]
+    if detected_ver in DOTNET_VERSIONS:
+        return detected_ver
+    elif detected_ver < min_ver:
+        return min_ver
+    return DOTNET_VERSION_DEFAULT
 
 
 def detect_node_version_tocreate(detected_ver):
