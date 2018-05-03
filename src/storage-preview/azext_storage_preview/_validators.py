@@ -76,12 +76,6 @@ def validate_bypass(namespace):
         namespace.bypass = ', '.join(namespace.bypass) if isinstance(namespace.bypass, list) else namespace.bypass
 
 
-# def get_client_parameters_validator(oauth):
-#     def func(cmd, namespace):
-#         validate_client_parameters(cmd, namespace, oauth=oauth)
-#     return func
-
-
 def validate_client_parameters(cmd, namespace):
     """ Retrieves storage connection parameters from environment variables and parses out connection string into
     account name and key """
@@ -89,6 +83,27 @@ def validate_client_parameters(cmd, namespace):
 
     def get_config_value(section, key, default):
         return cmd.cli_ctx.config.get(section, key, default)
+
+    if hasattr(n, 'auth_mode'):
+        auth_mode = n.auth_mode or get_config_value('storage', 'auth_mode', None)
+        del n.auth_mode
+        if not n.account_name:
+            n.account_name = get_config_value('storage', 'account', None)
+        if auth_mode == 'login':
+            n.token_credential = _create_token_credential(cmd.cli_ctx)
+
+            # give warning if there are account key args being ignored
+            account_key_args = [n.account_key and "--account-key", n.sas_token and "--sas-token",
+                                n.connection_string and "--connection-string"]
+            account_key_args = [arg for arg in account_key_args if arg]
+
+            if account_key_args:
+                from knack.log import get_logger
+
+                logger = get_logger(__name__)
+                logger.warning('In "login" auth mode, the following arguments are ignored: %s',
+                               ' ,'.join(account_key_args))
+            return
 
     if not n.connection_string:
         n.connection_string = get_config_value('storage', 'connection_string', None)
@@ -118,13 +133,7 @@ def validate_client_parameters(cmd, namespace):
 
     # if account name is specified but no key, attempt to query
     if n.account_name and not n.account_key and not n.sas_token:
-        if hasattr(n, 'auth_mode') and n.auth_mode == 'oauth':
-            n.token_credential = _create_token_credential(cmd.cli_ctx)
-        else:
-            n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
-
-    if hasattr(n, 'auth_mode'):
-        del n.auth_mode
+        n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
 
 
 def process_blob_source_uri(cmd, namespace):
