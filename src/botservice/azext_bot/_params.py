@@ -18,7 +18,7 @@ name_arg_type = CLIArgumentType(metavar='NAME', configured_default='botname')
 def load_arguments(self, _):
     with self.argument_context('bot') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('resource_name', options_list=['--name', '-n'], help='the Resouce Name of the bot.', arg_type=name_arg_type)
+        c.argument('resource_name', options_list=['--name', '-n'], help='the Resource Name of the bot.', arg_type=name_arg_type)
 
     with self.argument_context('bot create') as c:
         c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['F0', 'S1']), help='the Sku of the Bot', arg_group='Registration Bot Specific')
