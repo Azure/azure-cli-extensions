@@ -17,7 +17,9 @@ from azure.cli.command_modules.appservice.custom import (
     update_app_settings,
     _get_site_credential,
     _get_scm_url,
-    get_sku_name)
+    get_sku_name,
+    list_publish_profiles,
+    get_site_configs)
 
 from .create_util import (
     zip_contents_from_dir,
@@ -213,3 +215,35 @@ def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_
             return client.web_apps.recover_slot(resource_group, name, request, slot)
         else:
             return client.web_apps.recover(resource_group, name, request)
+
+
+def _check_for_ready_tunnel(cmd, resource_group_name, name, remote_debugging, tunnel_server, slot=None):
+    from .tunnel import TunnelServer
+    default_port = tunnel_server.is_port_set_to_default()
+    if default_port is not remote_debugging:
+        return True
+    return False
+
+
+def create_tunnel(cmd, resource_group_name, name, port, slot=None):
+    profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
+    user_name = next(p['userName'] for p in profiles)
+    user_password = next(p['userPWD'] for p in profiles)
+    import time
+    import threading
+    from .tunnel import TunnelServer
+    tunnel_server = TunnelServer('', port, name, user_name, user_password)
+    config = get_site_configs(cmd, resource_group_name, name, slot)
+
+    t = threading.Thread()
+    t.daemon = True
+    t.start()
+    if not _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
+        logger.warning('Tunnel is not ready yet, please wait (may take up to 1 minute)')
+        while True:
+            time.sleep(1)
+            logger.warning('.')
+            if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
+                break
+    logger.warning('Tunnel is ready! Creating on port %s', port)
+    tunnel_server.start_server()
