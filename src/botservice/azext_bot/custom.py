@@ -342,7 +342,7 @@ def email_create(client, resource_group_name, resource_name, email_address, pass
     return create_channel(client, channel, 'EmailChannel', resource_group_name, resource_name)
 
 
-def msteams_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None, enable_media_cards=None, enable_video=None, enable_calling=None, call_mode=None):
+def msteams_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None, enable_media_cards=None, enable_video=None, enable_calling=None):
     from azext_bot.botservice.models import MsTeamsChannel, MsTeamsChannelProperties
     channel = MsTeamsChannel(
         properties=MsTeamsChannelProperties(
@@ -350,14 +350,13 @@ def msteams_create(client, resource_group_name, resource_name, is_disabled=None,
             enable_messaging=enable_messaging,
             enable_media_cards=enable_media_cards,
             enable_video=enable_video,
-            enable_calling=enable_calling,
-            call_mode=call_mode
+            enable_calling=enable_calling
         )
     )
     return create_channel(client, channel, 'MsTeamsChannel', resource_group_name, resource_name)
 
 
-def skype_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None, enable_media_cards=None, enable_video=None, enable_calling=None, enable_screen_sharing=None, enable_groups=None, groups_mode=None, calling_web_hook=None):
+def skype_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None, enable_media_cards=None, enable_video=None, enable_calling=None, enable_screen_sharing=None, enable_groups=None, calling_web_hook=None):
     from azext_bot.botservice.models import SkypeChannel, SkypeChannelProperties
     channel = SkypeChannel(
         properties=SkypeChannelProperties(
@@ -368,7 +367,6 @@ def skype_create(client, resource_group_name, resource_name, is_disabled=None, e
             enable_calling=enable_calling,
             enable_screen_sharing=enable_screen_sharing,
             enable_groups=enable_groups,
-            groups_mode=groups_mode,
             calling_web_hook=calling_web_hook
         )
     )

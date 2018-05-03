@@ -40,7 +40,7 @@ def load_arguments(self, _):
         c.argument('branch', options_list=['--branch'], help='Git branch from which code will be published.')
 
     with self.argument_context('bot download') as c:
-        c.argument('file_save_path', options_list=['--save_path'], help='the root directory to which the file should be saved to.')
+        c.argument('file_save_path', options_list=['--save-path'], help='the root directory to which the file should be saved to.')
 
     with self.argument_context('bot show') as c:
         c.argument('bot_json', options_list=['--msbot'], help='show the output as json compatible with a .bot file', arg_type=get_three_state_flag())
@@ -63,7 +63,6 @@ def load_arguments(self, _):
         c.argument('enable_media_cards', help='Enable media cards on Skype', arg_type=get_three_state_flag())
         c.argument('enable_video', help='Enable video on Skype', arg_type=get_three_state_flag())
         c.argument('enable_calling', help='Enable calling on Skype', arg_type=get_three_state_flag())
-        c.argument('call_mode', help='The call mode to use on Microsoft Teams')
 
     with self.argument_context('bot skype create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag(), help='add the channel in a disabled state')
@@ -73,7 +72,6 @@ def load_arguments(self, _):
         c.argument('enable_calling', help='Enable calling on Skype', arg_type=get_three_state_flag())
         c.argument('enable_screen_sharing', help='Enable screen sharing on Skype', arg_type=get_three_state_flag())
         c.argument('enable_groups', help='Enable groups on Skype', arg_type=get_three_state_flag())
-        c.argument('groups_mode', help='The groups mode to use on Skype')
         c.argument('calling_web_hook', help='The calling web hook to use on Skype')
 
     with self.argument_context('bot kik create') as c:
