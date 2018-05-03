@@ -260,7 +260,7 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
         resource_group_name=resource_group_name,
         resource_name=resource_name
     )
-    if(raw_bot_properties.properties.kind == 'bot'):
+    if(raw_bot_properties.kind == 'bot'):
         raise CLIError('Source download is not supported for registration only bots')
     file_save_path = file_save_path or os.getcwd()
     if not os.path.isdir(file_save_path):

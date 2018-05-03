@@ -79,7 +79,7 @@ def load_arguments(self, _):
     with self.argument_context('bot kik create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag(), help='add the channel in a disabled state')
         c.argument('user_name', options_list=['--user-name', '-u'], help='kik user name')
-        c.argument('is_validated', action='store_true', help='Has the user name been validated')
+        c.argument('is_validated', help='Has the user name been validated', arg_type=get_three_state_flag())
         c.argument('api_key', options_list=['--key'], help='the api key for the kik account')
 
     with self.argument_context('bot webchat create') as c:
@@ -90,19 +90,19 @@ def load_arguments(self, _):
     with self.argument_context('bot directline create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag(), help='add the channel in a disabled state')
         c.argument('site_name', options_list=['-s', '--site-name'], help='name of the webchat channel site')
-        c.argument('is_v1_disabled', options_list=['--disablev1'], action='store_true', help='Enable v1 channel protocol', arg_type=get_three_state_flag())
-        c.argument('is_v3_disabled', options_list=['--disablev3'], action='store_true', help='Enable v3 channel protocol', arg_type=get_three_state_flag())
+        c.argument('is_v1_disabled', options_list=['--disablev1'], help='Enable v1 channel protocol', arg_type=get_three_state_flag())
+        c.argument('is_v3_disabled', options_list=['--disablev3'], help='Enable v3 channel protocol', arg_type=get_three_state_flag())
 
     with self.argument_context('bot telegram create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag())
         c.argument('access_token', help='The access token for the telegram account')
-        c.argument('is_validated', action='store_true', help='Has the user name been validated')
+        c.argument('is_validated', help='Has the user name been validated', arg_type=get_three_state_flag())
 
     with self.argument_context('bot sms create') as c:
         c.argument('is_disabled', options_list=['--add-disabled'], arg_type=get_three_state_flag(), help='add the channel in a disabled state')
         c.argument('account_sid', help='The account sid for the twilio account')
         c.argument('auth_token', help='The token token for the twilio account.')
-        c.argument('is_validated', action='store_true', help='Has the user name been validated.')
+        c.argument('is_validated', help='Has the user name been validated.', arg_type=get_three_state_flag())
         c.argument('phone', help='the phone number for the twilio account.')
 
     with self.argument_context('bot slack create') as c:
