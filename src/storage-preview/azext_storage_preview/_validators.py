@@ -76,13 +76,13 @@ def validate_bypass(namespace):
         namespace.bypass = ', '.join(namespace.bypass) if isinstance(namespace.bypass, list) else namespace.bypass
 
 
-def get_client_parameters_validator(oauth):
-    def func(cmd, namespace):
-        validate_client_parameters(cmd, namespace, oauth=oauth)
-    return func
+# def get_client_parameters_validator(oauth):
+#     def func(cmd, namespace):
+#         validate_client_parameters(cmd, namespace, oauth=oauth)
+#     return func
 
 
-def validate_client_parameters(cmd, namespace, oauth=False):
+def validate_client_parameters(cmd, namespace):
     """ Retrieves storage connection parameters from environment variables and parses out connection string into
     account name and key """
     n = namespace
@@ -118,10 +118,13 @@ def validate_client_parameters(cmd, namespace, oauth=False):
 
     # if account name is specified but no key, attempt to query
     if n.account_name and not n.account_key and not n.sas_token:
-        if oauth:
+        if hasattr(n, 'auth_mode') and n.auth_mode == 'oauth':
             n.token_credential = _create_token_credential(cmd.cli_ctx)
         else:
             n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
+
+    if hasattr(n, 'auth_mode'):
+        del n.auth_mode
 
 
 def process_blob_source_uri(cmd, namespace):

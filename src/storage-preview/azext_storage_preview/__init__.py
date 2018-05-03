@@ -137,14 +137,18 @@ class StorageCommandGroup(AzCommandGroup):
             command_name = self.command(name, method_name, command_type=command_type, **kwargs)
         else:
             command_name = self.command(name, method_name, **kwargs)
-        self._register_data_plane_account_arguments(command_name, oauth)
+        self._register_data_plane_account_arguments(command_name)
+        if oauth:
+            self._register_data_plane_oauth_arguments(command_name)
 
     def storage_command_oauth(self, *args, **kwargs):
         self.storage_command(*args, oauth=True, **kwargs)
 
     def storage_custom_command(self, name, method_name, oauth=False, **kwargs):
         command_name = self.custom_command(name, method_name, **kwargs)
-        self._register_data_plane_account_arguments(command_name, oauth)
+        self._register_data_plane_account_arguments(command_name)
+        if oauth:
+            self._register_data_plane_oauth_arguments(command_name)
 
     def storage_custom_command_oauth(self, *args, **kwargs):
         self.storage_custom_command(*args, oauth=True, **kwargs)
@@ -163,9 +167,9 @@ class StorageCommandGroup(AzCommandGroup):
 
         return handler
 
-    def _register_data_plane_account_arguments(self, command_name, oauth):
+    def _register_data_plane_account_arguments(self, command_name):
         """ Add parameters required to create a storage client """
-        from ._validators import get_client_parameters_validator
+        from ._validators import validate_client_parameters
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
@@ -183,13 +187,24 @@ class StorageCommandGroup(AzCommandGroup):
                              help='Storage account key. Must be used in conjunction with storage account name. '
                                   'Environment variable: AZURE_STORAGE_KEY')
         command.add_argument('connection_string', '--connection-string', required=False, default=None,
-                             validator=get_client_parameters_validator(oauth), arg_group=group_name,
+                             validator=validate_client_parameters, arg_group=group_name,
                              help='Storage account connection string. Environment variable: '
                                   'AZURE_STORAGE_CONNECTION_STRING')
         command.add_argument('sas_token', '--sas-token', required=False, default=None,
                              arg_group=group_name,
                              help='A Shared Access Signature (SAS). Must be used in conjunction with storage account '
                                   'name. Environment variable: AZURE_STORAGE_SAS_TOKEN')
+
+    def _register_data_plane_oauth_arguments(self, command_name):
+        from azure.cli.core.commands.parameters import get_enum_type
+        command = self.command_loader.command_table.get(command_name, None)
+        if not command:
+            return
+
+        command.add_argument('auth_mode', arg_type=get_enum_type(['oauth', 'legacy']), default='oauth',
+                             help='The mode in which to run the command. The legacy mode will attempt to query for '
+                                  'an account key if no authentication parameters for the account are provided.')
+
 
 
 COMMAND_LOADER_CLS = StorageCommandsLoader
