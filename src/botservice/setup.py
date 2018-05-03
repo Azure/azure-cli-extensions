@@ -40,14 +40,15 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='botservice',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Bot Services Extension',
+    description='Support for Azure Bot Service 2017-12-01 preview features',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
-    author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    url='https://github.com/azure/azure-cli',
+    author='Swagat Mishra',
+    author_email='swagatm@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     packages = find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES,
+    package_data={'azext_bot': ['azext_metadata.json']},
     include_package_data = True
 )
