@@ -8,7 +8,8 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azext_bot.botservice import AzureBotService
 from azext_bot.botservice.models import Bot, BotProperties, sku, BotChannel
-from azure.cli.command_modules.appservice.custom import enable_zip_deploy, config_source_control, get_app_settings, _get_site_credential, _get_scm_url
+from azure.cli.command_modules.appservice.custom import (enable_zip_deploy, config_source_control, get_app_settings,
+                                                         _get_site_credential, _get_scm_url)
 from azure.cli.command_modules.resource.custom import deploy_arm_template
 from azure.cli.core._profile import Profile
 import json
@@ -62,7 +63,8 @@ def provisionConvergedApp(bot_name):
 
 def create(cmd, client, resource_group_name, resource_name, kind, description=None, display_name=None,
            endpoint=None, msa_app_id=None, password=None, tags=None, storageAccountName=None,
-           location='Central US', sku_name='F0', appInsightsLocation='South Central US', bot_json=None, language='Csharp'):
+           location='Central US', sku_name='F0', appInsightsLocation='South Central US', bot_json=None,
+           language='Csharp'):
     display_name = display_name or resource_name
     kind = kind.lower()
 
@@ -92,7 +94,8 @@ def create(cmd, client, resource_group_name, resource_name, kind, description=No
             parameters=parameters
         )
     elif kind == 'webapp' or kind == 'function':
-        return create_app(cmd, client, resource_group_name, resource_name, description, kind, msa_app_id, password, storageAccountName, location, sku_name, appInsightsLocation, bot_json, language)
+        return create_app(cmd, client, resource_group_name, resource_name, description, kind, msa_app_id, password,
+                          storageAccountName, location, sku_name, appInsightsLocation, bot_json, language)
     else:
         raise CLIError('Invalid Bot Parameter : Kind')
 
@@ -163,21 +166,22 @@ def get_bot(cmd, client, resource_group_name, resource_name, bot_json=None):
     return raw_bot_properties
 
 
-def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName, location, sku, appInsightsLocation, bot_json, language):
+def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,
+               location, sku, appInsightsLocation, bot_json, language):
     if kind == 'function':
         template_name = 'functionapp.template.json'
         if language == 'Csharp':
             zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/csharp-abs-functions_emptybot.zip'
         else:
-            zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/node.js-abs-functions_emptybot_funcpack.zip'
+            zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/node.js-abs-functions_emptybot_funcpack.zip'  # pylint: disable=line-too-long
 
     else:
         kind = 'sdk'
         template_name = 'webapp.template.json'
         if language == 'Csharp':
-            zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/csharp-abs-webapp_simpleechobot_precompiled.zip'
+            zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/csharp-abs-webapp_simpleechobot_precompiled.zip'  # pylint: disable=line-too-long
         else:
-            zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/node.js-abs-webapp_hello-chatconnector.zip'
+            zip_url = 'https://connectorprod.blob.core.windows.net/bot-packages/node.js-abs-webapp_hello-chatconnector.zip'  # pylint: disable=line-too-long
 
     create_new_storage = False
     if not storageAccountName:
@@ -185,7 +189,8 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         import string
         import random
         create_new_storage = True
-        storageAccountName = re.sub(r'[^a-z0-9]', '', resource_name[:10] + ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(4)))
+        storageAccountName = re.sub(r'[^a-z0-9]', '', resource_name[:10] +
+                                    ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(4)))
 
     paramsdict = {
         "location": location,
@@ -195,7 +200,8 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         "appId": appid,
         "appSecret": password,
         "storageAccountResourceId": "",
-        "serverFarmId": "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Web/serverfarms/{2}".format(client.config.subscription_id, resource_group_name, resource_name),
+        "serverFarmId": "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Web/serverfarms/{2}".format(
+            client.config.subscription_id, resource_group_name, resource_name),
         "zipUrl": zip_url,
         "createNewStorage": create_new_storage,
         "storageAccountName": storageAccountName,
@@ -226,7 +232,8 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         return create_bot_json(cmd, client, resource_group_name, resource_name, app_password=password)
 
 
-def publish_app(cmd, client, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master', code_dir=None):
+def publish_app(cmd, _, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master',
+                code_dir=None):
     # if given msbot json, use that to update environment settings like luis settings
     if git_url:
         return config_source_control(
@@ -260,7 +267,7 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
         resource_group_name=resource_group_name,
         resource_name=resource_name
     )
-    if(raw_bot_properties.kind == 'bot'):
+    if raw_bot_properties.kind == 'bot':
         raise CLIError('Source download is not supported for registration only bots')
     file_save_path = file_save_path or os.getcwd()
     if not os.path.isdir(file_save_path):
