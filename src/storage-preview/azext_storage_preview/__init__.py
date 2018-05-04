@@ -241,7 +241,7 @@ def _merge_new_exception_handler(kwargs, handler):
             first = kwargs['exception_handler']
             try:
                 first(ex)
-            except Exception as raised_ex:
+            except Exception as raised_ex:  # pylint: disable=broad-except
                 handler(raised_ex)
         kwargs['exception_handler'] = new_handler
     else:

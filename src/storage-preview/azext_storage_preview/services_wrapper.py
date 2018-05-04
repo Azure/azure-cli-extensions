@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import get_sdk, ResourceType
+from azure.cli.core.profiles import get_sdk
 
 from ._client_factory import generic_data_service_factory
 from .profiles import CUSTOM_DATA_STORAGE

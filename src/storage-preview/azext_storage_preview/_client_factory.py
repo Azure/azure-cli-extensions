@@ -71,7 +71,6 @@ def generic_data_service_factory(cli_ctx, service, name=None, key=None, connecti
         message = str(val_exception)
         if message == _ERROR_STORAGE_MISSING_INFO:
             message = NO_CREDENTIALS_ERROR_MESSAGE
-        from knack.util import CLIError
         raise CLIError(message)
 
 
