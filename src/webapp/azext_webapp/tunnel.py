@@ -3,17 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=import-error,unused-import
 import sys
 import ssl
 import socket
 import time
 import traceback
-import websocket
 import logging as logs
-
 from contextlib import closing
 from datetime import datetime
 from threading import Thread
+
+import websocket
 from websocket import create_connection, WebSocket
 
 from knack.util import CLIError
@@ -31,9 +32,6 @@ class TunnelWebSocket(WebSocket):
         data = super(TunnelWebSocket, self).recv()
         logger.info('Received websocket data: %s', data)
         return data
-
-    def send_binary(self, data):
-        super(TunnelWebSocket, self).send_binary(data)
 
 
 class TunnelServer(object):
@@ -57,7 +55,7 @@ class TunnelServer(object):
         logger.info('Finished initialization')
 
     def create_basic_auth(self):
-        from base64 import b64encode, b64decode
+        from base64 import b64encode
         basic_auth_string = '{}:{}'.format(self.remote_user_name, self.remote_password).encode()
         basic_auth_string = b64encode(basic_auth_string).decode('utf-8')
         return basic_auth_string
@@ -73,7 +71,6 @@ class TunnelServer(object):
             return is_port_open
 
     def is_port_set_to_default(self):
-        import sys
         import certifi
         import urllib3
         try:
@@ -92,7 +89,8 @@ class TunnelServer(object):
             preload_content=False
         )
         if r.status != 200:
-            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(url, r.status, r.reason))
+            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(
+                url, r.status, r.reason))
         msg = r.read().decode('utf-8')
         logger.info('Status response message: %s', msg)
         if 'FAIL' in msg.upper():
@@ -106,7 +104,7 @@ class TunnelServer(object):
         index = 0
         basic_auth_string = self.create_basic_auth()
         while True:
-            self.client, address = self.sock.accept()
+            self.client, _address = self.sock.accept()
             self.client.settimeout(1800)
             host = 'wss://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx')
             basic_auth_header = 'Authorization: Basic {}'.format(basic_auth_string)

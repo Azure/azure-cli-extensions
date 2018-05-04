@@ -158,8 +158,7 @@ def detect_dotnet_lang(csproj_path):
         version_lang = re.sub(r'([^a-zA-Z\s]+?)', '', target_ver.text)
     if 'netcore' in version_lang.lower():
         return NETCORE_RUNTIME_NAME
-    else:
-        return DOTNET_RUNTIME_NAME
+    return DOTNET_RUNTIME_NAME
 
 
 def parse_dotnet_version(file_path):
