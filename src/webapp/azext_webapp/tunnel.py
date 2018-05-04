@@ -103,7 +103,7 @@ class TunnelServer(object):
         basic_auth_string = self.create_basic_auth()
         while True:
             self.client, address = self.sock.accept()
-            self.client.settimeout(60)
+            self.client.settimeout(1800)
             host = 'wss://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx')
             basic_auth_header = 'Authorization: Basic {}'.format(basic_auth_string)
             cli_logger = get_logger()  # get CLI logger which has the level set through command lines
