@@ -38,7 +38,7 @@ class TokenUpdater:
             self.timer.start()
 
     def cancel(self):
-        # the timer needs to be canceled if the application is terminating
+        # the timer needs to be canceled once the command has finished executing
         # if not the timer will keep going
         with self.lock:
             self.timer.cancel()
