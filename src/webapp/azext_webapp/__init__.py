@@ -35,7 +35,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
                        help="shows summary of the create and deploy operation instead of executing it",
                        default=False, action='store_true')
         with self.argument_context('webapp remote-connection create') as c:
-            c.argument('port', options_list=['--port', '-p'], help='Port for the remote connection', type=int)
+            c.argument('port', options_list=['--port', '-p'], help='Port for the remote connection. Default: Random available port', type=int)
             c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
         with self.argument_context('webapp config snapshot list') as c:
             c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of resource group.')

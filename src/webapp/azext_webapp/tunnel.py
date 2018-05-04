@@ -12,6 +12,7 @@ import websocket
 import logging as logs
 
 from contextlib import closing
+from datetime import datetime
 from threading import Thread
 from websocket import create_connection, WebSocket
 
@@ -39,7 +40,7 @@ class TunnelServer(object):
     def __init__(self, local_addr, local_port, remote_addr, remote_user_name, remote_password):
         self.local_addr = local_addr
         self.local_port = local_port
-        if not self.is_port_open():
+        if self.local_port != 0 and not self.is_port_open():
             raise CLIError('Defined port is currently unavailable')
         self.remote_addr = remote_addr
         self.remote_user_name = remote_user_name
@@ -50,6 +51,9 @@ class TunnelServer(object):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         logger.info('Binding to socket on local address and port')
         self.sock.bind((self.local_addr, self.local_port))
+        if self.local_port == 0:
+            self.local_port = self.sock.getsockname()[1]
+            logger.warning('Auto-selecting port: %s', self.local_port)
         logger.info('Finished initialization')
 
     def create_basic_auth(self):
@@ -103,7 +107,7 @@ class TunnelServer(object):
         basic_auth_string = self.create_basic_auth()
         while True:
             self.client, address = self.sock.accept()
-            self.client.settimeout(60)
+            self.client.settimeout(1800)
             host = 'wss://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx')
             basic_auth_header = 'Authorization: Basic {}'.format(basic_auth_string)
             cli_logger = get_logger()  # get CLI logger which has the level set through command lines
@@ -121,7 +125,6 @@ class TunnelServer(object):
                                         sslopt={'cert_reqs': ssl.CERT_NONE},
                                         enable_multithread=True)
             logger.info('Websocket, connected status: %s', self.ws.connected)
-
             index = index + 1
             logger.info('Got debugger connection... index: %s', index)
             debugger_thread = Thread(target=self.listen_to_client, args=(self.client, self.ws, index))
@@ -129,7 +132,7 @@ class TunnelServer(object):
             debugger_thread.start()
             web_socket_thread.start()
             logger.info('Both debugger and websocket threads started...')
-            logger.warning('Successfully started local server..')
+            logger.warning('Successfully connected to local server..')
             debugger_thread.join()
             web_socket_thread.join()
             logger.info('Both debugger and websocket threads stopped...')
@@ -182,5 +185,5 @@ class TunnelServer(object):
                 return False
 
     def start_server(self):
-        logger.warning('Starting local server..')
+        logger.warning('Start your favorite client and connect to port %s', self.local_port)
         self.listen()

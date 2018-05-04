@@ -38,6 +38,8 @@ from .create_util import (
 
 from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
 
+import time
+
 logger = get_logger(__name__)
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
@@ -162,14 +164,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             # work around until the timeout limits issue for linux is investigated & fixed
             # wakeup kudu, by making an SCM call
 
-        import requests
-        # work around until the timeout limits issue for linux is investigated & fixed
-        user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
-        scm_url = _get_scm_url(cmd, rg_name, name)
-
-        import urllib3
-        authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
-        requests.get(scm_url + '/api/settings', headers=authorization)
+        _ping_scm_site(cmd, rg_name, name)
 
         if is_java:
             zip_file_path = src_path + '\\\\' + lang_details.get('file_loc')[0]
@@ -192,6 +187,17 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     create_json.update({'app_url': url})
     logger.warning("All done.")
     return create_json
+
+
+def _ping_scm_site(cmd, resource_group, name):
+    #  wakeup kudu, by making an SCM call
+    import requests
+    #  work around until the timeout limits issue for linux is investigated & fixed
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group, name)
+    scm_url = _get_scm_url(cmd, resource_group, name)
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{}:{}'.format(user_name, password))
+    requests.get(scm_url + '/api/settings', headers=authorization)
 
 
 def list_webapp_snapshots(cmd, resource_group, name, slot=None):
@@ -226,7 +232,12 @@ def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_
             return client.web_apps.recover(resource_group, name, request)
 
 
-def _check_for_ready_tunnel(cmd, resource_group_name, name, remote_debugging, tunnel_server, slot=None):
+def _get_app_url(cmd, rg_name, app_name):
+    site = _generic_site_operation(cmd.cli_ctx, rg_name, app_name, 'get')
+    return "https://" + site.enabled_host_names[0]
+
+
+def _check_for_ready_tunnel(remote_debugging, tunnel_server):
     from .tunnel import TunnelServer
     default_port = tunnel_server.is_port_set_to_default()
     if default_port is not remote_debugging:
@@ -234,30 +245,37 @@ def _check_for_ready_tunnel(cmd, resource_group_name, name, remote_debugging, tu
     return False
 
 
-def create_tunnel(cmd, resource_group_name, name, port, slot=None):
+def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
     profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
     user_name = next(p['userName'] for p in profiles)
     user_password = next(p['userPWD'] for p in profiles)
-    import time
     import threading
     from .tunnel import TunnelServer
+
+    if port is None:
+        port = 0  # Will auto-select a free port from 1024-65535
+        logger.info('No port defined, creating on random free port')
     tunnel_server = TunnelServer('', port, name, user_name, user_password)
     config = get_site_configs(cmd, resource_group_name, name, slot)
+    _ping_scm_site(cmd, resource_group_name, name)
 
-    t = threading.Thread()
+    t = threading.Thread(target=_start_tunnel, args=(tunnel_server, config.remote_debugging_enabled))
     t.daemon = True
     t.start()
-    if not _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
+
+    # Wait indefinitely for CTRL-C
+    while True:
+        time.sleep(5)
+
+
+def _start_tunnel(tunnel_server, remote_debugging_enabled):
+    if not _check_for_ready_tunnel(remote_debugging_enabled, tunnel_server):
         logger.warning('Tunnel is not ready yet, please wait (may take up to 1 minute)')
         while True:
             time.sleep(1)
             logger.warning('.')
-            if _check_for_ready_tunnel(cmd, resource_group_name, name, config.remote_debugging_enabled, tunnel_server, slot):
+            if _check_for_ready_tunnel(remote_debugging_enabled, tunnel_server):
                 break
-    logger.warning('Tunnel is ready! Creating on port %s', port)
+    if remote_debugging_enabled is False:
+        logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
-
-
-def _get_app_url(cmd, rg_name, app_name):
-    site = _generic_site_operation(cmd.cli_ctx, rg_name, app_name, 'get')
-    return "https://" + site.enabled_host_names[0]
