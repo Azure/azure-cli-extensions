@@ -18,8 +18,7 @@ from azure.cli.command_modules.appservice.custom import (
     _get_scm_url,
     get_sku_name,
     list_publish_profiles,
-    get_site_configs,
-    config_diagnostics)
+    get_site_configs)
 
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 
@@ -74,7 +73,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')
         detected_version = data.get('detected')
-        runtime_version = "{}|{}".format(language, version_used_create) if version_used_create != "-" else version_used_create
+        runtime_version = "{}|{}".format(language, version_used_create) if \
+            version_used_create != "-" else version_used_create
 
     if location is None:
         locs = client.list_geo_regions(sku, True)
@@ -97,7 +97,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     # Resource group: check if default RG is set
     default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
-    if default_rg and check_resource_group_exists(cmd, default_rg) and check_resource_group_supports_os(cmd, default_rg, location, is_linux):
+    if default_rg and check_resource_group_exists(cmd, default_rg) and \
+            check_resource_group_supports_os(cmd, default_rg, location, is_linux):
         rg_name = default_rg
         rg_mssg = "[Using default Resource group]"
     else:
@@ -181,7 +182,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             except OSError:
                 pass
     else:
-        logger.warning("No known package (Node, ASP.NET, .NETCORE, Java or Static Html) found skipping zip and deploy process")
+        logger.warning('No known package (Node, ASP.NET, .NETCORE, Java or Static Html) '
+                       'found skipping zip and deploy process')
     create_json.update({'app_url': url})
     logger.warning("All done.")
     return create_json
@@ -202,32 +204,32 @@ def list_webapp_snapshots(cmd, resource_group, name, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     if slot is None:
         return client.web_apps.list_snapshots(resource_group, name)
-    else:
-        return client.web_apps.list_snapshots_slot(resource_group, name, slot)
+    return client.web_apps.list_snapshots_slot(resource_group, name, slot)
 
 
-def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_config=False, source_resource_group=None, source_name=None, source_slot=None):
+def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_config=False,
+                            source_resource_group=None, source_name=None, source_slot=None):
     client = web_client_factory(cmd.cli_ctx)
 
     if all([source_resource_group, source_name]):
         sub_id = get_subscription_id(cmd.cli_ctx)
-        target_id = "/subscriptions/" + sub_id + "/resourceGroups/" + resource_group + "/providers/Microsoft.Web/sites/" + name
+        target_id = "/subscriptions/" + sub_id + "/resourceGroups/" + resource_group + \
+            "/providers/Microsoft.Web/sites/" + name
         if slot:
             target_id = target_id + "/slots/" + slot
         target = SnapshotRecoveryTarget(id=target_id)
-        request = SnapshotRecoveryRequest(False, snapshot_time=time, recovery_target=target, recover_configuration=restore_config)
+        request = SnapshotRecoveryRequest(False, snapshot_time=time, recovery_target=target,
+                                          recover_configuration=restore_config)
         if source_slot:
             return client.web_apps.recover_slot(source_resource_group, source_name, request, source_slot)
-        else:
-            return client.web_apps.recover(source_resource_group, source_name, request)
+        return client.web_apps.recover(source_resource_group, source_name, request)
     elif any([source_resource_group, source_name]):
         raise CLIError('usage error: --source-resource-group and --source-name must both be specified if one is used')
     else:
         request = SnapshotRecoveryRequest(True, snapshot_time=time, recover_configuration=restore_config)
         if slot:
             return client.web_apps.recover_slot(resource_group, name, request, slot)
-        else:
-            return client.web_apps.recover(resource_group, name, request)
+        return client.web_apps.recover(resource_group, name, request)
 
 
 def _get_app_url(cmd, rg_name, app_name):
@@ -236,7 +238,6 @@ def _get_app_url(cmd, rg_name, app_name):
 
 
 def _check_for_ready_tunnel(remote_debugging, tunnel_server):
-    from .tunnel import TunnelServer
     default_port = tunnel_server.is_port_set_to_default()
     if default_port is not remote_debugging:
         return True
