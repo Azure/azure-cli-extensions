@@ -223,7 +223,8 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     if resource_id:
         # Resource ID is specified, we need to list only for the particular resource.
         if resource_group_name is not None or topic_name is not None:
-            raise CLIError('Since --resource-id is specified, --topic-name and --resource-group-name should not be specified.')
+            raise CLIError('Since --resource-id is specified, --topic-name and --resource-group-name should not '
+                           'be specified.')
 
         id_parts = parse_resource_id(resource_id)
         rg_name = id_parts['resource_group']
