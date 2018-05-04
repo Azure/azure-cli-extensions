@@ -229,7 +229,8 @@ If you want to use the old authentication method and allow querying for the righ
         self.command_loader.command_name = command_name
         with self.command_loader.argument_context(command_name) as c:
             c.extra('auth_mode', arg_type=get_enum_type(['login', 'key']),
-                    help='The mode in which to run the command. The legacy mode will attempt to query for '
+                    help='The mode in which to run the command. "login" mode will directly use your login credentials '
+                         'for the authentication. The legacy "key" mode will attempt to query for '
                          'an account key if no authentication parameters for the account are provided. '
                          'Environment variable: AZURE_STORAGE_AUTH_MODE')
 
