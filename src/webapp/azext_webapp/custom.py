@@ -12,7 +12,6 @@ from azure.mgmt.web.models import (AppServicePlan, SkuDescription, SnapshotRecov
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from azure.cli.command_modules.appservice.custom import (
-    enable_zip_deploy,
     create_webapp,
     update_app_settings,
     _get_site_credential,
@@ -37,7 +36,7 @@ from .create_util import (
 )
 
 from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
-
+import json
 import time
 
 logger = get_logger(__name__)
@@ -47,7 +46,6 @@ logger = get_logger(__name__)
 
 def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     import os
-    import json
 
     client = web_client_factory(cmd.cli_ctx)
     # the code to deploy is expected to be the current directory the command is running from
@@ -173,9 +171,9 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             # zip contents & deploy
             zip_file_path = zip_contents_from_dir(src_dir, language)
 
-        logger.warning("Deploying %s contents to app."
-                       "This operation can take some time to finish...", '' if is_skip_build else 'and building')
-        enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+        logger.warning("Preparing to deploy %s contents to app.",
+                       '' if is_skip_build else 'and build')
+        _zip_deploy(cmd, rg_name, name, zip_file_path)
         if not is_java:
             # Remove the file afer deployment, handling exception if user removed the file manually
             try:
@@ -279,3 +277,44 @@ def _start_tunnel(tunnel_server, remote_debugging_enabled):
     if remote_debugging_enabled is False:
         logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
+
+
+def _zip_deploy(cmd, rg_name, name, zip_path):
+    user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
+    scm_url = _get_scm_url(cmd, rg_name, name)
+    zip_url = scm_url + '/api/zipdeploy?isAsync=true'
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['content-type'] = 'application/octet-stream'
+
+    import requests
+    import os
+    # Read file content
+    with open(os.path.realpath(os.path.expanduser(zip_path)), 'rb') as fs:
+        zip_content = fs.read()
+        requests.post(zip_url, data=zip_content, headers=headers)
+    # keep checking for status of the deployment
+    deployment_url = scm_url + '/api/deployments/latest'
+    response = requests.get(deployment_url, headers=authorization)
+    if(response.json()['status'] != 4):
+        logger.warning(response.json()['progress'])
+        _check_deployment_status(deployment_url, authorization)
+
+
+def _check_deployment_status(deployment_url, authorization):
+    num_trials = 1
+    import requests
+    while num_trials < 9:
+        response = requests.get(deployment_url, headers=authorization)
+        res_dict = response.json()
+        num_trials = num_trials + 1
+        if res_dict['status'] == 5:
+            return logger.warning("Zip deployment failed status {}".format(
+                res_dict['status_text']
+            ))
+        elif res_dict['status'] == 4:
+            return
+        logger.warning(res_dict['progress'])
+    return
