@@ -35,8 +35,7 @@ from .create_util import (
     web_client_factory
 )
 
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT,
-    JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
 import json
 import time
 
@@ -299,7 +298,7 @@ def _zip_deploy(cmd, rg_name, name, zip_path):
     # keep checking for status of the deployment
     deployment_url = scm_url + '/api/deployments/latest'
     response = requests.get(deployment_url, headers=authorization)
-    if(response.json()['status'] !=4):
+    if(response.json()['status'] != 4):
         logger.warning(response.json()['progress'])
         _check_deployment_status(deployment_url, authorization)
 
