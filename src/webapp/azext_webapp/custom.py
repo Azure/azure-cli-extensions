@@ -306,7 +306,7 @@ def _zip_deploy(cmd, rg_name, name, zip_path):
 def _check_deployment_status(deployment_url, authorization):
     num_trials = 1
     import requests
-    while num_trials < 9:
+    while num_trials < 200:
         response = requests.get(deployment_url, headers=authorization)
         res_dict = response.json()
         num_trials = num_trials + 1
@@ -317,4 +317,9 @@ def _check_deployment_status(deployment_url, authorization):
         elif res_dict['status'] == 4:
             return
         logger.warning(res_dict['progress'])
+        # if the deployment is taking longer than expected
+        r = requests.get(deployment_url, headers=authorization)
+    if r.json()['status'] != 4:
+        logger.warning("""Deployment is taking longer than expected. Please verify status at '{}'
+            beforing launching the app""".format(deployment_url))
     return
