@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=protected-access
-
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -13,6 +12,7 @@ from ._client_factory import get_storage_data_service_client
 from .util import glob_files_locally, guess_content_type
 from .sdkutil import get_table_data_type
 from .url_quote_util import encode_for_url
+from .oauth_token_util import TokenUpdater
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 
@@ -43,6 +43,21 @@ def _query_account_key(cli_ctx, account_name):
         raise ValueError("Storage account '{}' not found.".format(account_name))
 
 
+def _create_token_credential(cli_ctx):
+    from knack.cli import EVENT_CLI_POST_EXECUTE
+    from .profiles import CUSTOM_DATA_STORAGE
+
+    TokenCredential = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#TokenCredential')
+
+    token_credential = TokenCredential(None)
+    updater = TokenUpdater(token_credential, cli_ctx)
+
+    def _cancel_timer_event_handler(_, **__):
+        updater.cancel()
+    cli_ctx.register_event(EVENT_CLI_POST_EXECUTE, _cancel_timer_event_handler)
+    return token_credential
+
+
 # region PARAMETER VALIDATORS
 
 def validate_table_payload_format(cmd, namespace):
@@ -68,6 +83,27 @@ def validate_client_parameters(cmd, namespace):
 
     def get_config_value(section, key, default):
         return cmd.cli_ctx.config.get(section, key, default)
+
+    if hasattr(n, 'auth_mode'):
+        auth_mode = n.auth_mode or get_config_value('storage', 'auth_mode', None)
+        del n.auth_mode
+        if not n.account_name:
+            n.account_name = get_config_value('storage', 'account', None)
+        if auth_mode == 'login':
+            n.token_credential = _create_token_credential(cmd.cli_ctx)
+
+            # give warning if there are account key args being ignored
+            account_key_args = [n.account_key and "--account-key", n.sas_token and "--sas-token",
+                                n.connection_string and "--connection-string"]
+            account_key_args = [arg for arg in account_key_args if arg]
+
+            if account_key_args:
+                from knack.log import get_logger
+
+                logger = get_logger(__name__)
+                logger.warning('In "login" auth mode, the following arguments are ignored: %s',
+                               ' ,'.join(account_key_args))
+            return
 
     if not n.connection_string:
         n.connection_string = get_config_value('storage', 'connection_string', None)

@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import get_sdk, ResourceType
+from azure.cli.core.profiles import get_sdk
+from .profiles import CUSTOM_DATA_STORAGE
 
 
 def build_table_output(result, projection):
@@ -134,7 +135,7 @@ def transform_file_directory_result(cli_ctx):
     list.
     """
     def transformer(result):
-        t_file, t_dir = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'File', 'Directory', mod='file.models')
+        t_file, t_dir = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'File', 'Directory', mod='file.models')
         return_list = []
         for each in result:
             if isinstance(each, t_file):
