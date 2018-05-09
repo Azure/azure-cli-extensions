@@ -3,19 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.prompting import prompt_y_n
+import json
+import os
+import shutil
+import adal  # pylint: disable=import-error
+from knack.prompting import prompt_y_n  # pylint: disable=unused-import
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_bot.botservice import AzureBotService
 from azext_bot.botservice.models import Bot, BotProperties, sku, BotChannel
 from azure.cli.command_modules.appservice.custom import (enable_zip_deploy, config_source_control, get_app_settings,
                                                          _get_site_credential, _get_scm_url)
 from azure.cli.command_modules.resource.custom import deploy_arm_template
 from azure.cli.core._profile import Profile
-import json
-import adal
-import os
-import shutil
 
 logger = get_logger(__name__)
 
@@ -65,6 +64,9 @@ def create(cmd, client, resource_group_name, resource_name, kind, description=No
            endpoint=None, msa_app_id=None, password=None, tags=None, storageAccountName=None,
            location='Central US', sku_name='F0', appInsightsLocation='South Central US', bot_json=None,
            language='Csharp'):
+    if tags:
+        raise CLIError('Tags not supported yet')
+
     display_name = display_name or resource_name
     kind = kind.lower()
 
@@ -84,8 +86,7 @@ def create(cmd, client, resource_group_name, resource_name, kind, description=No
                 display_name=display_name,
                 description=description,
                 endpoint=endpoint,
-                msa_app_id=msa_app_id,
-                password=password
+                msa_app_id=msa_app_id
             )
         )
         return client.bots.create(
@@ -100,7 +101,7 @@ def create(cmd, client, resource_group_name, resource_name, kind, description=No
         raise CLIError('Invalid Bot Parameter : Kind')
 
 
-def update(client, parameters, resource_group_name, **kwargs):
+def update(client, parameters, resource_group_name):
     try:
         return client.bots.update(
             resource_group_name=resource_group_name,
@@ -167,7 +168,7 @@ def get_bot(cmd, client, resource_group_name, resource_name, bot_json=None):
 
 
 def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,
-               location, sku, appInsightsLocation, bot_json, language):
+               location, sku_name, appInsightsLocation, bot_json, language):
     if kind == 'function':
         template_name = 'functionapp.template.json'
         if language == 'Csharp':
@@ -195,7 +196,7 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
     paramsdict = {
         "location": location,
         "kind": kind,
-        "sku": sku,
+        "sku": sku_name,
         "siteName": resource_name,
         "appId": appid,
         "appSecret": password,
@@ -286,8 +287,8 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
     headers['content-type'] = 'application/json'
 
     payload = {
-        'command': 'PostDeployScripts\prepareSrc.cmd {0}'.format(password),
-        'dir': 'site\wwwroot'
+        'command': 'PostDeployScripts\\prepareSrc.cmd {0}'.format(password),
+        'dir': r'site\wwwroot'
     }
 
     import requests
@@ -323,14 +324,13 @@ def create_channel(client, channel, channel_name, resource_group_name, resource_
     )
 
 
-def facebook_create(client, resource_group_name, resource_name, page_id, app_id, app_secret, access_token, is_disabled=None):
+def facebook_create(client, resource_group_name, resource_name, page_id, app_id, app_secret, access_token, is_disabled=None):  # pylint: disable=line-too-long
     from azext_bot.botservice.models import FacebookChannel, FacebookChannelProperties, FacebookPage
     channel = FacebookChannel(
         properties=FacebookChannelProperties(
             pages=[FacebookPage(id=page_id, access_token=access_token)],
             app_id=app_id,
             app_secret=app_secret,
-            access_token=access_token,
             is_enabled=not is_disabled
         )
     )
@@ -349,7 +349,8 @@ def email_create(client, resource_group_name, resource_name, email_address, pass
     return create_channel(client, channel, 'EmailChannel', resource_group_name, resource_name)
 
 
-def msteams_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None, enable_media_cards=None, enable_video=None, enable_calling=None):
+def msteams_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None,
+                   enable_media_cards=None, enable_video=None, enable_calling=None):
     from azext_bot.botservice.models import MsTeamsChannel, MsTeamsChannelProperties
     channel = MsTeamsChannel(
         properties=MsTeamsChannelProperties(
@@ -363,7 +364,9 @@ def msteams_create(client, resource_group_name, resource_name, is_disabled=None,
     return create_channel(client, channel, 'MsTeamsChannel', resource_group_name, resource_name)
 
 
-def skype_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None, enable_media_cards=None, enable_video=None, enable_calling=None, enable_screen_sharing=None, enable_groups=None, calling_web_hook=None):
+def skype_create(client, resource_group_name, resource_name, is_disabled=None, enable_messaging=None,
+                 enable_media_cards=None, enable_video=None, enable_calling=None,
+                 enable_screen_sharing=None, enable_groups=None, calling_web_hook=None):
     from azext_bot.botservice.models import SkypeChannel, SkypeChannelProperties
     channel = SkypeChannel(
         properties=SkypeChannelProperties(
@@ -393,7 +396,7 @@ def kik_create(client, resource_group_name, resource_name, user_name, api_key, i
     return create_channel(client, channel, 'KikChannel', resource_group_name, resource_name)
 
 
-def webchat_create(client, resource_group_name, resource_name, is_disabled=None, enable_preview=None, site_name='default'):
+def webchat_create(client, resource_group_name, resource_name, is_disabled=None, enable_preview=None, site_name='default'):  # pylint: disable=line-too-long
     if not enable_preview:
         enable_preview = False
     from azext_bot.botservice.models import WebChatChannel, WebChatChannelProperties, WebChatSite
@@ -409,7 +412,8 @@ def webchat_create(client, resource_group_name, resource_name, is_disabled=None,
     return create_channel(client, channel, 'WebChatChannel', resource_group_name, resource_name)
 
 
-def directline_create(client, resource_group_name, resource_name, is_disabled=None, is_v1_disabled=None, is_v3_disabled=None, site_name='default'):
+def directline_create(client, resource_group_name, resource_name, is_disabled=None,
+                      is_v1_disabled=None, is_v3_disabled=None, site_name='default'):
     from azext_bot.botservice.models import DirectLineChannel, DirectLineChannelProperties, DirectLineSite
     channel = DirectLineChannel(
         properties=DirectLineChannelProperties(
@@ -436,7 +440,7 @@ def telegram_create(client, resource_group_name, resource_name, access_token, is
     return create_channel(client, channel, 'TelegramChannel', resource_group_name, resource_name)
 
 
-def sms_create(client, resource_group_name, resource_name, phone, account_sid, auth_token, is_disabled=None, is_validated=None):
+def sms_create(client, resource_group_name, resource_name, phone, account_sid, auth_token, is_disabled=None, is_validated=None):  # pylint: disable=line-too-long
     from azext_bot.botservice.models import SmsChannel, SmsChannelProperties
     channel = SmsChannel(
         properties=SmsChannelProperties(
@@ -450,7 +454,8 @@ def sms_create(client, resource_group_name, resource_name, phone, account_sid, a
     return create_channel(client, channel, 'SmsChannel', resource_group_name, resource_name)
 
 
-def slack_create(client, resource_group_name, resource_name, client_id, client_secret, verification_token, is_disabled=None, landing_page_url=None):
+def slack_create(client, resource_group_name, resource_name, client_id, client_secret, verification_token,
+                 is_disabled=None, landing_page_url=None):
     from azext_bot.botservice.models import SlackChannel, SlackChannelProperties
     channel = SlackChannel(
         properties=SlackChannelProperties(
@@ -464,9 +469,9 @@ def slack_create(client, resource_group_name, resource_name, client_id, client_s
     return create_channel(client, channel, 'SlackChannel', resource_group_name, resource_name)
 
 
-class ChannelOperations:
+class ChannelOperations:  # pylint: disable=too-few-public-methods
     def __init__(self):
-        for channel in ['facebook', 'email', 'msTeams', 'skype', 'kik', 'webChat', 'directLine', 'telegram', 'sms', 'slack']:
+        for channel in ['facebook', 'email', 'msTeams', 'skype', 'kik', 'webChat', 'directLine', 'telegram', 'sms', 'slack']:  # pylint: disable=line-too-long
             channelName = '{}Channel'.format(channel)
             channelName = channelName[:1].upper() + channelName[1:]
 
