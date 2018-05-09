@@ -167,7 +167,7 @@ def get_bot(cmd, client, resource_group_name, resource_name, bot_json=None):
     return raw_bot_properties
 
 
-def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,
+def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,  # pylint: disable=inconsistent-return-statements
                location, sku_name, appInsightsLocation, bot_json, language):
     if kind == 'function':
         template_name = 'functionapp.template.json'
@@ -233,7 +233,7 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         return create_bot_json(cmd, client, resource_group_name, resource_name, app_password=password)
 
 
-def publish_app(cmd, _, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master',
+def publish_app(cmd, _, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master',  # pylint: disable=inconsistent-return-statements
                 code_dir=None):
     # if given msbot json, use that to update environment settings like luis settings
     if git_url:
