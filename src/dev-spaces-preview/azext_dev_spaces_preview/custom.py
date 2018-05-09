@@ -58,7 +58,7 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
 
     if should_install_vsce:
         # Install VSCE
-        logger.info('Installing Dev Spaces (Preview)ßß commands...')
+        logger.info('Installing Dev Spaces (Preview) commands...')
         from six.moves.urllib.request import urlretrieve
         urlretrieve(setup_url, setup_file)
         try:
