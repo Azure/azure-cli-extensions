@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from six.moves.urllib.parse import quote  # pylint: disable=import-error
 import re
+from six.moves.urllib.parse import quote  # pylint: disable=import-error,relative-import
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
