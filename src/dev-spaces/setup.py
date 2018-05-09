@@ -26,7 +26,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dev-spaces',
+    name='dev-spaces-preview',
     version=VERSION,
     description='An Azure CLI Extension to manage dev spaces',
     long_description='An Azure CLI Extension to manage dev spaces resources',
