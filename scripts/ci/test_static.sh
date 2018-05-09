@@ -9,12 +9,12 @@ PYLINT_EXCLUDES=$(echo "$AZURE_SDK_AUTOGEN_FILES" | sed -e s=\./src/=src/=g -e '
 
 # Run pylint/flake8 on extensions
 echo "Running pylint on extensions..."
-pylint ./src/rdbms/azext_rdbms/ --ignore=$PYLINT_EXCLUDES --ignore-patterns=test_* --rcfile=./pylintrc -j $proc_number
+pylint ./src/rdbms/azext_rdbms/ --ignore=$PYLINT_EXCLUDES,vendored_sdks --ignore-patterns=test_* --rcfile=./pylintrc -j $proc_number
 
 
 echo "Pylint OK."
 echo "Running flake8 on extensions..."
-flake8 --statistics --exclude=$FLAKE8_EXCLUDES --append-config=./.flake8 ./src/*/azext_*/
+flake8 --statistics --exclude=$FLAKE8_EXCLUDES,vendored_sdks --append-config=./.flake8 ./src/*/azext_*/
 echo "Flake8 OK."
 
 # Run pylint/flake8 on CI files
@@ -23,4 +23,4 @@ flake8 --append-config=./.flake8 ./scripts/ci/*.py
 
 # Other static checks
 python ./scripts/ci/verify_codeowners.py
-python ./scripts/ci/verify_license.py
+python ./scripts/ci/verify_license.py 'src/storage-preview/azext_storage_preview/vendored_sdks'

@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import get_sdk, ResourceType
+from azure.cli.core.profiles import get_sdk
 
 from ._client_factory import generic_data_service_factory
+from .profiles import CUSTOM_DATA_STORAGE
 
 
 class ServiceProperties(object):
@@ -29,7 +30,7 @@ class ServiceProperties(object):
         return self.get_service_properties()(timeout=timeout).__dict__['logging']
 
     def set_logging(self, read, write, delete, retention, timeout=None):
-        t_logging, t_retention_policy = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, 'Logging', 'RetentionPolicy',
+        t_logging, t_retention_policy = get_sdk(self.cli_ctx, CUSTOM_DATA_STORAGE, 'Logging', 'RetentionPolicy',
                                                 mod='common.models')
 
         retention_policy = t_retention_policy(enabled=retention != 0, days=retention)
@@ -42,7 +43,7 @@ class ServiceProperties(object):
     def add_cors(self, origins, methods, max_age, exposed_headers=None, allowed_headers=None, timeout=None):
         from azure.common import AzureHttpError
 
-        t_cors_rule = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, 'CorsRule', mod='common.models')
+        t_cors_rule = get_sdk(self.cli_ctx, CUSTOM_DATA_STORAGE, 'CorsRule', mod='common.models')
         cors = self.get_cors(timeout)
         new_rule = t_cors_rule(origins, methods, max_age, exposed_headers, allowed_headers)
         cors.append(new_rule)
@@ -71,7 +72,7 @@ class ServiceProperties(object):
         return metrics
 
     def set_metrics(self, retention, hour, minute, api=None, timeout=None):
-        t_metrics, t_retention_policy = get_sdk(self.cli_ctx, ResourceType.DATA_STORAGE, 'Metrics', 'RetentionPolicy',
+        t_metrics, t_retention_policy = get_sdk(self.cli_ctx, CUSTOM_DATA_STORAGE, 'Metrics', 'RetentionPolicy',
                                                 mod='common.models')
 
         retention_policy = t_retention_policy(enabled=retention != 0, days=retention)
