@@ -15,7 +15,8 @@ class DevspacesExtCommandLoader(AzCommandsLoader):
         dev_spaces_custom = CliCommandType(
             operations_tmpl='azext_dev_spaces.custom#{}')
         super(DevspacesExtCommandLoader, self).__init__(cli_ctx=cli_ctx,
-                                                        custom_command_type=dev_spaces_custom)
+                                                        custom_command_type=dev_spaces_custom,
+                                                        min_profile='2017-03-10-profile')
 
     def load_command_table(self, _):
         with self.command_group('aks') as g:

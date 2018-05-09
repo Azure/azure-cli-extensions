@@ -9,7 +9,6 @@ from knack.help_files import helps
 helps['aks use-dev-spaces'] = """
     type: command
     short-summary: (PREVIEW) Use Azure Dev Spaces with a managed Kubernetes cluster.
-    long-summary: "If needed, a Dev Spaces resource will be created and connected to the target cluster, and Dev Spaces commands will be installed on this machine."
     parameters:
         - name: --name -n
           type: string
