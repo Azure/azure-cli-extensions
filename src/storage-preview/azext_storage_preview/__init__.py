@@ -4,19 +4,22 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import ResourceType
+from azure.cli.core.profiles import ResourceType, register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
+from .profiles import CUSTOM_DATA_STORAGE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
+        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
+
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    resource_type=ResourceType.DATA_STORAGE,
+                                                    resource_type=CUSTOM_DATA_STORAGE,
                                                     custom_command_type=storage_custom,
                                                     command_group_cls=StorageCommandGroup,
                                                     argument_context_cls=StorageArgumentContext)
@@ -127,7 +130,7 @@ class StorageArgumentContext(AzArgumentContext):
 
 
 class StorageCommandGroup(AzCommandGroup):
-    def storage_command(self, name, method_name=None, command_type=None, **kwargs):
+    def storage_command(self, name, method_name=None, command_type=None, oauth=False, **kwargs):
         """ Registers an Azure CLI Storage Data Plane command. These commands always include the four parameters which
         can be used to obtain a storage client: account-name, account-key, connection-string, and sas-token. """
         if command_type:
@@ -135,22 +138,58 @@ class StorageCommandGroup(AzCommandGroup):
         else:
             command_name = self.command(name, method_name, **kwargs)
         self._register_data_plane_account_arguments(command_name)
+        if oauth:
+            self._register_data_plane_oauth_arguments(command_name)
 
-    def storage_custom_command(self, name, method_name, **kwargs):
+    def storage_command_oauth(self, *args, **kwargs):
+        _merge_new_exception_handler(kwargs, self.get_handler_suppress_403())
+        self.storage_command(*args, oauth=True, **kwargs)
+
+    def storage_custom_command(self, name, method_name, oauth=False, **kwargs):
         command_name = self.custom_command(name, method_name, **kwargs)
         self._register_data_plane_account_arguments(command_name)
+        if oauth:
+            self._register_data_plane_oauth_arguments(command_name)
+
+    def storage_custom_command_oauth(self, *args, **kwargs):
+        _merge_new_exception_handler(kwargs, self.get_handler_suppress_403())
+        self.storage_custom_command(*args, oauth=True, **kwargs)
 
     def get_handler_suppress_404(self):
-
-        # pylint: disable=inconsistent-return-statements
         def handler(ex):
             from azure.cli.core.profiles import get_sdk
 
             t_error = get_sdk(self.command_loader.cli_ctx,
-                              ResourceType.DATA_STORAGE,
+                              CUSTOM_DATA_STORAGE,
                               'common._error#AzureMissingResourceHttpError')
             if isinstance(ex, t_error):
-                return None
+                return
+            raise ex
+
+        return handler
+
+    def get_handler_suppress_403(self):
+        def handler(ex):
+            from azure.cli.core.profiles import get_sdk
+            from knack.log import get_logger
+
+            logger = get_logger(__name__)
+            t_error = get_sdk(self.command_loader.cli_ctx,
+                              CUSTOM_DATA_STORAGE,
+                              'common._error#AzureHttpError')
+            if isinstance(ex, t_error) and ex.status_code == 403:
+                message = """
+You do not have the required permissions needed to perform this operation.
+Depending on your operation, you may need to be assigned one of the following roles:
+    "Storage Blob Data Contributor (Preview)"
+    "Storage Blob Data Reader (Preview)"
+    "Storage Queue Data Contributor (Preview)"
+    "Storage Queue Data Reader (Preview)"
+
+If you want to use the old authentication method and allow querying for the right account key, please use the "--auth-mode" parameter and "key" value.
+                """
+                logger.error(message)
+                return
             raise ex
 
         return handler
@@ -182,6 +221,31 @@ class StorageCommandGroup(AzCommandGroup):
                              arg_group=group_name,
                              help='A Shared Access Signature (SAS). Must be used in conjunction with storage account '
                                   'name. Environment variable: AZURE_STORAGE_SAS_TOKEN')
+
+    def _register_data_plane_oauth_arguments(self, command_name):
+        from azure.cli.core.commands.parameters import get_enum_type
+
+        # workaround to allow use of AzArgumentContext.extra()
+        self.command_loader.command_name = command_name
+        with self.command_loader.argument_context(command_name) as c:
+            c.extra('auth_mode', arg_type=get_enum_type(['login', 'key']),
+                    help='The mode in which to run the command. "login" mode will directly use your login credentials '
+                         'for the authentication. The legacy "key" mode will attempt to query for '
+                         'an account key if no authentication parameters for the account are provided. '
+                         'Environment variable: AZURE_STORAGE_AUTH_MODE')
+
+
+def _merge_new_exception_handler(kwargs, handler):
+    if kwargs.get('exception_handler'):
+        def new_handler(ex):
+            first = kwargs['exception_handler']
+            try:
+                first(ex)
+            except Exception as raised_ex:  # pylint: disable=broad-except
+                handler(raised_ex)
+        kwargs['exception_handler'] = new_handler
+    else:
+        kwargs['exception_handler'] = handler
 
 
 COMMAND_LOADER_CLS = StorageCommandsLoader
