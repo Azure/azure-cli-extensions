@@ -12,6 +12,7 @@ from azure.cli.core.commands.parameters import (
 
 name_arg_type = CLIArgumentType(metavar='NAME', configured_default='botname')
 
+
 # pylint: disable=line-too-long,too-many-statements
 def load_arguments(self, _):
     with self.argument_context('bot') as c:
