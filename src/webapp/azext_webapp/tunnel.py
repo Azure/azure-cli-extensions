@@ -34,7 +34,7 @@ class TunnelWebSocket(WebSocket):
         return data
 
 
-# pylint: disable=no-member, too-many-instance-attributes,bare-except,
+# pylint: disable=no-member,too-many-instance-attributes,bare-except,no-self-use
 class TunnelServer(object):
     def __init__(self, local_addr, local_port, remote_addr, remote_user_name, remote_password):
         self.local_addr = local_addr
@@ -65,7 +65,6 @@ class TunnelServer(object):
 
     def is_port_open(self):
         is_port_open = False
-        # pylint: disable=no-member
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             if sock.connect_ex('', self.local_port) == 0:
                 logger.info('Port %s is NOT open', self.local_port)
@@ -103,7 +102,7 @@ class TunnelServer(object):
             return True
         return False
 
-    def listen(self):
+    def _listen(self):
         self.sock.listen(100)
         index = 0
         basic_auth_string = self.create_basic_auth()
@@ -140,7 +139,6 @@ class TunnelServer(object):
             logger.info('Both debugger and websocket threads stopped...')
             logger.warning('Stopped local server..')
 
-# pylint: disable=no-self-use
     def _listen_to_web_socket(self, client, ws_socket, index):
         while True:
             try:
@@ -164,7 +162,6 @@ class TunnelServer(object):
                 ws_socket.close()
                 return False
 
-# pylint: disable=no-self-use
     def _listen_to_client(self, client, ws_socket, index):
         while True:
             try:
@@ -190,4 +187,4 @@ class TunnelServer(object):
 
     def start_server(self):
         logger.warning('Start your favorite client and connect to port %s', self.local_port)
-        self.listen()
+        self._listen()
