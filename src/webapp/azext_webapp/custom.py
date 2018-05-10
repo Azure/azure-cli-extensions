@@ -318,4 +318,3 @@ def _check_deployment_status(deployment_url, authorization):
     if r.json()['status'] != 4:
         logger.warning("""Deployment is taking longer than expected. Please verify status at '{}'
             beforing launching the app""".format(deployment_url))
-

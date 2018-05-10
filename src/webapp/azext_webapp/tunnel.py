@@ -139,6 +139,7 @@ class TunnelServer(object):
             logger.info('Both debugger and websocket threads stopped...')
             logger.warning('Stopped local server..')
 
+# pylint: disable=no-self-use
     def _listen_to_web_socket(self, client, ws_socket, index):
         while True:
             try:
@@ -162,6 +163,7 @@ class TunnelServer(object):
                 ws_socket.close()
                 return False
 
+# pylint: disable=no-self-use
     def _listen_to_client(self, client, ws_socket, index):
         while True:
             try:
