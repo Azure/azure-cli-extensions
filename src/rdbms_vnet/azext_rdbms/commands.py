@@ -7,7 +7,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azext_rdbms._client_factory import (
     cf_mysql_virtual_network_rules_operations,
-	cf_postgres_virtual_network_rules_operations)
+    cf_postgres_virtual_network_rules_operations)
 
 
 # pylint: disable=too-many-locals, too-many-statements, line-too-long
@@ -27,22 +27,20 @@ def load_command_table(self, _):
         client_factory=cf_postgres_virtual_network_rules_operations
     )
     with self.command_group('mysql server vnet-rule', mysql_vnet_sdk) as g:
-         g.command('create', 'create_or_update')
-         g.command('delete', 'delete', confirmation=True)
-         g.command('show', 'get')
-         g.command('list', 'list_by_server')
-         #g.generic_update_command('update')
-         g.generic_update_command('update', getter_name='_custom_vnet_update_get', getter_type=rdbms_custom,
+        g.command('create', 'create_or_update')
+        g.command('delete', 'delete', confirmation=True)
+        g.command('show', 'get')
+        g.command('list', 'list_by_server')
+        # g.generic_update_command('update')
+        g.generic_update_command('update', getter_name='_custom_vnet_update_get', getter_type=rdbms_custom,
                                  setter_name='_custom_vnet_update_set', setter_type=rdbms_custom, setter_arg_name='parameters')
 
     with self.command_group('postgres server vnet-rule', postgres_vnet_sdk) as g:
-         g.command('create', 'create_or_update')
-         g.command('delete', 'delete', confirmation=True)
-         g.command('show', 'get')
-         g.command('list', 'list_by_server')
-         #g.generic_update_command('update')
-         g.generic_update_command('update',
-                       getter_name='_custom_vnet_update_get', getter_type=rdbms_custom,
-                       setter_name='_custom_vnet_update_set', setter_type=rdbms_custom, setter_arg_name='parameters')
-                       #custom_func_name='_custom_vnet_update', custom_func_type=rdbms_custom)
-         #g.custom_command('update', '_custom_vnet_update')
+        g.command('create', 'create_or_update')
+        g.command('delete', 'delete', confirmation=True)
+        g.command('show', 'get')
+        g.command('list', 'list_by_server')
+        # g.generic_update_command('update')
+        g.generic_update_command('update',
+                                 getter_name='_custom_vnet_update_get', getter_type=rdbms_custom,
+                                 setter_name='_custom_vnet_update_set', setter_type=rdbms_custom, setter_arg_name='parameters')
