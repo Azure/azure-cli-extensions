@@ -33,7 +33,7 @@ class TunnelWebSocket(WebSocket):
         logger.info('Received websocket data: %s', data)
         return data
 
-
+# pylint: disable=no-member, too-many-instance-attributes,bare-except,
 class TunnelServer(object):
     def __init__(self, local_addr, local_port, remote_addr, remote_user_name, remote_password):
         self.local_addr = local_addr
@@ -43,6 +43,8 @@ class TunnelServer(object):
         self.remote_addr = remote_addr
         self.remote_user_name = remote_user_name
         self.remote_password = remote_password
+        self.client = None
+        self.ws = None
         logger.info('Creating a socket on port: %s', self.local_port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logger.info('Setting socket options')
@@ -62,8 +64,9 @@ class TunnelServer(object):
 
     def is_port_open(self):
         is_port_open = False
+        # pylint: disable=no-member
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-            if sock.connect_ex(('', self.local_port)) == 0:
+            if sock.connect_ex('', self.local_port) == 0:
                 logger.info('Port %s is NOT open', self.local_port)
             else:
                 logger.warning('Port %s is open', self.local_port)
@@ -125,8 +128,8 @@ class TunnelServer(object):
             logger.info('Websocket, connected status: %s', self.ws.connected)
             index = index + 1
             logger.info('Got debugger connection... index: %s', index)
-            debugger_thread = Thread(target=self.listen_to_client, args=(self.client, self.ws, index))
-            web_socket_thread = Thread(target=self.listen_to_web_socket, args=(self.client, self.ws, index))
+            debugger_thread = Thread(target=self._listen_to_client, args=(self.client, self.ws, index))
+            web_socket_thread = Thread(target=self._listen_to_web_socket, args=(self.client, self.ws, index))
             debugger_thread.start()
             web_socket_thread.start()
             logger.info('Both debugger and websocket threads started...')
@@ -136,7 +139,7 @@ class TunnelServer(object):
             logger.info('Both debugger and websocket threads stopped...')
             logger.warning('Stopped local server..')
 
-    def listen_to_web_socket(self, client, ws_socket, index):
+    def _listen_to_web_socket(self, client, ws_socket, index):
         while True:
             try:
                 logger.info('Waiting for websocket data, connection status: %s, index: %s', ws_socket.connected, index)
@@ -159,7 +162,7 @@ class TunnelServer(object):
                 ws_socket.close()
                 return False
 
-    def listen_to_client(self, client, ws_socket, index):
+    def _listen_to_client(self, client, ws_socket, index):
         while True:
             try:
                 logger.info('Waiting for debugger data, index: %s', index)

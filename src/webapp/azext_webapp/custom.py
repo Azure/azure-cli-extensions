@@ -4,13 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import print_function
+import json
 from knack.log import get_logger
 from knack.util import CLIError
-
 from azure.mgmt.web.models import (AppServicePlan, SkuDescription, SnapshotRecoveryRequest, SnapshotRecoveryTarget)
-
 from azure.cli.core.commands.client_factory import get_subscription_id
-
 from azure.cli.command_modules.appservice.custom import (
     create_webapp,
     update_app_settings,
@@ -19,9 +17,7 @@ from azure.cli.command_modules.appservice.custom import (
     get_sku_name,
     list_publish_profiles,
     get_site_configs)
-
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
-
 from .create_util import (
     zip_contents_from_dir,
     get_runtime_version_details,
@@ -33,14 +29,10 @@ from .create_util import (
     get_lang_from_content,
     web_client_factory
 )
-
 from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
-import json
-import time
-
 logger = get_logger(__name__)
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
 
 
 def create_deploy_webapp(cmd, name, location=None, dryrun=False):
@@ -245,6 +237,7 @@ def _check_for_ready_tunnel(remote_debugging, tunnel_server):
 
 
 def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
+    import time
     profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
     user_name = next(p['userName'] for p in profiles)
     user_password = next(p['userPWD'] for p in profiles)
@@ -268,6 +261,7 @@ def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
 
 
 def _start_tunnel(tunnel_server, remote_debugging_enabled):
+    import time
     if not _check_for_ready_tunnel(remote_debugging_enabled, tunnel_server):
         logger.warning('Tunnel is not ready yet, please wait (may take up to 1 minute)')
         while True:
@@ -299,7 +293,7 @@ def _zip_deploy(cmd, rg_name, name, zip_path):
     # keep checking for status of the deployment
     deployment_url = scm_url + '/api/deployments/latest'
     response = requests.get(deployment_url, headers=authorization)
-    if(response.json()['status'] != 4):
+    if response.json()['status'] != 4:
         logger.warning(response.json()['progress'])
         _check_deployment_status(deployment_url, authorization)
 
@@ -312,15 +306,16 @@ def _check_deployment_status(deployment_url, authorization):
         res_dict = response.json()
         num_trials = num_trials + 1
         if res_dict['status'] == 5:
-            return logger.warning("Zip deployment failed status {}".format(
+            logger.warning("Zip deployment failed status {}".format(
                 res_dict['status_text']
             ))
+            break
         elif res_dict['status'] == 4:
-            return
+            break
         logger.warning(res_dict['progress'])
-        # if the deployment is taking longer than expected
-        r = requests.get(deployment_url, headers=authorization)
+    # if the deployment is taking longer than expected
+    r = requests.get(deployment_url, headers=authorization)
     if r.json()['status'] != 4:
         logger.warning("""Deployment is taking longer than expected. Please verify status at '{}'
             beforing launching the app""".format(deployment_url))
-    return
+
