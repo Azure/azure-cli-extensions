@@ -33,6 +33,7 @@ class TunnelWebSocket(WebSocket):
         logger.info('Received websocket data: %s', data)
         return data
 
+
 # pylint: disable=no-member, too-many-instance-attributes,bare-except,
 class TunnelServer(object):
     def __init__(self, local_addr, local_port, remote_addr, remote_user_name, remote_password):
