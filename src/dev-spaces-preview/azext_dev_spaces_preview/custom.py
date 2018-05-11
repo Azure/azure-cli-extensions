@@ -51,6 +51,12 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
         setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
         setup_url = "https://aka.ms/get-azds-osx-az"
         setup_args = ['bash', setup_file]
+    elif system == 'Linux':
+        # OSX
+        azds_cli = 'azds'
+        setup_file = os.path.join(_create_tmp_dir(), 'azds-linux-setup.sh')
+        setup_url = "https://aka.ms/get-azds-linux-az"
+        setup_args = ['bash', setup_file]
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 
