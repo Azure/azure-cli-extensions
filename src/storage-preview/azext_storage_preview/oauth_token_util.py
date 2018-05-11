@@ -6,7 +6,7 @@
 import threading
 
 
-class TokenUpdater:
+class TokenUpdater(object):
     """
     This class updates a given token_credential periodically using the provided callback function.
     It shows one way of making sure the credential does not become expired.

@@ -6,15 +6,14 @@
 
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-from knack.log import get_logger
-
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type,
     get_resource_name_completion_list,
     tags_type
 )
+
+from knack.log import get_logger
 
 from ._constants import (
     SIGNALR_SKU,
