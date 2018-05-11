@@ -372,17 +372,17 @@ class ProxyResourcesMgmtScenarioTest(ScenarioTest):
                  .format(database_engine, vnet_firewall_rule_1, resource_group, server,
                          vnet_name, subnet_name_1, ignore_missing_endpoint),
                  checks=[
-                        JMESPathCheck('name', vnet_firewall_rule_1),
-                        JMESPathCheck('resourceGroup', resource_group),
-                        JMESPathCheck('state', 'Ready')])
+                         JMESPathCheck('name', vnet_firewall_rule_1),
+                         JMESPathCheck('resourceGroup', resource_group),
+                         JMESPathCheck('state', 'Ready')])
 
         # test vnet-rule show
         self.cmd('{} server vnet-rule show -n {} -g {} -s {}'
                  .format(database_engine, vnet_firewall_rule_1, resource_group, server),
                  checks=[
-                        JMESPathCheck('name', vnet_firewall_rule_1),
-                        JMESPathCheck('resourceGroup', resource_group),
-                        JMESPathCheck('state', 'Ready')])
+                         JMESPathCheck('name', vnet_firewall_rule_1),
+                         JMESPathCheck('resourceGroup', resource_group),
+                         JMESPathCheck('state', 'Ready')])
 
         # test create one more vnet rule .
         self.cmd('{} server vnet-rule create -n {} -g {} -s {} '
@@ -390,9 +390,9 @@ class ProxyResourcesMgmtScenarioTest(ScenarioTest):
                  .format(database_engine, vnet_firewall_rule_2, resource_group, server,
                          vnet_name, subnet_name_2, ignore_missing_endpoint),
                  checks=[
-                        JMESPathCheck('name', vnet_firewall_rule_2),
-                        JMESPathCheck('resourceGroup', resource_group),
-                        JMESPathCheck('state', 'Ready')])
+                         JMESPathCheck('name', vnet_firewall_rule_2),
+                         JMESPathCheck('resourceGroup', resource_group),
+                         JMESPathCheck('state', 'Ready')])
 
         # test vnet-rule list
         self.cmd('{} server vnet-rule list -g {} -s {}'

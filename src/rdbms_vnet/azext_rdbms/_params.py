@@ -14,11 +14,6 @@ from azext_rdbms.validators import configuration_value_validator
 
 def load_arguments(self, _):    # pylint: disable=too-many-statements
 
-    server_completers = {
-        'mysql': get_resource_name_completion_list('Microsoft.DBForMySQL/servers'),
-        'postgres': get_resource_name_completion_list('Microsoft.DBForPostgreSQL/servers')
-    }
-
     for scope in ['mysql server vnet-rule', 'postgres server vnet-rule']:
         with self.argument_context(scope) as c:
                 c.argument('server_name', options_list=['--server-name', '-s'])
