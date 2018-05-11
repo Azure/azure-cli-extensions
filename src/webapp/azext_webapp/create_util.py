@@ -116,6 +116,7 @@ def check_app_exists(cmd, rg_name, app_name):
     return False
 
 
+# pylint:disable=unexpected-keyword-arg
 def get_lang_from_content(src_path):
     import glob
     # NODE: package.json should exist in the application root dir
@@ -158,8 +159,7 @@ def detect_dotnet_lang(csproj_path):
         version_lang = re.sub(r'([^a-zA-Z\s]+?)', '', target_ver.text)
     if 'netcore' in version_lang.lower():
         return NETCORE_RUNTIME_NAME
-    else:
-        return DOTNET_RUNTIME_NAME
+    return DOTNET_RUNTIME_NAME
 
 
 def parse_dotnet_version(file_path):
