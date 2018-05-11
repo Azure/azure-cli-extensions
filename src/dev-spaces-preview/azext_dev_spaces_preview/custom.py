@@ -8,10 +8,16 @@ import os
 import platform
 import subprocess
 import tempfile
+import six
 from knack.log import get_logger
 from knack.util import CLIError
 
 logger = get_logger(__name__)
+
+# Defining PermissionError for Python 2.7
+if six.PY2:
+    class PermissionError(OSError):
+        pass
 
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
