@@ -8,9 +8,10 @@ import os
 import platform
 import subprocess
 import tempfile
+from six.moves.urllib.request import urlretrieve   # pylint: disable=import-error
 import six
-from knack.log import get_logger
-from knack.util import CLIError
+from knack.log import get_logger  # pylint: disable=import-error
+from knack.util import CLIError  # pylint: disable=import-error
 
 logger = get_logger(__name__)
 
@@ -30,7 +31,7 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     :param cluster_name: Name of the managed cluster.
     :type cluster_name: String
     :param resource_group_name: Name of resource group. You can configure the default group. \
-    Using `az configure –defaults group=<name>`.
+    Using 'az configure –defaults group=<name>'.
     :type resource_group_name: String
     :param space_name: Name of the dev space to use.
     :type space_name: String
@@ -71,7 +72,6 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     if should_install_vsce:
         # Install VSCE
         logger.info('Installing Dev Spaces (Preview) commands...')
-        from six.moves.urllib.request import urlretrieve
         urlretrieve(setup_url, setup_file)
         try:
             subprocess.call(
@@ -121,7 +121,7 @@ def aks_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # p
     :param cluster_name: Name of the managed cluster.
     :type cluster_name: String
     :param resource_group_name: Name of resource group. You can configure the default group. \
-    Using `az configure –defaults group=<name>`.
+    Using 'az configure –defaults group=<name>'.
     :type resource_group_name: String
     :param prompt: Do not prompt for confirmation.
     :type prompt: bool
