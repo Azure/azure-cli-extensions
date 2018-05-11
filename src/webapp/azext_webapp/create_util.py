@@ -116,6 +116,7 @@ def check_app_exists(cmd, rg_name, app_name):
     return False
 
 
+# pylint:disable=unexpected-keyword-arg
 def get_lang_from_content(src_path):
     import glob
     # NODE: package.json should exist in the application root dir
