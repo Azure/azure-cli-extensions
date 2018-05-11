@@ -35,7 +35,7 @@ setup(
     work in a consistent dev environment.',
     license='MIT',
     author='Microsoft Corporation',
-    author_email='mindaro@microsoft.com',
+    author_email='azds-azcli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     package_data={'azext_dev_spaces': ['azext_metadata.json']},

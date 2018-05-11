@@ -54,7 +54,7 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 
-    should_install_vsce = not _is_dev_connect_installed(azds_cli)
+    should_install_vsce = not _is_dev_spaces_installed(azds_cli)
 
     if should_install_vsce:
         # Install VSCE
@@ -68,7 +68,7 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
             raise CLIError('Installing {} tooling needs permissions: {}'.format(azds_tool, ex))
         finally:
             os.remove(setup_file)
-        if not _is_dev_connect_installed(azds_cli):
+        if not _is_dev_spaces_installed(azds_cli):
             raise CLIError("{} not installed properly. Visit 'https://aka.ms/get-azds' for Azure Dev Spaces."
                            .format(azds_tool))
 
@@ -128,7 +128,7 @@ def aks_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # p
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 
-    if not _is_dev_connect_installed(azds_cli):
+    if not _is_dev_spaces_installed(azds_cli):
         raise CLIError("{} not installed properly. Use 'az aks use-dev-spaces' commands for Azure Dev Spaces."
                        .format(azds_tool))
 
@@ -145,7 +145,7 @@ def _create_tmp_dir():
     return tmp_dir
 
 
-def _is_dev_connect_installed(vsce_cli):
+def _is_dev_spaces_installed(vsce_cli):
     try:
         from subprocess import PIPE, Popen
         Popen([vsce_cli], stdout=PIPE, stderr=PIPE)

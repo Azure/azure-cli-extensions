@@ -1,4 +1,4 @@
-# Azure CLI Storage Preview Extension #
+# Azure CLI Dev Spaces Preview Extension #
 This is a extension for dev spaces features.
 
 ## How to use ##

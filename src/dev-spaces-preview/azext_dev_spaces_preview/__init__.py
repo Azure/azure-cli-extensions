@@ -29,13 +29,12 @@ class DevspacesExtCommandLoader(AzCommandsLoader):
             c.argument('cluster_name', options_list=['--name', '-n'])
             c.argument('resource_group_name', options_list=['--resource-group', '-g'])
             c.argument('space_name', options_list=['--space', '-s'])
-            c.argument('parent_space_name', options_list=['--parent-space'])
+            c.argument('parent_space_name', options_list=['--parent-space', '-p'])
 
         with self.argument_context('aks remove-dev-spaces') as c:
             c.argument('cluster_name', options_list=['--name', '-n'])
             c.argument('resource_group_name', options_list=['--resource-group', '-g'])
-            c.argument('prompt', options_list=['--yes', '-y'], action='store_true',
-                       help='If true, it does not prompt for confirmation.')
+            c.argument('prompt', options_list=['--yes', '-y'], action='store_true')
 
 
 COMMAND_LOADER_CLS = DevspacesExtCommandLoader
