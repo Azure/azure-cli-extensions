@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='rdbms-vnet',
     version=VERSION,
-    description='An Azure CLI Extension to manage VNET ACL rules for Azure MySQL and Azure PostgreSQL resources',
-    long_description='An Azure CLI Extension to manage VNET ACL rules for  Azure MySQL and Azure PostgreSQL resources',
+    description='Support for Virtual Network rules in Azure MySQL and Azure PostgreSQL resources',
+    long_description='Support for Virtual Network rules in Azure MySQL and Azure PostgreSQL resources',
     license='MIT',
     author='Rahul G S',
     author_email='ragoutha@microsoft.com',
