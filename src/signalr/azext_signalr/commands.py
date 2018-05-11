@@ -5,9 +5,9 @@
 
 
 from azure.cli.core.commands import CliCommandType
+from azure.cli.core.util import empty_on_404
 
 from ._client_factory import cf_signalr
-from azure.cli.core.util import empty_on_404
 
 
 def load_command_table(self, _):
