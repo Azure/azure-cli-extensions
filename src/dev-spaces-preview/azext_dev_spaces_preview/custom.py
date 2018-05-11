@@ -15,11 +15,6 @@ from knack.util import CLIError  # pylint: disable=import-error
 
 logger = get_logger(__name__)
 
-# Defining PermissionError for Python 2.7
-if six.PY2:
-    class PermissionError(OSError):
-        pass
-
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
 
@@ -76,7 +71,7 @@ def aks_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
         try:
             subprocess.call(
                 setup_args, universal_newlines=True, stdin=None, stdout=None, stderr=None, shell=False)
-        except PermissionError as ex:
+        except OSError as ex:
             raise CLIError('Installing {} tooling needs permissions: {}'.format(azds_tool, ex))
         finally:
             os.remove(setup_file)
