@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands import CliCommandType
 
-from azext_rdbms._client_vnet_factory import (
+from azext_rdbms._client_factory import (
     cf_mysql_virtual_network_rules_operations,
     cf_postgres_virtual_network_rules_operations)
 
