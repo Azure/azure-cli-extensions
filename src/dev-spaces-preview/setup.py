@@ -38,7 +38,7 @@ setup(
     author_email='azds-azcli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_dev_spaces': ['azext_metadata.json']},
+    package_data={'azext_dev_spaces_preview': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
