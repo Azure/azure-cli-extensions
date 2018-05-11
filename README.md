@@ -32,6 +32,22 @@ Add your extension to the index to make it available in these CLI commands:
 - Your extension artifact (i.e. `.whl`) will not live in this repository. You can publish your extension to PyPI or somewhere else such as Azure Storage.
 - If you want your extension to appear in the index.json, modify the index.
 
+## FAQ
+
+### How to generate sha256digest for index.json?
+
+MacOS
+```
+shasum -a 256 path_to_whl.whl
+```
+
+Windows / PowerShell
+```
+Get-FileHash path_to_whl.whl -Algorithm SHA256
+```
+
+Note: It should all be lowercase in index.json otherwise CI will fail.
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
