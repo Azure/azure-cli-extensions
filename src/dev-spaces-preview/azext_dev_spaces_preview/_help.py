@@ -15,7 +15,7 @@ helps['aks use-dev-spaces'] = """
           short-summary: Name of the managed cluster.
         - name: --resource-group -g
           type: string
-          short-summary: Name of resource group. You can configure the default group using 'az configure –defaults group=<name>'.
+          short-summary: Name of resource group. You can configure the default group using 'az configure --defaults group=<name>'.
         - name: --space -s
           type: string
           short-summary: Name of the dev space to use.
@@ -33,7 +33,7 @@ helps['aks remove-dev-spaces'] = """
           short-summary: Name of the managed cluster.
         - name: --resource-group -g
           type: string
-          short-summary: Name of resource group. You can configure the default group using 'az configure –defaults group=<name>'.
+          short-summary: Name of resource group. You can configure the default group using 'az configure --defaults group=<name>'.
         - name: --yes -y
           type: bool
           short-summary: Do not prompt for confirmation.
