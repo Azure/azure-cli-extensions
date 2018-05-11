@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands import CliCommandType
 
-from azext_rdbms._client_factory import (
+from azext_rdbms_vnet._client_factory import (
     cf_mysql_virtual_network_rules_operations,
     cf_postgres_virtual_network_rules_operations)
 
@@ -13,16 +13,16 @@ from azext_rdbms._client_factory import (
 # pylint: disable=too-many-locals, too-many-statements, line-too-long
 def load_command_table(self, _):
 
-    rdbms_custom = CliCommandType(operations_tmpl='azext_rdbms.custom#{}')
+    rdbms_custom = CliCommandType(operations_tmpl='azext_rdbms_vnet.custom#{}')
 
     mysql_vnet_sdk = CliCommandType(
-        operations_tmpl='azext_rdbms.mysql.operations.virtual_network_rules_operations#VirtualNetworkRulesOperations.{}',
+        operations_tmpl='azext_rdbms_vnet.mysql.operations.virtual_network_rules_operations#VirtualNetworkRulesOperations.{}',
         client_arg_name='self',
         client_factory=cf_mysql_virtual_network_rules_operations
     )
 
     postgres_vnet_sdk = CliCommandType(
-        operations_tmpl='azext_rdbms.postgresql.operations.virtual_network_rules_operations#VirtualNetworkRulesOperations.{}',
+        operations_tmpl='azext_rdbms_vnet.postgresql.operations.virtual_network_rules_operations#VirtualNetworkRulesOperations.{}',
         client_arg_name='self',
         client_factory=cf_postgres_virtual_network_rules_operations
     )
