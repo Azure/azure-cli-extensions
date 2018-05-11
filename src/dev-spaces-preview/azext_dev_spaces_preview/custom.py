@@ -9,7 +9,6 @@ import platform
 import subprocess
 import tempfile
 from six.moves.urllib.request import urlretrieve   # pylint: disable=import-error
-import six
 from knack.log import get_logger  # pylint: disable=import-error
 from knack.util import CLIError  # pylint: disable=import-error
 
