@@ -3,17 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=import-error,unused-import
 import sys
 import ssl
 import socket
 import time
 import traceback
-import websocket
 import logging as logs
-
 from contextlib import closing
 from datetime import datetime
 from threading import Thread
+
+import websocket
 from websocket import create_connection, WebSocket
 
 from knack.util import CLIError
@@ -32,10 +33,8 @@ class TunnelWebSocket(WebSocket):
         logger.info('Received websocket data: %s', data)
         return data
 
-    def send_binary(self, data):
-        super(TunnelWebSocket, self).send_binary(data)
 
-
+# pylint: disable=no-member,too-many-instance-attributes,bare-except,no-self-use
 class TunnelServer(object):
     def __init__(self, local_addr, local_port, remote_addr, remote_user_name, remote_password):
         self.local_addr = local_addr
@@ -45,6 +44,8 @@ class TunnelServer(object):
         self.remote_addr = remote_addr
         self.remote_user_name = remote_user_name
         self.remote_password = remote_password
+        self.client = None
+        self.ws = None
         logger.info('Creating a socket on port: %s', self.local_port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logger.info('Setting socket options')
@@ -57,7 +58,7 @@ class TunnelServer(object):
         logger.info('Finished initialization')
 
     def create_basic_auth(self):
-        from base64 import b64encode, b64decode
+        from base64 import b64encode
         basic_auth_string = '{}:{}'.format(self.remote_user_name, self.remote_password).encode()
         basic_auth_string = b64encode(basic_auth_string).decode('utf-8')
         return basic_auth_string
@@ -65,7 +66,7 @@ class TunnelServer(object):
     def is_port_open(self):
         is_port_open = False
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-            if sock.connect_ex(('', self.local_port)) == 0:
+            if sock.connect_ex('', self.local_port) == 0:
                 logger.info('Port %s is NOT open', self.local_port)
             else:
                 logger.warning('Port %s is open', self.local_port)
@@ -73,7 +74,6 @@ class TunnelServer(object):
             return is_port_open
 
     def is_port_set_to_default(self):
-        import sys
         import certifi
         import urllib3
         try:
@@ -92,7 +92,8 @@ class TunnelServer(object):
             preload_content=False
         )
         if r.status != 200:
-            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(url, r.status, r.reason))
+            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(
+                url, r.status, r.reason))
         msg = r.read().decode('utf-8')
         logger.info('Status response message: %s', msg)
         if 'FAIL' in msg.upper():
@@ -101,12 +102,12 @@ class TunnelServer(object):
             return True
         return False
 
-    def listen(self):
+    def _listen(self):
         self.sock.listen(100)
         index = 0
         basic_auth_string = self.create_basic_auth()
         while True:
-            self.client, address = self.sock.accept()
+            self.client, _address = self.sock.accept()
             self.client.settimeout(1800)
             host = 'wss://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx')
             basic_auth_header = 'Authorization: Basic {}'.format(basic_auth_string)
@@ -127,8 +128,8 @@ class TunnelServer(object):
             logger.info('Websocket, connected status: %s', self.ws.connected)
             index = index + 1
             logger.info('Got debugger connection... index: %s', index)
-            debugger_thread = Thread(target=self.listen_to_client, args=(self.client, self.ws, index))
-            web_socket_thread = Thread(target=self.listen_to_web_socket, args=(self.client, self.ws, index))
+            debugger_thread = Thread(target=self._listen_to_client, args=(self.client, self.ws, index))
+            web_socket_thread = Thread(target=self._listen_to_web_socket, args=(self.client, self.ws, index))
             debugger_thread.start()
             web_socket_thread.start()
             logger.info('Both debugger and websocket threads started...')
@@ -138,7 +139,7 @@ class TunnelServer(object):
             logger.info('Both debugger and websocket threads stopped...')
             logger.warning('Stopped local server..')
 
-    def listen_to_web_socket(self, client, ws_socket, index):
+    def _listen_to_web_socket(self, client, ws_socket, index):
         while True:
             try:
                 logger.info('Waiting for websocket data, connection status: %s, index: %s', ws_socket.connected, index)
@@ -161,7 +162,7 @@ class TunnelServer(object):
                 ws_socket.close()
                 return False
 
-    def listen_to_client(self, client, ws_socket, index):
+    def _listen_to_client(self, client, ws_socket, index):
         while True:
             try:
                 logger.info('Waiting for debugger data, index: %s', index)
@@ -186,4 +187,4 @@ class TunnelServer(object):
 
     def start_server(self):
         logger.warning('Start your favorite client and connect to port %s', self.local_port)
-        self.listen()
+        self._listen()
