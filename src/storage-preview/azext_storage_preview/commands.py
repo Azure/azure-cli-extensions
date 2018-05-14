@@ -11,14 +11,14 @@ from ._client_factory import (cf_sa, blob_data_service_factory,
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
-from .profiles import CUSTOM_DATA_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
     storage_account_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.storage.operations.storage_accounts_operations#StorageAccountsOperations.{}',
         client_factory=cf_sa,
-        resource_type=ResourceType.MGMT_STORAGE
+        resource_type=CUSTOM_MGMT_STORAGE
     )
 
     storage_account_custom_type = CliCommandType(
@@ -40,7 +40,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
             resource_type=resource_type
         )
 
-    with self.command_group('storage account', storage_account_sdk, resource_type=ResourceType.MGMT_STORAGE,
+    with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
         g.command('check-name', 'check_name_availability')
         g.custom_command('create', 'create_storage_account', min_api='2016-01-01')
@@ -57,7 +57,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
-                            resource_type=ResourceType.MGMT_STORAGE, min_api='2017-06-01') as g:
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
         g.custom_command('add', 'add_network_rule')
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')

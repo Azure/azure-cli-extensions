@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import ResourceType, register_resource_type
+from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import CUSTOM_DATA_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -16,6 +16,7 @@ class StorageCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-02-01')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
@@ -107,12 +108,12 @@ class StorageArgumentContext(AzArgumentContext):
         from ._validators import validate_encryption_services
 
         t_access_tier, t_sku_name, t_encryption_services = self.command_loader.get_models(
-            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=ResourceType.MGMT_STORAGE)
+            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=CUSTOM_MGMT_STORAGE)
 
         self.argument('https_only', help='Allows https traffic only to storage service.',
                       arg_type=get_three_state_flag())
         self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
-        self.argument('assign_identity', action='store_true', resource_type=ResourceType.MGMT_STORAGE,
+        self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_STORAGE,
                       min_api='2017-06-01',
                       help='Generate and assign a new Storage Account Identity for this storage account for use '
                            'with key management services like Azure KeyVault.')
@@ -125,7 +126,7 @@ class StorageArgumentContext(AzArgumentContext):
             encryption_choices = list(
                 t_encryption_services._attribute_map.keys())  # pylint: disable=protected-access
             self.argument('encryption_services', arg_type=get_enum_type(encryption_choices),
-                          resource_type=ResourceType.MGMT_STORAGE, min_api='2016-12-01', nargs='+',
+                          resource_type=CUSTOM_MGMT_STORAGE, min_api='2016-12-01', nargs='+',
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
 

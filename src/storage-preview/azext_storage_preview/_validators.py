@@ -6,13 +6,14 @@
 # pylint: disable=protected-access
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
-from azure.cli.core.profiles import ResourceType, get_sdk
+from azure.cli.core.profiles import get_sdk
 
 from ._client_factory import get_storage_data_service_client
 from .util import glob_files_locally, guess_content_type
 from .sdkutil import get_table_data_type
 from .url_quote_util import encode_for_url
 from .oauth_token_util import TokenUpdater
+from .profiles import CUSTOM_MGMT_STORAGE
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 
@@ -23,7 +24,7 @@ storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 # pylint: disable=inconsistent-return-statements
 def _query_account_key(cli_ctx, account_name):
     """Query the storage account key. This is used when the customer doesn't offer account key but name."""
-    scf = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE)
+    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
     acc = next((x for x in scf.storage_accounts.list() if x.name == account_name), None)
     if acc:
         from msrestazure.tools import parse_resource_id
@@ -31,7 +32,7 @@ def _query_account_key(cli_ctx, account_name):
 
         t_storage_account_keys, t_storage_account_list_keys_results = get_sdk(
             cli_ctx,
-            ResourceType.MGMT_STORAGE,
+            CUSTOM_MGMT_STORAGE,
             'models.storage_account_keys#StorageAccountKeys',
             'models.storage_account_list_keys_result#StorageAccountListKeysResult')
 
@@ -398,7 +399,7 @@ def validate_encryption_services(cmd, namespace):
     Builds up the encryption services object for storage account operations based on the list of services passed in.
     """
     if namespace.encryption_services:
-        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, ResourceType.MGMT_STORAGE,
+        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE,
                                                               'EncryptionServices', 'EncryptionService', mod='models')
         services = {service: t_encryption_service(enabled=True) for service in namespace.encryption_services}
 
@@ -420,7 +421,7 @@ def validate_encryption_source(cmd, namespace):
         if namespace.encryption_key_source != 'Microsoft.Keyvault':
             raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are not '
                              'applicable when --encryption-key-source=Microsoft.Keyvault is not specified.')
-        KeyVaultProperties = get_sdk(cmd.cli_ctx, ResourceType.MGMT_STORAGE, 'KeyVaultProperties',
+        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE, 'KeyVaultProperties',
                                      mod='models')
         if not KeyVaultProperties:
             return

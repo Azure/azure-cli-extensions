@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type)
 
@@ -13,7 +12,7 @@ from ._validators import (get_datetime_type, validate_metadata, get_permission_v
                           validate_table_payload_format, validate_key, add_progress_callback,
                           storage_account_key_options, process_file_download_namespace, process_metric_update_namespace,
                           get_char_options_validator, validate_bypass, validate_encryption_source)
-
+from .profiles import CUSTOM_MGMT_STORAGE
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
     from argcomplete.completers import FilesCompleter
@@ -93,7 +92,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage account create') as c:
         t_account_type, t_sku_name, t_kind = self.get_models('AccountType', 'SkuName', 'Kind',
-                                                             resource_type=ResourceType.MGMT_STORAGE)
+                                                             resource_type=CUSTOM_MGMT_STORAGE)
 
         c.register_common_storage_account_options()
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
@@ -126,10 +125,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.ignore('encryption_key_vault_properties')
 
     for scope in ['storage account create', 'storage account update']:
-        with self.argument_context(scope, resource_type=ResourceType.MGMT_STORAGE, min_api='2017-06-01',
+        with self.argument_context(scope, resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01',
                                    arg_group='Network Rule') as c:
             t_bypass, t_default_action = self.get_models('Bypass', 'DefaultAction',
-                                                         resource_type=ResourceType.MGMT_STORAGE)
+                                                         resource_type=CUSTOM_MGMT_STORAGE)
 
             c.argument('bypass', nargs='+', validator=validate_bypass, arg_type=get_enum_type(t_bypass),
                        help='Bypass traffic for space-separated uses.')
