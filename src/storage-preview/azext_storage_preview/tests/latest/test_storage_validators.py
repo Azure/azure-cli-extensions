@@ -19,7 +19,7 @@ from ..._validators import (get_permission_validator, get_datetime_type,
 from azure.cli.testsdk import api_version_constraint
 from ..._validators import (get_source_file_or_blob_service_client, validate_encryption_source,
                             validate_encryption_services)
-from ...profiles import CUSTOM_DATA_STORAGE
+from ...profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
 
 
 class MockCLI(CLI):
@@ -157,7 +157,7 @@ class TestStorageValidators(unittest.TestCase):
         self.assertEqual(result, set('ab'))
 
 
-@api_version_constraint(resource_type=ResourceType.MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(resource_type=CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class TestEncryptionValidators(unittest.TestCase):
     def setUp(self):
         self.cli = MockCLI()
