@@ -153,6 +153,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
 
     def test_show_usage(self):
         self.cmd('storage account show-usage', checks=JMESPathCheck('name.value', 'StorageAccounts'))
+        self.cmd('storage account show-usage -l centraluseuap', checks=JMESPathCheck('name.value', 'StorageAccounts'))
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()

@@ -7,6 +7,7 @@ from azure.cli.core.decorators import Completer
 
 from .util import get_storage_client
 from ._validators import validate_client_parameters
+from ._client_factory import cf_sa, cf_blob_container_mgmt
 
 
 @Completer
@@ -97,3 +98,16 @@ def get_storage_acl_name_completion_list(service, container_param, func):
         return list(getattr(client, func)(container_name))
 
     return completer
+
+
+@Completer
+def get_container_name_completions(cmd, _, namespace):
+    if namespace.account_name:
+        account_client = cf_sa(cmd.cli_ctx, None)
+        account = next((x for x in account_client.list() if x.name == namespace.account_name), None)
+        if account:
+            from msrestazure.tools import parse_resource_id
+            rg = parse_resource_id(account.id)['resource_group']
+            container_client = cf_blob_container_mgmt(cmd.cli_ctx, None)
+            return [container.name for container in container_client.list(rg, account.name).value]
+    return []

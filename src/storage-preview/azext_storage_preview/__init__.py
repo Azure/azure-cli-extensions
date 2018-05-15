@@ -20,6 +20,7 @@ class StorageCommandsLoader(AzCommandsLoader):
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                    min_profile='2017-03-10-profile',
                                                     resource_type=CUSTOM_DATA_STORAGE,
                                                     custom_command_type=storage_custom,
                                                     command_group_cls=StorageCommandGroup,
@@ -197,14 +198,17 @@ If you want to use the old authentication method and allow querying for the righ
 
     def _register_data_plane_account_arguments(self, command_name):
         """ Add parameters required to create a storage client """
+        from azure.cli.core.commands.parameters import get_resource_name_completion_list
         from ._validators import validate_client_parameters
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
 
         group_name = 'Storage Account'
+
         command.add_argument('account_name', '--account-name', required=False, default=None,
                              arg_group=group_name,
+                             completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
                              help='Storage account name. Related environment variable: AZURE_STORAGE_ACCOUNT. Must be '
                                   'used in conjunction with either storage account key or a SAS token. If neither are '
                                   'present, the command will try to query the storage account key using the '
