@@ -34,49 +34,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     :type parent_space_name: String
     """
 
-    azds_tool = 'Azure Dev Spaces CLI (Preview)'
-    should_install_vsce = False
-    system = platform.system()
-    if system == 'Windows':
-        # Windows
-        # Dev Connect Install Path (WinX)
-        azds_cli = os.path.join(os.environ["ProgramW6432"],
-                                "Microsoft SDKs", "Azure",
-                                "Azure Dev Spaces CLI (Preview)", "azds.exe")
-        setup_file = os.path.join(_create_tmp_dir(), 'azds-winx-setup.exe')
-        setup_url = "https://aka.ms/get-azds-windows-az"
-        setup_args = [setup_file]
-    elif system == 'Darwin':
-        # OSX
-        azds_cli = 'azds'
-        setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
-        setup_url = "https://aka.ms/get-azds-osx-az"
-        setup_args = ['bash', setup_file]
-    elif system == 'Linux':
-        # OSX
-        azds_cli = 'azds'
-        setup_file = os.path.join(_create_tmp_dir(), 'azds-linux-setup.sh')
-        setup_url = "https://aka.ms/get-azds-linux-az"
-        setup_args = ['bash', setup_file]
-    else:
-        raise CLIError('Platform not supported: {}.'.format(system))
-
-    should_install_vsce = not _is_dev_spaces_installed(azds_cli)
-
-    if should_install_vsce:
-        # Install VSCE
-        logger.info('Installing Dev Spaces (Preview) commands...')
-        urlretrieve(setup_url, setup_file)
-        try:
-            subprocess.call(
-                setup_args, universal_newlines=True, stdin=None, stdout=None, stderr=None, shell=False)
-        except OSError as ex:
-            raise CLIError('Installing {} tooling needs permissions: {}'.format(azds_tool, ex))
-        finally:
-            os.remove(setup_file)
-        if not _is_dev_spaces_installed(azds_cli):
-            raise CLIError("{} not installed properly. Visit 'https://aka.ms/get-azds' for Azure Dev Spaces."
-                           .format(azds_tool))
+    azds_cli = _install_dev_spaces_cli()
 
     from subprocess import PIPE
     should_create_resource = False
@@ -122,22 +80,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # p
     :type prompt: bool
     """
 
-    azds_tool = 'Azure Dev Spaces CLI'
-    system = platform.system()
-    if system == 'Windows':
-        # Windows
-        azds_cli = os.path.join(os.environ["ProgramW6432"],
-                                "Microsoft SDKs", "Azure",
-                                "Azure Dev Spaces CLI (Preview)", "azds.exe")
-    elif system == 'Darwin':
-        # OSX
-        azds_cli = 'azds'
-    else:
-        raise CLIError('Platform not supported: {}.'.format(system))
-
-    if not _is_dev_spaces_installed(azds_cli):
-        raise CLIError("{} not installed properly. Use 'az aks use-dev-spaces' commands for Azure Dev Spaces."
-                       .format(azds_tool))
+    azds_cli = _install_dev_spaces_cli()
 
     remove_command_arguments = [azds_cli, 'resource', 'rm', '--name',
                                 cluster_name, '--resource-group', resource_group_name]
@@ -159,3 +102,51 @@ def _is_dev_spaces_installed(vsce_cli):
     except OSError:
         return False
     return True
+
+
+def _install_dev_spaces_cli():
+    azds_tool = 'Azure Dev Spaces CLI'
+    should_install_azds = False
+    system = platform.system()
+    if system == 'Windows':
+        # Windows
+        # Dev Spaces Install Path (WinX)
+        azds_cli = os.path.join(os.environ["ProgramW6432"],
+                                "Microsoft SDKs", "Azure",
+                                "Azure Dev Spaces CLI (Preview)", "azds.exe")
+        setup_file = os.path.join(_create_tmp_dir(), 'azds-winx-setup.exe')
+        setup_url = "https://aka.ms/get-azds-windows-az"
+        setup_args = [setup_file]
+    elif system == 'Darwin':
+        # OSX
+        azds_cli = 'azds'
+        setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
+        setup_url = "https://aka.ms/get-azds-osx-az"
+        setup_args = ['bash', setup_file]
+    elif system == 'Linux':
+        # Linux
+        azds_cli = 'azds'
+        setup_file = os.path.join(_create_tmp_dir(), 'azds-linux-setup.sh')
+        setup_url = "https://aka.ms/get-azds-linux-az"
+        setup_args = ['bash', setup_file]
+    else:
+        raise CLIError('Platform not supported: {}.'.format(system))
+
+    should_install_azds = not _is_dev_spaces_installed(azds_cli)
+
+    if should_install_azds:
+        # Install AZDS
+        logger.info('Installing Dev Spaces (Preview) commands...')
+        urlretrieve(setup_url, setup_file)
+        try:
+            subprocess.call(
+                setup_args, universal_newlines=True, stdin=None, stdout=None, stderr=None, shell=False)
+        except OSError as ex:
+            raise CLIError('Installing {} tooling needs permissions: {}'.format(azds_tool, ex))
+        finally:
+            os.remove(setup_file)
+        if not _is_dev_spaces_installed(azds_cli):
+            raise CLIError("{} not installed properly. Visit 'https://aka.ms/get-azds' for Azure Dev Spaces."
+                           .format(azds_tool))
+
+    return azds_cli
