@@ -6,7 +6,14 @@
 from knack.help_files import helps   # pylint: disable=import-error
 
 
-helps['aks use-dev-spaces'] = """
+# ADS command help
+
+helps['ads'] = """
+     type: group
+     short-summary: (PREVIEW) Manage Azure Dev Spaces.
+"""
+
+helps['ads use'] = """
     type: command
     short-summary: (PREVIEW) Use Azure Dev Spaces with a managed Kubernetes cluster.
     parameters:
@@ -24,7 +31,7 @@ helps['aks use-dev-spaces'] = """
           short-summary: Name of a parent dev space to inherit from when creating a new dev space. By default, if there is already a single dev space with no parent, the new space inherits from this one.
 """
 
-helps['aks remove-dev-spaces'] = """
+helps['ads remove'] = """
     type: command
     short-summary: (PREVIEW) Remove Azure Dev Spaces from a managed Kubernetes cluster.
     parameters:
