@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import ResourceType, register_resource_type
+from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import CUSTOM_DATA_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -16,9 +16,11 @@ class StorageCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-02-01')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                    min_profile='2017-03-10-profile',
                                                     resource_type=CUSTOM_DATA_STORAGE,
                                                     custom_command_type=storage_custom,
                                                     command_group_cls=StorageCommandGroup,
@@ -107,12 +109,12 @@ class StorageArgumentContext(AzArgumentContext):
         from ._validators import validate_encryption_services
 
         t_access_tier, t_sku_name, t_encryption_services = self.command_loader.get_models(
-            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=ResourceType.MGMT_STORAGE)
+            'AccessTier', 'SkuName', 'EncryptionServices', resource_type=CUSTOM_MGMT_STORAGE)
 
         self.argument('https_only', help='Allows https traffic only to storage service.',
                       arg_type=get_three_state_flag())
         self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
-        self.argument('assign_identity', action='store_true', resource_type=ResourceType.MGMT_STORAGE,
+        self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_STORAGE,
                       min_api='2017-06-01',
                       help='Generate and assign a new Storage Account Identity for this storage account for use '
                            'with key management services like Azure KeyVault.')
@@ -125,7 +127,7 @@ class StorageArgumentContext(AzArgumentContext):
             encryption_choices = list(
                 t_encryption_services._attribute_map.keys())  # pylint: disable=protected-access
             self.argument('encryption_services', arg_type=get_enum_type(encryption_choices),
-                          resource_type=ResourceType.MGMT_STORAGE, min_api='2016-12-01', nargs='+',
+                          resource_type=CUSTOM_MGMT_STORAGE, min_api='2016-12-01', nargs='+',
                           validator=validate_encryption_services, help='Specifies which service(s) to encrypt.')
 
 
@@ -196,14 +198,17 @@ If you want to use the old authentication method and allow querying for the righ
 
     def _register_data_plane_account_arguments(self, command_name):
         """ Add parameters required to create a storage client """
+        from azure.cli.core.commands.parameters import get_resource_name_completion_list
         from ._validators import validate_client_parameters
         command = self.command_loader.command_table.get(command_name, None)
         if not command:
             return
 
         group_name = 'Storage Account'
+
         command.add_argument('account_name', '--account-name', required=False, default=None,
                              arg_group=group_name,
+                             completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
                              help='Storage account name. Related environment variable: AZURE_STORAGE_ACCOUNT. Must be '
                                   'used in conjunction with either storage account key or a SAS token. If neither are '
                                   'present, the command will try to query the storage account key using the '

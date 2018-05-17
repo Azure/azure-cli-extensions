@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type)
 
@@ -13,6 +12,7 @@ from ._validators import (get_datetime_type, validate_metadata, get_permission_v
                           validate_table_payload_format, validate_key, add_progress_callback,
                           storage_account_key_options, process_file_download_namespace, process_metric_update_namespace,
                           get_char_options_validator, validate_bypass, validate_encryption_source)
+from .profiles import CUSTOM_MGMT_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -24,7 +24,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
     from .sdkutil import get_table_data_type
-    from .completers import get_storage_name_completion_list
+    from .completers import get_storage_name_completion_list, get_container_name_completions
 
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
@@ -39,8 +39,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                                                                 parent='container_name'))
 
     container_name_type = CLIArgumentType(options_list=['--container-name', '-c'], help='The container name.',
-                                          completer=get_storage_name_completion_list(t_base_blob_service,
-                                                                                     'list_containers'))
+                                          completer=get_container_name_completions)
     directory_type = CLIArgumentType(options_list=['--directory-name', '-d'], help='The directory name.',
                                      completer=get_storage_name_completion_list(t_file_service,
                                                                                 'list_directories_and_files',
@@ -84,7 +83,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_match')
         c.argument('if_none_match')
 
-    for item in ['delete', 'list', 'show', 'show-usage', 'update', 'keys']:
+    for item in ['delete', 'list', 'show', 'update', 'keys']:
         with self.argument_context('storage account {}'.format(item)) as c:
             c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
 
@@ -93,7 +92,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage account create') as c:
         t_account_type, t_sku_name, t_kind = self.get_models('AccountType', 'SkuName', 'Kind',
-                                                             resource_type=ResourceType.MGMT_STORAGE)
+                                                             resource_type=CUSTOM_MGMT_STORAGE)
 
         c.register_common_storage_account_options()
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
@@ -126,10 +125,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.ignore('encryption_key_vault_properties')
 
     for scope in ['storage account create', 'storage account update']:
-        with self.argument_context(scope, resource_type=ResourceType.MGMT_STORAGE, min_api='2017-06-01',
+        with self.argument_context(scope, resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01',
                                    arg_group='Network Rule') as c:
             t_bypass, t_default_action = self.get_models('Bypass', 'DefaultAction',
-                                                         resource_type=ResourceType.MGMT_STORAGE)
+                                                         resource_type=CUSTOM_MGMT_STORAGE)
 
             c.argument('bypass', nargs='+', validator=validate_bypass, arg_type=get_enum_type(t_bypass),
                        help='Bypass traffic for space-separated uses.')
@@ -416,6 +415,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage container lease') as c:
         c.argument('lease_duration', type=int)
         c.argument('lease_break_period', type=int)
+
+    with self.argument_context('storage container immutability-policy') as c:
+        c.argument('immutability_period_since_creation_in_days', options_list='--period')
+        c.argument('container_name', container_name_type)
+        c.argument('account_name', completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
+
+    with self.argument_context('storage container legal-hold') as c:
+        c.argument('container_name', container_name_type)
+        c.argument('account_name', completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
+        c.argument('tags', nargs='+', help='Each tag should be 3 to 23 alphanumeric characters and is '
+                                           'normalized to lower case')
 
     with self.argument_context('storage share') as c:
         c.argument('share_name', share_name_type, options_list=('--name', '-n'))

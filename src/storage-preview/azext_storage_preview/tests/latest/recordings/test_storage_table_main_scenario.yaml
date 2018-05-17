@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
-      "date": "2018-05-01T21:45:28Z"}}'
+      "date": "2018-05-14T23:35:05Z"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -9,19 +9,19 @@ interactions:
       Connection: [keep-alive]
       Content-Length: ['110']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.26
-          msrest_azure/0.4.25 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
-          AZURECLI/2.0.32]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.33]
       accept-language: [en-US]
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
   response:
-    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2018-05-01T21:45:28Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2018-05-14T23:35:05Z"},"properties":{"provisioningState":"Succeeded"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['384']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:29 GMT']
+      date: ['Mon, 14 May 2018 23:35:06 GMT']
       expires: ['-1']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
@@ -38,20 +38,20 @@ interactions:
       Connection: [keep-alive]
       Content-Length: ['127']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.26
-          msrest_azure/0.4.25 azure-mgmt-storage/1.5.0 Azure-SDK-For-Python AZURECLI/2.0.32]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.0.33]
       accept-language: [en-US]
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2018-02-01
   response:
     body: {string: ''}
     headers:
       cache-control: [no-cache]
       content-length: ['0']
       content-type: [text/plain; charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:31 GMT']
+      date: ['Mon, 14 May 2018 23:35:07 GMT']
       expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/79bcc310-b663-4574-b037-da4e4560bf93?monitor=true&api-version=2017-10-01']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/3adf3e20-9a63-497d-b830-16d5a292d8b7?monitor=true&api-version=2018-02-01']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
           Microsoft-HTTPAPI/2.0']
@@ -66,19 +66,43 @@ interactions:
       Accept-Encoding: ['gzip, deflate']
       CommandName: [storage account create]
       Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.26
-          msrest_azure/0.4.25 azure-mgmt-storage/1.5.0 Azure-SDK-For-Python AZURECLI/2.0.32]
-      accept-language: [en-US]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.0.33]
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/79bcc310-b663-4574-b037-da4e4560bf93?monitor=true&api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/3adf3e20-9a63-497d-b830-16d5a292d8b7?monitor=true&api-version=2018-02-01
   response:
-    body: {string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"trustedDirectories":["72f988bf-86f1-41af-91ab-2d7cd011db47"],"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2018-05-01T21:45:31.1057749Z"},"blob":{"enabled":true,"lastEnabledTime":"2018-05-01T21:45:31.1057749Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2018-05-01T21:45:30.8713726Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"blob":"https://clitest000002-secondary.blob.core.windows.net/","queue":"https://clitest000002-secondary.queue.core.windows.net/","table":"https://clitest000002-secondary.table.core.windows.net/"}}}'}
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      content-type: [text/plain; charset=utf-8]
+      date: ['Mon, 14 May 2018 23:35:24 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/3adf3e20-9a63-497d-b830-16d5a292d8b7?monitor=true&api-version=2018-02-01']
+      pragma: [no-cache]
+      server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
+          Microsoft-HTTPAPI/2.0']
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 202, message: Accepted}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [storage account create]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.0.33]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/3adf3e20-9a63-497d-b830-16d5a292d8b7?monitor=true&api-version=2018-02-01
+  response:
+    body: {string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"trustedDirectories":["72f988bf-86f1-41af-91ab-2d7cd011db47"],"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2018-05-14T23:35:07.8404742Z"},"blob":{"enabled":true,"lastEnabledTime":"2018-05-14T23:35:07.8404742Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2018-05-14T23:35:07.7936057Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"blob":"https://clitest000002-secondary.blob.core.windows.net/","queue":"https://clitest000002-secondary.queue.core.windows.net/","table":"https://clitest000002-secondary.table.core.windows.net/"}}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['1546']
       content-type: [application/json]
-      date: ['Tue, 01 May 2018 21:45:48 GMT']
+      date: ['Mon, 14 May 2018 23:35:41 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
@@ -97,18 +121,49 @@ interactions:
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.26
-          msrest_azure/0.4.25 azure-mgmt-storage/1.5.0 Azure-SDK-For-Python AZURECLI/2.0.32]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.0.33]
       accept-language: [en-US]
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2017-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2018-02-01
   response:
-    body: {string: '{"keys":[{"keyName":"key1","value":"Z3FEYeyIW6IQcbvStmYTdFMLV8s5CdlOSPJtcyjUcYiHUVsqFZ4vEhVc2l+gHDZ1RRmzHGJWFLzjSLx+MpTunQ==","permissions":"FULL"},{"keyName":"key2","value":"lP99LhszlGpYtEg9vFPFsTiVhY4yUzSOGR/uvL5Cy5EMBnu4Xd+EPS2PCfu4trIeppI7wWqUbSawLYjo7DhUBQ==","permissions":"FULL"}]}'}
+    body: {string: '{"keys":[{"keyName":"key1","value":"6YoxG4/16yvClX1xuFBR9osC0ofM+2exTaebD0ChB/CniSpqTE5YAlmO4N83bpT4c23Pq2bb75A03lx9iQKOpA==","permissions":"FULL"},{"keyName":"key2","value":"/bdku3R1o/Pc/4T/AnQFEvKMg9QFI09ms/A2UQUs60HUNnRsiskRLdptDBTLzwGWYhZqHwgmg1sodVsuaEcPpA==","permissions":"FULL"}]}'}
     headers:
       cache-control: [no-cache]
       content-length: ['288']
       content-type: [application/json]
-      date: ['Tue, 01 May 2018 21:45:49 GMT']
+      date: ['Mon, 14 May 2018 23:35:43 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
+          Microsoft-HTTPAPI/2.0']
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [storage account keys list]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.0.33]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2018-02-01
+  response:
+    body: {string: '{"keys":[{"keyName":"key1","value":"6YoxG4/16yvClX1xuFBR9osC0ofM+2exTaebD0ChB/CniSpqTE5YAlmO4N83bpT4c23Pq2bb75A03lx9iQKOpA==","permissions":"FULL"},{"keyName":"key2","value":"/bdku3R1o/Pc/4T/AnQFEvKMg9QFI09ms/A2UQUs60HUNnRsiskRLdptDBTLzwGWYhZqHwgmg1sodVsuaEcPpA==","permissions":"FULL"}]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['288']
+      content-type: [application/json]
+      date: ['Mon, 14 May 2018 23:35:43 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
@@ -120,37 +175,6 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [storage account keys list]
-      Connection: [keep-alive]
-      Content-Length: ['0']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.26
-          msrest_azure/0.4.25 azure-mgmt-storage/1.5.0 Azure-SDK-For-Python AZURECLI/2.0.32]
-      accept-language: [en-US]
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2017-10-01
-  response:
-    body: {string: '{"keys":[{"keyName":"key1","value":"Z3FEYeyIW6IQcbvStmYTdFMLV8s5CdlOSPJtcyjUcYiHUVsqFZ4vEhVc2l+gHDZ1RRmzHGJWFLzjSLx+MpTunQ==","permissions":"FULL"},{"keyName":"key2","value":"lP99LhszlGpYtEg9vFPFsTiVhY4yUzSOGR/uvL5Cy5EMBnu4Xd+EPS2PCfu4trIeppI7wWqUbSawLYjo7DhUBQ==","permissions":"FULL"}]}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['288']
-      content-type: [application/json]
-      date: ['Tue, 01 May 2018 21:45:49 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
-          Microsoft-HTTPAPI/2.0']
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
-    status: {code: 200, message: OK}
-- request:
     body: 'b''{"TableName": "table000003"}'''
     headers:
       Accept: [application/json;odata=minimalmetadata]
@@ -160,8 +184,8 @@ interactions:
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
       Prefer: [return-no-content]
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:50 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:44 GMT']
       x-ms-version: ['2017-04-17']
     method: POST
     uri: https://clitest000002.table.core.windows.net/Tables
@@ -170,8 +194,8 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      dataserviceid: ['https://clitestydki2n33vwyrmdoub.table.core.windows.net/Tables(''tablewtfhpnleqm5yr2w4clw'')']
-      date: ['Tue, 01 May 2018 21:45:50 GMT']
+      dataserviceid: ['https://clitestarwetbqrz7bohdzyg.table.core.windows.net/Tables(''tabler5bkg7necu254axbcgm'')']
+      date: ['Mon, 14 May 2018 23:35:44 GMT']
       location: ['https://clitest000002.table.core.windows.net/Tables(''table000003'')']
       preference-applied: [return-no-content]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
@@ -185,8 +209,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:51 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:44 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/Tables('table000003')
@@ -195,7 +219,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=nometadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:51 GMT']
+      date: ['Mon, 14 May 2018 23:35:44 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -208,8 +232,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:51 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:45 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/Tables
@@ -218,7 +242,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=nometadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:50 GMT']
+      date: ['Mon, 14 May 2018 23:35:44 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -235,8 +259,8 @@ interactions:
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
       Prefer: [return-no-content]
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:52 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:45 GMT']
       x-ms-version: ['2017-04-17']
     method: POST
     uri: https://clitest000002.table.core.windows.net/table000003
@@ -245,9 +269,9 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      dataserviceid: ['https://clitestydki2n33vwyrmdoub.table.core.windows.net/tablewtfhpnleqm5yr2w4clw(PartitionKey=''001'',RowKey=''001'')']
-      date: ['Tue, 01 May 2018 21:45:52 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A52.1464357Z'"]
+      dataserviceid: ['https://clitestarwetbqrz7bohdzyg.table.core.windows.net/tabler5bkg7necu254axbcgm(PartitionKey=''001'',RowKey=''001'')']
+      date: ['Mon, 14 May 2018 23:35:44 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A45.6360278Z'"]
       location: ['https://clitest000002.table.core.windows.net/table000003(PartitionKey=''001'',RowKey=''001'')']
       preference-applied: [return-no-content]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
@@ -261,18 +285,18 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:52 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:45 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
   response:
-    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element","odata.etag":"W/\"datetime''2018-05-01T21%3A45%3A52.1464357Z''\"","PartitionKey":"001","RowKey":"001","Timestamp":"2018-05-01T21:45:52.1464357Z","name":"test","value":"something"}'}
+    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element","odata.etag":"W/\"datetime''2018-05-14T23%3A35%3A45.6360278Z''\"","PartitionKey":"001","RowKey":"001","Timestamp":"2018-05-14T23:35:45.6360278Z","name":"test","value":"something"}'}
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=minimalmetadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:52 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A52.1464357Z'"]
+      date: ['Mon, 14 May 2018 23:35:45 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A45.6360278Z'"]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -285,18 +309,18 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:52 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:46 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')?%24select=name
   response:
-    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element&$select=name","odata.etag":"W/\"datetime''2018-05-01T21%3A45%3A52.1464357Z''\"","name":"test"}'}
+    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element&$select=name","odata.etag":"W/\"datetime''2018-05-14T23%3A35%3A45.6360278Z''\"","name":"test"}'}
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=minimalmetadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:52 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A52.1464357Z'"]
+      date: ['Mon, 14 May 2018 23:35:46 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A45.6360278Z'"]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -312,8 +336,8 @@ interactions:
       DataServiceVersion: [3.0;NetFx]
       If-Match: ['*']
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:53 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:46 GMT']
       x-ms-version: ['2017-04-17']
     method: MERGE
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
@@ -322,8 +346,8 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:52 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A53.2291965Z'"]
+      date: ['Mon, 14 May 2018 23:35:46 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A46.7360852Z'"]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-content-type-options: [nosniff]
       x-ms-version: ['2017-04-17']
@@ -335,18 +359,18 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:53 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:46 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
   response:
-    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element","odata.etag":"W/\"datetime''2018-05-01T21%3A45%3A53.2291965Z''\"","PartitionKey":"001","RowKey":"001","Timestamp":"2018-05-01T21:45:53.2291965Z","name":"test","value":"newval"}'}
+    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element","odata.etag":"W/\"datetime''2018-05-14T23%3A35%3A46.7360852Z''\"","PartitionKey":"001","RowKey":"001","Timestamp":"2018-05-14T23:35:46.7360852Z","name":"test","value":"newval"}'}
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=minimalmetadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:53 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A53.2291965Z'"]
+      date: ['Mon, 14 May 2018 23:35:46 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A46.7360852Z'"]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -362,8 +386,8 @@ interactions:
       DataServiceVersion: [3.0;NetFx]
       If-Match: ['*']
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:53 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:47 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
@@ -372,8 +396,8 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:53 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A53.8687998Z'"]
+      date: ['Mon, 14 May 2018 23:35:46 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A47.3835439Z'"]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-content-type-options: [nosniff]
       x-ms-version: ['2017-04-17']
@@ -385,18 +409,18 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:54 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:47 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
   response:
-    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element","odata.etag":"W/\"datetime''2018-05-01T21%3A45%3A53.8687998Z''\"","PartitionKey":"001","RowKey":"001","Timestamp":"2018-05-01T21:45:53.8687998Z","cat":"hat"}'}
+    body: {string: '{"odata.metadata":"https://clitest000002.table.core.windows.net/$metadata#table000003/@Element","odata.etag":"W/\"datetime''2018-05-14T23%3A35%3A47.3835439Z''\"","PartitionKey":"001","RowKey":"001","Timestamp":"2018-05-14T23:35:47.3835439Z","cat":"hat"}'}
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=minimalmetadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:53 GMT']
-      etag: [W/"datetime'2018-05-01T21%3A45%3A53.8687998Z'"]
+      date: ['Mon, 14 May 2018 23:35:47 GMT']
+      etag: [W/"datetime'2018-05-14T23%3A35%3A47.3835439Z'"]
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -411,8 +435,8 @@ interactions:
       DataServiceVersion: [3.0;NetFx]
       If-Match: ['*']
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:54 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:47 GMT']
       x-ms-version: ['2017-04-17']
     method: DELETE
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
@@ -421,7 +445,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:54 GMT']
+      date: ['Mon, 14 May 2018 23:35:47 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-content-type-options: [nosniff]
       x-ms-version: ['2017-04-17']
@@ -433,18 +457,18 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:54 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:48 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003(PartitionKey='001',RowKey='001')
   response:
     body: {string: '{"odata.error":{"code":"ResourceNotFound","message":{"lang":"en-US","value":"The
-        specified resource does not exist.\nRequestId:281b235d-b002-00dd-2595-e1beac000000\nTime:2018-05-01T21:45:54.8674700Z"}}}'}
+        specified resource does not exist.\nRequestId:13a04c85-c002-00e8-0cdc-ebfec9000000\nTime:2018-05-14T23:35:48.2959044Z"}}}'}
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=minimalmetadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:45:53 GMT']
+      date: ['Mon, 14 May 2018 23:35:48 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -456,8 +480,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:55 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:48 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -466,7 +490,7 @@ interactions:
         \ />"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:54 GMT']
+      date: ['Mon, 14 May 2018 23:35:48 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -477,8 +501,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:55 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:48 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -487,7 +511,7 @@ interactions:
         \ />"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:55 GMT']
+      date: ['Mon, 14 May 2018 23:35:48 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -501,8 +525,8 @@ interactions:
       Content-Length: ['184']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:55 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:49 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -510,7 +534,7 @@ interactions:
     body: {string: ''}
     headers:
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:55 GMT']
+      date: ['Mon, 14 May 2018 23:35:48 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-version: ['2017-04-17']
     status: {code: 204, message: No Content}
@@ -520,8 +544,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:55 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:49 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -529,7 +553,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:55 GMT']
+      date: ['Mon, 14 May 2018 23:35:49 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -543,8 +567,8 @@ interactions:
       Content-Length: ['296']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:55 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:50 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -552,7 +576,7 @@ interactions:
     body: {string: ''}
     headers:
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:55 GMT']
+      date: ['Mon, 14 May 2018 23:35:50 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-version: ['2017-04-17']
     status: {code: 204, message: No Content}
@@ -562,8 +586,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:56 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:51 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -571,7 +595,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:55 GMT']
+      date: ['Mon, 14 May 2018 23:35:51 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -585,8 +609,8 @@ interactions:
       Content-Length: ['413']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:56 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:51 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -594,7 +618,7 @@ interactions:
     body: {string: ''}
     headers:
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:55 GMT']
+      date: ['Mon, 14 May 2018 23:35:52 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-version: ['2017-04-17']
     status: {code: 204, message: No Content}
@@ -604,8 +628,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:56 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:52 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -613,7 +637,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:56 GMT']
+      date: ['Mon, 14 May 2018 23:35:51 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -627,8 +651,8 @@ interactions:
       Content-Length: ['591']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:56 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:52 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -636,7 +660,7 @@ interactions:
     body: {string: ''}
     headers:
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:56 GMT']
+      date: ['Mon, 14 May 2018 23:35:51 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-version: ['2017-04-17']
     status: {code: 204, message: No Content}
@@ -646,8 +670,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:57 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:52 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -655,7 +679,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:56 GMT']
+      date: ['Mon, 14 May 2018 23:35:52 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -666,8 +690,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:57 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:53 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -675,7 +699,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:56 GMT']
+      date: ['Mon, 14 May 2018 23:35:52 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -686,8 +710,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:57 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:53 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -695,7 +719,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:57 GMT']
+      date: ['Mon, 14 May 2018 23:35:53 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -706,8 +730,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:58 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:53 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -715,7 +739,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:57 GMT']
+      date: ['Mon, 14 May 2018 23:35:54 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -726,8 +750,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:58 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:54 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -735,7 +759,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:57 GMT']
+      date: ['Mon, 14 May 2018 23:35:54 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -746,8 +770,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:58 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:55 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -755,7 +779,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>a</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:58 GMT']
+      date: ['Mon, 14 May 2018 23:35:54 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -769,8 +793,8 @@ interactions:
       Content-Length: ['598']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:58 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:55 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -778,7 +802,7 @@ interactions:
     body: {string: ''}
     headers:
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:58 GMT']
+      date: ['Mon, 14 May 2018 23:35:57 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-version: ['2017-04-17']
     status: {code: 204, message: No Content}
@@ -788,8 +812,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:59 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:58 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -797,7 +821,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>au</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:58 GMT']
+      date: ['Mon, 14 May 2018 23:35:57 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -808,8 +832,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:59 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:58 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -817,7 +841,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test1</Id><AccessPolicy><Permission>au</Permission></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:58 GMT']
+      date: ['Mon, 14 May 2018 23:35:58 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -831,8 +855,8 @@ interactions:
       Content-Length: ['491']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:59 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:59 GMT']
       x-ms-version: ['2017-04-17']
     method: PUT
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -840,7 +864,7 @@ interactions:
     body: {string: ''}
     headers:
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:45:58 GMT']
+      date: ['Mon, 14 May 2018 23:35:58 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-version: ['2017-04-17']
     status: {code: 204, message: No Content}
@@ -850,8 +874,8 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:45:59 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:59 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/table000003?comp=acl
@@ -859,7 +883,7 @@ interactions:
     body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><SignedIdentifiers><SignedIdentifier><Id>test2</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test3</Id><AccessPolicy><Expiry>2018-01-01T00:00:00.0000000Z</Expiry></AccessPolicy></SignedIdentifier><SignedIdentifier><Id>test4</Id><AccessPolicy><Start>2016-01-01T00:00:00.0000000Z</Start><Expiry>2016-05-01T00:00:00.0000000Z</Expiry><Permission>raud</Permission></AccessPolicy></SignedIdentifier></SignedIdentifiers>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:45:59 GMT']
+      date: ['Mon, 14 May 2018 23:35:59 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -872,8 +896,8 @@ interactions:
       Content-Length: ['0']
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:46:00 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:35:59 GMT']
       x-ms-version: ['2017-04-17']
     method: DELETE
     uri: https://clitest000002.table.core.windows.net/Tables('table000003')
@@ -882,7 +906,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:46:00 GMT']
+      date: ['Mon, 14 May 2018 23:35:59 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       x-content-type-options: [nosniff]
       x-ms-version: ['2017-04-17']
@@ -894,18 +918,18 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:46:00 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:36:00 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002.table.core.windows.net/Tables('table000003')
   response:
     body: {string: '{"odata.error":{"code":"ResourceNotFound","message":{"lang":"en-US","value":"The
-        specified resource does not exist.\nRequestId:a8068353-4002-00ae-0a95-e1ce6f000000\nTime:2018-05-01T21:46:00.8222096Z"}}}'}
+        specified resource does not exist.\nRequestId:51b0b0ac-b002-012f-79dc-ebc45d000000\nTime:2018-05-14T23:36:00.4016675Z"}}}'}
     headers:
       cache-control: [no-cache]
       content-type: [application/json;odata=nometadata;streaming=true;charset=utf-8]
-      date: ['Tue, 01 May 2018 21:46:00 GMT']
+      date: ['Mon, 14 May 2018 23:35:59 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-content-type-options: [nosniff]
@@ -917,16 +941,17 @@ interactions:
       Connection: [keep-alive]
       DataServiceVersion: [3.0;NetFx]
       MaxDataServiceVersion: ['3.0']
-      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.32]
-      x-ms-date: ['Tue, 01 May 2018 21:46:00 GMT']
+      User-Agent: [Azure-CosmosDB/0.37.1 (Python CPython 3.6.2; Windows 10) AZURECLI/2.0.33]
+      x-ms-date: ['Mon, 14 May 2018 23:36:00 GMT']
       x-ms-version: ['2017-04-17']
     method: GET
     uri: https://clitest000002-secondary.table.core.windows.net/?restype=service&comp=stats
   response:
-    body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceStats><GeoReplication><Status>unavailable</Status><LastSyncTime></LastSyncTime></GeoReplication></StorageServiceStats>"}
+    body: {string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceStats><GeoReplication><Status>live</Status><LastSyncTime>Mon,\
+        \ 14 May 2018 23:33:26 GMT</LastSyncTime></GeoReplication></StorageServiceStats>"}
     headers:
       content-type: [application/xml]
-      date: ['Tue, 01 May 2018 21:46:01 GMT']
+      date: ['Mon, 14 May 2018 23:36:00 GMT']
       server: [Windows-Azure-Table/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-version: ['2017-04-17']
@@ -940,9 +965,9 @@ interactions:
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.26
-          msrest_azure/0.4.25 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
-          AZURECLI/2.0.32]
+      User-Agent: [python/3.6.2 (Windows-10-10.0.16299-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.29 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.33]
       accept-language: [en-US]
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
@@ -951,12 +976,12 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 01 May 2018 21:46:01 GMT']
+      date: ['Mon, 14 May 2018 23:36:01 GMT']
       expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdBVU5HT1JXWVBBR1VRMlVFSDc3VllFWFc3QkRNVTcyWjdWSnxDOEZGRDEyMEQyOTc4OThCLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkc1S0hBQlRHWUxTSTJaU0lVRDNMSENNM1IzUUE3Rk5PWlZJTXxFRkVDMzNBNkIxMTc0ODE3LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-deletes: ['14999']
     status: {code: 202, message: Accepted}
 version: 1
