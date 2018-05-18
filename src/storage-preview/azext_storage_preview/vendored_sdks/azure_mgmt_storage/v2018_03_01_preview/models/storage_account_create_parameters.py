@@ -58,6 +58,9 @@ class StorageAccountCreateParameters(Model):
     :param enable_https_traffic_only: Allows https traffic only to storage
      service if sets to true. Default value: False .
     :type enable_https_traffic_only: bool
+    :param enable_azure_files_aad_integration: Enables Azure Files AAD
+     Integration if sets to true. Default value: False .
+    :type enable_azure_files_aad_integration: bool
     :param is_hns_enabled: Account HierarchicalNamespace enabled if sets to
      true. Default value: False .
     :type is_hns_enabled: bool
@@ -80,6 +83,7 @@ class StorageAccountCreateParameters(Model):
         'network_rule_set': {'key': 'properties.networkAcls', 'type': 'NetworkRuleSet'},
         'access_tier': {'key': 'properties.accessTier', 'type': 'AccessTier'},
         'enable_https_traffic_only': {'key': 'properties.supportsHttpsTrafficOnly', 'type': 'bool'},
+        'enable_azure_files_aad_integration': {'key': 'properties.azureFilesAadIntegration', 'type': 'bool'},
         'is_hns_enabled': {'key': 'properties.isHnsEnabled', 'type': 'bool'},
     }
 
@@ -95,4 +99,5 @@ class StorageAccountCreateParameters(Model):
         self.network_rule_set = kwargs.get('network_rule_set', None)
         self.access_tier = kwargs.get('access_tier', None)
         self.enable_https_traffic_only = kwargs.get('enable_https_traffic_only', False)
+        self.enable_azure_files_aad_integration = kwargs.get('enable_azure_files_aad_integration', False)
         self.is_hns_enabled = kwargs.get('is_hns_enabled', False)

@@ -9,7 +9,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .resource_py3 import Resource
+from .resource import Resource
 
 
 class AzureEntityResource(Resource):

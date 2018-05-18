@@ -100,6 +100,9 @@ class StorageAccount(TrackedResource):
     :ivar network_rule_set: Network rule set
     :vartype network_rule_set:
      ~azure.mgmt.storage.v2018_03_01_preview.models.NetworkRuleSet
+    :param enable_azure_files_aad_integration: Enables Azure Files AAD
+     Integration if sets to true. Default value: False .
+    :type enable_azure_files_aad_integration: bool
     :param is_hns_enabled: Account HierarchicalNamespace enabled if sets to
      true. Default value: False .
     :type is_hns_enabled: bool
@@ -150,6 +153,7 @@ class StorageAccount(TrackedResource):
         'access_tier': {'key': 'properties.accessTier', 'type': 'AccessTier'},
         'enable_https_traffic_only': {'key': 'properties.supportsHttpsTrafficOnly', 'type': 'bool'},
         'network_rule_set': {'key': 'properties.networkAcls', 'type': 'NetworkRuleSet'},
+        'enable_azure_files_aad_integration': {'key': 'properties.azureFilesAadIntegration', 'type': 'bool'},
         'is_hns_enabled': {'key': 'properties.isHnsEnabled', 'type': 'bool'},
     }
 
@@ -172,4 +176,5 @@ class StorageAccount(TrackedResource):
         self.access_tier = None
         self.enable_https_traffic_only = kwargs.get('enable_https_traffic_only', False)
         self.network_rule_set = None
+        self.enable_azure_files_aad_integration = kwargs.get('enable_azure_files_aad_integration', False)
         self.is_hns_enabled = kwargs.get('is_hns_enabled', False)

@@ -49,6 +49,9 @@ class StorageAccountUpdateParameters(Model):
     :param network_rule_set: Network rule set
     :type network_rule_set:
      ~azure.mgmt.storage.v2018_03_01_preview.models.NetworkRuleSet
+    :param enable_azure_files_aad_integration: Enables Azure Files AAD
+     Integration if sets to true. Default value: False .
+    :type enable_azure_files_aad_integration: bool
     :param kind: Optional. Indicates the type of storage account. Currently
      only StorageV2 value supported by server. Possible values include:
      'Storage', 'StorageV2', 'BlobStorage'
@@ -64,10 +67,11 @@ class StorageAccountUpdateParameters(Model):
         'access_tier': {'key': 'properties.accessTier', 'type': 'AccessTier'},
         'enable_https_traffic_only': {'key': 'properties.supportsHttpsTrafficOnly', 'type': 'bool'},
         'network_rule_set': {'key': 'properties.networkAcls', 'type': 'NetworkRuleSet'},
+        'enable_azure_files_aad_integration': {'key': 'properties.azureFilesAadIntegration', 'type': 'bool'},
         'kind': {'key': 'kind', 'type': 'Kind'},
     }
 
-    def __init__(self, *, sku=None, tags=None, identity=None, custom_domain=None, encryption=None, access_tier=None, enable_https_traffic_only: bool=False, network_rule_set=None, kind=None, **kwargs) -> None:
+    def __init__(self, *, sku=None, tags=None, identity=None, custom_domain=None, encryption=None, access_tier=None, enable_https_traffic_only: bool=False, network_rule_set=None, enable_azure_files_aad_integration: bool=False, kind=None, **kwargs) -> None:
         super(StorageAccountUpdateParameters, self).__init__(**kwargs)
         self.sku = sku
         self.tags = tags
@@ -77,4 +81,5 @@ class StorageAccountUpdateParameters(Model):
         self.access_tier = access_tier
         self.enable_https_traffic_only = enable_https_traffic_only
         self.network_rule_set = network_rule_set
+        self.enable_azure_files_aad_integration = enable_azure_files_aad_integration
         self.kind = kind

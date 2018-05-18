@@ -14,7 +14,7 @@ from msrest.serialization import Model
 
 class Endpoints(Model):
     """The URIs that are used to perform a retrieval of a public blob, queue,
-    table or dfs object.
+    file, table, dfs or web object.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -29,6 +29,8 @@ class Endpoints(Model):
     :vartype file: str
     :ivar dfs: Gets the dfs endpoint.
     :vartype dfs: str
+    :ivar web: Gets the web endpoint.
+    :vartype web: str
     """
 
     _validation = {
@@ -37,6 +39,7 @@ class Endpoints(Model):
         'table': {'readonly': True},
         'file': {'readonly': True},
         'dfs': {'readonly': True},
+        'web': {'readonly': True},
     }
 
     _attribute_map = {
@@ -45,6 +48,7 @@ class Endpoints(Model):
         'table': {'key': 'table', 'type': 'str'},
         'file': {'key': 'file', 'type': 'str'},
         'dfs': {'key': 'dfs', 'type': 'str'},
+        'web': {'key': 'web', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -54,3 +58,4 @@ class Endpoints(Model):
         self.table = None
         self.file = None
         self.dfs = None
+        self.web = None
