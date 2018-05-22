@@ -5,9 +5,16 @@
 
 
 from azext_signalr.signalr.models import (ResourceSku, SignalRCreateOrUpdateProperties, SignalRCreateParameters)
+from ._constants import (
+    UNIT_COUNT_MAXIMUM
+)
 
 
 def signalr_create(client, signalr_name, resource_group_name, sku, unit_count=1, location=None, tags=None):
+    if unit_count < 1 or unit_count > UNIT_COUNT_MAXIMUM:
+        from azure.cli.core.util import CLIError
+        raise CLIError('Unit count should between 1 and {}'.format(UNIT_COUNT_MAXIMUM))
+
     sku = ResourceSku(name=sku, capacity=unit_count)
     properties = SignalRCreateOrUpdateProperties(host_name_prefix=signalr_name)
 
