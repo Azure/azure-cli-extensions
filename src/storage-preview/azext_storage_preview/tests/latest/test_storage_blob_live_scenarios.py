@@ -7,9 +7,10 @@ import os
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, StorageAccountPreparer,
                                JMESPathCheck, api_version_constraint)
 from azure.cli.core.profiles import ResourceType
+from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageBlobUploadLiveTests(LiveScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer()

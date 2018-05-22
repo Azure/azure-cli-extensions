@@ -14,9 +14,10 @@ from azure.cli.core.profiles import ResourceType
 
 from ..._client_factory import NO_CREDENTIALS_ERROR_MESSAGE
 from .storage_test_util import StorageScenarioMixin
+from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(parameter_name='source_account')

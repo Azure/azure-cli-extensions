@@ -74,9 +74,11 @@ def show_storage_account_connection_string(cmd, resource_group_name, account_nam
     return {'connectionString': connection_string}
 
 
-def show_storage_account_usage(cmd):
+def show_storage_account_usage(cmd, location=None):
     scf = storage_client_factory(cmd.cli_ctx)
-    return next((x for x in scf.usage.list() if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
+    if not location:
+        return next((x for x in scf.usage.list() if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
+    return next((x for x in scf.usage.list_by_location(location) if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
 
 
 # pylint: disable=too-many-locals

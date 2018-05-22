@@ -7,9 +7,10 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                JMESPathCheck, NoneCheck, api_version_constraint)
 from azure.cli.core.profiles import ResourceType
 from .storage_test_util import StorageScenarioMixin
+from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageTableScenarioTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(sku='Standard_RAGRS')

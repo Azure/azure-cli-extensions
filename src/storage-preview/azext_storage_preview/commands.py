@@ -5,20 +5,21 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.profiles import ResourceType
-from ._client_factory import (cf_sa, blob_data_service_factory,
+from ._client_factory import (cf_sa, cf_blob_container_mgmt, blob_data_service_factory,
                               page_blob_service_factory, file_data_service_factory,
                               queue_data_service_factory, table_data_service_factory,
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
-from .profiles import CUSTOM_DATA_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
+from ._format import transform_immutability_policy
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
     storage_account_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.storage.operations.storage_accounts_operations#StorageAccountsOperations.{}',
         client_factory=cf_sa,
-        resource_type=ResourceType.MGMT_STORAGE
+        resource_type=CUSTOM_MGMT_STORAGE
     )
 
     storage_account_custom_type = CliCommandType(
@@ -40,7 +41,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
             resource_type=resource_type
         )
 
-    with self.command_group('storage account', storage_account_sdk, resource_type=ResourceType.MGMT_STORAGE,
+    with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
         g.command('check-name', 'check_name_availability')
         g.custom_command('create', 'create_storage_account', min_api='2016-01-01')
@@ -57,7 +58,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
-                            resource_type=ResourceType.MGMT_STORAGE, min_api='2017-06-01') as g:
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
         g.custom_command('add', 'add_network_rule')
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
@@ -189,6 +190,25 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('policy update', 'set_acl_policy', min_api='2017-04-17')
         g.storage_custom_command_oauth('policy show', 'get_acl_policy', exception_handler=g.get_handler_suppress_404())
         g.storage_custom_command_oauth('policy list', 'list_acl_policies', table_transformer=transform_acl_list_output)
+
+    blob_container_mgmt_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.blob_containers_operations'
+                        '#BlobContainersOperations.{}',
+        client_factory=cf_blob_container_mgmt,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+
+    with self.command_group('storage container immutability-policy', command_type=blob_container_mgmt_sdk) as g:
+        g.command('show', 'get_immutability_policy', transform=transform_immutability_policy)
+        g.command('create', 'create_or_update_immutability_policy')
+        g.command('delete', 'delete_immutability_policy', transform=lambda x: None)
+        g.command('lock', 'lock_immutability_policy')
+        g.command('extend', 'extend_immutability_policy')
+
+    with self.command_group('storage container legal-hold', command_type=blob_container_mgmt_sdk) as g:
+        g.command('set', 'set_legal_hold')
+        g.command('clear', 'clear_legal_hold')
+        g.command('show', 'get', transform=lambda x: getattr(x, 'legal_hold', x))
 
     file_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.file.fileservice#FileService.{}',
