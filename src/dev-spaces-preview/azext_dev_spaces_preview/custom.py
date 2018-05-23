@@ -15,10 +15,10 @@ from knack.util import CLIError  # pylint: disable=import-error
 logger = get_logger(__name__)
 
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-few-public-methods
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None):  # pylint: disable=line-too-long
+def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -34,40 +34,42 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     :type parent_space_name: String
     """
 
-    azds_cli = _install_dev_spaces_cli()
+    azds_cli = _install_dev_spaces_cli(False)
 
     from subprocess import PIPE
     should_create_resource = False
+    create_resource_ret_code = 0
     retCode = subprocess.call(
         [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
         stderr=PIPE)
     if retCode == 1:
         should_create_resource = True
+        create_resource_ret_code = 1
 
     if should_create_resource:
-        retCode = subprocess.call(
+        create_resource_ret_code = subprocess.call(
             [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
 
-        if retCode == 0:
-            should_create_spaces = False
-            create_space_arguments = [azds_cli, 'space', 'select', '--name', space_name]
-            if parent_space_name is not None:
-                create_space_arguments.append('--parent')
-                create_space_arguments.append(parent_space_name)
-            retCode = subprocess.call(
-                create_space_arguments, stderr=PIPE)
-            if retCode == 1:
-                should_create_spaces = True
+    if create_resource_ret_code == 0:
+        should_create_spaces = False
+        create_space_arguments = [azds_cli, 'space', 'select', '--name', space_name]
+        if parent_space_name is not None:
+            create_space_arguments.append('--parent')
+            create_space_arguments.append(parent_space_name)
+        retCode = subprocess.call(
+            create_space_arguments, stderr=PIPE)
+        if retCode == 1:
+            should_create_spaces = True
 
-            if should_create_spaces:
-                subprocess.call(
-                    [azds_cli, 'space', 'create', '--name', space_name],
-                    universal_newlines=True)
+        if should_create_spaces:
+            subprocess.call(
+                [azds_cli, 'space', 'create', '--name', space_name],
+                universal_newlines=True)
 
 
-def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # pylint: disable=line-too-long
+def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
     """
     Remove Azure Dev Spaces from a managed Kubernetes cluster.
 
@@ -80,7 +82,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # p
     :type prompt: bool
     """
 
-    azds_cli = _install_dev_spaces_cli()
+    azds_cli = _install_dev_spaces_cli(False)
 
     remove_command_arguments = [azds_cli, 'resource', 'rm', '--name',
                                 cluster_name, '--resource-group', resource_group_name]
@@ -88,6 +90,13 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # p
         remove_command_arguments.append('-y')
     subprocess.call(
         remove_command_arguments, universal_newlines=True)
+
+
+def ads_upgrade_dev_spaces_tools():
+    """
+    Upgrade Azure Dev Spaces tools.
+    """
+    _install_dev_spaces_cli(True)
 
 
 def _create_tmp_dir():
@@ -104,7 +113,7 @@ def _is_dev_spaces_installed(vsce_cli):
     return True
 
 
-def _install_dev_spaces_cli():
+def _install_dev_spaces_cli(force_install):
     azds_tool = 'Azure Dev Spaces CLI'
     should_install_azds = False
     system = platform.system()
@@ -132,7 +141,7 @@ def _install_dev_spaces_cli():
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 
-    should_install_azds = not _is_dev_spaces_installed(azds_cli)
+    should_install_azds = force_install | (not _is_dev_spaces_installed(azds_cli))
 
     if should_install_azds:
         # Install AZDS

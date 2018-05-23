@@ -21,21 +21,8 @@ class DevspacesExtCommandLoader(AzCommandsLoader):
 
     def load_command_table(self, _):
         with self.command_group('ads') as g:
-            g.custom_command('use', 'ads_use_dev_spaces')
-            g.custom_command('remove', 'ads_remove_dev_spaces')
+            g.custom_command('upgrade-tools', 'ads_upgrade_dev_spaces_tools')
         return self.command_table
-
-    def load_arguments(self, _):
-        with self.argument_context('ads use') as c:
-            c.argument('cluster_name', options_list=['--name', '-n'])
-            c.argument('resource_group_name', options_list=['--resource-group', '-g'])
-            c.argument('space_name', options_list=['--space', '-s'])
-            c.argument('parent_space_name', options_list=['--parent-space', '-p'])
-
-        with self.argument_context('ads remove') as c:
-            c.argument('cluster_name', options_list=['--name', '-n'])
-            c.argument('resource_group_name', options_list=['--resource-group', '-g'])
-            c.argument('prompt', options_list=['--yes', '-y'], action='store_true')
 
 
 COMMAND_LOADER_CLS = DevspacesExtCommandLoader
