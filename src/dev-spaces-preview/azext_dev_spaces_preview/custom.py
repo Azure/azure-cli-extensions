@@ -15,7 +15,7 @@ from knack.util import CLIError  # pylint: disable=import-error
 logger = get_logger(__name__)
 
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-few-public-methods
 
 
 def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None):
@@ -90,6 +90,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
         remove_command_arguments.append('-y')
     subprocess.call(
         remove_command_arguments, universal_newlines=True)
+
 
 def ads_upgrade_dev_spaces_tools():
     """
