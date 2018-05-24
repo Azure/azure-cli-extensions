@@ -38,33 +38,35 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
 
     from subprocess import PIPE
     should_create_resource = False
+    create_resource_ret_code = 0
     retCode = subprocess.call(
         [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
         stderr=PIPE)
     if retCode == 1:
         should_create_resource = True
+        create_resource_ret_code = 1
 
     if should_create_resource:
-        retCode = subprocess.call(
+        create_resource_ret_code = subprocess.call(
             [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
 
-        if retCode == 0:
-            should_create_spaces = False
-            create_space_arguments = [azds_cli, 'space', 'select', '--name', space_name]
-            if parent_space_name is not None:
-                create_space_arguments.append('--parent')
-                create_space_arguments.append(parent_space_name)
-            retCode = subprocess.call(
-                create_space_arguments, stderr=PIPE)
-            if retCode == 1:
-                should_create_spaces = True
+    if create_resource_ret_code == 0:
+        should_create_spaces = False
+        create_space_arguments = [azds_cli, 'space', 'select', '--name', space_name]
+        if parent_space_name is not None:
+            create_space_arguments.append('--parent')
+            create_space_arguments.append(parent_space_name)
+        retCode = subprocess.call(
+            create_space_arguments, stderr=PIPE)
+        if retCode == 1:
+            should_create_spaces = True
 
-            if should_create_spaces:
-                subprocess.call(
-                    [azds_cli, 'space', 'create', '--name', space_name],
-                    universal_newlines=True)
+        if should_create_spaces:
+            subprocess.call(
+                [azds_cli, 'space', 'create', '--name', space_name],
+                universal_newlines=True)
 
 
 def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # pylint: disable=line-too-long
@@ -121,7 +123,7 @@ def _install_dev_spaces_cli():
         # OSX
         azds_cli = 'azds'
         setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
-        setup_url = "https://aka.ms/get-azds-osx-az"
+        setup_url = "https://aka.ms/get-azds-mac-az"
         setup_args = ['bash', setup_file]
     elif system == 'Linux':
         # Linux
