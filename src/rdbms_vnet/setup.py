@@ -5,9 +5,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.1"
+VERSION = "10.0.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -26,19 +27,15 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dev-spaces-preview',
+    name='rdbms-vnet',
     version=VERSION,
-    description='Dev Spaces provides a rapid, iterative Kubernetes development experience for teams.',
-    long_description='Iteratively develop and debug containers in a Azure Kubernetes Service cluster using Dev Spaces. \
-    Share an AKS cluster with your team and collaborate together. You can test code end-to-end without replicating or \
-    mocking up dependencies. Onboard new team members faster by minimizing their local dev machine setup and have them \
-    work in a consistent dev environment.',
+    description='Support for Virtual Network rules in Azure MySQL and Azure PostgreSQL resources',
+    long_description='Support for Virtual Network rules in Azure MySQL and Azure PostgreSQL resources',
     license='MIT',
-    author='Microsoft Corporation',
-    author_email='azds-azcli@microsoft.com',
+    author='Rahul G S',
+    author_email='ragoutha@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_dev_spaces_preview': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
