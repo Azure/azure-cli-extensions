@@ -37,25 +37,27 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     azds_cli = _install_dev_spaces_cli()
 
     from subprocess import PIPE
-    resource_ready_code = 0  # Flag if the resource is ready, after create or select
     retCode = subprocess.call(
         [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
         stderr=PIPE)
-    if retCode == 1:
-        resource_ready_code = subprocess.call(
+    if retCode != 0:
+        retCode = subprocess.call(
             [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
+        if retCode != 0:
+            return
 
-    if resource_ready_code == 0:
-        retCode = subprocess.call(
-            [azds_cli, 'space', 'select', '--name', space_name], stderr=PIPE)
-        if retCode == 1:
-            create_space_arguments = [azds_cli, 'space', 'create', '--name', space_name]
-            if parent_space_name is not None:
-                create_space_arguments.append('--parent')
-                create_space_arguments.append(parent_space_name)
-            subprocess.call(create_space_arguments, universal_newlines=True)
+    retCode = subprocess.call(
+        [azds_cli, 'space', 'select', '--name', space_name], stderr=PIPE)
+    if retCode == 0:
+        return
+
+    create_space_arguments = [azds_cli, 'space', 'create', '--name', space_name]
+    if parent_space_name is not None:
+        create_space_arguments.append('--parent')
+        create_space_arguments.append(parent_space_name)
+    subprocess.call(create_space_arguments, universal_newlines=True)
 
 
 def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
