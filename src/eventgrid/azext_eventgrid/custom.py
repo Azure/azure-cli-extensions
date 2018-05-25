@@ -119,7 +119,7 @@ def cli_eventgrid_event_subscription_create(
         is_subject_case_sensitive=False,
         max_delivery_attempts=30,
         event_ttl=1440,
-        event_delivery_schema=EVENTGRID_SCHEMA,
+        event_delivery_schema=INPUT_EVENT_SCHEMA,
         deadletter_endpoint=None,
         labels=None):
     # Construct RetryPolicy based on max_delivery_attempts and event_ttl
