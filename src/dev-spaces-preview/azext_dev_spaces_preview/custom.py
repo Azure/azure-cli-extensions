@@ -15,10 +15,10 @@ from knack.util import CLIError  # pylint: disable=import-error
 logger = get_logger(__name__)
 
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-few-public-methods
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None):  # pylint: disable=line-too-long
+def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -37,37 +37,30 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     azds_cli = _install_dev_spaces_cli()
 
     from subprocess import PIPE
-    should_create_resource = False
     retCode = subprocess.call(
         [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
         stderr=PIPE)
-    if retCode == 1:
-        should_create_resource = True
-
-    if should_create_resource:
+    if retCode != 0:
         retCode = subprocess.call(
             [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
+        if retCode != 0:
+            return
 
-        if retCode == 0:
-            should_create_spaces = False
-            create_space_arguments = [azds_cli, 'space', 'select', '--name', space_name]
-            if parent_space_name is not None:
-                create_space_arguments.append('--parent')
-                create_space_arguments.append(parent_space_name)
-            retCode = subprocess.call(
-                create_space_arguments, stderr=PIPE)
-            if retCode == 1:
-                should_create_spaces = True
+    retCode = subprocess.call(
+        [azds_cli, 'space', 'select', '--name', space_name], stderr=PIPE)
+    if retCode == 0:
+        return
 
-            if should_create_spaces:
-                subprocess.call(
-                    [azds_cli, 'space', 'create', '--name', space_name],
-                    universal_newlines=True)
+    create_space_arguments = [azds_cli, 'space', 'create', '--name', space_name]
+    if parent_space_name is not None:
+        create_space_arguments.append('--parent')
+        create_space_arguments.append(parent_space_name)
+    subprocess.call(create_space_arguments, universal_newlines=True)
 
 
-def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # pylint: disable=line-too-long
+def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
     """
     Remove Azure Dev Spaces from a managed Kubernetes cluster.
 
@@ -121,7 +114,7 @@ def _install_dev_spaces_cli():
         # OSX
         azds_cli = 'azds'
         setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
-        setup_url = "https://aka.ms/get-azds-osx-az"
+        setup_url = "https://aka.ms/get-azds-mac-az"
         setup_args = ['bash', setup_file]
     elif system == 'Linux':
         # Linux
