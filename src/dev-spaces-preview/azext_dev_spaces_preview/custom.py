@@ -37,17 +37,17 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     azds_cli = _install_dev_spaces_cli()
 
     from subprocess import PIPE
-    create_resource_ret_code = 0
+    resource_ready_code = 0  # Flag if the resource is ready, after create or select
     retCode = subprocess.call(
         [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
         stderr=PIPE)
     if retCode == 1:
-        create_resource_ret_code = subprocess.call(
+        resource_ready_code = subprocess.call(
             [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
 
-    if create_resource_ret_code == 0:
+    if resource_ready_code == 0:
         retCode = subprocess.call(
             [azds_cli, 'space', 'select', '--name', space_name], stderr=PIPE)
         if retCode == 1:
