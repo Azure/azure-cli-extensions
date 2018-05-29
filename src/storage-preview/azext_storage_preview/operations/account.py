@@ -5,6 +5,8 @@
 
 """Custom operations for storage account commands"""
 
+import os
+from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from .._client_factory import storage_client_factory
 
 
@@ -133,7 +135,6 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
             from knack.util import CLIError
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         params.network_rule_set = acl
-
     return params
 
 
@@ -182,3 +183,15 @@ def remove_network_rule(cmd, client, resource_group_name, storage_account_name, 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)
     return client.update(resource_group_name, storage_account_name, params)
+
+def create_management_policies(_, client, resource_group_name, account_name, policy=None):
+    if policy:
+        if os.path.exists(policy):
+            policy = get_file_json(policy)
+        else:
+            policy = shell_safe_json_parse(policy)
+    return client.create_or_update_management_policies(resource_group_name, account_name, policy=policy)
+
+def update_management_policies(_, instance):
+    policy = instance.policy
+    return policy
