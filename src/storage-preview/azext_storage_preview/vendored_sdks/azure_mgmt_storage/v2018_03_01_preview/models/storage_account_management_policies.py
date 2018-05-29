@@ -27,7 +27,8 @@ class StorageAccountManagementPolicies(Resource):
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param policy: The Storage Account ManagementPolicies Rules, in JSON
-     format. //TODO: Link of the sample rules.
+     format. See more details in:
+     https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
     :type policy: object
     :ivar last_modified_time: Returns the date and time the ManagementPolicies
      was last modified.

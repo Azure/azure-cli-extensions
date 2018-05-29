@@ -93,7 +93,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage account create') as c:
         t_account_type, t_sku_name, t_kind = self.get_models('AccountType', 'SkuName', 'Kind',
                                                              resource_type=CUSTOM_MGMT_STORAGE)
-
         c.register_common_storage_account_options()
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('account_type', help='The storage account type', arg_type=get_enum_type(t_account_type))
@@ -171,6 +170,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        get_permission_help_string(t_account_permissions)),
                    validator=get_permission_validator(t_account_permissions))
         c.ignore('sas_token')
+
+    with self.argument_context('storage account management-policy create') as c:
+        c.argument('policy', type=file_type, completer=FilesCompleter(),
+                   help='The Storage Account ManagementPolicies Rules, in JSON format. See more details in: '
+                        'https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.')
+        c.argument('account_name', help='The name of the storage account within the specified resource group.')
 
     with self.argument_context('storage logging show') as c:
         c.extra('services', validator=get_char_options_validator('bqt', 'services'), default='bqt')

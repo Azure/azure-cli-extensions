@@ -13,11 +13,13 @@ from msrest.serialization import Model
 
 
 class ManagementPoliciesRulesSetParameter(Model):
-    """The Storage Account ManagementPolicies Rules, in JSON format. //TODO: Link
-    of the sample rules.
+    """The Storage Account ManagementPolicies Rules, in JSON format. See more
+    details in:
+    https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
 
     :param policy: The Storage Account ManagementPolicies Rules, in JSON
-     format. //TODO: Link of the sample rules.
+     format. See more details in:
+     https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
     :type policy: object
     """
 

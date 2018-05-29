@@ -79,8 +79,8 @@ def show_storage_account_connection_string(cmd, resource_group_name, account_nam
 def show_storage_account_usage(cmd, location=None):
     scf = storage_client_factory(cmd.cli_ctx)
     if not location:
-        return next((x for x in scf.usage.list() if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
-    return next((x for x in scf.usage.list_by_location(location) if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
+        return next((x for x in scf.usages.list() if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
+    return next((x for x in scf.usages.list_by_location(location) if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
 
 
 # pylint: disable=too-many-locals
@@ -184,7 +184,7 @@ def remove_network_rule(cmd, client, resource_group_name, storage_account_name, 
     params = StorageAccountUpdateParameters(network_rule_set=rules)
     return client.update(resource_group_name, storage_account_name, params)
 
-def create_management_policies(_, client, resource_group_name, account_name, policy=None):
+def create_management_policies(client, resource_group_name, account_name, policy=None):
     if policy:
         if os.path.exists(policy):
             policy = get_file_json(policy)
@@ -192,6 +192,7 @@ def create_management_policies(_, client, resource_group_name, account_name, pol
             policy = shell_safe_json_parse(policy)
     return client.create_or_update_management_policies(resource_group_name, account_name, policy=policy)
 
-def update_management_policies(_, instance):
-    policy = instance.policy
-    return policy
+def update_management_policies(client, resource_group_name, account_name, parameters=None):
+    if parameters:
+        parameters = parameters.policy
+    return client.create_or_update_management_policies(resource_group_name, account_name, policy=parameters)

@@ -930,7 +930,8 @@ class StorageAccountsOperations(object):
          24 characters in length and use numbers and lower-case letters only.
         :type account_name: str
         :param policy: The Storage Account ManagementPolicies Rules, in JSON
-         format. //TODO: Link of the sample rules.
+         format. See more details in:
+         https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
         :type policy: object
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

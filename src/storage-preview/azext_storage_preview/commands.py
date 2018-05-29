@@ -62,9 +62,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.command('show', 'get_management_policies')
         g.custom_command('create', 'create_management_policies')
         g.generic_update_command('update', getter_name='get_management_policies',
-                                 setter_name='create_or_update_management_policies',
-                                 setter_arg_name='policy',
-                                 custom_func_name='update_management_policies')
+                                 setter_name='update_management_policies',
+                                 setter_type=storage_account_custom_type)
         g.command('delete', 'delete_management_policies')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
