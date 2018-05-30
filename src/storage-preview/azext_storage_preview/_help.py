@@ -794,12 +794,12 @@ helps['storage account management-policy'] = """
 
 helps['storage account management-policy create'] = """
     type: command
-    short-summary: Create a storage account management policy.
+    short-summary: Creates the data policy rules associated with the specified storage account.
 """
 
 helps['storage account management-policy update'] = """
     type: command
-    short-summary: Update a storage account management policy.
+    short-summary: Updates the data policy rules associated with the specified storage account.
 """
 
 helps['storage account generate-sas'] = """
