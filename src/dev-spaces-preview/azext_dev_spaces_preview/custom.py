@@ -38,11 +38,11 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
 
     from subprocess import PIPE
     retCode = subprocess.call(
-        [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
+        [azds_cli, 'controller', 'select', '--name', cluster_name, '--resource-group', resource_group_name],
         stderr=PIPE)
     if retCode != 0:
         retCode = subprocess.call(
-            [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
+            [azds_cli, 'controller', 'create', '--target-name', cluster_name, '--target-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
         if retCode != 0:
