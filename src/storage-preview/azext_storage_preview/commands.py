@@ -17,7 +17,8 @@ from ._format import transform_immutability_policy
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
     storage_account_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.storage.operations.storage_accounts_operations#StorageAccountsOperations.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.storage_accounts_operations'
+                        '#StorageAccountsOperations.{}',
         client_factory=cf_sa,
         resource_type=CUSTOM_MGMT_STORAGE
     )
@@ -55,6 +56,15 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.command('keys renew', 'regenerate_key', transform=lambda x: getattr(x, 'keys', x))
         g.command('keys list', 'list_keys', transform=lambda x: getattr(x, 'keys', x))
         g.storage_command('generate-sas', 'generate_shared_access_signature', command_type=cloud_data_plane_sdk)
+
+    with self.command_group('storage account management-policy', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
+                            custom_command_type=storage_account_custom_type) as g:
+        g.command('show', 'get_management_policies')
+        g.custom_command('create', 'create_management_policies')
+        g.generic_update_command('update', getter_name='get_management_policies',
+                                 setter_name='update_management_policies',
+                                 setter_type=storage_account_custom_type)
+        g.command('delete', 'delete_management_policies')
 
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,

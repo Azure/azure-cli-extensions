@@ -787,6 +787,21 @@ helps['storage account network-rule remove'] = """
     short-summary: Remove a network rule.
 """
 
+helps['storage account management-policy'] = """
+    type: group
+    short-summary: Manage storage account management policies.
+"""
+
+helps['storage account management-policy create'] = """
+    type: command
+    short-summary: Creates the data policy rules associated with the specified storage account.
+"""
+
+helps['storage account management-policy update'] = """
+    type: command
+    short-summary: Updates the data policy rules associated with the specified storage account.
+"""
+
 helps['storage account generate-sas'] = """
     type: command
     parameters:

@@ -161,6 +161,7 @@ class TestStorageValidators(unittest.TestCase):
 class TestEncryptionValidators(unittest.TestCase):
     def setUp(self):
         self.cli = MockCLI()
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-03-01-preview')
 
     def test_validate_encryption_services(self):
         ns = Namespace(encryption_services=['blob'], _cmd=MockCmd(self.cli))
