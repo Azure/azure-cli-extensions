@@ -254,7 +254,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  '--encryption-key-vault {vtn} '
                  '--encryption-key-name testkey '
                  '--encryption-key-version {ver} ')
-    
+
     @ResourceGroupPreparer(location='eastus2euap')
     def test_management_policy(self, resource_group):
         import os
@@ -264,7 +264,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
 
         storage_account = self.create_random_name(prefix='cli', length=24)
 
-        self.kwargs = {'rg': resource_group, 'sa': storage_account, 'policy' : policy_file}
+        self.kwargs = {'rg': resource_group, 'sa': storage_account, 'policy': policy_file}
         self.cmd('storage account create -g {rg} -n {sa} --kind StorageV2')
         self.cmd('storage account management-policy create --account-name {sa} -g {rg} --policy @"{policy}"')
         self.cmd('storage account management-policy update --account-name {sa} -g {rg}'
@@ -274,6 +274,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account management-policy delete --account-name {sa} -g {rg}')
         with self.assertRaises(CloudError):
             self.cmd('storage account management-policy show --account-name {sa} -g {rg}')
+
 
 @api_version_constraint(CUSTOM_MGMT_STORAGE, max_api='2016-01-01')
 class StorageAccountTestsForStack(StorageScenarioMixin, ScenarioTest):

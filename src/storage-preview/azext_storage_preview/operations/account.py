@@ -184,6 +184,7 @@ def remove_network_rule(cmd, client, resource_group_name, storage_account_name, 
     params = StorageAccountUpdateParameters(network_rule_set=rules)
     return client.update(resource_group_name, storage_account_name, params)
 
+
 def create_management_policies(client, resource_group_name, account_name, policy=None):
     if policy:
         if os.path.exists(policy):
@@ -191,6 +192,7 @@ def create_management_policies(client, resource_group_name, account_name, policy
         else:
             policy = shell_safe_json_parse(policy)
     return client.create_or_update_management_policies(resource_group_name, account_name, policy=policy)
+
 
 def update_management_policies(client, resource_group_name, account_name, parameters=None):
     if parameters:
