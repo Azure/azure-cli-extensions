@@ -77,7 +77,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
 
     azds_cli = _install_dev_spaces_cli(False)
 
-    remove_command_arguments = [azds_cli, 'resource', 'rm', '--name',
+    remove_command_arguments = [azds_cli, 'controller', 'delete', '--name',
                                 cluster_name, '--resource-group', resource_group_name]
     if prompt:
         remove_command_arguments.append('-y')
