@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-few-public-methods
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None):
+def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None, update=False):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -32,17 +32,19 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     :param parent_space_name: Name of a parent dev space to inherit from when creating a new dev space. \
     By default, if there is already a single dev space with no parent, the new space inherits from this one.
     :type parent_space_name: String
+    :param update: Update Azure Dev Spaces tools.
+    :type update: bool
     """
 
-    azds_cli = _install_dev_spaces_cli()
+    azds_cli = _install_dev_spaces_cli(update)
 
     from subprocess import PIPE
     retCode = subprocess.call(
-        [azds_cli, 'resource', 'select', '-n', cluster_name, '-g', resource_group_name],
+        [azds_cli, 'controller', 'select', '--name', cluster_name, '--resource-group', resource_group_name],
         stderr=PIPE)
     if retCode != 0:
         retCode = subprocess.call(
-            [azds_cli, 'resource', 'create', '--aks-name', cluster_name, '--aks-resource-group',
+            [azds_cli, 'controller', 'create', '--target-name', cluster_name, '--target-resource-group',
              resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
             universal_newlines=True)
         if retCode != 0:
@@ -73,9 +75,9 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
     :type prompt: bool
     """
 
-    azds_cli = _install_dev_spaces_cli()
+    azds_cli = _install_dev_spaces_cli(False)
 
-    remove_command_arguments = [azds_cli, 'resource', 'rm', '--name',
+    remove_command_arguments = [azds_cli, 'controller', 'delete', '--name',
                                 cluster_name, '--resource-group', resource_group_name]
     if prompt:
         remove_command_arguments.append('-y')
@@ -97,7 +99,7 @@ def _is_dev_spaces_installed(vsce_cli):
     return True
 
 
-def _install_dev_spaces_cli():
+def _install_dev_spaces_cli(force_install):
     azds_tool = 'Azure Dev Spaces CLI'
     should_install_azds = False
     system = platform.system()
@@ -125,7 +127,7 @@ def _install_dev_spaces_cli():
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 
-    should_install_azds = not _is_dev_spaces_installed(azds_cli)
+    should_install_azds = force_install | (not _is_dev_spaces_installed(azds_cli))
 
     if should_install_azds:
         # Install AZDS
