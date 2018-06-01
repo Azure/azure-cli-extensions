@@ -29,6 +29,9 @@ helps['ads use'] = """
         - name: --parent-space -p
           type: string
           short-summary: Name of a parent dev space to inherit from when creating a new dev space. By default, if there is already a single dev space with no parent, the new space inherits from this one.
+        - name: --update
+          type: bool
+          short-summary: Update Azure Dev Spaces tools.
 """
 
 helps['ads remove'] = """
