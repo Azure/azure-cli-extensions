@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from six.moves.urllib.parse import quote  # pylint: disable=import-error
 import re
+from six.moves.urllib.parse import quote  # pylint: disable=import-error,relative-import
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
@@ -119,7 +119,7 @@ def cli_eventgrid_event_subscription_create(
         is_subject_case_sensitive=False,
         max_delivery_attempts=30,
         event_ttl=1440,
-        event_delivery_schema=EVENTGRID_SCHEMA,
+        event_delivery_schema=INPUT_EVENT_SCHEMA,
         deadletter_endpoint=None,
         labels=None):
     # Construct RetryPolicy based on max_delivery_attempts and event_ttl
@@ -223,7 +223,8 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     if resource_id:
         # Resource ID is specified, we need to list only for the particular resource.
         if resource_group_name is not None or topic_name is not None:
-            raise CLIError('Since --resource-id is specified, --topic-name and --resource-group-name should not be specified.')
+            raise CLIError('Since --resource-id is specified, --topic-name and --resource-group-name should not '
+                           'be specified.')
 
         id_parts = parse_resource_id(resource_id)
         rg_name = id_parts['resource_group']
