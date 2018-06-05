@@ -26,7 +26,7 @@ class TokenUpdater(object):
         from datetime import datetime
         # should give back token that is valid for at least 5 mins
         token = Profile(cli_ctx=self.cli_ctx).get_raw_token(resource="https://storage.azure.com")[0][2]
-        self.token_credential.update_token(token['accessToken'])
+        self.token_credential.token = token['accessToken']
         seconds_left = (datetime.strptime(token['expiresOn'], "%Y-%m-%d %H:%M:%S.%f") - datetime.now()).seconds
         if seconds_left < 240:
             # acquired token expires in less than 4 mins

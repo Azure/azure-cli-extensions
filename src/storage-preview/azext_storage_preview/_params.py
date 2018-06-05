@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type)
+from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type,
+                                                get_three_state_flag)
 
 from ._validators import (get_datetime_type, validate_metadata, get_permission_validator, get_permission_help_string,
                           resource_type_type, services_type, validate_entity, validate_select, validate_blob_type,
@@ -241,6 +242,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('enable', arg_type=get_enum_type(['true', 'false']), help='Enables/disables soft-delete.')
         c.argument('days_retained', type=int,
                    help='Number of days that soft-deleted blob will be retained. Must be in range [1,365].')
+
+    with self.argument_context('storage blob service-properties update') as c:
+        c.argument('soft_delete', arg_type=get_enum_type(['true', 'false']), help='Enables/disables soft-delete.')
+        c.argument('days_retained', type=int,
+                   help='Number of days that soft-deleted blob will be retained. Must be in range [1,365].')
+        c.argument('static_website, ')
 
     with self.argument_context('storage blob upload') as c:
         from ._validators import page_blob_tier_validator

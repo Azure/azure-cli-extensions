@@ -44,6 +44,30 @@ def set_delete_policy(client, enable=None, days_retained=None):
     client.set_blob_service_properties(delete_retention_policy=policy)
     return client.get_blob_service_properties().delete_retention_policy
 
+def set_service_properties(client, soft_delete=None, days_retained=None, static_website=None, index_document=None,
+                           error_document_404_path=None):
+    service_properties = client.get_blob_service_properties()
+
+    policy = service_properties.delete_retention_policy
+    if soft_delete is not None:
+        policy.enabled = soft_delete == 'true'
+    if days_retained is not None:
+        policy.days = days_retained
+
+    if policy.enabled and not policy.days:
+        from knack.util import CLIError
+        raise CLIError("must specify days-retained")
+
+    static_website_prop = service_properties.static_website
+    if static_website is not None:
+        static_website_prop.enabled = static_website == 'true'
+    if index_document is not None:
+        static_website_prop.index_document = index_document
+    if error_document_404_path is not None:
+        static_website_prop.error_document_404_path = error_document_404_path
+
+    client.set_blob_service_properties(delete_retention_policy=policy, static_website=static_website_prop)
+    return client.get_blob_service_properties()
 
 def storage_blob_copy_batch(cmd, client, source_client, destination_container=None,
                             destination_path=None, source_container=None, source_share=None,
