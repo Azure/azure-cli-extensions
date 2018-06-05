@@ -161,10 +161,11 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                 exception_handler=g.get_handler_suppress_404())
         g.storage_custom_command_oauth('update', 'set_delete_policy')
 
-    with self.command_group('storage blob service-properties', command_type=base_blob_sdk,
-                            custom_command_type=get_custom_sdk('blob', blob_data_service_factory)) as g:
+    with self.command_group('storage blob service-properties', command_type=base_blob_sdk) as g:
         g.storage_command_oauth('show', 'get_blob_service_properties', exception_handler=g.get_handler_suppress_404())
-        g.storage_custom_command_oauth('update', 'set_service_properties', exception_handler=g.get_handler_suppress_404())
+        g.storage_command_oauth('update', generic_update=True, getter_name='get_blob_service_properties',
+                                setter_type=get_custom_sdk('blob', blob_data_service_factory),
+                                setter_name='set_service_properties', exception_handler=g.get_handler_suppress_404())
 
     with self.command_group('storage container', command_type=block_blob_sdk,
                             custom_command_type=get_custom_sdk('acl', blob_data_service_factory)) as g:
