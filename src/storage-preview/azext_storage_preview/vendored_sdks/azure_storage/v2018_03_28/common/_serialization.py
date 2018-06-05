@@ -176,7 +176,7 @@ def _convert_signed_identifiers_to_xml(signed_identifiers):
 
 
 def _convert_service_properties_to_xml(logging, hour_metrics, minute_metrics,
-                                       cors, target_version=None, delete_retention_policy=None):
+                                       cors, target_version=None, delete_retention_policy=None, static_website=None):
     '''
     <?xml version="1.0" encoding="utf-8"?>
     <StorageServiceProperties>
@@ -218,9 +218,14 @@ def _convert_service_properties_to_xml(logging, hour_metrics, minute_metrics,
             </CorsRule>
         </Cors>
         <DeleteRetentionPolicy>
-             <Enabled>true|false</Enabled>
-             <Days>number-of-days</Days>
+            <Enabled>true|false</Enabled>
+            <Days>number-of-days</Days>
         </DeleteRetentionPolicy>
+        <StaticWebsite>
+            <Enabled>true|false</Enabled>
+            <IndexDocument></IndexDocument>
+            <ErrorDocument404Path></ErrorDocument404Path>
+        </StaticWebsite>
     </StorageServiceProperties>
     '''
     service_properties_element = ETree.Element('StorageServiceProperties')
@@ -269,6 +274,20 @@ def _convert_service_properties_to_xml(logging, hour_metrics, minute_metrics,
 
         if delete_retention_policy.enabled:
             ETree.SubElement(policy_element, 'Days').text = str(delete_retention_policy.days)
+
+    # StaticWebsite
+    if static_website:
+        static_website_element = ETree.SubElement(service_properties_element, 'StaticWebsite')
+        ETree.SubElement(static_website_element, 'Enabled').text = str(static_website.enabled)
+
+        if static_website.enabled:
+
+            if static_website.index_document is not None:
+                ETree.SubElement(static_website_element, 'IndexDocument').text = str(static_website.index_document)
+
+            if static_website.error_document_404_path is not None:
+                ETree.SubElement(static_website_element, 'ErrorDocument404Path').text = \
+                    str(static_website.error_document_404_path)
 
     # Add xml declaration and serialize
     try:

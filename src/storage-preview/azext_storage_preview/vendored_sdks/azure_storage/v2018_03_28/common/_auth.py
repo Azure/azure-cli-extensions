@@ -84,7 +84,7 @@ class _StorageSharedKeyAuthentication(_StorageSharedKeyAuthentication):
 
         string_to_sign = ''
         for name, value in sorted_queries:
-            if value:
+            if value is not None:
                 string_to_sign += '\n' + name.lower() + ':' + value
 
         return string_to_sign
@@ -115,11 +115,3 @@ class _StorageSASAuthentication(object):
             request.path += '?'
 
         request.path += self.sas_token
-
-
-class _StorageTokenAuthentication(object):
-    def __init__(self, token):
-        self.token_credential = token
-
-    def sign_request(self, request):
-        request.headers['Authorization'] = str.format("Bearer {}", self.token_credential.get_token())

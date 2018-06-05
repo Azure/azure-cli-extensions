@@ -165,6 +165,8 @@ def _convert_xml_to_containers(response):
             <LeaseState>available | leased | expired | breaking | broken</LeaseState>
             <LeaseDuration>infinite | fixed</LeaseDuration>
             <PublicAccess>blob | container</PublicAccess>
+            <HasImmutabilityPolicy>true | false</HasImmutabilityPolicy>
+            <HasLegalHold>true | false</HasLegalHold>
           </Properties>
           <Metadata>
             <metadata-name>value</metadata-name>
@@ -205,6 +207,8 @@ def _convert_xml_to_containers(response):
         container.properties.lease_state = properties_element.findtext('LeaseState')
         container.properties.lease_duration = properties_element.findtext('LeaseDuration')
         container.properties.public_access = properties_element.findtext('PublicAccess')
+        container.properties.has_immutability_policy = properties_element.findtext('HasImmutabilityPolicy')
+        container.properties.has_legal_hold = properties_element.findtext('HasLegalHold')
 
         # Add container to list
         containers.append(container)
@@ -240,6 +244,7 @@ LIST_BLOBS_ATTRIBUTE_MAP = {
     'ArchiveStatus': (None, 'rehydration_status', _to_str),
     'DeletedTime': (None, 'deleted_time', parser.parse),
     'RemainingRetentionDays': (None, 'remaining_retention_days', _to_int),
+    'Creation-Time': (None, 'creation_time', parser.parse),
 }
 
 
@@ -281,6 +286,7 @@ def _convert_xml_to_blob_list(response):
             <AccessTierInferred>true</AccessTierInferred>
             <DeletedTime>datetime</DeletedTime>
             <RemainingRetentionDays>int</RemainingRetentionDays>
+            <Creation-Time>date-time-value</Creation-Time>
           </Properties>
           <Metadata>   
             <Name>value</Name>

@@ -285,7 +285,7 @@ class _PageBlobChunkUploader(_BlobChunkUploader):
         # read until non-zero byte is encountered
         # if reached the end without returning, then chunk_data is all 0's
         for each_byte in chunk_data:
-            if each_byte != 0:
+            if each_byte != 0 and each_byte != b'\x00':
                 return False
         return True
 

@@ -12,7 +12,6 @@ from ..common._auth import (
     _StorageSASAuthentication,
     _StorageSharedKeyAuthentication,
     _StorageNoAuthentication,
-    _StorageTokenAuthentication,
 )
 from ..common._common_conversion import (
     _int_to_str,
@@ -184,7 +183,7 @@ class BaseBlobService(StorageClient):
         :param token_credential:
             A token credential used to authenticate HTTPS requests. The token value
             should be updated before its expiration.
-        :type `~..common.TokenCredential`
+        :type `~azure.storage.common.TokenCredential`
         '''
         service_params = _ServiceParameters.get_service_parameters(
             'blob',
@@ -211,7 +210,7 @@ class BaseBlobService(StorageClient):
         elif self.sas_token:
             self.authentication = _StorageSASAuthentication(self.sas_token)
         elif self.token_credential:
-            self.authentication = _StorageTokenAuthentication(self.token_credential)
+            self.authentication = self.token_credential
         else:
             self.authentication = _StorageNoAuthentication()
 
@@ -322,7 +321,7 @@ class BaseBlobService(StorageClient):
             restricts the request to those IP addresses.
         :param str protocol:
             Specifies the protocol permitted for a request made. The default value
-            is https,http. See :class:`~..common.models.Protocol` for possible values.
+            is https,http. See :class:`~azure.storage.common.models.Protocol` for possible values.
         :return: A Shared Access Signature (sas) token.
         :rtype: str
         '''
@@ -379,7 +378,7 @@ class BaseBlobService(StorageClient):
             restricts the request to those IP addresses.
         :param str protocol:
             Specifies the protocol permitted for a request made. The default value
-            is https,http. See :class:`~..common.models.Protocol` for possible values.
+            is https,http. See :class:`~azure.storage.common.models.Protocol` for possible values.
         :param str cache_control:
             Response header value for Cache-Control when resource is accessed
             using this shared access signature.
@@ -465,7 +464,7 @@ class BaseBlobService(StorageClient):
             restricts the request to those IP addresses.
         :param str protocol:
             Specifies the protocol permitted for a request made. The default value
-            is https,http. See :class:`~..common.models.Protocol` for possible values.
+            is https,http. See :class:`~azure.storage.common.models.Protocol` for possible values.
         :param str cache_control:
             Response header value for Cache-Control when resource is accessed
             using this shared access signature.
@@ -748,7 +747,7 @@ class BaseBlobService(StorageClient):
         :param int timeout:
             The timeout parameter is expressed in seconds.
         :return: A dictionary of access policies associated with the container. dict of str to
-            :class:`..common.models.AccessPolicy` and a public_access property
+            :class:`azure.storage.common.models.AccessPolicy` and a public_access property
             if public access is turned on
         '''
         _validate_not_none('container_name', container_name)
@@ -779,7 +778,7 @@ class BaseBlobService(StorageClient):
             A dictionary of access policies to associate with the container. The 
             dictionary may contain up to 5 elements. An empty dictionary 
             will clear the access policies set on the service. 
-        :type signed_identifiers: dict(str, :class:`~..common.models.AccessPolicy`)
+        :type signed_identifiers: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
         :param ~azure.storage.blob.models.PublicAccess public_access:
             Possible values include: container, blob.
         :param str lease_id:
@@ -1339,7 +1338,7 @@ class BaseBlobService(StorageClient):
         :param int timeout:
             The timeout parameter is expressed in seconds.
         :return: The blob service stats.
-        :rtype: :class:`~..common.models.ServiceStats`
+        :rtype: :class:`~azure.storage.common.models.ServiceStats`
         '''
         request = HTTPRequest()
         request.method = 'GET'
@@ -1355,7 +1354,7 @@ class BaseBlobService(StorageClient):
 
     def set_blob_service_properties(
             self, logging=None, hour_metrics=None, minute_metrics=None,
-            cors=None, target_version=None, timeout=None, delete_retention_policy=None):
+            cors=None, target_version=None, timeout=None, delete_retention_policy=None, static_website=None):
         '''
         Sets the properties of a storage account's Blob service, including
         Azure Storage Analytics. If an element (ex Logging) is left as None, the 
@@ -1364,22 +1363,22 @@ class BaseBlobService(StorageClient):
         :param logging:
             Groups the Azure Analytics Logging settings.
         :type logging:
-            :class:`~..common.models.Logging`
+            :class:`~azure.storage.common.models.Logging`
         :param hour_metrics:
             The hour metrics settings provide a summary of request 
             statistics grouped by API in hourly aggregates for blobs.
         :type hour_metrics:
-            :class:`~..common.models.Metrics`
+            :class:`~azure.storage.common.models.Metrics`
         :param minute_metrics:
             The minute metrics settings provide request statistics 
             for each minute for blobs.
         :type minute_metrics:
-            :class:`~..common.models.Metrics`
+            :class:`~azure.storage.common.models.Metrics`
         :param cors:
             You can include up to five CorsRule elements in the 
             list. If an empty list is specified, all CORS rules will be deleted, 
             and CORS will be disabled for the service.
-        :type cors: list(:class:`~..common.models.CorsRule`)
+        :type cors: list(:class:`~azure.storage.common.models.CorsRule`)
         :param str target_version:
             Indicates the default version to use for requests if an incoming 
             request's version is not specified. 
@@ -1389,7 +1388,12 @@ class BaseBlobService(StorageClient):
             The delete retention policy specifies whether to retain deleted blobs.
             It also specifies the number of days and versions of blob to keep.
         :type delete_retention_policy:
-            :class:`~..common.models.DeleteRetentionPolicy`
+            :class:`~azure.storage.common.models.DeleteRetentionPolicy`
+        :param static_website:
+            Specifies whether the static website feature is enabled,
+            and if yes, indicates the index document and 404 error document to use.
+        :type static_website:
+            :class:`~azure.storage.common.models.StaticWebsite`
         '''
         request = HTTPRequest()
         request.method = 'PUT'
@@ -1402,7 +1406,7 @@ class BaseBlobService(StorageClient):
         }
         request.body = _get_request_body(
             _convert_service_properties_to_xml(logging, hour_metrics, minute_metrics,
-                                               cors, target_version, delete_retention_policy))
+                                               cors, target_version, delete_retention_policy, static_website))
 
         self._perform_request(request)
 
@@ -1413,7 +1417,7 @@ class BaseBlobService(StorageClient):
 
         :param int timeout:
             The timeout parameter is expressed in seconds.
-        :return: The blob :class:`~..common.models.ServiceProperties` with an attached
+        :return: The blob :class:`~azure.storage.common.models.ServiceProperties` with an attached
             target_version property.
         '''
         request = HTTPRequest()
