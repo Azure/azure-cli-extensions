@@ -45,7 +45,26 @@ def set_delete_policy(client, enable=None, days_retained=None):
     return client.get_blob_service_properties().delete_retention_policy
 
 
-def set_service_properties(client, parameters):
+def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,
+                           index_document=None, error_document_404_path=None):
+    # update
+    if delete_retention is not None:
+        parameters.delete_retention_policy.enabled = delete_retention
+    if days_retained is not None:
+        parameters.delete_retention_policy.days = days_retained
+    if static_website is not None:
+        parameters.static_website.enabled = static_website
+    if index_document is not None:
+        parameters.static_website.index_document = index_document
+    if error_document_404_path is not None:
+        parameters.static_website.error_document_404_path = error_document_404_path
+
+    # checks
+    policy = parameters.delete_retention_policy
+    if policy.enabled and not policy.days:
+        from knack.util import CLIError
+        raise CLIError("must specify days-retained")
+
     client.set_blob_service_properties(delete_retention_policy=parameters.delete_retention_policy,
                                        static_website=parameters.static_website,
                                        logging=parameters.logging,
