@@ -25,13 +25,13 @@ helps['ads use'] = """
           short-summary: Name of resource group. You can configure the default group using 'az configure --defaults group=<name>'.
         - name: --space -s
           type: string
-          short-summary: Name of the dev space to use.
-        - name: --parent-space -p
-          type: string
-          short-summary: Name of a parent dev space to inherit from when creating a new dev space. By default, if there is already a single dev space with no parent, the new space inherits from this one.
+          short-summary: Name of the new or existing dev space to select. Defaults to an interactive selection experience.
         - name: --update
           type: bool
-          short-summary: Update Azure Dev Spaces tools.
+          short-summary: Update to the latest Azure Dev Spaces client components.
+        - name: --yes -y
+          type: bool
+          short-summary: Do not prompt for confirmation. Requires --space.
 """
 
 helps['ads remove'] = """

@@ -30,8 +30,8 @@ class DevspacesExtCommandLoader(AzCommandsLoader):
             c.argument('cluster_name', options_list=['--name', '-n'])
             c.argument('resource_group_name', options_list=['--resource-group', '-g'])
             c.argument('space_name', options_list=['--space', '-s'])
-            c.argument('parent_space_name', options_list=['--parent-space', '-p'])
             c.argument('update', options_list=['--update'], action='store_true')
+            c.argument('prompt', options_list=['--yes', '-y'], action='store_true')
 
         with self.argument_context('ads remove') as c:
             c.argument('cluster_name', options_list=['--name', '-n'])
