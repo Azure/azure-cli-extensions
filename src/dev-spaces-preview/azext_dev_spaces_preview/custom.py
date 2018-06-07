@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-few-public-methods
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, space_name=None, update=False, prompt=False):
+def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None, prompt=False):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -27,10 +27,10 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name=None, updat
     :param resource_group_name: Name of resource group. You can configure the default group. \
     Using 'az configure --defaults group=<name>'.
     :type resource_group_name: String
-    :param space_name: Name of the new or existing dev space to select. Defaults to an interactive selection experience.
-    :type space_name: String
     :param update: Update to the latest Azure Dev Spaces client components.
     :type update: bool
+    :param space_name: Name of the new or existing dev space to select. Defaults to an interactive selection experience.
+    :type space_name: String
     :param prompt: Do not prompt for confirmation. Requires --space.
     :type prompt: bool
     """
