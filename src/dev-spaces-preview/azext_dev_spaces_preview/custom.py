@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None, prompt=False):  # pylint:disable=too-few-public-methods
+def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None, prompt=False):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -63,7 +63,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
     subprocess.call(create_space_arguments, universal_newlines=True)
 
 
-def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):  # pylint:disable=too-few-public-methods
+def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
     """
     Remove Azure Dev Spaces from a managed Kubernetes cluster.
 

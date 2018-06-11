@@ -9,7 +9,7 @@ import azext_dev_spaces_preview._help  # pylint: disable=unused-import
 import azext_dev_spaces_preview.custom  # pylint: disable=unused-import
 
 
-class DevspacesExtCommandLoader(AzCommandsLoader):
+class DevspacesExtCommandLoader(AzCommandsLoader):  # pylint:disable=too-few-public-methods
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
