@@ -30,25 +30,31 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
         logger.warn(
             "Data disks in the source detected, but are ignored by this extension!")
 
+    source_os_disk_id = None
     source_os_disk_type = None
 
     try:
         source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
+        if source_os_disk_id is None:
+            raise TypeError
         source_os_disk_type = "DISK"
+        logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
     except TypeError:
-        pass
-
-    try:
-        source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['blobUri']
-        source_os_disk_type = "BLOB"
-    except TypeError:
-        pass
-
-    try:  # images created by e.g. image-copy extension
-        source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['snapshot']['id']
-        source_os_disk_type = "SNAPSHOT"
-    except TypeError:
-        pass
+        try:
+            source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['blobUri']
+            if source_os_disk_id is None:
+                raise TypeError
+            source_os_disk_type = "BLOB"
+            logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+        except TypeError:
+            try:  # images created by e.g. image-copy extension
+                source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['snapshot']['id']
+                if source_os_disk_id is None:
+                    raise TypeError
+                source_os_disk_type = "SNAPSHOT"
+                logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+            except TypeError:
+                pass
 
     if source_os_disk_type is None or source_os_disk_id is None:
         logger.error(
