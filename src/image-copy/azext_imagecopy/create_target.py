@@ -48,7 +48,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
     target_storage_account_key = json_output[0]['value']
-    logger.debug(target_storage_account_key)
+    logger.debug("storage account key: %s", target_storage_account_key)
 
     expiry_format = "%Y-%m-%dT%H:%MZ"
     expiry = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
