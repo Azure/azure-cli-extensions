@@ -26,20 +26,47 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
 
-    if 'id' not in json_cmd_output['storageProfile']['osDisk']['managedDisk']:
-        logger.error(
-            "It looks like the source resource isn't backed by a managed OS disk. Quitting...")
-        raise CLIError('Source with no Managed OS disk')
-
     if json_cmd_output['storageProfile']['dataDisks']:
-        logger.warn("Data disks in the source detected, but are ignored by this extension!")
+        logger.warn(
+            "Data disks in the source detected, but are ignored by this extension!")
 
-    source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
+    source_os_disk_id = None
+    source_os_disk_type = None
+
+    try:
+        source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['managedDisk']['id']
+        if source_os_disk_id is None:
+            raise TypeError
+        source_os_disk_type = "DISK"
+        logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+    except TypeError:
+        try:
+            source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['blobUri']
+            if source_os_disk_id is None:
+                raise TypeError
+            source_os_disk_type = "BLOB"
+            logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+        except TypeError:
+            try:  # images created by e.g. image-copy extension
+                source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['snapshot']['id']
+                if source_os_disk_id is None:
+                    raise TypeError
+                source_os_disk_type = "SNAPSHOT"
+                logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+            except TypeError:
+                pass
+
+    if source_os_disk_type is None or source_os_disk_id is None:
+        logger.error(
+            'Unable to locate a supported os disk type in the provided source object')
+        raise CLIError('Invalid OS Disk Source Type')
+
     source_os_type = json_cmd_output['storageProfile']['osDisk']['osType']
-    logger.debug("source_os_disk_id: %s. source_os_type: %s",
-                 source_os_disk_id, source_os_type)
+    logger.debug("source_os_disk_type: %s. source_os_disk_id: %s. source_os_type: %s",
+                 source_os_disk_type, source_os_disk_id, source_os_type)
 
     # create source snapshots
+    # TODO: skip creating another snapshot when the source is a snapshot
     logger.warn("Creating source snapshot")
     source_os_disk_snapshot_name = source_object_name + '_os_disk_snapshot'
     cli_cmd = prepare_cli_command(['snapshot', 'create',
@@ -65,7 +92,10 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     # Start processing in the target locations
 
     transient_resource_group_name = 'image-copy-rg'
-    create_resource_group(transient_resource_group_name, 'eastus')
+    # pick the first location for the temp group
+    transient_resource_group_location = target_location[0].strip()
+    create_resource_group(transient_resource_group_name,
+                          transient_resource_group_location)
 
     target_locations_count = len(target_location)
     logger.warn("Target location count: %s", target_locations_count)
@@ -125,6 +155,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
         run_cli_command(cli_cmd)
 
         # Delete source snapshot
+        # TODO: skip this if source is snapshot and not creating a new one
         cli_cmd = prepare_cli_command(['snapshot', 'delete',
                                        '--name', source_os_disk_snapshot_name,
                                        '--resource-group', source_resource_group_name])
