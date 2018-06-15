@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 def provisionConvergedApp(bot_name):
     botfirstpartyid = 'f3723d34-6ff5-4ceb-a148-d99dcd2511fc'
     aadclientid = '1950a258-227b-4e31-a9cf-717495945fc2'
-    tenantid = '72f988bf-86f1-41af-91ab-2d7cd011db47'
+    tenantid = 'f3dc643a-01dc-4aec-8660-46c75c40978b'
 
     authority = 'https://login.windows.net/{0}'.format(tenantid)
     context = adal.AuthenticationContext(
