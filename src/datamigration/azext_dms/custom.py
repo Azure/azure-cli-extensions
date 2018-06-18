@@ -167,7 +167,7 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                    server_name=server_name,
                                    port=port)
     elif "postgre" in typeOfInfo:
-        database_name = connection_info_json.get('databaseName', "postgre")
+        database_name = connection_info_json.get('databaseName', "postgres")
         port = connection_info_json.get('port', 5432)
         return PostgreSqlConnectionInfo(user_name=user_name,
                                         password=password,

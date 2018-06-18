@@ -124,7 +124,7 @@ helps['dms project task create'] = """
                 "userName": "user name",    // if this is missing or null, you will be prompted
                 "password": null,           // if this is missing or null (highly recommended) you will be prompted
                 "serverName": "server name",
-                "databaseName": "database name", // if this is missing, it will default to the 'postgre' server
+                "databaseName": "database name", // if this is missing, it will default to the 'postgres' database
                 "port": 5432                // if this is missing, it will default to 5432
             }
 """
