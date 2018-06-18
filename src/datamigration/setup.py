@@ -27,7 +27,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dms',
+    name='dms-pg-mysql',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools for the Data Migration Service (DMS) Command Module',
     license='MIT',
