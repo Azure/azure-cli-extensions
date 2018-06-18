@@ -29,7 +29,7 @@ DEPENDENCIES = []
 setup(
     name='dms-pg-mysql',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools for the Data Migration Service (DMS) Command Module',
+    description='Support for continuous migrations for MySql and PostgreSql instances.',
     license='MIT',
     author='Artyom Pavlichenko',
     author_email='arpavlic@microsoft.com',
