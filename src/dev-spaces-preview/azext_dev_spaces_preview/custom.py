@@ -15,10 +15,10 @@ from knack.util import CLIError  # pylint: disable=import-error
 logger = get_logger(__name__)
 
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-few-public-methods
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', parent_space_name=None, update=False):
+def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None, prompt=False):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -27,13 +27,12 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
     :param resource_group_name: Name of resource group. You can configure the default group. \
     Using 'az configure --defaults group=<name>'.
     :type resource_group_name: String
-    :param space_name: Name of the dev space to use.
-    :type space_name: String
-    :param parent_space_name: Name of a parent dev space to inherit from when creating a new dev space. \
-    By default, if there is already a single dev space with no parent, the new space inherits from this one.
-    :type parent_space_name: String
-    :param update: Update Azure Dev Spaces tools.
+    :param update: Update to the latest Azure Dev Spaces client components.
     :type update: bool
+    :param space_name: Name of the new or existing dev space to select. Defaults to an interactive selection experience.
+    :type space_name: String
+    :param prompt: Do not prompt for confirmation. Requires --space.
+    :type prompt: bool
     """
 
     azds_cli = _install_dev_spaces_cli(update)
@@ -50,15 +49,17 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, space_name='default', 
         if retCode != 0:
             return
 
+    if space_name is None:
+        space_name = 'default'
+
     retCode = subprocess.call(
         [azds_cli, 'space', 'select', '--name', space_name], stderr=PIPE)
     if retCode == 0:
         return
 
     create_space_arguments = [azds_cli, 'space', 'create', '--name', space_name]
-    if parent_space_name is not None:
-        create_space_arguments.append('--parent')
-        create_space_arguments.append(parent_space_name)
+    if prompt:
+        pass
     subprocess.call(create_space_arguments, universal_newlines=True)
 
 
