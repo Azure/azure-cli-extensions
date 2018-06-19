@@ -233,7 +233,7 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         return create_bot_json(cmd, client, resource_group_name, resource_name, app_password=password)
 
 
-def publish_app(cmd, _, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master',  # pylint: disable=inconsistent-return-statements
+def publish_app(cmd, resource_group_name, resource_name, git_url=None, git_token=None, git_branch='master',  # pylint: disable=inconsistent-return-statements
                 code_dir=None):
     # if given msbot json, use that to update environment settings like luis settings
     if git_url:
