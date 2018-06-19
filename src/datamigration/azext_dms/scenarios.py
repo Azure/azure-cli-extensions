@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azext_dms.mgmt.datamigration.models import (MigrationValidationOptions,
+from azext_dms.vendored_sdks.datamigration.models import (MigrationValidationOptions,
                                                  MigrateSqlServerSqlDbDatabaseInput,
                                                  MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput,
                                                  MigrateMySqlAzureDbForMySqlSyncDatabaseInput,

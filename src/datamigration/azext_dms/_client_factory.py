@@ -5,7 +5,7 @@
 
 def dms_client_factory(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_dms.mgmt.datamigration import DataMigrationServiceClient
+    from azext_dms.vendored_sdks.datamigration import DataMigrationServiceClient
     return get_mgmt_service_client(cli_ctx, DataMigrationServiceClient)
 
 def dms_cf_projects(cli_ctx, *_):

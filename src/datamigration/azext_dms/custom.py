@@ -7,7 +7,7 @@ import os
 
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from knack.prompting import prompt, prompt_pass
-from azext_dms.mgmt.datamigration.models import (Project,
+from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                  SqlConnectionInfo,
                                                  MySqlConnectionInfo,
                                                  PostgreSqlConnectionInfo,

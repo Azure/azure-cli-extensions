@@ -11,12 +11,12 @@ from azext_dms._client_factory import (dms_client_factory,
 
 def load_command_table(self, _):
     dms_projects_sdk = CliCommandType(
-        operations_tmpl='azext_dms.mgmt.datamigration.operations.projects_operations#ProjectsOperations.{}',
+        operations_tmpl='azext_dms.vendored_sdks.datamigration.operations.projects_operations#ProjectsOperations.{}',
         client_factory=dms_client_factory
     )
 
     dms_tasks_sdk = CliCommandType(
-        operations_tmpl='azext_dms.mgmt.datamigration.operations.tasks_operations#TasksOperations.{}',
+        operations_tmpl='azext_dms.vendored_sdks.datamigration.operations.tasks_operations#TasksOperations.{}',
         client_factory=dms_client_factory
     )
 
