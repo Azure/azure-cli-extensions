@@ -5,7 +5,8 @@
 
 from azure.cli.core import AzCommandsLoader
 
-import azext_dms._help # pylint: disable=unused-import
+import azext_dms._help  # pylint: disable=unused-import
+
 
 class DmsCommandsLoader(AzCommandsLoader):
 

@@ -20,6 +20,7 @@ from azext_dms.scenarios import (get_migrate_sql_server_to_sqldb_input,
                                  get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
                                  get_migrate_mysql_to_azuredbformysql_sync_input)
 
+
 # region Project
 def create_or_update_project(
         client,
@@ -53,6 +54,7 @@ def create_or_update_project(
                                    service_name=service_name,
                                    project_name=project_name)
 # endregion
+
 
 # region Task
 def create_task(
@@ -110,6 +112,7 @@ def create_task(
                                    task_name=task_name,
                                    properties=task_properties)
 
+
 def cutover_sync_task(
         client,
         resource_group_name,
@@ -132,14 +135,16 @@ def cutover_sync_task(
 
 # endregion
 
+
 # region Helper Methods
 def determine_scenario_eligibility(source_raw, target_raw):
     source_type = source_raw.lower()
     target_type = target_raw.lower()
 
     return (source_type == "sql" and target_type == "sqldb") or \
-            (source_type == "postgresql" and target_type == "azuredbforpostgresql") or \
-            (source_type == "mysql" and target_type == "azuredbformysql")
+           (source_type == "postgresql" and target_type == "azuredbforpostgresql") or \
+           (source_type == "mysql" and target_type == "azuredbformysql")
+
 
 # As of now, we dont expose Sql continuous migrations.
 # So we'll hard code the data movement type to simplify user interaction.
@@ -153,6 +158,7 @@ def get_data_movement_type(source_type, target_type):
     if source_type == "sql" and target_type == "sqldb":
         return oneTime
     return cont
+
 
 def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
     typeOfInfo = typeOfInfo.lower()
@@ -186,6 +192,7 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                              encrypt_connection=encrypt_connection,
                              trust_server_certificate=trust_server_certificate,
                              additional_settings=additional_settings)
+
 
 def get_task_migration_properties(
         database_options_json,

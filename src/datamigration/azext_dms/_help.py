@@ -91,7 +91,7 @@ helps['dms project task create'] = """
                 },
                 ...n
             ]
-        - name: For PostgreSQL and MySQL, the format of the database options JSON object. 
+        - name: For PostgreSQL and MySQL, the format of the database options JSON object.
           text: >
             [
                 {

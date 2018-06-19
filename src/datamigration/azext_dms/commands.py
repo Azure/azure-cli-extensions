@@ -9,6 +9,7 @@ from azext_dms._client_factory import (dms_client_factory,
                                        dms_cf_projects,
                                        dms_cf_tasks)
 
+
 def load_command_table(self, _):
     dms_projects_sdk = CliCommandType(
         operations_tmpl='azext_dms.vendored_sdks.datamigration.operations.projects_operations#ProjectsOperations.{}',

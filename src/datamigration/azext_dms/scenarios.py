@@ -11,6 +11,7 @@ from azext_dms.vendored_sdks.datamigration.models import (MigrationValidationOpt
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput,
                                                           MigrateMySqlAzureDbForMySqlSyncTaskInput)
 
+
 def get_migrate_sql_server_to_sqldb_input(database_options_json,
                                           source_connection_info,
                                           target_connection_info,
@@ -35,6 +36,7 @@ def get_migrate_sql_server_to_sqldb_input(database_options_json,
                                           selected_databases=database_options,
                                           validation_options=validation_options)
 
+
 def get_migrate_postgresql_to_azuredbforpostgresql_sync_input(database_options_json,
                                                               source_connection_info,
                                                               target_connection_info):
@@ -50,6 +52,7 @@ def get_migrate_postgresql_to_azuredbforpostgresql_sync_input(database_options_j
     return MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput(source_connection_info=source_connection_info,
                                                               target_connection_info=target_connection_info,
                                                               selected_databases=database_options)
+
 
 def get_migrate_mysql_to_azuredbformysql_sync_input(database_options_json,
                                                     source_connection_info,
