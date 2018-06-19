@@ -8,14 +8,14 @@ import os
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from knack.prompting import prompt, prompt_pass
 from azext_dms.vendored_sdks.datamigration.models import (Project,
-                                                 SqlConnectionInfo,
-                                                 MySqlConnectionInfo,
-                                                 PostgreSqlConnectionInfo,
-                                                 MigrateSyncCompleteCommandInput,
-                                                 MigrateSqlServerSqlDbTaskProperties,
-                                                 MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties,
-                                                 MigrateMySqlAzureDbForMySqlSyncTaskProperties,
-                                                 MigrateSyncCompleteCommandProperties)
+                                                          SqlConnectionInfo,
+                                                          MySqlConnectionInfo,
+                                                          PostgreSqlConnectionInfo,
+                                                          MigrateSyncCompleteCommandInput,
+                                                          MigrateSqlServerSqlDbTaskProperties,
+                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties,
+                                                          MigrateMySqlAzureDbForMySqlSyncTaskProperties,
+                                                          MigrateSyncCompleteCommandProperties)
 from azext_dms.scenarios import (get_migrate_sql_server_to_sqldb_input,
                                  get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
                                  get_migrate_mysql_to_azuredbformysql_sync_input)

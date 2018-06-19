@@ -4,12 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 from azext_dms.vendored_sdks.datamigration.models import (MigrationValidationOptions,
-                                                 MigrateSqlServerSqlDbDatabaseInput,
-                                                 MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput,
-                                                 MigrateMySqlAzureDbForMySqlSyncDatabaseInput,
-                                                 MigrateSqlServerSqlDbTaskInput,
-                                                 MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput,
-                                                 MigrateMySqlAzureDbForMySqlSyncTaskInput)
+                                                          MigrateSqlServerSqlDbDatabaseInput,
+                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput,
+                                                          MigrateMySqlAzureDbForMySqlSyncDatabaseInput,
+                                                          MigrateSqlServerSqlDbTaskInput,
+                                                          MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput,
+                                                          MigrateMySqlAzureDbForMySqlSyncTaskInput)
 
 def get_migrate_sql_server_to_sqldb_input(database_options_json,
                                           source_connection_info,
