@@ -37,30 +37,17 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
 
     azds_cli = _install_dev_spaces_cli(update)
 
-    from subprocess import PIPE
-    retCode = subprocess.call(
-        [azds_cli, 'controller', 'select', '--name', cluster_name, '--resource-group', resource_group_name],
-        stderr=PIPE)
-    if retCode != 0:
-        retCode = subprocess.call(
-            [azds_cli, 'controller', 'create', '--target-name', cluster_name, '--target-resource-group',
-             resource_group_name, '--name', cluster_name, '--resource-group', resource_group_name],
-            universal_newlines=True)
-        if retCode != 0:
-            return
+    use_command_arguments = [azds_cli, 'use', '--name', cluster_name,
+                             '--resource-group', resource_group_name]
 
-    if space_name is None:
-        space_name = 'default'
+    if space_name is not None:
+        use_command_arguments.append('--space')
+        use_command_arguments.append(space_name)
 
-    retCode = subprocess.call(
-        [azds_cli, 'space', 'select', '--name', space_name], stderr=PIPE)
-    if retCode == 0:
-        return
-
-    create_space_arguments = [azds_cli, 'space', 'create', '--name', space_name]
     if prompt:
-        pass
-    subprocess.call(create_space_arguments, universal_newlines=True)
+        use_command_arguments.append('-y')
+    subprocess.call(
+        use_command_arguments, universal_newlines=True)
 
 
 def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
@@ -78,8 +65,8 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
 
     azds_cli = _install_dev_spaces_cli(False)
 
-    remove_command_arguments = [azds_cli, 'controller', 'delete', '--name',
-                                cluster_name, '--resource-group', resource_group_name]
+    remove_command_arguments = [azds_cli, 'remove', '--name', cluster_name,
+                                 '--resource-group', resource_group_name]
     if prompt:
         remove_command_arguments.append('-y')
     subprocess.call(
