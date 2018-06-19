@@ -36,5 +36,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     packages = find_packages(exclude=["test"]),
+    package_data={'azext_bot': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
