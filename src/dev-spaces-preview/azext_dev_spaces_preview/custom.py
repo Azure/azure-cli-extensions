@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements
 
 
-def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None, prompt=False):
+def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_name=None, do_not_prompt=False):
     """
     Use Azure Dev Spaces with a managed Kubernetes cluster.
 
@@ -31,8 +31,8 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
     :type update: bool
     :param space_name: Name of the new or existing dev space to select. Defaults to an interactive selection experience.
     :type space_name: String
-    :param prompt: Do not prompt for confirmation. Requires --space.
-    :type prompt: bool
+    :param do_not_prompt: Do not prompt for confirmation. Requires --space.
+    :type do_not_prompt: bool
     """
 
     azds_cli = _install_dev_spaces_cli(update)
@@ -44,13 +44,13 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
         use_command_arguments.append('--space')
         use_command_arguments.append(space_name)
 
-    if prompt:
+    if do_not_prompt:
         use_command_arguments.append('-y')
     subprocess.call(
         use_command_arguments, universal_newlines=True)
 
 
-def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
+def ads_remove_dev_spaces(cluster_name, resource_group_name, do_not_prompt=False):
     """
     Remove Azure Dev Spaces from a managed Kubernetes cluster.
 
@@ -59,15 +59,15 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, prompt=False):
     :param resource_group_name: Name of resource group. You can configure the default group. \
     Using 'az configure --defaults group=<name>'.
     :type resource_group_name: String
-    :param prompt: Do not prompt for confirmation.
-    :type prompt: bool
+    :param do_not_prompt: Do not prompt for confirmation.
+    :type do_not_prompt: bool
     """
 
     azds_cli = _install_dev_spaces_cli(False)
 
     remove_command_arguments = [azds_cli, 'remove', '--name', cluster_name,
                                 '--resource-group', resource_group_name]
-    if prompt:
+    if do_not_prompt:
         remove_command_arguments.append('-y')
     subprocess.call(
         remove_command_arguments, universal_newlines=True)
