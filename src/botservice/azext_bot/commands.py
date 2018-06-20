@@ -36,7 +36,7 @@ def load_command_table(self, _):
         g.custom_command('show', 'get_bot')
         g.custom_command('delete', 'delete_bot')
         g.generic_update_command('update', setter_name='update', setter_type=updateBotService_commandType)
-    
+
     with self.command_group('bot connection', botOperations_commandType) as g:
         g.custom_command('list', 'get_connections')
         g.custom_command('show', 'get_connection')

@@ -111,7 +111,7 @@ def load_arguments(self, _):
 
     with self.argument_context('bot connection') as c:
         c.argument('connection_name', options_list=['--connection-name', '-c'], help='name of the oauth connection setting')
-    
+
     with self.argument_context('bot connection create') as c:
         c.argument('client_id', help='client id associated with the service provider setting')
         c.argument('client_secret', help='client secret associated with the service provider setting')

@@ -167,15 +167,16 @@ def get_bot(cmd, client, resource_group_name, resource_name, bot_json=None):
     return raw_bot_properties
 
 
-def get_connections(cmd, client, resource_group_name, resource_name):
+def get_connections(client, resource_group_name, resource_name):
     return client.bot_connection.list_by_bot_service(resource_group_name, resource_name)
 
 
-def get_connection(cmd, client, resource_group_name, resource_name, connection_name):
+def get_connection(client, resource_group_name, resource_name, connection_name):
     return client.bot_connection.get(resource_group_name, resource_name, connection_name)
 
 
-def create_connection(cmd, client, resource_group_name, resource_name, connection_name, client_id, client_secret, scopes, service_provider_name, parameters=None):
+def create_connection(client, resource_group_name, resource_name, connection_name, client_id, 
+                      client_secret, scopes, service_provider_name, parameters=None):
     from azext_bot.botservice.models import ConnectionSetting, ConnectionSettingProperties, ConnectionSettingParameter
     service_provider = get_service_providers(client, name=service_provider_name)
     if not service_provider:
@@ -200,16 +201,16 @@ def create_connection(cmd, client, resource_group_name, resource_name, connectio
     return client.bot_connection.create(resource_group_name, resource_name, connection_name, setting)
 
 
-def delete_connection(cmd, client, resource_group_name, resource_name, connection_name):
+def delete_connection(client, resource_group_name, resource_name, connection_name):
     return client.bot_connection.delete(resource_group_name, resource_name, connection_name)
 
 def get_service_providers(client, name=None):
-    from azext_bot.botservice.models import FacebookChannel, FacebookChannelProperties, FacebookPage
     service_provider_response = client.bot_connection.list_service_providers()
     name = name and name.lower()
     if name:
         try:
-            return next((item for item in service_provider_response.value if item.properties.service_provider_name.lower() == name.lower()))
+            return next((item for item in service_provider_response.value 
+                if item.properties.service_provider_name.lower() == name.lower()))
         except StopIteration:
             raise CLIError('A service provider with the name {0} was not found'.format(name))
     return service_provider_response
