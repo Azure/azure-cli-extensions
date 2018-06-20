@@ -119,27 +119,26 @@ helps['bot slack create'] = """
     type: command
     short-summary: Create Slack Channel on a Bot.
 """
-
+helps['bot connection'] = """
+    type: command
+    short-summary: Manage OAuth Connection Settings on a Bot.
+"""
 helps['bot connection create'] = """
     type: command
     short-summary: Create an OAuth Connection Setting on a Bot.
 """
-
 helps['bot connection show'] = """
     type: command
     short-summary: Show details of an OAuth Connection Setting on a Bot.
 """
-
 helps['bot connection list'] = """
     type: command
     short-summary: Show all OAuth Connection Settings on a Bot.
 """
-
 helps['bot connection delete'] = """
     type: command
     short-summary: Delete an OAuth Connection Setting on a Bot.
 """
-
 helps['bot connection listproviders'] = """
     type: command
     short-summary: List Details of All service Providers available for creating OAuth Connection Settings.
