@@ -9,10 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .azure_bot_service import AzureBotService
-from .version import VERSION
+from msrest.serialization import Model
 
-__all__ = ['AzureBotService']
 
-__version__ = VERSION
+class ServiceProvider(Model):
+    """Service Provider Definition.
 
+    :param properties: The Properties of a Service Provider Object
+    :type properties: ~azure.mgmt.botservice.models.ServiceProviderProperties
+    """
+
+    _attribute_map = {
+        'properties': {'key': 'properties', 'type': 'ServiceProviderProperties'},
+    }
+
+    def __init__(self, properties=None):
+        self.properties = properties

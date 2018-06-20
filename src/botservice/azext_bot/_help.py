@@ -120,6 +120,31 @@ helps['bot slack create'] = """
     short-summary: Create Slack Channel on a Bot.
 """
 
+helps['bot connection create'] = """
+    type: command
+    short-summary: Create an OAuth Connection Setting on a Bot.
+"""
+
+helps['bot connection show'] = """
+    type: command
+    short-summary: Show details of an OAuth Connection Setting on a Bot.
+"""
+
+helps['bot connection list'] = """
+    type: command
+    short-summary: Show all OAuth Connection Settings on a Bot.
+"""
+
+helps['bot connection delete'] = """
+    type: command
+    short-summary: Delete an OAuth Connection Setting on a Bot.
+"""
+
+helps['bot connection listproviders'] = """
+    type: command
+    short-summary: List Details of All service Providers available for creating OAuth Connection Settings.
+"""
+
 for channel in ['facebook', 'email', 'msteams', 'skype', 'kik', 'webchat', 'directline', 'telegram', 'sms', 'slack']:
     channelTitle = channel[:1].upper() + channel[1:]
     helps['bot {0} delete'.format(channel)] = """
