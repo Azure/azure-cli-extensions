@@ -32,7 +32,7 @@ helps['dms project create'] = """
 
 helps['dms project task create'] = """
     type: command
-    short-summary: Create a migration Project which can contain multiple Tasks.
+    short-summary: Create and start a migration Task.
     parameters:
         - name: --source-platform
           type: string
@@ -132,6 +132,10 @@ helps['dms project task create'] = """
 helps['dms project task cutover'] = """
     type: command
     short-summary: For a continuous task, complete the migration by performing a cutover.
+    long-summary: |
+        To see the result of the request, please use the 'task show' command:
+            az dms project task show ... --expand command
+
     parameters:
         - name: --database-name
           type: string
