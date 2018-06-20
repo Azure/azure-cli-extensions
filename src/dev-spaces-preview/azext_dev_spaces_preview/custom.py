@@ -40,7 +40,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
     use_command_arguments = [azds_cli, 'use', '--name', cluster_name,
                              '--resource-group', resource_group_name]
 
-    if space_name is not None:
+    if not space_name is None:
         use_command_arguments.append('--space')
         use_command_arguments.append(space_name)
 
