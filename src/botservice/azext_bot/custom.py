@@ -204,6 +204,7 @@ def create_connection(client, resource_group_name, resource_name, connection_nam
 def delete_connection(client, resource_group_name, resource_name, connection_name):
     return client.bot_connection.delete(resource_group_name, resource_name, connection_name)
 
+
 def get_service_providers(client, name=None):
     service_provider_response = client.bot_connection.list_service_providers()
     name = name and name.lower()
@@ -213,6 +214,7 @@ def get_service_providers(client, name=None):
         except StopIteration:
             raise CLIError('A service provider with the name {0} was not found'.format(name))
     return service_provider_response
+
 
 def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,  # pylint: disable=inconsistent-return-statements
                location, sku_name, appInsightsLocation, bot_json, language):
