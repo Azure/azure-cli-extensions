@@ -119,11 +119,10 @@ def _install_dev_spaces_cli(force_install):
 
     if should_install_azds:
         # Install AZDS
-        print('Installing Dev Spaces (Preview) commands...')
+        logger.warning('Installing Dev Spaces (Preview) commands...')
         if system == 'Windows':
-            print('A separate window will open to guide you through the installation process.')
-        else:
-            print('The following dependencies will be installed: curl, unzip, dotnet.')
+            logger.warning('A separate window will open to guide you through the installation process.')
+
         urlretrieve(setup_url, setup_file)
         try:
             subprocess.call(
