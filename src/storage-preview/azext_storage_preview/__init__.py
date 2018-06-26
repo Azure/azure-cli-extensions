@@ -245,6 +245,7 @@ If you want to use the old authentication method and allow querying for the righ
 
 def _merge_new_exception_handler(kwargs, handler):
     first = kwargs.get('exception_handler')
+
     def new_handler(ex):
         try:
             handler(ex)
