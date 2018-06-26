@@ -140,14 +140,16 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('copy start-batch', 'storage_blob_copy_batch')
 
     with self.command_group('storage blob incremental-copy',
-                            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.pageblobservice#PageBlobService.{}',
+                            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.pageblobservice'
+                                            '#PageBlobService.{}',
                             client_factory=page_blob_service_factory,
                             resource_type=CUSTOM_DATA_STORAGE,
                             min_api='2016-05-31') as g:
         g.storage_command_oauth('start', 'incremental_copy_blob')
 
     with self.command_group('storage blob incremental-copy',
-                            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.blockblobservice#BlockBlobService.{}',
+                            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.blockblobservice'
+                                            '#BlockBlobService.{}',
                             client_factory=page_blob_service_factory,
                             resource_type=CUSTOM_DATA_STORAGE,
                             min_api='2016-05-31') as g:
@@ -306,9 +308,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command('clear', 'clear_cors')
         g.storage_command('list', 'list_cors', transform=transform_cors_list_output)
 
-    queue_sdk = CliCommandType(operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.queue.queueservice#QueueService.{}',
-                               client_factory=queue_data_service_factory,
-                               resource_type=CUSTOM_DATA_STORAGE)
+    queue_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.queue.queueservice#QueueService.{}',
+        client_factory=queue_data_service_factory,
+        resource_type=CUSTOM_DATA_STORAGE)
 
     with self.command_group('storage queue', queue_sdk,
                             custom_command_type=get_custom_sdk('acl', queue_data_service_factory)) as g:
@@ -347,13 +350,15 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('update', 'update_message')
 
     if cosmosdb_table_exists(self.cli_ctx):
-        table_sdk = CliCommandType(operations_tmpl='azure.multiapi.cosmosdb.table.tableservice#TableService.{}',
-                                   client_factory=table_data_service_factory,
-                                   resource_type=ResourceType.DATA_COSMOS_TABLE)
+        table_sdk = CliCommandType(
+            operations_tmpl='azure.multiapi.cosmosdb.table.tableservice#TableService.{}',
+            client_factory=table_data_service_factory,
+            resource_type=ResourceType.DATA_COSMOS_TABLE)
     else:
-        table_sdk = CliCommandType(operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.table.tableservice#TableService.{}',
-                                   client_factory=table_data_service_factory,
-                                   resource_type=ResourceType.DATA_COSMOS_TABLE)
+        table_sdk = CliCommandType(
+            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.table.tableservice#TableService.{}',
+            client_factory=table_data_service_factory,
+            resource_type=ResourceType.DATA_COSMOS_TABLE)
 
     with self.command_group('storage table', table_sdk,
                             custom_command_type=get_custom_sdk('acl', table_data_service_factory)) as g:
