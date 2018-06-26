@@ -119,6 +119,43 @@ helps['bot slack create'] = """
     type: command
     short-summary: Create Slack Channel on a Bot.
 """
+helps['bot connection'] = """
+    type: group
+    short-summary: Manage OAuth Connection Settings on a Bot.
+"""
+helps['bot connection create'] = """
+    type: command
+    short-summary: Create an OAuth Connection Setting on a Bot.
+    examples:
+        - name: Create a new OAuth Connection Setting on a Bot.
+          text: |-
+            az bot connection create -g MyResourceGroup -n botName -c myConnectionName
+            --client-id clientId --client-secret secret scopes "scope1 scope2" --service google
+            --parameters id=myid
+"""
+helps['bot connection show'] = """
+    type: command
+    short-summary: Show details of an OAuth Connection Setting on a Bot.
+"""
+helps['bot connection list'] = """
+    type: command
+    short-summary: Show all OAuth Connection Settings on a Bot.
+"""
+helps['bot connection delete'] = """
+    type: command
+    short-summary: Delete an OAuth Connection Setting on a Bot.
+"""
+helps['bot connection list-providers'] = """
+    type: command
+    short-summary: List Details of All service Providers available for creating OAuth Connection Settings.
+    examples:
+        - name: list all service providers.
+          text: |-
+            az bot connection list-providers
+        - name: Filter by a particular type of service provider.
+          text: |-
+            az bot connection list-providers --provider-name google
+"""
 
 for channel in ['facebook', 'email', 'msteams', 'skype', 'kik', 'webchat', 'directline', 'telegram', 'sms', 'slack']:
     channelTitle = channel[:1].upper() + channel[1:]

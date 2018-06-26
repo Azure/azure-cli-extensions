@@ -37,6 +37,13 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_bot')
         g.generic_update_command('update', setter_name='update', setter_type=updateBotService_commandType)
 
+    with self.command_group('bot connection', botOperations_commandType) as g:
+        g.custom_command('list', 'get_connections')
+        g.custom_command('show', 'get_connection')
+        g.custom_command('create', 'create_connection')
+        g.custom_command('delete', 'delete_connection')
+        g.custom_command('list-providers', 'get_service_providers')
+
     for channel in ['facebook', 'email', 'msteams', 'skype', 'kik', 'webchat', 'directline', 'telegram', 'sms',
                     'slack']:
         with self.command_group('bot {}'.format(channel), channelOperations_commandType) as g:
