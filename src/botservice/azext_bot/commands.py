@@ -42,7 +42,7 @@ def load_command_table(self, _):
         g.custom_command('show', 'get_connection')
         g.custom_command('create', 'create_connection')
         g.custom_command('delete', 'delete_connection')
-        g.custom_command('listproviders', 'get_service_providers')
+        g.custom_command('list-providers', 'get_service_providers')
 
     for channel in ['facebook', 'email', 'msteams', 'skype', 'kik', 'webchat', 'directline', 'telegram', 'sms',
                     'slack']:
