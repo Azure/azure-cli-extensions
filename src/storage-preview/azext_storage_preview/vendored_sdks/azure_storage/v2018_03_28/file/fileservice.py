@@ -480,7 +480,7 @@ class FileService(StorageClient):
             You can include up to five CorsRule elements in the 
             list. If an empty list is specified, all CORS rules will be deleted, 
             and CORS will be disabled for the service.
-        :type cors: list(:class:`~..common.models.CorsRule`)
+        :type cors: list(:class:`~azure.storage.common.models.CorsRule`)
         :param int timeout:
             The timeout parameter is expressed in seconds.
         '''
@@ -507,7 +507,7 @@ class FileService(StorageClient):
             The timeout parameter is expressed in seconds.
         :return: The file service properties.
         :rtype:
-            :class:`~..common.models.ServiceProperties`
+            :class:`~azure.storage.common.models.ServiceProperties`
         '''
         request = HTTPRequest()
         request.method = 'GET'
@@ -816,7 +816,7 @@ class FileService(StorageClient):
         :param int timeout:
             The timeout parameter is expressed in seconds.
         :return: A dictionary of access policies associated with the share.
-        :rtype: dict(str, :class:`~..common.models.AccessPolicy`)
+        :rtype: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
         '''
         _validate_not_none('share_name', share_name)
         request = HTTPRequest()
@@ -842,7 +842,7 @@ class FileService(StorageClient):
             A dictionary of access policies to associate with the share. The 
             dictionary may contain up to 5 elements. An empty dictionary 
             will clear the access policies set on the service. 
-        :type signed_identifiers: dict(str, :class:`~..common.models.AccessPolicy`)
+        :type signed_identifiers: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
         :param int timeout:
             The timeout parameter is expressed in seconds.
         '''

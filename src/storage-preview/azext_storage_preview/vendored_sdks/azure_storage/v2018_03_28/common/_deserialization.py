@@ -22,6 +22,7 @@ from .models import (
     GeoReplication,
     ServiceStats,
     DeleteRetentionPolicy,
+    StaticWebsite,
 )
 
 
@@ -63,6 +64,7 @@ GET_PROPERTIES_ATTRIBUTE_MAP = {
     'x-ms-archive-status': (None, 'rehydration_status', _to_str),
     'x-ms-share-quota': (None, 'quota', _to_int),
     'x-ms-server-encrypted': (None, 'server_encrypted', _bool),
+    'x-ms-creation-time': (None, 'creation_time', parser.parse),
     'content-type': ('content_settings', 'content_type', _to_str),
     'cache-control': ('content_settings', 'cache_control', _to_str),
     'content-encoding': ('content_settings', 'content_encoding', _to_str),
@@ -79,6 +81,8 @@ GET_PROPERTIES_ATTRIBUTE_MAP = {
     'x-ms-copy-completion-time': ('copy', 'completion_time', parser.parse),
     'x-ms-copy-destination-snapshot': ('copy', 'destination_snapshot_time', _to_str),
     'x-ms-copy-status-description': ('copy', 'status_description', _to_str),
+    'x-ms-has-immutability-policy': (None, 'has_immutability_policy', _bool),
+    'x-ms-has-legal-hold': (None, 'has_legal_hold', _bool),
 }
 
 
@@ -250,6 +254,11 @@ def _convert_xml_to_service_properties(response):
              <Enabled>true|false</Enabled>
              <Days>number-of-days</Days>
         </DeleteRetentionPolicy>
+        <StaticWebsite>
+            <Enabled>true|false</Enabled>
+            <IndexDocument></IndexDocument>
+            <ErrorDocument404Path></ErrorDocument404Path>
+        </StaticWebsite>
     </StorageServiceProperties>
     '''
     if response is None or response.body is None:
@@ -318,6 +327,20 @@ def _convert_xml_to_service_properties(response):
 
         if policy_enabled:
             service_properties.delete_retention_policy.days = int(delete_retention_policy_element.find('Days').text)
+
+    # StaticWebsite
+    static_website_element = service_properties_element.find('StaticWebsite')
+    if static_website_element is not None:
+        service_properties.static_website = StaticWebsite()
+        service_properties.static_website.enabled = _bool(static_website_element.find('Enabled').text)
+
+        index_document_element = static_website_element.find('IndexDocument')
+        if index_document_element is not None:
+            service_properties.static_website.index_document = index_document_element.text
+
+        error_document_element = static_website_element.find('ErrorDocument404Path')
+        if error_document_element is not None:
+            service_properties.static_website.error_document_404_path = error_document_element.text
 
     return service_properties
 

@@ -7,7 +7,7 @@ import platform
 import sys
 
 __author__ = 'Microsoft Corp. <ptvshelp@microsoft.com>'
-__version__ = '1.2.0rc0'
+__version__ = '1.2.0rc1'
 
 # UserAgent string sample: 'Azure-Storage/0.37.0-0.38.0 (Python CPython 3.4.2; Windows 8)'
 # First version(0.37.0) is the common package, and the second version(0.38.0) is the service package
@@ -17,7 +17,7 @@ USER_AGENT_STRING_SUFFIX = '(Python {} {}; {} {})'.format(platform.python_implem
                                                           platform.release())
 
 # default values for common package, in case it is used directly
-DEFAULT_X_MS_VERSION = '2017-07-29'
+DEFAULT_X_MS_VERSION = '2018-03-28'
 DEFAULT_USER_AGENT_STRING = '{}None {}'.format(USER_AGENT_STRING_PREFIX, USER_AGENT_STRING_SUFFIX)
 
 # Live ServiceClient URLs

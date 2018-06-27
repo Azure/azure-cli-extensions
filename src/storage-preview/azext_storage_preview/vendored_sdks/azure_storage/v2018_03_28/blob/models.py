@@ -39,6 +39,10 @@ class ContainerProperties(object):
         conditionally.
     :ivar LeaseProperties lease:
         Stores all the lease information for the container.
+    :ivar bool has_immutability_policy:
+        Represents whether the container has an immutability policy.
+    :ivar bool has_legal_hold:
+        Represents whether the container has a legal hold.
     '''
 
     def __init__(self):
@@ -46,6 +50,8 @@ class ContainerProperties(object):
         self.etag = None
         self.lease = LeaseProperties()
         self.public_access = None
+        self.has_immutability_policy = None
+        self.has_legal_hold = None
 
 
 class Blob(object):
@@ -128,6 +134,8 @@ class BlobProperties(object):
         A datetime object representing the time at which the blob was deleted.
     :ivar int remaining_retention_days:
         The number of days that the blob will be retained before being permanently deleted by the service.
+    :ivar datetime creation_time:
+        Indicates when the blob was created, in UTC.
     '''
 
     def __init__(self):
@@ -147,6 +155,7 @@ class BlobProperties(object):
         self.blob_tier_inferred = False
         self.deleted_time = None
         self.remaining_retention_days = None
+        self.creation_time = None
 
 
 class ContentSettings(object):

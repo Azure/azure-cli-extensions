@@ -50,7 +50,7 @@ def _create_token_credential(cli_ctx):
 
     TokenCredential = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#TokenCredential')
 
-    token_credential = TokenCredential(None)
+    token_credential = TokenCredential()
     updater = TokenUpdater(token_credential, cli_ctx)
 
     def _cancel_timer_event_handler(_, **__):
