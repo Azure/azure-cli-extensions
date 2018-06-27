@@ -11,7 +11,6 @@ from azure.common import (
 from ..common._auth import (
     _StorageSASAuthentication,
     _StorageSharedKeyAuthentication,
-    _StorageTokenAuthentication,
 )
 from ..common._common_conversion import (
     _int_to_str,
@@ -163,7 +162,7 @@ class QueueService(StorageClient):
         :param token_credential:
             A token credential used to authenticate HTTPS requests. The token value
             should be updated before its expiration.
-        :type `~..common.TokenCredential`
+        :type `~azure.storage.common.TokenCredential`
         '''
         service_params = _ServiceParameters.get_service_parameters(
             'queue',
@@ -189,7 +188,7 @@ class QueueService(StorageClient):
         elif self.sas_token:
             self.authentication = _StorageSASAuthentication(self.sas_token)
         elif self.token_credential:
-            self.authentication = _StorageTokenAuthentication(self.token_credential)
+            self.authentication = self.token_credential
         else:
             raise ValueError(_ERROR_STORAGE_MISSING_INFO)
 
@@ -238,7 +237,7 @@ class QueueService(StorageClient):
             restricts the request to those IP addresses.
         :param str protocol:
             Specifies the protocol permitted for a request made. The default value
-            is https,http. See :class:`~..common.models.Protocol` for possible values.
+            is https,http. See :class:`~azure.storage.common.models.Protocol` for possible values.
         :return: A Shared Access Signature (sas) token.
         :rtype: str
         '''
@@ -293,7 +292,7 @@ class QueueService(StorageClient):
             restricts the request to those IP addresses.
         :param str protocol:
             Specifies the protocol permitted for a request made. The default value
-            is https,http. See :class:`~..common.models.Protocol` for possible values.
+            is https,http. See :class:`~azure.storage.common.models.Protocol` for possible values.
         :return: A Shared Access Signature (sas) token.
         :rtype: str
         '''
@@ -334,7 +333,7 @@ class QueueService(StorageClient):
         :param int timeout:
             The timeout parameter is expressed in seconds.
         :return: The queue service stats.
-        :rtype: :class:`~..common.models.ServiceStats`
+        :rtype: :class:`~azure.storage.common.models.ServiceStats`
         '''
         request = HTTPRequest()
         request.method = 'GET'
@@ -356,7 +355,7 @@ class QueueService(StorageClient):
         :param int timeout:
             The server timeout, expressed in seconds.
         :return: The queue service properties.
-        :rtype: :class:`~..common.models.ServiceProperties`
+        :rtype: :class:`~azure.storage.common.models.ServiceProperties`
         '''
         request = HTTPRequest()
         request.method = 'GET'
@@ -393,7 +392,7 @@ class QueueService(StorageClient):
             and CORS will be disabled for the service. For detailed information 
             about CORS rules and evaluation logic, see 
             https://msdn.microsoft.com/en-us/library/azure/dn535601.aspx.
-        :type cors: list(:class:`~..common.models.CorsRule`)
+        :type cors: list(:class:`~azure.storage.common.models.CorsRule`)
         :param int timeout:
             The server timeout, expressed in seconds.
         '''
@@ -662,7 +661,7 @@ class QueueService(StorageClient):
         :param int timeout:
             The server timeout, expressed in seconds.
         :return: A dictionary of access policies associated with the queue.
-        :rtype: dict(str, :class:`~..common.models.AccessPolicy`)
+        :rtype: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
         '''
         _validate_not_none('queue_name', queue_name)
         request = HTTPRequest()
@@ -698,7 +697,7 @@ class QueueService(StorageClient):
             A dictionary of access policies to associate with the queue. The 
             dictionary may contain up to 5 elements. An empty dictionary 
             will clear the access policies set on the service. 
-        :type signed_identifiers: dict(str, :class:`~..common.models.AccessPolicy`)
+        :type signed_identifiers: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
         :param int timeout:
             The server timeout, expressed in seconds.
         '''

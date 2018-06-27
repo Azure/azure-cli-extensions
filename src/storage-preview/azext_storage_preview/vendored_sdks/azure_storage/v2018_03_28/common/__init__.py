@@ -15,6 +15,7 @@ from .models import (
     Metrics,
     CorsRule,
     DeleteRetentionPolicy,
+    StaticWebsite,
     ServiceProperties,
     AccessPolicy,
     ResourceTypes,

@@ -6,6 +6,7 @@
 from abc import ABCMeta
 from math import pow
 import random
+from io import (SEEK_SET, UnsupportedOperation)
 
 from .models import LocationMode
 from ._constants import (
@@ -148,6 +149,19 @@ class _Retry(object):
             # request allows it
             if self.retry_to_secondary:
                 self._set_next_host_location(context)
+
+            # rewind the request body if it is a stream
+            if hasattr(context.request.body, 'read'):
+                # no position was saved, then retry would not work
+                if context.body_position is None:
+                    return None
+                else:
+                    try:
+                        # attempt to rewind the body to the initial position
+                        context.request.body.seek(context.body_position, SEEK_SET)
+                    except UnsupportedOperation:
+                        # if body is not seekable, then retry would not work
+                        return None
 
             return backoff_interval
 
