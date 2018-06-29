@@ -101,6 +101,7 @@ def get_index_data():
     except ValueError as err:
         raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
 
+
 def verify_dependency(dep):
     # ex. "azure-batch-extensions (<3.1,>=3.0.0)", "paho-mqtt (==1.3.1)", "pyyaml"
     # check if 'azure-' dependency, as they use 'azure' namespace.
