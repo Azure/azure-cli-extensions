@@ -18,7 +18,7 @@ import mock
 from wheel.install import WHEEL_INFO_RE
 from six import with_metaclass
 
-from util import get_ext_metadata, SRC_PATH, SKIP_DEP_CHECK
+from util import get_ext_metadata, verify_dependency, SRC_PATH
 
 
 ALL_TESTS = []
@@ -86,9 +86,9 @@ class TestSourceWheels(unittest.TestCase):
             ext_name = WHEEL_INFO_RE(filename).groupdict().get('name')
             metadata = get_ext_metadata(ext_dir, ext_file, ext_name)
             run_requires = metadata.get('run_requires')
-            if run_requires and ext_name not in SKIP_DEP_CHECK:
+            if run_requires:
                 deps = run_requires[0]['requires']
-                self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
+                self.assertTrue(all(verify_dependency(dep) for dep in deps),
                                 "Dependencies of {} use disallowed extension dependencies. "
                                 "Remove these dependencies: {}".format(filename, deps))
         shutil.rmtree(built_whl_dir)
