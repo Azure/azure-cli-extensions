@@ -138,9 +138,10 @@ class TestIndex(unittest.TestCase):
                 run_requires = metadata.get('run_requires')
                 if run_requires and ext_name not in SKIP_DEP_CHECK:
                     deps = run_requires[0]['requires']
-                    self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
-                                    "Dependencies of {} use disallowed extension dependencies. "
-                                    "Remove these dependencies: {}".format(item['filename'], deps))
+                    self.assertTrue(
+                        all(not dep.startswith('azure-') or dep.startswith('azure-batch-extensions') for dep in deps),
+                        "Dependencies of {} use disallowed extension dependencies. "
+                        "Remove these dependencies: {}".format(item['filename'], deps))
         shutil.rmtree(extensions_dir)
 
 

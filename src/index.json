@@ -3,9 +3,9 @@
     "extensions": {
         "azure-batch-cli-extensions": [
             {
-                "filename": "azure_batch_cli_extensions-2.2.2-py2.py3-none-any.whl",
-                "sha256Digest": "212493c9b044a66271986f30efd8ac9dd7f736283272d0049fa4f125e9dc9323",
-                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.2.2/azure_batch_cli_extensions-2.2.2-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-2.3.0-py2.py3-none-any.whl",
+                "sha256Digest": "360fa1a71da65db1866ec6987bad822868915d9ce5d2e6d5542c58836ff62816",
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.3.0/azure_batch_cli_extensions-2.3.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "azext.maxCliCoreVersion": "2.1.0",
@@ -26,12 +26,20 @@
                             }
                         }
                     },
+                    "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "azure-batch-cli-extensions",
+                    "run_requires": [
+                      {
+                        "requires": [
+                          "azure-batch-extensions (<3.1,>=3.0.0)"
+                        ]
+                      }
+                    ],
                     "summary": "Additional commands for working with Azure Batch service",
-                    "version": "2.2.2"
+                    "version": "2.3.0"
                 }
             }
         ],
