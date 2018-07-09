@@ -12,6 +12,11 @@
 from enum import Enum
 
 
+class IngressQoSLevel(Enum):
+
+    bronze = "Bronze"
+
+
 class HealthState(Enum):
 
     invalid = "Invalid"
@@ -19,6 +24,16 @@ class HealthState(Enum):
     warning = "Warning"
     error = "Error"
     unknown = "Unknown"
+
+
+class ServiceResourceStatus(Enum):
+
+    unknown = "Unknown"
+    active = "Active"
+    upgrading = "Upgrading"
+    deleting = "Deleting"
+    creating = "Creating"
+    failed = "Failed"
 
 
 class ApplicationResourceStatus(Enum):
@@ -31,12 +46,13 @@ class ApplicationResourceStatus(Enum):
     failed = "Failed"
 
 
+class DiagnosticsSinkKind(Enum):
+
+    invalid = "Invalid"
+    azure_internal_monitoring_pipeline = "AzureInternalMonitoringPipeline"
+
+
 class OperatingSystemTypes(Enum):
 
-    windows = "windows"
-    linux = "linux"
-
-
-class IngressQoSLevel(Enum):
-
-    bronze = "bronze"
+    linux = "Linux"
+    windows = "Windows"

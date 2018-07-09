@@ -9,23 +9,25 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .resource import Resource
 
 
-class ProxyResource(Model):
-    """The base type for a proxy Azure resource. A proxy resource is created by a
-    resource provider and not explicitly by the user.
+class ProxyResource(Resource):
+    """The resource model definition for Azure Resource Manager proxy resource. It
+    will have everything other than required location and tags.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Azure resource identifier.
+    :ivar id: Fully qualified identifier for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Azure resource name.
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Azure resource type.
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: Resource location.
+    :param location: The geo-location where the resource lives
     :type location: str
     """
 
@@ -33,18 +35,7 @@ class ProxyResource(Model):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
     }
 
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(self, location):
-        self.id = None
-        self.name = None
-        self.type = None
-        self.location = location
+    def __init__(self, location=None):
+        super(ProxyResource, self).__init__(location=location)

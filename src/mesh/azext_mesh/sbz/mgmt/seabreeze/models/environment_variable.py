@@ -27,5 +27,6 @@ class EnvironmentVariable(Model):
     }
 
     def __init__(self, name=None, value=None):
+        super(EnvironmentVariable, self).__init__()
         self.name = name
         self.value = value

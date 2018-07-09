@@ -34,6 +34,7 @@ class ContainerInstanceView(Model):
     }
 
     def __init__(self, restart_count=None, current_state=None, previous_state=None, events=None):
+        super(ContainerInstanceView, self).__init__()
         self.restart_count = restart_count
         self.current_state = current_state
         self.previous_state = previous_state

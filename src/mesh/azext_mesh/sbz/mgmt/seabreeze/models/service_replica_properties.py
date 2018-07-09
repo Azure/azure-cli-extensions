@@ -16,7 +16,7 @@ class ServiceReplicaProperties(Model):
     """Describes the properties of a service replica.
 
     :param os_type: The Operating system type required by the code in service.
-     . Possible values include: 'windows', 'linux'
+     . Possible values include: 'Linux', 'Windows'
     :type os_type: str or ~azure.seabreeze.models.OperatingSystemTypes
     :param code_packages: Describes the set of code packages that forms the
      service. A code package describes the container and the properties for
@@ -27,6 +27,8 @@ class ServiceReplicaProperties(Model):
     :param network_refs: The names of the private networks that this service
      needs to be part of.
     :type network_refs: list[~azure.seabreeze.models.NetworkRef]
+    :param diagnostics: Reference to sinks in DiagnosticsDescription.
+    :type diagnostics: ~azure.seabreeze.models.DiagnosticsRef
     """
 
     _validation = {
@@ -38,9 +40,12 @@ class ServiceReplicaProperties(Model):
         'os_type': {'key': 'osType', 'type': 'str'},
         'code_packages': {'key': 'codePackages', 'type': '[ContainerCodePackageProperties]'},
         'network_refs': {'key': 'networkRefs', 'type': '[NetworkRef]'},
+        'diagnostics': {'key': 'diagnostics', 'type': 'DiagnosticsRef'},
     }
 
-    def __init__(self, os_type, code_packages, network_refs=None):
+    def __init__(self, os_type, code_packages, network_refs=None, diagnostics=None):
+        super(ServiceReplicaProperties, self).__init__()
         self.os_type = os_type
         self.code_packages = code_packages
         self.network_refs = network_refs
+        self.diagnostics = diagnostics

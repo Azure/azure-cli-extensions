@@ -19,7 +19,7 @@ class IngressConfig(Model):
     sending a request.
 
     :param qos_level: The QoS tier for ingress. Possible values include:
-     'bronze'
+     'Bronze'
     :type qos_level: str or ~azure.seabreeze.models.IngressQoSLevel
     :param layer4: Configuration for layer4 public connectivity for this
      network.
@@ -39,6 +39,7 @@ class IngressConfig(Model):
     }
 
     def __init__(self, qos_level=None, layer4=None):
+        super(IngressConfig, self).__init__()
         self.qos_level = qos_level
         self.layer4 = layer4
         self.public_ip_address = None

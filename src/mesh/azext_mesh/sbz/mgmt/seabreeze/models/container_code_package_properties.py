@@ -34,6 +34,13 @@ class ContainerCodePackageProperties(Model):
      container
     :type environment_variables:
      list[~azure.seabreeze.models.EnvironmentVariable]
+    :param settings: The settings to set in this container. The setting file
+     path can be fetched from environment variable "Fabric_SettingPath". The
+     path for Windows container is "C:\\\\secrets". The path for Linux
+     container is "/var/secrets".
+    :type settings: list[~azure.seabreeze.models.Setting]
+    :param labels: The labels to set in this container.
+    :type labels: list[~azure.seabreeze.models.ContainerLabel]
     :param endpoints: The endpoints exposed by this container.
     :type endpoints: list[~azure.seabreeze.models.EndpointProperties]
     :param resources: This type describes the resource requirements for a
@@ -43,6 +50,8 @@ class ContainerCodePackageProperties(Model):
     :type volume_refs: list[~azure.seabreeze.models.ContainerVolume]
     :ivar instance_view: Runtime information of a container instance.
     :vartype instance_view: ~azure.seabreeze.models.ContainerInstanceView
+    :param diagnostics: Reference to sinks in DiagnosticsDescription.
+    :type diagnostics: ~azure.seabreeze.models.DiagnosticsRef
     """
 
     _validation = {
@@ -59,20 +68,27 @@ class ContainerCodePackageProperties(Model):
         'entrypoint': {'key': 'entrypoint', 'type': 'str'},
         'commands': {'key': 'commands', 'type': '[str]'},
         'environment_variables': {'key': 'environmentVariables', 'type': '[EnvironmentVariable]'},
+        'settings': {'key': 'settings', 'type': '[Setting]'},
+        'labels': {'key': 'labels', 'type': '[ContainerLabel]'},
         'endpoints': {'key': 'endpoints', 'type': '[EndpointProperties]'},
         'resources': {'key': 'resources', 'type': 'ResourceRequirements'},
         'volume_refs': {'key': 'volumeRefs', 'type': '[ContainerVolume]'},
         'instance_view': {'key': 'instanceView', 'type': 'ContainerInstanceView'},
+        'diagnostics': {'key': 'diagnostics', 'type': 'DiagnosticsRef'},
     }
 
-    def __init__(self, name, image, resources, image_registry_credential=None, entrypoint=None, commands=None, environment_variables=None, endpoints=None, volume_refs=None):
+    def __init__(self, name, image, resources, image_registry_credential=None, entrypoint=None, commands=None, environment_variables=None, settings=None, labels=None, endpoints=None, volume_refs=None, diagnostics=None):
+        super(ContainerCodePackageProperties, self).__init__()
         self.name = name
         self.image = image
         self.image_registry_credential = image_registry_credential
         self.entrypoint = entrypoint
         self.commands = commands
         self.environment_variables = environment_variables
+        self.settings = settings
+        self.labels = labels
         self.endpoints = endpoints
         self.resources = resources
         self.volume_refs = volume_refs
         self.instance_view = None
+        self.diagnostics = diagnostics

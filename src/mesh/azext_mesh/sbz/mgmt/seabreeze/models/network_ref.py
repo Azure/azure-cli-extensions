@@ -24,4 +24,5 @@ class NetworkRef(Model):
     }
 
     def __init__(self, name=None):
+        super(NetworkRef, self).__init__()
         self.name = name

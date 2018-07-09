@@ -35,6 +35,7 @@ class NetworkProperties(Model):
     }
 
     def __init__(self, address_prefix, description=None, ingress_config=None):
+        super(NetworkProperties, self).__init__()
         self.description = description
         self.address_prefix = address_prefix
         self.ingress_config = ingress_config

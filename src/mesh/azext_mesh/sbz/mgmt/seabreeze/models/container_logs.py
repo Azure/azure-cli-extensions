@@ -24,4 +24,5 @@ class ContainerLogs(Model):
     }
 
     def __init__(self, content=None):
+        super(ContainerLogs, self).__init__()
         self.content = content

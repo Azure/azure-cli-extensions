@@ -21,7 +21,7 @@ class ApplicationOperations(object):
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
-    :param deserializer: An objec model deserializer.
+    :param deserializer: An object model deserializer.
     :ivar api_version: The version of the API. This parameter is required and its value must be `2018-03-01-privatepreview`. Constant value: "2018-03-01-privatepreview".
     """
 
@@ -37,20 +37,23 @@ class ApplicationOperations(object):
         self.config = config
 
     def create(
-            self, resource_group_name, application_name, properties, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, application_name, application_resource_description, custom_headers=None, raw=False, **operation_config):
         """Creates or updates an application resource.
 
         Creates an application resource with the specified name and
         description. If an application with the same name already exists, then
         its description is updated to the one indicated in this request.
+        Use network resources to provide public connectivity to the services of
+        an application.
+        .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
         :param application_name: The identity of the application.
         :type application_name: str
-        :param properties: The description of the application to be created or
-         updated.
-        :type properties:
+        :param application_resource_description: Description for creating an
+         application resource.
+        :type application_resource_description:
          ~azure.seabreeze.models.ApplicationResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -65,7 +68,7 @@ class ApplicationOperations(object):
          :class:`ErrorModelException<azure.seabreeze.models.ErrorModelException>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications/{applicationName}'
+        url = self.create.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -88,12 +91,12 @@ class ApplicationOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(properties, 'ApplicationResourceDescription')
+        body_content = self._serialize.body(application_resource_description, 'ApplicationResourceDescription')
 
         # Construct and send request
         request = self._client.put(url, query_parameters)
         response = self._client.send(
-            request, header_parameters, body_content, **operation_config)
+            request, header_parameters, body_content, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
             raise models.ErrorModelException(self._deserialize, response)
@@ -110,6 +113,7 @@ class ApplicationOperations(object):
             return client_raw_response
 
         return deserialized
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications/{applicationName}'}
 
     def get(
             self, resource_group_name, application_name, custom_headers=None, raw=False, **operation_config):
@@ -136,7 +140,7 @@ class ApplicationOperations(object):
          :class:`ErrorModelException<azure.seabreeze.models.ErrorModelException>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications/{applicationName}'
+        url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -160,7 +164,7 @@ class ApplicationOperations(object):
 
         # Construct and send request
         request = self._client.get(url, query_parameters)
-        response = self._client.send(request, header_parameters, **operation_config)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             raise models.ErrorModelException(self._deserialize, response)
@@ -175,6 +179,7 @@ class ApplicationOperations(object):
             return client_raw_response
 
         return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications/{applicationName}'}
 
     def delete(
             self, resource_group_name, application_name, custom_headers=None, raw=False, **operation_config):
@@ -197,7 +202,7 @@ class ApplicationOperations(object):
          :class:`ErrorModelException<azure.seabreeze.models.ErrorModelException>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications/{applicationName}'
+        url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -221,7 +226,7 @@ class ApplicationOperations(object):
 
         # Construct and send request
         request = self._client.delete(url, query_parameters)
-        response = self._client.send(request, header_parameters, **operation_config)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200, 204]:
             raise models.ErrorModelException(self._deserialize, response)
@@ -229,6 +234,7 @@ class ApplicationOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications/{applicationName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
@@ -255,7 +261,7 @@ class ApplicationOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications'
+                url = self.list_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str')
@@ -283,7 +289,7 @@ class ApplicationOperations(object):
             # Construct and send request
             request = self._client.get(url, query_parameters)
             response = self._client.send(
-                request, header_parameters, **operation_config)
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 raise models.ErrorModelException(self._deserialize, response)
@@ -299,6 +305,7 @@ class ApplicationOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/applications'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -323,7 +330,7 @@ class ApplicationOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabric/applications'
+                url = self.list_by_subscription.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
@@ -350,7 +357,7 @@ class ApplicationOperations(object):
             # Construct and send request
             request = self._client.get(url, query_parameters)
             response = self._client.send(
-                request, header_parameters, **operation_config)
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 raise models.ErrorModelException(self._deserialize, response)
@@ -366,3 +373,4 @@ class ApplicationOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabric/applications'}

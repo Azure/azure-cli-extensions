@@ -13,7 +13,7 @@ from msrest.serialization import Model
 
 
 class OperationResult(Model):
-    """Available operation list result.
+    """List of operations available at the listed Azure resource provider.
 
     :param name: The name of the operation.
     :type name: str
@@ -33,6 +33,7 @@ class OperationResult(Model):
     }
 
     def __init__(self, name=None, display=None, origin=None, next_link=None):
+        super(OperationResult, self).__init__()
         self.name = name
         self.display = display
         self.origin = origin

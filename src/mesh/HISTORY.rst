@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.7.0 (2018-06-26)
+++++++++++++++++++
+
+* Add statusDetails and unhealthyEvaluation
+
 0.6.0 (2018-05-14)
 ++++++++++++++++++
 

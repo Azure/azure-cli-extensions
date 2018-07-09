@@ -27,7 +27,6 @@ class VolumeProviderParametersAzureFile(Model):
 
     _validation = {
         'account_name': {'required': True},
-        'account_key': {'required': True},
         'share_name': {'required': True},
     }
 
@@ -37,7 +36,8 @@ class VolumeProviderParametersAzureFile(Model):
         'share_name': {'key': 'shareName', 'type': 'str'},
     }
 
-    def __init__(self, account_name, account_key, share_name):
+    def __init__(self, account_name, share_name, account_key=None):
+        super(VolumeProviderParametersAzureFile, self).__init__()
         self.account_name = account_name
         self.account_key = account_key
         self.share_name = share_name

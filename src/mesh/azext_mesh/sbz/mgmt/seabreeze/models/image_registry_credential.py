@@ -16,7 +16,7 @@ class ImageRegistryCredential(Model):
     """Image registry credential.
 
     :param server: Docker image registry server, without protocol such as
-     "http" and "https".
+     `http` and `https`.
     :type server: str
     :param username: The username for the private registry.
     :type username: str
@@ -36,6 +36,7 @@ class ImageRegistryCredential(Model):
     }
 
     def __init__(self, server, username, password=None):
+        super(ImageRegistryCredential, self).__init__()
         self.server = server
         self.username = username
         self.password = password

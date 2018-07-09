@@ -12,8 +12,11 @@
 from msrest.serialization import Model
 
 
-class Resource(Model):
-    """The resource model definition for Azure Resource Manager resource.
+class ManagedProxyResource(Model):
+    """The resource model definition for Azure Resource Manager proxy resource. It
+    will have everything other than required location and tags. This proxy
+    resource is explicitly created or updated by including it in the parent
+    resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -21,18 +24,15 @@ class Resource(Model):
     :ivar id: Fully qualified identifier for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
+    :param name: The name of the resource
+    :type name: str
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The geo-location where the resource lives
-    :type location: str
     """
 
     _validation = {
         'id': {'readonly': True},
-        'name': {'readonly': True},
         'type': {'readonly': True},
     }
 
@@ -40,12 +40,10 @@ class Resource(Model):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, location=None):
-        super(Resource, self).__init__()
+    def __init__(self, name=None):
+        super(ManagedProxyResource, self).__init__()
         self.id = None
-        self.name = None
+        self.name = name
         self.type = None
-        self.location = location

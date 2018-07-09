@@ -21,7 +21,7 @@ class NetworkOperations(object):
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
-    :param deserializer: An objec model deserializer.
+    :param deserializer: An object model deserializer.
     :ivar api_version: The version of the API. This parameter is required and its value must be `2018-03-01-privatepreview`. Constant value: "2018-03-01-privatepreview".
     """
 
@@ -37,21 +37,24 @@ class NetworkOperations(object):
         self.config = config
 
     def create(
-            self, resource_group_name, network_name, properties, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, network_name, network_resource_description, custom_headers=None, raw=False, **operation_config):
         """Creates or updates a network resource.
 
         Creates a network resource with the specified name and description. If
         a network with the same name already exists, then its description is
         updated to the one indicated in this request.
+        Use network resources to create private network and configure public
+        connectivity for services within your application.
         .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
         :param network_name: The identity of the network.
         :type network_name: str
-        :param properties: The description of the network to be created or
-         updated.
-        :type properties: ~azure.seabreeze.models.NetworkResourceDescription
+        :param network_resource_description: Description for creating a
+         network resource.
+        :type network_resource_description:
+         ~azure.seabreeze.models.NetworkResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -64,7 +67,7 @@ class NetworkOperations(object):
          :class:`ErrorModelException<azure.seabreeze.models.ErrorModelException>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks/{networkName}'
+        url = self.create.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -87,12 +90,12 @@ class NetworkOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(properties, 'NetworkResourceDescription')
+        body_content = self._serialize.body(network_resource_description, 'NetworkResourceDescription')
 
         # Construct and send request
         request = self._client.put(url, query_parameters)
         response = self._client.send(
-            request, header_parameters, body_content, **operation_config)
+            request, header_parameters, body_content, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
             raise models.ErrorModelException(self._deserialize, response)
@@ -109,6 +112,7 @@ class NetworkOperations(object):
             return client_raw_response
 
         return deserialized
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks/{networkName}'}
 
     def get(
             self, resource_group_name, network_name, custom_headers=None, raw=False, **operation_config):
@@ -135,7 +139,7 @@ class NetworkOperations(object):
          :class:`ErrorModelException<azure.seabreeze.models.ErrorModelException>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks/{networkName}'
+        url = self.get.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -159,7 +163,7 @@ class NetworkOperations(object):
 
         # Construct and send request
         request = self._client.get(url, query_parameters)
-        response = self._client.send(request, header_parameters, **operation_config)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             raise models.ErrorModelException(self._deserialize, response)
@@ -174,6 +178,7 @@ class NetworkOperations(object):
             return client_raw_response
 
         return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks/{networkName}'}
 
     def delete(
             self, resource_group_name, network_name, custom_headers=None, raw=False, **operation_config):
@@ -196,7 +201,7 @@ class NetworkOperations(object):
          :class:`ErrorModelException<azure.seabreeze.models.ErrorModelException>`
         """
         # Construct URL
-        url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks/{networkName}'
+        url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -220,7 +225,7 @@ class NetworkOperations(object):
 
         # Construct and send request
         request = self._client.delete(url, query_parameters)
-        response = self._client.send(request, header_parameters, **operation_config)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200, 204]:
             raise models.ErrorModelException(self._deserialize, response)
@@ -228,6 +233,7 @@ class NetworkOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks/{networkName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
@@ -255,7 +261,7 @@ class NetworkOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks'
+                url = self.list_by_resource_group.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str')
@@ -283,7 +289,7 @@ class NetworkOperations(object):
             # Construct and send request
             request = self._client.get(url, query_parameters)
             response = self._client.send(
-                request, header_parameters, **operation_config)
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 raise models.ErrorModelException(self._deserialize, response)
@@ -299,6 +305,7 @@ class NetworkOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabric/networks'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -323,7 +330,7 @@ class NetworkOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabric/networks'
+                url = self.list_by_subscription.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
@@ -350,7 +357,7 @@ class NetworkOperations(object):
             # Construct and send request
             request = self._client.get(url, query_parameters)
             response = self._client.send(
-                request, header_parameters, **operation_config)
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 raise models.ErrorModelException(self._deserialize, response)
@@ -366,3 +373,4 @@ class NetworkOperations(object):
             return client_raw_response
 
         return deserialized
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabric/networks'}

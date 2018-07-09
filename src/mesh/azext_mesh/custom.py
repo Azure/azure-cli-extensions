@@ -5,6 +5,7 @@
 
 # pylint: disable=too-few-public-methods,too-many-arguments,no-self-use,too-many-locals,line-too-long,unused-argument
 
+from __future__ import print_function
 from collections import OrderedDict
 import json
 import ssl
@@ -253,6 +254,9 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
 def deploy_arm_template(cmd, resource_group_name,
                         template_file=None, template_uri=None, deployment_name=None,
                         parameters=None, mode=None, no_wait=False):
+    print("If the deployment takes more than 10 minutes, then open up a new CLI window and run the following to get the status of your application deployment.")
+    print("az mesh app show --resource-group <resource group name> --name <application name>")
+    print("The output should point to the potential issue. If the 'app show' cmd response does not have any errors listed, then it could just be that your image is taking long to download, rerun the az mesh app show command again after 5 minutes.")
     return _deploy_arm_template_core(cmd.cli_ctx, resource_group_name, template_file, template_uri,
                                      deployment_name, parameters, mode, no_wait=no_wait)
 

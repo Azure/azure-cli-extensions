@@ -37,6 +37,7 @@ class ContainerVolume(Model):
     }
 
     def __init__(self, name, destination_path, read_only=None):
+        super(ContainerVolume, self).__init__()
         self.name = name
         self.read_only = read_only
         self.destination_path = destination_path

@@ -13,15 +13,15 @@ from msrest.serialization import Model
 
 
 class AvailableOperationDisplay(Model):
-    """Operation supported by Service Fabric resource provider.
+    """An operation available at the listed Azure resource provider.
 
-    :param provider: The name of the provider.
+    :param provider: Name of the operation provider.
     :type provider: str
-    :param resource: The resource on which the operation is performed
+    :param resource: Name of the resource on which the operation is available.
     :type resource: str
-    :param operation: The operation that can be performed.
+    :param operation: Name of the available operation.
     :type operation: str
-    :param description: Operation description
+    :param description: Description of the available operation.
     :type description: str
     """
 
@@ -33,6 +33,7 @@ class AvailableOperationDisplay(Model):
     }
 
     def __init__(self, provider=None, resource=None, operation=None, description=None):
+        super(AvailableOperationDisplay, self).__init__()
         self.provider = provider
         self.resource = resource
         self.operation = operation

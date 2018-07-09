@@ -9,25 +9,25 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .proxy_resource import ProxyResource
+from .managed_proxy_resource import ManagedProxyResource
 
 
-class ServiceResourceDescription(ProxyResource):
-    """This type describes a volume resource.
+class ServiceResourceDescription(ManagedProxyResource):
+    """This type describes a service resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Azure resource identifier.
+    :ivar id: Fully qualified identifier for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Azure resource name.
-    :vartype name: str
-    :ivar type: Azure resource type.
+    :param name: The name of the resource
+    :type name: str
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: Resource location.
-    :type location: str
     :param os_type: The Operating system type required by the code in service.
-     . Possible values include: 'windows', 'linux'
+     . Possible values include: 'Linux', 'Windows'
     :type os_type: str or ~azure.seabreeze.models.OperatingSystemTypes
     :param code_packages: Describes the set of code packages that forms the
      service. A code package describes the container and the properties for
@@ -38,26 +38,26 @@ class ServiceResourceDescription(ProxyResource):
     :param network_refs: The names of the private networks that this service
      needs to be part of.
     :type network_refs: list[~azure.seabreeze.models.NetworkRef]
+    :param diagnostics: Reference to sinks in DiagnosticsDescription.
+    :type diagnostics: ~azure.seabreeze.models.DiagnosticsRef
     :param description: User readable description of the service.
     :type description: str
     :param replica_count: The number of replicas of the service to create.
      Defaults to 1 if not specified.
     :type replica_count: int
     :param health_state: The health state of a resource such as Application,
-     Service, Replica etc. Possible values include: 'Invalid', 'Ok', 'Warning',
+     Service, or Network. Possible values include: 'Invalid', 'Ok', 'Warning',
      'Error', 'Unknown'
     :type health_state: str or ~azure.seabreeze.models.HealthState
     :ivar status: Represents the status of the service. Possible values
      include: 'Unknown', 'Active', 'Upgrading', 'Deleting', 'Creating',
      'Failed'
-    :vartype status: str or ~azure.seabreeze.models.enum
+    :vartype status: str or ~azure.seabreeze.models.ServiceResourceStatus
     """
 
     _validation = {
         'id': {'readonly': True},
-        'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
         'os_type': {'required': True},
         'code_packages': {'required': True},
         'status': {'readonly': True},
@@ -67,21 +67,22 @@ class ServiceResourceDescription(ProxyResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'os_type': {'key': 'properties.osType', 'type': 'str'},
         'code_packages': {'key': 'properties.codePackages', 'type': '[ContainerCodePackageProperties]'},
         'network_refs': {'key': 'properties.networkRefs', 'type': '[NetworkRef]'},
+        'diagnostics': {'key': 'properties.diagnostics', 'type': 'DiagnosticsRef'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'replica_count': {'key': 'properties.replicaCount', 'type': 'int'},
         'health_state': {'key': 'properties.healthState', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
     }
 
-    def __init__(self, location, os_type, code_packages, network_refs=None, description=None, replica_count=None, health_state=None):
-        super(ServiceResourceDescription, self).__init__(location=location)
+    def __init__(self, os_type, code_packages, name=None, network_refs=None, diagnostics=None, description=None, replica_count=None, health_state=None):
+        super(ServiceResourceDescription, self).__init__(name=name)
         self.os_type = os_type
         self.code_packages = code_packages
         self.network_refs = network_refs
+        self.diagnostics = diagnostics
         self.description = description
         self.replica_count = replica_count
         self.health_state = health_state

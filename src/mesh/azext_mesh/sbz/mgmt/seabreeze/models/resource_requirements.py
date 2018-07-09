@@ -32,5 +32,6 @@ class ResourceRequirements(Model):
     }
 
     def __init__(self, requests, limits=None):
+        super(ResourceRequirements, self).__init__()
         self.requests = requests
         self.limits = limits

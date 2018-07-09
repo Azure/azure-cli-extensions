@@ -16,7 +16,7 @@ class ServiceReplicaDescription(ServiceReplicaProperties):
     """This type describes a replica of a service resource.
 
     :param os_type: The Operating system type required by the code in service.
-     . Possible values include: 'windows', 'linux'
+     . Possible values include: 'Linux', 'Windows'
     :type os_type: str or ~azure.seabreeze.models.OperatingSystemTypes
     :param code_packages: Describes the set of code packages that forms the
      service. A code package describes the container and the properties for
@@ -27,6 +27,8 @@ class ServiceReplicaDescription(ServiceReplicaProperties):
     :param network_refs: The names of the private networks that this service
      needs to be part of.
     :type network_refs: list[~azure.seabreeze.models.NetworkRef]
+    :param diagnostics: Reference to sinks in DiagnosticsDescription.
+    :type diagnostics: ~azure.seabreeze.models.DiagnosticsRef
     :param replica_name: Name of the replica.
     :type replica_name: str
     """
@@ -40,9 +42,10 @@ class ServiceReplicaDescription(ServiceReplicaProperties):
         'os_type': {'key': 'osType', 'type': 'str'},
         'code_packages': {'key': 'codePackages', 'type': '[ContainerCodePackageProperties]'},
         'network_refs': {'key': 'networkRefs', 'type': '[NetworkRef]'},
+        'diagnostics': {'key': 'diagnostics', 'type': 'DiagnosticsRef'},
         'replica_name': {'key': 'replicaName', 'type': 'str'},
     }
 
-    def __init__(self, os_type, code_packages, network_refs=None, replica_name=None):
-        super(ServiceReplicaDescription, self).__init__(os_type=os_type, code_packages=code_packages, network_refs=network_refs)
+    def __init__(self, os_type, code_packages, network_refs=None, diagnostics=None, replica_name=None):
+        super(ServiceReplicaDescription, self).__init__(os_type=os_type, code_packages=code_packages, network_refs=network_refs, diagnostics=diagnostics)
         self.replica_name = replica_name

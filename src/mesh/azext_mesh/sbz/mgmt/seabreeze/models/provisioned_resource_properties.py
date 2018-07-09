@@ -12,25 +12,24 @@
 from msrest.serialization import Model
 
 
-class EndpointProperties(Model):
-    """Describes a container endpoint.
+class ProvisionedResourceProperties(Model):
+    """Describes common properties of a provisioned resource.
 
-    :param name: The name of the endpoint.
-    :type name: str
-    :param port: Port used by the container.
-    :type port: int
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar provisioning_state: State of the resource.
+    :vartype provisioning_state: str
     """
 
     _validation = {
-        'name': {'required': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'port': {'key': 'port', 'type': 'int'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
     }
 
-    def __init__(self, name, port=None):
-        super(EndpointProperties, self).__init__()
-        self.name = name
-        self.port = port
+    def __init__(self):
+        super(ProvisionedResourceProperties, self).__init__()
+        self.provisioning_state = None

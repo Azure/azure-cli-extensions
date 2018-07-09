@@ -24,19 +24,31 @@ class ApplicationProperties(Model):
     :type debug_params: str
     :param services: describes the services in the application.
     :type services: list[~azure.seabreeze.models.ServiceResourceDescription]
-    :param health_state: Describes the health state of an application
-     resource. Possible values include: 'Invalid', 'Ok', 'Warning', 'Error',
-     'Unknown'
-    :type health_state: str or ~azure.seabreeze.models.HealthState
+    :ivar health_state: Describes the health state of an application resource.
+     Possible values include: 'Invalid', 'Ok', 'Warning', 'Error', 'Unknown'
+    :vartype health_state: str or ~azure.seabreeze.models.HealthState
+    :ivar unhealthy_evaluation: When the application's health state is not
+     'Ok', this additional details from service fabric Health Manager for the
+     user to know why the application is marked unhealthy.
+    :vartype unhealthy_evaluation: str
     :ivar status: Status of the application resource. Possible values include:
      'Invalid', 'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
     :vartype status: str or ~azure.seabreeze.models.ApplicationResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the application deployment.
+    :vartype status_details: str
     :ivar service_names: Names of the services in the application.
     :vartype service_names: list[str]
+    :param diagnostics: Describes the diagnostics definition and usage for an
+     application resource.
+    :type diagnostics: ~azure.seabreeze.models.DiagnosticsDescription
     """
 
     _validation = {
+        'health_state': {'readonly': True},
+        'unhealthy_evaluation': {'readonly': True},
         'status': {'readonly': True},
+        'status_details': {'readonly': True},
         'service_names': {'readonly': True},
     }
 
@@ -45,14 +57,21 @@ class ApplicationProperties(Model):
         'debug_params': {'key': 'debugParams', 'type': 'str'},
         'services': {'key': 'services', 'type': '[ServiceResourceDescription]'},
         'health_state': {'key': 'healthState', 'type': 'str'},
+        'unhealthy_evaluation': {'key': 'unhealthyEvaluation', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
+        'status_details': {'key': 'statusDetails', 'type': 'str'},
         'service_names': {'key': 'serviceNames', 'type': '[str]'},
+        'diagnostics': {'key': 'diagnostics', 'type': 'DiagnosticsDescription'},
     }
 
-    def __init__(self, description=None, debug_params=None, services=None, health_state=None):
+    def __init__(self, description=None, debug_params=None, services=None, diagnostics=None):
+        super(ApplicationProperties, self).__init__()
         self.description = description
         self.debug_params = debug_params
         self.services = services
-        self.health_state = health_state
+        self.health_state = None
+        self.unhealthy_evaluation = None
         self.status = None
+        self.status_details = None
         self.service_names = None
+        self.diagnostics = diagnostics

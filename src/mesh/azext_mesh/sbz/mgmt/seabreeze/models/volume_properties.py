@@ -41,5 +41,6 @@ class VolumeProperties(Model):
     provider = "SFAzureFile"
 
     def __init__(self, description=None, azure_file_parameters=None):
+        super(VolumeProperties, self).__init__()
         self.description = description
         self.azure_file_parameters = azure_file_parameters

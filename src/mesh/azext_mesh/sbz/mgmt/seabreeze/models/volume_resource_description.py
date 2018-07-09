@@ -9,25 +9,29 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .resource import Resource
+from .tracked_resource import TrackedResource
 
 
-class VolumeResourceDescription(Resource):
+class VolumeResourceDescription(TrackedResource):
     """This type describes a volume resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Azure resource identifier.
+    :ivar id: Fully qualified identifier for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: Azure resource name.
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: Azure resource type.
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: Resource location.
+    :param location: The geo-location where the resource lives
     :type location: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
+    :ivar provisioning_state: State of the resource.
+    :vartype provisioning_state: str
     :param description: User readable description of the volume.
     :type description: str
     :ivar provider: Provider of the volume. Default value: "SFAzureFile" .
@@ -36,17 +40,14 @@ class VolumeResourceDescription(Resource):
      Azure Files file share.
     :type azure_file_parameters:
      ~azure.seabreeze.models.VolumeProviderParametersAzureFile
-    :ivar provisioning_state: Azure resource provisioning state
-    :vartype provisioning_state: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
-        'provider': {'required': True, 'constant': True},
         'provisioning_state': {'readonly': True},
+        'provider': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
@@ -55,16 +56,16 @@ class VolumeResourceDescription(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'provider': {'key': 'properties.provider', 'type': 'str'},
         'azure_file_parameters': {'key': 'properties.azureFileParameters', 'type': 'VolumeProviderParametersAzureFile'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
     provider = "SFAzureFile"
 
-    def __init__(self, location, tags=None, description=None, azure_file_parameters=None):
+    def __init__(self, location=None, tags=None, description=None, azure_file_parameters=None):
         super(VolumeResourceDescription, self).__init__(location=location, tags=tags)
+        self.provisioning_state = None
         self.description = description
         self.azure_file_parameters = azure_file_parameters
-        self.provisioning_state = None

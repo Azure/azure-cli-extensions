@@ -9,11 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .resource import Resource
 
 
-class Resource(Model):
-    """The resource model definition for Azure Resource Manager resource.
+class TrackedResource(Resource):
+    """The resource model definition for Azure Resource Manager tracked top-level
+    resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -28,6 +29,8 @@ class Resource(Model):
     :vartype type: str
     :param location: The geo-location where the resource lives
     :type location: str
+    :param tags: Resource tags.
+    :type tags: dict[str, str]
     """
 
     _validation = {
@@ -41,11 +44,9 @@ class Resource(Model):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
-    def __init__(self, location=None):
-        super(Resource, self).__init__()
-        self.id = None
-        self.name = None
-        self.type = None
-        self.location = location
+    def __init__(self, location=None, tags=None):
+        super(TrackedResource, self).__init__(location=location)
+        self.tags = tags

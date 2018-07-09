@@ -12,25 +12,26 @@
 from msrest.serialization import Model
 
 
-class EndpointProperties(Model):
-    """Describes a container endpoint.
+class ContainerLabel(Model):
+    """Describes a container label.
 
-    :param name: The name of the endpoint.
+    :param name: The name of the container label.
     :type name: str
-    :param port: Port used by the container.
-    :type port: int
+    :param value: The value of the container label.
+    :type value: str
     """
 
     _validation = {
         'name': {'required': True},
+        'value': {'required': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'port': {'key': 'port', 'type': 'int'},
+        'value': {'key': 'value', 'type': 'str'},
     }
 
-    def __init__(self, name, port=None):
-        super(EndpointProperties, self).__init__()
+    def __init__(self, name, value):
+        super(ContainerLabel, self).__init__()
         self.name = name
-        self.port = port
+        self.value = value

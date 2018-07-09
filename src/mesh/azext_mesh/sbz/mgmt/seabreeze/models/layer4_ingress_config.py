@@ -18,7 +18,7 @@ class Layer4IngressConfig(Model):
 
     :param public_port: Specifies the public port at which the service
      endpoint below needs to be exposed.
-    :type public_port: str
+    :type public_port: int
     :param application_name: The application name which contains the service
      to be exposed.
     :type application_name: str
@@ -30,13 +30,14 @@ class Layer4IngressConfig(Model):
     """
 
     _attribute_map = {
-        'public_port': {'key': 'publicPort', 'type': 'str'},
+        'public_port': {'key': 'publicPort', 'type': 'int'},
         'application_name': {'key': 'applicationName', 'type': 'str'},
         'service_name': {'key': 'serviceName', 'type': 'str'},
         'endpoint_name': {'key': 'endpointName', 'type': 'str'},
     }
 
     def __init__(self, public_port=None, application_name=None, service_name=None, endpoint_name=None):
+        super(Layer4IngressConfig, self).__init__()
         self.public_port = public_port
         self.application_name = application_name
         self.service_name = service_name

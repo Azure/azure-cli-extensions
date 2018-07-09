@@ -66,6 +66,11 @@ helps['mesh service-replica list'] = """
 """
 
 helps['mesh code-package-log'] = """
+    type: group
+    short-summary: Examine the logs for a codepackage.
+"""
+
+helps['mesh code-package-log get'] = """
     type: command
     short-summary: Examine the logs for a codepackage.
 """

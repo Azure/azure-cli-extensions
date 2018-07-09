@@ -15,12 +15,14 @@ from msrest.serialization import Model
 class ContainerEvent(Model):
     """A container event.
 
+    :param name: The name of the container event.
+    :type name: str
     :param count: The count of the event.
     :type count: int
     :param first_timestamp: Date/time of the first event.
-    :type first_timestamp: datetime
+    :type first_timestamp: str
     :param last_timestamp: Date/time of the last event.
-    :type last_timestamp: datetime
+    :type last_timestamp: str
     :param message: The event message
     :type message: str
     :param type: The event type.
@@ -28,14 +30,17 @@ class ContainerEvent(Model):
     """
 
     _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
         'count': {'key': 'count', 'type': 'int'},
-        'first_timestamp': {'key': 'firstTimestamp', 'type': 'iso-8601'},
-        'last_timestamp': {'key': 'lastTimestamp', 'type': 'iso-8601'},
+        'first_timestamp': {'key': 'firstTimestamp', 'type': 'str'},
+        'last_timestamp': {'key': 'lastTimestamp', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, count=None, first_timestamp=None, last_timestamp=None, message=None, type=None):
+    def __init__(self, name=None, count=None, first_timestamp=None, last_timestamp=None, message=None, type=None):
+        super(ContainerEvent, self).__init__()
+        self.name = name
         self.count = count
         self.first_timestamp = first_timestamp
         self.last_timestamp = last_timestamp
