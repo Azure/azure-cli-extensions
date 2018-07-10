@@ -3,9 +3,9 @@
     "extensions": {
         "azure-batch-cli-extensions": [
             {
-                "filename": "azure_batch_cli_extensions-2.2.2-py2.py3-none-any.whl",
-                "sha256Digest": "212493c9b044a66271986f30efd8ac9dd7f736283272d0049fa4f125e9dc9323",
-                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.2.2/azure_batch_cli_extensions-2.2.2-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-2.3.0-py2.py3-none-any.whl",
+                "sha256Digest": "360fa1a71da65db1866ec6987bad822868915d9ce5d2e6d5542c58836ff62816",
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.3.0/azure_batch_cli_extensions-2.3.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "azext.maxCliCoreVersion": "2.1.0",
@@ -26,20 +26,28 @@
                             }
                         }
                     },
+                    "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "azure-batch-cli-extensions",
+                    "run_requires": [
+                      {
+                        "requires": [
+                          "azure-batch-extensions (<3.1,>=3.0.0)"
+                        ]
+                      }
+                    ],
                     "summary": "Additional commands for working with Azure Batch service",
-                    "version": "2.2.2"
+                    "version": "2.3.0"
                 }
             }
         ],
         "azure-cli-iot-ext": [
             {
-                "filename": "azure_cli_iot_ext-0.4.4-py2.py3-none-any.whl",
-                "sha256Digest": "da6fcb521773816d0b5b6d71dea32405b777ac0465be5a95f00459b9b8492ff8",
-                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.4.4/azure_cli_iot_ext-0.4.4-py2.py3-none-any.whl",
+                "filename": "azure_cli_iot_ext-0.5.0-py2.py3-none-any.whl",
+                "sha256Digest": "c427f8f249c3e11ab1a5306be8bdbcce41155c949c71072fc6bda801e6dbd1c8",
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.5.0/azure_cli_iot_ext-0.5.0-py2.py3-none-any.whl",
                 "metadata": {
                   "azext.minCliCoreVersion": "2.0.24",
                   "classifiers": [
@@ -80,69 +88,16 @@
                   "run_requires": [
                     {
                       "requires": [
-                        "msrestazure",
+                        "jmespath (==0.9.3)",
+                        "msrestazure (==0.4.29)",
                         "paho-mqtt (==1.3.1)",
                         "pyyaml"
                       ]
                     }
                   ],
                   "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
-                  "version": "0.4.4"
+                  "version": "0.5.0"
                 }
-            },
-            {
-              "filename": "azure_cli_iot_ext-0.4.3-py2.py3-none-any.whl",
-              "sha256Digest": "58eb6812ee62998c6616021e0632eb37573d44ac4ed9fef45119078590ff5099",
-              "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.4.3/azure_cli_iot_ext-0.4.3-py2.py3-none-any.whl",
-              "metadata": {
-                "azext.minCliCoreVersion": "2.0.24",
-                "classifiers": [
-                  "Development Status :: 4 - Beta",
-                  "Intended Audience :: Developers",
-                  "Intended Audience :: System Administrators",
-                  "Programming Language :: Python",
-                  "Programming Language :: Python :: 2",
-                  "Programming Language :: Python :: 2.7",
-                  "Programming Language :: Python :: 3",
-                  "Programming Language :: Python :: 3.4",
-                  "Programming Language :: Python :: 3.5",
-                  "Programming Language :: Python :: 3.6",
-                  "License :: OSI Approved :: MIT License"
-                ],
-                "extensions": {
-                  "python.details": {
-                    "contacts": [
-                      {
-                        "email": "iotupx@microsoft.com",
-                        "name": "Microsoft",
-                        "role": "author"
-                      }
-                    ],
-                    "document_names": {
-                      "description": "DESCRIPTION.rst"
-                    },
-                    "project_urls": {
-                      "Home": "https://github.com/azure/azure-iot-cli-extension"
-                    }
-                  }
-                },
-                "extras": [],
-                "generator": "bdist_wheel (0.30.0)",
-                "license": "MIT",
-                "metadata_version": "2.0",
-                "name": "azure-cli-iot-ext",
-                "run_requires": [
-                  {
-                    "requires": [
-                      "msrestazure",
-                      "paho-mqtt (==1.3.1)",
-                      "pyyaml"
-                    ]
-                  }
-                ],
-                "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
-                "version": "0.4.3"
-              }
             }
         ],
         "image-copy-extension": [
@@ -276,6 +231,50 @@
                     "summary": "Support for copying managed vm images between regions",
                     "version": "0.0.6"
                 }
+            },
+            {
+                "filename": "image_copy_extension-0.0.7-py2.py3-none-any.whl",
+                "sha256Digest": "01a055c909a68f8990d8bab544b20a783c3fbe4d006947887ea9f253f358519e",                
+                "downloadUrl": "https://files.pythonhosted.org/packages/2f/1c/71f08dfe9f1af698459384aeb141d7debeb09ecb5d6fcf359486196bc86c/image_copy_extension-0.0.7-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.24",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "tamir.kamara@microsoft.com",
+                                    "name": "Tamir Kamara",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "image-copy-extension",
+                    "summary": "Support for copying managed vm images between regions",
+                    "version": "0.0.7"
+                }
             }
         ],
         "aem": [
@@ -326,12 +325,12 @@
         ],
         "dev-spaces-preview": [
             {
-                "filename": "dev_spaces_preview-0.1.0-py2.py3-none-any.whl",
-                "sha256Digest": "483f58b99d1c1bc13ecf3a6f1ec92c0299734b90e13f4a8032950d1eec22877f",
-                "downloadUrl": "https://azuredevspacestools.blob.core.windows.net/azdssetup/LKS/dev_spaces_preview-0.1.0-py2.py3-none-any.whl",
+                "filename": "dev_spaces_preview-0.1.6-py2.py3-none-any.whl",
+                "sha256Digest": "cd0fc8a0f684b561e53c1deb235b3cfa85ef7a4df5f52d67cec6dcba5a9494ae",
+                "downloadUrl": "https://azuredevspacestools.blob.core.windows.net/azdssetup/LKS/dev_spaces_preview-0.1.6-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
-                    "azext.minCliCoreVersion": "2.0.27",
+                    "azext.minCliCoreVersion": "2.0.32",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -367,7 +366,7 @@
                     "metadata_version": "2.0",
                     "name": "dev-spaces-preview",
                     "summary": "Dev Spaces provides a rapid, iterative Kubernetes development experience for teams.",
-                    "version": "0.1.0"
+                    "version": "0.1.6"
                 }
             }
         ],
@@ -508,11 +507,11 @@
                 }
             }
         ],
-        "rdbms": [
+        "rdbms-vnet": [
             {
-                "filename": "rdbms-0.0.5-py2.py3-none-any.whl",
-                "sha256Digest": "2b587493a8e10738bb6f3f82cf9e26ebf32a509c162f7093b4cb8e99aff5072f",
-                "downloadUrl": "https://prodrdbmsclipackages.blob.core.windows.net/cliextensions/rdbms-0.0.5-py2.py3-none-any.whl",
+                "filename": "rdbms_vnet-10.0.0-py2.py3-none-any.whl",
+                "sha256Digest": "c10d63f21308751212b3bd68448b0dfe27d6e79bf9c54412680229f69f9bcec7",
+                "downloadUrl": "https://prodrdbmsclipackages.blob.core.windows.net/cliextensions/rdbms_vnet-10.0.0-py2.py3-none-any.whl",
                 "metadata": {
                     "classifiers": [
                         "Development Status :: 4 - Beta",
@@ -531,8 +530,8 @@
                         "python.details": {
                             "contacts": [
                                 {
-                                    "email": "rohitjoy@microsoft.com",
-                                    "name": "Rohit Joy",
+                                    "email": "ragoutha@microsoft.com",
+                                    "name": "Rahul G S",
                                     "role": "author"
                                 }
                             ],
@@ -544,15 +543,15 @@
                             }
                         }
                     },
-                    "generator": "bdist_wheel (0.29.0)",
+                    "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
-                    "name": "rdbms",
-                    "summary": "An Azure CLI Extension providing support for Azure MySQL and Azure PostgreSQL.",
-                    "version": "0.0.5"
+                    "name": "rdbms-vnet",
+                    "summary": "Support for Virtual Network rules in Azure MySQL and Azure PostgreSQL resources",
+                    "version": "10.0.0"
                 }
             }
-        ],
+        ],        
         "alias": [
             {
                 "filename": "alias-0.5.1-py2.py3-none-any.whl",
@@ -793,9 +792,9 @@
         ],
         "eventgrid": [
             {
-                "filename": "eventgrid-0.2.0-py2.py3-none-any.whl",
-                "sha256Digest": "c26ee3b5bc9e8f109b370ec20b25697d71fc9d4e8700f5f03e452b66c9eaedb2",
-                "downloadUrl": "https://eventgridcliextension.blob.core.windows.net/cli/eventgrid-0.2.0-py2.py3-none-any.whl",
+                "filename": "eventgrid-0.2.1-py2.py3-none-any.whl",
+                "sha256Digest": "e7acf947b1d7ab307a21897a8a9cb859575fe880c84fe04e191a5e00d7e4814a",
+                "downloadUrl": "https://eventgridcliextension.blob.core.windows.net/cli/eventgrid-0.2.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "azext.isPreview": true,
@@ -834,15 +833,15 @@
                     "metadata_version": "2.0",
                     "name": "eventgrid",
                     "summary": "Support for Azure EventGrid 2018-05-01-preview features",
-                    "version": "0.2.0"
+                    "version": "0.2.1"
                 }
             }
         ],
         "botservice": [
             {
-                "filename": "botservice-0.0.1-py2.py3-none-any.whl",
-                "sha256Digest": "365b974deade7caf5097feb1f2e04a64d89b350dba0ef2c9f13bcc234a2598c9",
-                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.0.1-py2.py3-none-any.whl",
+                "filename": "botservice-0.0.3-py2.py3-none-any.whl",
+                "sha256Digest": "2bab390922c1ad9b6fa645b651540e7c8de14f20213fd6848a6fa67f0636f699",
+                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.0.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.30",
                     "azext.isPreview": true,
@@ -868,15 +867,15 @@
                     "metadata_version": "2.0",
                     "name": "botservice",
                     "summary": "Support for Azure Bot Service 2017-12-01 preview features",
-                    "version": "0.0.1"
+                    "version": "0.0.3"
                 }
             }
         ],
         "storage-preview": [
             {
-                "filename": "storage_preview-0.1.0-py2.py3-none-any.whl",
-                "sha256Digest": "36768962d09c65b9668581f5bc01f1ad252acf832f22afdb04ed00c3333379cc",
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.0-py2.py3-none-any.whl",
+                "filename": "storage_preview-0.1.3-py2.py3-none-any.whl",
+                "sha256Digest": "e5715c73cc858041c610e14a059abd6311e78b6fd5342a09e8e86746e6ff8c9e",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.32.dev0",
@@ -906,7 +905,7 @@
                                 "description": "DESCRIPTION.rst"
                             },
                             "project_urls": {
-                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/storage-preview"
                             }
                         }
                     },
@@ -915,7 +914,7 @@
                     "metadata_version": "2.0",
                     "name": "storage-preview",
                     "summary": "Provides a preview for upcoming storage features.",
-                    "version": "0.1.0"
+                    "version": "0.1.3"
                 }
             }
         ]

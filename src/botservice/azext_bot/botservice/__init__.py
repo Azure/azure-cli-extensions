@@ -15,3 +15,4 @@ from .version import VERSION
 __all__ = ['AzureBotService']
 
 __version__ = VERSION
+

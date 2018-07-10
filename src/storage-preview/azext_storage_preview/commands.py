@@ -5,20 +5,22 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.profiles import ResourceType
-from ._client_factory import (cf_sa, blob_data_service_factory,
+from ._client_factory import (cf_sa, cf_blob_container_mgmt, cf_blob_data_gen_update, blob_data_service_factory,
                               page_blob_service_factory, file_data_service_factory,
                               queue_data_service_factory, table_data_service_factory,
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
-from .profiles import CUSTOM_DATA_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
+from ._format import transform_immutability_policy
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
     storage_account_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.storage.operations.storage_accounts_operations#StorageAccountsOperations.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.storage_accounts_operations'
+                        '#StorageAccountsOperations.{}',
         client_factory=cf_sa,
-        resource_type=ResourceType.MGMT_STORAGE
+        resource_type=CUSTOM_MGMT_STORAGE
     )
 
     storage_account_custom_type = CliCommandType(
@@ -26,7 +28,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         client_factory=cf_sa)
 
     cloud_data_plane_sdk = CliCommandType(
-        operations_tmpl='azure.multiapi.storage.common#CloudStorageAccount.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.common#CloudStorageAccount.{}',
         client_factory=cloud_storage_account_service_factory
     )
 
@@ -40,7 +42,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
             resource_type=resource_type
         )
 
-    with self.command_group('storage account', storage_account_sdk, resource_type=ResourceType.MGMT_STORAGE,
+    with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
         g.command('check-name', 'check_name_availability')
         g.custom_command('create', 'create_storage_account', min_api='2016-01-01')
@@ -55,9 +57,18 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.command('keys list', 'list_keys', transform=lambda x: getattr(x, 'keys', x))
         g.storage_command('generate-sas', 'generate_shared_access_signature', command_type=cloud_data_plane_sdk)
 
+    with self.command_group('storage account management-policy', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
+                            custom_command_type=storage_account_custom_type) as g:
+        g.command('show', 'get_management_policies')
+        g.custom_command('create', 'create_management_policies')
+        g.generic_update_command('update', getter_name='get_management_policies',
+                                 setter_name='update_management_policies',
+                                 setter_type=storage_account_custom_type)
+        g.command('delete', 'delete_management_policies')
+
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
-                            resource_type=ResourceType.MGMT_STORAGE, min_api='2017-06-01') as g:
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
         g.custom_command('add', 'add_network_rule')
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
@@ -77,12 +88,12 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                           exception_handler=g.get_handler_suppress_404())
 
     block_blob_sdk = CliCommandType(
-        operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.blockblobservice#BlockBlobService.{}',
         client_factory=blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE)
 
     base_blob_sdk = CliCommandType(
-        operations_tmpl='azure.multiapi.storage.blob.baseblobservice#BaseBlobService.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.baseblobservice#BaseBlobService.{}',
         client_factory=blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE)
 
@@ -129,14 +140,16 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('copy start-batch', 'storage_blob_copy_batch')
 
     with self.command_group('storage blob incremental-copy',
-                            operations_tmpl='azure.multiapi.storage.blob.pageblobservice#PageBlobService.{}',
+                            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.pageblobservice'
+                                            '#PageBlobService.{}',
                             client_factory=page_blob_service_factory,
                             resource_type=CUSTOM_DATA_STORAGE,
                             min_api='2016-05-31') as g:
         g.storage_command_oauth('start', 'incremental_copy_blob')
 
     with self.command_group('storage blob incremental-copy',
-                            operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
+                            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.blockblobservice'
+                                            '#BlockBlobService.{}',
                             client_factory=page_blob_service_factory,
                             resource_type=CUSTOM_DATA_STORAGE,
                             min_api='2016-05-31') as g:
@@ -152,6 +165,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage blob service-properties', command_type=base_blob_sdk) as g:
         g.storage_command_oauth('show', 'get_blob_service_properties', exception_handler=g.get_handler_suppress_404())
+        g.storage_command_oauth('update', generic_update=True, getter_name='get_blob_service_properties',
+                                setter_type=get_custom_sdk('blob', cf_blob_data_gen_update),
+                                setter_name='set_service_properties',
+                                client_factory=cf_blob_data_gen_update)
 
     with self.command_group('storage container', command_type=block_blob_sdk,
                             custom_command_type=get_custom_sdk('acl', blob_data_service_factory)) as g:
@@ -190,8 +207,27 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('policy show', 'get_acl_policy', exception_handler=g.get_handler_suppress_404())
         g.storage_custom_command_oauth('policy list', 'list_acl_policies', table_transformer=transform_acl_list_output)
 
+    blob_container_mgmt_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.blob_containers_operations'
+                        '#BlobContainersOperations.{}',
+        client_factory=cf_blob_container_mgmt,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+
+    with self.command_group('storage container immutability-policy', command_type=blob_container_mgmt_sdk) as g:
+        g.command('show', 'get_immutability_policy', transform=transform_immutability_policy)
+        g.command('create', 'create_or_update_immutability_policy')
+        g.command('delete', 'delete_immutability_policy', transform=lambda x: None)
+        g.command('lock', 'lock_immutability_policy')
+        g.command('extend', 'extend_immutability_policy')
+
+    with self.command_group('storage container legal-hold', command_type=blob_container_mgmt_sdk) as g:
+        g.command('set', 'set_legal_hold')
+        g.command('clear', 'clear_legal_hold')
+        g.command('show', 'get', transform=lambda x: getattr(x, 'legal_hold', x))
+
     file_sdk = CliCommandType(
-        operations_tmpl='azure.multiapi.storage.file.fileservice#FileService.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.file.fileservice#FileService.{}',
         client_factory=file_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE)
 
@@ -272,9 +308,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command('clear', 'clear_cors')
         g.storage_command('list', 'list_cors', transform=transform_cors_list_output)
 
-    queue_sdk = CliCommandType(operations_tmpl='azure.multiapi.storage.queue.queueservice#QueueService.{}',
-                               client_factory=queue_data_service_factory,
-                               resource_type=CUSTOM_DATA_STORAGE)
+    queue_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.queue.queueservice#QueueService.{}',
+        client_factory=queue_data_service_factory,
+        resource_type=CUSTOM_DATA_STORAGE)
 
     with self.command_group('storage queue', queue_sdk,
                             custom_command_type=get_custom_sdk('acl', queue_data_service_factory)) as g:
@@ -313,13 +350,15 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command_oauth('update', 'update_message')
 
     if cosmosdb_table_exists(self.cli_ctx):
-        table_sdk = CliCommandType(operations_tmpl='azure.multiapi.cosmosdb.table.tableservice#TableService.{}',
-                                   client_factory=table_data_service_factory,
-                                   resource_type=ResourceType.DATA_COSMOS_TABLE)
+        table_sdk = CliCommandType(
+            operations_tmpl='azure.multiapi.cosmosdb.table.tableservice#TableService.{}',
+            client_factory=table_data_service_factory,
+            resource_type=ResourceType.DATA_COSMOS_TABLE)
     else:
-        table_sdk = CliCommandType(operations_tmpl='azure.multiapi.storage.table.tableservice#TableService.{}',
-                                   client_factory=table_data_service_factory,
-                                   resource_type=ResourceType.DATA_COSMOS_TABLE)
+        table_sdk = CliCommandType(
+            operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.table.tableservice#TableService.{}',
+            client_factory=table_data_service_factory,
+            resource_type=ResourceType.DATA_COSMOS_TABLE)
 
     with self.command_group('storage table', table_sdk,
                             custom_command_type=get_custom_sdk('acl', table_data_service_factory)) as g:

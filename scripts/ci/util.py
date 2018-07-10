@@ -8,8 +8,9 @@ import json
 import zipfile
 from wheel.install import WHEEL_INFO_RE
 
-# Extensions to skip dep. check. Aim to keep this list empty.
-SKIP_DEP_CHECK = ['azure-cli-iot-ext']
+# Dependencies that will not be checked.
+# This is for packages starting with 'azure-' but do not use the 'azure' namespace.
+SKIP_DEP_CHECK = ['azure-batch-extensions']
 
 
 def get_repo_root():
@@ -99,3 +100,10 @@ def get_index_data():
             return json.load(f, object_pairs_hook=_catch_dup_keys)
     except ValueError as err:
         raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
+
+
+def verify_dependency(dep):
+    # ex. "azure-batch-extensions (<3.1,>=3.0.0)", "paho-mqtt (==1.3.1)", "pyyaml"
+    # check if 'azure-' dependency, as they use 'azure' namespace.
+    dep_split = dep.split()
+    return not (dep_split and dep_split[0].startswith('azure-') and dep_split[0] not in SKIP_DEP_CHECK)

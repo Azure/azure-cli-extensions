@@ -224,6 +224,11 @@ helps['storage blob service-properties'] = """
     short-summary: Manage storage blob service properties.
 """
 
+helps['storage blob service-properties update'] = """
+    type: command
+    short-summary: Update storage blob service properties.
+"""
+
 helps['storage blob service-properties delete-policy'] = """
     type: group
     short-summary: Manage storage blob delete-policy service properties.
@@ -401,6 +406,21 @@ helps['storage container metadata'] = """
 helps['storage container policy'] = """
     type: group
     short-summary: Manage container stored access policies.
+"""
+
+helps['storage container immutability-policy'] = """
+    type: group
+    short-summary: Manage container immutability policies.
+"""
+
+helps['storage container legal-hold'] = """
+    type: group
+    short-summary: Manage container legal holds.
+"""
+
+helps['storage container legal-hold show'] = """
+    type: command
+    short-summary: Get the legal hold properties of a container.
 """
 
 helps['storage cors'] = """
@@ -770,6 +790,21 @@ helps['storage account network-rule list'] = """
 helps['storage account network-rule remove'] = """
     type: command
     short-summary: Remove a network rule.
+"""
+
+helps['storage account management-policy'] = """
+    type: group
+    short-summary: Manage storage account management policies.
+"""
+
+helps['storage account management-policy create'] = """
+    type: command
+    short-summary: Creates the data policy rules associated with the specified storage account.
+"""
+
+helps['storage account management-policy update'] = """
+    type: command
+    short-summary: Updates the data policy rules associated with the specified storage account.
 """
 
 helps['storage account generate-sas'] = """

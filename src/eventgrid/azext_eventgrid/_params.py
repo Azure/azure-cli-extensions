@@ -53,7 +53,7 @@ def load_arguments(self, _):
     with self.argument_context('eventgrid event-subscription') as c:
         c.argument('topic_name', help='Name of the Event Grid topic', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
-        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'inputeventschema', 'cloudeventv01schema'], default='eventgridschema'), help='Schema in which events should be delivered for this event subscription. By default, events are delivered in the eventgridschema. To make EventGrid deliver events in the same schema as the published event schema, use customeventschema as the value for this parameter. To make EventGrid deliver events in the Cloud Events V0.1 schema, use cloudeventv01schema as the value for this parameter.')
+        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'inputeventschema', 'cloudeventv01schema'], default='inputeventschema'), help='The schema in which events should be delivered for this event subscription. By default, events are delivered in the same schema in which they are published (inputeventschema).')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
         c.argument('event_ttl', help="Event time to live (in minutes). Must be a number between 1 and 1440.")
         c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")

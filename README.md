@@ -28,6 +28,7 @@ Add your extension to the index to make it available in these CLI commands:
 - Extension source code goes into the `src` directory.
 - You can place your source code in this repository by creating a PR.
 - Once CI is green and it has been approved, the PR can be merged.
+- SDKs generated from [AutoRest](https://github.com/Azure/autorest) often do not pass CI static-checking. If they are vendored inside the extension, exclude them from static checking by placing them in the folder: `src/<extension root>/azext_*/vendored_sdks`.
 - Ensure that you include an appropriate owner for your extension in `.github/CODEOWNERS`.
 - Your extension artifact (i.e. `.whl`) will not live in this repository. You can publish your extension to PyPI or somewhere else such as Azure Storage.
 - If you want your extension to appear in the index.json, modify the index.

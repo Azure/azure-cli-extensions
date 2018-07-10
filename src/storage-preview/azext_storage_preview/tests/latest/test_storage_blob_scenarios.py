@@ -14,9 +14,10 @@ from azure.cli.core.profiles import ResourceType
 
 from ..._client_factory import NO_CREDENTIALS_ERROR_MESSAGE
 from .storage_test_util import StorageScenarioMixin
+from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(parameter_name='source_account')
@@ -365,6 +366,22 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
         with self.assertRaises(Exception):
             self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --type append --if-none-match *', account_info,
                              container, local_file, blob_name)
+
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_blob_update_service_properties(self, resource_group):
+        storage_account = self.create_random_name(prefix='account', length=24)
+
+        self.cmd('storage account create -n {} -g {} --kind StorageV2'.format(storage_account, resource_group))
+        account_info = self.get_account_info(resource_group, storage_account)
+
+        self.storage_cmd('storage blob service-properties show', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', False))
+
+        self.storage_cmd('storage blob service-properties update --static-website --index-document index.html '
+                         '--404-document error.html', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', True),
+                                JMESPathCheck('staticWebsite.errorDocument_404Path', 'error.html'),
+                                JMESPathCheck('staticWebsite.indexDocument', 'index.html'))
 
 
 if __name__ == '__main__':
