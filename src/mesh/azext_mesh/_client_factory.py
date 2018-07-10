@@ -4,34 +4,34 @@
 # --------------------------------------------------------------------------------------------
 
 
-def _cf_sbz(cli_ctx, **_):
+def _cf_mesh(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .sbz.mgmt.seabreeze import SeaBreezeManagementClient
-    return get_mgmt_service_client(cli_ctx, SeaBreezeManagementClient)
+    from .servicefabricmesh.mgmt.servicefabricmesh import ServiceFabricMeshManagementClient
+    return get_mgmt_service_client(cli_ctx, ServiceFabricMeshManagementClient)
 
 
-def cf_application(cli_ctx, _):
-    return _cf_sbz(cli_ctx).application
+def cf_mesh_application(cli_ctx, _):
+    return _cf_mesh(cli_ctx).application
 
 
-def cf_service(cli_ctx, _):
-    return _cf_sbz(cli_ctx).service
+def cf_mesh_service(cli_ctx, _):
+    return _cf_mesh(cli_ctx).service
 
 
-def cf_replica(cli_ctx, _):
-    return _cf_sbz(cli_ctx).replica
+def cf_mesh_replica(cli_ctx, _):
+    return _cf_mesh(cli_ctx).replica
 
 
-def cf_code_package(cli_ctx, _):
-    return _cf_sbz(cli_ctx).code_package
+def cf_mesh_code_package(cli_ctx, _):
+    return _cf_mesh(cli_ctx).code_package
 
 
-def cf_network(cli_ctx, _):
-    return _cf_sbz(cli_ctx).network
+def cf_mesh_network(cli_ctx, _):
+    return _cf_mesh(cli_ctx).network
 
 
-def cf_volume(cli_ctx, _):
-    return _cf_sbz(cli_ctx).volume
+def cf_mesh_volume(cli_ctx, _):
+    return _cf_mesh(cli_ctx).volume
 
 
 def _resource_client_factory(cli_ctx, **_):
@@ -40,5 +40,5 @@ def _resource_client_factory(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
 
 
-def cf_deployments(cli_ctx, _):
+def cf_mesh_deployments(cli_ctx, _):
     return _resource_client_factory(cli_ctx).deployments

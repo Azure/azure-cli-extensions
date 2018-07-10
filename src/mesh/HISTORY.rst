@@ -3,15 +3,23 @@
 Release History
 ===============
 
+0.8.0 (2018-07-09)
+++++++++++++++++++
+
+* Update SDK, use api-version (2018-07-01-preview).
+
+
 0.7.0 (2018-06-26)
 ++++++++++++++++++
 
 * Add statusDetails and unhealthyEvaluation
 
+
 0.6.0 (2018-05-14)
 ++++++++++++++++++
 
 * Change servicereplica and codepackage command name for CLI convenction
+
 
 0.5.0 (2018-05-02)
 ++++++++++++++++++

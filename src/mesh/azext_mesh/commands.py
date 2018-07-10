@@ -12,9 +12,10 @@ from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands import CliCommandType
 
 from azure.cli.command_modules.resource._validators import process_deployment_create_namespace
-from ._client_factory import (cf_application, cf_service, cf_deployments,
-                              cf_replica, cf_code_package, cf_network,
-                              cf_volume)
+from ._client_factory import (cf_mesh_deployments,
+                              cf_mesh_application, cf_mesh_service,
+                              cf_mesh_replica, cf_mesh_code_package, cf_mesh_network,
+                              cf_mesh_volume)
 from ._exception_handler import resource_exception_handler
 
 
@@ -102,29 +103,29 @@ def load_command_table(self, _):
         exception_handler=resource_exception_handler
     )
 
-    service_util = CliCommandType(
-        operations_tmpl='azext_mesh.sbz.mgmt.seabreeze.operations.service_operations#ServiceOperations.{}',
+    mesh_service_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.service_operations#ServiceOperations.{}',
         exception_handler=resource_exception_handler
     )
 
-    replica_util = CliCommandType(
-        operations_tmpl='azext_mesh.sbz.mgmt.seabreeze.operations.replica_operations#ReplicaOperations.{}',
+    mesh_replica_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.replica_operations#ReplicaOperations.{}',
         exception_handler=resource_exception_handler
     )
 
-    cp_util = CliCommandType(
-        operations_tmpl='azext_mesh.sbz.mgmt.seabreeze.operations.code_package_operations#CodePackageOperations.{}',
+    mesh_cp_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.code_package_operations#CodePackageOperations.{}',
         exception_handler=resource_exception_handler
     )
 
-    network_util = CliCommandType(
-        operations_tmpl='azext_mesh.sbz.mgmt.seabreeze.operations.network_operations#NetworkOperations.{}',
+    mesh_network_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.network_operations#NetworkOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     resource_deployment_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.resource.resources.operations.deployments_operations#DeploymentsOperations.{}',
-        client_factory=cf_deployments,
+        client_factory=cf_mesh_deployments,
         resource_type=ResourceType.MGMT_RESOURCE_RESOURCES,
         exception_handler=resource_exception_handler
     )
@@ -133,30 +134,30 @@ def load_command_table(self, _):
         g.custom_command('create', 'deploy_arm_template', supports_no_wait=True, validator=process_deployment_create_namespace)
 
     with self.command_group('mesh app', cmd_util) as g:
-        g.custom_command('list', 'list_application', client_factory=cf_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)
-        g.custom_command('show', 'show_application', client_factory=cf_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
-        g.custom_command('delete', 'delete_application', client_factory=cf_application, confirmation=True)
+        g.custom_command('list', 'list_application', client_factory=cf_mesh_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)
+        g.custom_command('show', 'show_application', client_factory=cf_mesh_application, table_transformer=transform_application, exception_handler=resource_exception_handler)
+        g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
 
-    with self.command_group('mesh service', service_util, client_factory=cf_service) as g:
+    with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
         g.command('list', 'list_by_application_name')
         g.command('show', 'get')
 
-    with self.command_group('mesh service-replica', replica_util, client_factory=cf_replica) as g:
+    with self.command_group('mesh service-replica', mesh_replica_util, client_factory=cf_mesh_replica) as g:
         g.command('list', 'list_by_service_name')
         g.command('show', 'get')
 
-    with self.command_group('mesh code-package-log', cp_util, client_factory=cf_code_package) as g:
+    with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
         g.command('get', 'get_container_log', transform=transform_log_output)
 
-    with self.command_group('mesh network', network_util, client_factory=cf_network) as g:
+    with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
         g.command('show', 'get', table_transformer=transform_network)
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh network', cmd_util) as g:
-        g.custom_command('list', 'list_networks', client_factory=cf_network, table_transformer=transform_network_list)
+        g.custom_command('list', 'list_networks', client_factory=cf_mesh_network, table_transformer=transform_network_list)
 
     with self.command_group('mesh volume', cmd_util) as g:
-        g.custom_command('create', 'create_volume', client_factory=cf_volume, table_transformer=transform_volume_list)
-        g.custom_command('list', 'list_volumes', client_factory=cf_volume, table_transformer=transform_volume_list)
-        g.custom_command('show', 'show_volume', client_factory=cf_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
-        g.custom_command('delete', 'delete_volume', client_factory=cf_volume, confirmation=True)
+        g.custom_command('create', 'create_volume', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
+        g.custom_command('list', 'list_volumes', client_factory=cf_mesh_volume, table_transformer=transform_volume_list)
+        g.custom_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
+        g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
