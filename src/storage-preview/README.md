@@ -9,7 +9,7 @@ az extension add --name storage-preview
 
 ### Included Features
 **OAuth:**
-Allow use of login credentials for authorization of storage operations: [more info](https://docs.microsoft.com/en-us/rest/api/storageservices/authenticate-with-azure-active-directory)
+Allow use of login credentials for authorization of storage operations: [more info](https://docs.microsoft.com/en-us/rest/api/storageservices/authenticate-with-azure-active-directory)\
 *Examples:*
 ```
 az storage container list \
@@ -18,7 +18,7 @@ az storage container list \
 ```
 
 **Immutable Storage-WORM(Write-Once-Read-Many):**
-Manage immutability storage with Azure blobs: [more info](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-immutable-storage)
+Manage immutability storage with Azure blobs: [more info](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-immutable-storage)\
 *Examples:*
 ```
 az storage container immutability-policy create \
@@ -39,7 +39,7 @@ az storage container legal-hold set \
 ```
 
 **Management Policy:**
-Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts)
+Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts)\
 *Examples:*
 ```
 az storage account management-policy create \
@@ -49,7 +49,7 @@ az storage account management-policy create \
 ```
 
 **Static Website:**
-Manage static website configurations.
+Manage static website configurations.\
 *Examples:*
 ```
 az storage blob service-properties update \
@@ -60,7 +60,7 @@ az storage blob service-properties update \
 ```
 
 **Hierarchical Namespace:**
-Enable the blob service to exhibit filesystem semantics.
+Enable the blob service to exhibit filesystem semantics.\
 *Examples:*
 ```
 az storage account create \
