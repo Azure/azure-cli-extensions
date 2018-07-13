@@ -124,8 +124,8 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
         encryption=encryption,
         access_tier=AccessTier(access_tier) if access_tier is not None else instance.access_tier,
         enable_https_traffic_only=https_only if https_only is not None else instance.enable_https_traffic_only,
-        enable_azure_files_aad_integration=file_aad if file_aad is not None \
-            else instance.enable_azure_files_aad_integration
+        enable_azure_files_aad_integration=file_aad if file_aad is not None
+        else instance.enable_azure_files_aad_integration
     )
     if assign_identity:
         params.identity = Identity()
