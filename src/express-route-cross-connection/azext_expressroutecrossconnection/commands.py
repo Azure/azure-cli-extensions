@@ -7,7 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import (
-    network_client_factory, cf_express_route_cross_connection_peerings, cf_express_route_cross_connections)
+    cf_express_route_cross_connection_peerings, cf_express_route_cross_connections)
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
@@ -23,8 +23,6 @@ def load_command_table(self, _):
         client_factory=cf_express_route_cross_connection_peerings,
         min_api='2018-04-01'
     )
-
-    cc_custom = CliCommandType(operations_tmpl='azext_expressroutecrossconnection.custom#{}')
 
     with self.command_group('network cross-connection', network_er_cc_sdk) as g:
         g.show_command('show', 'get')

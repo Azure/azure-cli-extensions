@@ -17,7 +17,7 @@ def update_express_route_cross_connection(instance, provisioning_state=None, not
 
     if bandwidth_in_mbps is not None:
         instance.bandwith_in_mbps = bandwidth_in_mbps
-        
+
     if notes is not None:
         instance.service_provider_notes = notes
 
@@ -84,9 +84,9 @@ def _create_or_update_ipv6_peering(cmd, config, primary_peer_address_prefix, sec
 
 
 def update_express_route_peering(cmd, instance, peer_asn=None, primary_peer_address_prefix=None,
-                                secondary_peer_address_prefix=None, vlan_id=None, shared_key=None,
-                                advertised_public_prefixes=None, customer_asn=None,
-                                routing_registry_name=None, ip_version='IPv4'):
+                                 secondary_peer_address_prefix=None, vlan_id=None, shared_key=None,
+                                 advertised_public_prefixes=None, customer_asn=None,
+                                 routing_registry_name=None, ip_version='IPv4'):
 
     # update settings common to all peering types
     if peer_asn is not None:

@@ -17,7 +17,7 @@ from azure.cli.command_modules.network._validators import validate_peering_type
 def load_arguments(self, _):
 
     (ExpressRouteCircuitSkuFamily, ExpressRouteCircuitSkuTier, ExpressRoutePeeringType) = self.get_models(
-         'ExpressRouteCircuitSkuFamily', 'ExpressRouteCircuitSkuTier', 'ExpressRoutePeeringType')
+        'ExpressRouteCircuitSkuFamily', 'ExpressRouteCircuitSkuTier', 'ExpressRoutePeeringType')
 
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
     cross_connection_name_type = CLIArgumentType(options_list=('--cross-connection-name',), metavar='NAME', help='ExpressRoute cross-connection name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteCrossConnections'))
