@@ -14,7 +14,7 @@ pylint ./src/*/azext_*/ --ignore=$PYLINT_EXCLUDES,vendored_sdks --ignore-pattern
 
 echo "Pylint OK."
 echo "Running flake8 on extensions..."
-flake8 --statistics --exclude=$FLAKE8_EXCLUDES,vendored_sdks --append-config=./.flake8 ./src/*/azext_*/
+flake8 --statistics --append-config=./.flake8 ./src/*/azext_*/
 echo "Flake8 OK."
 
 # Run pylint/flake8 on CI files

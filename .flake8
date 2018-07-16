@@ -7,3 +7,16 @@ ignore =
     F401,  # imported but unused, too many violations, to be removed in the future
     F811,  # redefinition of unused, to be removed in the future
     C901   # code flow is too complex, too many violations, to be removed in the future
+exclude = 
+    */vendored_sdks
+    docs
+    scripts
+    ./src/eventgrid/azext_eventgrid/mgmt/eventgrid
+    ./src/botservice/azext_bot/botservice
+    ./src/dns/azext_dns/dns
+    ./src/managementgroups/azext_managementgroups/managementgroups
+    ./src/managementpartner/azext_managementpartner/managementpartner
+    ./src/rdbms_vnet/azext_rdbms_vnet/postgresql
+    ./src/rdbms_vnet/azext_rdbms_vnet/mysql
+    ./src/signalr/azext_signalr/signalr
+    ./src/subscription/azext_subscription/subscription
