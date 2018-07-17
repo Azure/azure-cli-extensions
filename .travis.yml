@@ -7,11 +7,11 @@ install:
     - pip install pylint==1.9.2 flake8 requests wheel==0.30.0 -q
 jobs:
   include:
-    - stage: verify
+    - stage: precheck
       env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
       python: 2.7
-    - stage: verify
+    - stage: precheck
       env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
       python: 3.6
