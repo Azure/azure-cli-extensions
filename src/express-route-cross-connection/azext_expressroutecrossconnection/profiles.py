@@ -5,4 +5,4 @@
 
 from azure.cli.core.profiles import CustomResourceType
 
-CUSTOM_ER_CC = CustomResourceType('azext_expressroutecrossconnection.sdk', 'NetworkManagementClient')
+CUSTOM_ER_CC = CustomResourceType('azext_expressroutecrossconnection.vendored_sdks', 'NetworkManagementClient')

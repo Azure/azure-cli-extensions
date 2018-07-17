@@ -9,17 +9,18 @@ from azure.cli.core.commands import CliCommandType
 from ._client_factory import (
     cf_express_route_cross_connection_peerings, cf_express_route_cross_connections)
 
+
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
     network_er_cc_sdk = CliCommandType(
-        operations_tmpl='azext_expressroutecrossconnection.sdk.operations.express_route_cross_connections_operations#ExpressRouteCrossConnectionsOperations.{}',
+        operations_tmpl='azext_expressroutecrossconnection.vendored_sdks.operations.express_route_cross_connections_operations#ExpressRouteCrossConnectionsOperations.{}',
         client_factory=cf_express_route_cross_connections,
         min_api='2018-04-01'
     )
 
     network_er_cc_peering_sdk = CliCommandType(
-        operations_tmpl='azext_expressroutecrossconnection.sdk.operations.express_route_cross_connection_peerings_operations#ExpressRouteCrossConnectionPeeringsOperations.{}',
+        operations_tmpl='azext_expressroutecrossconnection.vendored_sdks.operations.express_route_cross_connection_peerings_operations#ExpressRouteCrossConnectionPeeringsOperations.{}',
         client_factory=cf_express_route_cross_connection_peerings,
         min_api='2018-04-01'
     )
@@ -39,4 +40,3 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.command('list', 'list')
         g.generic_update_command('update', setter_arg_name='peering_parameters', custom_func_name='update_express_route_peering')
-    

@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.7"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,14 +29,15 @@ DEPENDENCIES = []
 setup(
     name='express-route-cross-connection',
     version=VERSION,
-    description='Support for ExpressRoute cross connection resources',
-    long_description='Support for ExpressRoute cross connection resources',
+    description='Manage customer ExpressRoute circuits using an ExpressRoute cross-connection.',
+    long_description='These commands give ISPs limited ability to manage the ExpressRoute circuits of ' \
+                     'their customers through an ExpressRoute cross-connection resource.'
     license='MIT',
-    author='Travis Prescott',
-    author_email='trpresco@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/express-route-cross-connection',
     classifiers=CLASSIFIERS,
-    package_data={'azext_express-route-cross-connection': ['azext_metadata.json']},
+    package_data={'azext_expressroutecrossconnection': ['azext_metadata.json']},
     packages=find_packages(),
     install_requires=DEPENDENCIES
 )
