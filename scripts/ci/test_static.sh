@@ -23,4 +23,4 @@ flake8 --append-config=./.flake8 ./scripts/ci/*.py
 
 # Other static checks
 python ./scripts/ci/verify_codeowners.py
-python ./scripts/ci/verify_license.py 'src/storage-preview/azext_storage_preview/vendored_sdks'
+python ./scripts/ci/verify_license.py
