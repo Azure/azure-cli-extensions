@@ -33,7 +33,7 @@ def get_extension_help_files(cli_ctx):
     print('FOUND {} command(s) from the extension.'.format(len(cmd_table)))
     for cmd_name in cmd_table:
             invoker.commands_loader.load_arguments(cmd_name)
-    invoker.parser.load_command_table(invoker.commands_loader.command_table)
+    invoker.parser.load_command_table(invoker.commands_loader)
 
     parser_keys = []
     parser_values = []
@@ -44,10 +44,12 @@ def get_extension_help_files(cli_ctx):
         if cmd not in sub_parser_keys:
             sub_parser_keys.append(cmd)
             sub_parser_values.append(parser)
+    help_ctx = cli_ctx.help_cls(cli_ctx=cli_ctx)
     help_files = []
     for cmd, parser in zip(sub_parser_keys, sub_parser_values):
         try:
-            help_file = GroupHelpFile(cmd, parser) if _is_group(parser) else CliCommandHelpFile(cmd, parser)
+            help_file = GroupHelpFile(help_ctx, cmd, parser) if _is_group(parser) \
+                else CliCommandHelpFile(help_ctx, cmd, parser)
             help_file.load(parser)
             help_files.append(help_file)
         except Exception as ex:
@@ -73,6 +75,8 @@ class AzHelpGenDirective(Directive):
             yield ''
             yield '{}:summary: {}'.format(INDENT, help_file.short_summary)
             yield '{}:description: {}'.format(INDENT, help_file.long_summary)
+            if help_file.deprecate_info:
+                yield '{}:deprecated: {}'.format(INDENT, help_file.deprecate_info._get_message(help_file.deprecate_info))
             yield ''
 
             if is_command and help_file.parameters:
@@ -84,6 +88,8 @@ class AzHelpGenDirective(Directive):
                     yield '{}.. cliarg:: {}'.format(INDENT, arg.name)
                     yield ''
                     yield '{}:required: {}'.format(DOUBLEINDENT, arg.required)
+                    if arg.deprecate_info:
+                        yield '{}:deprecated: {}'.format(DOUBLEINDENT, arg.deprecate_info._get_message(arg.deprecate_info))
                     short_summary = arg.short_summary or ''
                     possible_values_index = short_summary.find(' Possible values include')
                     short_summary = short_summary[0:possible_values_index
