@@ -31,7 +31,7 @@ setup(
     version=VERSION,
     description='Manage customer ExpressRoute circuits using an ExpressRoute cross-connection.',
     long_description='These commands give ISPs limited ability to manage the ExpressRoute circuits of ' \
-                     'their customers through an ExpressRoute cross-connection resource.'
+                     'their customers through an ExpressRoute cross-connection resource.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',

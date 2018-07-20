@@ -8,19 +8,10 @@ from knack.help_files import helps
 
 helps['network cross-connection'] = """
     type: group
-    short-summary: Manage customers' dedicated private network fiber connections to Azure.
+    short-summary: Manage customers' ExpressRoute circuits.
     long-summary: >
         To learn more about ExpressRoute circuits visit
         https://docs.microsoft.com/en-us/azure/expressroute/howto-circuit-cli
-"""
-
-helps['network cross-connection get-stats'] = """
-    type: command
-    short-summary: Get the statistics of an ExpressRoute circuit.
-    examples:
-        - name: Get the statistics of an ExpressRoute circuit.
-          text: >
-            az network cross-connection get-stats -g MyResourceGroup -n MyCircuit
 """
 
 helps['network cross-connection list'] = """
@@ -34,7 +25,7 @@ helps['network cross-connection list'] = """
 
 helps['network cross-connection list-arp-tables'] = """
     type: command
-    short-summary: Show the current Address Resolution Protocol (ARP) table of an ExpressRoute circuit.
+    short-summary: Show the current Address Resolution Protocol (ARP) table of an ExpressRoute circuit peering.
     examples:
         - name: Show the current Address Resolution Protocol (ARP) table of an ExpressRoute circuit.
           text: |
@@ -68,14 +59,6 @@ helps['network cross-connection update'] = """
         - name: Change the SKU of an ExpressRoute circuit from Standard to Premium.
           text: >
             az network cross-connection update -n MyCircuit -g MyResourceGroup --sku-tier Premium
-"""
-
-helps['network cross-connection list-service-providers'] = """
-    type: command
-    short-summary: List available ExpressRoute service providers.
-    examples:
-        - name: List available ExpressRoute service providers.
-          text: az network cross-connection list-service-providers
 """
 
 helps['network cross-connection wait'] = """
