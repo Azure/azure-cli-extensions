@@ -15,4 +15,3 @@ from .version import VERSION
 __all__ = ['ServiceFabricMeshManagementClient']
 
 __version__ = VERSION
-

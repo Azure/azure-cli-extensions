@@ -3,6 +3,13 @@
 Release History
 ===============
 
+
+0.9.0 (2018-07-16)
+++++++++++++++++++
+
+* Added diagnostic output to deployment create command.
+
+
 0.8.0 (2018-07-09)
 ++++++++++++++++++
 
