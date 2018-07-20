@@ -12,7 +12,7 @@ import sys
 import tempfile
 import unittest
 import shutil
-from subprocess import check_call, CalledProcessError, PIPE
+from subprocess import check_output, check_call, CalledProcessError
 
 import mock
 from wheel.install import WHEEL_INFO_RE
@@ -76,8 +76,7 @@ class TestSourceWheels(unittest.TestCase):
             if not os.path.isfile(os.path.join(s, 'setup.py')):
                 continue
             try:
-                check_call(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir],
-                           cwd=s, stdout=PIPE, stderr=PIPE)
+                check_output(['python', 'setup.py', 'bdist_wheel', '-q', '-d', built_whl_dir], cwd=s)
             except CalledProcessError as err:
                 self.fail("Unable to build extension {} : {}".format(s, err))
         for filename in os.listdir(built_whl_dir):
