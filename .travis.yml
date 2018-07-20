@@ -10,10 +10,6 @@ jobs:
     - stage: precheck
       env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
-      python: 2.7
-    - stage: precheck
-      env: PURPOSE='SourceStatic'
-      script: ./scripts/ci/test_static.sh
       python: 3.6
     - stage: precheck
       env: PURPOSE='IndexVerify'
@@ -21,11 +17,11 @@ jobs:
       python: 3.6
     - stage: verify
       env: PURPOSE='SourceTests'
-      script: travis_wait 40 ./scripts/ci/test_source.sh
+      script: ./scripts/ci/test_source.sh
       python: 2.7
     - stage: verify
       env: PURPOSE='SourceTests'
-      script: travis_wait 40 ./scripts/ci/test_source.sh
+      script: ./scripts/ci/test_source.sh
       python: 3.6
     - stage: verify
       env: PURPOSE='IndexRefDocVerify'
