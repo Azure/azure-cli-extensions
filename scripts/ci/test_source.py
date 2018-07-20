@@ -25,11 +25,18 @@ ALL_TESTS = []
 
 for src_d in os.listdir(SRC_PATH):
     src_d_full = os.path.join(SRC_PATH, src_d)
-    if os.path.isdir(src_d_full):
-        pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
-        # Find the package and check it has tests
-        if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
-            ALL_TESTS.append((pkg_name, src_d_full))
+    if not os.path.isdir(src_d_full):
+        continue
+    pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
+
+    # If running in Travis CI, only run tests for edited extensions
+    commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
+    if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+        continue
+
+    # Find the package and check it has tests
+    if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
+        ALL_TESTS.append((pkg_name, src_d_full))
 
 
 class TestExtensionSourceMeta(type):
