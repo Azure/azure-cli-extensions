@@ -89,7 +89,7 @@ def transform_volume(result):
                         ('ResourceGroup', result['resourceGroup']),
                         ('Location', result['location']),
                         ('ProvisioningState', result.get('provisioningState')),
-                        ('Provider', result['properties']['provider'])])
+                        ('Provider', result.get('provider'))])
 
 
 def transform_volume_list(result):
