@@ -23,7 +23,6 @@ def load_arguments(self, _):
 
     with self.argument_context('network cross-connection') as c:
         c.argument('cross_connection_name', cross_connection_name_type, options_list=('--name', '-n'))
-        c.argument('bandwidth_in_mbps', options_list=('--bandwidth',), help="Bandwidth in Mbps of the circuit.")
 
     with self.argument_context('network cross-connection update') as c:
         c.argument('notes', help='Service provider notes.')

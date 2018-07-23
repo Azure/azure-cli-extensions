@@ -13,10 +13,7 @@ def list_express_route_cross_connections(cmd, resource_group_name=None):
     return client.list()
 
 
-def update_express_route_cross_connection(instance, provisioning_state=None, notes=None, bandwidth_in_mbps=None):
-
-    if bandwidth_in_mbps is not None:
-        instance.bandwith_in_mbps = bandwidth_in_mbps
+def update_express_route_cross_connection(instance, provisioning_state=None, notes=None):
 
     if notes is not None:
         instance.service_provider_notes = notes
