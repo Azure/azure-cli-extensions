@@ -26,11 +26,16 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
+with open('README.rst', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
+
 setup(
     name='loganalytics',
     version=VERSION,
-    description='Log Analytics data plane query CLI extension',
-    long_description='Log Analytics data plane query CLI extension',
+    description='Support for Azure Log Analytics query capabilities.',
+    long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Ace Eldeib',
     author_email='aleldeib@microsoft.com',
