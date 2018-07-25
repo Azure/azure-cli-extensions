@@ -9,7 +9,7 @@ Commands to manage Azure Service Fabric Mesh resources
         az mesh: Manage Azure Service Fabric Mesh resources.
 
     Commands:
-        app create: Create an application.
+        app deployment create: Create an application.
         app delete: Delete an application.
         app list  : List applications.
         app show  : Show the details of an application.
@@ -20,7 +20,7 @@ Commands to create an application
 ::
 
 	Command
-		az mesh app create: Create an Service Fabric Mesh application.
+		az mesh deployment create: Create an Service Fabric Mesh application.
 
 	Arguments
 		--resource-group -g [Required]: Name of resource group. You can configure the default group
