@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.9.1 (2018-07-26)
+++++++++++++++++++
+
+* Fix output in table format for volume list.
+
 
 0.9.0 (2018-07-16)
 ++++++++++++++++++
