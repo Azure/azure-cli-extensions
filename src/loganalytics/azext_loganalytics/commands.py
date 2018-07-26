@@ -16,5 +16,5 @@ def load_command_table(self, _):
         client_factory=loganalytics_data_plane_client
     )
 
-    with self.command_group('loganalytics', loganalytics_sdk) as g:
+    with self.command_group('monitor loganalytics', loganalytics_sdk) as g:
         g.command('query', 'execute_query')

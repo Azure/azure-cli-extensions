@@ -19,7 +19,7 @@ helps['loganalytics query'] = """
           short-summary: Query to execute over the Log Analytics data.
         - timespan: --timespan -t
           type: string
-          short-summary: Timespan over which to query data. Defaults to all data. 
+          short-summary: Timespan over which to query data. Defaults to all data.
         - workspaces: --workspaces
           type: array
           short-summary: Additional workspaces to union data for querying. Specify additional workspace IDs separated by commas.
