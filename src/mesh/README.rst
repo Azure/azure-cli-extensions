@@ -1,6 +1,6 @@
 Microsoft Azure CLI 'mesh' Command Module
 ==============================================================
-
+Official doc https://docs.microsoft.com/en-us/azure/service-fabric-mesh/
 Commands to manage Azure Service Fabric Mesh resources
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ::
@@ -19,31 +19,34 @@ Commands to create an application
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ::
 
-	Command
-		az mesh deployment create: Create an Service Fabric Mesh application.
+    Command
+        az mesh deployment create: Create a Service Fabric Mesh application.
 
-	Arguments
-		--resource-group -g [Required]: Name of resource group. You can configure the default group
-										using `az configure --defaults group=<name>`.
-		--mode
-		--no-wait                     : Do not wait for the long-running operation to finish.
-		--parameters
-		--template-file               : The full file path of creation template.
-		--template-uri                : The full file path of creation template on a http or https link.
+    Arguments
+        --resource-group -g [Required]: Name of resource group. You can configure the default group
+                                        using `az configure --defaults group=<name>`.
+        --mode
+        --name -n                     : The deployment name. Default to template file base name.
+        --no-wait                     : Do not wait for the long-running operation to finish.
+        --parameters
+        --template-file               : The full file path of creation template.
+        --template-uri                : The full file path of creation template on a http or https link.
 
-	Global Arguments
-		--debug                       : Increase logging verbosity to show all debug logs.
-		--help -h                     : Show this help message and exit.
-		--output -o                   : Output format.  Allowed values: json, jsonc, table, tsv.
-										Default: json.
-		--query                       : JMESPath query string. See http://jmespath.org/ for more
-										information and examples.
-		--verbose                     : Increase logging verbosity. Use --debug for full debug logs.
+    Global Arguments
+        --debug                       : Increase logging verbosity to show all debug logs.
+        --help -h                     : Show this help message and exit.
+        --output -o                   : Output format.  Allowed values: json, jsonc, table, tsv.
+                                        Default: json.
+        --query                       : JMESPath query string. See http://jmespath.org/ for more
+                                        information and examples.
+        --subscription                : Name or ID of subscription. You can configure the default
+                                        subscription using `az account set -s NAME_OR_ID`".
+        --verbose                     : Increase logging verbosity. Use --debug for full debug logs.
 
-	Examples
-		Create an application with a template file on the remote.
-			az mesh app create --resource-group mygroup --template-uri
-			https://seabreezequickstart.blob.core.windows.net/quickstart/application-quickstart.json
+    Examples
+        Create a deployment with a template file on the remote.
+            az mesh deployment create --resource-group mygroup --template-uri
+            https://seabreezequickstart.blob.core.windows.net/templates/quickstart/sbz_rp.linux.json
 
-		Create an application with a template file on local disk.
-			az mesh app create --resource-group mygroup --template-file ./appTemplate.json
+        Create a deployment with a template file on local disk.
+            az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
