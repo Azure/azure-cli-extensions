@@ -12,8 +12,8 @@ helps['vm encryption encrypt-vhd'] = """
     examples:
         - name: encrype a VHD and upload to a storage account
           text: |
-            az vm encryption encrypt-vhd --vhd-file ~/os_disk.vhd --storage-account myStorageAccount --container vhds --kv /subscriptions/xxxx/resourceGroups/myGroup/providers/Microsoft.KeyVault/vaults/myVault --kek myKey --storage-account myStorageAccount
+            az vm encryption encrypt-vhd --vhd-file ~/os_disk.vhd --storage-account myStorageAccount --container vhds --kv /subscriptions/xxxx/resourceGroups/myGroup/providers/Microsoft.KeyVault/vaults/myVault --kek myKey
         - name: encrypt a VHD at local (not uploading to storage)
           text: |
-            az vm encryption encrypt-vhd --vhd-file ~/os_disk.vhd --vhd-file-enc ~/os_disk.encrypted.vhd --kv /subscriptions/xxxx/resourceGroups/myGroup/providers/Microsoft.KeyVault/vaults/myVault --kek myKey --storage-account myStorageAccount
+            az vm encryption encrypt-vhd --vhd-file ~/os_disk.vhd --vhd-file-enc ~/os_disk.encrypted.vhd --kv /subscriptions/xxxx/resourceGroups/myGroup/providers/Microsoft.KeyVault/vaults/myVault --kek myKey
 """
