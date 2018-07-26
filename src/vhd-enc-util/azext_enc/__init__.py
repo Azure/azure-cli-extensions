@@ -30,7 +30,7 @@ class ENCCommandsLoader(AzCommandsLoader):
             c.argument('key_encryption_key', options_list=['--key-encryption-key', '--kek'], help='key vault key name or id')
             c.argument('vhd_file', options_list=['--vhd-file', '-f'], help='VHD file to encrypt')
             c.argument('blob_name', options_list=['--blob-name', '-b'], help='the name of the storage blob which the encrypted VHD get uploaded to. Default to the VHD file name ')
-            c.argument('container', options_list=['--container', '-c'], help='the storage container of the VHD blob. Default to "vhds"')
+            c.argument('container', options_list=['--container', '-c'], help='the storage container of the VHD blob')
             c.argument('storage_account', help='the storage account of the VHD blob')
             c.argument('vhd_file_enc', help="File name of encrypted VHD. This is required if you don't want to upload to storage")
             c.argument('no_progress', action='store_true', help="disable progress reporting")
