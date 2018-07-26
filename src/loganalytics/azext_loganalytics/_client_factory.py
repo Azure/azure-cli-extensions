@@ -6,7 +6,7 @@
 
 def loganalytics_data_plane_client(cli_ctx, _):
     """Initialize Log Analytics data client for use with CLI."""
-    from .loganalytics import LogAnalyticsDataClient
+    from .vendored_sdks.loganalytics import LogAnalyticsDataClient
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(

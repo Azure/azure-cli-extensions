@@ -10,5 +10,5 @@ logger = get_logger(__name__)
 
 def execute_query(client, workspace, kql, timespan=None, workspaces=None):
     """Executes a query against the provided Log Analytics workspace."""
-    from .loganalytics.models import QueryBody
+    from .vendored_sdks.loganalytics.models import QueryBody
     return client.query(workspace, QueryBody(query=kql, timespan=timespan, workspaces=workspaces))

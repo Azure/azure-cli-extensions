@@ -1,2 +1,2 @@
-Azure Log Analytics CLI Extension
-==================================
+Commands for working with Azure Log Analytics
+==============================================
