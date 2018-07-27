@@ -22,7 +22,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
-
+from azure.common import AzureMissingResourceHttpError
 from azure.storage.common.retry import ExponentialRetry
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.commands.client_factory import get_data_service_client, get_mgmt_service_client
@@ -38,7 +38,8 @@ logger = get_logger(__name__)
 def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, container='vhds', blob_name=None,
                         key_encryption_key=None, key_encryption_keyvault=None, no_progress=None, max_connections=10):
     # TODO: storage account should support sas as well
-    # TODO: round up the percentage
+
+    # arguments checks
     if not key_encryption_key or not key_encryption_keyvault:
         raise CLIError('useage error: --key-encryption-key KEY_NAME or KEY_ID --key-encryption-keyvault KEY_VAULT_RESOURCE_ID')
 
@@ -48,11 +49,18 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
     if not os.path.isfile(vhd_file):
         raise CLIError('"{}" to encrypt doesn\'t exist')
 
+    if storage_account:
+        data_client = _get_storage_prerequisites(cmd, storage_account, container)
+
     # check there is enough disk-space
-    required_size, target_path = os.path.getsize(vhd_file), vhd_file_enc or tempfile.gettempdir()
+    required_size = os.path.getsize(vhd_file)
+    if vhd_file_enc:
+        target_path = os.path.dirname(os.path.abspath(vhd_file_enc))
+    else:
+        target_path = tempfile.gettempdir()
     if _get_disk_free_spaces(target_path) < required_size:
-        raise CLIError('No enough disk space to contain encryption result. Please free up at least {} MB for "{}" drive',
-                       required_size//(1024**2), os.path.splitdrive(os.path.abspath(target_path))[0])
+        raise CLIError('No enough disk space to contain encryption result. Please free up at least {} GB from the drive of "{}"'.format(
+            required_size // (1024**3), target_path))
 
     if storage_account and not blob_name:
         blob_name = '{0}.encrypted.vhd'.format(os.path.splitext(vhd_file)[0])
@@ -64,7 +72,7 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
     if storage_account:
         logger.warning('\nUpload "%s" to "%s"', result_file, storage_account)
         try:
-            _upload_vhd_to_storage(cmd, result_file, storage_account, container, blob_name, metadata_key,
+            _upload_vhd_to_storage(cmd, result_file, data_client, container, blob_name, metadata_key,
                                    metedata_vaule, not no_progress, max_connections)
         finally:
             logger.warning('Removing local encrypted VHD: %s', result_file)
@@ -76,8 +84,8 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
             f.write(json.dumps(metedata_vaule))
         cmd = 'az storage blob upload --account-name myStorageAccount -c containter -n {0} -f "{1}" --metadata {2}=@{3}'.format(
             os.path.basename(result_file), result_file, metadata_key, metadata_file)
-        logger.warning('Encryption is completed. If you like to upload the encrypted VHD to create a VM,'
-                       ' run "%s".', cmd)
+        logger.warning('Encryption is completed. If you like to upload the encrypted VHD to create a VM later,'
+                       ' run the following command:\n    %s', cmd)
 
 
 def _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
@@ -245,30 +253,8 @@ def _encrypt_vhd_fragment(args, progress=None):
                 progress(total, total)
 
 
-def _upload_vhd_to_storage(cmd, file_path, storage_account, container_name, blob_name,
+def _upload_vhd_to_storage(cmd, file_path, client, container_name, blob_name,
                            metadata_key, metedata_vaule, show_progress, max_connections):
-    t_page_blob_service = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob.pageblobservice#PageBlobService')
-
-    scf = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE)
-    acc = next((x for x in scf.storage_accounts.list() if x.name == storage_account), None)
-    account_key = None
-    if acc:
-        rg = parse_resource_id(acc.id)['resource_group']
-
-        t_storage_account_keys, t_storage_account_list_keys_results = get_sdk(
-            cmd.cli_ctx, ResourceType.MGMT_STORAGE,
-            'models.storage_account_keys#StorageAccountKeys',
-            'models.storage_account_list_keys_result#StorageAccountListKeysResult')
-
-        if t_storage_account_keys:
-            account_key = scf.storage_accounts.list_keys(rg, storage_account).key1
-        elif t_storage_account_list_keys_results:
-            account_key = scf.storage_accounts.list_keys(rg, storage_account).keys[0].value  # pylint: disable=no-member
-
-    if not account_key:
-        raise ValueError('credentials to access storage account is missing')
-    client = get_data_service_client(cmd.cli_ctx, t_page_blob_service, storage_account, account_key, None, None,
-                                     socket_timeout=None, endpoint_suffix=cmd.cli_ctx.cloud.suffixes.storage_endpoint)
 
     client.retry = ExponentialRetry(initial_backoff=30, increment_base=2, max_attempts=10).retry
     # increase the block size to 100MB when the block list will contain more
@@ -337,3 +323,36 @@ def _get_disk_free_spaces(folder):
     except Exception as ex:  # pylint: disable=broad-except
         logger.info('get free space failed for error %s', ex)
         return 0
+
+
+def _get_storage_prerequisites(cmd, storage_account, container):
+    t_page_blob_service = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob.pageblobservice#PageBlobService')
+
+    mgmt_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_STORAGE)
+    acc = next((x for x in mgmt_client.storage_accounts.list() if x.name.lower() == storage_account.lower()), None)
+    account_key = None
+    if acc:
+        rg = parse_resource_id(acc.id)['resource_group']
+
+        t_storage_account_keys, t_storage_account_list_keys_results = get_sdk(
+            cmd.cli_ctx, ResourceType.MGMT_STORAGE,
+            'models.storage_account_keys#StorageAccountKeys',
+            'models.storage_account_list_keys_result#StorageAccountListKeysResult')
+
+        if t_storage_account_keys:
+            account_key = mgmt_client.storage_accounts.list_keys(rg, storage_account).key1
+        elif t_storage_account_list_keys_results:
+            account_key = mgmt_client.storage_accounts.list_keys(rg, storage_account).keys[0].value
+    else:
+        raise CLIError('Storage account of "{}" doesn\'t exist'.format(storage_account))
+
+    if not account_key:
+        raise ValueError('credentials to access storage account is missing')
+    data_client = get_data_service_client(cmd.cli_ctx, t_page_blob_service, storage_account,
+                                          account_key, None, None, socket_timeout=None,
+                                          endpoint_suffix=cmd.cli_ctx.cloud.suffixes.storage_endpoint)
+    try:
+        data_client.get_container_properties(container)  # verify the container exists
+    except AzureMissingResourceHttpError:
+        raise CLIError('"{}" doesn\'t exist in the storage account of "{}"'.format(container, storage_account))
+    return data_client
