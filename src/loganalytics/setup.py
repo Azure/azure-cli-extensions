@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.2"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -32,7 +32,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='azure-loganalytics-cli-extension',
+    name='log-analytics',
     version=VERSION,
     description='Support for Azure Log Analytics query capabilities.',
     long_description=README + '\n\n' + HISTORY,
