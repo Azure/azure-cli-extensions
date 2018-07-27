@@ -7,7 +7,7 @@ from knack.help_files import helps
 
 # pylint: disable=line-too-long
 
-helps['loganalytics query'] = """
+helps['monitor loganalytics query'] = """
     type: command
     short-summary: Query a Log Analytics workspace.
     parameters:
