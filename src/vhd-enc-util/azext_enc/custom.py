@@ -3,10 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=protected-access,line-too-long,too-many-locals
+# pylint: disable=protected-access,line-too-long,too-many-locals,too-many-statements
+import ctypes
 import os
 import base64
 import json
+import platform
 import struct
 import uuid
 import shutil
@@ -16,13 +18,12 @@ import multiprocessing
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from azure.storage.common.retry import ExponentialRetry
-
 from knack.log import get_logger
 from knack.util import CLIError
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
+from azure.storage.common.retry import ExponentialRetry
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.commands.client_factory import get_data_service_client, get_mgmt_service_client
 
@@ -35,7 +36,7 @@ logger = get_logger(__name__)
 
 
 def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, container='vhds', blob_name=None,
-                        key_encryption_key=None, key_encryption_keyvault=None, no_progress=None, max_connections=20):
+                        key_encryption_key=None, key_encryption_keyvault=None, no_progress=None, max_connections=10):
     # TODO: storage account should support sas as well
     # TODO: round up the percentage
     if not key_encryption_key or not key_encryption_keyvault:
@@ -46,6 +47,13 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
 
     if not os.path.isfile(vhd_file):
         raise CLIError('"{}" to encrypt doesn\'t exist')
+
+    # check there is enough disk-space
+    required_size, target_path = os.path.getsize(vhd_file), vhd_file_enc or tempfile.gettempdir()
+    if _get_disk_free_spaces(target_path) < required_size:
+        raise CLIError('No enough disk space to contain encryption result. Please free up at least {} MB for "{}" drive',
+                       required_size//(1024**2), os.path.splitdrive(os.path.abspath(target_path))[0])
+
     if storage_account and not blob_name:
         blob_name = '{0}.encrypted.vhd'.format(os.path.splitext(vhd_file)[0])
 
@@ -148,6 +156,12 @@ def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress):
         fd, fname = tempfile.mkstemp()
         os.close(fd)
         vhd_file_enc = fname
+
+    if proc_count != 1:
+        # do we have enugh temp space?
+        if _get_disk_free_spaces(tempfile.gettempdir()) - 1024**3 < vhd_size:
+            logger.info('no enough temporary disk space for concurrent encryption')
+            proc_count = 1
 
     if proc_count != 1:
         staging_dir = tempfile.mkdtemp()
@@ -256,7 +270,7 @@ def _upload_vhd_to_storage(cmd, file_path, storage_account, container_name, blob
     client = get_data_service_client(cmd.cli_ctx, t_page_blob_service, storage_account, account_key, None, None,
                                      socket_timeout=None, endpoint_suffix=cmd.cli_ctx.cloud.suffixes.storage_endpoint)
 
-    client.retry=ExponentialRetry(initial_backoff=30, increment_base=2, max_attempts=10).retry
+    client.retry = ExponentialRetry(initial_backoff=30, increment_base=2, max_attempts=10).retry
     # increase the block size to 100MB when the block list will contain more
     # than 50,000 blocks
     if os.stat(file_path).st_size > 50000 * 4 * 1024 * 1024:
@@ -310,3 +324,16 @@ def _create_keyvault_data_plane_client(cli_ctx):
 def _get_tweak(int_v):
     v = struct.pack('<I', int_v)
     return v.ljust(16, b'\0')
+
+
+def _get_disk_free_spaces(folder):
+    try:
+        if platform.system() == 'Windows':
+            free_bytes = ctypes.c_ulonglong(0)
+            ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+            return free_bytes.value
+        statvfs = os.statvfs(folder)  # pylint: disable=no-member
+        return statvfs.f_frsize * statvfs.f_bfree
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.info('get free space failed for error %s', ex)
+        return 0
