@@ -7,7 +7,7 @@
 
 
 def load_arguments(self, _):
-    with self.argument_context('loganalytics') as c:
+    with self.argument_context('monitor log-analytics') as c:
         c.argument('workspace', options_list=['--workspace', '-w'], help='GUID of the Log Analytics Workspace', required=True)
         c.argument('kql', help='Query to execute over Log Analytics data.', required=True)
         c.argument('timespan', options_list=['--timespan', '-t'], help='Timespan over which to query. Defaults to querying all available data.')
