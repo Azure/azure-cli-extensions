@@ -11,10 +11,5 @@ def load_command_table(self, _):
     from azure.cli.core.commands import CliCommandType
     from azext_loganalytics._client_factory import loganalytics_data_plane_client
 
-    loganalytics_sdk = CliCommandType(
-        operations_tmpl='azext_loganalytics.custom#{}',
-        client_factory=loganalytics_data_plane_client
-    )
-
     with self.command_group('monitor log-analytics') as g:
         g.custom_command('query', 'execute_query')
