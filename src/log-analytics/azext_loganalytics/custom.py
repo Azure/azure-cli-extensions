@@ -8,7 +8,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-def execute_query(client, workspace, kql, timespan=None, workspaces=None):
+def execute_query(client, workspace, analytics_query, timespan=None, workspaces=None):
     """Executes a query against the provided Log Analytics workspace."""
     from .vendored_sdks.loganalytics.models import QueryBody
-    return client.query(workspace, QueryBody(query=kql, timespan=timespan, workspaces=workspaces))
+    return client.query(workspace, QueryBody(query=analytics_query, timespan=timespan, workspaces=workspaces))

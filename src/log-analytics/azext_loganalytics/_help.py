@@ -14,7 +14,7 @@ helps['monitor log-analytics query'] = """
         - workspace: --workspace -w
           type: string
           short-summary: GUID of the Log Analytics workspace.
-        - kql: --kql -k
+        - analytics-query: --analytics-query
           type: string
           short-summary: Query to execute over the Log Analytics data.
         - timespan: --timespan -t
