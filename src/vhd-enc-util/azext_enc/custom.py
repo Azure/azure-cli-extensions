@@ -63,14 +63,14 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
             required_size // (1024**3), target_path))
 
     if storage_account and not blob_name:
-        blob_name = '{0}.encrypted.vhd'.format(os.path.splitext(vhd_file)[0])
+        blob_name = '{0}.encrypted.vhd'.format(os.path.splitext(os.path.basename(vhd_file))[0])
 
     metadata_key = 'DiskEncryptionSettings'
     key, metedata_vaule = _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault)
 
     result_file = _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, not no_progress)
     if storage_account:
-        logger.warning('\nUpload "%s" to "%s"', result_file, storage_account)
+        logger.warning('\nUpload "%s" to blob "%s" at storage of "%s"', result_file, blob_name, storage_account)
         try:
             _upload_vhd_to_storage(cmd, result_file, data_client, container, blob_name, metadata_key,
                                    metedata_vaule, not no_progress, max_connections)
@@ -118,7 +118,7 @@ def _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
         "encryptionSettingsVersion": "2.0",
         "dataEncryptionMetadata": {
             "encryptionCipherMode": "AES-XTS",
-            "encryptionKeyLength": 256,
+            "encryptionKeyLength": 512,
             "encryptionBlockSize": 512
         },
         "encryptionEnabled": True,
@@ -129,7 +129,8 @@ def _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
             },
             "keyEncryptionKey": {
                 "sourceVault": {"id": key_encryption_keyvault},
-                "keyUrl": key_encryption_key
+                "keyUrl": key_encryption_key,
+                "kekAlgorithm": "RSA-OAEP"
             }
         }]
     }
