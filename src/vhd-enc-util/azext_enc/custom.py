@@ -79,10 +79,10 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
             os.remove(result_file)
     else:
         # tell user the command they should run later to upload vhd and metadata together
-        _, metadata_file = tempfile.mkstemp()
+        metadata_file = vhd_file_enc + '.metadata'
         with open(metadata_file, 'w') as f:
             f.write(json.dumps(metedata_vaule))
-        cmd = 'az storage blob upload --account-name myStorageAccount -c containter -n {0} -f "{1}" --metadata {2}=@{3}'.format(
+        cmd = 'az storage blob upload --account-name myStorageAccount -c container -n {0} -f "{1}" --metadata {2}=@{3}'.format(
             os.path.basename(result_file), result_file, metadata_key, metadata_file)
         logger.warning('Encryption is completed. If you like to upload the encrypted VHD to create a VM later,'
                        ' run the following command:\n    %s', cmd)
