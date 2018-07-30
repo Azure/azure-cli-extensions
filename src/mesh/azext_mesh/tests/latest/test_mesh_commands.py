@@ -6,7 +6,6 @@ import os
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename).replace('\\', '\\\\')
-    # return os.path.abspath(os.path.join(os.path.abspath(__file__), 'data', filename)).replace("\\", "\\")
 
 
 class AzureMeshServiceScenarioTest(ScenarioTest):
