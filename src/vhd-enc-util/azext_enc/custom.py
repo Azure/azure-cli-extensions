@@ -208,7 +208,8 @@ def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress):
             if os.path.isdir(staging_dir):
                 shutil.rmtree(staging_dir)
     else:
-        _encrypt_vhd_fragment([vhd_file, vhd_file_enc, 0, sector_count, key])
+        _encrypt_vhd_fragment([vhd_file, vhd_file_enc, 0, sector_count, key],
+                              _init_progress_callback(cmd, 'Encrypting') if show_progress else None)
     return vhd_file_enc
 
 
