@@ -249,7 +249,7 @@ def _encrypt_vhd_fragment(args, progress=None):
                         progress(current, total)
                         prev = current
             encryptor.finalize()
-            if progress:  # make it 100%
+            if progress and prev != total:  # make it 100%
                 progress(total, total)
 
 
