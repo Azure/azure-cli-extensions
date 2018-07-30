@@ -70,7 +70,7 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
 
     result_file = _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, not no_progress)
     if storage_account:
-        logger.warning('\nUpload "%s" to blob "%s" at storage of "%s"', result_file, blob_name, storage_account)
+        logger.warning('\nUploading "%s" to blob "%s" at storage of "%s"', result_file, blob_name, storage_account)
         try:
             _upload_vhd_to_storage(cmd, result_file, data_client, container, blob_name, metadata_key,
                                    metedata_vaule, not no_progress, max_connections)
