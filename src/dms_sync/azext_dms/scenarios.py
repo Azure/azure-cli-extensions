@@ -43,9 +43,7 @@ def get_migrate_mysql_to_azuredbformysql_sync_input(database_options_json,
     for d in database_options_json:
         database_options.append(MigrateMySqlAzureDbForMySqlSyncDatabaseInput(
             name=d.get('name', None),
-            target_database_name=d.get('target_database_name', None),
-            make_source_db_read_only=None,
-            table_map=None))
+            target_database_name=d.get('target_database_name', None)))
 
     return MigrateMySqlAzureDbForMySqlSyncTaskInput(source_connection_info=source_connection_info,
                                                     target_connection_info=target_connection_info,
