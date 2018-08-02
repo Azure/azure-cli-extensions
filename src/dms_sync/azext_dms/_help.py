@@ -18,7 +18,7 @@ helps['dms project create'] = """
         - name: --source-platform
           type: string
           short-summary: >
-            The type of server for the source database. The supported types are: SQL, MySQL
+            The type of server for the source database. The supported types are: SQL, MySQL.
         - name: --target-platform
           type: string
           short-summary: >
