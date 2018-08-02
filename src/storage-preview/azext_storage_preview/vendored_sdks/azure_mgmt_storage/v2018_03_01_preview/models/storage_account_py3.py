@@ -94,6 +94,9 @@ class StorageAccount(TrackedResource):
      The access tier used for billing. Possible values include: 'Hot', 'Cool'
     :vartype access_tier: str or
      ~azure.mgmt.storage.v2018_03_01_preview.models.AccessTier
+    :param enable_azure_files_aad_integration: Enables Azure Files AAD
+     Integration for SMB if sets to true. Default value: False .
+    :type enable_azure_files_aad_integration: bool
     :param enable_https_traffic_only: Allows https traffic only to storage
      service if sets to true. Default value: False .
     :type enable_https_traffic_only: bool
@@ -148,12 +151,13 @@ class StorageAccount(TrackedResource):
         'secondary_endpoints': {'key': 'properties.secondaryEndpoints', 'type': 'Endpoints'},
         'encryption': {'key': 'properties.encryption', 'type': 'Encryption'},
         'access_tier': {'key': 'properties.accessTier', 'type': 'AccessTier'},
+        'enable_azure_files_aad_integration': {'key': 'properties.azureFilesAadIntegration', 'type': 'bool'},
         'enable_https_traffic_only': {'key': 'properties.supportsHttpsTrafficOnly', 'type': 'bool'},
         'network_rule_set': {'key': 'properties.networkAcls', 'type': 'NetworkRuleSet'},
         'is_hns_enabled': {'key': 'properties.isHnsEnabled', 'type': 'bool'},
     }
 
-    def __init__(self, *, location: str, tags=None, identity=None, enable_https_traffic_only: bool=False, is_hns_enabled: bool=False, **kwargs) -> None:
+    def __init__(self, *, location: str, tags=None, identity=None, enable_azure_files_aad_integration: bool=False, enable_https_traffic_only: bool=False, is_hns_enabled: bool=False, **kwargs) -> None:
         super(StorageAccount, self).__init__(tags=tags, location=location, **kwargs)
         self.sku = None
         self.kind = None
@@ -170,6 +174,7 @@ class StorageAccount(TrackedResource):
         self.secondary_endpoints = None
         self.encryption = None
         self.access_tier = None
+        self.enable_azure_files_aad_integration = enable_azure_files_aad_integration
         self.enable_https_traffic_only = enable_https_traffic_only
         self.network_rule_set = None
         self.is_hns_enabled = is_hns_enabled
