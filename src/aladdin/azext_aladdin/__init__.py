@@ -2,13 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
- 
-from knack.help_files import helps
 
 from azure.cli.core import AzCommandsLoader
-
-from knack.log import get_logger
-#logger = get_logger(__name__)
+from knack.help_files import helps
 
 helps['?'] = """
     type: command
@@ -26,11 +22,9 @@ class AladdinCommandsLoader(AzCommandsLoader):
 
         processquery_custom = CliCommandType(
             operations_tmpl='azext_aladdin.custom#{}')
-        super(AladdinCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                      custom_command_type=processquery_custom)
+        super(AladdinCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=processquery_custom)
         #print(cli_ctx.__dict__)
         #print(cli_ctx.invocation.parser = newParser)
-        
 
     def load_command_table(self, args):
         with self.command_group('?') as g:
