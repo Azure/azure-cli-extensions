@@ -16,8 +16,7 @@ class ConnectionInfo(Model):
     """Defines the connection properties of a server.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: OracleConnectionInfo, MySqlConnectionInfo,
-    SqlConnectionInfo
+    sub-classes are: MySqlConnectionInfo, SqlConnectionInfo
 
     :param user_name: User name
     :type user_name: str
@@ -38,7 +37,7 @@ class ConnectionInfo(Model):
     }
 
     _subtype_map = {
-        'type': {'OracleConnectionInfo': 'OracleConnectionInfo', 'MySqlConnectionInfo': 'MySqlConnectionInfo', 'SqlConnectionInfo': 'SqlConnectionInfo'}
+        'type': {'MySqlConnectionInfo': 'MySqlConnectionInfo', 'SqlConnectionInfo': 'SqlConnectionInfo'}
     }
 
     def __init__(self, user_name=None, password=None):

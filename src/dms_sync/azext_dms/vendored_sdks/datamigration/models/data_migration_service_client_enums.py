@@ -35,21 +35,6 @@ class AuthenticationType(Enum):
     active_directory_password = "ActiveDirectoryPassword"
 
 
-class OracleConnectionMode(Enum):
-
-    connection_string = "ConnectionString"
-    standard = "Standard"
-
-
-class DatabaseFileType(Enum):
-
-    rows = "Rows"
-    log = "Log"
-    filestream = "Filestream"
-    not_supported = "NotSupported"
-    fulltext = "Fulltext"
-
-
 class BackupType(Enum):
 
     database = "Database"
@@ -102,41 +87,6 @@ class SyncMigrationState(Enum):
     failed = "FAILED"
 
 
-class MigrationState(Enum):
-
-    none = "None"
-    in_progress = "InProgress"
-    failed = "Failed"
-    warning = "Warning"
-    completed = "Completed"
-    skipped = "Skipped"
-    stopped = "Stopped"
-
-
-class DatabaseMigrationStage(Enum):
-
-    none = "None"
-    initialize = "Initialize"
-    backup = "Backup"
-    file_copy = "FileCopy"
-    restore = "Restore"
-    completed = "Completed"
-
-
-class MigrationStatus(Enum):
-
-    default = "Default"
-    connecting = "Connecting"
-    source_and_target_selected = "SourceAndTargetSelected"
-    select_logins = "SelectLogins"
-    configured = "Configured"
-    running = "Running"
-    error = "Error"
-    stopped = "Stopped"
-    completed = "Completed"
-    completed_with_warnings = "CompletedWithWarnings"
-
-
 class ValidationStatus(Enum):
 
     default = "Default"
@@ -170,6 +120,41 @@ class ObjectType(Enum):
     user = "User"
     view = "View"
     function = "Function"
+
+
+class MigrationState(Enum):
+
+    none = "None"
+    in_progress = "InProgress"
+    failed = "Failed"
+    warning = "Warning"
+    completed = "Completed"
+    skipped = "Skipped"
+    stopped = "Stopped"
+
+
+class DatabaseMigrationStage(Enum):
+
+    none = "None"
+    initialize = "Initialize"
+    backup = "Backup"
+    file_copy = "FileCopy"
+    restore = "Restore"
+    completed = "Completed"
+
+
+class MigrationStatus(Enum):
+
+    default = "Default"
+    connecting = "Connecting"
+    source_and_target_selected = "SourceAndTargetSelected"
+    select_logins = "SelectLogins"
+    configured = "Configured"
+    running = "Running"
+    error = "Error"
+    stopped = "Stopped"
+    completed = "Completed"
+    completed_with_warnings = "CompletedWithWarnings"
 
 
 class LoginMigrationStage(Enum):
@@ -220,15 +205,20 @@ class DatabaseCompatLevel(Enum):
     compat_level140 = "CompatLevel140"
 
 
+class DatabaseFileType(Enum):
+
+    rows = "Rows"
+    log = "Log"
+    filestream = "Filestream"
+    not_supported = "NotSupported"
+    fulltext = "Fulltext"
+
+
 class ServerLevelPermissionsGroup(Enum):
 
     default = "Default"
     migration_from_sql_server_to_azure_db = "MigrationFromSqlServerToAzureDB"
     migration_from_sql_server_to_azure_mi = "MigrationFromSqlServerToAzureMI"
-    migration_from_sql_server_to_azure_vm = "MigrationFromSqlServerToAzureVM"
-    migration_from_oracle_to_sql = "MigrationFromOracleToSQL"
-    migration_from_oracle_to_azure_db = "MigrationFromOracleToAzureDB"
-    migration_from_oracle_to_azure_dw = "MigrationFromOracleToAzureDW"
     migration_from_my_sql_to_sql = "MigrationFromMySQLToSQL"
     migration_from_my_sql_to_azure_db = "MigrationFromMySQLToAzureDB"
     migration_from_my_sql_to_azure_db_for_my_sql = "MigrationFromMySQLToAzureDBForMySQL"
@@ -262,15 +252,8 @@ class ServiceProvisioningState(Enum):
 
 class ProjectTargetPlatform(Enum):
 
-    sql10 = "SQL10"
-    sql11 = "SQL11"
-    sql12 = "SQL12"
-    sql13 = "SQL13"
-    sql14 = "SQL14"
     sqldb = "SQLDB"
-    sqldw = "SQLDW"
     sqlmi = "SQLMI"
-    sqlvm = "SQLVM"
     azure_db_for_my_sql = "AzureDbForMySql"
     unknown = "Unknown"
 
@@ -278,11 +261,7 @@ class ProjectTargetPlatform(Enum):
 class ProjectSourcePlatform(Enum):
 
     sql = "SQL"
-    access = "Access"
-    db2 = "DB2"
     my_sql = "MySQL"
-    oracle = "Oracle"
-    sybase = "Sybase"
     unknown = "Unknown"
 
 

@@ -24,9 +24,7 @@ class ConnectToSourceMySqlTaskInput(Model):
      ~azure.mgmt.datamigration.models.MySqlTargetPlatformType
     :param check_permissions_group: Permission group for validations. Possible
      values include: 'Default', 'MigrationFromSqlServerToAzureDB',
-     'MigrationFromSqlServerToAzureMI', 'MigrationFromSqlServerToAzureVM',
-     'MigrationFromOracleToSQL', 'MigrationFromOracleToAzureDB',
-     'MigrationFromOracleToAzureDW', 'MigrationFromMySQLToSQL',
+     'MigrationFromSqlServerToAzureMI', 'MigrationFromMySQLToSQL',
      'MigrationFromMySQLToAzureDB', 'MigrationFromMySQLToAzureDBForMySQL'
     :type check_permissions_group: str or
      ~azure.mgmt.datamigration.models.ServerLevelPermissionsGroup

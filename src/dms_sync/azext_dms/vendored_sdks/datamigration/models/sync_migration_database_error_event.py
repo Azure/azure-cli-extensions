@@ -13,7 +13,7 @@ from msrest.serialization import Model
 
 
 class SyncMigrationDatabaseErrorEvent(Model):
-    """Database migration errors.
+    """Database migration errors for online migration.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.

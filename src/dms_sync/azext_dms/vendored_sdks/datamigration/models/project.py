@@ -29,12 +29,11 @@ class Project(TrackedResource):
     :param location: Resource location.
     :type location: str
     :param source_platform: Source platform for the project. Possible values
-     include: 'SQL', 'Access', 'DB2', 'MySQL', 'Oracle', 'Sybase', 'Unknown'
+     include: 'SQL', 'MySQL', 'Unknown'
     :type source_platform: str or
      ~azure.mgmt.datamigration.models.ProjectSourcePlatform
     :param target_platform: Target platform for the project. Possible values
-     include: 'SQL10', 'SQL11', 'SQL12', 'SQL13', 'SQL14', 'SQLDB', 'SQLDW',
-     'SQLMI', 'SQLVM', 'AzureDbForMySql', 'Unknown'
+     include: 'SQLDB', 'SQLMI', 'AzureDbForMySql', 'Unknown'
     :type target_platform: str or
      ~azure.mgmt.datamigration.models.ProjectTargetPlatform
     :ivar creation_time: UTC Date and time when project was created

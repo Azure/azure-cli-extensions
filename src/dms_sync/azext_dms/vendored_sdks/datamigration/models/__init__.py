@@ -20,17 +20,11 @@ from .resource import Resource
 from .get_tde_certificates_sql_task_output import GetTdeCertificatesSqlTaskOutput
 from .selected_certificate_input import SelectedCertificateInput
 from .file_share import FileShare
-from .oracle_connection_info import OracleConnectionInfo
 from .my_sql_connection_info import MySqlConnectionInfo
 from .connection_info import ConnectionInfo
 from .sql_connection_info import SqlConnectionInfo
 from .get_tde_certificates_sql_task_input import GetTdeCertificatesSqlTaskInput
 from .get_tde_certificates_sql_task_properties import GetTdeCertificatesSqlTaskProperties
-from .validate_migration_input_sql_server_sql_server_task_output import ValidateMigrationInputSqlServerSqlServerTaskOutput
-from .database_file_input import DatabaseFileInput
-from .migrate_sql_server_sql_server_database_input import MigrateSqlServerSqlServerDatabaseInput
-from .validate_migration_input_sql_server_sql_server_task_input import ValidateMigrationInputSqlServerSqlServerTaskInput
-from .validate_migration_input_sql_server_sql_server_task_properties import ValidateMigrationInputSqlServerSqlServerTaskProperties
 from .database_backup_info import DatabaseBackupInfo
 from .validate_migration_input_sql_server_sql_mi_task_output import ValidateMigrationInputSqlServerSqlMITaskOutput
 from .blob_share import BlobShare
@@ -61,13 +55,6 @@ from .sql_migration_task_input import SqlMigrationTaskInput
 from .migration_validation_options import MigrationValidationOptions
 from .migrate_sql_server_sql_db_sync_task_input import MigrateSqlServerSqlDbSyncTaskInput
 from .migrate_sql_server_sql_db_sync_task_properties import MigrateSqlServerSqlDbSyncTaskProperties
-from .migrate_sql_server_sql_server_task_output_error import MigrateSqlServerSqlServerTaskOutputError
-from .data_item_migration_summary_result import DataItemMigrationSummaryResult
-from .migrate_sql_server_sql_server_task_output_database_level import MigrateSqlServerSqlServerTaskOutputDatabaseLevel
-from .migrate_sql_server_sql_server_task_output_migration_level import MigrateSqlServerSqlServerTaskOutputMigrationLevel
-from .migrate_sql_server_sql_server_task_output import MigrateSqlServerSqlServerTaskOutput
-from .migrate_sql_server_sql_server_task_input import MigrateSqlServerSqlServerTaskInput
-from .migrate_sql_server_sql_server_task_properties import MigrateSqlServerSqlServerTaskProperties
 from .validation_error import ValidationError
 from .wait_statistics import WaitStatistics
 from .execution_statistics import ExecutionStatistics
@@ -81,6 +68,7 @@ from .migration_validation_database_summary_result import MigrationValidationDat
 from .migration_validation_result import MigrationValidationResult
 from .migrate_sql_server_sql_db_task_output_error import MigrateSqlServerSqlDbTaskOutputError
 from .migrate_sql_server_sql_db_task_output_table_level import MigrateSqlServerSqlDbTaskOutputTableLevel
+from .data_item_migration_summary_result import DataItemMigrationSummaryResult
 from .migrate_sql_server_sql_db_task_output_database_level import MigrateSqlServerSqlDbTaskOutputDatabaseLevel
 from .migration_report_result import MigrationReportResult
 from .database_summary_result import DatabaseSummaryResult
@@ -100,19 +88,13 @@ from .migrate_sql_server_sql_mi_task_input import MigrateSqlServerSqlMITaskInput
 from .migrate_sql_server_sql_mi_task_properties import MigrateSqlServerSqlMITaskProperties
 from .migration_table_metadata import MigrationTableMetadata
 from .data_migration_project_metadata import DataMigrationProjectMetadata
-from .oracle_data_migration_project_metadata import OracleDataMigrationProjectMetadata
-from .get_project_details_oracle_sql_task_output import GetProjectDetailsOracleSqlTaskOutput
-from .get_project_details_non_sql_task_input import GetProjectDetailsNonSqlTaskInput
-from .get_project_details_oracle_sql_task_properties import GetProjectDetailsOracleSqlTaskProperties
 from .my_sql_data_migration_project_metadata import MySqlDataMigrationProjectMetadata
 from .get_project_details_my_sql_sql_task_output import GetProjectDetailsMySqlSqlTaskOutput
+from .get_project_details_non_sql_task_input import GetProjectDetailsNonSqlTaskInput
 from .get_project_details_my_sql_sql_task_properties import GetProjectDetailsMySqlSqlTaskProperties
 from .connect_to_target_azure_db_for_my_sql_task_output import ConnectToTargetAzureDbForMySqlTaskOutput
 from .connect_to_target_azure_db_for_my_sql_task_input import ConnectToTargetAzureDbForMySqlTaskInput
 from .connect_to_target_azure_db_for_my_sql_task_properties import ConnectToTargetAzureDbForMySqlTaskProperties
-from .connect_to_target_sql_server_task_output import ConnectToTargetSqlServerTaskOutput
-from .connect_to_target_sql_server_task_input import ConnectToTargetSqlServerTaskInput
-from .connect_to_target_sql_server_task_properties import ConnectToTargetSqlServerTaskProperties
 from .connect_to_target_sql_mi_task_output import ConnectToTargetSqlMITaskOutput
 from .connect_to_target_sql_mi_task_input import ConnectToTargetSqlMITaskInput
 from .connect_to_target_sql_mi_task_properties import ConnectToTargetSqlMITaskProperties
@@ -165,8 +147,6 @@ from .connect_to_source_my_sql_task_input import ConnectToSourceMySqlTaskInput
 from .server_properties import ServerProperties
 from .connect_to_source_non_sql_task_output import ConnectToSourceNonSqlTaskOutput
 from .connect_to_source_my_sql_task_properties import ConnectToSourceMySqlTaskProperties
-from .connect_to_source_oracle_task_input import ConnectToSourceOracleTaskInput
-from .connect_to_source_oracle_task_properties import ConnectToSourceOracleTaskProperties
 from .migrate_my_sql_sql_task_input import MigrateMySqlSqlTaskInput
 from .migrate_my_sql_sql_task_output import MigrateMySqlSqlTaskOutput
 from .migrate_my_sql_sql_task_properties import MigrateMySqlSqlTaskProperties
@@ -175,11 +155,10 @@ from .non_sql_data_migration_table_result import NonSqlDataMigrationTableResult
 from .non_sql_migration_task_output import NonSqlMigrationTaskOutput
 from .non_sql_data_migration_table import NonSqlDataMigrationTable
 from .non_sql_migration_task_input import NonSqlMigrationTaskInput
-from .migrate_oracle_sql_task_input import MigrateOracleSqlTaskInput
-from .migrate_oracle_sql_task_output import MigrateOracleSqlTaskOutput
-from .migrate_oracle_sql_task_properties import MigrateOracleSqlTaskProperties
 from .database import Database
 from .database_object_name import DatabaseObjectName
+from .database_file_input import DatabaseFileInput
+from .migrate_sql_server_sql_server_database_input import MigrateSqlServerSqlServerDatabaseInput
 from .resource_sku_paged import ResourceSkuPaged
 from .available_service_sku_paged import AvailableServiceSkuPaged
 from .data_migration_service_paged import DataMigrationServicePaged
@@ -191,24 +170,23 @@ from .data_migration_service_client_enums import (
     CommandState,
     SqlSourcePlatform,
     AuthenticationType,
-    OracleConnectionMode,
-    DatabaseFileType,
     BackupType,
     BackupMode,
     SyncTableMigrationState,
     SyncDatabaseMigrationReportingState,
     SyncMigrationState,
-    MigrationState,
-    DatabaseMigrationStage,
-    MigrationStatus,
     ValidationStatus,
     Severity,
     UpdateActionType,
     ObjectType,
+    MigrationState,
+    DatabaseMigrationStage,
+    MigrationStatus,
     LoginMigrationStage,
     LoginType,
     DatabaseState,
     DatabaseCompatLevel,
+    DatabaseFileType,
     ServerLevelPermissionsGroup,
     TaskState,
     ServiceProvisioningState,
@@ -238,17 +216,11 @@ __all__ = [
     'GetTdeCertificatesSqlTaskOutput',
     'SelectedCertificateInput',
     'FileShare',
-    'OracleConnectionInfo',
     'MySqlConnectionInfo',
     'ConnectionInfo',
     'SqlConnectionInfo',
     'GetTdeCertificatesSqlTaskInput',
     'GetTdeCertificatesSqlTaskProperties',
-    'ValidateMigrationInputSqlServerSqlServerTaskOutput',
-    'DatabaseFileInput',
-    'MigrateSqlServerSqlServerDatabaseInput',
-    'ValidateMigrationInputSqlServerSqlServerTaskInput',
-    'ValidateMigrationInputSqlServerSqlServerTaskProperties',
     'DatabaseBackupInfo',
     'ValidateMigrationInputSqlServerSqlMITaskOutput',
     'BlobShare',
@@ -279,13 +251,6 @@ __all__ = [
     'MigrationValidationOptions',
     'MigrateSqlServerSqlDbSyncTaskInput',
     'MigrateSqlServerSqlDbSyncTaskProperties',
-    'MigrateSqlServerSqlServerTaskOutputError',
-    'DataItemMigrationSummaryResult',
-    'MigrateSqlServerSqlServerTaskOutputDatabaseLevel',
-    'MigrateSqlServerSqlServerTaskOutputMigrationLevel',
-    'MigrateSqlServerSqlServerTaskOutput',
-    'MigrateSqlServerSqlServerTaskInput',
-    'MigrateSqlServerSqlServerTaskProperties',
     'ValidationError',
     'WaitStatistics',
     'ExecutionStatistics',
@@ -299,6 +264,7 @@ __all__ = [
     'MigrationValidationResult',
     'MigrateSqlServerSqlDbTaskOutputError',
     'MigrateSqlServerSqlDbTaskOutputTableLevel',
+    'DataItemMigrationSummaryResult',
     'MigrateSqlServerSqlDbTaskOutputDatabaseLevel',
     'MigrationReportResult',
     'DatabaseSummaryResult',
@@ -318,19 +284,13 @@ __all__ = [
     'MigrateSqlServerSqlMITaskProperties',
     'MigrationTableMetadata',
     'DataMigrationProjectMetadata',
-    'OracleDataMigrationProjectMetadata',
-    'GetProjectDetailsOracleSqlTaskOutput',
-    'GetProjectDetailsNonSqlTaskInput',
-    'GetProjectDetailsOracleSqlTaskProperties',
     'MySqlDataMigrationProjectMetadata',
     'GetProjectDetailsMySqlSqlTaskOutput',
+    'GetProjectDetailsNonSqlTaskInput',
     'GetProjectDetailsMySqlSqlTaskProperties',
     'ConnectToTargetAzureDbForMySqlTaskOutput',
     'ConnectToTargetAzureDbForMySqlTaskInput',
     'ConnectToTargetAzureDbForMySqlTaskProperties',
-    'ConnectToTargetSqlServerTaskOutput',
-    'ConnectToTargetSqlServerTaskInput',
-    'ConnectToTargetSqlServerTaskProperties',
     'ConnectToTargetSqlMITaskOutput',
     'ConnectToTargetSqlMITaskInput',
     'ConnectToTargetSqlMITaskProperties',
@@ -383,8 +343,6 @@ __all__ = [
     'ServerProperties',
     'ConnectToSourceNonSqlTaskOutput',
     'ConnectToSourceMySqlTaskProperties',
-    'ConnectToSourceOracleTaskInput',
-    'ConnectToSourceOracleTaskProperties',
     'MigrateMySqlSqlTaskInput',
     'MigrateMySqlSqlTaskOutput',
     'MigrateMySqlSqlTaskProperties',
@@ -393,11 +351,10 @@ __all__ = [
     'NonSqlMigrationTaskOutput',
     'NonSqlDataMigrationTable',
     'NonSqlMigrationTaskInput',
-    'MigrateOracleSqlTaskInput',
-    'MigrateOracleSqlTaskOutput',
-    'MigrateOracleSqlTaskProperties',
     'Database',
     'DatabaseObjectName',
+    'DatabaseFileInput',
+    'MigrateSqlServerSqlServerDatabaseInput',
     'ResourceSkuPaged',
     'AvailableServiceSkuPaged',
     'DataMigrationServicePaged',
@@ -408,24 +365,23 @@ __all__ = [
     'CommandState',
     'SqlSourcePlatform',
     'AuthenticationType',
-    'OracleConnectionMode',
-    'DatabaseFileType',
     'BackupType',
     'BackupMode',
     'SyncTableMigrationState',
     'SyncDatabaseMigrationReportingState',
     'SyncMigrationState',
-    'MigrationState',
-    'DatabaseMigrationStage',
-    'MigrationStatus',
     'ValidationStatus',
     'Severity',
     'UpdateActionType',
     'ObjectType',
+    'MigrationState',
+    'DatabaseMigrationStage',
+    'MigrationStatus',
     'LoginMigrationStage',
     'LoginType',
     'DatabaseState',
     'DatabaseCompatLevel',
+    'DatabaseFileType',
     'ServerLevelPermissionsGroup',
     'TaskState',
     'ServiceProvisioningState',
