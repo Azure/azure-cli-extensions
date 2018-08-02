@@ -26,9 +26,9 @@ class AladdinCommandsLoader(AzCommandsLoader):
         #print(cli_ctx.__dict__)
         #print(cli_ctx.invocation.parser = newParser)
 
-    def load_command_table(self, args):
+    def load_command_table(self, _):
         with self.command_group('?') as g:
-            #print(args)
+            #print(args) #passed as argument
             g.custom_command('', 'processquery')
         return self.command_table
 
