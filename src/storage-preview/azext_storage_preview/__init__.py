@@ -15,7 +15,7 @@ class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
-        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-03-01-preview')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
@@ -132,10 +132,13 @@ class StorageArgumentContext(AzArgumentContext):
 
 
 class StorageCommandGroup(AzCommandGroup):
-    def storage_command(self, name, method_name=None, command_type=None, oauth=False, **kwargs):
+    def storage_command(self, name, method_name=None, command_type=None, oauth=False, generic_update=None, **kwargs):
         """ Registers an Azure CLI Storage Data Plane command. These commands always include the four parameters which
         can be used to obtain a storage client: account-name, account-key, connection-string, and sas-token. """
-        if command_type:
+        if generic_update:
+            command_name = '{} {}'.format(self.group_name, name) if self.group_name else name
+            self.generic_update_command(name, **kwargs)
+        elif command_type:
             command_name = self.command(name, method_name, command_type=command_type, **kwargs)
         else:
             command_name = self.command(name, method_name, **kwargs)
@@ -241,16 +244,16 @@ If you want to use the old authentication method and allow querying for the righ
 
 
 def _merge_new_exception_handler(kwargs, handler):
-    if kwargs.get('exception_handler'):
-        def new_handler(ex):
-            first = kwargs['exception_handler']
-            try:
-                first(ex)
-            except Exception as raised_ex:  # pylint: disable=broad-except
-                handler(raised_ex)
-        kwargs['exception_handler'] = new_handler
-    else:
-        kwargs['exception_handler'] = handler
+    first = kwargs.get('exception_handler')
+
+    def new_handler(ex):
+        try:
+            handler(ex)
+        except Exception:  # pylint: disable=broad-except
+            if not first:
+                raise
+            first(ex)
+    kwargs['exception_handler'] = new_handler
 
 
 COMMAND_LOADER_CLS = StorageCommandsLoader

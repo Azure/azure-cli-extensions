@@ -136,8 +136,9 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             'loc': location
         })
 
-        self.cmd('storage account create -n {name} -g {rg} -l {loc} --kind StorageV2',
-                 checks=[JMESPathCheck('kind', 'StorageV2')])
+        self.cmd('storage account create -n {name} -g {rg} -l {loc} --kind StorageV2 --hierarchical-namespace',
+                 checks=[JMESPathCheck('kind', 'StorageV2'),
+                         JMESPathCheck('isHnsEnabled', True)])
 
         self.cmd('storage account check-name --name {name}', checks=[
             JMESPathCheck('nameAvailable', False),

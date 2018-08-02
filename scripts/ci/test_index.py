@@ -16,7 +16,7 @@ import unittest
 import hashlib
 import shutil
 from wheel.install import WHEEL_INFO_RE
-from util import get_ext_metadata, get_whl_from_url, get_index_data, SKIP_DEP_CHECK
+from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
 
 
 def get_sha256sum(a_file):
@@ -136,11 +136,12 @@ class TestIndex(unittest.TestCase):
                                      "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
                                                                               separators=(',', ': '))))
                 run_requires = metadata.get('run_requires')
-                if run_requires and ext_name not in SKIP_DEP_CHECK:
+                if run_requires:
                     deps = run_requires[0]['requires']
-                    self.assertTrue(all(not dep.startswith('azure-') for dep in deps),
-                                    "Dependencies of {} use disallowed extension dependencies. "
-                                    "Remove these dependencies: {}".format(item['filename'], deps))
+                    self.assertTrue(
+                        all(verify_dependency(dep) for dep in deps),
+                        "Dependencies of {} use disallowed extension dependencies. "
+                        "Remove these dependencies: {}".format(item['filename'], deps))
         shutil.rmtree(extensions_dir)
 
 

@@ -32,7 +32,7 @@ class MockCLI(CLI):
 class MockLoader(object):
     def __init__(self, ctx):
         self.ctx = ctx
-        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
 
     def get_models(self, *attr_args, **_):
         from azure.cli.core.profiles import get_sdk
