@@ -12,7 +12,7 @@ def processquery(question):
     # print(cmd.__dict__)
     print(random.choice(wait_messages))
     logger.warn('Please wait...\n')
-    print(process_answer(question))
+    process_answer(question)
 
 def process_answer(query):
     answer_list = call_aladdin_service(query)

@@ -6,7 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 from knack.help_files import helps
 
-helps['?'] = """
+helps['find'] = """
     type: command
     short-summary: Ask a question about Azure CLI.
 """
@@ -23,13 +23,13 @@ class AladdinCommandsLoader(AzCommandsLoader):
         #print(cli_ctx.invocation.parser = newParser)
 
     def load_command_table(self, _):
-        with self.command_group('?') as g:
+        with self.command_group('') as g:
             #print(args) #passed as argument
-            g.custom_command('', 'processquery')
+            g.custom_command('find', 'processquery')
         return self.command_table
 
     def load_arguments(self, _):
-        with self.argument_context('?') as c:
+        with self.argument_context('find') as c:
             c.argument('question', options_list=['-q', '--question'], help='Questions about Azure CLI commands.')
 
 COMMAND_LOADER_CLS = AladdinCommandsLoader
