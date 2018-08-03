@@ -1,6 +1,13 @@
 Microsoft Azure CLI 'mesh' Command Module
 ==============================================================
 Official doc https://docs.microsoft.com/en-us/azure/service-fabric-mesh/
+
+Run tests using
+python tests/latest/test_mesh_commands.py
+Delete the recordings file to run live tests instead of through vcr.
+For more info on testing see
+https://github.com/Azure/azure-cli/blob/dev/doc/authoring_tests.md
+
 Commands to manage Azure Service Fabric Mesh resources
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ::
