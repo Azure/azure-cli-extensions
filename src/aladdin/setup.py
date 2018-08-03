@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.0.21"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,13 +29,14 @@ DEPENDENCIES = []
 setup(
     name='aladdin',
     version=VERSION,
-    description='An Azure CLI Extension.',
-    long_description='Aladdin answers your CLI questions.',
+    description='Intelligent querying for CLI information.',
+    long_description='Aladdin answers any CLI related questions from defining Azure terms to finding the right CLI command for your task.',
     license='MIT',
-    author='SMART.',
-    author_email='vssmart@microsoft.com',
-    url='https://github.com/ORG/REPO',
+    author='Roshanak Zilouchian',
+    author_email='rozilouc@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aladdin',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    install_requires=DEPENDENCIES
+    install_requires=DEPENDENCIES,
+    package_data={'azext_aladdin': ['azext_metadata.json']}
 )

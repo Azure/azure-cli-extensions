@@ -6,25 +6,28 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 wait_messages = ['Ok, let me find an answer to that question for you.',
-                 'I\'m working on finding the right anwser for you.', 'Let me see if I answer that for you.']
+                 'I\'m working on finding the right answer for you.', 'Let me see if I answer that for you.']
 
-def processquery(query):
+def processquery(question):
     # print(cmd.__dict__)
     print(random.choice(wait_messages))
-    logger.warn('Please wait...')
-    print(process_answer(query))
-
+    logger.warn('Please wait...\n')
+    print(process_answer(question))
 
 def process_answer(query):
     answer_list = call_aladdin_service(query)
+    num_results_to_show = 1
     if answer_list:
-        print(answer_list[0]['snippet'],
-              "\nFor more information please see:", answer_list[0]['link'])
-    else:
-        print("Not 100% sure. But, here are some information I was able to gather for you: ")
-        # Bing search result
-
-
+        if answer_list[0]['source'] == 'bing':
+            print("Here are some information I was able to gather for you: ")
+            num_results_to_show = 3
+        for i in range(0, num_results_to_show):
+            print(answer_list[i]['title'])
+            print(answer_list[i]['snippet'],
+                "\nFor more information please see:", answer_list[i]['link'])
+            if(num_results_to_show > 1):
+                print("=========================================")
+    
 def call_aladdin_service(query):
     service_input = {
         'paragraphText': "",
@@ -43,4 +46,3 @@ def call_aladdin_service(query):
         return answers
 
     print('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
-    return None

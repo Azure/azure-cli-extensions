@@ -9,10 +9,6 @@ from knack.help_files import helps
 helps['?'] = """
     type: command
     short-summary: Ask a question about Azure CLI.
-    parameters:
-        - query: -q
-          type: string
-          short-summary: Question to ask Aladdin.
 """
 
 class AladdinCommandsLoader(AzCommandsLoader):
@@ -34,6 +30,6 @@ class AladdinCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, _):
         with self.argument_context('?') as c:
-            c.argument('query', options_list=['-q'], help='Question to ask Aladdin.')
+            c.argument('question', options_list=['-q', '--question'], help='Questions about Azure CLI commands.')
 
 COMMAND_LOADER_CLS = AladdinCommandsLoader
