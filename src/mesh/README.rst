@@ -4,7 +4,8 @@ Official doc https://docs.microsoft.com/en-us/azure/service-fabric-mesh/
 
 Run tests using
 python tests/latest/test_mesh_commands.py
-Delete the recordings file to run live tests instead of through vcr.
+Delete the recordings file to run live tests instead of through vcr by deleting
+ mesh\azext_mesh\tests\latest\recordings
 For more info on testing see
 https://github.com/Azure/azure-cli/blob/dev/doc/authoring_tests.md
 
