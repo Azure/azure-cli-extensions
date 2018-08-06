@@ -11,6 +11,7 @@ helps['find'] = """
     short-summary: Ask a question about Azure CLI.
 """
 
+
 class AladdinCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
@@ -18,18 +19,21 @@ class AladdinCommandsLoader(AzCommandsLoader):
 
         processquery_custom = CliCommandType(
             operations_tmpl='azext_aladdin.custom#{}')
-        super(AladdinCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=processquery_custom)
-        #print(cli_ctx.__dict__)
-        #print(cli_ctx.invocation.parser = newParser)
+        super(AladdinCommandsLoader, self).__init__(
+            cli_ctx=cli_ctx, custom_command_type=processquery_custom)
+        # print(cli_ctx.__dict__)
+        # print(cli_ctx.invocation.parser = newParser)
 
     def load_command_table(self, _):
         with self.command_group('') as g:
-            #print(args) #passed as argument
+            # print(args) #passed as argument
             g.custom_command('find', 'processquery')
         return self.command_table
 
     def load_arguments(self, _):
         with self.argument_context('find') as c:
-            c.argument('question', options_list=['-q', '--question'], help='Questions about Azure CLI commands.')
+            c.argument('question', options_list=[
+                       '-q', '--question'], help='Questions about Azure CLI commands.')
+
 
 COMMAND_LOADER_CLS = AladdinCommandsLoader
