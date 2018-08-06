@@ -27,16 +27,16 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='aladdin',
+    name='find',
     version=VERSION,
     description='Intelligent querying for CLI information.',
-    long_description='Aladdin answers any CLI related questions from defining Azure terms to finding the right CLI command for your task.',
+    long_description='Find answers any CLI related questions from defining Azure terms to finding the right CLI command for your task.',
     license='MIT',
     author='Roshanak Zilouchian',
     author_email='rozilouc@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aladdin',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/find',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_aladdin': ['azext_metadata.json']}
+    package_data={'azext_find': ['azext_metadata.json']}
 )

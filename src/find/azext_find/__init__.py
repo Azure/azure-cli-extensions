@@ -12,14 +12,14 @@ helps['find'] = """
 """
 
 
-class AladdinCommandsLoader(AzCommandsLoader):
+class FindCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
         processquery_custom = CliCommandType(
-            operations_tmpl='azext_aladdin.custom#{}')
-        super(AladdinCommandsLoader, self).__init__(
+            operations_tmpl='azext_find.custom#{}')
+        super(FindCommandsLoader, self).__init__(
             cli_ctx=cli_ctx, custom_command_type=processquery_custom)
         # print(cli_ctx.__dict__)
         # print(cli_ctx.invocation.parser = newParser)
@@ -35,4 +35,4 @@ class AladdinCommandsLoader(AzCommandsLoader):
             c.argument('question', options_list=['-q', '--question'], help='Questions about Azure CLI commands.')
 
 
-COMMAND_LOADER_CLS = AladdinCommandsLoader
+COMMAND_LOADER_CLS = FindCommandsLoader
