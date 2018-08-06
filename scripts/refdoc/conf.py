@@ -37,3 +37,6 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+# Disable smartquotes to keep the document just the same as that in _help.py
+smartquotes = False
