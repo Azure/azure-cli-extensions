@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.9.1 (2018-07-26)
+0.9.2 (2018-07-26)
 ++++++++++++++++++
 
 * Fix output in get logs command.
