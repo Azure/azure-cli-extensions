@@ -23,11 +23,10 @@ def process_answer(query):
             num_results_to_show = 3
         for i in range(0, num_results_to_show):
             print(answer_list[i]['title'])
-            print(answer_list[i]['snippet'],
-                "\nFor more information please see:", answer_list[i]['link'])
-            if(num_results_to_show > 1):
+            print(answer_list[i]['snippet'], "\nFor more information please see:", answer_list[i]['link'])
+            if num_results_to_show > 1:
                 print("=========================================")
-    
+
 def call_aladdin_service(query):
     service_input = {
         'paragraphText': "",
@@ -46,3 +45,4 @@ def call_aladdin_service(query):
         return answers
 
     print('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
+    return []
