@@ -51,5 +51,5 @@ def call_aladdin_service(query):
     if response.status_code == 200:
         answers = json.loads(response.content)
         return answers
-    
+
     return response.status_code
