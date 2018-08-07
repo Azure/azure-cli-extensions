@@ -168,12 +168,12 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         logger.warning("Preparing to deploy %s contents to app.",
                        '' if is_skip_build else 'and build')
         enable_zip_deploy(cmd, rg_name, name, zip_file_path)
-        # if not is_java:
-        #     # Remove the file afer deployment, handling exception if user removed the file manually
-        #     try:
-        #         os.remove(zip_file_path)
-        #     except OSError:
-        #         pass
+        if not is_java:
+            # Remove the file afer deployment, handling exception if user removed the file manually
+            try:
+                os.remove(zip_file_path)
+            except OSError:
+                pass
     else:
         logger.warning('No known package (Node, ASP.NET, .NETCORE, Java or Static Html) '
                        'found skipping zip and deploy process')
