@@ -21,12 +21,9 @@ class FindCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_find.custom#{}')
         super(FindCommandsLoader, self).__init__(
             cli_ctx=cli_ctx, custom_command_type=processquery_custom)
-        # print(cli_ctx.__dict__)
-        # print(cli_ctx.invocation.parser = newParser)
 
     def load_command_table(self, _):
         with self.command_group('') as g:
-            # print(args) #passed as argument
             g.custom_command('find', 'processquery')
         return self.command_table
 
