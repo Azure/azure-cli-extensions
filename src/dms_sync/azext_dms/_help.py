@@ -40,7 +40,7 @@ helps['dms project task create'] = """
         - name: --target-platform
           type: string
           short-summary: >
-            The type of service for the target database. The supported types are: SQLDB, AzureDbForMySql.
+            The type of server for the target database. The supported types are: SQLDB, AzureDbForMySql.
         - name: --database-options-json
           type: string
           short-summary: >
