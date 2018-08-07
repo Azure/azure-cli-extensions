@@ -10,6 +10,7 @@ from knack.util import CLIError
 from azure.mgmt.web.models import (AppServicePlan, SkuDescription, SnapshotRecoveryRequest, SnapshotRecoveryTarget)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
+    enable_zip_deploy,
     create_webapp,
     update_app_settings,
     _get_site_credential,
@@ -166,7 +167,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
         logger.warning("Preparing to deploy %s contents to app.",
                        '' if is_skip_build else 'and build')
-        _zip_deploy(cmd, rg_name, name, zip_file_path)
+        enable_zip_deploy(cmd, rg_name, name, zip_file_path)
         if not is_java:
             # Remove the file afer deployment, handling exception if user removed the file manually
             try:
@@ -275,49 +276,3 @@ def _start_tunnel(tunnel_server, remote_debugging_enabled):
     if remote_debugging_enabled is False:
         logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
-
-
-def _zip_deploy(cmd, rg_name, name, zip_path):
-    user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
-    scm_url = _get_scm_url(cmd, rg_name, name)
-    zip_url = scm_url + '/api/zipdeploy?isAsync=true'
-
-    import urllib3
-    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
-    headers = authorization
-    headers['content-type'] = 'application/octet-stream'
-
-    import requests
-    import os
-    # Read file content
-    with open(os.path.realpath(os.path.expanduser(zip_path)), 'rb') as fs:
-        zip_content = fs.read()
-        requests.post(zip_url, data=zip_content, headers=headers)
-    # keep checking for status of the deployment
-    deployment_url = scm_url + '/api/deployments/latest'
-    response = requests.get(deployment_url, headers=authorization)
-    if response.json()['status'] != 4:
-        logger.warning(response.json()['progress'])
-        _check_deployment_status(deployment_url, authorization)
-
-
-def _check_deployment_status(deployment_url, authorization):
-    num_trials = 1
-    import requests
-    while num_trials < 200:
-        response = requests.get(deployment_url, headers=authorization)
-        res_dict = response.json()
-        num_trials = num_trials + 1
-        if res_dict['status'] == 5:
-            logger.warning("Zip deployment failed status {}".format(
-                res_dict['status_text']
-            ))
-            break
-        elif res_dict['status'] == 4:
-            break
-        logger.warning(res_dict['progress'])
-    # if the deployment is taking longer than expected
-    r = requests.get(deployment_url, headers=authorization)
-    if r.json()['status'] != 4:
-        logger.warning("""Deployment is taking longer than expected. Please verify status at '{}'
-            beforing launching the app""".format(deployment_url))
