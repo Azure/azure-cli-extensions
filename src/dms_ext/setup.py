@@ -27,9 +27,9 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dms_sync',
+    name='dms_ext',
     version=VERSION,
-    description='Support for continuous migrations.',
+    description='Support for new Database Migration Service scenarios.',
     license='MIT',
     author='Artyom Pavlichenko',
     author_email='arpavlic@microsoft.com',
