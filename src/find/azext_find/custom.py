@@ -14,25 +14,26 @@ wait_messages = ['Ok, let me find an answer to that question for you.',
                  'I\'m working on finding the right answer for you.', 'Let me see if I answer that for you.']
 
 
-def processquery(question):
+def process_query(question):
     print(random.choice(wait_messages))
-    logger.warn('Please wait...\n')
-    process_answer(question)
+    response = call_aladdin_service(question)
 
-
-def process_answer(query):
-    answer_list = call_aladdin_service(query)
-    num_results_to_show = 1
-    if answer_list:
-        if answer_list[0]['source'] == 'bing':
-            print("Here are some information I was able to gather for you: ")
-            num_results_to_show = 3
-        for i in range(num_results_to_show):
-            print(answer_list[i]['title'])
-            print(answer_list[i]['snippet'])
-            print("For more information please see:", answer_list[i]['link'])
-            if i + 1 < num_results_to_show:
-                print("=========================================")
+    if response.status_code != 200:
+        logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
+    else:
+        answer_list = json.loads(response.content)
+        num_results_to_show = 1
+        if answer_list:
+            if answer_list[0]['source'] == 'bing':
+                print("Here are some information I was able to gather for you: ")
+                num_results_to_show = 3
+            for i in range(num_results_to_show):
+                print(answer_list[i]['title'].strip())
+                print("- - - - - - - - - - - - - - - - - - - - - ")
+                print(answer_list[i]['snippet'].strip())
+                print("More info: ", answer_list[i]['link'])
+                if i + 1 < num_results_to_show:
+                    print("=========================================")
 
 
 def call_aladdin_service(query):
@@ -48,8 +49,4 @@ def call_aladdin_service(query):
 
     response = requests.post(api_url, headers=headers, json=service_input)
 
-    if response.status_code == 200:
-        answers = json.loads(response.content)
-        return answers
-
-    return response.status_code
+    return response

@@ -17,14 +17,14 @@ class FindCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
-        processquery_custom = CliCommandType(
+        process_query_custom = CliCommandType(
             operations_tmpl='azext_find.custom#{}')
         super(FindCommandsLoader, self).__init__(
-            cli_ctx=cli_ctx, custom_command_type=processquery_custom)
+            cli_ctx=cli_ctx, custom_command_type=process_query_custom)
 
     def load_command_table(self, _):
         with self.command_group('') as g:
-            g.custom_command('find', 'processquery')
+            g.custom_command('find', 'process_query')
         return self.command_table
 
     def load_arguments(self, _):
