@@ -339,7 +339,7 @@ class StorageAccountTestsForStack(StorageScenarioMixin, ScenarioTest):
                  checks=JMESPathCheck('nameAvailable', True))
 
     def test_show_usage_stack(self):
-        self.cmd('storage account show-usage', checks=JMESPathCheck('name.value', 'StorageAccounts'))
+        self.cmd('storage account show-usage -l westus', checks=JMESPathCheck('name.value', 'StorageAccounts'))
 
     @ResourceGroupPreparer(name_prefix='cli_test_storage_stack_scenario', location='local',
                            dev_setting_location='local')
