@@ -48,7 +48,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.command('check-name', 'check_name_availability')
         g.custom_command('create', 'create_storage_account', min_api='2016-01-01')
         g.command('delete', 'delete', confirmation=True)
-        g.command('show', 'get_properties')
+        g.show_command('show', 'get_properties')
         g.custom_command('list', 'list_storage_accounts')
         g.custom_command('show-usage', 'show_storage_account_usage')
         g.custom_command('show-connection-string', 'show_storage_account_connection_string')
@@ -62,7 +62,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage account management-policy', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
-        g.command('show', 'get_management_policies')
+        g.show_command('show', 'get_management_policies')
         g.custom_command('create', 'create_management_policies')
         g.generic_update_command('update', getter_name='get_management_policies',
                                  setter_name='update_management_policies',
@@ -225,8 +225,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     )
 
     with self.command_group('storage container immutability-policy', command_type=blob_container_mgmt_sdk) as g:
-        g.command('show', 'get_immutability_policy', transform=transform_immutability_policy,
-                  exception_handler=show_exception_handler)
+        g.show_command('show', 'get_immutability_policy', transform=transform_immutability_policy)
         g.command('create', 'create_or_update_immutability_policy')
         g.command('delete', 'delete_immutability_policy', transform=lambda x: None)
         g.command('lock', 'lock_immutability_policy')
@@ -235,8 +234,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage container legal-hold', command_type=blob_container_mgmt_sdk) as g:
         g.command('set', 'set_legal_hold')
         g.command('clear', 'clear_legal_hold')
-        g.command('show', 'get', transform=lambda x: getattr(x, 'legal_hold', x),
-                  exception_handler=show_exception_handler)
+        g.show_command('show', 'get', transform=lambda x: getattr(x, 'legal_hold', x))
 
     file_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.file.fileservice#FileService.{}',
