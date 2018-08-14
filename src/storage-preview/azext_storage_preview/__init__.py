@@ -160,19 +160,6 @@ class StorageCommandGroup(AzCommandGroup):
         _merge_new_exception_handler(kwargs, self.get_handler_suppress_403())
         self.storage_custom_command(*args, oauth=True, **kwargs)
 
-    def get_handler_suppress_404(self):
-        def handler(ex):
-            from azure.cli.core.profiles import get_sdk
-
-            t_error = get_sdk(self.command_loader.cli_ctx,
-                              CUSTOM_DATA_STORAGE,
-                              'common._error#AzureMissingResourceHttpError')
-            if isinstance(ex, t_error):
-                return
-            raise ex
-
-        return handler
-
     def get_handler_suppress_403(self):
         def handler(ex):
             from azure.cli.core.profiles import get_sdk
