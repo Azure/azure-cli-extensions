@@ -5,7 +5,7 @@
 
 import os
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, StorageAccountPreparer,
-                               JMESPathCheck, api_version_constraint)
+                               JMESPathCheck, JMESPathCheckExists, api_version_constraint)
 from azure.cli.core.profiles import ResourceType
 from ...profiles import CUSTOM_MGMT_STORAGE
 

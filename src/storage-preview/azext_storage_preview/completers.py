@@ -7,7 +7,7 @@ from azure.cli.core.decorators import Completer
 
 from .util import get_storage_client
 from ._validators import validate_client_parameters
-from ._client_factory import cf_sa, cf_blob_container_mgmt
+from ._client_factory import cf_blob_container_mgmt
 
 
 @Completer
