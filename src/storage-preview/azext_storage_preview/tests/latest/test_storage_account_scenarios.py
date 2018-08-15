@@ -109,10 +109,17 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('kind', 'Storage')
         ])
 
+        self.cmd('az storage account show -n {}'.format(name), checks=[
+            JMESPathCheck('name', name),
+            JMESPathCheck('location', location),
+            JMESPathCheck('sku.name', 'Standard_LRS'),
+            JMESPathCheck('kind', 'Storage')
+        ])
+
         self.cmd('storage account show-connection-string -g {} -n {} --protocol http'.format(
             resource_group, name), checks=[
-            JMESPathCheck("contains(connectionString, 'https')", False),
-            JMESPathCheck("contains(connectionString, '{}')".format(name), True)])
+                JMESPathCheck("contains(connectionString, 'https')", False),
+                JMESPathCheck("contains(connectionString, '{}')".format(name), True)])
 
         self.cmd('storage account update -g {} -n {} --tags foo=bar cat'
                  .format(resource_group, name),
@@ -153,8 +160,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.cmd(create_cmd, checks=[JMESPathCheck('sku.name', 'Standard_RAGRS')])
 
     def test_show_usage(self):
-        self.cmd('storage account show-usage', checks=JMESPathCheck('name.value', 'StorageAccounts'))
-        self.cmd('storage account show-usage -l centraluseuap', checks=JMESPathCheck('name.value', 'StorageAccounts'))
+        self.cmd('storage account show-usage -l westus', checks=JMESPathCheck('name.value', 'StorageAccounts'))
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
@@ -256,6 +262,25 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  '--encryption-key-name testkey '
                  '--encryption-key-version {ver} ')
 
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_storage_account_show_exit_codes(self, resource_group, storage_account):
+        self.kwargs = {'rg': resource_group, 'sa': storage_account}
+
+        self.assertEqual(self.cmd('storage account show -g {rg} -n {sa}').exit_code, 0)
+
+        with self.assertRaises(SystemExit) as ex:
+            self.cmd('storage account show text_causing_parsing_error')
+        self.assertEqual(ex.exception.code, 2)
+
+        with self.assertRaises(SystemExit) as ex:
+            self.cmd('storage account show -g fake_group -n {sa}')
+        self.assertEqual(ex.exception.code, 3)
+
+        with self.assertRaises(SystemExit) as ex:
+            self.cmd('storage account show -g {rg} -n fake_account')
+        self.assertEqual(ex.exception.code, 3)
+
     @ResourceGroupPreparer(location='eastus2euap')
     def test_management_policy(self, resource_group):
         import os
@@ -273,8 +298,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account management-policy show --account-name {sa} -g {rg}',
                  checks=JMESPathCheck('policy.rules[0].name', 'newname'))
         self.cmd('storage account management-policy delete --account-name {sa} -g {rg}')
-        with self.assertRaises(CloudError):
-            self.cmd('storage account management-policy show --account-name {sa} -g {rg}')
+        self.cmd('storage account management-policy show --account-name {sa} -g {rg}', expect_failure=True)
 
 
 @api_version_constraint(CUSTOM_MGMT_STORAGE, max_api='2016-01-01')
@@ -315,7 +339,7 @@ class StorageAccountTestsForStack(StorageScenarioMixin, ScenarioTest):
                  checks=JMESPathCheck('nameAvailable', True))
 
     def test_show_usage_stack(self):
-        self.cmd('storage account show-usage', checks=JMESPathCheck('name.value', 'StorageAccounts'))
+        self.cmd('storage account show-usage -l westus', checks=JMESPathCheck('name.value', 'StorageAccounts'))
 
     @ResourceGroupPreparer(name_prefix='cli_test_storage_stack_scenario', location='local',
                            dev_setting_location='local')
