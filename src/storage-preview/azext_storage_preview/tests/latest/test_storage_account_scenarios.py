@@ -136,7 +136,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                  checks=JMESPathCheck('nameAvailable', True))
 
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2017-10-01')
-    @ResourceGroupPreparer(parameter_name_for_location='location', location='southcentralus')
+    @ResourceGroupPreparer(parameter_name_for_location='location', location='westus2')
     def test_create_storage_account_v2(self, resource_group, location):
         self.kwargs.update({
             'name': self.create_random_name(prefix='cli', length=24),
