@@ -3,9 +3,9 @@
     "extensions": {
         "azure-batch-cli-extensions": [
             {
-                "filename": "azure_batch_cli_extensions-2.2.2-py2.py3-none-any.whl",
-                "sha256Digest": "212493c9b044a66271986f30efd8ac9dd7f736283272d0049fa4f125e9dc9323",
-                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.2.2/azure_batch_cli_extensions-2.2.2-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-2.4.1-py2.py3-none-any.whl",
+                "sha256Digest": "e4bace92de317d2c50dabc4676ef2795133d30bbb253214978b809b84807861e",
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.4.1/azure_batch_cli_extensions-2.4.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "azext.maxCliCoreVersion": "2.1.0",
@@ -26,122 +26,123 @@
                             }
                         }
                     },
+                    "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "azure-batch-cli-extensions",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "azure-batch-extensions (<3.2,>=3.0.0)"
+                            ]
+                        }
+                    ],
                     "summary": "Additional commands for working with Azure Batch service",
-                    "version": "2.2.2"
+                    "version": "2.4.1"
                 }
             }
         ],
         "azure-cli-iot-ext": [
             {
-                "filename": "azure_cli_iot_ext-0.4.5-py2.py3-none-any.whl",
-                "sha256Digest": "a93fc9ef7b6537cafd36fc57d6891ed15df70e50233f3355daf1fe0e32827b82",
-                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.4.5/azure_cli_iot_ext-0.4.5-py2.py3-none-any.whl",
+                "filename": "azure_cli_iot_ext-0.5.1-py2.py3-none-any.whl",
+                "sha256Digest": "136c50b6a2e4ba601bb79d3f890691d0132480a166f1fd9ec70b61b6fea6a21f",
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.5.1/azure_cli_iot_ext-0.5.1-py2.py3-none-any.whl",
                 "metadata": {
-                  "azext.minCliCoreVersion": "2.0.24",
-                  "classifiers": [
-                    "Development Status :: 4 - Beta",
-                    "Intended Audience :: Developers",
-                    "Intended Audience :: System Administrators",
-                    "Programming Language :: Python",
-                    "Programming Language :: Python :: 2",
-                    "Programming Language :: Python :: 2.7",
-                    "Programming Language :: Python :: 3",
-                    "Programming Language :: Python :: 3.4",
-                    "Programming Language :: Python :: 3.5",
-                    "Programming Language :: Python :: 3.6",
-                    "License :: OSI Approved :: MIT License"
-                  ],
-                  "extensions": {
-                    "python.details": {
-                      "contacts": [
-                        {
-                          "email": "iotupx@microsoft.com",
-                          "name": "Microsoft",
-                          "role": "author"
+                    "azext.minCliCoreVersion": "2.0.24",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "iotupx@microsoft.com",
+                                    "name": "Microsoft",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/azure/azure-iot-cli-extension"
+                            }
                         }
-                      ],
-                      "document_names": {
-                        "description": "DESCRIPTION.rst"
-                      },
-                      "project_urls": {
-                        "Home": "https://github.com/azure/azure-iot-cli-extension"
-                      }
-                    }
-                  },
-                  "extras": [],
-                  "generator": "bdist_wheel (0.30.0)",
-                  "license": "MIT",
-                  "metadata_version": "2.0",
-                  "name": "azure-cli-iot-ext",
-                  "run_requires": [
-                    {
-                      "requires": [
-                        "msrestazure (==0.4.29)",
-                        "paho-mqtt (==1.3.1)",
-                        "pyyaml"
-                      ]
-                    }
-                  ],
-                  "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
-                  "version": "0.4.5"
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "azure-cli-iot-ext",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "jmespath (==0.9.3)",
+                                "msrestazure (==0.4.29)",
+                                "paho-mqtt (==1.3.1)",
+                                "pyyaml (==3.13)"
+                            ]
+                        }
+                    ],
+                    "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
+                    "version": "0.5.1"
                 }
-            },
+            }
+        ],
+        "express-route-cross-connection": [
             {
-                "filename": "azure_cli_iot_ext-0.4.4-py2.py3-none-any.whl",
-                "sha256Digest": "da6fcb521773816d0b5b6d71dea32405b777ac0465be5a95f00459b9b8492ff8",
-                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.4.4/azure_cli_iot_ext-0.4.4-py2.py3-none-any.whl",
+                "filename": "express_route_cross_connection-0.1.0-py2.py3-none-any.whl",
+                "sha256Digest": "b055b9039422f6925d78ece21c90b3163de537e1a40c8f3a30654575cdc8ee24",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/express_route_cross_connection-0.1.0-py2.py3-none-any.whl",
                 "metadata": {
-                  "azext.minCliCoreVersion": "2.0.24",
-                  "classifiers": [
-                    "Development Status :: 4 - Beta",
-                    "Intended Audience :: Developers",
-                    "Intended Audience :: System Administrators",
-                    "Programming Language :: Python",
-                    "Programming Language :: Python :: 2",
-                    "Programming Language :: Python :: 2.7",
-                    "Programming Language :: Python :: 3",
-                    "Programming Language :: Python :: 3.4",
-                    "Programming Language :: Python :: 3.5",
-                    "Programming Language :: Python :: 3.6",
-                    "License :: OSI Approved :: MIT License"
-                  ],
-                  "extensions": {
-                    "python.details": {
-                      "contacts": [
-                        {
-                          "email": "iotupx@microsoft.com",
-                          "name": "Microsoft",
-                          "role": "author"
+                    "azext.minCliCoreVersion": "2.0.41",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/express-route-cross-connection"
+                            }
                         }
-                      ],
-                      "document_names": {
-                        "description": "DESCRIPTION.rst"
-                      },
-                      "project_urls": {
-                        "Home": "https://github.com/azure/azure-iot-cli-extension"
-                      }
-                    }
-                  },
-                  "extras": [],
-                  "generator": "bdist_wheel (0.30.0)",
-                  "license": "MIT",
-                  "metadata_version": "2.0",
-                  "name": "azure-cli-iot-ext",
-                  "run_requires": [
-                    {
-                      "requires": [
-                        "msrestazure",
-                        "paho-mqtt (==1.3.1)",
-                        "pyyaml"
-                      ]
-                    }
-                  ],
-                  "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
-                  "version": "0.4.4"
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "express-route-cross-connection",
+                    "summary": "Manage customer ExpressRoute circuits using an ExpressRoute cross-connection.",
+                    "version": "0.1.0"
                 }
             }
         ],
@@ -235,7 +236,7 @@
             },
             {
                 "filename": "image_copy_extension-0.0.6-py2.py3-none-any.whl",
-                "sha256Digest": "986ab7ab186974bb2c365bf4092ed5dd554b00017ddf4c70ea07a53bcaa6bcc7",                
+                "sha256Digest": "986ab7ab186974bb2c365bf4092ed5dd554b00017ddf4c70ea07a53bcaa6bcc7",
                 "downloadUrl": "https://files.pythonhosted.org/packages/ed/60/306879ce292e087d329ed15c7c63f42e880371ec8cc624c17bb28a1f937b/image_copy_extension-0.0.6-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
@@ -279,7 +280,7 @@
             },
             {
                 "filename": "image_copy_extension-0.0.7-py2.py3-none-any.whl",
-                "sha256Digest": "01a055c909a68f8990d8bab544b20a783c3fbe4d006947887ea9f253f358519e",                
+                "sha256Digest": "01a055c909a68f8990d8bab544b20a783c3fbe4d006947887ea9f253f358519e",
                 "downloadUrl": "https://files.pythonhosted.org/packages/2f/1c/71f08dfe9f1af698459384aeb141d7debeb09ecb5d6fcf359486196bc86c/image_copy_extension-0.0.7-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
@@ -370,9 +371,9 @@
         ],
         "dev-spaces-preview": [
             {
-                "filename": "dev_spaces_preview-0.1.3-py2.py3-none-any.whl",
-                "sha256Digest": "3d431ce5a0f873b41c87dda411bec3a1851c9ac2cb86b566b5317980f3eb116b",
-                "downloadUrl": "https://azuredevspacestools.blob.core.windows.net/azdssetup/LKS/dev_spaces_preview-0.1.3-py2.py3-none-any.whl",
+                "filename": "dev_spaces_preview-0.1.6-py2.py3-none-any.whl",
+                "sha256Digest": "cd0fc8a0f684b561e53c1deb235b3cfa85ef7a4df5f52d67cec6dcba5a9494ae",
+                "downloadUrl": "https://azuredevspacestools.blob.core.windows.net/azdssetup/LKS/dev_spaces_preview-0.1.6-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.32",
@@ -411,15 +412,15 @@
                     "metadata_version": "2.0",
                     "name": "dev-spaces-preview",
                     "summary": "Dev Spaces provides a rapid, iterative Kubernetes development experience for teams.",
-                    "version": "0.1.3"
+                    "version": "0.1.6"
                 }
             }
         ],
         "webapp": [
             {
-                "filename": "webapp-0.2.6-py2.py3-none-any.whl",
-                "sha256Digest": "758bf8c5cdea08dc4fade6bdd8714a01d737aefd400f4ccac55980ef6a387e7d",
-                "downloadUrl": "https://github.com/panchagnula/azure-cli-extensions/raw/sisirap-extensions-whl/dist/webapp-0.2.6-py2.py3-none-any.whl",
+                "filename": "webapp-0.2.7-py2.py3-none-any.whl",
+                "sha256Digest": "82ffe9ce4eff558d13031675bc16cc75f56acdcd98ccd79901858577e73a4caf",
+                "downloadUrl": "https://github.com/panchagnula/azure-cli-extensions/raw/sisirap-extensions-whl/dist/webapp-0.2.7-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.24",
@@ -453,12 +454,12 @@
                             }
                         }
                     },
-                    "generator": "bdist_wheel (0.29.0)",
+                    "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "webapp",
                     "summary": "An Azure CLI Extension to manage appservice resources",
-                    "version": "0.2.6"
+                    "version": "0.2.7"
                 }
             }
         ],
@@ -596,7 +597,7 @@
                     "version": "10.0.0"
                 }
             }
-        ],        
+        ],
         "alias": [
             {
                 "filename": "alias-0.5.1-py2.py3-none-any.whl",
@@ -819,7 +820,7 @@
                                 }
                             ],
                             "document_names": {
-                              "description": "DESCRIPTION.rst"
+                                "description": "DESCRIPTION.rst"
                             },
                             "project_urls": {
                                 "Home": "https://github.com/Azure/azure-keyvault-cli-extension"
@@ -866,7 +867,7 @@
                                 }
                             ],
                             "document_names": {
-                              "description": "DESCRIPTION.rst"
+                                "description": "DESCRIPTION.rst"
                             },
                             "project_urls": {
                                 "Home": "https://github.com/Azure/azure-cli-extensions"
@@ -884,9 +885,9 @@
         ],
         "botservice": [
             {
-                "filename": "botservice-0.0.2-py2.py3-none-any.whl",
-                "sha256Digest": "bfacf788883301a7711243287cdd3e38feea50d750bbe8e6b6284a29dfef78f0",
-                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.0.2-py2.py3-none-any.whl",
+                "filename": "botservice-0.0.3-py2.py3-none-any.whl",
+                "sha256Digest": "2bab390922c1ad9b6fa645b651540e7c8de14f20213fd6848a6fa67f0636f699",
+                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.0.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.30",
                     "azext.isPreview": true,
@@ -912,15 +913,15 @@
                     "metadata_version": "2.0",
                     "name": "botservice",
                     "summary": "Support for Azure Bot Service 2017-12-01 preview features",
-                    "version": "0.0.2"
+                    "version": "0.0.3"
                 }
             }
         ],
         "storage-preview": [
             {
-                "filename": "storage_preview-0.1.2-py2.py3-none-any.whl",
-                "sha256Digest": "a82a5cd6616fa6d4d29821ccc8b39bf125616f010eaf7e968def21c569a6dcf0",
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.2-py2.py3-none-any.whl",
+                "filename": "storage_preview-0.1.3-py2.py3-none-any.whl",
+                "sha256Digest": "e5715c73cc858041c610e14a059abd6311e78b6fd5342a09e8e86746e6ff8c9e",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.32.dev0",
@@ -954,12 +955,125 @@
                             }
                         }
                     },
-                    "generator": "bdist_wheel (0.30.0)",
+                    "generator": "bdist_wheel (0.29.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "storage-preview",
                     "summary": "Provides a preview for upcoming storage features.",
+                    "version": "0.1.3"
+                }
+            }
+        ],
+        "mesh": [
+            {
+                "filename": "mesh-0.9.1-py2.py3-none-any.whl",
+                "sha256Digest": "0c3a9d251910208139baf854d03de925e4d9b46bee99208f61ca4dcd2382eaa7",
+                "downloadUrl": "https://meshcli.blob.core.windows.net/cli/mesh-0.9.1-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.30",
+                    "azext.isPreview": true,
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "mesh",
+                    "summary": "Support for Microsoft Azure Service Fabric Mesh - Public Preview",
+                    "version": "0.9.1"
+                }
+            }
+        ],
+        "log-analytics": [
+            {
+                "filename": "log_analytics-0.1.2-py2.py3-none-any.whl",
+                "sha256Digest": "b958800232b5340871999f1e90aa3b198e1be645d5d7553e2f023759912f87a8",
+                "downloadUrl": "https://files.pythonhosted.org/packages/0c/06/78ddfe634d2af7b35a4931b7a17aea9f026c202316b18f861f462857a2fc/log_analytics-0.1.2-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "aleldeib@microsoft.com",
+                                    "name": "Ace Eldeib",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/log-analytics"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "log-analytics",
+                    "summary": "Support for Azure Log Analytics query capabilities.",
                     "version": "0.1.2"
+                }
+            }
+        ],
+        "find": [
+            {
+                "filename": "find-0.1.0-py2.py3-none-any.whl",
+                "sha256Digest": "659fd2dc8c1dd62cd8633a3a47e585faf01b584c8b3ecb6f136cb2c63d979b6a",
+                "downloadUrl": "https://smartmlprod.blob.core.windows.net/aladdin-public/find-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "rozilouc@microsoft.com",
+                                    "name": "Roshanak Zilouchian",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                              "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/find"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.29.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "find",
+                    "summary": "Intelligent querying for CLI information.",
+                    "version": "0.1.0"
                 }
             }
         ]

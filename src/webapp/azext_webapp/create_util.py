@@ -131,7 +131,7 @@ def get_lang_from_content(src_path):
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
-        runtime_details_dict['default_sku'] = 'S1'
+        runtime_details_dict['default_sku'] = 'B1'
     elif package_netlang_glob:
         package_netcore_file = os.path.join(src_path, package_netlang_glob[0])
         runtime_lang = detect_dotnet_lang(package_netcore_file)

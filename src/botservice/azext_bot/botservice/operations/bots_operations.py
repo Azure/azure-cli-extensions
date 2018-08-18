@@ -41,8 +41,8 @@ class BotsOperations(object):
         """Creates a Bot Service. Bot Service is a resource group wide resource
         type.
 
-        :param resource_group_name: The name of the resource group within the
-         user's subscription.
+        :param resource_group_name: The name of the Bot resource group in the
+         user subscription.
         :type resource_group_name: str
         :param resource_name: The name of the Bot resource.
         :type resource_name: str
@@ -62,7 +62,7 @@ class BotsOperations(object):
         # Construct URL
         url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.BotService/botServices/{resourceName}'
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
@@ -110,8 +110,8 @@ class BotsOperations(object):
             self, resource_group_name, resource_name, location=None, tags=None, sku=None, kind=None, etag=None, properties=None, custom_headers=None, raw=False, **operation_config):
         """Updates a Bot Service.
 
-        :param resource_group_name: The name of the resource group within the
-         user's subscription.
+        :param resource_group_name: The name of the Bot resource group in the
+         user subscription.
         :type resource_group_name: str
         :param resource_name: The name of the Bot resource.
         :type resource_name: str
@@ -144,7 +144,7 @@ class BotsOperations(object):
         # Construct URL
         url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.BotService/botServices/{resourceName}'
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
@@ -192,8 +192,8 @@ class BotsOperations(object):
             self, resource_group_name, resource_name, custom_headers=None, raw=False, **operation_config):
         """Deletes a Bot Service from the resource group. .
 
-        :param resource_group_name: The name of the resource group within the
-         user's subscription.
+        :param resource_group_name: The name of the Bot resource group in the
+         user subscription.
         :type resource_group_name: str
         :param resource_name: The name of the Bot resource.
         :type resource_name: str
@@ -210,7 +210,7 @@ class BotsOperations(object):
         # Construct URL
         url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.BotService/botServices/{resourceName}'
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
@@ -245,8 +245,8 @@ class BotsOperations(object):
             self, resource_group_name, resource_name, custom_headers=None, raw=False, **operation_config):
         """Returns a BotService specified by the parameters.
 
-        :param resource_group_name: The name of the resource group within the
-         user's subscription.
+        :param resource_group_name: The name of the Bot resource group in the
+         user subscription.
         :type resource_group_name: str
         :param resource_name: The name of the Bot resource.
         :type resource_name: str
@@ -264,7 +264,7 @@ class BotsOperations(object):
         # Construct URL
         url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.BotService/botServices/{resourceName}'
         path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'resourceName': self._serialize.url("resource_name", resource_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
         }
@@ -307,8 +307,8 @@ class BotsOperations(object):
         """Returns all the resources of a particular type belonging to a resource
         group.
 
-        :param resource_group_name: The name of the resource group within the
-         user's subscription.
+        :param resource_group_name: The name of the Bot resource group in the
+         user subscription.
         :type resource_group_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -327,7 +327,7 @@ class BotsOperations(object):
                 # Construct URL
                 url = '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.BotService/botServices'
                 path_format_arguments = {
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=64, min_length=2, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]*$'),
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)

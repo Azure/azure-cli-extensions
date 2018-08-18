@@ -108,3 +108,17 @@ def load_arguments(self, _):
         c.argument('client_id', help='The client id from slack')
         c.argument('verification_token', help='The verification token from slack')
         c.argument('landing_page_url', help='The landing page url to redirect to after login')
+
+    with self.argument_context('bot connection') as c:
+        c.argument('connection_name', options_list=['--connection-name', '-c'], help='name of the oauth connection setting')
+
+    with self.argument_context('bot connection create') as c:
+        c.argument('client_id', help='client id associated with the service provider setting')
+        c.argument('client_secret', help='client secret associated with the service provider setting')
+        c.argument('scopes', help='scopes associated with the service provider setting.The format depends on the service provider.')
+        c.argument('service_provider_name', options_list=['--service'], help='name of the service provider. For a list of all service providers, use az bot connection listserviceproviders')
+        c.argument('parameters', help='parameter values for Service Provider Parameters. Usage: --parameters key=value key1=value1', nargs='+')
+
+    with self.argument_context('bot connection list-providers') as c:
+        c.argument('as_raw_settings', options_list=['--as-raw'], help='Output the raw json for each service provider', arg_type=get_three_state_flag())
+        c.argument('name', options_list=['--provider-name'], help='service provider name for which to fetch details')
