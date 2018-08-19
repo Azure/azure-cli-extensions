@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import hashlib
 import datetime
 import time
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
@@ -20,12 +19,12 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription):
 
-    unique_subscription_string = get_random_string(STORAGE_ACCOUNT_NAME_LENGTH - len(location))
+    random_string = get_random_string(STORAGE_ACCOUNT_NAME_LENGTH - len(location))
 
     # create the target storage account
     logger.warn(
         "%s - Creating target storage account (can be slow sometimes)", location)
-    target_storage_account_name = location + unique_subscription_string
+    target_storage_account_name = location + random_string
     cli_cmd = prepare_cli_command(['storage', 'account', 'create',
                                    '--name', target_storage_account_name,
                                    '--resource-group', transient_resource_group_name,
