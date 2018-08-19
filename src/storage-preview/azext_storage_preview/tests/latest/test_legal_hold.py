@@ -7,9 +7,11 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
 
 
 class StorageLegalHold(ScenarioTest):
-    @ResourceGroupPreparer(location='eastus2euap')
-    @StorageAccountPreparer(location='eastus2euap')
-    def test_storage_legal_hold(self, resource_group, storage_account):
+    @ResourceGroupPreparer()
+    def test_storage_legal_hold(self, resource_group):
+        storage_account = self.create_random_name('clistorage', 20)
+        self.cmd('storage account create -g {} -n {} --kind StorageV2'.format(
+            resource_group, storage_account))
         container_name = 'container1'
         self.cmd('storage container create --account-name {} -n {}'.format(storage_account, container_name))
 

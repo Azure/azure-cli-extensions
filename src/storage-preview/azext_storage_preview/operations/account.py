@@ -10,9 +10,10 @@ from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from .._client_factory import storage_client_factory
 
 
+# pylint: disable=too-many-locals
 def create_storage_account(cmd, resource_group_name, account_name, sku=None, location=None, kind=None,
                            tags=None, custom_domain=None, encryption_services=None, access_tier=None, https_only=None,
-                           bypass=None, default_action=None, assign_identity=False):
+                           hierarchical_namespace=None, bypass=None, default_action=None, assign_identity=False):
     StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
                        'Encryption', 'NetworkRuleSet')
@@ -28,6 +29,8 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
         params.identity = Identity()
     if https_only:
         params.enable_https_traffic_only = https_only
+    if hierarchical_namespace:
+        params.is_hns_enabled = hierarchical_namespace
 
     if NetworkRuleSet and (bypass or default_action):
         if bypass and not default_action:
@@ -76,10 +79,8 @@ def show_storage_account_connection_string(cmd, resource_group_name, account_nam
     return {'connectionString': connection_string}
 
 
-def show_storage_account_usage(cmd, location=None):
+def show_storage_account_usage(cmd, location):
     scf = storage_client_factory(cmd.cli_ctx)
-    if not location:
-        return next((x for x in scf.usages.list() if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
     return next((x for x in scf.usages.list_by_location(location) if x.name.value == 'StorageAccounts'), None)  # pylint: disable=no-member
 
 
@@ -138,17 +139,17 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     return params
 
 
-def list_network_rules(client, resource_group_name, storage_account_name):
-    sa = client.get_properties(resource_group_name, storage_account_name)
+def list_network_rules(client, resource_group_name, account_name):
+    sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
     delattr(rules, 'bypass')
     delattr(rules, 'default_action')
     return rules
 
 
-def add_network_rule(cmd, client, resource_group_name, storage_account_name, action='Allow', subnet=None,
+def add_network_rule(cmd, client, resource_group_name, account_name, action='Allow', subnet=None,
                      vnet_name=None, ip_address=None):  # pylint: disable=unused-argument
-    sa = client.get_properties(resource_group_name, storage_account_name)
+    sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
     if subnet:
         from msrestazure.tools import is_valid_resource_id
@@ -167,12 +168,12 @@ def add_network_rule(cmd, client, resource_group_name, storage_account_name, act
 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)
-    return client.update(resource_group_name, storage_account_name, params)
+    return client.update(resource_group_name, account_name, params)
 
 
-def remove_network_rule(cmd, client, resource_group_name, storage_account_name, ip_address=None, subnet=None,
+def remove_network_rule(cmd, client, resource_group_name, account_name, ip_address=None, subnet=None,
                         vnet_name=None):  # pylint: disable=unused-argument
-    sa = client.get_properties(resource_group_name, storage_account_name)
+    sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
     if subnet:
         rules.virtual_network_rules = [x for x in rules.virtual_network_rules
@@ -182,7 +183,7 @@ def remove_network_rule(cmd, client, resource_group_name, storage_account_name, 
 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)
-    return client.update(resource_group_name, storage_account_name, params)
+    return client.update(resource_group_name, account_name, params)
 
 
 def create_management_policies(client, resource_group_name, account_name, policy=None):
