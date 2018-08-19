@@ -168,6 +168,7 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
         logger.error("The copy operation didn't succeed. Last status: %s", copy_status)
         raise CLIError('Blob copy failed')
 
+
 def get_random_string(length):
     import string
     import random
