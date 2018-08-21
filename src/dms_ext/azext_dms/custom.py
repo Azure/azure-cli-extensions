@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-
-from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from knack.prompting import prompt, prompt_pass
 from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MySqlConnectionInfo,
@@ -16,8 +14,9 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MigrateSyncCompleteCommandProperties)
 from azext_dms.scenarios import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                  get_migrate_postgresql_to_azuredbforpostgresql_sync_input)
+from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
-                                                  create_task as core_create_task)  
+                                                  create_task as core_create_task)
 
 
 # region Project
@@ -43,17 +42,17 @@ def create_or_update_project(
         try:
             # TODO: Remove this check after validations are added to core
             if source_platform != "sql" or target_platform != "sqldb":
-                raise
+                raise ValueError
 
             core_res = core_create_or_update_project(
-                        client,
-                        project_name,
-                        service_name,
-                        resource_group_name,
-                        location,
-                        source_platform,
-                        target_platform,
-                        tags)
+                client,
+                project_name,
+                service_name,
+                resource_group_name,
+                location,
+                source_platform,
+                target_platform,
+                tags)
         except:
             raise ValueError("The provided source-platform, target-platform combination is not appropriate. \n\
                 Please refer to the help file 'az dms project create -h' for the supported scenarios.")
@@ -101,25 +100,26 @@ def create_task(
         # TODO: We currently don't have any CLI core code to perform any validations
         # because of this we need to raise the error here.
         try:
-            # CLI core doesnt currently support task types - it only supports offline migrations. 
+            # CLI core doesnt currently support task types - it only supports offline migrations.
             # TODO: Remove this check after task types are supported
             if source_platform != "sql" or target_platform != "sqldb" or task_type != "offlinemigration":
-                raise
+                raise ValueError
 
             core_res = core_create_task(
-                        client,
-                        resource_group_name,
-                        service_name,
-                        project_name,
-                        task_name,
-                        source_connection_json,
-                        target_connection_json,
-                        database_options_json,
-                        enable_schema_validation,
-                        enable_data_integrity_validation,
-                        enable_query_analysis_validation)
+                client,
+                resource_group_name,
+                service_name,
+                project_name,
+                task_name,
+                source_connection_json,
+                target_connection_json,
+                database_options_json,
+                enable_schema_validation,
+                enable_data_integrity_validation,
+                enable_query_analysis_validation)
         except:
-            raise ValueError("The provided source-platform, target-platform, and task-type combination is not appropriate. \n\
+            raise ValueError("The provided source-platform, target-platform, and task-type \
+                combination is not appropriate. \n\
                 Please refer to the help file 'az dms project task create -h' for the supported scenarios.")
         else:
             return core_res
@@ -152,10 +152,7 @@ def create_task(
                                                     target_platform,
                                                     task_type,
                                                     source_connection_info,
-                                                    target_connection_info,
-                                                    enable_schema_validation,
-                                                    enable_data_integrity_validation,
-                                                    enable_query_analysis_validation)
+                                                    target_connection_info)
 
     return client.create_or_update(group_name=resource_group_name,
                                    service_name=service_name,
@@ -207,7 +204,6 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
     user_name = connection_info_json.get('userName', None) or prompt(prompt_prefix + 'Username: ')
     password = connection_info_json.get('password', None) or prompt_pass(msg=prompt_prefix + 'Password: ')
     server_name = connection_info_json.get('serverName', None)
-    
     if "mysql" in typeOfInfo:
         port = connection_info_json.get('port', 3306)
         return MySqlConnectionInfo(user_name=user_name,
@@ -230,10 +226,7 @@ def get_task_migration_properties(
         target_type,
         task_type,
         source_connection_info,
-        target_connection_info,
-        enable_schema_validation,
-        enable_data_integrity_validation,
-        enable_query_analysis_validation):
+        target_connection_info):
     if source_type == 'mysql' and target_type == 'azuredbformysql' and task_type == "onlinemigration":
         TaskProperties = MigrateMySqlAzureDbForMySqlSyncTaskProperties
         GetInput = get_migrate_mysql_to_azuredbformysql_sync_input
