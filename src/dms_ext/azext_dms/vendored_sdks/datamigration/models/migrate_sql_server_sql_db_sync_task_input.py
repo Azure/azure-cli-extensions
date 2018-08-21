@@ -14,7 +14,7 @@ from .sql_migration_task_input import SqlMigrationTaskInput
 
 class MigrateSqlServerSqlDbSyncTaskInput(SqlMigrationTaskInput):
     """Input for the task that migrates on-prem SQL Server databases to Azure SQL
-    Database with continuous sync.
+    Database for online migrations.
 
     :param source_connection_info: Information for connecting to source
     :type source_connection_info:

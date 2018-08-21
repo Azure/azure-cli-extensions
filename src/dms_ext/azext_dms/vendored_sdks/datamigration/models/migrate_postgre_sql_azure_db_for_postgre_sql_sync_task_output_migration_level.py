@@ -9,11 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .migrate_sql_server_sql_db_sync_task_output import MigrateSqlServerSqlDbSyncTaskOutput
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput
 
 
-class MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel(MigrateSqlServerSqlDbSyncTaskOutput):
-    """MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel.
+class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput):
+    """MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -34,8 +34,6 @@ class MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel(MigrateSqlServerSqlDbSyn
     :vartype target_server_version: str
     :ivar target_server: Target server name
     :vartype target_server: str
-    :ivar database_count: Count of databases
-    :vartype database_count: int
     """
 
     _validation = {
@@ -47,7 +45,6 @@ class MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel(MigrateSqlServerSqlDbSyn
         'source_server': {'readonly': True},
         'target_server_version': {'readonly': True},
         'target_server': {'readonly': True},
-        'database_count': {'readonly': True},
     }
 
     _attribute_map = {
@@ -59,16 +56,14 @@ class MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel(MigrateSqlServerSqlDbSyn
         'source_server': {'key': 'sourceServer', 'type': 'str'},
         'target_server_version': {'key': 'targetServerVersion', 'type': 'str'},
         'target_server': {'key': 'targetServer', 'type': 'str'},
-        'database_count': {'key': 'databaseCount', 'type': 'int'},
     }
 
     def __init__(self):
-        super(MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel, self).__init__()
+        super(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel, self).__init__()
         self.started_on = None
         self.ended_on = None
         self.source_server_version = None
         self.source_server = None
         self.target_server_version = None
         self.target_server = None
-        self.database_count = None
         self.result_type = 'MigrationLevelOutput'

@@ -77,16 +77,6 @@ class SyncDatabaseMigrationReportingState(Enum):
     failed = "FAILED"
 
 
-class SyncMigrationState(Enum):
-
-    undefined = "UNDEFINED"
-    validating = "VALIDATING"
-    pending = "PENDING"
-    complete = "COMPLETE"
-    action_required = "ACTION_REQUIRED"
-    failed = "FAILED"
-
-
 class ValidationStatus(Enum):
 
     default = "Default"
@@ -219,8 +209,6 @@ class ServerLevelPermissionsGroup(Enum):
     default = "Default"
     migration_from_sql_server_to_azure_db = "MigrationFromSqlServerToAzureDB"
     migration_from_sql_server_to_azure_mi = "MigrationFromSqlServerToAzureMI"
-    migration_from_my_sql_to_sql = "MigrationFromMySQLToSQL"
-    migration_from_my_sql_to_azure_db = "MigrationFromMySQLToAzureDB"
     migration_from_my_sql_to_azure_db_for_my_sql = "MigrationFromMySQLToAzureDBForMySQL"
 
 
@@ -255,6 +243,7 @@ class ProjectTargetPlatform(Enum):
     sqldb = "SQLDB"
     sqlmi = "SQLMI"
     azure_db_for_my_sql = "AzureDbForMySql"
+    azure_db_for_postgre_sql = "AzureDbForPostgreSql"
     unknown = "Unknown"
 
 
@@ -262,6 +251,7 @@ class ProjectSourcePlatform(Enum):
 
     sql = "SQL"
     my_sql = "MySQL"
+    postgre_sql = "PostgreSql"
     unknown = "Unknown"
 
 
@@ -269,12 +259,6 @@ class ProjectProvisioningState(Enum):
 
     deleting = "Deleting"
     succeeded = "Succeeded"
-
-
-class DataMovement(Enum):
-
-    one_time_migration = "OneTimeMigration"
-    continuous = "Continuous"
 
 
 class NameCheckFailureReason(Enum):
@@ -310,15 +294,7 @@ class ResourceSkuCapacityScaleType(Enum):
 
 class MySqlTargetPlatformType(Enum):
 
-    sql_server = "SqlServer"
     azure_db_for_my_sql = "AzureDbForMySQL"
-
-
-class ErrorType(Enum):
-
-    default = "Default"
-    warning = "Warning"
-    error = "Error"
 
 
 class DataMigrationResultCode(Enum):
@@ -329,3 +305,10 @@ class DataMigrationResultCode(Enum):
     object_not_exists_in_target = "ObjectNotExistsInTarget"
     target_object_is_inaccessible = "TargetObjectIsInaccessible"
     fatal_error = "FatalError"
+
+
+class ErrorType(Enum):
+
+    default = "Default"
+    warning = "Warning"
+    error = "Error"

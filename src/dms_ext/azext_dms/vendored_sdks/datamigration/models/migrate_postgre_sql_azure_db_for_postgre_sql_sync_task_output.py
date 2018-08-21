@@ -12,16 +12,17 @@
 from msrest.serialization import Model
 
 
-class MigrateSqlServerSqlDbSyncTaskOutput(Model):
-    """Output for the task that migrates on-prem SQL Server databases to Azure SQL
-    Database for online migrations.
+class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput(Model):
+    """Output for the task that migrates PostgreSQL databases to Azure Database
+    for PostgreSQL for online migrations.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: MigrateSqlServerSqlDbSyncTaskOutputDatabaseError,
-    MigrateSqlServerSqlDbSyncTaskOutputError,
-    MigrateSqlServerSqlDbSyncTaskOutputTableLevel,
-    MigrateSqlServerSqlDbSyncTaskOutputDatabaseLevel,
-    MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel
+    sub-classes are:
+    MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseError,
+    MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputError,
+    MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel,
+    MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseLevel,
+    MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -43,10 +44,10 @@ class MigrateSqlServerSqlDbSyncTaskOutput(Model):
     }
 
     _subtype_map = {
-        'result_type': {'DatabaseLevelErrorOutput': 'MigrateSqlServerSqlDbSyncTaskOutputDatabaseError', 'ErrorOutput': 'MigrateSqlServerSqlDbSyncTaskOutputError', 'TableLevelOutput': 'MigrateSqlServerSqlDbSyncTaskOutputTableLevel', 'DatabaseLevelOutput': 'MigrateSqlServerSqlDbSyncTaskOutputDatabaseLevel', 'MigrationLevelOutput': 'MigrateSqlServerSqlDbSyncTaskOutputMigrationLevel'}
+        'result_type': {'DatabaseLevelErrorOutput': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseError', 'ErrorOutput': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputError', 'TableLevelOutput': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel', 'DatabaseLevelOutput': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseLevel', 'MigrationLevelOutput': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel'}
     }
 
     def __init__(self):
-        super(MigrateSqlServerSqlDbSyncTaskOutput, self).__init__()
+        super(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput, self).__init__()
         self.id = None
         self.result_type = None

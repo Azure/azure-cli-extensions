@@ -13,10 +13,10 @@ from msrest.serialization import Model
 
 
 class ConnectToTargetSqlSqlDbSyncTaskInput(Model):
-    """Input for the task that validates connection to SQL DB and target server
-    requirements.
+    """Input for the task that validates connection to Azure SQL DB and target
+    server requirements.
 
-    :param source_connection_info: Connection information for Source SQL
+    :param source_connection_info: Connection information for source SQL
      Server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
