@@ -23,6 +23,7 @@ def get_migrate_mysql_to_azuredbformysql_sync_input(database_options_json,
                                                     target_connection_info=target_connection_info,
                                                     selected_databases=database_options)
 
+
 def get_migrate_postgresql_to_azuredbforpostgresql_sync_input(database_options_json,
                                                               source_connection_info,
                                                               target_connection_info):

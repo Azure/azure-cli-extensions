@@ -190,14 +190,14 @@ def determine_scenario_eligibility(
         target_type,
         task_type):
     return (source_type == "mysql" and target_type == "azuredbformysql" and task_type == "onlinemigration") or \
-            (source_type == "postgresql" and target_type == "azuredbforpostgresql" and task_type == "onlinemigration")
+           (source_type == "postgresql" and target_type == "azuredbforpostgresql" and task_type == "onlinemigration")
+
 
 def determine_source_target_eligibility(
         source_type,
         target_type):
     return (source_type == "mysql" and target_type == "azuredbformysql") or \
-            (source_type == "postgresql" and target_type == "azuredbforpostgresql")
-
+           (source_type == "postgresql" and target_type == "azuredbforpostgresql")
 
 
 def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
