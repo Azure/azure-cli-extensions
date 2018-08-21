@@ -12,8 +12,8 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MigrateMySqlAzureDbForMySqlSyncTaskProperties,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties,
                                                           MigrateSyncCompleteCommandProperties)
-from azext_dms.scenarios import (get_migrate_mysql_to_azuredbformysql_sync_input,
-                                 get_migrate_postgresql_to_azuredbforpostgresql_sync_input)
+from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
+                                       get_migrate_postgresql_to_azuredbforpostgresql_sync_input)
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
                                                   create_task as core_create_task)
