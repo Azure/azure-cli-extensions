@@ -25,8 +25,8 @@ def run_cli_command(cmd, return_as_json=False):
             if cmd_output:
                 json_output = json.loads(cmd_output)
                 return json_output
-            else:
-                raise CLIError("Command returned an unexpected empty string.")
+
+            raise CLIError("Command returned an unexpected empty string.")
         else:
             return cmd_output
     except CalledProcessError as ex:
@@ -38,13 +38,17 @@ def run_cli_command(cmd, return_as_json=False):
         raise
 
 
-def prepare_cli_command(cmd, output_as_json=True, tags=None):
+def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
     full_cmd = [sys.executable, '-m', 'azure.cli'] + cmd
 
     if output_as_json:
         full_cmd += ['--output', 'json']
     else:
         full_cmd += ['--output', 'tsv']
+
+    # override the default subscription if needed
+    if subscription is not None:
+        full_cmd += ['--subscription', subscription]
 
     # tag newly created resources, containers don't have tags
     if 'create' in cmd and ('container' not in cmd):
