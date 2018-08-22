@@ -10,10 +10,10 @@ helps['dms project create'] = """
     short-summary: Create a migration Project which can contain multiple Tasks.
     long-summary: |
         The following project configurations are supported:
-            -) source -> target :: project type
-            1) SQL -> SQLDB :: OfflineMigration
-            2) MySQL -> AzureDbForMySql :: OnlineMigration
-            3) PostgreSQL -> AzureDbForPostgreSQL :: OnlineMigration
+            -) source -> target
+            1) SQL -> SQLDB
+            2) MySQL -> AzureDbForMySql
+            3) PostgreSQL -> AzureDbForPostgreSQL
 
     parameters:
         - name: --source-platform
@@ -35,7 +35,7 @@ helps['dms project task create'] = """
     short-summary: Create and start a migration Task.
     long-summary: |
         The following task configurations are supported:
-            -) source -> target :: project type
+            -) source -> target :: task type
             1) SQL -> SQLDB :: OfflineMigration
             2) MySQL -> AzureDbForMySql :: OnlineMigration
             3) PostgreSQL -> AzureDbForPostgreSQL :: OnlineMigration
