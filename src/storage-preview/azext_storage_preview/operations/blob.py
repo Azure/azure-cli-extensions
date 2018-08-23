@@ -230,6 +230,9 @@ def storage_blob_upload_batch(cmd, client, source, destination, pattern=None,  #
             if include:
                 results.append(_create_return_result(dst, guessed_content_settings, result))
 
+        num_failures = len(source_files) - len(results)
+        if num_failures:
+            logger.warning('%s of %s files not uploaded due to "Failed Precondition"', num_failures, len(source_files))
     return results
 
 
@@ -313,6 +316,25 @@ def upload_blob(cmd, client, container_name, blob_name, file_path, blob_type=Non
     return type_func[blob_type]()
 
 
+def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=None,
+              if_modified_since=None, if_unmodified_since=None, if_match=None,
+              if_none_match=None, timeout=None):
+    blob = client.get_blob_properties(
+        container_name, blob_name, snapshot=snapshot, lease_id=lease_id,
+        if_modified_since=if_modified_since, if_unmodified_since=if_unmodified_since, if_match=if_match,
+        if_none_match=if_none_match, timeout=timeout)
+
+    page_ranges = None
+    if blob.properties.blob_type == cmd.get_models('blob.models#_BlobTypes').PageBlob:
+        page_ranges = client.get_page_ranges(
+            container_name, blob_name, snapshot=snapshot, lease_id=lease_id, if_modified_since=if_modified_since,
+            if_unmodified_since=if_unmodified_since, if_match=if_match, if_none_match=if_none_match, timeout=timeout)
+
+    blob.properties.page_ranges = page_ranges
+
+    return blob
+
+
 def storage_blob_delete_batch(client, source, source_container_name, pattern=None, lease_id=None,
                               delete_snapshots=None, if_modified_since=None, if_unmodified_since=None, if_match=None,
                               if_none_match=None, timeout=None, dryrun=False):
@@ -330,11 +352,10 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
             'timeout': timeout
         }
         return client.delete_blob(**delete_blob_args)
-
+    logger = get_logger(__name__)
     source_blobs = list(collect_blobs(client, source_container_name, pattern))
 
     if dryrun:
-        logger = get_logger(__name__)
         logger.warning('delete action: from %s', source)
         logger.warning('    pattern %s', pattern)
         logger.warning('  container %s', source_container_name)
@@ -344,7 +365,10 @@ def storage_blob_delete_batch(client, source, source_container_name, pattern=Non
             logger.warning('  - %s', blob)
         return []
 
-    return [result for include, result in (_delete_blob(blob) for blob in source_blobs) if include]
+    results = [result for include, result in (_delete_blob(blob) for blob in source_blobs) if include]
+    num_failures = len(source_blobs) - len(results)
+    if num_failures:
+        logger.warning('%s of %s blobs not deleted due to "Failed Precondition"', num_failures, len(source_blobs))
 
 
 def _copy_blob_to_blob_container(blob_service, source_blob_service, destination_container, destination_path,

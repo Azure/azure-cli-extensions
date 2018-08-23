@@ -56,7 +56,7 @@ class StorageTestFilesPreparer(AbstractPreparer):
         super(StorageTestFilesPreparer, self).__init__(name_prefix='test', name_len=24)
         self.parameter_name = parameter_name
 
-    def create_resource(self, _name, **_kwargs):
+    def create_resource(self, name, **_kwargs):  # pylint: disable=unused-argument
         temp_dir = os.path.join(tempfile.gettempdir(), self.random_name)
         if not os.path.exists(temp_dir):
             os.mkdir(temp_dir)
@@ -78,7 +78,7 @@ class StorageTestFilesPreparer(AbstractPreparer):
         setattr(self, '_temp_dir', temp_dir)
         return {self.parameter_name: temp_dir}
 
-    def remove_resource(self, _name, **_kwargs):
+    def remove_resource(self, name, **_kwargs):  # pylint: disable=unused-argument
         temp_dir = self.get_temp_dir()
         if temp_dir:
             shutil.rmtree(temp_dir, ignore_errors=True)

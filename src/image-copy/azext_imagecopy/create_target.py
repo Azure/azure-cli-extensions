@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import hashlib
 import datetime
 import time
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
@@ -18,24 +17,20 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 # pylint: disable=too-many-locals
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
-                        target_resource_group_name, azure_pool_frequency, tags, target_name):
+                        target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription):
 
-    subscription_id = get_subscription_id()
-
-    subscription_hash = hashlib.sha1(
-        subscription_id.encode("UTF-8")).hexdigest()
-    unique_subscription_string = subscription_hash[:(
-        STORAGE_ACCOUNT_NAME_LENGTH - len(location))]
+    random_string = get_random_string(STORAGE_ACCOUNT_NAME_LENGTH - len(location))
 
     # create the target storage account
     logger.warn(
         "%s - Creating target storage account (can be slow sometimes)", location)
-    target_storage_account_name = location + unique_subscription_string
+    target_storage_account_name = location + random_string
     cli_cmd = prepare_cli_command(['storage', 'account', 'create',
                                    '--name', target_storage_account_name,
                                    '--resource-group', transient_resource_group_name,
                                    '--location', location,
-                                   '--sku', 'Standard_LRS'])
+                                   '--sku', 'Standard_LRS'],
+                                  subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_blob_endpoint = json_output['primaryEndpoints']['blob']
@@ -43,7 +38,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     # Setup the target storage account
     cli_cmd = prepare_cli_command(['storage', 'account', 'keys', 'list',
                                    '--account-name', target_storage_account_name,
-                                   '--resource-group', transient_resource_group_name])
+                                   '--resource-group', transient_resource_group_name],
+                                  subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
@@ -59,7 +55,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--expiry', expiry.strftime(expiry_format),
                                    '--permissions', 'aclrpuw', '--resource-types',
                                    'sco', '--services', 'b', '--https-only'],
-                                  output_as_json=False)
+                                  output_as_json=False,
+                                  subscription=target_subscription)
 
     sas_token = run_cli_command(cli_cmd)
     sas_token = sas_token.rstrip("\n\r")  # STRANGE
@@ -71,7 +68,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     target_container_name = 'snapshots'
     cli_cmd = prepare_cli_command(['storage', 'container', 'create',
                                    '--name', target_container_name,
-                                   '--account-name', target_storage_account_name])
+                                   '--account-name', target_storage_account_name],
+                                  subscription=target_subscription)
 
     run_cli_command(cli_cmd)
 
@@ -84,14 +82,15 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--destination-blob', blob_name,
                                    '--destination-container', target_container_name,
                                    '--account-name', target_storage_account_name,
-                                   '--sas-token', sas_token])
+                                   '--sas-token', sas_token],
+                                  subscription=target_subscription)
 
     run_cli_command(cli_cmd)
 
     # Wait for the copy to complete
     start_datetime = datetime.datetime.now()
-    wait_for_blob_copy_operation(blob_name, target_container_name,
-                                 target_storage_account_name, azure_pool_frequency, location)
+    wait_for_blob_copy_operation(blob_name, target_container_name, target_storage_account_name,
+                                 azure_pool_frequency, location, target_subscription)
     msg = "{0} - Copy time: {1}".format(
         location, datetime.datetime.now() - start_datetime)
     logger.warn(msg)
@@ -106,7 +105,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--resource-group', transient_resource_group_name,
                                    '--name', target_snapshot_name,
                                    '--location', location,
-                                   '--source', target_blob_path])
+                                   '--source', target_blob_path],
+                                  subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
@@ -127,20 +127,23 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--location', location,
                                    '--source', target_blob_path,
                                    '--os-type', source_os_type,
-                                   '--source', target_snapshot_id], tags=tags)
+                                   '--source', target_snapshot_id],
+                                  tags=tags,
+                                  subscription=target_subscription)
 
     run_cli_command(cli_cmd)
 
 
 def wait_for_blob_copy_operation(blob_name, target_container_name, target_storage_account_name,
-                                 azure_pool_frequency, location):
+                                 azure_pool_frequency, location, subscription):
     copy_status = "pending"
     prev_progress = -1
     while copy_status == "pending":
         cli_cmd = prepare_cli_command(['storage', 'blob', 'show',
                                        '--name', blob_name,
                                        '--container-name', target_container_name,
-                                       '--account-name', target_storage_account_name])
+                                       '--account-name', target_storage_account_name],
+                                      subscription=subscription)
 
         json_output = run_cli_command(cli_cmd, return_as_json=True)
         copy_status = json_output["properties"]["copy"]["status"]
@@ -161,17 +164,13 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
         except KeyboardInterrupt:
             return
 
-    if copy_status == 'success':
-        return
-    else:
-        logger.error(
-            "The copy operation didn't succeed. Last status: %s", copy_status)
+    if copy_status != 'success':
+        logger.error("The copy operation didn't succeed. Last status: %s", copy_status)
         raise CLIError('Blob copy failed')
 
 
-def get_subscription_id():
-    cli_cmd = prepare_cli_command(['account', 'show'])
-    json_output = run_cli_command(cli_cmd, return_as_json=True)
-    subscription_id = json_output['id']
-
-    return subscription_id
+def get_random_string(length):
+    import string
+    import random
+    chars = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(chars) for _ in range(length))

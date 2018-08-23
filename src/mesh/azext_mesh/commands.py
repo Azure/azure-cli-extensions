@@ -21,7 +21,7 @@ from ._exception_handler import resource_exception_handler
 
 def transform_log_output(result):
     """Print log. """
-    print(result)
+    return result
 
 
 def transform_application(result):
