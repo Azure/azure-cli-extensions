@@ -12,8 +12,8 @@
 from .connection_info import ConnectionInfo
 
 
-class MySqlConnectionInfo(ConnectionInfo):
-    """Information for connecting to MySQL server.
+class PostgreSqlConnectionInfo(ConnectionInfo):
+    """Information for connecting to PostgreSQL server.
 
     :param user_name: User name
     :type user_name: str
@@ -23,6 +23,8 @@ class MySqlConnectionInfo(ConnectionInfo):
     :type type: str
     :param server_name: Name of the server
     :type server_name: str
+    :param database_name: Name of the database
+    :type database_name: str
     :param port: Port for Server
     :type port: int
     """
@@ -38,11 +40,13 @@ class MySqlConnectionInfo(ConnectionInfo):
         'password': {'key': 'password', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'server_name': {'key': 'serverName', 'type': 'str'},
+        'database_name': {'key': 'databaseName', 'type': 'str'},
         'port': {'key': 'port', 'type': 'int'},
     }
 
-    def __init__(self, server_name, port, user_name=None, password=None):
-        super(MySqlConnectionInfo, self).__init__(user_name=user_name, password=password)
+    def __init__(self, server_name, port, user_name=None, password=None, database_name=None):
+        super(PostgreSqlConnectionInfo, self).__init__(user_name=user_name, password=password)
         self.server_name = server_name
+        self.database_name = database_name
         self.port = port
-        self.type = 'MySqlConnectionInfo'
+        self.type = 'PostgreSqlConnectionInfo'

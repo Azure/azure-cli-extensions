@@ -22,7 +22,7 @@ class NonSqlMigrationTaskInput(Model):
     :type target_database_name: str
     :param project_name: Name of the migration project
     :type project_name: str
-    :param project_location: An URL that points to the drop location to access
+    :param project_location: A URL that points to the drop location to access
      project artifacts
     :type project_location: str
     :param selected_tables: Metadata of the tables selected for migration

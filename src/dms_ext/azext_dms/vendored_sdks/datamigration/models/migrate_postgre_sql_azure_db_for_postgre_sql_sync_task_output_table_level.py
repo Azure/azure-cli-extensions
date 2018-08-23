@@ -9,11 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .migrate_sql_server_sql_db_sync_task_output import MigrateSqlServerSqlDbSyncTaskOutput
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput
 
 
-class MigrateSqlServerSqlDbSyncTaskOutputTableLevel(MigrateSqlServerSqlDbSyncTaskOutput):
-    """MigrateSqlServerSqlDbSyncTaskOutputTableLevel.
+class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput):
+    """MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -90,7 +90,7 @@ class MigrateSqlServerSqlDbSyncTaskOutputTableLevel(MigrateSqlServerSqlDbSyncTas
     }
 
     def __init__(self):
-        super(MigrateSqlServerSqlDbSyncTaskOutputTableLevel, self).__init__()
+        super(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel, self).__init__()
         self.table_name = None
         self.database_name = None
         self.cdc_insert_counter = None

@@ -20,6 +20,7 @@ from .resource import Resource
 from .get_tde_certificates_sql_task_output import GetTdeCertificatesSqlTaskOutput
 from .selected_certificate_input import SelectedCertificateInput
 from .file_share import FileShare
+from .postgre_sql_connection_info import PostgreSqlConnectionInfo
 from .my_sql_connection_info import MySqlConnectionInfo
 from .connection_info import ConnectionInfo
 from .sql_connection_info import SqlConnectionInfo
@@ -36,6 +37,15 @@ from .migrate_sql_server_sql_db_sync_database_input import MigrateSqlServerSqlDb
 from .validate_sync_migration_input_sql_server_task_input import ValidateSyncMigrationInputSqlServerTaskInput
 from .validate_migration_input_sql_server_sql_db_sync_task_properties import ValidateMigrationInputSqlServerSqlDbSyncTaskProperties
 from .sync_migration_database_error_event import SyncMigrationDatabaseErrorEvent
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output_database_error import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseError
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output_error import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputError
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output_table_level import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output_database_level import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseLevel
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output_migration_level import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_output import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_database_input import MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_input import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput
+from .migrate_postgre_sql_azure_db_for_postgre_sql_sync_task_properties import MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties
 from .migrate_my_sql_azure_db_for_my_sql_sync_task_output_database_error import MigrateMySqlAzureDbForMySqlSyncTaskOutputDatabaseError
 from .migrate_my_sql_azure_db_for_my_sql_sync_task_output_error import MigrateMySqlAzureDbForMySqlSyncTaskOutputError
 from .migrate_my_sql_azure_db_for_my_sql_sync_task_output_table_level import MigrateMySqlAzureDbForMySqlSyncTaskOutputTableLevel
@@ -86,12 +96,6 @@ from .migrate_sql_server_sql_mi_task_output_migration_level import MigrateSqlSer
 from .migrate_sql_server_sql_mi_task_output import MigrateSqlServerSqlMITaskOutput
 from .migrate_sql_server_sql_mi_task_input import MigrateSqlServerSqlMITaskInput
 from .migrate_sql_server_sql_mi_task_properties import MigrateSqlServerSqlMITaskProperties
-from .migration_table_metadata import MigrationTableMetadata
-from .data_migration_project_metadata import DataMigrationProjectMetadata
-from .my_sql_data_migration_project_metadata import MySqlDataMigrationProjectMetadata
-from .get_project_details_my_sql_sql_task_output import GetProjectDetailsMySqlSqlTaskOutput
-from .get_project_details_non_sql_task_input import GetProjectDetailsNonSqlTaskInput
-from .get_project_details_my_sql_sql_task_properties import GetProjectDetailsMySqlSqlTaskProperties
 from .connect_to_target_azure_db_for_my_sql_task_output import ConnectToTargetAzureDbForMySqlTaskOutput
 from .connect_to_target_azure_db_for_my_sql_task_input import ConnectToTargetAzureDbForMySqlTaskInput
 from .connect_to_target_azure_db_for_my_sql_task_properties import ConnectToTargetAzureDbForMySqlTaskProperties
@@ -133,7 +137,6 @@ from .service_operation import ServiceOperation
 from .quota_name import QuotaName
 from .quota import Quota
 from .name_availability_response import NameAvailabilityResponse
-from .project_artifacts_response import ProjectArtifactsResponse
 from .available_service_sku_sku import AvailableServiceSkuSku
 from .available_service_sku_capacity import AvailableServiceSkuCapacity
 from .available_service_sku import AvailableServiceSku
@@ -147,16 +150,16 @@ from .connect_to_source_my_sql_task_input import ConnectToSourceMySqlTaskInput
 from .server_properties import ServerProperties
 from .connect_to_source_non_sql_task_output import ConnectToSourceNonSqlTaskOutput
 from .connect_to_source_my_sql_task_properties import ConnectToSourceMySqlTaskProperties
-from .migrate_my_sql_sql_task_input import MigrateMySqlSqlTaskInput
-from .migrate_my_sql_sql_task_output import MigrateMySqlSqlTaskOutput
-from .migrate_my_sql_sql_task_properties import MigrateMySqlSqlTaskProperties
+from .database import Database
+from .database_object_name import DatabaseObjectName
+from .migration_table_metadata import MigrationTableMetadata
+from .data_migration_project_metadata import DataMigrationProjectMetadata
+from .get_project_details_non_sql_task_input import GetProjectDetailsNonSqlTaskInput
+from .non_sql_data_migration_table import NonSqlDataMigrationTable
+from .non_sql_migration_task_input import NonSqlMigrationTaskInput
 from .data_migration_error import DataMigrationError
 from .non_sql_data_migration_table_result import NonSqlDataMigrationTableResult
 from .non_sql_migration_task_output import NonSqlMigrationTaskOutput
-from .non_sql_data_migration_table import NonSqlDataMigrationTable
-from .non_sql_migration_task_input import NonSqlMigrationTaskInput
-from .database import Database
-from .database_object_name import DatabaseObjectName
 from .database_file_input import DatabaseFileInput
 from .migrate_sql_server_sql_server_database_input import MigrateSqlServerSqlServerDatabaseInput
 from .resource_sku_paged import ResourceSkuPaged
@@ -174,7 +177,6 @@ from .data_migration_service_client_enums import (
     BackupMode,
     SyncTableMigrationState,
     SyncDatabaseMigrationReportingState,
-    SyncMigrationState,
     ValidationStatus,
     Severity,
     UpdateActionType,
@@ -193,15 +195,14 @@ from .data_migration_service_client_enums import (
     ProjectTargetPlatform,
     ProjectSourcePlatform,
     ProjectProvisioningState,
-    DataMovement,
     NameCheckFailureReason,
     ServiceScalability,
     ResourceSkuRestrictionsType,
     ResourceSkuRestrictionsReasonCode,
     ResourceSkuCapacityScaleType,
     MySqlTargetPlatformType,
-    ErrorType,
     DataMigrationResultCode,
+    ErrorType,
 )
 
 __all__ = [
@@ -216,6 +217,7 @@ __all__ = [
     'GetTdeCertificatesSqlTaskOutput',
     'SelectedCertificateInput',
     'FileShare',
+    'PostgreSqlConnectionInfo',
     'MySqlConnectionInfo',
     'ConnectionInfo',
     'SqlConnectionInfo',
@@ -232,6 +234,15 @@ __all__ = [
     'ValidateSyncMigrationInputSqlServerTaskInput',
     'ValidateMigrationInputSqlServerSqlDbSyncTaskProperties',
     'SyncMigrationDatabaseErrorEvent',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseError',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputError',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputTableLevel',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputDatabaseLevel',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutputMigrationLevel',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput',
+    'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties',
     'MigrateMySqlAzureDbForMySqlSyncTaskOutputDatabaseError',
     'MigrateMySqlAzureDbForMySqlSyncTaskOutputError',
     'MigrateMySqlAzureDbForMySqlSyncTaskOutputTableLevel',
@@ -282,12 +293,6 @@ __all__ = [
     'MigrateSqlServerSqlMITaskOutput',
     'MigrateSqlServerSqlMITaskInput',
     'MigrateSqlServerSqlMITaskProperties',
-    'MigrationTableMetadata',
-    'DataMigrationProjectMetadata',
-    'MySqlDataMigrationProjectMetadata',
-    'GetProjectDetailsMySqlSqlTaskOutput',
-    'GetProjectDetailsNonSqlTaskInput',
-    'GetProjectDetailsMySqlSqlTaskProperties',
     'ConnectToTargetAzureDbForMySqlTaskOutput',
     'ConnectToTargetAzureDbForMySqlTaskInput',
     'ConnectToTargetAzureDbForMySqlTaskProperties',
@@ -329,7 +334,6 @@ __all__ = [
     'QuotaName',
     'Quota',
     'NameAvailabilityResponse',
-    'ProjectArtifactsResponse',
     'AvailableServiceSkuSku',
     'AvailableServiceSkuCapacity',
     'AvailableServiceSku',
@@ -343,16 +347,16 @@ __all__ = [
     'ServerProperties',
     'ConnectToSourceNonSqlTaskOutput',
     'ConnectToSourceMySqlTaskProperties',
-    'MigrateMySqlSqlTaskInput',
-    'MigrateMySqlSqlTaskOutput',
-    'MigrateMySqlSqlTaskProperties',
+    'Database',
+    'DatabaseObjectName',
+    'MigrationTableMetadata',
+    'DataMigrationProjectMetadata',
+    'GetProjectDetailsNonSqlTaskInput',
+    'NonSqlDataMigrationTable',
+    'NonSqlMigrationTaskInput',
     'DataMigrationError',
     'NonSqlDataMigrationTableResult',
     'NonSqlMigrationTaskOutput',
-    'NonSqlDataMigrationTable',
-    'NonSqlMigrationTaskInput',
-    'Database',
-    'DatabaseObjectName',
     'DatabaseFileInput',
     'MigrateSqlServerSqlServerDatabaseInput',
     'ResourceSkuPaged',
@@ -369,7 +373,6 @@ __all__ = [
     'BackupMode',
     'SyncTableMigrationState',
     'SyncDatabaseMigrationReportingState',
-    'SyncMigrationState',
     'ValidationStatus',
     'Severity',
     'UpdateActionType',
@@ -388,13 +391,12 @@ __all__ = [
     'ProjectTargetPlatform',
     'ProjectSourcePlatform',
     'ProjectProvisioningState',
-    'DataMovement',
     'NameCheckFailureReason',
     'ServiceScalability',
     'ResourceSkuRestrictionsType',
     'ResourceSkuRestrictionsReasonCode',
     'ResourceSkuCapacityScaleType',
     'MySqlTargetPlatformType',
-    'ErrorType',
     'DataMigrationResultCode',
+    'ErrorType',
 ]

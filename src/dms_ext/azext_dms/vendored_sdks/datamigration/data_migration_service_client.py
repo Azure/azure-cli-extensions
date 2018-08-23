@@ -47,7 +47,7 @@ class DataMigrationServiceClientConfiguration(AzureConfiguration):
 
         super(DataMigrationServiceClientConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('datamigrationserviceclient/{}'.format(VERSION))
+        self.add_user_agent('azure-mgmt-datamigration/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
@@ -88,7 +88,6 @@ class DataMigrationServiceClient(object):
         self._client = ServiceClient(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-07-15-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
