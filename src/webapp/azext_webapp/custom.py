@@ -193,6 +193,7 @@ def _ping_scm_site(cmd, resource_group, name):
     requests.get(scm_url + '/api/settings', headers=authorization)
     return scm_url
 
+
 def list_webapp_snapshots(cmd, resource_group, name, slot=None):
     client = web_client_factory(cmd.cli_ctx)
     if slot is None:
