@@ -84,7 +84,7 @@ class TunnelServer(object):
 
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
         headers = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(self.remote_user_name, self.remote_password))
-        url = 'https://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx?GetStatus')
+        url = '{}{}'.format(self.remote_addr, '/AppServiceTunnel/Tunnel.ashx?GetStatus')
         r = http.request(
             'GET',
             url,
@@ -109,7 +109,7 @@ class TunnelServer(object):
         while True:
             self.client, _address = self.sock.accept()
             self.client.settimeout(1800)
-            host = 'wss://{}{}'.format(self.remote_addr, '.scm.azurewebsites.net/AppServiceTunnel/Tunnel.ashx')
+            host = '{}{}'.format(self.remote_addr.replace('https', 'wss'), '/AppServiceTunnel/Tunnel.ashx')
             basic_auth_header = 'Authorization: Basic {}'.format(basic_auth_string)
             cli_logger = get_logger()  # get CLI logger which has the level set through command lines
             is_verbose = any(handler.level <= logs.INFO for handler in cli_logger.handlers)
