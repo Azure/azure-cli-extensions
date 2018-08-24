@@ -191,9 +191,7 @@ def _ping_scm_site(cmd, resource_group, name):
     import urllib3
     authorization = urllib3.util.make_headers(basic_auth='{}:{}'.format(user_name, password))
     requests.get(scm_url + '/api/settings', headers=authorization)
-
     return scm_url
-
 
 def list_webapp_snapshots(cmd, resource_group, name, slot=None):
     client = web_client_factory(cmd.cli_ctx)
