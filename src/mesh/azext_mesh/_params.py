@@ -54,3 +54,22 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('template_file', options_list=['--template-file'], help="The full file path of creation template")
         c.argument('template_uri', options_list=['--template-uri'], help="The full file path of creation template on a http or https link")
+
+    with self.argument_context('mesh secret') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('secret_name', options_list=('-n', '--name'), help="The name of the secret", id_part='secret_name')
+
+    with self.argument_context('mesh secretvalue') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret resource", id_part='secret_name')
+        c.argument('version_id', options_list=('-v', '--name'), help="The name of the secret version", id_part='version_id')
+
+    # with self.argument_context('mesh secret create') as c:
+    #     c.argument('resource_group_name', arg_type=resource_group_name_type)
+    #     c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret", id_part='secret_name')
+    #     c.argument('secret_resource_description', options_list=('-d', '--secret-resource-description'), help="The description of the secret resource", id_part='secret_resource_description')
+    #
+    # with self.argument_context('mesh secretvalue create') as c:
+    #     c.argument('resource_group_name', arg_type=resource_group_name_type)
+    #     c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret", id_part='secret_name')
+    #     c.argument('version', options_list=('-v', '--version'), help="The version of the secret", id_part='version')

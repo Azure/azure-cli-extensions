@@ -9,22 +9,14 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .resource import Resource
-from .proxy_resource import ProxyResource
-from .managed_proxy_resource import ManagedProxyResource
-from .tracked_resource import TrackedResource
-from .provisioned_resource_properties import ProvisionedResourceProperties
 from .layer4_ingress_config import Layer4IngressConfig
 from .ingress_config import IngressConfig
-from .network_resource_description import NetworkResourceDescription
 from .network_properties import NetworkProperties
 from .volume_provider_parameters_azure_file import VolumeProviderParametersAzureFile
-from .volume_resource_description import VolumeResourceDescription
 from .volume_properties import VolumeProperties
 from .service_resource_description import ServiceResourceDescription
 from .diagnostics_sink_properties import DiagnosticsSinkProperties
 from .diagnostics_description import DiagnosticsDescription
-from .application_resource_description import ApplicationResourceDescription
 from .application_properties import ApplicationProperties
 from .container_state import ContainerState
 from .container_event import ContainerEvent
@@ -35,9 +27,6 @@ from .image_registry_credential import ImageRegistryCredential
 from .resource_limits import ResourceLimits
 from .resource_requests import ResourceRequests
 from .resource_requirements import ResourceRequirements
-from .available_operation_display import AvailableOperationDisplay
-from .operation_result import OperationResult
-from .error_model import ErrorModel, ErrorModelException
 from .environment_variable import EnvironmentVariable
 from .setting import Setting
 from .endpoint_properties import EndpointProperties
@@ -48,12 +37,31 @@ from .service_replica_description import ServiceReplicaDescription
 from .network_ref import NetworkRef
 from .service_replica_properties import ServiceReplicaProperties
 from .azure_internal_monitoring_pipeline_sink_description import AzureInternalMonitoringPipelineSinkDescription
+from .resource import Resource
+from .proxy_resource import ProxyResource
+from .managed_proxy_resource import ManagedProxyResource
+from .tracked_resource import TrackedResource
+from .provisioned_resource_properties import ProvisionedResourceProperties
+from .network_resource_description import NetworkResourceDescription
+from .volume_resource_description import VolumeResourceDescription
+from .application_resource_description import ApplicationResourceDescription
+from .available_operation_display import AvailableOperationDisplay
+from .operation_result import OperationResult
+from .error_model import ErrorModel, ErrorModelException
+from .secret_resource_properties_base import SecretResourcePropertiesBase
+from .secret_resource_description import SecretResourceDescription
+from .versioned_secret_value_resource_description import VersionedSecretValueResourceDescription
+from .secret_resource_properties import SecretResourceProperties
+from .simple_secret_resource_properties import SimpleSecretResourceProperties
+from .versioned_secret_value_properties import VersionedSecretValueProperties
 from .application_resource_description_paged import ApplicationResourceDescriptionPaged
 from .service_resource_description_paged import ServiceResourceDescriptionPaged
 from .service_replica_description_paged import ServiceReplicaDescriptionPaged
 from .operation_result_paged import OperationResultPaged
 from .network_resource_description_paged import NetworkResourceDescriptionPaged
 from .volume_resource_description_paged import VolumeResourceDescriptionPaged
+from .secret_resource_description_paged import SecretResourceDescriptionPaged
+from .versioned_secret_value_resource_description_paged import VersionedSecretValueResourceDescriptionPaged
 from .service_fabric_mesh_management_client_enums import (
     IngressQoSLevel,
     HealthState,
@@ -61,25 +69,18 @@ from .service_fabric_mesh_management_client_enums import (
     ApplicationResourceStatus,
     OperatingSystemTypes,
     DiagnosticsSinkKind,
+    SecretKind,
 )
 
 __all__ = [
-    'Resource',
-    'ProxyResource',
-    'ManagedProxyResource',
-    'TrackedResource',
-    'ProvisionedResourceProperties',
     'Layer4IngressConfig',
     'IngressConfig',
-    'NetworkResourceDescription',
     'NetworkProperties',
     'VolumeProviderParametersAzureFile',
-    'VolumeResourceDescription',
     'VolumeProperties',
     'ServiceResourceDescription',
     'DiagnosticsSinkProperties',
     'DiagnosticsDescription',
-    'ApplicationResourceDescription',
     'ApplicationProperties',
     'ContainerState',
     'ContainerEvent',
@@ -90,9 +91,6 @@ __all__ = [
     'ResourceLimits',
     'ResourceRequests',
     'ResourceRequirements',
-    'AvailableOperationDisplay',
-    'OperationResult',
-    'ErrorModel', 'ErrorModelException',
     'EnvironmentVariable',
     'Setting',
     'EndpointProperties',
@@ -103,16 +101,36 @@ __all__ = [
     'NetworkRef',
     'ServiceReplicaProperties',
     'AzureInternalMonitoringPipelineSinkDescription',
+    'Resource',
+    'ProxyResource',
+    'ManagedProxyResource',
+    'TrackedResource',
+    'ProvisionedResourceProperties',
+    'NetworkResourceDescription',
+    'VolumeResourceDescription',
+    'ApplicationResourceDescription',
+    'AvailableOperationDisplay',
+    'OperationResult',
+    'ErrorModel', 'ErrorModelException',
+    'SecretResourcePropertiesBase',
+    'SecretResourceDescription',
+    'VersionedSecretValueResourceDescription',
+    'SecretResourceProperties',
+    'SimpleSecretResourceProperties',
+    'VersionedSecretValueProperties',
     'ApplicationResourceDescriptionPaged',
     'ServiceResourceDescriptionPaged',
     'ServiceReplicaDescriptionPaged',
     'OperationResultPaged',
     'NetworkResourceDescriptionPaged',
     'VolumeResourceDescriptionPaged',
+    'SecretResourceDescriptionPaged',
+    'VersionedSecretValueResourceDescriptionPaged',
     'IngressQoSLevel',
     'HealthState',
     'ServiceResourceStatus',
     'ApplicationResourceStatus',
     'OperatingSystemTypes',
     'DiagnosticsSinkKind',
+    'SecretKind',
 ]

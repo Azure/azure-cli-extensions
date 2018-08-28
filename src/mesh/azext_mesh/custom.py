@@ -426,3 +426,22 @@ def show_volume(client, resource_group_name, name):
 def delete_volume(client, resource_group_name, name, **kwargs):
     """Delete a volume. """
     return client.delete(resource_group_name, name)
+
+
+def create_secret_value(client, resource_group_name, secret_name, version_id):
+    value = prompt_pass(msg='Value: ')
+    return client.create(resource_group_name, secret_name, version_id, value=value,)
+
+
+def list_secrets(client, resource_group_name=None):
+    """List all networks in a resource group. """
+    if resource_group_name is None:
+        return client.list_by_subscription()
+    return client.list_by_resource_group(resource_group_name)
+
+
+def secret_show(client, resource_group_name, secret_name, version_id, download=False):
+    secret_data = client.get(resource_group_name, secret_name, version_id)
+    print(secret_data)
+    del secret_data.value
+    return secret_data

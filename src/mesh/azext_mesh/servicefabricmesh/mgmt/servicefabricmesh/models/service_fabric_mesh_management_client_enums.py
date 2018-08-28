@@ -56,3 +56,10 @@ class DiagnosticsSinkKind(Enum):
 
     invalid = "Invalid"
     azure_internal_monitoring_pipeline = "AzureInternalMonitoringPipeline"
+
+
+class SecretKind(Enum):
+
+    simple = "simple"
+    key_vault_managed_reference = "keyVaultManagedReference"
+    key_vault_versioned_reference = "keyVaultVersionedReference"

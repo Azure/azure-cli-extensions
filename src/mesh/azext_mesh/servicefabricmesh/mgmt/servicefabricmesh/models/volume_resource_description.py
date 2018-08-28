@@ -26,10 +26,10 @@ class VolumeResourceDescription(TrackedResource):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The geo-location where the resource lives
-    :type location: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives
+    :type location: str
     :ivar provisioning_state: State of the resource.
     :vartype provisioning_state: str
     :param description: User readable description of the volume.
@@ -46,6 +46,7 @@ class VolumeResourceDescription(TrackedResource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'location': {'required': True},
         'provisioning_state': {'readonly': True},
         'provider': {'required': True, 'constant': True},
     }
@@ -54,8 +55,8 @@ class VolumeResourceDescription(TrackedResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'provider': {'key': 'properties.provider', 'type': 'str'},
@@ -64,8 +65,8 @@ class VolumeResourceDescription(TrackedResource):
 
     provider = "SFAzureFile"
 
-    def __init__(self, location=None, tags=None, description=None, azure_file_parameters=None):
-        super(VolumeResourceDescription, self).__init__(location=location, tags=tags)
+    def __init__(self, location, tags=None, description=None, azure_file_parameters=None):
+        super(VolumeResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.description = description
         self.azure_file_parameters = azure_file_parameters

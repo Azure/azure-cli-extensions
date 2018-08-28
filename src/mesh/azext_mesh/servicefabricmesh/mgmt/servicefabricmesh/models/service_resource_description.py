@@ -27,7 +27,7 @@ class ServiceResourceDescription(ManagedProxyResource):
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
     :param os_type: The Operating system type required by the code in service.
-     . Possible values include: 'Linux', 'Windows'
+     Possible values include: 'Linux', 'Windows'
     :type os_type: str or
      ~azure.mgmt.servicefabricmesh.models.OperatingSystemTypes
     :param code_packages: Describes the set of code packages that forms the
@@ -46,9 +46,8 @@ class ServiceResourceDescription(ManagedProxyResource):
     :param replica_count: The number of replicas of the service to create.
      Defaults to 1 if not specified.
     :type replica_count: int
-    :param health_state: The health state of a resource such as Application,
-     Service, or Network. Possible values include: 'Invalid', 'Ok', 'Warning',
-     'Error', 'Unknown'
+    :param health_state: Describes the health state of an services resource.
+     Possible values include: 'Invalid', 'Ok', 'Warning', 'Error', 'Unknown'
     :type health_state: str or
      ~azure.mgmt.servicefabricmesh.models.HealthState
     :ivar status: Represents the status of the service. Possible values

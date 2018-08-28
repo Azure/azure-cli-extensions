@@ -45,7 +45,6 @@ class ApplicationOperations(object):
         its description is updated to the one indicated in this request.
         Use network resources to provide public connectivity to the services of
         an application.
-        .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str

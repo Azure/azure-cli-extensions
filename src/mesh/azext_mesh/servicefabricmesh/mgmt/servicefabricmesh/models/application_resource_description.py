@@ -26,10 +26,10 @@ class ApplicationResourceDescription(TrackedResource):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The geo-location where the resource lives
-    :type location: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives
+    :type location: str
     :ivar provisioning_state: State of the resource.
     :vartype provisioning_state: str
     :param description: User readable description of the application.
@@ -66,6 +66,7 @@ class ApplicationResourceDescription(TrackedResource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'location': {'required': True},
         'provisioning_state': {'readonly': True},
         'health_state': {'readonly': True},
         'unhealthy_evaluation': {'readonly': True},
@@ -78,8 +79,8 @@ class ApplicationResourceDescription(TrackedResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'debug_params': {'key': 'properties.debugParams', 'type': 'str'},
@@ -92,8 +93,8 @@ class ApplicationResourceDescription(TrackedResource):
         'diagnostics': {'key': 'properties.diagnostics', 'type': 'DiagnosticsDescription'},
     }
 
-    def __init__(self, location=None, tags=None, description=None, debug_params=None, services=None, diagnostics=None):
-        super(ApplicationResourceDescription, self).__init__(location=location, tags=tags)
+    def __init__(self, location, tags=None, description=None, debug_params=None, services=None, diagnostics=None):
+        super(ApplicationResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.description = description
         self.debug_params = debug_params

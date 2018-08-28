@@ -9,5 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2018-07-01-preview"
+from msrest.serialization import Model
 
+
+class VersionedSecretValueProperties(Model):
+    """This type describes properties of a versioned value of a secret.
+
+    :param value: The value of the secret resource.
+    :type value: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(self, value=None):
+        super(VersionedSecretValueProperties, self).__init__()
+        self.value = value

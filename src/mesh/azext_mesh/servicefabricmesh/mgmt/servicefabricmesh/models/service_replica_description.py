@@ -13,10 +13,10 @@ from .service_replica_properties import ServiceReplicaProperties
 
 
 class ServiceReplicaDescription(ServiceReplicaProperties):
-    """This type describes a replica of a service resource.
+    """Describes a replica of a service resource.
 
     :param os_type: The Operating system type required by the code in service.
-     . Possible values include: 'Linux', 'Windows'
+     Possible values include: 'Linux', 'Windows'
     :type os_type: str or
      ~azure.mgmt.servicefabricmesh.models.OperatingSystemTypes
     :param code_packages: Describes the set of code packages that forms the
@@ -37,6 +37,7 @@ class ServiceReplicaDescription(ServiceReplicaProperties):
     _validation = {
         'os_type': {'required': True},
         'code_packages': {'required': True},
+        'replica_name': {'required': True},
     }
 
     _attribute_map = {
@@ -47,6 +48,6 @@ class ServiceReplicaDescription(ServiceReplicaProperties):
         'replica_name': {'key': 'replicaName', 'type': 'str'},
     }
 
-    def __init__(self, os_type, code_packages, network_refs=None, diagnostics=None, replica_name=None):
+    def __init__(self, os_type, code_packages, replica_name, network_refs=None, diagnostics=None):
         super(ServiceReplicaDescription, self).__init__(os_type=os_type, code_packages=code_packages, network_refs=network_refs, diagnostics=diagnostics)
         self.replica_name = replica_name

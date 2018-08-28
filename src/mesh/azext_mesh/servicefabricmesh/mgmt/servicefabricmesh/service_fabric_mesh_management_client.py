@@ -20,6 +20,9 @@ from .operations.code_package_operations import CodePackageOperations
 from .operations.operations import Operations
 from .operations.network_operations import NetworkOperations
 from .operations.volume_operations import VolumeOperations
+from .operations.secret_operations import SecretOperations
+from .operations.versioned_secret_value_operations import VersionedSecretValueOperations
+from .operations.versioned_secret_operations import VersionedSecretOperations
 from . import models
 
 
@@ -75,6 +78,12 @@ class ServiceFabricMeshManagementClient(object):
     :vartype network: azure.mgmt.servicefabricmesh.operations.NetworkOperations
     :ivar volume: Volume operations
     :vartype volume: azure.mgmt.servicefabricmesh.operations.VolumeOperations
+    :ivar secret: Secret operations
+    :vartype secret: azure.mgmt.servicefabricmesh.operations.SecretOperations
+    :ivar versioned_secret_value: VersionedSecretValue operations
+    :vartype versioned_secret_value: azure.mgmt.servicefabricmesh.operations.VersionedSecretValueOperations
+    :ivar versioned_secret: VersionedSecret operations
+    :vartype versioned_secret: azure.mgmt.servicefabricmesh.operations.VersionedSecretOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -108,4 +117,10 @@ class ServiceFabricMeshManagementClient(object):
         self.network = NetworkOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.volume = VolumeOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.secret = SecretOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.versioned_secret_value = VersionedSecretValueOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.versioned_secret = VersionedSecretOperations(
             self._client, self.config, self._serialize, self._deserialize)

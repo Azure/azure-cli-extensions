@@ -9,11 +9,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .tracked_resource import TrackedResource
 
 
-class Resource(Model):
-    """The resource model definition for Azure Resource Manager resource.
+class SecretResourceDescription(TrackedResource):
+    """This type describes a secret resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -26,22 +26,36 @@ class Resource(Model):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
+    :param tags: Resource tags.
+    :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives
+    :type location: str
+    :ivar provisioning_state: State of the resource.
+    :vartype provisioning_state: str
+    :param kind: Constant filled by server.
+    :type kind: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'location': {'required': True},
+        'provisioning_state': {'readonly': True},
+        'kind': {'required': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'kind': {'key': 'properties.kind', 'type': 'str'},
     }
 
-    def __init__(self):
-        super(Resource, self).__init__()
-        self.id = None
-        self.name = None
-        self.type = None
+    def __init__(self, location, kind, tags=None):
+        super(SecretResourceDescription, self).__init__(tags=tags, location=location)
+        self.provisioning_state = None
+        self.kind = kind

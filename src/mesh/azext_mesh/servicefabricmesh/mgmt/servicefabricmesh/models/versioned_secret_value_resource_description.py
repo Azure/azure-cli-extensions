@@ -12,9 +12,10 @@
 from .resource import Resource
 
 
-class ProxyResource(Resource):
-    """The resource model definition for Azure Resource Manager proxy resource. It
-    will have everything other than required location and tags.
+class VersionedSecretValueResourceDescription(Resource):
+    """This type describes a versioned value of a secret resource. The name of
+    this resource consists of identifier of the parent secret resource combined
+    with the version identifier corresponding to this secret value.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -27,13 +28,28 @@ class ProxyResource(Resource):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
+    :ivar provisioning_state: State of the resource.
+    :vartype provisioning_state: str
+    :param value: The value of the secret resource.
+    :type value: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
-    def __init__(self):
-        super(ProxyResource, self).__init__()
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'value': {'key': 'properties.value', 'type': 'str'},
+    }
+
+    def __init__(self, value=None):
+        super(VersionedSecretValueResourceDescription, self).__init__()
+        self.provisioning_state = None
+        self.value = value

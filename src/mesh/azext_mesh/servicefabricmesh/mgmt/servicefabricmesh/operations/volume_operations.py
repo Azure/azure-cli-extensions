@@ -43,7 +43,6 @@ class VolumeOperations(object):
         Creates a volume resource with the specified name and description. If a
         volume with the same name already exists, then its description is
         updated to the one indicated in this request.
-        .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -119,7 +118,6 @@ class VolumeOperations(object):
         Gets the information about the volume resource with a given name. This
         information includes the volume description and other runtime
         information.
-        .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -240,7 +238,6 @@ class VolumeOperations(object):
         Gets the information about all volume resources in a given resource
         group. The information includes the volume description and other
         runtime information.
-        .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -312,7 +309,6 @@ class VolumeOperations(object):
         Gets the information about all volume resources in a given
         subscription. The information includes the volume description and other
         runtime information.
-        .
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
