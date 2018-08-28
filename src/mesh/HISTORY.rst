@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.9.3 (2018-08-27)
+++++++++++++++++++
+
+* Added secret resource and secret value resource commands.
+
+
 0.9.2 (2018-08-03)
 ++++++++++++++++++
 
