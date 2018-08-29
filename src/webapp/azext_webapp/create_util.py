@@ -58,12 +58,15 @@ def zip_contents_from_dir(dirPath, lang):
 def get_runtime_version_details(file_path, lang_name):
     version_detected = None
     version_to_create = None
+    print(lang_name)
+    print(lang_name)
     if lang_name.lower() == NETCORE_RUNTIME_NAME:
         # method returns list in DESC, pick the first
         version_detected = parse_netcore_version(file_path)[0]
         version_to_create = detect_netcore_version_tocreate(version_detected)
     elif lang_name.lower() == DOTNET_RUNTIME_NAME:
         # method returns list in DESC, pick the first
+        print("Inside DOTNET RUntime")
         version_detected = parse_dotnet_version(file_path)
         version_to_create = detect_dotnet_version_tocreate(version_detected)
     elif lang_name.lower() == NODE_RUNTIME_NAME:
@@ -126,7 +129,6 @@ def get_lang_from_content(src_path):
     runtime_details_dict = dict.fromkeys(['language', 'file_loc', 'default_sku'])
     package_json_file = os.path.join(src_path, 'package.json')
     package_netlang_glob = glob.glob("**/*.csproj", recursive=True)
-    runtime_java_file = glob.glob("**/*.war", recursive=True)
     static_html_file = glob.glob("**/*.html", recursive=True)
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
@@ -138,10 +140,6 @@ def get_lang_from_content(src_path):
         runtime_details_dict['language'] = runtime_lang
         runtime_details_dict['file_loc'] = package_netcore_file
         runtime_details_dict['default_sku'] = 'F1'
-    elif runtime_java_file:
-        runtime_details_dict['language'] = JAVA_RUNTIME_NAME
-        runtime_details_dict['file_loc'] = runtime_java_file
-        runtime_details_dict['default_sku'] = 'S1'
     elif static_html_file:
         runtime_details_dict['language'] = STATIC_RUNTIME_NAME
         runtime_details_dict['file_loc'] = static_html_file[0]
@@ -163,18 +161,21 @@ def detect_dotnet_lang(csproj_path):
 
 
 def parse_dotnet_version(file_path):
-    from xml.dom import minidom
-    import re
-    xmldoc = minidom.parse(file_path)
-    framework_ver = xmldoc.getElementsByTagName('TargetFrameworkVersion')
     version_detected = ['4.7']
-    target_ver = framework_ver[0].firstChild.data
-    non_decimal = re.compile(r'[^\d.]+')
-    # reduce the version to '5.7.4' from '5.7'
-    if target_ver is not None:
-        # remove the string from the beginning of the version value
-        c = non_decimal.sub('', target_ver)
-        version_detected = c[:3]
+    try:
+        from xml.dom import minidom
+        import re
+        xmldoc = minidom.parse(file_path)
+        framework_ver = xmldoc.getElementsByTagName('TargetFrameworkVersion')
+        target_ver = framework_ver[0].firstChild.data
+        non_decimal = re.compile(r'[^\d.]+')
+        # reduce the version to '5.7.4' from '5.7'
+        if target_ver is not None:
+            # remove the string from the beginning of the version value
+            c = non_decimal.sub('', target_ver)
+            version_detected = c[:3]
+    except:
+            version_detected = version_detected[0]
     return version_detected
 
 
