@@ -42,14 +42,11 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     client = web_client_factory(cmd.cli_ctx)
     # the code to deploy is expected to be the current directory the command is running from
     src_dir = os.getcwd()
-    print(src_dir)
     # if dir is empty, show a message in dry run
     do_deployment = False if os.listdir(src_dir) == [] else True
 
     # determine the details for app to be created from src contents
     lang_details = get_lang_from_content(src_dir)
-    print("Language Details are")
-    print(lang_details)
     # we support E2E create and deploy for Node & dotnetcore, any other stack, set defaults for os & runtime
     # and skip deployment
     if lang_details['language'] is None:

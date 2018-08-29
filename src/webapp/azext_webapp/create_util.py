@@ -58,15 +58,12 @@ def zip_contents_from_dir(dirPath, lang):
 def get_runtime_version_details(file_path, lang_name):
     version_detected = None
     version_to_create = None
-    print(lang_name)
-    print(lang_name)
     if lang_name.lower() == NETCORE_RUNTIME_NAME:
         # method returns list in DESC, pick the first
         version_detected = parse_netcore_version(file_path)[0]
         version_to_create = detect_netcore_version_tocreate(version_detected)
     elif lang_name.lower() == DOTNET_RUNTIME_NAME:
         # method returns list in DESC, pick the first
-        print("Inside DOTNET RUntime")
         version_detected = parse_dotnet_version(file_path)
         version_to_create = detect_dotnet_version_tocreate(version_detected)
     elif lang_name.lower() == NODE_RUNTIME_NAME:
