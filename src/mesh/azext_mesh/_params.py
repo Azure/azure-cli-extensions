@@ -63,13 +63,3 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret resource", id_part='secret_name')
         c.argument('version_id', options_list=('-v', '--name'), help="The name of the secret version", id_part='version_id')
-
-    # with self.argument_context('mesh secret create') as c:
-    #     c.argument('resource_group_name', arg_type=resource_group_name_type)
-    #     c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret", id_part='secret_name')
-    #     c.argument('secret_resource_description', options_list=('-d', '--secret-resource-description'), help="The description of the secret resource", id_part='secret_resource_description')
-    #
-    # with self.argument_context('mesh secretvalue create') as c:
-    #     c.argument('resource_group_name', arg_type=resource_group_name_type)
-    #     c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret", id_part='secret_name')
-    #     c.argument('version', options_list=('-v', '--version'), help="The version of the secret", id_part='version')
