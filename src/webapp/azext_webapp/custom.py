@@ -30,7 +30,7 @@ from .create_util import (
     get_lang_from_content,
     web_client_factory
 )
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME)
 logger = get_logger(__name__)
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
@@ -169,7 +169,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         except OSError:
             pass
     else:
-        logger.warning('No known package (Node, ASP.NET, .NETCORE, Java or Static Html) '
+        logger.warning('No known package (Node, ASP.NET, .NETCORE, or Static Html) '
                        'found skipping zip and deploy process')
     create_json.update({'app_url': url})
     logger.warning("All done.")

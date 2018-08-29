@@ -171,8 +171,8 @@ def parse_dotnet_version(file_path):
             # remove the string from the beginning of the version value
             c = non_decimal.sub('', target_ver)
             version_detected = c[:3]
-    except:
-            version_detected = version_detected[0]
+    except:  # pylint: disable=bare-except
+        version_detected = version_detected[0]
     return version_detected
 
 
