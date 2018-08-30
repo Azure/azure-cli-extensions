@@ -30,7 +30,7 @@ from .create_util import (
     get_lang_from_content,
     web_client_factory
 )
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME)
 logger = get_logger(__name__)
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
@@ -42,7 +42,6 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     client = web_client_factory(cmd.cli_ctx)
     # the code to deploy is expected to be the current directory the command is running from
     src_dir = os.getcwd()
-
     # if dir is empty, show a message in dry run
     do_deployment = False if os.listdir(src_dir) == [] else True
 
@@ -59,9 +58,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     else:
         sku = lang_details.get("default_sku")
         language = lang_details.get("language")
-        is_java = language.lower() == JAVA_RUNTIME_NAME
-        is_skip_build = is_java or language.lower() == STATIC_RUNTIME_NAME
-        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME or is_java else OS_DEFAULT
+        is_skip_build = language.lower() == STATIC_RUNTIME_NAME
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME else OS_DEFAULT
         # detect the version
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')
@@ -158,24 +156,20 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
         _ping_scm_site(cmd, rg_name, name)
 
-        if is_java:
-            zip_file_path = src_path + '\\\\' + lang_details.get('file_loc')[0]
-        else:
-            logger.warning("Creating zip with contents of dir %s ...", src_dir)
-            # zip contents & deploy
-            zip_file_path = zip_contents_from_dir(src_dir, language)
+        logger.warning("Creating zip with contents of dir %s ...", src_dir)
+        # zip contents & deploy
+        zip_file_path = zip_contents_from_dir(src_dir, language)
 
         logger.warning("Preparing to deploy %s contents to app.",
                        '' if is_skip_build else 'and build')
         enable_zip_deploy(cmd, rg_name, name, zip_file_path)
-        if not is_java:
-            # Remove the file afer deployment, handling exception if user removed the file manually
-            try:
-                os.remove(zip_file_path)
-            except OSError:
-                pass
+        # Remove the file afer deployment, handling exception if user removed the file manually
+        try:
+            os.remove(zip_file_path)
+        except OSError:
+            pass
     else:
-        logger.warning('No known package (Node, ASP.NET, .NETCORE, Java or Static Html) '
+        logger.warning('No known package (Node, ASP.NET, .NETCORE, or Static Html) '
                        'found skipping zip and deploy process')
     create_json.update({'app_url': url})
     logger.warning("All done.")
