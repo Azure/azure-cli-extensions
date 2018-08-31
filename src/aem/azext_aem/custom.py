@@ -475,10 +475,7 @@ class EnhancedMonitoring(object):
         mapping.update(
             dict.fromkeys(
                 ['Standard_DS4_v2', 'Standard_D16s_v3', 'Standard_E16s_v3', 'Standard_E16-4s_v3',
-                 'Standard_E16-8s_v3'], {
-                     'IOPS': 25600,
-                     'TP': 384,
-                 }
+                 'Standard_E16-8s_v3'], {'IOPS': 25600, 'TP': 384}
             )
         )
         mapping.update(dict.fromkeys(['Standard_DS5_v2', 'Standard_D32s_v3'], {
@@ -574,10 +571,7 @@ class EnhancedMonitoring(object):
         mapping.update(
             dict.fromkeys(
                 ['Standard_E64s_v3', 'Standard_D64s_v3', 'Standard_E64-16s_v3', 'Standard_E64-32s_v3',
-                 'Standard_E64is_v3'], {
-                     'IOPS': 80000,
-                     'TP': 1200,
-                 }
+                 'Standard_E64is_v3'], {'IOPS': 80000, 'TP': 1200}
             )
         )
         return mapping
