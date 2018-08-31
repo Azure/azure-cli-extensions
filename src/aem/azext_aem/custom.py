@@ -478,7 +478,9 @@ class EnhancedMonitoring(object):
                  'Standard_E16-8s_v3'], {
                      'IOPS': 25600,
                      'TP': 384,
-                }))
+                 }
+            )
+        )
         mapping.update(dict.fromkeys(['Standard_DS5_v2', 'Standard_D32s_v3'], {
             'IOPS': 51200,
             'TP': 768,
@@ -575,5 +577,7 @@ class EnhancedMonitoring(object):
                  'Standard_E64is_v3'], {
                      'IOPS': 80000,
                      'TP': 1200,
-                }))
+                 }
+            )
+        )
         return mapping
