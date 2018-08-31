@@ -40,7 +40,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='botservice',
     version=VERSION,
-    description='Support for Azure Bot Service 2017-12-01 preview features',
+    description='Bug fixes for issues in the native botservice cli command module.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Swagat Mishra',
