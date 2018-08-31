@@ -46,7 +46,7 @@ class SecretResourceProperties(SecretResourcePropertiesBase):
     }
 
     _subtype_map = {
-        'kind': {'simple': 'SimpleSecretResourceProperties'}
+        'kind': {'inlinedValue': 'SimpleSecretResourceProperties'}
     }
 
     def __init__(self, description=None, content_type=None):

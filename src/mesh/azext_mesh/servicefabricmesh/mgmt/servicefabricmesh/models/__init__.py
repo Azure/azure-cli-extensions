@@ -30,9 +30,12 @@ from .resource_requirements import ResourceRequirements
 from .environment_variable import EnvironmentVariable
 from .setting import Setting
 from .endpoint_properties import EndpointProperties
-from .container_volume import ContainerVolume
+from .volume_reference import VolumeReference
+from .application_scoped_volume_creation_parameters import ApplicationScopedVolumeCreationParameters
+from .application_scoped_volume import ApplicationScopedVolume
 from .diagnostics_ref import DiagnosticsRef
 from .container_code_package_properties import ContainerCodePackageProperties
+from .application_scoped_volume_creation_parameters_service_fabric_volume_disk import ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk
 from .service_replica_description import ServiceReplicaDescription
 from .network_ref import NetworkRef
 from .service_replica_properties import ServiceReplicaProperties
@@ -48,12 +51,22 @@ from .application_resource_description import ApplicationResourceDescription
 from .available_operation_display import AvailableOperationDisplay
 from .operation_result import OperationResult
 from .error_model import ErrorModel, ErrorModelException
-from .secret_resource_properties_base import SecretResourcePropertiesBase
-from .secret_resource_description import SecretResourceDescription
-from .versioned_secret_value_resource_description import VersionedSecretValueResourceDescription
 from .secret_resource_properties import SecretResourceProperties
 from .simple_secret_resource_properties import SimpleSecretResourceProperties
-from .versioned_secret_value_properties import VersionedSecretValueProperties
+from .secret_value_properties import SecretValueProperties
+from .secret_resource_properties_base import SecretResourcePropertiesBase
+from .secret_resource_description import SecretResourceDescription
+from .secret_value_resource_description import SecretValueResourceDescription
+from .gateway_destination import GatewayDestination
+from .tcp_config import TcpConfig
+from .http_route_match_path import HttpRouteMatchPath
+from .http_route_match_header import HttpRouteMatchHeader
+from .http_route_match_rule import HttpRouteMatchRule
+from .http_route_config import HttpRouteConfig
+from .http_host_config import HttpHostConfig
+from .http_config import HttpConfig
+from .gateway_properties import GatewayProperties
+from .gateway_resource_description import GatewayResourceDescription
 from .application_resource_description_paged import ApplicationResourceDescriptionPaged
 from .service_resource_description_paged import ServiceResourceDescriptionPaged
 from .service_replica_description_paged import ServiceReplicaDescriptionPaged
@@ -61,15 +74,20 @@ from .operation_result_paged import OperationResultPaged
 from .network_resource_description_paged import NetworkResourceDescriptionPaged
 from .volume_resource_description_paged import VolumeResourceDescriptionPaged
 from .secret_resource_description_paged import SecretResourceDescriptionPaged
-from .versioned_secret_value_resource_description_paged import VersionedSecretValueResourceDescriptionPaged
+from .secret_value_resource_description_paged import SecretValueResourceDescriptionPaged
+from .gateway_resource_description_paged import GatewayResourceDescriptionPaged
 from .service_fabric_mesh_management_client_enums import (
     IngressQoSLevel,
     HealthState,
     ServiceResourceStatus,
     ApplicationResourceStatus,
+    SizeTypes,
+    ApplicationScopedVolumeKind,
     OperatingSystemTypes,
     DiagnosticsSinkKind,
     SecretKind,
+    HeaderMatchType,
+    GatewayResourceStatus,
 )
 
 __all__ = [
@@ -94,9 +112,12 @@ __all__ = [
     'EnvironmentVariable',
     'Setting',
     'EndpointProperties',
-    'ContainerVolume',
+    'VolumeReference',
+    'ApplicationScopedVolumeCreationParameters',
+    'ApplicationScopedVolume',
     'DiagnosticsRef',
     'ContainerCodePackageProperties',
+    'ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk',
     'ServiceReplicaDescription',
     'NetworkRef',
     'ServiceReplicaProperties',
@@ -112,12 +133,22 @@ __all__ = [
     'AvailableOperationDisplay',
     'OperationResult',
     'ErrorModel', 'ErrorModelException',
-    'SecretResourcePropertiesBase',
-    'SecretResourceDescription',
-    'VersionedSecretValueResourceDescription',
     'SecretResourceProperties',
     'SimpleSecretResourceProperties',
-    'VersionedSecretValueProperties',
+    'SecretValueProperties',
+    'SecretResourcePropertiesBase',
+    'SecretResourceDescription',
+    'SecretValueResourceDescription',
+    'GatewayDestination',
+    'TcpConfig',
+    'HttpRouteMatchPath',
+    'HttpRouteMatchHeader',
+    'HttpRouteMatchRule',
+    'HttpRouteConfig',
+    'HttpHostConfig',
+    'HttpConfig',
+    'GatewayProperties',
+    'GatewayResourceDescription',
     'ApplicationResourceDescriptionPaged',
     'ServiceResourceDescriptionPaged',
     'ServiceReplicaDescriptionPaged',
@@ -125,12 +156,17 @@ __all__ = [
     'NetworkResourceDescriptionPaged',
     'VolumeResourceDescriptionPaged',
     'SecretResourceDescriptionPaged',
-    'VersionedSecretValueResourceDescriptionPaged',
+    'SecretValueResourceDescriptionPaged',
+    'GatewayResourceDescriptionPaged',
     'IngressQoSLevel',
     'HealthState',
     'ServiceResourceStatus',
     'ApplicationResourceStatus',
+    'SizeTypes',
+    'ApplicationScopedVolumeKind',
     'OperatingSystemTypes',
     'DiagnosticsSinkKind',
     'SecretKind',
+    'HeaderMatchType',
+    'GatewayResourceStatus',
 ]

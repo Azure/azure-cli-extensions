@@ -440,8 +440,8 @@ def list_secrets(client, resource_group_name=None):
     return client.list_by_resource_group(resource_group_name)
 
 
-def secret_show(client, resource_group_name, secret_name, version_id, download=False):
-    secret_data = client.get(resource_group_name, secret_name, version_id)
+def secret_show(client, resource_group_name, secret_name, secret_value_resource_name, download=False):
+    secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
     print(secret_data)
     del secret_data.value
     return secret_data

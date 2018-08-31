@@ -41,4 +41,4 @@ class SimpleSecretResourceProperties(SecretResourceProperties):
 
     def __init__(self, description=None, content_type=None):
         super(SimpleSecretResourceProperties, self).__init__(description=description, content_type=content_type)
-        self.kind = 'simple'
+        self.kind = 'inlinedValue'

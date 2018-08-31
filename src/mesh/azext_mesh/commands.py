@@ -16,7 +16,7 @@ from ._client_factory import (cf_mesh_deployments,
                               cf_mesh_application, cf_mesh_service,
                               cf_mesh_replica, cf_mesh_code_package, cf_mesh_network,
                               cf_mesh_volume, cf_mesh_secret, cf_mesh_versioned_secret_operations,
-                              cf_mesh_versioned_secret_value_operations)
+                              cf_mesh_secret_value_operations)
 from ._exception_handler import resource_exception_handler
 
 
@@ -101,11 +101,13 @@ def transform_volume_list(result):
 def transform_secret(result):
     """Transform a volume to table output. """
     return OrderedDict([('Id', result['id']),
-                        ('Name', result['version']),
-                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Version', result['name']),
+                        ('Kind', result['kind']),
+                        ('type', result.get('contentType')),
+                        ('tags', result.get('tags')),
+                        # ('ResourceGroup', result.get('resourceGroup')),
                         ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioning_state')),
-                        ('Kind', result['kind'])
+                        ('ProvisioningState', result.get('provisioning_state'))
                         ])
 
 
@@ -116,9 +118,7 @@ def transform_secret_list(result):
 
 def transform_secretvalue(result):
     """Transform a volume to table output. """
-    return OrderedDict([('Name', result['name']),
-                        ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioning_state'))
+    return OrderedDict([('Version', result['name'])
                         ])
 
 
@@ -158,13 +158,8 @@ def load_command_table(self, _):
         exception_handler=resource_exception_handler
     )
 
-    mesh_secret_value_list_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.versioned_secret_operations#VersionedSecretOperations.{}',
-        exception_handler=resource_exception_handler
-    )
-
-    mesh_secretvalue_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.versioned_secret_value_operations#VersionedSecretValueOperations.{}',
+    mesh_secret_value_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_value_operations#SecretValueOperations.{}',
         exception_handler=resource_exception_handler
     )
 
@@ -214,10 +209,9 @@ def load_command_table(self, _):
     with self.command_group('mesh secret', cmd_util) as g:
         g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
 
-    with self.command_group('mesh secretvalue', mesh_secretvalue_util, client_factory=cf_mesh_versioned_secret_value_operations) as g:
+    with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value_operations) as g:
         g.command('show', 'get')
-        g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)
         g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('mesh secretvalue', mesh_secret_value_list_util, client_factory=cf_mesh_versioned_secret_operations) as g:
+    with self.command_group('mesh secretvalue', mesh_secret_util, client_factory=cf_mesh_versioned_secret_operations) as g:
         g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)

@@ -46,6 +46,18 @@ class ApplicationResourceStatus(Enum):
     failed = "Failed"
 
 
+class SizeTypes(Enum):
+
+    small = "Small"
+    medium = "Medium"
+    large = "Large"
+
+
+class ApplicationScopedVolumeKind(Enum):
+
+    service_fabric_volume_disk = "ServiceFabricVolumeDisk"
+
+
 class OperatingSystemTypes(Enum):
 
     linux = "Linux"
@@ -60,6 +72,19 @@ class DiagnosticsSinkKind(Enum):
 
 class SecretKind(Enum):
 
-    simple = "simple"
-    key_vault_managed_reference = "keyVaultManagedReference"
-    key_vault_versioned_reference = "keyVaultVersionedReference"
+    inlined_value = "inlinedValue"
+
+
+class HeaderMatchType(Enum):
+
+    exact = "exact"
+
+
+class GatewayResourceStatus(Enum):
+
+    invalid = "Invalid"
+    ready = "Ready"
+    upgrading = "Upgrading"
+    creating = "Creating"
+    deleting = "Deleting"
+    failed = "Failed"

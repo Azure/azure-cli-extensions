@@ -52,5 +52,5 @@ def cf_mesh_versioned_secret_operations(cli_ctx, _):
     return _cf_mesh(cli_ctx).versioned_secret
 
 
-def cf_mesh_versioned_secret_value_operations(cli_ctx, _):
-    return _cf_mesh(cli_ctx).versioned_secret_value
+def cf_mesh_secret_value_operations(cli_ctx, _):
+    return _cf_mesh(cli_ctx).secret_value

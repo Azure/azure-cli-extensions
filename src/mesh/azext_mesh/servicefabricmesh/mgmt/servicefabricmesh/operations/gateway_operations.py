@@ -15,8 +15,8 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class SecretOperations(object):
-    """SecretOperations operations.
+class GatewayOperations(object):
+    """GatewayOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
@@ -37,28 +37,32 @@ class SecretOperations(object):
         self.config = config
 
     def create(
-            self, resource_group_name, secret_resource_name, secret_resource_description, custom_headers=None, raw=False, **operation_config):
-        """Creates or updates a secret resource.
+            self, resource_group_name, gateway_resource_name, gateway_resource_description, custom_headers=None, raw=False, **operation_config):
+        """Creates or updates a gateway resource.
 
-        Creates a secret resource of the specified kind, and with the specified
-        name, description and metadata describing its value.
+        Creates a gateway resource with the specified name and description. If
+        a gateway with the same name already exists,  then its description is
+        updated to the one indicated in this request. Use gateway resources to
+        create a gateway for public connectivity for services within your
+        application. .
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param secret_resource_name: The name of the secret resource.
-        :type secret_resource_name: str
-        :param secret_resource_description: Description for creating a secret
-         resource.
-        :type secret_resource_description:
-         ~azure.mgmt.servicefabricmesh.models.SecretResourceDescription
+        :param gateway_resource_name: The identity of the gateway.
+        :type gateway_resource_name: str
+        :param gateway_resource_description: Description for creating a
+         Gateway resource.
+        :type gateway_resource_description:
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: SecretResourceDescription or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.servicefabricmesh.models.SecretResourceDescription
-         or ~msrest.pipeline.ClientRawResponse
+        :return: GatewayResourceDescription or ClientRawResponse if raw=true
+        :rtype:
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription or
+         ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -67,7 +71,7 @@ class SecretOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'secretResourceName': self._serialize.url("secret_resource_name", secret_resource_name, 'str', skip_quote=True)
+            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -86,7 +90,7 @@ class SecretOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(secret_resource_description, 'SecretResourceDescription')
+        body_content = self._serialize.body(gateway_resource_description, 'GatewayResourceDescription')
 
         # Construct and send request
         request = self._client.put(url, query_parameters)
@@ -99,37 +103,38 @@ class SecretOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('SecretResourceDescription', response)
+            deserialized = self._deserialize('GatewayResourceDescription', response)
         if response.status_code == 201:
-            deserialized = self._deserialize('SecretResourceDescription', response)
+            deserialized = self._deserialize('GatewayResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets/{secretResourceName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
 
     def get(
-            self, resource_group_name, secret_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the secret resource with the given name.
+            self, resource_group_name, gateway_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the gateway resource with the given name.
 
-        Gets the information about the secret resource with the given name. The
-        information includes the secret's kind, description and the metadata
-        describing its value. The secret's value is not included.
+        Gets the information about the gateway resource with the given name.
+        The information include the description, configuration and other
+        runtime properties of the gateway.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param secret_resource_name: The name of the secret resource.
-        :type secret_resource_name: str
+        :param gateway_resource_name: The identity of the gateway.
+        :type gateway_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: SecretResourceDescription or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.servicefabricmesh.models.SecretResourceDescription
-         or ~msrest.pipeline.ClientRawResponse
+        :return: GatewayResourceDescription or ClientRawResponse if raw=true
+        :rtype:
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription or
+         ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -138,7 +143,7 @@ class SecretOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'secretResourceName': self._serialize.url("secret_resource_name", secret_resource_name, 'str', skip_quote=True)
+            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -166,26 +171,25 @@ class SecretOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('SecretResourceDescription', response)
+            deserialized = self._deserialize('GatewayResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets/{secretResourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
 
     def delete(
-            self, resource_group_name, secret_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Deletes the specified secret, including all of its versions.
+            self, resource_group_name, gateway_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Deletes the gateway resource.
 
-        Deletes the secret resource identified by the name; all of the
-        versioned values of this secret, if any exist, are also deleted.
+        Deletes the gateway resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param secret_resource_name: The name of the secret resource.
-        :type secret_resource_name: str
+        :param gateway_resource_name: The identity of the gateway.
+        :type gateway_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -201,7 +205,7 @@ class SecretOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'secretResourceName': self._serialize.url("secret_resource_name", secret_resource_name, 'str', skip_quote=True)
+            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -229,15 +233,15 @@ class SecretOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets/{secretResourceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
-        """Gets all the secret resources in a given resource group.
+        """Gets all the gateway resources in a given resource group.
 
-        Gets the information about all secret resources in a given resource
-        group. The information include the kind of secret resource, description
-        and metadata about its value. It does not include the secret value.
+        Gets the information about all gateway resources in a given resource
+        group. The information include the description, configuration and other
+        runtime properties of the gateway.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -246,9 +250,9 @@ class SecretOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of SecretResourceDescription
+        :return: An iterator like instance of GatewayResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.SecretResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.SecretResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -292,33 +296,32 @@ class SecretOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.SecretResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.SecretResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
-        """Gets all the secret resources in a given subscription.
+        """Gets all the gateway resources in a given subscription.
 
-        Gets the information about all secret resources in a given
-        subscription. The information include the kind of secret resource,
-        description and metadata about its value. It does not include the
-        secret value.
+        Gets the information about all gateway resources in a given resource
+        group. The information include the description, configuration and other
+        runtime properties of the gateway.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of SecretResourceDescription
+        :return: An iterator like instance of GatewayResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.SecretResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.SecretResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -361,86 +364,12 @@ class SecretOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.SecretResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.SecretResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/secrets'}
-
-    def list_versions(
-            self, resource_group_name, secret_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Gets all versions of the the specified secret resource.
-
-        Gets information about all versions of the specified secret resource.
-        The information includes the namethe secret value resources, but not
-        the actual values.
-
-        :param resource_group_name: Azure resource group name
-        :type resource_group_name: str
-        :param secret_resource_name: The name of the secret resource.
-        :type secret_resource_name: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of SecretValueResourceDescription
-        :rtype:
-         ~azure.mgmt.servicefabricmesh.models.SecretValueResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.SecretValueResourceDescription]
-        :raises:
-         :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
-        """
-        def internal_paging(next_link=None, raw=False):
-
-            if not next_link:
-                # Construct URL
-                url = self.list_versions.metadata['url']
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'secretResourceName': self._serialize.url("secret_resource_name", secret_resource_name, 'str', skip_quote=True)
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-
-                # Construct parameters
-                query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-
-            else:
-                url = next_link
-                query_parameters = {}
-
-            # Construct headers
-            header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
-            if self.config.generate_client_request_id:
-                header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-            if custom_headers:
-                header_parameters.update(custom_headers)
-            if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
-
-            if response.status_code not in [200]:
-                raise models.ErrorModelException(self._deserialize, response)
-
-            return response
-
-        # Deserialize response
-        deserialized = models.SecretValueResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
-
-        if raw:
-            header_dict = {}
-            client_raw_response = models.SecretValueResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
-            return client_raw_response
-
-        return deserialized
-    list_versions.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets/{secretResourceName}/values'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/gateways'}
