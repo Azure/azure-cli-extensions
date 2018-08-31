@@ -462,20 +462,23 @@ class EnhancedMonitoring(object):
             'IOPS': 12800,
             'TP': 128,
         }
-        mapping.update(dict.fromkeys(['Standard_DS3_v2', 'Standard_D8s_v3', \
-        'Standard_E8s_v3', 'Standard_E8-2s_v3', 'Standard_E8-4s_v3'], {
-            'IOPS': 12800,
-            'TP': 192,
-        }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_DS3_v2', 'Standard_D8s_v3', 'Standard_E8s_v3', 'Standard_E8-2s_v3', 'Standard_E8-4s_v3'], {
+                    'IOPS': 12800,
+                    'TP': 192,
+                }))
         mapping['Standard_DS4'] = {
             'IOPS': 25600,
             'TP': 256,
         }
-        mapping.update(dict.fromkeys(['Standard_DS4_v2', 'Standard_D16s_v3', \
-        'Standard_E16s_v3', 'Standard_E16-4s_v3', 'Standard_E16-8s_v3'], {
-            'IOPS': 25600,
-            'TP': 384,
-        }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_DS4_v2', 'Standard_D16s_v3', 'Standard_E16s_v3', 'Standard_E16-4s_v3',
+                 'Standard_E16-8s_v3'], {
+                     'IOPS': 25600,
+                     'TP': 384,
+                 }))
         mapping.update(dict.fromkeys(['Standard_DS5_v2', 'Standard_D32s_v3'], {
             'IOPS': 51200,
             'TP': 768,
@@ -508,11 +511,12 @@ class EnhancedMonitoring(object):
             'IOPS': 51200,
             'TP': 512,
         }
-        mapping.update(dict.fromkeys(['Standard_DS14_v2', 'Standard_E32s_v3', \
-        'Standard_E32-8s_v3', 'Standard_E32-16s_v3'], {
-            'IOPS': 51200,
-            'TP': 768,
-        }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_DS14_v2', 'Standard_E32s_v3', 'Standard_E32-8s_v3', 'Standard_E32-16s_v3'], {
+                    'IOPS': 51200,
+                    'TP': 768,
+                }))
         mapping['Standard_DS15_v2'] = {
             'IOPS': 64000,
             'TP': 960,
@@ -537,34 +541,39 @@ class EnhancedMonitoring(object):
             'IOPS': 80000,
             'TP': 2000,
         }
-        mapping.update(dict.fromkeys(['Standard_M8-2ms', 'Standard_M8-4ms', \
-        'Standard_M8ms'], {
-            'IOPS': 5000,
-            'TP': 125,
-        }))
-        mapping.update(dict.fromkeys(['Standard_M16-4ms', 'Standard_M16-8ms', \
-        'Standard_M16ms'], {
-            'IOPS': 10000,
-            'TP': 250,
-        }))
-        mapping.update(dict.fromkeys(['Standard_M32-8ms', 'Standard_M32-16ms', 'Standard_M32ms', \
-        'Standard_M32ls', 'Standard_M32ts'], {
-            'IOPS': 20000,
-            'TP': 500,
-        }))
-        mapping.update(dict.fromkeys(['Standard_M64ms', 'Standard_M64s', 'Standard_M64ls', \
-        'Standard_M64-16ms', 'Standard_M64-32ms'], {
-            'IOPS': 40000,
-            'TP': 1000,
-        }))
-        mapping.update(dict.fromkeys(['Standard_M128s', 'Standard_M128ms', 'Standard_M128-32ms', \
-        'Standard_M128-64ms'], {
-            'IOPS': 80000,
-            'TP': 2000,
-        }))
-        mapping.update(dict.fromkeys(['Standard_E64s_v3', 'Standard_D64s_v3', 'Standard_E64-16s_v3', \
-        'Standard_E64-32s_v3', 'Standard_E64is_v3'], {
-            'IOPS': 80000,
-            'TP': 1200,
-        }))
+        mapping.update(
+            dict.fromkeys(['Standard_M8-2ms', 'Standard_M8-4ms', 'Standard_M8ms'], {
+                'IOPS': 5000,
+                'TP': 125,
+            }))
+        mapping.update(
+            dict.fromkeys(['Standard_M16-4ms', 'Standard_M16-8ms', 'Standard_M16ms'], {
+                'IOPS': 10000,
+                'TP': 250,
+            }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_M32-8ms', 'Standard_M32-16ms', 'Standard_M32ms', 'Standard_M32ls', 'Standard_M32ts'], {
+                    'IOPS': 20000,
+                    'TP': 500,
+                }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_M64ms', 'Standard_M64s', 'Standard_M64ls', 'Standard_M64-16ms', 'Standard_M64-32ms'], {
+                    'IOPS': 40000,
+                    'TP': 1000,
+                }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_M128s', 'Standard_M128ms', 'Standard_M128-32ms', 'Standard_M128-64ms'], {
+                    'IOPS': 80000,
+                    'TP': 2000,
+                }))
+        mapping.update(
+            dict.fromkeys(
+                ['Standard_E64s_v3', 'Standard_D64s_v3', 'Standard_E64-16s_v3', 'Standard_E64-32s_v3',
+                 'Standard_E64is_v3'], {
+                     'IOPS': 80000,
+                     'TP': 1200,
+                 }))
         return mapping
