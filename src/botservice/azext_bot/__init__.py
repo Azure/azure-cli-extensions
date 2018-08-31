@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_bot._help import helps  # pylint: disable=unused-import
-from azext_bot._client_factory import get_botservice_management_client
+from azure.cli.command_modules.botservice._client_factory import get_botservice_management_client
 
 
 class BotServiceCommandsLoader(AzCommandsLoader):
