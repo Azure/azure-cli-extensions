@@ -7,7 +7,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.mgmt.botservice.models import Bot, BotProperties, Sku
 from azure.cli.command_modules.botservice.custom import create_app, provisionConvergedApp
-from azure.cli.core._profile import Profile
+from azure.cli.core._profile import Profile  # pylint: disable=unused-import
 
 logger = get_logger(__name__)
 
