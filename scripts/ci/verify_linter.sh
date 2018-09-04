@@ -8,10 +8,16 @@ pip install -e "git+https://github.com/Azure/azure-cli@dev#egg=azure-cli-dev-too
 echo "Installed."
 
 # check for index updates
+set +x  # json output is too verbose
 public_index=$(az extension list-available -d)
 index_file=$(cat ./src/index.json)
+modified_extensions=$(python ./scripts/ci/index_changes.py "$index_file" "$public_index")
+set -x
 
-python ./scripts/ci/index_changes.py "$index_file" "$public_index"
+echo "Found the following modified extensions:"
+echo "$modified_extensions"
+
+
 
 azdev cli-lint --ci
 echo "OK. Completed Linting"
