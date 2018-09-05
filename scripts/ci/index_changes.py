@@ -5,14 +5,14 @@
 
 import sys
 import json
+import subprocess
 
 
-_, index_file, public_index = sys.argv  # pylint: disable=unbalanced-tuple-unpacking
+public_index = json.loads(subprocess.check_output('az extension list-available -d', shell=True))
 
-
-curr_index = json.loads(index_file).get("extensions")
-public_index = json.loads(public_index)
+with open('./src/index.json', 'r') as myfile:
+    curr_index = json.loads(myfile.read()).get("extensions")
 
 for extension in curr_index:
-    if curr_index[extension] != public_index[extension]:
+    if curr_index[extension] != public_index.get(extension):
         print(extension)
