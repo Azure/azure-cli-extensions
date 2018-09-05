@@ -2,7 +2,7 @@ import sys
 import json
 
 
-_, index_file, public_index = sys.argv
+_, index_file, public_index = sys.argv  # pylint: disable=unbalanced-tuple-unpacking
 
 
 curr_index = json.loads(index_file).get("extensions")

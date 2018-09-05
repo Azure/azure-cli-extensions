@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+set -ex
 
 # Install CLI & Dev Tools
 echo "Installing azure-cli-dev-tools and azure-cli..."
@@ -12,12 +12,19 @@ set +x  # json output is too verbose
 public_index=$(az extension list-available -d)
 index_file=$(cat ./src/index.json)
 modified_extensions=$(python ./scripts/ci/index_changes.py "$index_file" "$public_index")
-set -x
 
 echo "Found the following modified extensions:"
 echo "$modified_extensions"
 
+# run linter on each modified extension
+for ext in $modified_extensions; do
+    echo
+    echo "Adding extension:" $ext
+    az extension add -n $ext
+    echo "Running linter on extension:" $ext
+    azdev cli-lint --ci --extensions $ext
+    az extension remove -n $ext
+    echo $ext "extension has been removed."
+done
 
-
-azdev cli-lint --ci
 echo "OK. Completed Linting"
