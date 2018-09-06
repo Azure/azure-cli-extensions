@@ -9,5 +9,24 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2018-09-01-preview"
+from msrest.serialization import Model
 
+
+class AutoScalingTrigger(Model):
+    """Describes the trigger for performing auto scaling operation.
+
+    :param kind: Constant filled by server.
+    :type kind: str
+    """
+
+    _validation = {
+        'kind': {'required': True},
+    }
+
+    _attribute_map = {
+        'kind': {'key': 'kind', 'type': 'str'},
+    }
+
+    def __init__(self):
+        super(AutoScalingTrigger, self).__init__()
+        self.kind = None

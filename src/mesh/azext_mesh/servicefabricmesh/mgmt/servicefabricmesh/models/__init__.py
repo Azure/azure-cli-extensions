@@ -14,6 +14,9 @@ from .ingress_config import IngressConfig
 from .network_properties import NetworkProperties
 from .volume_provider_parameters_azure_file import VolumeProviderParametersAzureFile
 from .volume_properties import VolumeProperties
+from .auto_scaling_trigger import AutoScalingTrigger
+from .auto_scaling_mechanism import AutoScalingMechanism
+from .auto_scaling_policy import AutoScalingPolicy
 from .service_resource_description import ServiceResourceDescription
 from .diagnostics_sink_properties import DiagnosticsSinkProperties
 from .diagnostics_description import DiagnosticsDescription
@@ -34,12 +37,15 @@ from .volume_reference import VolumeReference
 from .application_scoped_volume_creation_parameters import ApplicationScopedVolumeCreationParameters
 from .application_scoped_volume import ApplicationScopedVolume
 from .diagnostics_ref import DiagnosticsRef
+from .reliable_collections_ref import ReliableCollectionsRef
 from .container_code_package_properties import ContainerCodePackageProperties
 from .application_scoped_volume_creation_parameters_service_fabric_volume_disk import ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk
 from .service_replica_description import ServiceReplicaDescription
 from .network_ref import NetworkRef
 from .service_replica_properties import ServiceReplicaProperties
 from .azure_internal_monitoring_pipeline_sink_description import AzureInternalMonitoringPipelineSinkDescription
+from .auto_scaling_metric import AutoScalingMetric
+from .auto_scaling_resource_metric import AutoScalingResourceMetric
 from .resource import Resource
 from .proxy_resource import ProxyResource
 from .managed_proxy_resource import ManagedProxyResource
@@ -54,19 +60,10 @@ from .error_model import ErrorModel, ErrorModelException
 from .secret_resource_properties import SecretResourceProperties
 from .simple_secret_resource_properties import SimpleSecretResourceProperties
 from .secret_value_properties import SecretValueProperties
+from .secret_value import SecretValue
 from .secret_resource_properties_base import SecretResourcePropertiesBase
 from .secret_resource_description import SecretResourceDescription
 from .secret_value_resource_description import SecretValueResourceDescription
-from .gateway_destination import GatewayDestination
-from .tcp_config import TcpConfig
-from .http_route_match_path import HttpRouteMatchPath
-from .http_route_match_header import HttpRouteMatchHeader
-from .http_route_match_rule import HttpRouteMatchRule
-from .http_route_config import HttpRouteConfig
-from .http_host_config import HttpHostConfig
-from .http_config import HttpConfig
-from .gateway_properties import GatewayProperties
-from .gateway_resource_description import GatewayResourceDescription
 from .application_resource_description_paged import ApplicationResourceDescriptionPaged
 from .service_resource_description_paged import ServiceResourceDescriptionPaged
 from .service_replica_description_paged import ServiceReplicaDescriptionPaged
@@ -75,7 +72,6 @@ from .network_resource_description_paged import NetworkResourceDescriptionPaged
 from .volume_resource_description_paged import VolumeResourceDescriptionPaged
 from .secret_resource_description_paged import SecretResourceDescriptionPaged
 from .secret_value_resource_description_paged import SecretValueResourceDescriptionPaged
-from .gateway_resource_description_paged import GatewayResourceDescriptionPaged
 from .service_fabric_mesh_management_client_enums import (
     IngressQoSLevel,
     HealthState,
@@ -85,9 +81,10 @@ from .service_fabric_mesh_management_client_enums import (
     ApplicationScopedVolumeKind,
     OperatingSystemTypes,
     DiagnosticsSinkKind,
+    AutoScalingMechanismKind,
+    AutoScalingMetricKind,
+    AutoScalingTriggerKind,
     SecretKind,
-    HeaderMatchType,
-    GatewayResourceStatus,
 )
 
 __all__ = [
@@ -96,6 +93,9 @@ __all__ = [
     'NetworkProperties',
     'VolumeProviderParametersAzureFile',
     'VolumeProperties',
+    'AutoScalingTrigger',
+    'AutoScalingMechanism',
+    'AutoScalingPolicy',
     'ServiceResourceDescription',
     'DiagnosticsSinkProperties',
     'DiagnosticsDescription',
@@ -116,12 +116,15 @@ __all__ = [
     'ApplicationScopedVolumeCreationParameters',
     'ApplicationScopedVolume',
     'DiagnosticsRef',
+    'ReliableCollectionsRef',
     'ContainerCodePackageProperties',
     'ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk',
     'ServiceReplicaDescription',
     'NetworkRef',
     'ServiceReplicaProperties',
     'AzureInternalMonitoringPipelineSinkDescription',
+    'AutoScalingMetric',
+    'AutoScalingResourceMetric',
     'Resource',
     'ProxyResource',
     'ManagedProxyResource',
@@ -136,19 +139,10 @@ __all__ = [
     'SecretResourceProperties',
     'SimpleSecretResourceProperties',
     'SecretValueProperties',
+    'SecretValue',
     'SecretResourcePropertiesBase',
     'SecretResourceDescription',
     'SecretValueResourceDescription',
-    'GatewayDestination',
-    'TcpConfig',
-    'HttpRouteMatchPath',
-    'HttpRouteMatchHeader',
-    'HttpRouteMatchRule',
-    'HttpRouteConfig',
-    'HttpHostConfig',
-    'HttpConfig',
-    'GatewayProperties',
-    'GatewayResourceDescription',
     'ApplicationResourceDescriptionPaged',
     'ServiceResourceDescriptionPaged',
     'ServiceReplicaDescriptionPaged',
@@ -157,7 +151,6 @@ __all__ = [
     'VolumeResourceDescriptionPaged',
     'SecretResourceDescriptionPaged',
     'SecretValueResourceDescriptionPaged',
-    'GatewayResourceDescriptionPaged',
     'IngressQoSLevel',
     'HealthState',
     'ServiceResourceStatus',
@@ -166,7 +159,8 @@ __all__ = [
     'ApplicationScopedVolumeKind',
     'OperatingSystemTypes',
     'DiagnosticsSinkKind',
+    'AutoScalingMechanismKind',
+    'AutoScalingMetricKind',
+    'AutoScalingTriggerKind',
     'SecretKind',
-    'HeaderMatchType',
-    'GatewayResourceStatus',
 ]

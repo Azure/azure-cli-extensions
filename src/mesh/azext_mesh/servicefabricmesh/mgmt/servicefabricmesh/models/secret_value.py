@@ -9,5 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2018-09-01-preview"
+from msrest.serialization import Model
 
+
+class SecretValue(Model):
+    """This type represents the unencrypted value of the secret.
+
+    :param value: The actual value of the secret.
+    :type value: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': 'str'},
+    }
+
+    def __init__(self, value=None):
+        super(SecretValue, self).__init__()
+        self.value = value

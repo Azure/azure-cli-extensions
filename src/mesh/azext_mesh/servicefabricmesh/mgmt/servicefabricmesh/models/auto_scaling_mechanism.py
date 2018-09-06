@@ -12,17 +12,22 @@
 from msrest.serialization import Model
 
 
-class VersionedSecretValueProperties(Model):
-    """This type describes properties of a versioned value of a secret.
+class AutoScalingMechanism(Model):
+    """Describes the mechanism for performing auto scaling operation. Derived
+    classes will describe the actual mechanism.
 
-    :param value: The value of the secret resource.
-    :type value: str
+    :param kind: Constant filled by server.
+    :type kind: str
     """
 
-    _attribute_map = {
-        'value': {'key': 'value', 'type': 'str'},
+    _validation = {
+        'kind': {'required': True},
     }
 
-    def __init__(self, value=None):
-        super(VersionedSecretValueProperties, self).__init__()
-        self.value = value
+    _attribute_map = {
+        'kind': {'key': 'kind', 'type': 'str'},
+    }
+
+    def __init__(self):
+        super(AutoScalingMechanism, self).__init__()
+        self.kind = None

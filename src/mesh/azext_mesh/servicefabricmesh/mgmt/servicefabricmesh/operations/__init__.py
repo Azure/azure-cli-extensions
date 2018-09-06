@@ -18,7 +18,6 @@ from .network_operations import NetworkOperations
 from .volume_operations import VolumeOperations
 from .secret_operations import SecretOperations
 from .secret_value_operations import SecretValueOperations
-from .gateway_operations import GatewayOperations
 
 __all__ = [
     'ApplicationOperations',
@@ -30,5 +29,4 @@ __all__ = [
     'VolumeOperations',
     'SecretOperations',
     'SecretValueOperations',
-    'GatewayOperations',
 ]

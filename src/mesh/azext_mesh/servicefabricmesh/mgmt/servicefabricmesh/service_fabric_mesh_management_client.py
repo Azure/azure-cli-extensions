@@ -22,7 +22,6 @@ from .operations.network_operations import NetworkOperations
 from .operations.volume_operations import VolumeOperations
 from .operations.secret_operations import SecretOperations
 from .operations.secret_value_operations import SecretValueOperations
-from .operations.gateway_operations import GatewayOperations
 from . import models
 
 
@@ -82,8 +81,6 @@ class ServiceFabricMeshManagementClient(object):
     :vartype secret: azure.mgmt.servicefabricmesh.operations.SecretOperations
     :ivar secret_value: SecretValue operations
     :vartype secret_value: azure.mgmt.servicefabricmesh.operations.SecretValueOperations
-    :ivar gateway: Gateway operations
-    :vartype gateway: azure.mgmt.servicefabricmesh.operations.GatewayOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -100,7 +97,7 @@ class ServiceFabricMeshManagementClient(object):
         self._client = ServiceClient(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-07-01-preview'
+        self.api_version = '2018-09-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -121,6 +118,4 @@ class ServiceFabricMeshManagementClient(object):
         self.secret = SecretOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.secret_value = SecretValueOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.gateway = GatewayOperations(
             self._client, self.config, self._serialize, self._deserialize)

@@ -70,21 +70,21 @@ class DiagnosticsSinkKind(Enum):
     azure_internal_monitoring_pipeline = "AzureInternalMonitoringPipeline"
 
 
+class AutoScalingMechanismKind(Enum):
+
+    add_remove_replica = "AddRemoveReplica"
+
+
+class AutoScalingMetricKind(Enum):
+
+    resource = "Resource"
+
+
+class AutoScalingTriggerKind(Enum):
+
+    average_load = "AverageLoad"
+
+
 class SecretKind(Enum):
 
     inlined_value = "inlinedValue"
-
-
-class HeaderMatchType(Enum):
-
-    exact = "exact"
-
-
-class GatewayResourceStatus(Enum):
-
-    invalid = "Invalid"
-    ready = "Ready"
-    upgrading = "Upgrading"
-    creating = "Creating"
-    deleting = "Deleting"
-    failed = "Failed"

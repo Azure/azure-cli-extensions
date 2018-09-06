@@ -61,6 +61,9 @@ class ContainerCodePackageProperties(Model):
      ~azure.mgmt.servicefabricmesh.models.ContainerInstanceView
     :param diagnostics: Reference to sinks in DiagnosticsDescription.
     :type diagnostics: ~azure.mgmt.servicefabricmesh.models.DiagnosticsRef
+    :param reliable_collections_refs:
+    :type reliable_collections_refs:
+     list[~azure.mgmt.servicefabricmesh.models.ReliableCollectionsRef]
     """
 
     _validation = {
@@ -85,9 +88,10 @@ class ContainerCodePackageProperties(Model):
         'volumes': {'key': 'volumes', 'type': '[ApplicationScopedVolume]'},
         'instance_view': {'key': 'instanceView', 'type': 'ContainerInstanceView'},
         'diagnostics': {'key': 'diagnostics', 'type': 'DiagnosticsRef'},
+        'reliable_collections_refs': {'key': 'reliableCollectionsRefs', 'type': '[ReliableCollectionsRef]'},
     }
 
-    def __init__(self, name, image, resources, image_registry_credential=None, entrypoint=None, commands=None, environment_variables=None, settings=None, labels=None, endpoints=None, volume_refs=None, volumes=None, diagnostics=None):
+    def __init__(self, name, image, resources, image_registry_credential=None, entrypoint=None, commands=None, environment_variables=None, settings=None, labels=None, endpoints=None, volume_refs=None, volumes=None, diagnostics=None, reliable_collections_refs=None):
         super(ContainerCodePackageProperties, self).__init__()
         self.name = name
         self.image = image
@@ -103,3 +107,4 @@ class ContainerCodePackageProperties(Model):
         self.volumes = volumes
         self.instance_view = None
         self.diagnostics = diagnostics
+        self.reliable_collections_refs = reliable_collections_refs

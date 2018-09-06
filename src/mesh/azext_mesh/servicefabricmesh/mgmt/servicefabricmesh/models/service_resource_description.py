@@ -46,6 +46,9 @@ class ServiceResourceDescription(ManagedProxyResource):
     :param replica_count: The number of replicas of the service to create.
      Defaults to 1 if not specified.
     :type replica_count: int
+    :param auto_scaling_policies: Auto scaling policies
+    :type auto_scaling_policies:
+     list[~azure.mgmt.servicefabricmesh.models.AutoScalingPolicy]
     :param health_state: Describes the health state of an services resource.
      Possible values include: 'Invalid', 'Ok', 'Warning', 'Error', 'Unknown'
     :type health_state: str or
@@ -75,11 +78,12 @@ class ServiceResourceDescription(ManagedProxyResource):
         'diagnostics': {'key': 'properties.diagnostics', 'type': 'DiagnosticsRef'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'replica_count': {'key': 'properties.replicaCount', 'type': 'int'},
+        'auto_scaling_policies': {'key': 'properties.autoScalingPolicies', 'type': '[AutoScalingPolicy]'},
         'health_state': {'key': 'properties.healthState', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'str'},
     }
 
-    def __init__(self, os_type, code_packages, name=None, network_refs=None, diagnostics=None, description=None, replica_count=None, health_state=None):
+    def __init__(self, os_type, code_packages, name=None, network_refs=None, diagnostics=None, description=None, replica_count=None, auto_scaling_policies=None, health_state=None):
         super(ServiceResourceDescription, self).__init__(name=name)
         self.os_type = os_type
         self.code_packages = code_packages
@@ -87,5 +91,6 @@ class ServiceResourceDescription(ManagedProxyResource):
         self.diagnostics = diagnostics
         self.description = description
         self.replica_count = replica_count
+        self.auto_scaling_policies = auto_scaling_policies
         self.health_state = health_state
         self.status = None
