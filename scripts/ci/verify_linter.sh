@@ -18,18 +18,15 @@ echo "$modified_extensions"
 while read line; do
     part_array=($line)
     ext=${part_array[0]}
-    urls=${part_array[1]}
+    source=${part_array[1]}
     echo
     echo "New index entries detected for extension:" $ext
-    for source in $urls; do
-        echo
-        echo "Adding latest entry from source:" $source
-        az extension add -s $source -y
-        echo "Running linter"
-        azdev cli-lint --ci --extensions $ext
-        az extension remove -n $ext
-        echo $ext "extension has been removed."
-    done
+    echo "Adding latest entry from source:" $source
+    az extension add -s $source -y
+    echo "Running linter"
+    azdev cli-lint --ci --extensions $ext
+    az extension remove -n $ext
+    echo $ext "extension has been removed."
 done <<< "$modified_extensions"
 
 echo "OK. Completed Linting"
