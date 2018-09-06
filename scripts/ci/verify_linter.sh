@@ -11,18 +11,25 @@ set +x
 
 # check for index updates
 modified_extensions=$(python ./scripts/ci/index_changes.py)
-echo "Found the following modified extensions:"
+echo "Found the following modified extension entries:"
 echo "$modified_extensions"
 
-# run linter on each modified extension
-for ext in $modified_extensions; do
+# run linter on each modified extension entry
+while read line; do
+    if [ -z "$line" ]; then
+        continue
+    fi
+    part_array=($line)
+    ext=${part_array[0]}
+    source=${part_array[1]}
     echo
-    echo "Adding extension:" $ext
-    az extension add -n $ext
-    echo "Running linter on extension:" $ext
+    echo "New index entries detected for extension:" $ext
+    echo "Adding latest entry from source:" $source
+    az extension add -s $source -y
+    echo "Running linter"
     azdev cli-lint --ci --extensions $ext
     az extension remove -n $ext
     echo $ext "extension has been removed."
-done
+done <<< "$modified_extensions"
 
 echo "OK. Completed Linting"
