@@ -16,6 +16,9 @@ echo "$modified_extensions"
 
 # run linter on each modified extension entry
 while read line; do
+    if [ -z "$line" ]; then
+        continue
+    fi
     part_array=($line)
     ext=${part_array[0]}
     source=${part_array[1]}
