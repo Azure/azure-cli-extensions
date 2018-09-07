@@ -9,7 +9,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['eventgrid'] = """
     type: group
-    short-summary: Manage Azure Event Grid topics and subscriptions.
+    short-summary: Manage Azure Event Grid topics and event subscriptions.
     """
 helps['eventgrid topic'] = """
     type: group
@@ -115,6 +115,13 @@ helps['eventgrid event-subscription create'] = """
         - name: Create a new event subscription for a subscription, using default filters, and CloudEventV01 as the delivery schema.
           text: |
             az eventgrid event-subscription create --name es2 --endpoint https://contoso.azurewebsites.net/api/f1?code=code --event-delivery-schema cloudeventv01schema
+        - name: Create a new event subscription for a resource, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier).
+          text: |
+            az eventgrid event-subscription create --name es2 \\
+                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
+                --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
+                --deadletter-endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1 \\
+                --max-delivery-attempts 10 --event-ttl 120
     """
 helps['eventgrid event-subscription update'] = """
     type: command
@@ -135,6 +142,11 @@ helps['eventgrid event-subscription update'] = """
           text: |
             az eventgrid event-subscription update --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/microsoft.storage/storageaccounts/kalsegblob" --name es3 \\
                 --included-event-types Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted
+        - name: Update an event subscription for a resource, to include a deadletter destination.
+          text: |
+            az eventgrid event-subscription update --name es2 \\
+                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
+                --deadletter-endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
     """
 helps['eventgrid event-subscription delete'] = """
     type: command
