@@ -185,7 +185,6 @@ def _ping_scm_site(cmd, resource_group, name):
     import urllib3
     authorization = urllib3.util.make_headers(basic_auth='{}:{}'.format(user_name, password))
     requests.get(scm_url + '/api/settings', headers=authorization)
-    return scm_url
 
 
 def list_webapp_snapshots(cmd, resource_group, name, slot=None):
@@ -247,9 +246,11 @@ def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
     if slot is not None:
         host_name += "-" + slot
     config = get_site_configs(cmd, resource_group_name, name, slot)
-    scm_site = _ping_scm_site(cmd, resource_group_name, name)
+    _ping_scm_site(cmd, resource_group_name, name)
+    
+    scm_url = _get_scm_url(cmd, resource_group_name, name)
 
-    tunnel_server = TunnelServer('', port, scm_site, user_name, user_password)
+    tunnel_server = TunnelServer('', port, scm_url, user_name, user_password)
 
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server, config.remote_debugging_enabled))
     t.daemon = True
