@@ -8,7 +8,6 @@ NETCORE_VERSION_DEFAULT = "2.0"
 DOTNET_VERSION_DEFAULT = "4.7"
 NETCORE_RUNTIME_NAME = "dotnetcore"
 DOTNET_RUNTIME_NAME = "aspnet"
-JAVA_RUNTIME_NAME = "java"
 OS_DEFAULT = "Windows"
 STATIC_RUNTIME_NAME = "static"  # not an oficial supported runtime but used for CLI logic
 # TODO: Remove this once we have the api returning the versions

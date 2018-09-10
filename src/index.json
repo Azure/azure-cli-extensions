@@ -45,9 +45,9 @@
         ],
         "azure-cli-iot-ext": [
             {
-                "filename": "azure_cli_iot_ext-0.5.1-py2.py3-none-any.whl",
-                "sha256Digest": "136c50b6a2e4ba601bb79d3f890691d0132480a166f1fd9ec70b61b6fea6a21f",
-                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.5.1/azure_cli_iot_ext-0.5.1-py2.py3-none-any.whl",
+                "filename": "azure_cli_iot_ext-0.5.2-py2.py3-none-any.whl",
+                "sha256Digest": "1d3627ef23a09c8e641a49912de7cc1bdb79e29cc287048f51dd752399dc1de8",
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.5.2/azure_cli_iot_ext-0.5.2-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "classifiers": [
@@ -88,15 +88,12 @@
                     "run_requires": [
                         {
                             "requires": [
-                                "jmespath (==0.9.3)",
-                                "msrestazure (==0.4.29)",
-                                "paho-mqtt (==1.3.1)",
-                                "pyyaml (==3.13)"
+                                "paho-mqtt (==1.3.1)"
                             ]
                         }
                     ],
                     "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
-                    "version": "0.5.1"
+                    "version": "0.5.2"
                 }
             }
         ],
@@ -287,12 +284,13 @@
         ],
         "webapp": [
             {
-                "filename": "webapp-0.2.7-py2.py3-none-any.whl",
-                "sha256Digest": "82ffe9ce4eff558d13031675bc16cc75f56acdcd98ccd79901858577e73a4caf",
-                "downloadUrl": "https://github.com/panchagnula/azure-cli-extensions/raw/sisirap-extensions-whl/dist/webapp-0.2.7-py2.py3-none-any.whl",
+                "filename": "webapp-0.2.8-py2.py3-none-any.whl",
+                "sha256Digest": "f070374b29c07b18f77e03dc6acac52c6f947b821dd085643aad464e98aca51f",
+                "downloadUrl": "https://github.com/panchagnula/azure-cli-extensions/raw/sisirap-extensions-whl/dist/webapp-0.2.8-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.24",
+                    "azext.maxCliCoreVersion": "2.0.45",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -328,7 +326,7 @@
                     "metadata_version": "2.0",
                     "name": "webapp",
                     "summary": "An Azure CLI Extension to manage appservice resources",
-                    "version": "0.2.7"
+                    "version": "0.2.8"
                 }
             }
         ],
@@ -784,16 +782,48 @@
                     "summary": "Support for Azure Bot Service 2017-12-01 preview features",
                     "version": "0.0.3"
                 }
+            },
+            {
+                "filename": "botservice-0.4.0-py2.py3-none-any.whl",
+                "sha256Digest": "0d5e27f47d06393b51e22e2bde68a4f00ece42580c50f668d16feeff493e172f",
+                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.4.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.45",
+                    "azext.isPreview": true,
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "swagatm@microsoft.com",
+                                    "name": "Swagat Mishra",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "botservice",
+                    "summary": "Bug fixes for issues in the native botservice cli command module.",
+                    "version": "0.4.0"
+                }
             }
         ],
         "storage-preview": [
             {
-                "filename": "storage_preview-0.1.3-py2.py3-none-any.whl",
-                "sha256Digest": "e5715c73cc858041c610e14a059abd6311e78b6fd5342a09e8e86746e6ff8c9e",
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.3-py2.py3-none-any.whl",
+                "filename": "storage_preview-0.1.4-py2.py3-none-any.whl",
+                "sha256Digest": "23a16ca387f9288339f2b18559cdf60fa305fb637bd62821a430e99955ab1d84",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.4-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
-                    "azext.minCliCoreVersion": "2.0.32.dev0",
+                    "azext.minCliCoreVersion": "2.0.43",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -829,7 +859,7 @@
                     "metadata_version": "2.0",
                     "name": "storage-preview",
                     "summary": "Provides a preview for upcoming storage features.",
-                    "version": "0.1.3"
+                    "version": "0.1.4"
                 }
             }
         ],

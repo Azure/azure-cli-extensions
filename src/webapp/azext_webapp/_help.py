@@ -9,7 +9,7 @@ from knack.help_files import helps
 helps['webapp up'] = """
     type: command
     short-summary: Experimental command to create and deploy a web app.
-                   Current supports includes Node and Java(needs a .war file) on Linux & .NET Core, ASP.NET, staticHtml on Windows.
+                   Current supports includes Node on Linux & .NET Core, ASP.NET, staticHtml on Windows.
     examples:
         - name: Create a web app with the default configuration.
           text: >
