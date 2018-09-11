@@ -247,7 +247,7 @@ def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
         host_name += "-" + slot
     config = get_site_configs(cmd, resource_group_name, name, slot)
     _ping_scm_site(cmd, resource_group_name, name)
-    
+
     scm_url = _get_scm_url(cmd, resource_group_name, name)
 
     tunnel_server = TunnelServer('', port, scm_url, user_name, user_password)
