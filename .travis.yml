@@ -11,7 +11,7 @@ jobs:
       env: PURPOSE='SourceStatic'
       script: ./scripts/ci/test_static.sh
       python: 3.6
-    - stage: precheck
+    - stage: verify
       env: PURPOSE='IndexVerify'
       script: python ./scripts/ci/test_index.py -v
       python: 3.6
