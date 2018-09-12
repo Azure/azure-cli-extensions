@@ -7,6 +7,7 @@
 from azure.cli.testsdk import ScenarioTest
 from azure_devtools.scenario_tests.const import MOCKED_SUBSCRIPTION_ID
 from knack.util import CLIError
+from six import string_types
 import json
 
 
@@ -20,14 +21,14 @@ class ResourceGraphTests(ScenarioTest):
 
         self.assertTrue(len(query_response[0]) == 4)  # resourceGroup is auto-added after output
         self.assertIsInstance(query_response[0], dict)
-        self.assertIsInstance(query_response[0]['id'], str)
+        self.assertIsInstance(query_response[0]['id'], string_types)
         self.assertIsInstance(query_response[0]['tags'], dict)
         self.assertIsInstance(query_response[0]['properties'], dict)
         self.assertTrue(len(query_response[0]['properties']) > 3)
 
         self.assertTrue(len(query_response[1]) == 4)
         self.assertIsInstance(query_response[1], dict)
-        self.assertIsInstance(query_response[1]['id'], str)
+        self.assertIsInstance(query_response[1]['id'], string_types)
         self.assertIsInstance(query_response[1]['tags'], dict)
         self.assertIsInstance(query_response[1]['properties'], dict)
         self.assertTrue(len(query_response[1]['properties']) > 3)
@@ -48,9 +49,9 @@ class ResourceGraphTests(ScenarioTest):
         self.assertTrue(len(query_response[1]) == 2)
         self.assertTrue(len(query_response[2]) == 2)
 
-        self.assertIsInstance(query_response[0]['id'], str)
-        self.assertIsInstance(query_response[1]['id'], str)
-        self.assertIsInstance(query_response[2]['id'], str)
+        self.assertIsInstance(query_response[0]['id'], string_types)
+        self.assertIsInstance(query_response[1]['id'], string_types)
+        self.assertIsInstance(query_response[2]['id'], string_types)
 
         self.assertTrue(len(query_response[0]['id']) > 0)
         self.assertTrue(len(query_response[1]['id']) > 0)
@@ -60,7 +61,7 @@ class ResourceGraphTests(ScenarioTest):
         test_sub_id1 = '11111111-1111-1111-1111-111111111111'
         test_sub_id2 = '22222222-2222-2222-2222-222222222222'
         command_no_subs = 'az graph query "distinct subscriptionId | order by subscriptionId asc"'
-        command_with_subs = command_no_subs + f' --subscriptions {test_sub_id1},{test_sub_id2}'
+        command_with_subs = command_no_subs + ' --subscriptions {} {}'.format(test_sub_id1, test_sub_id2)
 
         query_response_no_subs = self.cmd(command_no_subs).get_output_in_json()
         query_response_with_subs = self.cmd(command_with_subs).get_output_in_json()
@@ -85,8 +86,8 @@ class ResourceGraphTests(ScenarioTest):
         self.assertIsInstance(error_response['error'], dict)
         self.assertTrue(len(error_response['error']) == 3)
 
-        self.assertIsInstance(error_response['error']['code'], str)
-        self.assertIsInstance(error_response['error']['message'], str)
+        self.assertIsInstance(error_response['error']['code'], string_types)
+        self.assertIsInstance(error_response['error']['message'], string_types)
         self.assertIsInstance(error_response['error']['details'], list)
         self.assertTrue(len(error_response['error']['code']) > 0)
         self.assertTrue(len(error_response['error']['message']) > 0)
@@ -95,8 +96,8 @@ class ResourceGraphTests(ScenarioTest):
         self.assertIsInstance(error_response['error']['details'][0], dict)
         self.assertTrue(len(error_response['error']['details'][0]) == 3)
 
-        self.assertIsInstance(error_response['error']['details'][0]['code'], str)
-        self.assertIsInstance(error_response['error']['details'][0]['message'], str)
+        self.assertIsInstance(error_response['error']['details'][0]['code'], string_types)
+        self.assertIsInstance(error_response['error']['details'][0]['message'], string_types)
         self.assertIsInstance(error_response['error']['details'][0]['additionalProperties'], dict)
         self.assertTrue(len(error_response['error']['details'][0]['code']) > 0)
         self.assertTrue(len(error_response['error']['details'][0]['message']) > 0)

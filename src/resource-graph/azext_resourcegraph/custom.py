@@ -2,9 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from collections import OrderedDict
 
+# pylint: disable=unused-import
+
+from collections import OrderedDict
 import json
+
 from azure.cli.core._profile import Profile
 from knack.util import todict, CLIError
 from .vendored_sdks.resourcegraph import ResourceGraphClient
@@ -14,8 +17,8 @@ from .vendored_sdks.resourcegraph.models import \
 __ROWS_PER_PAGE = 1000
 
 
-def execute_query(
-        client: ResourceGraphClient, graph_query: str, first: int, skip: int, subscriptions: [str]):
+def execute_query(client, graph_query, first, skip, subscriptions):
+    # type: (ResourceGraphClient, str, int, int, list[str]) -> object
 
     subs_list = subscriptions or _get_cached_subscriptions()
 
@@ -30,7 +33,7 @@ def execute_query(
                 skip_token=skip_token
             )
             request = QueryRequest(query=graph_query, subscriptions=subs_list, options=request_options)
-            response: QueryResponse = client.resources(request)
+            response = client.resources(request)  # type: QueryResponse
             skip_token = response.skip_token
             results.extend(_table_to_dicts(response.data))
 
@@ -44,11 +47,15 @@ def execute_query(
 
 
 def _get_cached_subscriptions():
+    # type: () -> list[str]
+
     cached_subs = Profile().load_cached_subscriptions()
     return [sub['id'] for sub in cached_subs]
 
 
-def _table_to_dicts(table: Table):
+def _table_to_dicts(table):
+    # type: (Table) -> list[dict]
+
     results = []
     for row in table.rows:
         result = {}
