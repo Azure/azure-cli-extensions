@@ -15,8 +15,8 @@ from azure.cli.command_modules.resource._validators import process_deployment_cr
 from ._client_factory import (cf_mesh_deployments,
                               cf_mesh_application, cf_mesh_service,
                               cf_mesh_replica, cf_mesh_code_package, cf_mesh_network,
-                              cf_mesh_volume, cf_mesh_secret, cf_mesh_versioned_secret_operations,
-                              cf_mesh_secret_value_operations)
+                              cf_mesh_volume, cf_mesh_secret, cf_mesh_secret_value_operations,
+                              cf_mesh_gateway)
 from ._exception_handler import resource_exception_handler
 
 
@@ -127,6 +127,22 @@ def transform_secretvalue_list(result):
     return [transform_secret(secret) for secret in result]
 
 
+def transform_gateway(result):
+    """Transform a gateway list to table output. """
+    return OrderedDict([('Name', result.get('name')),
+                        ('Location', result.get('location')),
+                        ('ProvisioningState', result.get('provisioning_state')),
+                        ('Status', result.get('status')),
+                        ('SourceNetwork', result.get('source_network')),
+                        ('DestinationNetwork', result.get('destination_network'))
+                        ])
+
+
+def transform_gateway_list(result):
+    """Transform a gateway list to table output. """
+    return [transform_secret(secret) for secret in result]
+
+
 def load_command_table(self, _):
     cmd_util = CliCommandType(
         operations_tmpl='azext_mesh.custom#{}',
@@ -160,6 +176,11 @@ def load_command_table(self, _):
 
     mesh_secret_value_util = CliCommandType(
         operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_value_operations#SecretValueOperations.{}',
+        exception_handler=resource_exception_handler
+    )
+
+    mesh_gateway_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.gateway_operations#GatewayOperations.{}',
         exception_handler=resource_exception_handler
     )
 
@@ -213,5 +234,12 @@ def load_command_table(self, _):
         g.command('show', 'get')
         g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('mesh secretvalue', mesh_secret_util, client_factory=cf_mesh_versioned_secret_operations) as g:
+    with self.command_group('mesh secretvalue', mesh_secret_util, client_factory=cf_mesh_secret_value_operations) as g:
         g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)
+
+    with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
+        g.command('show', 'get')
+        g.command('delete', 'delete', confirmation=True)
+
+    with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
+        g.command('list', 'list_secrets', table_transformer=transform_gateway_list)

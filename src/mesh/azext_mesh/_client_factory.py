@@ -50,3 +50,7 @@ def cf_mesh_secret(cli_ctx, _):
 
 def cf_mesh_secret_value_operations(cli_ctx, _):
     return _cf_mesh(cli_ctx).secret_value
+
+
+def cf_mesh_gateway(cli_ctx, _):
+    return _cf_mesh(cli_ctx).secret_value

@@ -445,3 +445,5 @@ def secret_show(client, resource_group_name, secret_name, secret_value_resource_
     print(secret_data)
     del secret_data.value
     return secret_data
+
+

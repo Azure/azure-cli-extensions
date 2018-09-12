@@ -164,3 +164,23 @@ helps['mesh secretvalue show'] = """
     type: command
     short-summary: Get the details of a secret value.
 """
+
+helps['mesh gateway'] = """
+    type: group
+    short-summary: Manage gateway resources.
+"""
+
+helps['mesh gateway delete'] = """
+    type: command
+    short-summary: Delete a gateway resource.
+"""
+
+helps['mesh gateway list'] = """
+    type: command
+    short-summary: List gateway resources.
+"""
+
+helps['mesh gateway show'] = """
+    type: command
+    short-summary: Get the details of a gateway.
+"""
