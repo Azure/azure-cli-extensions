@@ -16,13 +16,17 @@ class MigrateSqlServerSqlMITaskInput(SqlMigrationTaskInput):
     """Input for task that migrates SQL Server databases to Azure SQL Database
     Managed Instance.
 
-    :param source_connection_info: Information for connecting to source
+    All required parameters must be populated in order to send to Azure.
+
+    :param source_connection_info: Required. Information for connecting to
+     source
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Information for connecting to target
+    :param target_connection_info: Required. Information for connecting to
+     target
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param selected_databases: Databases to migrate
+    :param selected_databases: Required. Databases to migrate
     :type selected_databases:
      list[~azure.mgmt.datamigration.models.MigrateSqlServerSqlMIDatabaseInput]
     :param selected_logins: Logins to migrate.
@@ -32,8 +36,8 @@ class MigrateSqlServerSqlMITaskInput(SqlMigrationTaskInput):
     :param backup_file_share: Backup file share information for all selected
      databases.
     :type backup_file_share: ~azure.mgmt.datamigration.models.FileShare
-    :param backup_blob_share: SAS URI of Azure Storage Account Container to be
-     used for storing backup files.
+    :param backup_blob_share: Required. SAS URI of Azure Storage Account
+     Container to be used for storing backup files.
     :type backup_blob_share: ~azure.mgmt.datamigration.models.BlobShare
     :param backup_mode: Backup Mode to specify whether to use existing backup
      or create new backup. If using existing backups, backup file paths are
@@ -60,11 +64,11 @@ class MigrateSqlServerSqlMITaskInput(SqlMigrationTaskInput):
         'backup_mode': {'key': 'backupMode', 'type': 'str'},
     }
 
-    def __init__(self, source_connection_info, target_connection_info, selected_databases, backup_blob_share, selected_logins=None, selected_agent_jobs=None, backup_file_share=None, backup_mode=None):
-        super(MigrateSqlServerSqlMITaskInput, self).__init__(source_connection_info=source_connection_info, target_connection_info=target_connection_info)
-        self.selected_databases = selected_databases
-        self.selected_logins = selected_logins
-        self.selected_agent_jobs = selected_agent_jobs
-        self.backup_file_share = backup_file_share
-        self.backup_blob_share = backup_blob_share
-        self.backup_mode = backup_mode
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlMITaskInput, self).__init__(**kwargs)
+        self.selected_databases = kwargs.get('selected_databases', None)
+        self.selected_logins = kwargs.get('selected_logins', None)
+        self.selected_agent_jobs = kwargs.get('selected_agent_jobs', None)
+        self.backup_file_share = kwargs.get('backup_file_share', None)
+        self.backup_blob_share = kwargs.get('backup_blob_share', None)
+        self.backup_mode = kwargs.get('backup_mode', None)

@@ -16,14 +16,16 @@ class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput(Model):
     """Input for the task that migrates PostgreSQL databases to Azure Database for
     PostgreSQL for online migrations.
 
-    :param selected_databases: Databases to migrate
+    All required parameters must be populated in order to send to Azure.
+
+    :param selected_databases: Required. Databases to migrate
     :type selected_databases:
      list[~azure.mgmt.datamigration.models.MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput]
-    :param target_connection_info: Connection information for target Azure
-     Database for PostgreSQL
+    :param target_connection_info: Required. Connection information for target
+     Azure Database for PostgreSQL
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.PostgreSqlConnectionInfo
-    :param source_connection_info: Connection information for source
+    :param source_connection_info: Required. Connection information for source
      PostgreSQL
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.PostgreSqlConnectionInfo
@@ -41,8 +43,8 @@ class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput(Model):
         'source_connection_info': {'key': 'sourceConnectionInfo', 'type': 'PostgreSqlConnectionInfo'},
     }
 
-    def __init__(self, selected_databases, target_connection_info, source_connection_info):
-        super(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput, self).__init__()
-        self.selected_databases = selected_databases
-        self.target_connection_info = target_connection_info
-        self.source_connection_info = source_connection_info
+    def __init__(self, **kwargs):
+        super(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput, self).__init__(**kwargs)
+        self.selected_databases = kwargs.get('selected_databases', None)
+        self.target_connection_info = kwargs.get('target_connection_info', None)
+        self.source_connection_info = kwargs.get('source_connection_info', None)

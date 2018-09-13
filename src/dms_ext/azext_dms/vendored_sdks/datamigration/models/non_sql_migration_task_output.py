@@ -63,8 +63,8 @@ class NonSqlMigrationTaskOutput(Model):
         'target_server_name': {'key': 'targetServerName', 'type': 'str'},
     }
 
-    def __init__(self):
-        super(NonSqlMigrationTaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(NonSqlMigrationTaskOutput, self).__init__(**kwargs)
         self.id = None
         self.started_on = None
         self.ended_on = None

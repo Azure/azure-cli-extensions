@@ -19,6 +19,8 @@ class ConnectToTargetSqlDbTaskProperties(ProjectTaskProperties):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar errors: Array of errors. This is ignored if submitted.
     :vartype errors: list[~azure.mgmt.datamigration.models.ODataError]
     :ivar state: The state of the task. This is ignored if submitted. Possible
@@ -28,7 +30,7 @@ class ConnectToTargetSqlDbTaskProperties(ProjectTaskProperties):
     :ivar commands: Array of command properties.
     :vartype commands:
      list[~azure.mgmt.datamigration.models.CommandProperties]
-    :param task_type: Constant filled by server.
+    :param task_type: Required. Constant filled by server.
     :type task_type: str
     :param input: Task input
     :type input:
@@ -55,8 +57,8 @@ class ConnectToTargetSqlDbTaskProperties(ProjectTaskProperties):
         'output': {'key': 'output', 'type': '[ConnectToTargetSqlDbTaskOutput]'},
     }
 
-    def __init__(self, input=None):
-        super(ConnectToTargetSqlDbTaskProperties, self).__init__()
-        self.input = input
+    def __init__(self, **kwargs):
+        super(ConnectToTargetSqlDbTaskProperties, self).__init__(**kwargs)
+        self.input = kwargs.get('input', None)
         self.output = None
         self.task_type = 'ConnectToTarget.SqlDb'

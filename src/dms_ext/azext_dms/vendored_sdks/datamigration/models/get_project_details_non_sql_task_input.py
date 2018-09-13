@@ -15,10 +15,12 @@ from msrest.serialization import Model
 class GetProjectDetailsNonSqlTaskInput(Model):
     """Input for the task that reads configuration from project artifacts.
 
-    :param project_name: Name of the migration project
+    All required parameters must be populated in order to send to Azure.
+
+    :param project_name: Required. Name of the migration project
     :type project_name: str
-    :param project_location: A URL that points to the location to access
-     project artifacts
+    :param project_location: Required. A URL that points to the location to
+     access project artifacts
     :type project_location: str
     """
 
@@ -32,7 +34,7 @@ class GetProjectDetailsNonSqlTaskInput(Model):
         'project_location': {'key': 'projectLocation', 'type': 'str'},
     }
 
-    def __init__(self, project_name, project_location):
-        super(GetProjectDetailsNonSqlTaskInput, self).__init__()
-        self.project_name = project_name
-        self.project_location = project_location
+    def __init__(self, **kwargs):
+        super(GetProjectDetailsNonSqlTaskInput, self).__init__(**kwargs)
+        self.project_name = kwargs.get('project_name', None)
+        self.project_location = kwargs.get('project_location', None)

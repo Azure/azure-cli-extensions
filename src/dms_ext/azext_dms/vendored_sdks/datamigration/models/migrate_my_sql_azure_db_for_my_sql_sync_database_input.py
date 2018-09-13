@@ -28,7 +28,7 @@ class MigrateMySqlAzureDbForMySqlSyncDatabaseInput(Model):
         'target_database_name': {'key': 'targetDatabaseName', 'type': 'str'},
     }
 
-    def __init__(self, name=None, target_database_name=None):
-        super(MigrateMySqlAzureDbForMySqlSyncDatabaseInput, self).__init__()
-        self.name = name
-        self.target_database_name = target_database_name
+    def __init__(self, **kwargs):
+        super(MigrateMySqlAzureDbForMySqlSyncDatabaseInput, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.target_database_name = kwargs.get('target_database_name', None)

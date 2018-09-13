@@ -18,9 +18,11 @@ class MigrateSqlServerSqlMITaskOutputLoginLevel(MigrateSqlServerSqlMITaskOutput)
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Constant filled by server.
+    :param result_type: Required. Constant filled by server.
     :type result_type: str
     :ivar login_name: Login name.
     :vartype login_name: str
@@ -69,8 +71,8 @@ class MigrateSqlServerSqlMITaskOutputLoginLevel(MigrateSqlServerSqlMITaskOutput)
         'exceptions_and_warnings': {'key': 'exceptionsAndWarnings', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(MigrateSqlServerSqlMITaskOutputLoginLevel, self).__init__()
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlMITaskOutputLoginLevel, self).__init__(**kwargs)
         self.login_name = None
         self.state = None
         self.stage = None

@@ -18,9 +18,11 @@ class MigrateSqlServerSqlDbSyncTaskOutputDatabaseLevel(MigrateSqlServerSqlDbSync
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Constant filled by server.
+    :param result_type: Required. Constant filled by server.
     :type result_type: str
     :ivar database_name: Name of the database
     :vartype database_name: str
@@ -99,8 +101,8 @@ class MigrateSqlServerSqlDbSyncTaskOutputDatabaseLevel(MigrateSqlServerSqlDbSync
         'latency': {'key': 'latency', 'type': 'long'},
     }
 
-    def __init__(self):
-        super(MigrateSqlServerSqlDbSyncTaskOutputDatabaseLevel, self).__init__()
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlDbSyncTaskOutputDatabaseLevel, self).__init__(**kwargs)
         self.database_name = None
         self.started_on = None
         self.ended_on = None

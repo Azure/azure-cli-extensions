@@ -18,9 +18,11 @@ class MigrateSqlServerSqlDbTaskOutputTableLevel(MigrateSqlServerSqlDbTaskOutput)
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Constant filled by server.
+    :param result_type: Required. Constant filled by server.
     :type result_type: str
     :ivar object_name: Name of the item
     :vartype object_name: str
@@ -73,8 +75,8 @@ class MigrateSqlServerSqlDbTaskOutputTableLevel(MigrateSqlServerSqlDbTaskOutput)
         'result_prefix': {'key': 'resultPrefix', 'type': 'str'},
     }
 
-    def __init__(self):
-        super(MigrateSqlServerSqlDbTaskOutputTableLevel, self).__init__()
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlDbTaskOutputTableLevel, self).__init__(**kwargs)
         self.object_name = None
         self.started_on = None
         self.ended_on = None

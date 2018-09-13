@@ -62,8 +62,8 @@ class DatabaseBackupInfo(Model):
         'backup_finish_date': {'key': 'backupFinishDate', 'type': 'iso-8601'},
     }
 
-    def __init__(self):
-        super(DatabaseBackupInfo, self).__init__()
+    def __init__(self, **kwargs):
+        super(DatabaseBackupInfo, self).__init__(**kwargs)
         self.database_name = None
         self.backup_type = None
         self.backup_files = None

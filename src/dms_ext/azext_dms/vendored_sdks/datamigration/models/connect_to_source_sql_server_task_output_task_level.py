@@ -19,9 +19,11 @@ class ConnectToSourceSqlServerTaskOutputTaskLevel(ConnectToSourceSqlServerTaskOu
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Constant filled by server.
+    :param result_type: Required. Constant filled by server.
     :type result_type: str
     :ivar databases: Source databases as a map from database name to database
      id
@@ -66,8 +68,8 @@ class ConnectToSourceSqlServerTaskOutputTaskLevel(ConnectToSourceSqlServerTaskOu
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(ConnectToSourceSqlServerTaskOutputTaskLevel, self).__init__()
+    def __init__(self, **kwargs):
+        super(ConnectToSourceSqlServerTaskOutputTaskLevel, self).__init__(**kwargs)
         self.databases = None
         self.logins = None
         self.agent_jobs = None

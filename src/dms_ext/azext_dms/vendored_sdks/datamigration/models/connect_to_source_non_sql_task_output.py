@@ -48,8 +48,8 @@ class ConnectToSourceNonSqlTaskOutput(Model):
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(ConnectToSourceNonSqlTaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(ConnectToSourceNonSqlTaskOutput, self).__init__(**kwargs)
         self.id = None
         self.source_server_brand_version = None
         self.server_properties = None

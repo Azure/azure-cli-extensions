@@ -18,13 +18,15 @@ class MigrateSyncCompleteCommandProperties(CommandProperties):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar errors: Array of errors. This is ignored if submitted.
     :vartype errors: list[~azure.mgmt.datamigration.models.ODataError]
     :ivar state: The state of the command. This is ignored if submitted.
      Possible values include: 'Unknown', 'Accepted', 'Running', 'Succeeded',
      'Failed'
     :vartype state: str or ~azure.mgmt.datamigration.models.CommandState
-    :param command_type: Constant filled by server.
+    :param command_type: Required. Constant filled by server.
     :type command_type: str
     :param input: Command input
     :type input:
@@ -49,8 +51,8 @@ class MigrateSyncCompleteCommandProperties(CommandProperties):
         'output': {'key': 'output', 'type': 'MigrateSyncCompleteCommandOutput'},
     }
 
-    def __init__(self, input=None):
-        super(MigrateSyncCompleteCommandProperties, self).__init__()
-        self.input = input
+    def __init__(self, **kwargs):
+        super(MigrateSyncCompleteCommandProperties, self).__init__(**kwargs)
+        self.input = kwargs.get('input', None)
         self.output = None
         self.command_type = 'Migrate.Sync.Complete.Database'

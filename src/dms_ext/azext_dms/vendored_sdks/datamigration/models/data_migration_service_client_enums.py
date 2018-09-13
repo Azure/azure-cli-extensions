@@ -12,7 +12,7 @@
 from enum import Enum
 
 
-class CommandState(Enum):
+class CommandState(str, Enum):
 
     unknown = "Unknown"
     accepted = "Accepted"
@@ -21,12 +21,12 @@ class CommandState(Enum):
     failed = "Failed"
 
 
-class SqlSourcePlatform(Enum):
+class SqlSourcePlatform(str, Enum):
 
     sql_on_prem = "SqlOnPrem"
 
 
-class AuthenticationType(Enum):
+class AuthenticationType(str, Enum):
 
     none = "None"
     windows_authentication = "WindowsAuthentication"
@@ -35,7 +35,7 @@ class AuthenticationType(Enum):
     active_directory_password = "ActiveDirectoryPassword"
 
 
-class BackupType(Enum):
+class BackupType(str, Enum):
 
     database = "Database"
     transaction_log = "TransactionLog"
@@ -46,13 +46,13 @@ class BackupType(Enum):
     differential_partial = "DifferentialPartial"
 
 
-class BackupMode(Enum):
+class BackupMode(str, Enum):
 
     create_backup = "CreateBackup"
     existing_backup = "ExistingBackup"
 
 
-class SyncTableMigrationState(Enum):
+class SyncTableMigrationState(str, Enum):
 
     before_load = "BEFORE_LOAD"
     full_load = "FULL_LOAD"
@@ -62,7 +62,7 @@ class SyncTableMigrationState(Enum):
     failed = "FAILED"
 
 
-class SyncDatabaseMigrationReportingState(Enum):
+class SyncDatabaseMigrationReportingState(str, Enum):
 
     undefined = "UNDEFINED"
     configuring = "CONFIGURING"
@@ -77,7 +77,7 @@ class SyncDatabaseMigrationReportingState(Enum):
     failed = "FAILED"
 
 
-class ValidationStatus(Enum):
+class ValidationStatus(str, Enum):
 
     default = "Default"
     not_started = "NotStarted"
@@ -89,21 +89,21 @@ class ValidationStatus(Enum):
     failed = "Failed"
 
 
-class Severity(Enum):
+class Severity(str, Enum):
 
     message = "Message"
     warning = "Warning"
     error = "Error"
 
 
-class UpdateActionType(Enum):
+class UpdateActionType(str, Enum):
 
     deleted_on_target = "DeletedOnTarget"
     changed_on_target = "ChangedOnTarget"
     added_on_target = "AddedOnTarget"
 
 
-class ObjectType(Enum):
+class ObjectType(str, Enum):
 
     stored_procedures = "StoredProcedures"
     table = "Table"
@@ -112,7 +112,7 @@ class ObjectType(Enum):
     function = "Function"
 
 
-class MigrationState(Enum):
+class MigrationState(str, Enum):
 
     none = "None"
     in_progress = "InProgress"
@@ -123,7 +123,7 @@ class MigrationState(Enum):
     stopped = "Stopped"
 
 
-class DatabaseMigrationStage(Enum):
+class DatabaseMigrationStage(str, Enum):
 
     none = "None"
     initialize = "Initialize"
@@ -133,7 +133,7 @@ class DatabaseMigrationStage(Enum):
     completed = "Completed"
 
 
-class MigrationStatus(Enum):
+class MigrationStatus(str, Enum):
 
     default = "Default"
     connecting = "Connecting"
@@ -147,7 +147,7 @@ class MigrationStatus(Enum):
     completed_with_warnings = "CompletedWithWarnings"
 
 
-class LoginMigrationStage(Enum):
+class LoginMigrationStage(str, Enum):
 
     none = "None"
     initialize = "Initialize"
@@ -160,7 +160,7 @@ class LoginMigrationStage(Enum):
     completed = "Completed"
 
 
-class LoginType(Enum):
+class LoginType(str, Enum):
 
     windows_user = "WindowsUser"
     windows_group = "WindowsGroup"
@@ -171,7 +171,7 @@ class LoginType(Enum):
     external_group = "ExternalGroup"
 
 
-class DatabaseState(Enum):
+class DatabaseState(str, Enum):
 
     online = "Online"
     restoring = "Restoring"
@@ -184,7 +184,7 @@ class DatabaseState(Enum):
     offline_secondary = "OfflineSecondary"
 
 
-class DatabaseCompatLevel(Enum):
+class DatabaseCompatLevel(str, Enum):
 
     compat_level80 = "CompatLevel80"
     compat_level90 = "CompatLevel90"
@@ -195,7 +195,7 @@ class DatabaseCompatLevel(Enum):
     compat_level140 = "CompatLevel140"
 
 
-class DatabaseFileType(Enum):
+class DatabaseFileType(str, Enum):
 
     rows = "Rows"
     log = "Log"
@@ -204,7 +204,7 @@ class DatabaseFileType(Enum):
     fulltext = "Fulltext"
 
 
-class ServerLevelPermissionsGroup(Enum):
+class ServerLevelPermissionsGroup(str, Enum):
 
     default = "Default"
     migration_from_sql_server_to_azure_db = "MigrationFromSqlServerToAzureDB"
@@ -212,7 +212,7 @@ class ServerLevelPermissionsGroup(Enum):
     migration_from_my_sql_to_azure_db_for_my_sql = "MigrationFromMySQLToAzureDBForMySQL"
 
 
-class TaskState(Enum):
+class TaskState(str, Enum):
 
     unknown = "Unknown"
     queued = "Queued"
@@ -224,7 +224,7 @@ class TaskState(Enum):
     faulted = "Faulted"
 
 
-class ServiceProvisioningState(Enum):
+class ServiceProvisioningState(str, Enum):
 
     accepted = "Accepted"
     deleting = "Deleting"
@@ -238,7 +238,7 @@ class ServiceProvisioningState(Enum):
     failed = "Failed"
 
 
-class ProjectTargetPlatform(Enum):
+class ProjectTargetPlatform(str, Enum):
 
     sqldb = "SQLDB"
     sqlmi = "SQLMI"
@@ -247,7 +247,7 @@ class ProjectTargetPlatform(Enum):
     unknown = "Unknown"
 
 
-class ProjectSourcePlatform(Enum):
+class ProjectSourcePlatform(str, Enum):
 
     sql = "SQL"
     my_sql = "MySQL"
@@ -255,49 +255,70 @@ class ProjectSourcePlatform(Enum):
     unknown = "Unknown"
 
 
-class ProjectProvisioningState(Enum):
+class ProjectProvisioningState(str, Enum):
 
     deleting = "Deleting"
     succeeded = "Succeeded"
 
 
-class NameCheckFailureReason(Enum):
+class NameCheckFailureReason(str, Enum):
 
     already_exists = "AlreadyExists"
     invalid = "Invalid"
 
 
-class ServiceScalability(Enum):
+class ServiceScalability(str, Enum):
 
     none = "none"
     manual = "manual"
     automatic = "automatic"
 
 
-class ResourceSkuRestrictionsType(Enum):
+class ResourceSkuRestrictionsType(str, Enum):
 
     location = "location"
 
 
-class ResourceSkuRestrictionsReasonCode(Enum):
+class ResourceSkuRestrictionsReasonCode(str, Enum):
 
     quota_id = "QuotaId"
     not_available_for_subscription = "NotAvailableForSubscription"
 
 
-class ResourceSkuCapacityScaleType(Enum):
+class ResourceSkuCapacityScaleType(str, Enum):
 
     automatic = "Automatic"
     manual = "Manual"
     none = "None"
 
 
-class MySqlTargetPlatformType(Enum):
+class MySqlTargetPlatformType(str, Enum):
 
     azure_db_for_my_sql = "AzureDbForMySQL"
 
 
-class DataMigrationResultCode(Enum):
+class SchemaMigrationOption(str, Enum):
+
+    none = "None"
+    extract_from_source = "ExtractFromSource"
+    use_storage_file = "UseStorageFile"
+
+
+class SchemaMigrationStage(str, Enum):
+
+    not_started = "NotStarted"
+    validating_inputs = "ValidatingInputs"
+    collecting_objects = "CollectingObjects"
+    downloading_script = "DownloadingScript"
+    generating_script = "GeneratingScript"
+    uploading_script = "UploadingScript"
+    deploying_schema = "DeployingSchema"
+    completed = "Completed"
+    completed_with_warnings = "CompletedWithWarnings"
+    failed = "Failed"
+
+
+class DataMigrationResultCode(str, Enum):
 
     initial = "Initial"
     completed = "Completed"
@@ -307,7 +328,7 @@ class DataMigrationResultCode(Enum):
     fatal_error = "FatalError"
 
 
-class ErrorType(Enum):
+class ErrorType(str, Enum):
 
     default = "Default"
     warning = "Warning"

@@ -49,8 +49,8 @@ class GetUserTablesSqlSyncTaskOutput(Model):
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(GetUserTablesSqlSyncTaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(GetUserTablesSqlSyncTaskOutput, self).__init__(**kwargs)
         self.databases_to_source_tables = None
         self.databases_to_target_tables = None
         self.table_validation_errors = None

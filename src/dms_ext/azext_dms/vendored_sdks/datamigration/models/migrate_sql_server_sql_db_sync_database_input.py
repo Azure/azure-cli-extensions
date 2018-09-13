@@ -48,13 +48,13 @@ class MigrateSqlServerSqlDbSyncDatabaseInput(Model):
         'target_setting': {'key': 'targetSetting', 'type': '{str}'},
     }
 
-    def __init__(self, id=None, name=None, target_database_name=None, schema_name=None, table_map=None, migration_setting=None, source_setting=None, target_setting=None):
-        super(MigrateSqlServerSqlDbSyncDatabaseInput, self).__init__()
-        self.id = id
-        self.name = name
-        self.target_database_name = target_database_name
-        self.schema_name = schema_name
-        self.table_map = table_map
-        self.migration_setting = migration_setting
-        self.source_setting = source_setting
-        self.target_setting = target_setting
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlDbSyncDatabaseInput, self).__init__(**kwargs)
+        self.id = kwargs.get('id', None)
+        self.name = kwargs.get('name', None)
+        self.target_database_name = kwargs.get('target_database_name', None)
+        self.schema_name = kwargs.get('schema_name', None)
+        self.table_map = kwargs.get('table_map', None)
+        self.migration_setting = kwargs.get('migration_setting', None)
+        self.source_setting = kwargs.get('source_setting', None)
+        self.target_setting = kwargs.get('target_setting', None)

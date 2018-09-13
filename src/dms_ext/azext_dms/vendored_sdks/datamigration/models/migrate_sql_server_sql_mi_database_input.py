@@ -16,9 +16,12 @@ class MigrateSqlServerSqlMIDatabaseInput(Model):
     """Database specific information for SQL to Azure SQL DB Managed Instance
     migration task inputs.
 
-    :param name: Name of the database
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. Name of the database
     :type name: str
-    :param restore_database_name: Name of the database at destination
+    :param restore_database_name: Required. Name of the database at
+     destination
     :type restore_database_name: str
     :param backup_file_share: Backup file share information for backing up
      this database.
@@ -40,9 +43,9 @@ class MigrateSqlServerSqlMIDatabaseInput(Model):
         'backup_file_paths': {'key': 'backupFilePaths', 'type': '[str]'},
     }
 
-    def __init__(self, name, restore_database_name, backup_file_share=None, backup_file_paths=None):
-        super(MigrateSqlServerSqlMIDatabaseInput, self).__init__()
-        self.name = name
-        self.restore_database_name = restore_database_name
-        self.backup_file_share = backup_file_share
-        self.backup_file_paths = backup_file_paths
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlMIDatabaseInput, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.restore_database_name = kwargs.get('restore_database_name', None)
+        self.backup_file_share = kwargs.get('backup_file_share', None)
+        self.backup_file_paths = kwargs.get('backup_file_paths', None)

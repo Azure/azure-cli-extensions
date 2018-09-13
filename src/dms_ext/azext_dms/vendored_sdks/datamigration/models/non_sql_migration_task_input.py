@@ -15,17 +15,21 @@ from msrest.serialization import Model
 class NonSqlMigrationTaskInput(Model):
     """Base class for non sql migration task input.
 
-    :param target_connection_info: Information for connecting to target
+    All required parameters must be populated in order to send to Azure.
+
+    :param target_connection_info: Required. Information for connecting to
+     target
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_database_name: Target database name
+    :param target_database_name: Required. Target database name
     :type target_database_name: str
-    :param project_name: Name of the migration project
+    :param project_name: Required. Name of the migration project
     :type project_name: str
-    :param project_location: A URL that points to the drop location to access
-     project artifacts
+    :param project_location: Required. A URL that points to the drop location
+     to access project artifacts
     :type project_location: str
-    :param selected_tables: Metadata of the tables selected for migration
+    :param selected_tables: Required. Metadata of the tables selected for
+     migration
     :type selected_tables:
      list[~azure.mgmt.datamigration.models.NonSqlDataMigrationTable]
     """
@@ -46,10 +50,10 @@ class NonSqlMigrationTaskInput(Model):
         'selected_tables': {'key': 'selectedTables', 'type': '[NonSqlDataMigrationTable]'},
     }
 
-    def __init__(self, target_connection_info, target_database_name, project_name, project_location, selected_tables):
-        super(NonSqlMigrationTaskInput, self).__init__()
-        self.target_connection_info = target_connection_info
-        self.target_database_name = target_database_name
-        self.project_name = project_name
-        self.project_location = project_location
-        self.selected_tables = selected_tables
+    def __init__(self, **kwargs):
+        super(NonSqlMigrationTaskInput, self).__init__(**kwargs)
+        self.target_connection_info = kwargs.get('target_connection_info', None)
+        self.target_database_name = kwargs.get('target_database_name', None)
+        self.project_name = kwargs.get('project_name', None)
+        self.project_location = kwargs.get('project_location', None)
+        self.selected_tables = kwargs.get('selected_tables', None)

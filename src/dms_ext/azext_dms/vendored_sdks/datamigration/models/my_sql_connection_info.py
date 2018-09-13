@@ -15,15 +15,17 @@ from .connection_info import ConnectionInfo
 class MySqlConnectionInfo(ConnectionInfo):
     """Information for connecting to MySQL server.
 
+    All required parameters must be populated in order to send to Azure.
+
     :param user_name: User name
     :type user_name: str
     :param password: Password credential.
     :type password: str
-    :param type: Constant filled by server.
+    :param type: Required. Constant filled by server.
     :type type: str
-    :param server_name: Name of the server
+    :param server_name: Required. Name of the server
     :type server_name: str
-    :param port: Port for Server
+    :param port: Required. Port for Server
     :type port: int
     """
 
@@ -41,8 +43,8 @@ class MySqlConnectionInfo(ConnectionInfo):
         'port': {'key': 'port', 'type': 'int'},
     }
 
-    def __init__(self, server_name, port, user_name=None, password=None):
-        super(MySqlConnectionInfo, self).__init__(user_name=user_name, password=password)
-        self.server_name = server_name
-        self.port = port
+    def __init__(self, **kwargs):
+        super(MySqlConnectionInfo, self).__init__(**kwargs)
+        self.server_name = kwargs.get('server_name', None)
+        self.port = kwargs.get('port', None)
         self.type = 'MySqlConnectionInfo'

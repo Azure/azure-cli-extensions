@@ -39,11 +39,11 @@ class ReportableException(Model):
         'stack_trace': {'key': 'stackTrace', 'type': 'str'},
     }
 
-    def __init__(self, message=None, actionable_message=None, file_path=None, line_number=None, h_result=None, stack_trace=None):
-        super(ReportableException, self).__init__()
-        self.message = message
-        self.actionable_message = actionable_message
-        self.file_path = file_path
-        self.line_number = line_number
-        self.h_result = h_result
-        self.stack_trace = stack_trace
+    def __init__(self, **kwargs):
+        super(ReportableException, self).__init__(**kwargs)
+        self.message = kwargs.get('message', None)
+        self.actionable_message = kwargs.get('actionable_message', None)
+        self.file_path = kwargs.get('file_path', None)
+        self.line_number = kwargs.get('line_number', None)
+        self.h_result = kwargs.get('h_result', None)
+        self.stack_trace = kwargs.get('stack_trace', None)

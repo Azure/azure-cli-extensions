@@ -18,9 +18,11 @@ class MigrateSqlServerSqlMITaskOutputAgentJobLevel(MigrateSqlServerSqlMITaskOutp
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Constant filled by server.
+    :param result_type: Required. Constant filled by server.
     :type result_type: str
     :ivar name: Agent Job name.
     :vartype name: str
@@ -64,8 +66,8 @@ class MigrateSqlServerSqlMITaskOutputAgentJobLevel(MigrateSqlServerSqlMITaskOutp
         'exceptions_and_warnings': {'key': 'exceptionsAndWarnings', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(MigrateSqlServerSqlMITaskOutputAgentJobLevel, self).__init__()
+    def __init__(self, **kwargs):
+        super(MigrateSqlServerSqlMITaskOutputAgentJobLevel, self).__init__(**kwargs)
         self.name = None
         self.is_enabled = None
         self.state = None

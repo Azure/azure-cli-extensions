@@ -16,11 +16,14 @@ class ConnectToTargetSqlSqlDbSyncTaskInput(Model):
     """Input for the task that validates connection to Azure SQL DB and target
     server requirements.
 
-    :param source_connection_info: Connection information for source SQL
-     Server
+    All required parameters must be populated in order to send to Azure.
+
+    :param source_connection_info: Required. Connection information for source
+     SQL Server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Connection information for target SQL DB
+    :param target_connection_info: Required. Connection information for target
+     SQL DB
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
     """
@@ -35,7 +38,7 @@ class ConnectToTargetSqlSqlDbSyncTaskInput(Model):
         'target_connection_info': {'key': 'targetConnectionInfo', 'type': 'SqlConnectionInfo'},
     }
 
-    def __init__(self, source_connection_info, target_connection_info):
-        super(ConnectToTargetSqlSqlDbSyncTaskInput, self).__init__()
-        self.source_connection_info = source_connection_info
-        self.target_connection_info = target_connection_info
+    def __init__(self, **kwargs):
+        super(ConnectToTargetSqlSqlDbSyncTaskInput, self).__init__(**kwargs)
+        self.source_connection_info = kwargs.get('source_connection_info', None)
+        self.target_connection_info = kwargs.get('target_connection_info', None)

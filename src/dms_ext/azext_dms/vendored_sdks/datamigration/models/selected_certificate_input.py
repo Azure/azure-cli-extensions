@@ -15,9 +15,12 @@ from msrest.serialization import Model
 class SelectedCertificateInput(Model):
     """Info for ertificate to be exported for TDE enabled databases.
 
-    :param certificate_name: Name of certificate to be exported.
+    All required parameters must be populated in order to send to Azure.
+
+    :param certificate_name: Required. Name of certificate to be exported.
     :type certificate_name: str
-    :param password: Password to use for encrypting the exported certificate.
+    :param password: Required. Password to use for encrypting the exported
+     certificate.
     :type password: str
     """
 
@@ -31,7 +34,7 @@ class SelectedCertificateInput(Model):
         'password': {'key': 'password', 'type': 'str'},
     }
 
-    def __init__(self, certificate_name, password):
-        super(SelectedCertificateInput, self).__init__()
-        self.certificate_name = certificate_name
-        self.password = password
+    def __init__(self, **kwargs):
+        super(SelectedCertificateInput, self).__init__(**kwargs)
+        self.certificate_name = kwargs.get('certificate_name', None)
+        self.password = kwargs.get('password', None)

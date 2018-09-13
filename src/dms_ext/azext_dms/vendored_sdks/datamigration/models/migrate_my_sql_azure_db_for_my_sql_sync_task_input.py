@@ -16,14 +16,17 @@ class MigrateMySqlAzureDbForMySqlSyncTaskInput(Model):
     """Input for the task that migrates MySQL databases to Azure Database for
     MySQL for online migrations.
 
-    :param source_connection_info: Connection information for source MySQL
+    All required parameters must be populated in order to send to Azure.
+
+    :param source_connection_info: Required. Connection information for source
+     MySQL
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.MySqlConnectionInfo
-    :param target_connection_info: Connection information for target Azure
-     Database for MySQL
+    :param target_connection_info: Required. Connection information for target
+     Azure Database for MySQL
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.MySqlConnectionInfo
-    :param selected_databases: Databases to migrate
+    :param selected_databases: Required. Databases to migrate
     :type selected_databases:
      list[~azure.mgmt.datamigration.models.MigrateMySqlAzureDbForMySqlSyncDatabaseInput]
     """
@@ -40,8 +43,8 @@ class MigrateMySqlAzureDbForMySqlSyncTaskInput(Model):
         'selected_databases': {'key': 'selectedDatabases', 'type': '[MigrateMySqlAzureDbForMySqlSyncDatabaseInput]'},
     }
 
-    def __init__(self, source_connection_info, target_connection_info, selected_databases):
-        super(MigrateMySqlAzureDbForMySqlSyncTaskInput, self).__init__()
-        self.source_connection_info = source_connection_info
-        self.target_connection_info = target_connection_info
-        self.selected_databases = selected_databases
+    def __init__(self, **kwargs):
+        super(MigrateMySqlAzureDbForMySqlSyncTaskInput, self).__init__(**kwargs)
+        self.source_connection_info = kwargs.get('source_connection_info', None)
+        self.target_connection_info = kwargs.get('target_connection_info', None)
+        self.selected_databases = kwargs.get('selected_databases', None)

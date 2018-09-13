@@ -36,7 +36,7 @@ class MigrationEligibilityInfo(Model):
         'validation_messages': {'key': 'validationMessages', 'type': '[str]'},
     }
 
-    def __init__(self):
-        super(MigrationEligibilityInfo, self).__init__()
+    def __init__(self, **kwargs):
+        super(MigrationEligibilityInfo, self).__init__(**kwargs)
         self.is_eligibile_for_migration = None
         self.validation_messages = None

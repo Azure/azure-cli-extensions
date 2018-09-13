@@ -33,8 +33,8 @@ class SchemaComparisonValidationResultType(Model):
         'update_action': {'key': 'updateAction', 'type': 'str'},
     }
 
-    def __init__(self, object_name=None, object_type=None, update_action=None):
-        super(SchemaComparisonValidationResultType, self).__init__()
-        self.object_name = object_name
-        self.object_type = object_type
-        self.update_action = update_action
+    def __init__(self, **kwargs):
+        super(SchemaComparisonValidationResultType, self).__init__(**kwargs)
+        self.object_name = kwargs.get('object_name', None)
+        self.object_type = kwargs.get('object_type', None)
+        self.update_action = kwargs.get('update_action', None)

@@ -48,8 +48,8 @@ class ConnectToTargetAzureDbForMySqlTaskOutput(Model):
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(ConnectToTargetAzureDbForMySqlTaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(ConnectToTargetAzureDbForMySqlTaskOutput, self).__init__(**kwargs)
         self.id = None
         self.server_version = None
         self.databases = None

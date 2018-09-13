@@ -23,6 +23,6 @@ class MigrateSyncCompleteCommandOutput(Model):
         'errors': {'key': 'errors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self, errors=None):
-        super(MigrateSyncCompleteCommandOutput, self).__init__()
-        self.errors = errors
+    def __init__(self, **kwargs):
+        super(MigrateSyncCompleteCommandOutput, self).__init__(**kwargs)
+        self.errors = kwargs.get('errors', None)

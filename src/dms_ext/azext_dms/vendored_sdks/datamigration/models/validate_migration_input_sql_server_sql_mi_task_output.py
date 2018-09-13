@@ -69,8 +69,8 @@ class ValidateMigrationInputSqlServerSqlMITaskOutput(Model):
         'database_backup_info': {'key': 'databaseBackupInfo', 'type': 'DatabaseBackupInfo'},
     }
 
-    def __init__(self, database_backup_info=None):
-        super(ValidateMigrationInputSqlServerSqlMITaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(ValidateMigrationInputSqlServerSqlMITaskOutput, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.restore_database_name_errors = None
@@ -78,4 +78,4 @@ class ValidateMigrationInputSqlServerSqlMITaskOutput(Model):
         self.backup_share_credentials_errors = None
         self.backup_storage_account_errors = None
         self.existing_backup_errors = None
-        self.database_backup_info = database_backup_info
+        self.database_backup_info = kwargs.get('database_backup_info', None)

@@ -36,7 +36,7 @@ class GetTdeCertificatesSqlTaskOutput(Model):
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(GetTdeCertificatesSqlTaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(GetTdeCertificatesSqlTaskOutput, self).__init__(**kwargs)
         self.base64_encoded_certificates = None
         self.validation_errors = None

@@ -15,12 +15,14 @@ from msrest.serialization import Model
 class FileShare(Model):
     """File share information with Path, Username, and Password.
 
+    All required parameters must be populated in order to send to Azure.
+
     :param user_name: User name credential to connect to the share location
     :type user_name: str
     :param password: Password credential used to connect to the share
      location.
     :type password: str
-    :param path: The folder path for this share.
+    :param path: Required. The folder path for this share.
     :type path: str
     """
 
@@ -34,8 +36,8 @@ class FileShare(Model):
         'path': {'key': 'path', 'type': 'str'},
     }
 
-    def __init__(self, path, user_name=None, password=None):
-        super(FileShare, self).__init__()
-        self.user_name = user_name
-        self.password = password
-        self.path = path
+    def __init__(self, **kwargs):
+        super(FileShare, self).__init__(**kwargs)
+        self.user_name = kwargs.get('user_name', None)
+        self.password = kwargs.get('password', None)
+        self.path = kwargs.get('path', None)

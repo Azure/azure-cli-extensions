@@ -57,8 +57,8 @@ class NonSqlDataMigrationTableResult(Model):
         'errors': {'key': 'errors', 'type': '[DataMigrationError]'},
     }
 
-    def __init__(self):
-        super(NonSqlDataMigrationTableResult, self).__init__()
+    def __init__(self, **kwargs):
+        super(NonSqlDataMigrationTableResult, self).__init__(**kwargs)
         self.result_code = None
         self.source_name = None
         self.target_name = None

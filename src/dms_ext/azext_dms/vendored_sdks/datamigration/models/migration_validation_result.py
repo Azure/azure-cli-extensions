@@ -45,9 +45,9 @@ class MigrationValidationResult(Model):
         'status': {'key': 'status', 'type': 'str'},
     }
 
-    def __init__(self, summary_results=None):
-        super(MigrationValidationResult, self).__init__()
+    def __init__(self, **kwargs):
+        super(MigrationValidationResult, self).__init__(**kwargs)
         self.id = None
         self.migration_id = None
-        self.summary_results = summary_results
+        self.summary_results = kwargs.get('summary_results', None)
         self.status = None

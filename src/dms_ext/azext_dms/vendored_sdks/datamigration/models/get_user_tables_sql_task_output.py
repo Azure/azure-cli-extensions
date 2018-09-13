@@ -41,8 +41,8 @@ class GetUserTablesSqlTaskOutput(Model):
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(GetUserTablesSqlTaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(GetUserTablesSqlTaskOutput, self).__init__(**kwargs)
         self.id = None
         self.databases_to_tables = None
         self.validation_errors = None

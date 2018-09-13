@@ -15,7 +15,9 @@ from msrest.serialization import Model
 class MigrateSyncCompleteCommandInput(Model):
     """Input for command that completes sync migration for a database.
 
-    :param database_name: Name of database
+    All required parameters must be populated in order to send to Azure.
+
+    :param database_name: Required. Name of database
     :type database_name: str
     :param commit_time_stamp: Time stamp to complete
     :type commit_time_stamp: datetime
@@ -30,7 +32,7 @@ class MigrateSyncCompleteCommandInput(Model):
         'commit_time_stamp': {'key': 'commitTimeStamp', 'type': 'iso-8601'},
     }
 
-    def __init__(self, database_name, commit_time_stamp=None):
-        super(MigrateSyncCompleteCommandInput, self).__init__()
-        self.database_name = database_name
-        self.commit_time_stamp = commit_time_stamp
+    def __init__(self, **kwargs):
+        super(MigrateSyncCompleteCommandInput, self).__init__(**kwargs)
+        self.database_name = kwargs.get('database_name', None)
+        self.commit_time_stamp = kwargs.get('commit_time_stamp', None)

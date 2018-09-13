@@ -52,8 +52,8 @@ class ConnectToTargetSqlMITaskOutput(Model):
         'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
     }
 
-    def __init__(self):
-        super(ConnectToTargetSqlMITaskOutput, self).__init__()
+    def __init__(self, **kwargs):
+        super(ConnectToTargetSqlMITaskOutput, self).__init__(**kwargs)
         self.id = None
         self.target_server_version = None
         self.target_server_brand_version = None
