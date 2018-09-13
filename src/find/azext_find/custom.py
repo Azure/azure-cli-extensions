@@ -41,7 +41,7 @@ def process_query(question):
                         current_title, current_snippet = current_snippet, current_title
                         current_title = current_title.split('\r\n')[0]
                     elif '```azurecli\r\n' in current_snippet:
-                        start_index = current_snippet.index('```azurecli\r\n')+len('```azurecli\r\n')
+                        start_index = current_snippet.index('```azurecli\r\n') + len('```azurecli\r\n')
                         current_snippet = current_snippet[start_index:]
                     current_snippet = current_snippet.replace('```', '').replace(current_title, '').strip()
                     current_snippet = re.sub(r'\[.*\]', '', current_snippet).strip()
