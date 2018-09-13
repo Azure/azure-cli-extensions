@@ -11,7 +11,7 @@ helps['graph query'] = """
     type: command
     short-summary: Query the resources managed by Azure Resource Manager.
     long-summary: >
-        Learn more about the query syntax here: https://aka.ms/graph/learntoquery
+        Learn more about the query syntax here: https://aka.ms/AzureResourceGraph-QueryLanguage
     parameters:
         - name: --first
           type: int
