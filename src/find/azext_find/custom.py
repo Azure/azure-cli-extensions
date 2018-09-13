@@ -62,7 +62,7 @@ def call_aladdin_service(query):
 
     if query:
         if query.startswith("az "):
-            query = '"'+query+'"'
+            query = '"' + query + '"'
 
     service_input = {
         'paragraphText': "<div id='dummyHeader'></div>",
