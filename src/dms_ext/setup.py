@@ -27,7 +27,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dms_ext',
+    name='dms-ext',
     version=VERSION,
     description='Support for new Database Migration Service scenarios.',
     license='MIT',
