@@ -29,7 +29,7 @@ class FindCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, _):
         with self.argument_context('find') as c:
-            c.positional('question')
+            c.positional('question', help='Questions about Azure CLI commands.')
 
 
 COMMAND_LOADER_CLS = FindCommandsLoader
