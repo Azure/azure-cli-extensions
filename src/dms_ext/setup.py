@@ -33,9 +33,9 @@ setup(
     license='MIT',
     author='Artyom Pavlichenko',
     author_email='arpavlic@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dms_ext',
     classifiers=CLASSIFIERS,
     packages = find_packages(exclude=["test"]),
-    package_data={'azext_bot': ['azext_metadata.json']},
+    package_data={'azext_dms': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
