@@ -6,7 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_container_mgmt, cf_blob_data_gen_update, 
+from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_container_mgmt, cf_blob_data_gen_update,
                               blob_data_service_factory,
                               page_blob_service_factory, file_data_service_factory,
                               queue_data_service_factory, table_data_service_factory,
@@ -62,8 +62,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_command('generate-sas', 'generate_shared_access_signature')
 
     storage_account_sdk_preview = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.storage_accounts_operations'
-                        '#StorageAccountsOperations.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.'
+                        'storage_accounts_operations#StorageAccountsOperations.{}',
         client_factory=cf_sa_preview,
         resource_type=CUSTOM_MGMT_STORAGE_PREVIEW
     )
