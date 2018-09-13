@@ -5,7 +5,11 @@
 
 import random
 import json
+import re
 import requests
+
+
+from azure.cli.core import telemetry as telemetry_core
 
 from knack.log import get_logger
 logger = get_logger(__name__)
@@ -19,29 +23,53 @@ def process_query(question):
     response = call_aladdin_service(question)
 
     if response.status_code != 200:
-        logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
+        logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(
+            response.status_code, response.content))
     else:
         answer_list = json.loads(response.content)
         num_results_to_show = 1
         if answer_list:
             if answer_list[0]['source'] == 'bing':
-                print("Here are some information I was able to gather for you: ")
-                num_results_to_show = 3
-            for i in range(num_results_to_show):
-                print(answer_list[i]['title'].strip())
-                print("- - - - - - - - - - - - - - - - - - - - - ")
-                print(answer_list[i]['snippet'].strip())
-                print("More info: ", answer_list[i]['link'])
-                if i + 1 < num_results_to_show:
-                    print("=========================================")
+                print("Sorry I am not able to help with that. Try typing the beginning of a"
+                      "command e.g. 'az vm' or explain the task you want to accomplish e.g. 'create a vm' \n")
+            else:
+                print("Here are some information I was able to gather for you: \n")
+                num_results_to_show = min(3, len(answer_list))
+                for i in range(num_results_to_show):
+                    current_title = answer_list[i]['title'].strip()
+                    current_snippet = answer_list[i]['snippet'].strip()
+                    if current_title.startswith("az "):
+                        current_title, current_snippet = current_snippet, current_title
+                        current_title = current_title.split('\r\n')[0]
+                    elif '```azurecli\r\n' in current_snippet:
+                        start_index = current_snippet.index('```azurecli\r\n')+len('```azurecli\r\n')
+                        current_snippet = current_snippet[start_index:]
+                    current_snippet = current_snippet.replace('```', '').replace(current_title, '').strip()
+                    current_snippet = re.sub(r'\[.*\]', '', current_snippet).strip()
+                    print('\033[1m' + current_title + '\033[0m')
+                    print(current_snippet)
+
+                    if i + 1 < num_results_to_show:
+                        print("\n")
 
 
 def call_aladdin_service(query):
+    context = {
+        'session_id': telemetry_core._session._get_base_properties()['Reserved.SessionId'],  # pylint: disable=W0212
+        'subscription_id': telemetry_core._get_azure_subscription_id(),  # pylint: disable=W0212
+        'client_request_id': telemetry_core._session.application.data['headers']['x-ms-client-request-id'],  # pylint: disable=W0212
+        'installation_id': telemetry_core._get_installation_id()  # pylint: disable=W0212
+    }
+
+    if query:
+        if query.startswith("az "):
+            query = '"'+query+'"'
+
     service_input = {
-        'paragraphText': "",
+        'paragraphText': "<div id='dummyHeader'></div>",
         'currentPageUrl': "",
         'query': "ALADDIN-CLI:" + query,
-        'context': ""
+        'context': context
     }
 
     api_url = 'https://aladdinservice-staging.azurewebsites.net/api/aladdin/generateCards'
