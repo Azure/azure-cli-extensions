@@ -8,6 +8,7 @@ from six.moves.urllib.parse import quote  # pylint: disable=import-error,relativ
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
+from dateutil import parser
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_eventgrid.mgmt.eventgrid.models import (
@@ -15,6 +16,7 @@ from azext_eventgrid.mgmt.eventgrid.models import (
     EventSubscriptionUpdateParameters,
     WebHookEventSubscriptionDestination,
     Topic,
+    Domain,
     JsonInputSchemaMapping,
     JsonField,
     JsonFieldWithDefault,
@@ -31,6 +33,7 @@ EVENTGRID_NAMESPACE = "Microsoft.EventGrid"
 RESOURCES_NAMESPACE = "Microsoft.Resources"
 SUBSCRIPTIONS = "subscriptions"
 RESOURCE_GROUPS = "resourcegroups"
+EVENTGRID_DOMAINS = "domains"
 EVENTGRID_TOPICS = "topics"
 WEBHOOK_DESTINATION = "webhook"
 EVENTHUB_DESTINATION = "eventhub"
@@ -39,7 +42,7 @@ HYBRIDCONNECTION_DESTINATION = "hybridconnection"
 EVENTGRID_SCHEMA = "EventGridSchema"
 CLOUDEVENTV01_SCHEMA = "CloudEventV01Schema"
 CUSTOM_EVENT_SCHEMA = "CustomEventSchema"
-INPUT_EVENT_SCHEMA = "InputEventSchema"
+CUSTOM_INPUT_SCHEMA = "CustomInputSchema"
 
 # Constants for the target field names of the mapping
 TOPIC = "topic"
@@ -68,33 +71,15 @@ def cli_topic_create_or_update(
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
         input_mapping_default_values=None):
-    if input_schema.lower() == EVENTGRID_SCHEMA.lower():
-        input_schema = EVENTGRID_SCHEMA
-    elif input_schema.lower() == CUSTOM_EVENT_SCHEMA.lower():
-        input_schema = CUSTOM_EVENT_SCHEMA
-    elif input_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
-        input_schema = CLOUDEVENTV01_SCHEMA
-    else:
-        raise CLIError('The provided --input-schema is not valid. The supported values are: ' +
-                       EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
-
-    if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
-        # Ensure that custom input mappings are not specified
-        if input_mapping_fields is not None or input_mapping_default_values is not None:
-            raise CLIError('--input-mapping-default-values and --input-mapping-fields should be ' +
-                           'specified only when --input-schema is set to customeventschema.')
-
-    if input_schema == CUSTOM_EVENT_SCHEMA:
-        # Ensure that custom input mappings are specified
-        if input_mapping_fields is None and input_mapping_default_values is None:
-            raise CLIError('Either --input-mapping-default-values or --input-mapping-fields must be ' +
-                           'specified when --input-schema is set to customeventschema.')
-
-    input_schema_mapping = get_input_schema_mapping(
+    final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
+        input_schema,
         input_mapping_fields,
         input_mapping_default_values)
-
-    topic_info = Topic(location, tags, input_schema, input_schema_mapping)
+    topic_info = Topic(
+        location=location,
+        tags=tags,
+        input_schema=final_input_schema,
+        input_schema_mapping=input_schema_mapping)
 
     async_topic_create = client.create_or_update(
         resource_group_name,
@@ -102,6 +87,42 @@ def cli_topic_create_or_update(
         topic_info)
     created_topic = async_topic_create.result()
     return created_topic
+
+
+def cli_domain_list(
+        client,
+        resource_group_name=None):
+    if resource_group_name:
+        return client.list_by_resource_group(resource_group_name)
+
+    return client.list_by_subscription()
+
+
+def cli_domain_create_or_update(
+        client,
+        resource_group_name,
+        domain_name,
+        location,
+        tags=None,
+        input_schema=EVENTGRID_SCHEMA,
+        input_mapping_fields=None,
+        input_mapping_default_values=None):
+    final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
+        input_schema,
+        input_mapping_fields,
+        input_mapping_default_values)
+    domain_info = Domain(
+        location=location,
+        tags=tags,
+        input_schema=final_input_schema,
+        input_schema_mapping=input_schema_mapping)
+
+    async_domain_create = client.create_or_update(
+        resource_group_name,
+        domain_name,
+        domain_info)
+    created_domain = async_domain_create.result()
+    return created_domain
 
 
 def cli_eventgrid_event_subscription_create(
@@ -119,25 +140,30 @@ def cli_eventgrid_event_subscription_create(
         is_subject_case_sensitive=False,
         max_delivery_attempts=30,
         event_ttl=1440,
-        event_delivery_schema=INPUT_EVENT_SCHEMA,
+        event_delivery_schema=None,
         deadletter_endpoint=None,
-        labels=None):
+        labels=None,
+        expiration_date=None,
+        advanced_filter=None):
     # Construct RetryPolicy based on max_delivery_attempts and event_ttl
     max_delivery_attempts = int(max_delivery_attempts)
     event_ttl = int(event_ttl)
     _validate_retry_policy(max_delivery_attempts, event_ttl)
-    retry_policy = RetryPolicy(max_delivery_attempts, event_ttl)
+    retry_policy = RetryPolicy(max_delivery_attempts=max_delivery_attempts, event_time_to_live_in_minutes=event_ttl)
 
     # Get event_delivery_schema in the right case
     event_delivery_schema = _get_event_delivery_schema(event_delivery_schema)
 
     destination = _get_endpoint_destination(endpoint_type, endpoint)
 
+    print(advanced_filter)
+
     event_subscription_filter = EventSubscriptionFilter(
-        subject_begins_with,
-        subject_ends_with,
-        included_event_types,
-        is_subject_case_sensitive)
+        subject_begins_with=subject_begins_with,
+        subject_ends_with=subject_ends_with,
+        included_event_types=included_event_types,
+        is_subject_case_sensitive=is_subject_case_sensitive,
+        advanced_filters=advanced_filter)
 
     deadletter_destination = None
     if deadletter_endpoint is not None:
@@ -149,13 +175,16 @@ def cli_eventgrid_event_subscription_create(
         topic_name,
         resource_group_name)
 
+    expiration_date = parser.parse(expiration_date)
+
     event_subscription_info = EventSubscription(
-        destination,
-        event_subscription_filter,
-        labels,
-        event_delivery_schema,
-        retry_policy,
-        deadletter_destination)
+        destination=destination,
+        filter=event_subscription_filter,
+        labels=labels,
+        event_delivery_schema=event_delivery_schema,
+        retry_policy=retry_policy,
+        expiration_time_utc=expiration_date,
+        dead_letter_destination=deadletter_destination)
 
     _warn_if_manual_handshake_needed(endpoint_type, endpoint)
 
@@ -229,12 +258,21 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         id_parts = parse_resource_id(resource_id)
         rg_name = id_parts['resource_group']
         resource_name = id_parts['name']
-        provider_namespace = id_parts['namespace']
+        namespace = id_parts['namespace']
         resource_type = id_parts['resource_type']
 
+        # If this is for a domain topic, invoke the appropriate operation
+        if (namespace.lower() == EVENTGRID_NAMESPACE.lower() and resource_type.lower() == EVENTGRID_DOMAINS.lower()):
+            child_resource_type = id_parts.get('child_type_1')
+            child_resource_name = id_parts.get('child_name_1')
+
+            if (child_resource_type is not None and child_resource_type.lower() == EVENTGRID_TOPICS.lower() and child_resource_name is not None):
+                return client.list_by_domain_topic(rg_name, resource_name, child_resource_name)
+
+        # Not a domain topic, invoke the standard list_by_resource
         return client.list_by_resource(
             rg_name,
-            provider_namespace,
+            namespace,
             resource_type,
             resource_name)
 
@@ -447,11 +485,11 @@ def update_event_subscription(
 
 def _get_endpoint_destination(endpoint_type, endpoint):
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
-        destination = WebHookEventSubscriptionDestination(endpoint)
+        destination = WebHookEventSubscriptionDestination(endpoint_url=endpoint)
     elif endpoint_type.lower() == EVENTHUB_DESTINATION.lower():
-        destination = EventHubEventSubscriptionDestination(endpoint)
+        destination = EventHubEventSubscriptionDestination(resource_id=endpoint)
     elif endpoint_type.lower() == HYBRIDCONNECTION_DESTINATION.lower():
-        destination = HybridConnectionEventSubscriptionDestination(endpoint)
+        destination = HybridConnectionEventSubscriptionDestination(resource_id=endpoint)
     elif endpoint_type.lower() == STORAGEQUEUE_DESTINATION.lower():
         destination = _get_storage_queue_destination(endpoint)
 
@@ -472,7 +510,7 @@ def _get_storage_queue_destination(endpoint):
                        'storageAccounts/sa1/queueServices/default/queues/queueName')
 
     destination = StorageQueueEventSubscriptionDestination(
-        queue_items[0], queue_items[1])
+        resource_id=queue_items[0], queue_name=queue_items[1])
 
     return destination
 
@@ -487,7 +525,7 @@ def _get_deadletter_destination(deadletter_endpoint):
                        'storageAccounts/sa1/blobServices/default/containers/containerName')
 
     deadletter_destination = StorageBlobDeadLetterDestination(
-        blob_items[0], blob_items[1])
+        resource_id=blob_items[0], blob_container_name=blob_items[1])
 
     return deadletter_destination
 
@@ -501,15 +539,17 @@ def _validate_retry_policy(max_delivery_attempts, event_ttl):
 
 
 def _get_event_delivery_schema(event_delivery_schema):
-    if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
+    if event_delivery_schema is None:
+        return None        
+    elif event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
         event_delivery_schema = EVENTGRID_SCHEMA
-    elif event_delivery_schema.lower() == INPUT_EVENT_SCHEMA.lower():
-        event_delivery_schema = INPUT_EVENT_SCHEMA
+    elif event_delivery_schema.lower() == CUSTOM_INPUT_SCHEMA.lower():
+        event_delivery_schema = CUSTOM_INPUT_SCHEMA
     elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
         event_delivery_schema = CLOUDEVENTV01_SCHEMA
     else:
         raise CLIError('The provided --event-delivery-schema is not valid. The supported '
-                       ' values are:' + EVENTGRID_SCHEMA + ',' + INPUT_EVENT_SCHEMA +
+                       ' values are:' + EVENTGRID_SCHEMA + ',' + CUSTOM_INPUT_SCHEMA +
                        ',' + CLOUDEVENTV01_SCHEMA)
 
     return event_delivery_schema
@@ -530,3 +570,36 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
                        "subscription validation event, in order to complete the event " +
                        "subscription creation or update. For more details, " +
                        "please visit http://aka.ms/esvalidation")
+
+
+def _get_input_schema_and_mapping(
+        input_schema=EVENTGRID_SCHEMA,
+        input_mapping_fields=None,
+        input_mapping_default_values=None):
+    if input_schema.lower() == EVENTGRID_SCHEMA.lower():
+        input_schema = EVENTGRID_SCHEMA
+    elif input_schema.lower() == CUSTOM_EVENT_SCHEMA.lower():
+        input_schema = CUSTOM_EVENT_SCHEMA
+    elif input_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
+        input_schema = CLOUDEVENTV01_SCHEMA
+    else:
+        raise CLIError('The provided --input-schema is not valid. The supported values are: ' +
+                       EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
+
+    if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
+        # Ensure that custom input mappings are not specified
+        if input_mapping_fields is not None or input_mapping_default_values is not None:
+            raise CLIError('--input-mapping-default-values and --input-mapping-fields should be ' +
+                           'specified only when --input-schema is set to customeventschema.')
+
+    if input_schema == CUSTOM_EVENT_SCHEMA:
+        # Ensure that custom input mappings are specified
+        if input_mapping_fields is None and input_mapping_default_values is None:
+            raise CLIError('Either --input-mapping-default-values or --input-mapping-fields must be ' +
+                           'specified when --input-schema is set to customeventschema.')
+
+    input_schema_mapping = get_input_schema_mapping(
+        input_mapping_fields,
+        input_mapping_default_values)
+
+    return input_schema, input_schema_mapping

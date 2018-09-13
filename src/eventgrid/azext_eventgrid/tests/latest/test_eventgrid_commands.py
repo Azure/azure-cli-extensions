@@ -10,7 +10,7 @@ from knack.util import CLIError
 
 
 class EventGridTests(ScenarioTest):
-    @unittest.skip("Temporarily disabled as this is not yet enabled with the 2018-05-01-preview API version")
+    @unittest.skip("Temporarily disabled as this is not yet enabled with the 2018-09-15-preview API version")
     def test_topic_types(self):
 
         self.kwargs.update({
@@ -27,6 +27,168 @@ class EventGridTests(ScenarioTest):
         self.cmd('az eventgrid topic-type list-event-types --name {topic_type_name}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/topicTypes/eventTypes')
         ])
+
+    @ResourceGroupPreparer()
+    def test_create_domain(self, resource_group):
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
+
+        domain_name = self.create_random_name(prefix='cli', length=40)
+        domain_name2 = self.create_random_name(prefix='cli', length=40)
+        domain_name3 = self.create_random_name(prefix='cli', length=40)
+        event_subscription_name = self.create_random_name(prefix='cli', length=40)
+
+        self.kwargs.update({
+            'domain_name': domain_name,
+            'domain_name2': domain_name2,
+            'domain_name3': domain_name3,
+            'location': 'eastus2euap',
+            'event_subscription_name': event_subscription_name,
+            'endpoint_url': endpoint_url,
+            'endpoint_baseurl': endpoint_baseurl
+        })
+
+        self.kwargs['resource_id'] = self.cmd('az eventgrid domain create --name {domain_name} --resource-group {rg} --location {location}', checks=[
+            self.check('type', 'Microsoft.EventGrid/domains'),
+            self.check('name', self.kwargs['domain_name']),
+            self.check('provisioningState', 'Succeeded'),
+        ]).get_output_in_json()['id']
+
+        self.cmd('az eventgrid domain show --name {domain_name} --resource-group {rg}', checks=[
+            self.check('type', 'Microsoft.EventGrid/domains'),
+            self.check('name', self.kwargs['domain_name']),
+        ])
+
+        # Test various failure conditions
+        # Input mappings cannot be provided when input schema is not customeventschema
+        with self.assertRaises(CLIError):
+            self.cmd('az eventgrid domain create --name {domain_name2} --resource-group {rg} --location {location} --input-schema CloudEventV01Schema --input-mapping-fields domain=mydomainField')
+
+        # Input mappings cannot be provided when input schema is not customeventschema
+        with self.assertRaises(CLIError):
+            self.cmd('az eventgrid domain create --name {domain_name2} --resource-group {rg} --location {location} --input-schema eventgridschema --input-mapping-fields domain=mydomainField')
+
+        # Input mappings must be provided when input schema is customeventschema
+        with self.assertRaises(CLIError):
+            self.cmd('az eventgrid domain create --name {domain_name2} --resource-group {rg} --location {location} --input-schema customeventschema')
+
+        self.cmd('az eventgrid domain create --name {domain_name2} --resource-group {rg} --location {location} --input-schema CloudEventV01Schema', checks=[
+            self.check('type', 'Microsoft.EventGrid/domains'),
+            self.check('name', self.kwargs['domain_name2']),
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid domain create --name {domain_name3} --resource-group {rg} --location {location} --input-schema Customeventschema --input-mapping-fields domain=mydomainField eventType=myEventTypeField topic=myTopic --input-mapping-default-values subject=DefaultSubject dataVersion=1.0', checks=[
+            self.check('type', 'Microsoft.EventGrid/domains'),
+            self.check('name', self.kwargs['domain_name3']),
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid domain update --name {domain_name} --resource-group {rg} --tags Dept=IT', checks=[
+            self.check('name', self.kwargs['domain_name']),
+            self.check('tags', {'Dept': 'IT'}),
+        ])
+
+        self.cmd('az eventgrid domain list --resource-group {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/domains'),
+            self.check('[0].name', self.kwargs['domain_name']),
+        ])
+
+        output = self.cmd('az eventgrid domain key list --name {domain_name} --resource-group {rg}').get_output_in_json()
+        self.assertIsNotNone(output['key1'])
+        self.assertIsNotNone(output['key2'])
+
+        output = self.cmd('az eventgrid domain key regenerate --name {domain_name} --resource-group {rg} --key-name key1').get_output_in_json()
+        self.assertIsNotNone(output['key1'])
+        self.assertIsNotNone(output['key2'])
+
+        self.cmd('az eventgrid domain key regenerate --name {domain_name} --resource-group {rg} --key-name key2').get_output_in_json()
+        self.assertIsNotNone(output['key1'])
+        self.assertIsNotNone(output['key2'])
+
+        # Event subscriptions to domain
+
+        self.cmd('az eventgrid event-subscription create --resource-id {resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription show --resource-id {resource_id} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+        ])
+
+        self.cmd('az eventgrid event-subscription show --resource-id {resource_id} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription update --resource-id {resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription list --resource-id {resource_id}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+        self.cmd('az eventgrid event-subscription delete --resource-id {resource_id} --name {event_subscription_name}')
+
+        # Event subscriptions to a domain topic
+        self.kwargs['domain_topic_resource_id'] = self.kwargs['resource_id'] + "/topics/topic1"
+
+        self.cmd('az eventgrid event-subscription create --resource-id {domain_topic_resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription show --resource-id {domain_topic_resource_id} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+        ])
+
+        # Now that an event subscription to a domain topic has been created, it would have internally resulted in creation of
+        # the corresponding auto-managed domain topic. Hence, we should now be able to list the set of domain topics under the domain.
+        # In the future, we can expand this to support CRUD operations for domain topics (i.e. manual management of domain topics) directly.
+        self.cmd('az eventgrid domain topic list --resource-group {rg} --name {domain_name}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/domains/topics'),
+            self.check('[0].id', self.kwargs['domain_topic_resource_id']),
+            self.check('[0].name', 'topic1'),
+        ])
+
+        self.cmd('az eventgrid domain topic show --resource-group {rg} --name {domain_name} --topic-name topic1', checks=[
+            self.check('type', 'Microsoft.EventGrid/domains/topics'),
+            self.check('id', self.kwargs['domain_topic_resource_id']),
+            self.check('name', 'topic1'),
+        ])
+
+        self.cmd('az eventgrid event-subscription show --resource-id {domain_topic_resource_id} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription update --resource-id {domain_topic_resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription list --resource-id {domain_topic_resource_id}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+        self.cmd('az eventgrid event-subscription delete --resource-id {domain_topic_resource_id} --name {event_subscription_name}')
+        self.cmd('az eventgrid domain delete --name {domain_name} --resource-group {rg}')
+
 
     @ResourceGroupPreparer()
     def test_create_topic(self, resource_group):
@@ -180,9 +342,8 @@ class EventGridTests(ScenarioTest):
 
         self.cmd('az eventgrid event-subscription delete --resource-group {rg} --name {event_subscription_name}')
 
-    @unittest.skip("Temporarily disabled as this is not yet enabled with the 2018-05-01-preview API version")
-    @ResourceGroupPreparer(name_prefix='clieventgridrg')
-    @StorageAccountPreparer(name_prefix='clieventgrid')
+    @ResourceGroupPreparer(name_prefix='clieventgridrg', location='eastus2euap')
+    @StorageAccountPreparer(name_prefix='clieventgrid', location='eastus2euap')
     def test_create_event_subscriptions_to_resource(self, resource_group, resource_group_location, storage_account):
         event_subscription_name = self.create_random_name(prefix='cli', length=40)
         endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
@@ -311,3 +472,65 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --resource-group {rg} --name {event_subscription_name1}')
+
+
+    @ResourceGroupPreparer()
+    def test_advanced_filters(self, resource_group):
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
+
+        topic_name = self.create_random_name(prefix='cli', length=40)
+        event_subscription_name = self.create_random_name(prefix='cli', length=40)
+
+        self.kwargs.update({
+            'topic_name': topic_name,
+            'location': 'eastus2euap',
+            'event_subscription_name': event_subscription_name,
+            'endpoint_url': endpoint_url,
+            'endpoint_baseurl': endpoint_baseurl
+        })
+
+        self.cmd('az eventgrid topic create --name {topic_name} --resource-group {rg} --location {location}', checks=[
+            self.check('type', 'Microsoft.EventGrid/topics'),
+            self.check('name', self.kwargs['topic_name']),
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Error cases
+        with self.assertRaises(CLIError):
+            # No operator/values provided
+            self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1')
+
+        with self.assertRaises(CLIError):
+            # No filter value provided
+            self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn')
+
+        with self.assertRaises(CLIError):
+            # Invalid operator type provided
+            self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 FooNumberLessThan 2 3')
+
+        with self.assertRaises(CLIError):
+            # Multiple values provided for a single value filter
+            self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberLessThan 2 3')
+
+        # TODO: Uncomment the below once the service side changes are deployed.
+        # One advanced filter for NumberIn operator
+        # self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200', checks=[
+        #     self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+        #     self.check('provisioningState', 'Succeeded'),
+        #     self.check('name', self.kwargs['event_subscription_name']),
+        #     self.check(len('filter.advanced_filters'), 1)
+        #     self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        # ])
+
+        # Two advanced filters for NumberIn, StringIn operators
+        # self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200 --advanced-filter key1.key2 StringIn 2 3 4 100 200', checks=[
+        #     self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+        #     self.check('provisioningState', 'Succeeded'),
+        #     self.check('name', self.kwargs['event_subscription_name']),
+        #     self.check(len('filter.advanced_filters'), 1)
+        #     self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        # ])
+
+        self.cmd('az eventgrid event-subscription delete --topic-name {topic_name} -g {rg} --name {event_subscription_name}')
+        self.cmd('az eventgrid topic delete --name {topic_name} --resource-group {rg}')

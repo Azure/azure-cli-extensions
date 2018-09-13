@@ -24,7 +24,7 @@ helps['eventgrid topic create'] = """
         - name: Create a new topic with custom input mappings.
           text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=myTopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
         - name: Create a new topic that accepts events published in CloudEvents V0.1 schema.
-          text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventv01
+          text: az eventgrid topic create -g rg1 --name topic1 -l westus2 --input-schema cloudeventv01schema
     """
 helps['eventgrid topic update'] = """
     type: command
@@ -70,6 +70,83 @@ helps['eventgrid topic key regenerate'] = """
     type: command
     short-summary: Regenerate a shared access key of a topic.
     """
+helps['eventgrid domain'] = """
+    type: group
+    short-summary: Manage Azure Event Grid domains.
+    """
+helps['eventgrid domain create'] = """
+    type: command
+    short-summary: Create a domain.
+    examples:
+        - name: Create a new domain.
+          text: az eventgrid domain create -g rg1 --name domain1 -l westus2
+        - name: Create a new domain with custom input mappings.
+          text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --input-schema customeventschema --input-mapping-fields topic=mytopicField eventType=myEventTypeField --input-mapping-default-values subject=DefaultSubject dataVersion=1.0
+        - name: Create a new domain that accepts events published in CloudEvents V0.1 schema.
+          text: az eventgrid domain create -g rg1 --name domain1 -l westus2 --input-schema cloudeventv01schema
+    """
+helps['eventgrid domain update'] = """
+    type: command
+    short-summary: Update a domain.
+    examples:
+        - name: Update the properties of an existing domain.
+          text: az eventgrid domain update -g rg1 --name domain1 --tags Dept=IT
+    """
+helps['eventgrid domain delete'] = """
+    type: command
+    short-summary: Delete a domain.
+    examples:
+        - name: Delete a domain.
+          text: az eventgrid domain delete -g rg1 --name domain1
+    """
+helps['eventgrid domain list'] = """
+    type: command
+    short-summary: List available domains.
+    examples:
+        - name: List all domains in the current Azure subscription.
+          text: az eventgrid domain list
+        - name: List all domains in a resource group.
+          text: az eventgrid domain list -g rg1
+    """
+helps['eventgrid domain show'] = """
+    type: command
+    short-summary: Get the details of a domain.
+    examples:
+        - name: Show the details of a domain.
+          text: az eventgrid domain show -g rg1 -n domain1
+        - name: Show the details of a domain based on resource ID.
+          text: az eventgrid domain show --ids /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1
+    """
+helps['eventgrid domain key'] = """
+    type: group
+    short-summary: Manage shared access keys of a domain.
+    """
+helps['eventgrid domain topic'] = """
+    type: group
+    short-summary: View information about topics in a domain.
+    """
+helps['eventgrid domain key list'] = """
+    type: command
+    short-summary: List shared access keys of a domain.
+    """
+helps['eventgrid domain key regenerate'] = """
+    type: command
+    short-summary: Regenerate a shared access key of a domain.
+    """
+helps['eventgrid domain topic list'] = """
+    type: command
+    short-summary: List available topics in a domain.
+    examples:
+        - name: List all topics in a domain.
+          text: az eventgrid domain list -g rg1 -n domain1
+    """
+helps['eventgrid domain topic show'] = """
+    type: command
+    short-summary: Get the details of a domain topic.
+    examples:
+        - name: Show the details of a domain topic.
+          text: az eventgrid domain topic show -g rg1 -n domain1 --topic-name topic1
+    """
 helps['eventgrid event-subscription'] = """
     type: group
     short-summary: Manage event subscriptions for an Event Grid topic or for an Azure resource.
@@ -77,6 +154,24 @@ helps['eventgrid event-subscription'] = """
 helps['eventgrid event-subscription create'] = """
     type: command
     short-summary: Create a new event subscription for an Event Grid topic or for an Azure resource.
+    parameters:
+        - name: --advanced-filter
+          short-summary: An advanced filter enables filtering of events based on a specific event property.
+          long-summary: |
+            Usage:                     --advanced-filter KEY[.INNERKEY] FILTEROPERATOR VALUE [VALUE ...]
+            StringIn:                  --advanced-filter data.Color StringIn Blue Red Orange Yellow
+            StringNotIn:               --advanced-filter data.Color StringNotIn Blue Red Orange Yellow
+            StringContains:            --advanced-filter subject StringContains image
+            StringBeginsWith:          --advanced-filter subject StringBeginsWith image
+            StringEndsWith:            --advanced-filter subject StringEndsWith image
+            NumberIn:                  --advanced-filter data.property1 NumberIn 5 10 20
+            NumberNotIn:               --advanced-filter data.property2 NumberNotIn 100 200 300
+            NumberLessThan:            --advanced-filter data.property3 NumberLessThan 100
+            NumberLessThanOrEquals:    --advanced-filter data.property2 NumberLessThanOrEquals 100
+            NumberGreaterThan:         --advanced-filter data.property3 NumberGreaterThan 100
+            NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
+            BoolEquals:                --advanced-filter data.property3 BoolEquals true
+            Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
     examples:
         - name: Create a new event subscription for an Event Grid topic, using default filters.
           text: |
@@ -94,7 +189,13 @@ helps['eventgrid event-subscription create'] = """
           text: |
             az eventgrid event-subscription create --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" --name es3 \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-        - name: Create a new event subscription for a subscription, with a filter specifying a subject prefix.
+        - name: Create a new event subscription for a storage account, using advanced filters.
+          text: |
+            az eventgrid event-subscription create --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" --name es3 \\
+                --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+                --advanced-filter data.blobType Stringin BlockBlob
+                --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
+        - name: Create a new event subscription for an Azure subscription, with a filter specifying a subject prefix.
           text: |
             az eventgrid event-subscription create --name es4 \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
@@ -104,7 +205,7 @@ helps['eventgrid event-subscription create'] = """
             az eventgrid event-subscription create -g rg2 --name es5 \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
                 --subject-ends-with mysubject_suffix
-        - name: Create a new event subscription for a subscription, using default filters, and an EventHub as a destination.
+        - name: Create a new event subscription for an Azure subscription, using default filters, and an EventHub as a destination.
           text: |
             az eventgrid event-subscription create --name es2 --endpoint-type eventhub \\
                 --endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.EventHub/namespaces/ContosoNamespace/eventhubs/EH1
@@ -112,7 +213,7 @@ helps['eventgrid event-subscription create'] = """
           text: |
             az eventgrid event-subscription create --name es2 --endpoint-type storagequeue \\
                 --endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/queueservices/default/queues/queue1
-        - name: Create a new event subscription for a subscription, using default filters, and CloudEventV01 as the delivery schema.
+        - name: Create a new event subscription for an Azure subscription, using default filters, and CloudEventV01 as the delivery schema.
           text: |
             az eventgrid event-subscription create --name es2 --endpoint https://contoso.azurewebsites.net/api/f1?code=code --event-delivery-schema cloudeventv01schema
         - name: Create a new event subscription for a resource, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier).
@@ -122,6 +223,11 @@ helps['eventgrid event-subscription create'] = """
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
                 --deadletter-endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1 \\
                 --max-delivery-attempts 10 --event-ttl 120
+        - name: Create a new event subscription for a domain topic.
+          text: |
+            az eventgrid event-subscription create --name es2 \\
+                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1/topic/topic1" \\
+                --endpoint https://contoso.azurewebsites.net/api/f1?code=code
     """
 helps['eventgrid event-subscription update'] = """
     type: command

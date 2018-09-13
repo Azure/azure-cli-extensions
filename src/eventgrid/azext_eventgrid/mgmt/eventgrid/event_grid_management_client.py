@@ -9,10 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.service_client import ServiceClient
+from msrest.service_client import SDKClient
 from msrest import Serializer, Deserializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
+from .operations.domains_operations import DomainsOperations
+from .operations.domain_topics_operations import DomainTopicsOperations
 from .operations.event_subscriptions_operations import EventSubscriptionsOperations
 from .operations.operations import Operations
 from .operations.topics_operations import TopicsOperations
@@ -47,27 +49,31 @@ class EventGridManagementClientConfiguration(AzureConfiguration):
 
         super(EventGridManagementClientConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('azext_eventgrid-mgmt-eventgrid/{}'.format(VERSION))
+        self.add_user_agent('azure-mgmt-eventgrid/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
         self.subscription_id = subscription_id
 
 
-class EventGridManagementClient(object):
+class EventGridManagementClient(SDKClient):
     """Azure EventGrid Management Client
 
     :ivar config: Configuration for client.
     :vartype config: EventGridManagementClientConfiguration
 
+    :ivar domains: Domains operations
+    :vartype domains: azure.mgmt.eventgrid.operations.DomainsOperations
+    :ivar domain_topics: DomainTopics operations
+    :vartype domain_topics: azure.mgmt.eventgrid.operations.DomainTopicsOperations
     :ivar event_subscriptions: EventSubscriptions operations
-    :vartype event_subscriptions: azext_eventgrid.mgmt.eventgrid.operations.EventSubscriptionsOperations
+    :vartype event_subscriptions: azure.mgmt.eventgrid.operations.EventSubscriptionsOperations
     :ivar operations: Operations operations
-    :vartype operations: azext_eventgrid.mgmt.eventgrid.operations.Operations
+    :vartype operations: azure.mgmt.eventgrid.operations.Operations
     :ivar topics: Topics operations
-    :vartype topics: azext_eventgrid.mgmt.eventgrid.operations.TopicsOperations
+    :vartype topics: azure.mgmt.eventgrid.operations.TopicsOperations
     :ivar topic_types: TopicTypes operations
-    :vartype topic_types: azext_eventgrid.mgmt.eventgrid.operations.TopicTypesOperations
+    :vartype topic_types: azure.mgmt.eventgrid.operations.TopicTypesOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -83,13 +89,17 @@ class EventGridManagementClient(object):
             self, credentials, subscription_id, base_url=None):
 
         self.config = EventGridManagementClientConfiguration(credentials, subscription_id, base_url)
-        self._client = ServiceClient(self.config.credentials, self.config)
+        super(EventGridManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-05-01-preview'
+        self.api_version = '2018-09-15-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
+        self.domains = DomainsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.domain_topics = DomainTopicsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
         self.event_subscriptions = EventSubscriptionsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.operations = Operations(
