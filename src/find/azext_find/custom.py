@@ -23,8 +23,7 @@ def process_query(question):
     response = call_aladdin_service(question)
 
     if response.status_code != 200:
-        logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(
-            response.status_code, response.content))
+        logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
     else:
         answer_list = json.loads(response.content)
         num_results_to_show = 1

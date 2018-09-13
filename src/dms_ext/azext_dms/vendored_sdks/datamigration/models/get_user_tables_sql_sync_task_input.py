@@ -19,7 +19,7 @@ class GetUserTablesSqlSyncTaskInput(Model):
     :param source_connection_info: Connection information for SQL Server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Connection information for SQL Server
+    :param target_connection_info: Connection information for SQL DB
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
     :param selected_source_databases: List of source database names to collect

@@ -12,12 +12,11 @@ from knack import CLI
 from azure.cli.core._config import GLOBAL_CONFIG_DIR, ENV_VAR_PREFIX
 from azure.cli.core.cloud import get_active_cloud
 from azure.cli.core.profiles import get_sdk, ResourceType, supported_api_version, register_resource_type
-
+from azure.cli.testsdk import api_version_constraint
 from ..._validators import (get_permission_validator, get_datetime_type,
                             ipv4_range_type, resource_type_type, services_type,
-                            process_blob_source_uri, get_char_options_validator)
-from azure.cli.testsdk import api_version_constraint
-from ..._validators import (get_source_file_or_blob_service_client, validate_encryption_source,
+                            process_blob_source_uri, get_char_options_validator,
+                            get_source_file_or_blob_service_client, validate_encryption_source,
                             validate_encryption_services)
 from ...profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
 

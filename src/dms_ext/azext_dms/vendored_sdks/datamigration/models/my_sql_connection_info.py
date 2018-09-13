@@ -13,7 +13,7 @@ from .connection_info import ConnectionInfo
 
 
 class MySqlConnectionInfo(ConnectionInfo):
-    """Information for connecting to MySQL source.
+    """Information for connecting to MySQL server.
 
     :param user_name: User name
     :type user_name: str

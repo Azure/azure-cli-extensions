@@ -12,9 +12,9 @@
 from .project_task_properties import ProjectTaskProperties
 
 
-class GetProjectDetailsMySqlSqlTaskProperties(ProjectTaskProperties):
-    """Properties for task that reads information from project artifacts for MySQL
-    as source.
+class MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties(ProjectTaskProperties):
+    """Properties for the task that migrates PostgreSQL databases to Azure
+    Database for PostgreSQL for online migrations.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -32,10 +32,10 @@ class GetProjectDetailsMySqlSqlTaskProperties(ProjectTaskProperties):
     :type task_type: str
     :param input: Task input
     :type input:
-     ~azure.mgmt.datamigration.models.GetProjectDetailsNonSqlTaskInput
+     ~azure.mgmt.datamigration.models.MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput
     :ivar output: Task output. This is ignored if submitted.
     :vartype output:
-     list[~azure.mgmt.datamigration.models.GetProjectDetailsMySqlSqlTaskOutput]
+     list[~azure.mgmt.datamigration.models.MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput]
     """
 
     _validation = {
@@ -51,12 +51,12 @@ class GetProjectDetailsMySqlSqlTaskProperties(ProjectTaskProperties):
         'state': {'key': 'state', 'type': 'str'},
         'commands': {'key': 'commands', 'type': '[CommandProperties]'},
         'task_type': {'key': 'taskType', 'type': 'str'},
-        'input': {'key': 'input', 'type': 'GetProjectDetailsNonSqlTaskInput'},
-        'output': {'key': 'output', 'type': '[GetProjectDetailsMySqlSqlTaskOutput]'},
+        'input': {'key': 'input', 'type': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput'},
+        'output': {'key': 'output', 'type': '[MigratePostgreSqlAzureDbForPostgreSqlSyncTaskOutput]'},
     }
 
     def __init__(self, input=None):
-        super(GetProjectDetailsMySqlSqlTaskProperties, self).__init__()
+        super(MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties, self).__init__()
         self.input = input
         self.output = None
-        self.task_type = 'GetProjectDetails.MySql.Sql'
+        self.task_type = 'Migrate.PostgreSql.AzureDbForPostgreSql.Sync'
