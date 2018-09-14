@@ -27,13 +27,13 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dms-ext',
+    name='dms-preview',
     version=VERSION,
     description='Support for new Database Migration Service scenarios.',
     license='MIT',
     author='Artyom Pavlichenko',
     author_email='arpavlic@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dms_ext',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dms-preview',
     classifiers=CLASSIFIERS,
     packages = find_packages(exclude=["test"]),
     package_data={'azext_dms': ['azext_metadata.json']},
