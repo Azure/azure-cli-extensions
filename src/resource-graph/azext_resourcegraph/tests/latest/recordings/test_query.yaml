@@ -1,0 +1,34 @@
+interactions:
+- request:
+    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
+      "query": "project id, tags, properties | limit 2", "options": {"$top": 2, "$skip": 0}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [graph query]
+      Connection: [keep-alive]
+      Content-Length: ['986']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
+          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
+          AZURECLI/2.0.46]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
+  response:
+    body: {string: '{"totalRecords":2,"count":2,"data":{"columns":[{"name":"id","type":"string"},{"name":"tags","type":"object"},{"name":"properties","type":"object"}],"rows":[["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mms-wcus/providers/Microsoft.Automation/automationAccounts/Automate-1394611-WCUS",{},{"creationTime":"2017-06-01T05:35:53.1000000Z","lastModifiedTime":"2018-08-07T18:40:20.7730000Z","lastModifiedBy":"aaaaa@aaaaaaaaa.com","state":"Ok","RegistrationUrl":"https://aaaa-aaaaaservice-prod-1.azure-automation.net/accounts/b8103983-a1e8-a1e8-a1e8-b8103983b3e9","sku":{"name":"Free","capacity":null,"family":null}}],["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.Network/publicIPAddresses/myPublicIP",{},{"provisioningState":"Succeeded","resourceGuid":"e143e88a-b2df-b2df-b2df-e143e88aef12","publicIPAllocationMethod":"Dynamic","idleTimeoutInMinutes":4,"publicIPAddressVersion":"IPv4","dnsSettings":{"domainNameLabel":"testuser000","fqdn":"testuser000.eastus.cloudapp.azure.com"},"ipConfiguration":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.Network/networkInterfaces/myVMNic/ipConfigurations/ipconfig1"},"ipTags":[],"ipAddress":"99.999.99.99"}]]},"facets":[],"resultTruncated":"false"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['1309']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 11 Sep 2018 18:28:35 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-tenant-writes: ['1198']
+    status: {code: 200, message: OK}
+version: 1
