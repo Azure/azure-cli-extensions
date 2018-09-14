@@ -26,7 +26,6 @@ def process_query(question):
         logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
     else:
         answer_list = json.loads(response.content)
-        num_results_to_show = 1
         if answer_list:
             if answer_list[0]['source'] == 'bing':
                 print("Sorry I am not able to help with that. Try typing the beginning of a"
@@ -50,6 +49,9 @@ def process_query(question):
 
                     if i + 1 < num_results_to_show:
                         print("\n")
+        else:
+            print("Sorry I am not able to help with that. Try typing the beginning of a"
+                  "command e.g. 'az vm' or explain the task you want to accomplish e.g. 'create a vm' \n")
 
 
 def call_aladdin_service(query):
