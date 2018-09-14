@@ -9,7 +9,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 
 from .sdkutil import get_table_data_type
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_STORAGE_PREVIEW
 
 NO_CREDENTIALS_ERROR_MESSAGE = """
 No credentials specified to access storage service. Please provide any of the following:
@@ -76,6 +76,10 @@ def generic_data_service_factory(cli_ctx, service, name=None, key=None, connecti
 
 def storage_client_factory(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
+
+
+def storage_preview_client_factory(cli_ctx, **_):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE_PREVIEW)
 
 
 def file_data_service_factory(cli_ctx, kwargs):
@@ -164,6 +168,10 @@ def multi_service_properties_factory(cli_ctx, kwargs):
 
 def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
+
+
+def cf_sa_preview(cli_ctx, _):
+    return storage_preview_client_factory(cli_ctx).storage_accounts
 
 
 def cf_blob_container_mgmt(cli_ctx, _):
