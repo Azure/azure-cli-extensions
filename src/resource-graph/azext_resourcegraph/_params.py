@@ -25,7 +25,7 @@ _QUERY_EXAMPLES = [
 
 def load_arguments(self, _):
     with self.argument_context('graph query') as c:
-        c.positional('graph_query', required=True, completer=get_generic_completion_list(_QUERY_EXAMPLES), help='Resource Graph query to execute.')
+        c.argument('graph_query', options_list=['--graph-query', '--q', '-q'], required=True, completer=get_generic_completion_list(_QUERY_EXAMPLES), help='Resource Graph query to execute.')
         c.argument('first', options_list=['--first'], required=False, type=int, default=100, help='The maximum number of objects to return. Accepted range: 1-5000.')
         c.argument('skip', options_list=['--skip'], required=False, type=int, default=0, help='Ignores the first N objects and then gets the remaining objects.')
         c.argument('subscriptions', options_list=['--subscriptions', '-s'], nargs='*', required=False, default=None, help='List of subscriptions to run query against. By default all accessible subscriptions are queried.')
