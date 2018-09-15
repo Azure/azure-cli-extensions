@@ -169,9 +169,9 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('reason', 'AlreadyExists')
         ])
 
-        self.cmd('storage account create -n {name2} -g {rg} --kind FileStorage --sku {sku}',
-            checks=[JMESPathCheck('kind', 'FileStorage'),
-                    JMESPathCheck('sku.name', 'Premium_LRS')])
+        self.cmd('storage account create -n {name2} -g {rg} --kind FileStorage --sku {sku}', checks=[
+            JMESPathCheck('kind', 'FileStorage'),
+            JMESPathCheck('sku.name', 'Premium_LRS')])
 
         self.cmd('storage account check-name --name {name2}', checks=[
             JMESPathCheck('nameAvailable', False),
