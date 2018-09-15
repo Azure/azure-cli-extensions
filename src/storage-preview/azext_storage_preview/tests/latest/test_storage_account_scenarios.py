@@ -152,7 +152,6 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('reason', 'AlreadyExists')
         ])
 
-    # @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-03-02')
     @ResourceGroupPreparer(parameter_name_for_location='location', location='northeurope')
     def test_create_storage_account_premium_sku(self, resource_group, location):
         self.kwargs.update({
