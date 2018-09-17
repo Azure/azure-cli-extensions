@@ -6,7 +6,7 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
                                StorageAccountPreparer, api_version_constraint)
 from azure.cli.core.profiles import ResourceType
 from .storage_test_util import StorageScenarioMixin
-from ...profiles import CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
@@ -148,6 +148,32 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
                          JMESPathCheck('isHnsEnabled', True)])
 
         self.cmd('storage account check-name --name {name}', checks=[
+            JMESPathCheck('nameAvailable', False),
+            JMESPathCheck('reason', 'AlreadyExists')
+        ])
+
+    @ResourceGroupPreparer(parameter_name_for_location='location', location='northeurope')
+    def test_create_storage_account_premium_sku(self, resource_group, location):
+        self.kwargs.update({
+            'name1': self.create_random_name(prefix='cli', length=24),
+            'name2': self.create_random_name(prefix='cli', length=24),
+            'sku': 'Premium_LRS'
+        })
+
+        self.cmd('storage account create -n {name1} -g {rg} --kind BlockBlobStorage --sku {sku}',
+                 checks=[JMESPathCheck('kind', 'BlockBlobStorage'),
+                         JMESPathCheck('sku.name', 'Premium_LRS')])
+
+        self.cmd('storage account check-name --name {name1}', checks=[
+            JMESPathCheck('nameAvailable', False),
+            JMESPathCheck('reason', 'AlreadyExists')
+        ])
+
+        self.cmd('storage account create -n {name2} -g {rg} --kind FileStorage --sku {sku}', checks=[
+            JMESPathCheck('kind', 'FileStorage'),
+            JMESPathCheck('sku.name', 'Premium_LRS')])
+
+        self.cmd('storage account check-name --name {name2}', checks=[
             JMESPathCheck('nameAvailable', False),
             JMESPathCheck('reason', 'AlreadyExists')
         ])
