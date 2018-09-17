@@ -8,7 +8,7 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_STORAGE_PREVIEW
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -17,7 +17,7 @@ class StorageCommandsLoader(AzCommandsLoader):
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-07-01')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE_PREVIEW, '2018-03-01-preview')
+        register_resource_type('latest', CUSTOM_MGMT_PREVIEW_STORAGE, '2018-03-01-preview')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,

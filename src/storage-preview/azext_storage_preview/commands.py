@@ -13,7 +13,7 @@ from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_container_mgmt, cf_b
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_STORAGE_PREVIEW
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 from ._format import transform_immutability_policy
 
 
@@ -65,11 +65,11 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.'
                         'storage_accounts_operations#StorageAccountsOperations.{}',
         client_factory=cf_sa_preview,
-        resource_type=CUSTOM_MGMT_STORAGE_PREVIEW
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
 
     with self.command_group('storage account management-policy', storage_account_sdk_preview,
-                            resource_type=CUSTOM_MGMT_STORAGE_PREVIEW,
+                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
         g.show_command('show', 'get_management_policies')
         g.custom_command('create', 'create_management_policies')
