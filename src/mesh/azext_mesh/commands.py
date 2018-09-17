@@ -99,14 +99,13 @@ def transform_volume_list(result):
 
 def transform_secret(result):
     """Transform a volume to table output. """
-    return OrderedDict([('Id', result['id']),
-                        ('Version', result['name']),
+    return OrderedDict([('Name', result['name']),
                         ('Kind', result['kind']),
                         ('type', result.get('contentType')),
                         ('tags', result.get('tags')),
-                        # ('ResourceGroup', result.get('resourceGroup')),
+                        ('ResourceGroup', result.get('resourceGroup')),
                         ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioning_state'))
+                        ('ProvisioningState', result.get('provisioningState'))
                         ])
 
 
@@ -123,7 +122,7 @@ def transform_secretvalue(result):
 
 def transform_secretvalue_list(result):
     """Transform a secret list to table output. """
-    return [transform_secret(secret) for secret in result]
+    return [transform_secretvalue(secret) for secret in result]
 
 
 def load_command_table(self, _):
@@ -213,5 +212,5 @@ def load_command_table(self, _):
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
-        g.custom_command('show', 'secret_show')
+        g.custom_command('show', 'secret_show', )
         g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)

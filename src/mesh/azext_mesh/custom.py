@@ -11,7 +11,6 @@ import json
 import ssl
 import sys
 import os
-from pprint import pprint
 from time import sleep
 
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
@@ -362,8 +361,10 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
         logger.warning("deployment template validation failed:")
         logger.warning(validation.error)
     else:
+        kwargs = {'long_running_operation_timeout': 5}
+
         operation_status_poller = sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name,
-                                              deployment_name, properties)
+                                              deployment_name, properties, **kwargs)
         if no_wait:
             return operation_status_poller
 
