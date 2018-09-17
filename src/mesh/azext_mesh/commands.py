@@ -15,8 +15,7 @@ from azure.cli.command_modules.resource._validators import process_deployment_cr
 from ._client_factory import (cf_mesh_deployments,
                               cf_mesh_application, cf_mesh_service,
                               cf_mesh_replica, cf_mesh_code_package, cf_mesh_network,
-                              cf_mesh_volume, cf_mesh_secret, cf_mesh_versioned_secret_operations,
-                              cf_mesh_secret_value_operations)
+                              cf_mesh_volume, cf_mesh_secret, cf_mesh_secret_value)
 from ._exception_handler import resource_exception_handler
 
 
@@ -209,9 +208,10 @@ def load_command_table(self, _):
     with self.command_group('mesh secret', cmd_util) as g:
         g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
 
-    with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value_operations) as g:
-        g.command('show', 'get')
+    with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
+        g.command('show', 'get', )
         g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('mesh secretvalue', mesh_secret_util, client_factory=cf_mesh_versioned_secret_operations) as g:
-        g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)
+    with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
+        g.custom_command('show', 'secret_show')
+        g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)

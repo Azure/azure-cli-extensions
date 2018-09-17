@@ -11,6 +11,7 @@ import json
 import ssl
 import sys
 import os
+from pprint import pprint
 from time import sleep
 
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
@@ -249,10 +250,10 @@ def _display_successful_application(cfn, resource_group_name, resource):
 
     if network_resource_information and network_resource_information.ingress_config:
         public_ip_address = network_resource_information.ingress_config.public_ip_address
-        logger.warning("application {application} has been deployed successfully on network {network} with public ip address {ip}"
+        logger.warning("application {application} is deployed on network {network} with public ip address {ip}"
                        .format(application=application_name, network=network_name, ip=public_ip_address))
     else:
-        logger.warning("application {application} has been deployed successfully".format(application=application_name))
+        logger.warning("application {application} is deployed".format(application=application_name))
 
 
 def _display_application_status(mesh_network_client, resource, resource_group_name, mesh_application_client):
@@ -442,6 +443,10 @@ def list_secrets(client, resource_group_name=None):
 
 def secret_show(client, resource_group_name, secret_name, secret_value_resource_name, download=False):
     secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
-    print(secret_data)
     del secret_data.value
+    return secret_data
+
+
+def list_secret_values(client, resource_group_name, secret_name):
+    secret_data = client.list(resource_group_name, secret_name)
     return secret_data
