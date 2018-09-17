@@ -40,8 +40,8 @@ class StartMigrationScenarioServerRoleResult(Model):
         'exceptions_and_warnings': {'key': 'exceptionsAndWarnings', 'type': '[ReportableException]'},
     }
 
-    def __init__(self, **kwargs):
-        super(StartMigrationScenarioServerRoleResult, self).__init__(**kwargs)
+    def __init__(self):
+        super(StartMigrationScenarioServerRoleResult, self).__init__()
         self.name = None
         self.state = None
         self.exceptions_and_warnings = None

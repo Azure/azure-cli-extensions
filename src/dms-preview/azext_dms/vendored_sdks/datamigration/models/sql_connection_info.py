@@ -15,15 +15,13 @@ from .connection_info import ConnectionInfo
 class SqlConnectionInfo(ConnectionInfo):
     """Information for connecting to SQL database server.
 
-    All required parameters must be populated in order to send to Azure.
-
     :param user_name: User name
     :type user_name: str
     :param password: Password credential.
     :type password: str
-    :param type: Required. Constant filled by server.
+    :param type: Constant filled by server.
     :type type: str
-    :param data_source: Required. Data source in the format
+    :param data_source: Data source in the format
      Protocol:MachineName\\SQLServerInstanceName,PortNumber
     :type data_source: str
     :param authentication: Authentication type to use for connection. Possible
@@ -61,12 +59,12 @@ class SqlConnectionInfo(ConnectionInfo):
         'platform': {'key': 'platform', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(SqlConnectionInfo, self).__init__(**kwargs)
-        self.data_source = kwargs.get('data_source', None)
-        self.authentication = kwargs.get('authentication', None)
-        self.encrypt_connection = kwargs.get('encrypt_connection', True)
-        self.additional_settings = kwargs.get('additional_settings', None)
-        self.trust_server_certificate = kwargs.get('trust_server_certificate', False)
-        self.platform = kwargs.get('platform', None)
+    def __init__(self, data_source, user_name=None, password=None, authentication=None, encrypt_connection=True, additional_settings=None, trust_server_certificate=False, platform=None):
+        super(SqlConnectionInfo, self).__init__(user_name=user_name, password=password)
+        self.data_source = data_source
+        self.authentication = authentication
+        self.encrypt_connection = encrypt_connection
+        self.additional_settings = additional_settings
+        self.trust_server_certificate = trust_server_certificate
+        self.platform = platform
         self.type = 'SqlConnectionInfo'

@@ -16,14 +16,12 @@ class ConnectToTargetAzureDbForMySqlTaskInput(Model):
     """Input for the task that validates connection to Azure Database for MySQL
     and target server requirements.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Connection information for source
-     MySQL server
+    :param source_connection_info: Connection information for source MySQL
+     server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.MySqlConnectionInfo
-    :param target_connection_info: Required. Connection information for target
-     Azure Database for MySQL server
+    :param target_connection_info: Connection information for target Azure
+     Database for MySQL server
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.MySqlConnectionInfo
     """
@@ -38,7 +36,7 @@ class ConnectToTargetAzureDbForMySqlTaskInput(Model):
         'target_connection_info': {'key': 'targetConnectionInfo', 'type': 'MySqlConnectionInfo'},
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectToTargetAzureDbForMySqlTaskInput, self).__init__(**kwargs)
-        self.source_connection_info = kwargs.get('source_connection_info', None)
-        self.target_connection_info = kwargs.get('target_connection_info', None)
+    def __init__(self, source_connection_info, target_connection_info):
+        super(ConnectToTargetAzureDbForMySqlTaskInput, self).__init__()
+        self.source_connection_info = source_connection_info
+        self.target_connection_info = target_connection_info

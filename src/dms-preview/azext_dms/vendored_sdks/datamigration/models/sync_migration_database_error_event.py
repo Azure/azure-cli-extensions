@@ -38,8 +38,8 @@ class SyncMigrationDatabaseErrorEvent(Model):
         'event_text': {'key': 'eventText', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(SyncMigrationDatabaseErrorEvent, self).__init__(**kwargs)
+    def __init__(self):
+        super(SyncMigrationDatabaseErrorEvent, self).__init__()
         self.timestamp_string = None
         self.event_type_string = None
         self.event_text = None

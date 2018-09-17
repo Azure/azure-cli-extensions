@@ -15,9 +15,7 @@ from msrest.serialization import Model
 class BlobShare(Model):
     """Blob container storage information.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param sas_uri: Required. SAS URI of Azure Storage Account Container.
+    :param sas_uri: SAS URI of Azure Storage Account Container.
     :type sas_uri: str
     """
 
@@ -29,6 +27,6 @@ class BlobShare(Model):
         'sas_uri': {'key': 'sasUri', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(BlobShare, self).__init__(**kwargs)
-        self.sas_uri = kwargs.get('sas_uri', None)
+    def __init__(self, sas_uri):
+        super(BlobShare, self).__init__()
+        self.sas_uri = sas_uri

@@ -15,17 +15,14 @@ from msrest.serialization import Model
 class ValidateSyncMigrationInputSqlServerTaskInput(Model):
     """Input for task that validates migration input for SQL sync migrations.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Information for connecting to
-     source SQL server
+    :param source_connection_info: Information for connecting to source SQL
+     server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Required. Information for connecting to
-     target
+    :param target_connection_info: Information for connecting to target
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param selected_databases: Required. Databases to migrate
+    :param selected_databases: Databases to migrate
     :type selected_databases:
      list[~azure.mgmt.datamigration.models.MigrateSqlServerSqlDbSyncDatabaseInput]
     """
@@ -42,8 +39,8 @@ class ValidateSyncMigrationInputSqlServerTaskInput(Model):
         'selected_databases': {'key': 'selectedDatabases', 'type': '[MigrateSqlServerSqlDbSyncDatabaseInput]'},
     }
 
-    def __init__(self, **kwargs):
-        super(ValidateSyncMigrationInputSqlServerTaskInput, self).__init__(**kwargs)
-        self.source_connection_info = kwargs.get('source_connection_info', None)
-        self.target_connection_info = kwargs.get('target_connection_info', None)
-        self.selected_databases = kwargs.get('selected_databases', None)
+    def __init__(self, source_connection_info, target_connection_info, selected_databases):
+        super(ValidateSyncMigrationInputSqlServerTaskInput, self).__init__()
+        self.source_connection_info = source_connection_info
+        self.target_connection_info = target_connection_info
+        self.selected_databases = selected_databases

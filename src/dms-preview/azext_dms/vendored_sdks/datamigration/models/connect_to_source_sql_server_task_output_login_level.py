@@ -19,11 +19,9 @@ class ConnectToSourceSqlServerTaskOutputLoginLevel(ConnectToSourceSqlServerTaskO
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Required. Constant filled by server.
+    :param result_type: Constant filled by server.
     :type result_type: str
     :ivar name: Login name.
     :vartype name: str
@@ -61,8 +59,8 @@ class ConnectToSourceSqlServerTaskOutputLoginLevel(ConnectToSourceSqlServerTaskO
         'migration_eligibility': {'key': 'migrationEligibility', 'type': 'MigrationEligibilityInfo'},
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectToSourceSqlServerTaskOutputLoginLevel, self).__init__(**kwargs)
+    def __init__(self):
+        super(ConnectToSourceSqlServerTaskOutputLoginLevel, self).__init__()
         self.name = None
         self.login_type = None
         self.default_database = None

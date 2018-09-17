@@ -33,9 +33,9 @@ class MigrateSqlServerSqlServerDatabaseInput(Model):
         'database_files': {'key': 'databaseFiles', 'type': '[DatabaseFileInput]'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSqlServerSqlServerDatabaseInput, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.restore_database_name = kwargs.get('restore_database_name', None)
-        self.backup_and_restore_folder = kwargs.get('backup_and_restore_folder', None)
-        self.database_files = kwargs.get('database_files', None)
+    def __init__(self, name=None, restore_database_name=None, backup_and_restore_folder=None, database_files=None):
+        super(MigrateSqlServerSqlServerDatabaseInput, self).__init__()
+        self.name = name
+        self.restore_database_name = restore_database_name
+        self.backup_and_restore_folder = backup_and_restore_folder
+        self.database_files = database_files

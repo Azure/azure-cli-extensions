@@ -18,11 +18,9 @@ class MigrateSqlServerSqlDbSyncTaskOutputDatabaseError(MigrateSqlServerSqlDbSync
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Required. Constant filled by server.
+    :param result_type: Constant filled by server.
     :type result_type: str
     :param error_message: Error message
     :type error_message: str
@@ -43,8 +41,8 @@ class MigrateSqlServerSqlDbSyncTaskOutputDatabaseError(MigrateSqlServerSqlDbSync
         'events': {'key': 'events', 'type': '[SyncMigrationDatabaseErrorEvent]'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSqlServerSqlDbSyncTaskOutputDatabaseError, self).__init__(**kwargs)
-        self.error_message = kwargs.get('error_message', None)
-        self.events = kwargs.get('events', None)
+    def __init__(self, error_message=None, events=None):
+        super(MigrateSqlServerSqlDbSyncTaskOutputDatabaseError, self).__init__()
+        self.error_message = error_message
+        self.events = events
         self.result_type = 'DatabaseLevelErrorOutput'

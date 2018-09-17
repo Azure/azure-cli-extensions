@@ -65,8 +65,8 @@ class DataItemMigrationSummaryResult(Model):
         'result_prefix': {'key': 'resultPrefix', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(DataItemMigrationSummaryResult, self).__init__(**kwargs)
+    def __init__(self):
+        super(DataItemMigrationSummaryResult, self).__init__()
         self.name = None
         self.started_on = None
         self.ended_on = None

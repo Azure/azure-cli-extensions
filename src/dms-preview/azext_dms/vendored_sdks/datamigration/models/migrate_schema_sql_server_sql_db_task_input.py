@@ -16,17 +16,13 @@ class MigrateSchemaSqlServerSqlDbTaskInput(SqlMigrationTaskInput):
     """Input for task that migrates Schema for SQL Server databases to Azure SQL
     databases.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Information for connecting to
-     source
+    :param source_connection_info: Information for connecting to source
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Required. Information for connecting to
-     target
+    :param target_connection_info: Information for connecting to target
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param selected_databases: Required. Databases to migrate
+    :param selected_databases: Databases to migrate
     :type selected_databases:
      list[~azure.mgmt.datamigration.models.MigrateSchemaSqlServerSqlDbDatabaseInput]
     """
@@ -43,6 +39,6 @@ class MigrateSchemaSqlServerSqlDbTaskInput(SqlMigrationTaskInput):
         'selected_databases': {'key': 'selectedDatabases', 'type': '[MigrateSchemaSqlServerSqlDbDatabaseInput]'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSchemaSqlServerSqlDbTaskInput, self).__init__(**kwargs)
-        self.selected_databases = kwargs.get('selected_databases', None)
+    def __init__(self, source_connection_info, target_connection_info, selected_databases):
+        super(MigrateSchemaSqlServerSqlDbTaskInput, self).__init__(source_connection_info=source_connection_info, target_connection_info=target_connection_info)
+        self.selected_databases = selected_databases

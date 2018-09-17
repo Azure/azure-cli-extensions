@@ -19,13 +19,11 @@ class ConnectionInfo(Model):
     sub-classes are: PostgreSqlConnectionInfo, MySqlConnectionInfo,
     SqlConnectionInfo
 
-    All required parameters must be populated in order to send to Azure.
-
     :param user_name: User name
     :type user_name: str
     :param password: Password credential.
     :type password: str
-    :param type: Required. Constant filled by server.
+    :param type: Constant filled by server.
     :type type: str
     """
 
@@ -43,8 +41,8 @@ class ConnectionInfo(Model):
         'type': {'PostgreSqlConnectionInfo': 'PostgreSqlConnectionInfo', 'MySqlConnectionInfo': 'MySqlConnectionInfo', 'SqlConnectionInfo': 'SqlConnectionInfo'}
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectionInfo, self).__init__(**kwargs)
-        self.user_name = kwargs.get('user_name', None)
-        self.password = kwargs.get('password', None)
+    def __init__(self, user_name=None, password=None):
+        super(ConnectionInfo, self).__init__()
+        self.user_name = user_name
+        self.password = password
         self.type = None

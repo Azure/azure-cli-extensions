@@ -44,8 +44,8 @@ class ResourceSkuCapacity(Model):
         'scale_type': {'key': 'scaleType', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(ResourceSkuCapacity, self).__init__(**kwargs)
+    def __init__(self):
+        super(ResourceSkuCapacity, self).__init__()
         self.minimum = None
         self.maximum = None
         self.default = None

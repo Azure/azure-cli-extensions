@@ -50,8 +50,8 @@ class ServerProperties(Model):
         'server_database_count': {'key': 'serverDatabaseCount', 'type': 'int'},
     }
 
-    def __init__(self, **kwargs):
-        super(ServerProperties, self).__init__(**kwargs)
+    def __init__(self):
+        super(ServerProperties, self).__init__()
         self.server_platform = None
         self.server_name = None
         self.server_version = None

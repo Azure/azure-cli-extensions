@@ -23,6 +23,6 @@ class NonSqlDataMigrationTable(Model):
         'source_name': {'key': 'sourceName', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(NonSqlDataMigrationTable, self).__init__(**kwargs)
-        self.source_name = kwargs.get('source_name', None)
+    def __init__(self, source_name=None):
+        super(NonSqlDataMigrationTable, self).__init__()
+        self.source_name = source_name

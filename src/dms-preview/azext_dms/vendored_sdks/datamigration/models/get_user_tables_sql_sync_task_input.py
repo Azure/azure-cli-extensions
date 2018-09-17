@@ -16,20 +16,17 @@ class GetUserTablesSqlSyncTaskInput(Model):
     """Input for the task that collects user tables for the given list of
     databases.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Connection information for SQL
-     Server
+    :param source_connection_info: Connection information for SQL Server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Required. Connection information for SQL DB
+    :param target_connection_info: Connection information for SQL DB
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param selected_source_databases: Required. List of source database names
-     to collect tables for
+    :param selected_source_databases: List of source database names to collect
+     tables for
     :type selected_source_databases: list[str]
-    :param selected_target_databases: Required. List of target database names
-     to collect tables for
+    :param selected_target_databases: List of target database names to collect
+     tables for
     :type selected_target_databases: list[str]
     """
 
@@ -47,9 +44,9 @@ class GetUserTablesSqlSyncTaskInput(Model):
         'selected_target_databases': {'key': 'selectedTargetDatabases', 'type': '[str]'},
     }
 
-    def __init__(self, **kwargs):
-        super(GetUserTablesSqlSyncTaskInput, self).__init__(**kwargs)
-        self.source_connection_info = kwargs.get('source_connection_info', None)
-        self.target_connection_info = kwargs.get('target_connection_info', None)
-        self.selected_source_databases = kwargs.get('selected_source_databases', None)
-        self.selected_target_databases = kwargs.get('selected_target_databases', None)
+    def __init__(self, source_connection_info, target_connection_info, selected_source_databases, selected_target_databases):
+        super(GetUserTablesSqlSyncTaskInput, self).__init__()
+        self.source_connection_info = source_connection_info
+        self.target_connection_info = target_connection_info
+        self.selected_source_databases = selected_source_databases
+        self.selected_target_databases = selected_target_databases

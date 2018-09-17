@@ -18,11 +18,9 @@ class MigrateSchemaSqlServerSqlDbTaskOutputDatabaseLevel(MigrateSchemaSqlServerS
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Required. Constant filled by server.
+    :param result_type: Constant filled by server.
     :type result_type: str
     :ivar database_name: The name of the database
     :vartype database_name: str
@@ -87,8 +85,8 @@ class MigrateSchemaSqlServerSqlDbTaskOutputDatabaseLevel(MigrateSchemaSqlServerS
         'file_id': {'key': 'fileId', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSchemaSqlServerSqlDbTaskOutputDatabaseLevel, self).__init__(**kwargs)
+    def __init__(self):
+        super(MigrateSchemaSqlServerSqlDbTaskOutputDatabaseLevel, self).__init__()
         self.database_name = None
         self.state = None
         self.stage = None

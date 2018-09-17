@@ -18,8 +18,6 @@ class Project(TrackedResource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Resource ID.
     :vartype id: str
     :ivar name: Resource name.
@@ -28,15 +26,15 @@ class Project(TrackedResource):
     :vartype type: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
-    :param location: Required. Resource location.
+    :param location: Resource location.
     :type location: str
-    :param source_platform: Required. Source platform for the project.
-     Possible values include: 'SQL', 'MySQL', 'PostgreSql', 'Unknown'
+    :param source_platform: Source platform for the project. Possible values
+     include: 'SQL', 'MySQL', 'PostgreSql', 'Unknown'
     :type source_platform: str or
      ~azure.mgmt.datamigration.models.ProjectSourcePlatform
-    :param target_platform: Required. Target platform for the project.
-     Possible values include: 'SQLDB', 'SQLMI', 'AzureDbForMySql',
-     'AzureDbForPostgreSql', 'Unknown'
+    :param target_platform: Target platform for the project. Possible values
+     include: 'SQLDB', 'SQLMI', 'AzureDbForMySql', 'AzureDbForPostgreSql',
+     'Unknown'
     :type target_platform: str or
      ~azure.mgmt.datamigration.models.ProjectTargetPlatform
     :ivar creation_time: UTC Date and time when project was created
@@ -81,12 +79,12 @@ class Project(TrackedResource):
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(Project, self).__init__(**kwargs)
-        self.source_platform = kwargs.get('source_platform', None)
-        self.target_platform = kwargs.get('target_platform', None)
+    def __init__(self, location, source_platform, target_platform, tags=None, source_connection_info=None, target_connection_info=None, databases_info=None):
+        super(Project, self).__init__(tags=tags, location=location)
+        self.source_platform = source_platform
+        self.target_platform = target_platform
         self.creation_time = None
-        self.source_connection_info = kwargs.get('source_connection_info', None)
-        self.target_connection_info = kwargs.get('target_connection_info', None)
-        self.databases_info = kwargs.get('databases_info', None)
+        self.source_connection_info = source_connection_info
+        self.target_connection_info = target_connection_info
+        self.databases_info = databases_info
         self.provisioning_state = None

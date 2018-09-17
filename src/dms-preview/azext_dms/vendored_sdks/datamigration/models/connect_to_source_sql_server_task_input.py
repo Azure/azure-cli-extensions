@@ -16,10 +16,8 @@ class ConnectToSourceSqlServerTaskInput(Model):
     """Input for the task that validates connection to SQL Server and also
     validates source server requirements.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Connection information for Source
-     SQL Server
+    :param source_connection_info: Connection information for Source SQL
+     Server
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
     :param check_permissions_group: Permission group for validations. Possible
@@ -50,10 +48,10 @@ class ConnectToSourceSqlServerTaskInput(Model):
         'collect_tde_certificate_info': {'key': 'collectTdeCertificateInfo', 'type': 'bool'},
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectToSourceSqlServerTaskInput, self).__init__(**kwargs)
-        self.source_connection_info = kwargs.get('source_connection_info', None)
-        self.check_permissions_group = kwargs.get('check_permissions_group', None)
-        self.collect_logins = kwargs.get('collect_logins', False)
-        self.collect_agent_jobs = kwargs.get('collect_agent_jobs', False)
-        self.collect_tde_certificate_info = kwargs.get('collect_tde_certificate_info', False)
+    def __init__(self, source_connection_info, check_permissions_group=None, collect_logins=False, collect_agent_jobs=False, collect_tde_certificate_info=False):
+        super(ConnectToSourceSqlServerTaskInput, self).__init__()
+        self.source_connection_info = source_connection_info
+        self.check_permissions_group = check_permissions_group
+        self.collect_logins = collect_logins
+        self.collect_agent_jobs = collect_agent_jobs
+        self.collect_tde_certificate_info = collect_tde_certificate_info

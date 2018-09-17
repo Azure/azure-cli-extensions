@@ -18,8 +18,6 @@ class TrackedResource(Resource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Resource ID.
     :vartype id: str
     :ivar name: Resource name.
@@ -28,7 +26,7 @@ class TrackedResource(Resource):
     :vartype type: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
-    :param location: Required. Resource location.
+    :param location: Resource location.
     :type location: str
     """
 
@@ -47,7 +45,7 @@ class TrackedResource(Resource):
         'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(TrackedResource, self).__init__(**kwargs)
-        self.tags = kwargs.get('tags', None)
-        self.location = kwargs.get('location', None)
+    def __init__(self, location, tags=None):
+        super(TrackedResource, self).__init__()
+        self.tags = tags
+        self.location = location
