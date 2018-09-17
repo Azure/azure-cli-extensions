@@ -10,13 +10,15 @@ from knack.help_files import helps
 helps['graph'] = """
     type: group
     short-summary: Query the resources managed by Azure Resource Manager.
+    long-summary: >
+        Run 'az graph query --help' for detailed help.
 """
 
 helps['graph query'] = """
     type: command
     short-summary: Query the resources managed by Azure Resource Manager.
     long-summary: >
-        Learn more about the query syntax here: https://aka.ms/AzureResourceGraph-QueryLanguage
+        See https://aka.ms/AzureResourceGraph-QueryLanguage to learn more about query language and browse examples
     parameters:
         - name: --graph-query --q -q
           type: string
