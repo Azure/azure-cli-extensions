@@ -16,10 +16,7 @@ class ConnectToTargetSqlDbTaskInput(Model):
     """Input for the task that validates connection to SQL DB and target server
     requirements.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param target_connection_info: Required. Connection information for target
-     SQL DB
+    :param target_connection_info: Connection information for target SQL DB
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
     """
@@ -32,6 +29,6 @@ class ConnectToTargetSqlDbTaskInput(Model):
         'target_connection_info': {'key': 'targetConnectionInfo', 'type': 'SqlConnectionInfo'},
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectToTargetSqlDbTaskInput, self).__init__(**kwargs)
-        self.target_connection_info = kwargs.get('target_connection_info', None)
+    def __init__(self, target_connection_info):
+        super(ConnectToTargetSqlDbTaskInput, self).__init__()
+        self.target_connection_info = target_connection_info

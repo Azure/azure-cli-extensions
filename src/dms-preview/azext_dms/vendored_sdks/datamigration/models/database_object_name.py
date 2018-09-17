@@ -43,9 +43,9 @@ class DatabaseObjectName(Model):
         'object_type': {'key': 'objectType', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(DatabaseObjectName, self).__init__(**kwargs)
+    def __init__(self, object_type=None):
+        super(DatabaseObjectName, self).__init__()
         self.database_name = None
         self.object_name = None
         self.schema_name = None
-        self.object_type = kwargs.get('object_type', None)
+        self.object_type = object_type

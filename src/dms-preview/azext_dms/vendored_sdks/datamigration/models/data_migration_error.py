@@ -33,7 +33,7 @@ class DataMigrationError(Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(DataMigrationError, self).__init__(**kwargs)
+    def __init__(self, type=None):
+        super(DataMigrationError, self).__init__()
         self.message = None
-        self.type = kwargs.get('type', None)
+        self.type = type

@@ -18,11 +18,9 @@ class MigrateSchemaSqlServerSqlDbTaskOutputError(MigrateSchemaSqlServerSqlDbTask
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Required. Constant filled by server.
+    :param result_type: Constant filled by server.
     :type result_type: str
     :ivar command_text: Schema command which failed
     :vartype command_text: str
@@ -44,8 +42,8 @@ class MigrateSchemaSqlServerSqlDbTaskOutputError(MigrateSchemaSqlServerSqlDbTask
         'error_text': {'key': 'errorText', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSchemaSqlServerSqlDbTaskOutputError, self).__init__(**kwargs)
+    def __init__(self):
+        super(MigrateSchemaSqlServerSqlDbTaskOutputError, self).__init__()
         self.command_text = None
         self.error_text = None
         self.result_type = 'SchemaErrorOutput'

@@ -16,17 +16,13 @@ class MigrateSqlServerSqlDbTaskInput(SqlMigrationTaskInput):
     """Input for the task that migrates on-prem SQL Server databases to Azure SQL
     Database.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Information for connecting to
-     source
+    :param source_connection_info: Information for connecting to source
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param target_connection_info: Required. Information for connecting to
-     target
+    :param target_connection_info: Information for connecting to target
     :type target_connection_info:
      ~azure.mgmt.datamigration.models.SqlConnectionInfo
-    :param selected_databases: Required. Databases to migrate
+    :param selected_databases: Databases to migrate
     :type selected_databases:
      list[~azure.mgmt.datamigration.models.MigrateSqlServerSqlDbDatabaseInput]
     :param validation_options: Options for enabling various post migration
@@ -57,7 +53,7 @@ class MigrateSqlServerSqlDbTaskInput(SqlMigrationTaskInput):
         'validation_options': {'key': 'validationOptions', 'type': 'MigrationValidationOptions'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSqlServerSqlDbTaskInput, self).__init__(**kwargs)
-        self.selected_databases = kwargs.get('selected_databases', None)
-        self.validation_options = kwargs.get('validation_options', None)
+    def __init__(self, source_connection_info, target_connection_info, selected_databases, validation_options=None):
+        super(MigrateSqlServerSqlDbTaskInput, self).__init__(source_connection_info=source_connection_info, target_connection_info=target_connection_info)
+        self.selected_databases = selected_databases
+        self.validation_options = validation_options

@@ -79,22 +79,22 @@ class Database(Model):
         'server_id': {'key': 'serverId', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(Database, self).__init__(**kwargs)
-        self.id = kwargs.get('id', None)
-        self.name = kwargs.get('name', None)
-        self.compatibility_level = kwargs.get('compatibility_level', None)
-        self.collation = kwargs.get('collation', None)
-        self.server_name = kwargs.get('server_name', None)
-        self.fqdn = kwargs.get('fqdn', None)
-        self.install_id = kwargs.get('install_id', None)
-        self.server_version = kwargs.get('server_version', None)
-        self.server_edition = kwargs.get('server_edition', None)
-        self.server_level = kwargs.get('server_level', None)
-        self.server_default_data_path = kwargs.get('server_default_data_path', None)
-        self.server_default_log_path = kwargs.get('server_default_log_path', None)
-        self.server_default_backup_path = kwargs.get('server_default_backup_path', None)
-        self.server_core_count = kwargs.get('server_core_count', None)
-        self.server_visible_online_core_count = kwargs.get('server_visible_online_core_count', None)
-        self.database_state = kwargs.get('database_state', None)
-        self.server_id = kwargs.get('server_id', None)
+    def __init__(self, id=None, name=None, compatibility_level=None, collation=None, server_name=None, fqdn=None, install_id=None, server_version=None, server_edition=None, server_level=None, server_default_data_path=None, server_default_log_path=None, server_default_backup_path=None, server_core_count=None, server_visible_online_core_count=None, database_state=None, server_id=None):
+        super(Database, self).__init__()
+        self.id = id
+        self.name = name
+        self.compatibility_level = compatibility_level
+        self.collation = collation
+        self.server_name = server_name
+        self.fqdn = fqdn
+        self.install_id = install_id
+        self.server_version = server_version
+        self.server_edition = server_edition
+        self.server_level = server_level
+        self.server_default_data_path = server_default_data_path
+        self.server_default_log_path = server_default_log_path
+        self.server_default_backup_path = server_default_backup_path
+        self.server_core_count = server_core_count
+        self.server_visible_online_core_count = server_visible_online_core_count
+        self.database_state = database_state
+        self.server_id = server_id

@@ -18,11 +18,9 @@ class MigrateSchemaSqlServerSqlDbTaskOutputMigrationLevel(MigrateSchemaSqlServer
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Required. Constant filled by server.
+    :param result_type: Constant filled by server.
     :type result_type: str
     :ivar state: Overall state of the schema migration. Possible values
      include: 'None', 'InProgress', 'Failed', 'Warning', 'Completed',
@@ -66,8 +64,8 @@ class MigrateSchemaSqlServerSqlDbTaskOutputMigrationLevel(MigrateSchemaSqlServer
         'target_server_brand_version': {'key': 'targetServerBrandVersion', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSchemaSqlServerSqlDbTaskOutputMigrationLevel, self).__init__(**kwargs)
+    def __init__(self):
+        super(MigrateSchemaSqlServerSqlDbTaskOutputMigrationLevel, self).__init__()
         self.state = None
         self.started_on = None
         self.ended_on = None

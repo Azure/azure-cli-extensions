@@ -56,8 +56,8 @@ class MigrationValidationDatabaseSummaryResult(Model):
         'status': {'key': 'status', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrationValidationDatabaseSummaryResult, self).__init__(**kwargs)
+    def __init__(self):
+        super(MigrationValidationDatabaseSummaryResult, self).__init__()
         self.id = None
         self.migration_id = None
         self.source_database_name = None

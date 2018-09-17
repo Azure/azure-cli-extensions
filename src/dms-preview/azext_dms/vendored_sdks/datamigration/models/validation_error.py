@@ -27,7 +27,7 @@ class ValidationError(Model):
         'severity': {'key': 'severity', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(ValidationError, self).__init__(**kwargs)
-        self.text = kwargs.get('text', None)
-        self.severity = kwargs.get('severity', None)
+    def __init__(self, text=None, severity=None):
+        super(ValidationError, self).__init__()
+        self.text = text
+        self.severity = severity

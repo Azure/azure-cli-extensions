@@ -27,7 +27,7 @@ class MigrateSchemaSqlServerSqlDbDatabaseInput(Model):
         'schema_setting': {'key': 'schemaSetting', 'type': 'SchemaMigrationSetting'},
     }
 
-    def __init__(self, **kwargs):
-        super(MigrateSchemaSqlServerSqlDbDatabaseInput, self).__init__(**kwargs)
-        self.target_database_name = kwargs.get('target_database_name', None)
-        self.schema_setting = kwargs.get('schema_setting', None)
+    def __init__(self, target_database_name=None, schema_setting=None):
+        super(MigrateSchemaSqlServerSqlDbDatabaseInput, self).__init__()
+        self.target_database_name = target_database_name
+        self.schema_setting = schema_setting

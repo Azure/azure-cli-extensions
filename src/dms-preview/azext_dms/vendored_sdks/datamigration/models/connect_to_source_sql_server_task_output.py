@@ -25,11 +25,9 @@ class ConnectToSourceSqlServerTaskOutput(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
     :ivar id: Result identifier
     :vartype id: str
-    :param result_type: Required. Constant filled by server.
+    :param result_type: Constant filled by server.
     :type result_type: str
     """
 
@@ -47,7 +45,7 @@ class ConnectToSourceSqlServerTaskOutput(Model):
         'result_type': {'AgentJobLevelOutput': 'ConnectToSourceSqlServerTaskOutputAgentJobLevel', 'LoginLevelOutput': 'ConnectToSourceSqlServerTaskOutputLoginLevel', 'DatabaseLevelOutput': 'ConnectToSourceSqlServerTaskOutputDatabaseLevel', 'TaskLevelOutput': 'ConnectToSourceSqlServerTaskOutputTaskLevel'}
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectToSourceSqlServerTaskOutput, self).__init__(**kwargs)
+    def __init__(self):
+        super(ConnectToSourceSqlServerTaskOutput, self).__init__()
         self.id = None
         self.result_type = None

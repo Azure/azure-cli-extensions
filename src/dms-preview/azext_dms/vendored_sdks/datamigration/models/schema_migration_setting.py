@@ -29,7 +29,7 @@ class SchemaMigrationSetting(Model):
         'file_id': {'key': 'fileId', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(SchemaMigrationSetting, self).__init__(**kwargs)
-        self.schema_option = kwargs.get('schema_option', None)
-        self.file_id = kwargs.get('file_id', None)
+    def __init__(self, schema_option=None, file_id=None):
+        super(SchemaMigrationSetting, self).__init__()
+        self.schema_option = schema_option
+        self.file_id = file_id

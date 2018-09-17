@@ -15,10 +15,7 @@ from msrest.serialization import Model
 class ConnectToSourceMySqlTaskInput(Model):
     """Input for the task that validates MySQL database connection.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param source_connection_info: Required. Information for connecting to
-     MySQL source
+    :param source_connection_info: Information for connecting to MySQL source
     :type source_connection_info:
      ~azure.mgmt.datamigration.models.MySqlConnectionInfo
     :param target_platform: Target Platform for the migration. Possible values
@@ -42,8 +39,8 @@ class ConnectToSourceMySqlTaskInput(Model):
         'check_permissions_group': {'key': 'checkPermissionsGroup', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(ConnectToSourceMySqlTaskInput, self).__init__(**kwargs)
-        self.source_connection_info = kwargs.get('source_connection_info', None)
-        self.target_platform = kwargs.get('target_platform', None)
-        self.check_permissions_group = kwargs.get('check_permissions_group', None)
+    def __init__(self, source_connection_info, target_platform=None, check_permissions_group=None):
+        super(ConnectToSourceMySqlTaskInput, self).__init__()
+        self.source_connection_info = source_connection_info
+        self.target_platform = target_platform
+        self.check_permissions_group = check_permissions_group
