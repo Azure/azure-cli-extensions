@@ -9,17 +9,17 @@
 from azure.cli.core.commands.parameters import get_generic_completion_list
 
 _QUERY_EXAMPLES = [
-    ''' summarize count()''',
-    ''' project name, type, location | order by name asc''',
-    ''' where type =~ 'Microsoft.Compute/virtualMachines' | project name, location, type | order by name desc''',
-    ''' where type =~ 'Microsoft.Compute/virtualMachines' | project name, location''',
-    ''' summarize count() by subscriptionId''',
-    ''' summarize count() by subscriptionId, location''',
-    ''' where type =~ 'Microsoft.Compute/virtualMachines' | summarize count() by tostring(properties.storageProfile.osDisk.osType)''',
-    ''' where type =~ 'Microsoft.Compute/virtualMachines'  and properties.storageProfile.osDisk.osType =~ 'Windows' | project name''',
-    ''' where name contains 'sql'| project location, name''',
-    ''' where isnotempty(tags) and tags != '{}' | project tags''',
-    ''' where isnotempty(tags.environment) | project name, Environment=tags.environment | limit 10'''
+    '''summarize count()''',
+    '''project name, type, location | order by name asc''',
+    '''where type =~ 'Microsoft.Compute/virtualMachines' | project name, location, type | order by name desc''',
+    '''where type =~ 'Microsoft.Compute/virtualMachines' | project name, location''',
+    '''summarize count() by subscriptionId''',
+    '''summarize count() by subscriptionId, location''',
+    '''where type =~ 'Microsoft.Compute/virtualMachines' | summarize count() by tostring(properties.storageProfile.osDisk.osType)''',
+    '''where type =~ 'Microsoft.Compute/virtualMachines'  and properties.storageProfile.osDisk.osType =~ 'Windows' | project name''',
+    '''where name contains 'sql'| project location, name''',
+    '''where isnotempty(tags) and tags != '{}' | project tags''',
+    '''where isnotempty(tags.environment) | project name, Environment=tags.environment | limit 10'''
 ]
 
 
