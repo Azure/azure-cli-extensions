@@ -18,6 +18,7 @@ from .operations.skus_operations import SkusOperations
 from .operations.storage_accounts_operations import StorageAccountsOperations
 from .operations.usages_operations import UsagesOperations
 from .operations.blob_containers_operations import BlobContainersOperations
+from .operations.management_policies_operations import ManagementPoliciesOperations
 from . import models
 
 
@@ -69,6 +70,8 @@ class StorageManagementClient(SDKClient):
     :vartype usages: azure.mgmt.storage.v2018_07_01.operations.UsagesOperations
     :ivar blob_containers: BlobContainers operations
     :vartype blob_containers: azure.mgmt.storage.v2018_07_01.operations.BlobContainersOperations
+    :ivar management_policies: ManagementPolicies operations
+    :vartype management_policies: azure.mgmt.storage.v2018_07_01.operations.ManagementPoliciesOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -85,7 +88,6 @@ class StorageManagementClient(SDKClient):
         super(StorageManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-07-01'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -98,4 +100,6 @@ class StorageManagementClient(SDKClient):
         self.usages = UsagesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.blob_containers = BlobContainersOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.management_policies = ManagementPoliciesOperations(
             self._client, self.config, self._serialize, self._deserialize)
