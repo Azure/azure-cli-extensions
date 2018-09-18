@@ -114,6 +114,9 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.argument('https_only', help='Allows https traffic only to storage service.',
                       arg_type=get_three_state_flag())
+        self.argument('file_aad', help='Allows Azure File Active Directory integration.'
+                                       ' Will allow SMB access to azure files using AAD.',
+                      arg_type=get_three_state_flag())
         self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
         self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_STORAGE,
                       min_api='2017-06-01',
