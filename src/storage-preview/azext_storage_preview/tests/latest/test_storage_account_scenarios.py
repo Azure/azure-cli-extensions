@@ -137,7 +137,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
 
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2017-10-01')
     @ResourceGroupPreparer(parameter_name_for_location='location', location='westus2')
-    def test_create_storage_account_v2(self, resource_group, location):
+    def test_create_storage_account_hierarchical_namespace(self, resource_group, location):
         self.kwargs.update({
             'name': self.create_random_name(prefix='cli', length=24),
             'loc': location
@@ -151,6 +151,25 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('nameAvailable', False),
             JMESPathCheck('reason', 'AlreadyExists')
         ])
+
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    def test_create_storage_account_file_aad(self, resource_group, location):
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='cli', length=24),
+            'loc': location
+        })
+
+        self.cmd('storage account create -n {name} -g {rg} -l {loc} --kind StorageV2 --file-aad',
+                 checks=[JMESPathCheck('kind', 'StorageV2'),
+                         JMESPathCheck('enableAzureFilesAadIntegration', True)])
+
+        self.cmd('storage account check-name --name {name}', checks=[
+            JMESPathCheck('nameAvailable', False),
+            JMESPathCheck('reason', 'AlreadyExists')
+        ])
+
+        self.cmd('storage account update -n {name} -g {rg} --file-aad false',
+                 checks=[JMESPathCheck('enableAzureFilesAadIntegration', False)])
 
     @ResourceGroupPreparer(parameter_name_for_location='location', location='northeurope')
     def test_create_storage_account_premium_sku(self, resource_group, location):
