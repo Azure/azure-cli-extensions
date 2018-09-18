@@ -30,7 +30,7 @@ REPO_LOCATION = os.environ.get('REPO_LOCATION')
 SCRIPTS_LOCATION = os.path.join(REPO_LOCATION, 'scripts')
 
 REPO_CLI_DOCS = 'https://{}@github.com/{}'.format(GH_TOKEN, DOC_REPO_SLUG)
-CLONED_CLI_DOCS = os.path.join(os.sep, 'doc-repo')
+CLONED_CLI_DOCS = os.path.join(os.path.sep, 'doc-repo')
 AVAILABLE_EXTENSIONS_DOC = os.path.join(CLONED_CLI_DOCS, 'docs-ref-conceptual', 'azure-cli-extensions-list.md')
 TEMPLATE_FILE = "list-template.md"
 
@@ -53,17 +53,27 @@ def get_extensions():
     return extensions
 
 def update_extensions_list(template_file, output_file):
+    template = None
     with open(template_file, 'r') as doc_template:
-        template = Template(doc_template)
-        with open(output_file, 'w') as output:
-            print(template.render(extensions=get_extensions(), 
-                    date=datetime.date.today().strftime("%m/%d/%Y")),
-                file=output)
+        template = Template(doc_template.read())
+    if template is None:
+        logger.error("Failed to read template %s", template_file)
+        exit(1)
+    with open(output_file, 'w') as output:
+        output.write(template.render(extensions=get_extensions(),
+                        date=datetime.date.today().strftime("%m/%d/%Y")))
+
+def date_only_diff(diff):
+    if not diff:
+        return True
+    stats = diff.split('\t')
+    if stats[0] == 1 and stats[1] == 1:
+        return True
+    return False
 
 def commit_update(doc_repo):
     doc_repo.git.add(doc_repo.working_tree_dir)
-
-    if not doc_repo.git.diff(staged=True):
+    if date_only_diff(doc_repo.git.diff(staged=True, numstat=True)):
         logger.warning('No changes. Exiting')
         return
     github_con = Github(GH_TOKEN)
@@ -71,20 +81,13 @@ def commit_update(doc_repo):
     doc_repo.git.config('user.email', user.email or 'azpycli@microsoft.com')
     doc_repo.git.config('user.name', user.name)
     logger.info('Cloned %s', CLONED_CLI_DOCS)
-    local_branch = doc_repo.create_head('az-ext-list-ci')
+    branch_name = 'az-ext-list-ci-{}'.format(TRAVIS_BUILD_ID)
+    local_branch = doc_repo.create_head(branch_name)
     local_branch.checkout()
     commit_url = 'https://github.com/{}/commit/{}'.format(TRAVIS_REPO_SLUG, TRAVIS_COMMIT)
     commit_msg = 'Update CLI extensions available doc.\n Triggered by {} - ' \
                  'TRAVIS_BUILD_ID={}\n{}'.format(TRAVIS_REPO_SLUG, TRAVIS_BUILD_ID, commit_url)
     doc_repo.index.commit(commit_msg)
-
-    # There's no diff.stat for GitPython, so we have to stat AFTER the commit. It would
-    # be pretty easy to add one, though.
-
-    if doc_repo.head.stats.files[AVAILABLE_EXTENSIONS_DOC]['lines'] == 1:
-        logger.warning('Only date changed. Exiting')
-        return
-
     doc_repo.git.push('origin', local_branch.name, set_upstream=True)
     gh_repo = github_con.get_repo(DOC_REPO_SLUG)
     gh_repo.create_pull(
