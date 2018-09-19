@@ -12,23 +12,17 @@
 from msrest.serialization import Model
 
 
-class Setting(Model):
-    """Describes a setting for the container. The setting file path can be fetched
-    from environment variable "Fabric_SettingPath". The path for Windows
-    container is "C:\\secrets". The path for Linux container is "/var/secrets".
+class VersionedSecretValueProperties(Model):
+    """This type describes properties of a versioned value of a secret.
 
-    :param name: The name of the setting.
-    :type name: str
-    :param value: The value of the setting.
+    :param value: The value of the secret resource.
     :type value: str
     """
 
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
         'value': {'key': 'value', 'type': 'str'},
     }
 
-    def __init__(self, name=None, value=None):
-        super(Setting, self).__init__()
-        self.name = name
+    def __init__(self, value=None):
+        super(VersionedSecretValueProperties, self).__init__()
         self.value = value

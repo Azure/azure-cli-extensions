@@ -15,10 +15,10 @@ from .service_replica_properties import ServiceReplicaProperties
 class ServiceReplicaDescription(ServiceReplicaProperties):
     """Describes a replica of a service resource.
 
-    :param os_type: The Operating system type required by the code in service.
+    :param os_type: The operation system required by the code in service.
      Possible values include: 'Linux', 'Windows'
     :type os_type: str or
-     ~azure.mgmt.servicefabricmesh.models.OperatingSystemTypes
+     ~azure.mgmt.servicefabricmesh.models.OperatingSystemType
     :param code_packages: Describes the set of code packages that forms the
      service. A code package describes the container and the properties for
      running it. All the code packages are started together on the same host

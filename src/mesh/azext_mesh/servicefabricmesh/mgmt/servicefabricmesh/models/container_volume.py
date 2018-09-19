@@ -9,13 +9,13 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .volume_reference import VolumeReference
+from msrest.serialization import Model
 
 
-class ApplicationScopedVolume(VolumeReference):
-    """Describes a volume whose lifetime is scoped to the application's lifetime.
+class ContainerVolume(Model):
+    """Describes how a volume is attached to a container.
 
-    :param name: Name of the volume being referenced.
+    :param name: Name of the volume.
     :type name: str
     :param read_only: The flag indicating whether the volume is read only.
      Default is 'false'.
@@ -23,25 +23,21 @@ class ApplicationScopedVolume(VolumeReference):
     :param destination_path: The path within the container at which the volume
      should be mounted. Only valid path characters are allowed.
     :type destination_path: str
-    :param creation_parameters: Describes parameters for creating
-     application-scoped volumes.
-    :type creation_parameters:
-     ~azure.mgmt.servicefabricmesh.models.ApplicationScopedVolumeCreationParameters
     """
 
     _validation = {
         'name': {'required': True},
         'destination_path': {'required': True},
-        'creation_parameters': {'required': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'read_only': {'key': 'readOnly', 'type': 'bool'},
         'destination_path': {'key': 'destinationPath', 'type': 'str'},
-        'creation_parameters': {'key': 'creationParameters', 'type': 'ApplicationScopedVolumeCreationParameters'},
     }
 
-    def __init__(self, name, destination_path, creation_parameters, read_only=None):
-        super(ApplicationScopedVolume, self).__init__(name=name, read_only=read_only, destination_path=destination_path)
-        self.creation_parameters = creation_parameters
+    def __init__(self, name, destination_path, read_only=None):
+        super(ContainerVolume, self).__init__()
+        self.name = name
+        self.read_only = read_only
+        self.destination_path = destination_path

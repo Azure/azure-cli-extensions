@@ -34,6 +34,12 @@ class VolumeResourceDescription(TrackedResource):
     :vartype provisioning_state: str
     :param description: User readable description of the volume.
     :type description: str
+    :param status: Status of the volume. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the volume.
+    :vartype status_details: str
     :ivar provider: Provider of the volume. Default value: "SFAzureFile" .
     :vartype provider: str
     :param azure_file_parameters: This type describes a volume provided by an
@@ -48,6 +54,7 @@ class VolumeResourceDescription(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
+        'status_details': {'readonly': True},
         'provider': {'required': True, 'constant': True},
     }
 
@@ -59,14 +66,18 @@ class VolumeResourceDescription(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
         'provider': {'key': 'properties.provider', 'type': 'str'},
         'azure_file_parameters': {'key': 'properties.azureFileParameters', 'type': 'VolumeProviderParametersAzureFile'},
     }
 
     provider = "SFAzureFile"
 
-    def __init__(self, location, tags=None, description=None, azure_file_parameters=None):
+    def __init__(self, location, tags=None, description=None, status=None, azure_file_parameters=None):
         super(VolumeResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.description = description
+        self.status = status
+        self.status_details = None
         self.azure_file_parameters = azure_file_parameters

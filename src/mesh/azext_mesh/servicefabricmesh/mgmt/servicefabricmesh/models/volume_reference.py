@@ -13,9 +13,9 @@ from msrest.serialization import Model
 
 
 class VolumeReference(Model):
-    """Describes a reference to a volume.
+    """Describes a reference to a volume resource.
 
-    :param name: Name of the volume.
+    :param name: Name of the volume being referenced.
     :type name: str
     :param read_only: The flag indicating whether the volume is read only.
      Default is 'false'.

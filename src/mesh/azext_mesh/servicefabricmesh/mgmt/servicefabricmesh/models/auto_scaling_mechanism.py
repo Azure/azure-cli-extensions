@@ -16,6 +16,9 @@ class AutoScalingMechanism(Model):
     """Describes the mechanism for performing auto scaling operation. Derived
     classes will describe the actual mechanism.
 
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: AddRemoveReplicaScalingMechanism
+
     :param kind: Constant filled by server.
     :type kind: str
     """
@@ -26,6 +29,10 @@ class AutoScalingMechanism(Model):
 
     _attribute_map = {
         'kind': {'key': 'kind', 'type': 'str'},
+    }
+
+    _subtype_map = {
+        'kind': {'AddRemoveReplica': 'AddRemoveReplicaScalingMechanism'}
     }
 
     def __init__(self):

@@ -208,7 +208,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
 
     with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value) as g:
-        g.command('show', 'get', )
+        g.command('show', 'get')
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:

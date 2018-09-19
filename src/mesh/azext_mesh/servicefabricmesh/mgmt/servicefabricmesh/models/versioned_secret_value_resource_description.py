@@ -9,12 +9,13 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .tracked_resource import TrackedResource
+from .resource import Resource
 
 
-class SecretValueResourceDescription(TrackedResource):
-    """This type describes a value of a secret resource. The name of this resource
-    is the version identifier corresponding to this secret value.
+class VersionedSecretValueResourceDescription(Resource):
+    """This type describes a versioned value of a secret resource. The name of
+    this resource consists of identifier of the parent secret resource combined
+    with the version identifier corresponding to this secret value.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -27,13 +28,9 @@ class SecretValueResourceDescription(TrackedResource):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param location: The geo-location where the resource lives
-    :type location: str
     :ivar provisioning_state: State of the resource.
     :vartype provisioning_state: str
-    :param value: The actual value of the secret.
+    :param value: The value of the secret resource.
     :type value: str
     """
 
@@ -41,7 +38,6 @@ class SecretValueResourceDescription(TrackedResource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -49,13 +45,11 @@ class SecretValueResourceDescription(TrackedResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'value': {'key': 'properties.value', 'type': 'str'},
     }
 
-    def __init__(self, location, tags=None, value=None):
-        super(SecretValueResourceDescription, self).__init__(tags=tags, location=location)
+    def __init__(self, value=None):
+        super(VersionedSecretValueResourceDescription, self).__init__()
         self.provisioning_state = None
         self.value = value

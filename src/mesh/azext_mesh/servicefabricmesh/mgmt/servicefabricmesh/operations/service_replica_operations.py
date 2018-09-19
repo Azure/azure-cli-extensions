@@ -15,8 +15,8 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class ServiceOperations(object):
-    """ServiceOperations operations.
+class ServiceReplicaOperations(object):
+    """ServiceReplicaOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
@@ -37,12 +37,12 @@ class ServiceOperations(object):
         self.config = config
 
     def get(
-            self, resource_group_name, application_resource_name, service_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the service resource with the given name.
+            self, resource_group_name, application_resource_name, service_resource_name, replica_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the given replica of the service of an application.
 
-        Gets the information about the service resource with the given name.
-        The information include the description and other properties of the
-        service.
+        Gets the information about the service replica with the given name. The
+        information include the description and other properties of the service
+        replica.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -50,15 +50,16 @@ class ServiceOperations(object):
         :type application_resource_name: str
         :param service_resource_name: The identity of the service.
         :type service_resource_name: str
+        :param replica_name: Service Fabric replica name.
+        :type replica_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: ServiceResourceDescription or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.servicefabricmesh.models.ServiceResourceDescription or
-         ~msrest.pipeline.ClientRawResponse
+        :return: ServiceReplicaDescription or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.servicefabricmesh.models.ServiceReplicaDescription
+         or ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -68,7 +69,8 @@ class ServiceOperations(object):
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True),
-            'serviceResourceName': self._serialize.url("service_resource_name", service_resource_name, 'str', skip_quote=True)
+            'serviceResourceName': self._serialize.url("service_resource_name", service_resource_name, 'str', skip_quote=True),
+            'replicaName': self._serialize.url("replica_name", replica_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -96,35 +98,37 @@ class ServiceOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('ServiceResourceDescription', response)
+            deserialized = self._deserialize('ServiceReplicaDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services/{serviceResourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services/{serviceResourceName}/replicas/{replicaName}'}
 
     def list(
-            self, resource_group_name, application_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Lists all the service resources.
+            self, resource_group_name, application_resource_name, service_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets replicas of a given service.
 
-        Gets the information about all services of an application resource. The
-        information include the description and other properties of the
-        Service.
+        Gets the information about all replicas of a given service of an
+        application. The information includes the runtime properties of the
+        replica instance.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
         :param application_resource_name: The identity of the application.
         :type application_resource_name: str
+        :param service_resource_name: The identity of the service.
+        :type service_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of ServiceResourceDescription
+        :return: An iterator like instance of ServiceReplicaDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.ServiceResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.ServiceResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.ServiceReplicaDescriptionPaged[~azure.mgmt.servicefabricmesh.models.ServiceReplicaDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -136,7 +140,8 @@ class ServiceOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
+                    'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True),
+                    'serviceResourceName': self._serialize.url("service_resource_name", service_resource_name, 'str', skip_quote=True)
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 
@@ -169,12 +174,12 @@ class ServiceOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.ServiceResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.ServiceReplicaDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.ServiceResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.ServiceReplicaDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services/{serviceResourceName}/replicas'}

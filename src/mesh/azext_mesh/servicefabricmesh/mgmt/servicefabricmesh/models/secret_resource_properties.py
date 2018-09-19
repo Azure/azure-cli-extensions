@@ -25,8 +25,14 @@ class SecretResourceProperties(SecretResourcePropertiesBase):
     :vartype provisioning_state: str
     :param kind: Constant filled by server.
     :type kind: str
-    :param description: Description of the secret resource.
+    :param description: User readable description of the secret.
     :type description: str
+    :param status: Status of the resource. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the secret.
+    :vartype status_details: str
     :param content_type: The type of the content stored in the secret value.
      The value of this property is opaque to Service Fabric. Once set, the
      value of this property cannot be changed.
@@ -36,12 +42,15 @@ class SecretResourceProperties(SecretResourcePropertiesBase):
     _validation = {
         'provisioning_state': {'readonly': True},
         'kind': {'required': True},
+        'status_details': {'readonly': True},
     }
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'status_details': {'key': 'statusDetails', 'type': 'str'},
         'content_type': {'key': 'contentType', 'type': 'str'},
     }
 
@@ -49,8 +58,10 @@ class SecretResourceProperties(SecretResourcePropertiesBase):
         'kind': {'inlinedValue': 'SimpleSecretResourceProperties'}
     }
 
-    def __init__(self, description=None, content_type=None):
+    def __init__(self, description=None, status=None, content_type=None):
         super(SecretResourceProperties, self).__init__()
         self.description = description
+        self.status = status
+        self.status_details = None
         self.content_type = content_type
         self.kind = 'SecretResourceProperties'

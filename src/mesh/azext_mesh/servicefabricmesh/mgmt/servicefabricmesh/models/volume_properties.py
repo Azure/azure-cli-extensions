@@ -13,13 +13,19 @@ from msrest.serialization import Model
 
 
 class VolumeProperties(Model):
-    """This type describes properties of a volume resource.
+    """Describes properties of a volume resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
     :param description: User readable description of the volume.
     :type description: str
+    :param status: Status of the volume. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the volume.
+    :vartype status_details: str
     :ivar provider: Provider of the volume. Default value: "SFAzureFile" .
     :vartype provider: str
     :param azure_file_parameters: This type describes a volume provided by an
@@ -29,18 +35,23 @@ class VolumeProperties(Model):
     """
 
     _validation = {
+        'status_details': {'readonly': True},
         'provider': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+        'status_details': {'key': 'statusDetails', 'type': 'str'},
         'provider': {'key': 'provider', 'type': 'str'},
         'azure_file_parameters': {'key': 'azureFileParameters', 'type': 'VolumeProviderParametersAzureFile'},
     }
 
     provider = "SFAzureFile"
 
-    def __init__(self, description=None, azure_file_parameters=None):
+    def __init__(self, description=None, status=None, azure_file_parameters=None):
         super(VolumeProperties, self).__init__()
         self.description = description
+        self.status = status
+        self.status_details = None
         self.azure_file_parameters = azure_file_parameters

@@ -39,6 +39,12 @@ class NetworkResourceDescription(TrackedResource):
     :param ingress_config: Configuration for public connectivity for this
      network.
     :type ingress_config: ~azure.mgmt.servicefabricmesh.models.IngressConfig
+    :param status: Status of the network. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the network.
+    :vartype status_details: str
     """
 
     _validation = {
@@ -47,7 +53,7 @@ class NetworkResourceDescription(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
-        'address_prefix': {'required': True},
+        'status_details': {'readonly': True},
     }
 
     _attribute_map = {
@@ -60,11 +66,15 @@ class NetworkResourceDescription(TrackedResource):
         'description': {'key': 'properties.description', 'type': 'str'},
         'address_prefix': {'key': 'properties.addressPrefix', 'type': 'str'},
         'ingress_config': {'key': 'properties.ingressConfig', 'type': 'IngressConfig'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
     }
 
-    def __init__(self, location, address_prefix, tags=None, description=None, ingress_config=None):
+    def __init__(self, location, tags=None, description=None, address_prefix=None, ingress_config=None, status=None):
         super(NetworkResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.description = description
         self.address_prefix = address_prefix
         self.ingress_config = ingress_config
+        self.status = status
+        self.status_details = None
