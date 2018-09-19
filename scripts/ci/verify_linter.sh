@@ -25,7 +25,12 @@ while read line; do
     echo
     echo "New index entries detected for extension:" $ext
     echo "Adding latest entry from source:" $source
+    set +e
     az extension add -s $source -y
+    if [ $? != 0 ]; then
+        continue
+    fi
+    set -e
     echo "Running linter"
     azdev cli-lint --ci --extensions $ext
     az extension remove -n $ext
