@@ -66,5 +66,39 @@ Enable the blob service to exhibit filesystem semantics.\
 az storage account create \
     --name accountName \
     --resource-group groupName \
+    --kind StorageV2 \
     --hierarchical-namespace
+```
+
+**File AAD Integration:**
+Enable AAD integration for Azure files, which will support SMB access.\
+*Examples:*
+```
+az storage account create \
+    --name accountName \
+    --resource-group groupName \
+    --kind StorageV2 \
+    --file-aad
+
+az storage account update \
+    --name accountName \
+    --resource-group groupName \
+    --file-aad false
+```
+
+**Premium Blobs/Files:**
+Create premium blob/file storage accounts.\
+*Examples:*
+```
+az storage account create \
+    --name accountName \
+    --resource-group groupName \
+    --sku Premium_LRS \
+    --kind BlockBlobStorage
+
+az storage account create \
+    --name accountName \
+    --resource-group groupName \
+    --sku Premium_LRS \
+    --kind FileStorage
 ```
