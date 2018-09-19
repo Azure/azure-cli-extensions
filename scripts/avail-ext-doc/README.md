@@ -5,7 +5,7 @@ Automatically create PR to update the document listing the available CLI extensi
 To build locally:
 
 ```bash
-docker build . -t sttramer/az-ext-list-sync:0.2.0
+docker build . -t sttramer/az-ext-list-publisher:0.2.0
 ```
 
 To run locally:
@@ -18,7 +18,7 @@ docker run --rm -e TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID \
     -e DOC_REPO_SLUG=$DOC_REPO_SLUG \
     -e REPO_LOCATION=/repo \
     -v $PWD:/repo \
-    sttramer/az-ext-list-sync:0.2.0
+    sttramer/az-ext-list-publisher:0.2.0
 ```
 
 For example:
@@ -31,5 +31,5 @@ docker run --rm -e TRAVIS_BUILD_ID=1234 \
     -e DOC_REPO_SLUG='azure/azure-docs-cli-python' \
     -e REPO_LOCATION=/repo \
     -v /Repos/azure-cli-extensions:/repo \
-    sttramer/az-ext-list-sync:0.2.0
+    sttramer/az-ext-list-publisher:0.2.0
 ```
