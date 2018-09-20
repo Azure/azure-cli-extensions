@@ -223,19 +223,19 @@ def load_command_table(self, _):
         g.custom_command('show', 'show_volume', client_factory=cf_mesh_volume, exception_handler=resource_exception_handler, table_transformer=transform_volume)
         g.custom_command('delete', 'delete_volume', client_factory=cf_mesh_volume, confirmation=True)
 
-    with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:
-        g.command('show', 'get')
-        g.command('delete', 'delete', confirmation=True)
-
-    with self.command_group('mesh secret', cmd_util) as g:
-        g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
-
-    with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value_operations) as g:
-        g.command('show', 'get')
-        g.command('delete', 'delete', confirmation=True)
-
-    with self.command_group('mesh secretvalue', mesh_secret_util, client_factory=cf_mesh_secret_value_operations) as g:
-        g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)
+    # with self.command_group('mesh secret', mesh_secret_util, client_factory=cf_mesh_secret) as g:
+    #     g.command('show', 'get')
+    #     g.command('delete', 'delete', confirmation=True)
+    #
+    # with self.command_group('mesh secret', cmd_util) as g:
+    #     g.custom_command('list', 'list_secrets', client_factory=cf_mesh_secret, table_transformer=transform_secret_list)
+    #
+    # with self.command_group('mesh secretvalue', mesh_secret_value_util, client_factory=cf_mesh_secret_value_operations) as g:
+    #     g.command('show', 'get')
+    #     g.command('delete', 'delete', confirmation=True)
+    #
+    # with self.command_group('mesh secretvalue', mesh_secret_util, client_factory=cf_mesh_secret_value_operations) as g:
+    #     g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)
 
     with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
         g.command('show', 'get')

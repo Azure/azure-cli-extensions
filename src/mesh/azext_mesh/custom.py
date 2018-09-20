@@ -238,14 +238,13 @@ def _get_gateway(template_resources, network_name):
 
 def _get_first_network_ref_name(application_resource):
     network_name = None
-    services = application_resource['properties']['services']
-    if services:
-        for service in services:
-            if service['properties']['networkRefs']:
-                for network_ref in service['properties']['networkRefs']:
-                    network_name = _parse_network_ref(network_ref['name'])
-                    if network_name:
-                        break
+    services = application_resource.get('properties', {}).get('services', [])
+    for service in services:
+        if service['properties']['networkRefs']:
+            for network_ref in service['properties']['networkRefs']:
+                network_name = _parse_network_ref(network_ref['name'])
+                if network_name:
+                    break
     return network_name
 
 
@@ -253,14 +252,6 @@ def _display_successful_application(resource_group_name, resource, template_reso
     application_name = resource['name']
     network_name = _get_first_network_ref_name(resource)
     gateway_resource_information = None
-
-    # if services:
-    #     for service in services:
-    #         if service['properties']['networkRefs']:
-    #             for network_ref in service['properties']['networkRefs']:
-    #                 network_name = _parse_network_ref(network_ref['name'])
-    #                 if network_name:
-    #                     break
 
     if network_name:
         gateway_resource_information = _get_gateway(template_resources, network_name)
