@@ -12,9 +12,14 @@
 from enum import Enum
 
 
-class IngressQoSLevel(Enum):
+class ResourceStatus(Enum):
 
-    bronze = "Bronze"
+    unknown = "Unknown"
+    ready = "Ready"
+    upgrading = "Upgrading"
+    creating = "Creating"
+    deleting = "Deleting"
+    failed = "Failed"
 
 
 class HealthState(Enum):
@@ -26,24 +31,14 @@ class HealthState(Enum):
     unknown = "Unknown"
 
 
-class ServiceResourceStatus(Enum):
+class SecretKind(Enum):
 
-    unknown = "Unknown"
-    active = "Active"
-    upgrading = "Upgrading"
-    deleting = "Deleting"
-    creating = "Creating"
-    failed = "Failed"
+    inlined_value = "inlinedValue"
 
 
-class ApplicationResourceStatus(Enum):
+class VolumeProvider(Enum):
 
-    invalid = "Invalid"
-    ready = "Ready"
-    upgrading = "Upgrading"
-    creating = "Creating"
-    deleting = "Deleting"
-    failed = "Failed"
+    sf_azure_file = "SFAzureFile"
 
 
 class SizeTypes(Enum):
@@ -58,10 +53,14 @@ class ApplicationScopedVolumeKind(Enum):
     service_fabric_volume_disk = "ServiceFabricVolumeDisk"
 
 
-class OperatingSystemTypes(Enum):
+class NetworkKind(Enum):
 
-    linux = "Linux"
-    windows = "Windows"
+    local = "Local"
+
+
+class HeaderMatchType(Enum):
+
+    exact = "exact"
 
 
 class DiagnosticsSinkKind(Enum):
@@ -80,11 +79,18 @@ class AutoScalingMetricKind(Enum):
     resource = "Resource"
 
 
+class AutoScalingResourceMetricName(Enum):
+
+    cpu = "cpu"
+    memory_in_gb = "memoryInGB"
+
+
 class AutoScalingTriggerKind(Enum):
 
     average_load = "AverageLoad"
 
 
-class SecretKind(Enum):
+class OperatingSystemType(Enum):
 
-    inlined_value = "inlinedValue"
+    linux = "Linux"
+    windows = "Windows"

@@ -32,13 +32,16 @@ class NetworkResourceDescription(TrackedResource):
     :type location: str
     :ivar provisioning_state: State of the resource.
     :vartype provisioning_state: str
+    :param kind: Constant filled by server.
+    :type kind: str
     :param description: User readable description of the network.
     :type description: str
-    :param address_prefix: the address prefix for this network.
-    :type address_prefix: str
-    :param ingress_config: Configuration for public connectivity for this
-     network.
-    :type ingress_config: ~azure.mgmt.servicefabricmesh.models.IngressConfig
+    :param status: Status of the network. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the network.
+    :vartype status_details: str
     """
 
     _validation = {
@@ -47,7 +50,8 @@ class NetworkResourceDescription(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
-        'address_prefix': {'required': True},
+        'kind': {'required': True},
+        'status_details': {'readonly': True},
     }
 
     _attribute_map = {
@@ -57,14 +61,16 @@ class NetworkResourceDescription(TrackedResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'kind': {'key': 'properties.kind', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
-        'address_prefix': {'key': 'properties.addressPrefix', 'type': 'str'},
-        'ingress_config': {'key': 'properties.ingressConfig', 'type': 'IngressConfig'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
     }
 
-    def __init__(self, location, address_prefix, tags=None, description=None, ingress_config=None):
+    def __init__(self, location, kind, tags=None, description=None, status=None):
         super(NetworkResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
+        self.kind = kind
         self.description = description
-        self.address_prefix = address_prefix
-        self.ingress_config = ingress_config
+        self.status = status
+        self.status_details = None

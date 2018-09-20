@@ -22,7 +22,7 @@ class GatewayOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
     """
 
     models = models
@@ -32,7 +32,7 @@ class GatewayOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-07-01-preview"
+        self.api_version = "2018-09-01-privatepreview"
 
         self.config = config
 
@@ -40,11 +40,11 @@ class GatewayOperations(object):
             self, resource_group_name, gateway_resource_name, gateway_resource_description, custom_headers=None, raw=False, **operation_config):
         """Creates or updates a gateway resource.
 
-        Creates a gateway resource with the specified name and description. If
-        a gateway with the same name already exists,  then its description is
-        updated to the one indicated in this request. Use gateway resources to
-        create a gateway for public connectivity for services within your
-        application. .
+        Creates a gateway resource with the specified name, description and
+        properties. If a gateway resource with the same name exists, then it is
+        updated with the specified description and properties. Use gateway
+        resources to create a gateway for public connectivity for services
+        within your application.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -119,8 +119,8 @@ class GatewayOperations(object):
         """Gets the gateway resource with the given name.
 
         Gets the information about the gateway resource with the given name.
-        The information include the description, configuration and other
-        runtime properties of the gateway.
+        The information include the description and other properties of the
+        gateway.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -240,8 +240,8 @@ class GatewayOperations(object):
         """Gets all the gateway resources in a given resource group.
 
         Gets the information about all gateway resources in a given resource
-        group. The information include the description, configuration and other
-        runtime properties of the gateway.
+        group. The information include the description and other properties of
+        the Gateway.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -311,8 +311,8 @@ class GatewayOperations(object):
         """Gets all the gateway resources in a given subscription.
 
         Gets the information about all gateway resources in a given resource
-        group. The information include the description, configuration and other
-        runtime properties of the gateway.
+        group. The information include the description and other properties of
+        the gateway.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

@@ -9,25 +9,30 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .managed_proxy_resource import ManagedProxyResource
+from .service_replica_properties import ServiceReplicaProperties
 
 
-class ServiceResourceDescription(ManagedProxyResource):
-    """This type describes a service resource.
+class ServiceProperties(ServiceReplicaProperties):
+    """Describes properties of a service resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified identifier for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :param name: The name of the resource
-    :type name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
-    :vartype type: str
-    :ivar provisioning_state: State of the resource.
-    :vartype provisioning_state: str
+    :param os_type: The operation system required by the code in service.
+     Possible values include: 'Linux', 'Windows'
+    :type os_type: str or
+     ~azure.mgmt.servicefabricmesh.models.OperatingSystemType
+    :param code_packages: Describes the set of code packages that forms the
+     service. A code package describes the container and the properties for
+     running it. All the code packages are started together on the same host
+     and share the same context (network, process etc.).
+    :type code_packages:
+     list[~azure.mgmt.servicefabricmesh.models.ContainerCodePackageProperties]
+    :param network_refs: The names of the private networks that this service
+     needs to be part of.
+    :type network_refs: list[~azure.mgmt.servicefabricmesh.models.NetworkRef]
+    :param diagnostics: Reference to sinks in DiagnosticsDescription.
+    :type diagnostics: ~azure.mgmt.servicefabricmesh.models.DiagnosticsRef
     :param description: User readable description of the service.
     :type description: str
     :param replica_count: The number of replicas of the service to create.
@@ -53,31 +58,29 @@ class ServiceResourceDescription(ManagedProxyResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'type': {'readonly': True},
-        'provisioning_state': {'readonly': True},
+        'os_type': {'required': True},
+        'code_packages': {'required': True},
         'status_details': {'readonly': True},
         'health_state': {'readonly': True},
         'unhealthy_evaluation': {'readonly': True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'description': {'key': 'properties.description', 'type': 'str'},
-        'replica_count': {'key': 'properties.replicaCount', 'type': 'int'},
-        'auto_scaling_policies': {'key': 'properties.autoScalingPolicies', 'type': '[AutoScalingPolicy]'},
-        'status': {'key': 'properties.status', 'type': 'str'},
-        'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
-        'health_state': {'key': 'properties.healthState', 'type': 'str'},
-        'unhealthy_evaluation': {'key': 'properties.unhealthyEvaluation', 'type': 'str'},
+        'os_type': {'key': 'osType', 'type': 'str'},
+        'code_packages': {'key': 'codePackages', 'type': '[ContainerCodePackageProperties]'},
+        'network_refs': {'key': 'networkRefs', 'type': '[NetworkRef]'},
+        'diagnostics': {'key': 'diagnostics', 'type': 'DiagnosticsRef'},
+        'description': {'key': 'description', 'type': 'str'},
+        'replica_count': {'key': 'replicaCount', 'type': 'int'},
+        'auto_scaling_policies': {'key': 'autoScalingPolicies', 'type': '[AutoScalingPolicy]'},
+        'status': {'key': 'status', 'type': 'str'},
+        'status_details': {'key': 'statusDetails', 'type': 'str'},
+        'health_state': {'key': 'healthState', 'type': 'str'},
+        'unhealthy_evaluation': {'key': 'unhealthyEvaluation', 'type': 'str'},
     }
 
-    def __init__(self, name=None, description=None, replica_count=None, auto_scaling_policies=None, status=None):
-        super(ServiceResourceDescription, self).__init__(name=name)
-        self.provisioning_state = None
+    def __init__(self, os_type, code_packages, network_refs=None, diagnostics=None, description=None, replica_count=None, auto_scaling_policies=None, status=None):
+        super(ServiceProperties, self).__init__(os_type=os_type, code_packages=code_packages, network_refs=network_refs, diagnostics=diagnostics)
         self.description = description
         self.replica_count = replica_count
         self.auto_scaling_policies = auto_scaling_policies

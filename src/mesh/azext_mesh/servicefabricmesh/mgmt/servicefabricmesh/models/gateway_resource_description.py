@@ -42,13 +42,15 @@ class GatewayResourceDescription(TrackedResource):
     :type tcp: list[~azure.mgmt.servicefabricmesh.models.TcpConfig]
     :param http: Configuration for http connectivity for this gateway.
     :type http: list[~azure.mgmt.servicefabricmesh.models.HttpConfig]
-    :ivar status: Status of the gateway resource. Possible values include:
-     'Invalid', 'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
-    :vartype status: str or
-     ~azure.mgmt.servicefabricmesh.models.GatewayResourceStatus
+    :param status: Status of the resource. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
     :ivar status_details: Gives additional information about the current
-     status of the gateay.
+     status of the gateway.
     :vartype status_details: str
+    :ivar ip_address: IP address of the gateway. This is populated in the
+     response and is ignored for incoming requests.
+    :vartype ip_address: str
     """
 
     _validation = {
@@ -59,8 +61,8 @@ class GatewayResourceDescription(TrackedResource):
         'provisioning_state': {'readonly': True},
         'source_network': {'required': True},
         'destination_network': {'required': True},
-        'status': {'readonly': True},
         'status_details': {'readonly': True},
+        'ip_address': {'readonly': True},
     }
 
     _attribute_map = {
@@ -77,9 +79,10 @@ class GatewayResourceDescription(TrackedResource):
         'http': {'key': 'properties.http', 'type': '[HttpConfig]'},
         'status': {'key': 'properties.status', 'type': 'str'},
         'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
+        'ip_address': {'key': 'properties.ipAddress', 'type': 'str'},
     }
 
-    def __init__(self, location, source_network, destination_network, tags=None, description=None, tcp=None, http=None):
+    def __init__(self, location, source_network, destination_network, tags=None, description=None, tcp=None, http=None, status=None):
         super(GatewayResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.description = description
@@ -87,5 +90,6 @@ class GatewayResourceDescription(TrackedResource):
         self.destination_network = destination_network
         self.tcp = tcp
         self.http = http
-        self.status = None
+        self.status = status
         self.status_details = None
+        self.ip_address = None

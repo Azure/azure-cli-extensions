@@ -22,7 +22,7 @@ class SecretValueOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
     """
 
     models = models
@@ -32,12 +32,12 @@ class SecretValueOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-preview"
+        self.api_version = "2018-09-01-privatepreview"
 
         self.config = config
 
     def create(
-            self, resource_group_name, secret_resource_name, secret_value_resource_name, value=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, secret_resource_name, secret_value_resource_name, secret_value_resource_description, custom_headers=None, raw=False, **operation_config):
         """Adds the specified value as a new version of the specified secret
         resource.
 
@@ -52,8 +52,10 @@ class SecretValueOperations(object):
         :param secret_value_resource_name: The name of the secret resource
          value which is typically the version identifier for the value.
         :type secret_value_resource_name: str
-        :param value: The actual value of the secret.
-        :type value: str
+        :param secret_value_resource_description: Description for creating a
+         value of a secret resource.
+        :type secret_value_resource_description:
+         ~azure.mgmt.servicefabricmesh.models.SecretValueResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -67,8 +69,6 @@ class SecretValueOperations(object):
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
-        secret_value_resource_description = models.SecretValueResourceDescription(value=value)
-
         # Construct URL
         url = self.create.metadata['url']
         path_format_arguments = {

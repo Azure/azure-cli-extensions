@@ -9,46 +9,49 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .network_resource_properties import NetworkResourceProperties
 
 
-class NetworkProperties(Model):
-    """Describes properties of a network resource.
+class LocalNetworkResourceProperties(NetworkResourceProperties):
+    """Information about a Service Fabric container network local to a single
+    Service Fabric cluster.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    :ivar provisioning_state: State of the resource.
+    :vartype provisioning_state: str
+    :param kind: Constant filled by server.
+    :type kind: str
     :param description: User readable description of the network.
     :type description: str
-    :param address_prefix: the address prefix for this network.
-    :type address_prefix: str
-    :param ingress_config: Configuration for public connectivity for this
-     network.
-    :type ingress_config: ~azure.mgmt.servicefabricmesh.models.IngressConfig
     :param status: Status of the network. Possible values include: 'Unknown',
      'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
     :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
     :ivar status_details: Gives additional information about the current
      status of the network.
     :vartype status_details: str
+    :param network_address_prefix: Address space for the local container
+     network.
+    :type network_address_prefix: str
     """
 
     _validation = {
+        'provisioning_state': {'readonly': True},
+        'kind': {'required': True},
         'status_details': {'readonly': True},
     }
 
     _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
-        'address_prefix': {'key': 'addressPrefix', 'type': 'str'},
-        'ingress_config': {'key': 'ingressConfig', 'type': 'IngressConfig'},
         'status': {'key': 'status', 'type': 'str'},
         'status_details': {'key': 'statusDetails', 'type': 'str'},
+        'network_address_prefix': {'key': 'networkAddressPrefix', 'type': 'str'},
     }
 
-    def __init__(self, description=None, address_prefix=None, ingress_config=None, status=None):
-        super(NetworkProperties, self).__init__()
-        self.description = description
-        self.address_prefix = address_prefix
-        self.ingress_config = ingress_config
-        self.status = status
-        self.status_details = None
+    def __init__(self, description=None, status=None, network_address_prefix=None):
+        super(LocalNetworkResourceProperties, self).__init__(description=description, status=status)
+        self.network_address_prefix = network_address_prefix
+        self.kind = 'Local'

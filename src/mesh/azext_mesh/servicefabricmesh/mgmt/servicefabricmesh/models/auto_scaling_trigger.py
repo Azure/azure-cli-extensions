@@ -15,6 +15,9 @@ from msrest.serialization import Model
 class AutoScalingTrigger(Model):
     """Describes the trigger for performing auto scaling operation.
 
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: AverageLoadScalingTrigger
+
     :param kind: Constant filled by server.
     :type kind: str
     """
@@ -25,6 +28,10 @@ class AutoScalingTrigger(Model):
 
     _attribute_map = {
         'kind': {'key': 'kind', 'type': 'str'},
+    }
+
+    _subtype_map = {
+        'kind': {'AverageLoad': 'AverageLoadScalingTrigger'}
     }
 
     def __init__(self):

@@ -9,49 +9,53 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .network_resource_properties_base import NetworkResourcePropertiesBase
 
 
-class VolumeProperties(Model):
-    """Describes properties of a volume resource.
+class NetworkResourceProperties(NetworkResourcePropertiesBase):
+    """Describes properties of a network resource.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: LocalNetworkResourceProperties
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :param description: User readable description of the volume.
+    :ivar provisioning_state: State of the resource.
+    :vartype provisioning_state: str
+    :param kind: Constant filled by server.
+    :type kind: str
+    :param description: User readable description of the network.
     :type description: str
-    :param status: Status of the volume. Possible values include: 'Unknown',
+    :param status: Status of the network. Possible values include: 'Unknown',
      'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
     :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
     :ivar status_details: Gives additional information about the current
-     status of the volume.
+     status of the network.
     :vartype status_details: str
-    :ivar provider: Provider of the volume. Default value: "SFAzureFile" .
-    :vartype provider: str
-    :param azure_file_parameters: This type describes a volume provided by an
-     Azure Files file share.
-    :type azure_file_parameters:
-     ~azure.mgmt.servicefabricmesh.models.VolumeProviderParametersAzureFile
     """
 
     _validation = {
+        'provisioning_state': {'readonly': True},
+        'kind': {'required': True},
         'status_details': {'readonly': True},
-        'provider': {'required': True, 'constant': True},
     }
 
     _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
         'status_details': {'key': 'statusDetails', 'type': 'str'},
-        'provider': {'key': 'provider', 'type': 'str'},
-        'azure_file_parameters': {'key': 'azureFileParameters', 'type': 'VolumeProviderParametersAzureFile'},
     }
 
-    provider = "SFAzureFile"
+    _subtype_map = {
+        'kind': {'Local': 'LocalNetworkResourceProperties'}
+    }
 
-    def __init__(self, description=None, status=None, azure_file_parameters=None):
-        super(VolumeProperties, self).__init__()
+    def __init__(self, description=None, status=None):
+        super(NetworkResourceProperties, self).__init__()
         self.description = description
         self.status = status
         self.status_details = None
-        self.azure_file_parameters = azure_file_parameters
+        self.kind = 'NetworkResourceProperties'

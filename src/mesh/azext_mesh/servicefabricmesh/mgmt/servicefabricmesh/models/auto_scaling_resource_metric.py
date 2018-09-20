@@ -17,9 +17,10 @@ class AutoScalingResourceMetric(AutoScalingMetric):
 
     :param kind: Constant filled by server.
     :type kind: str
-    :param name: Name of the resource (like cpu or memoryInGB). Possible
-     values include: 'cpu', 'memoryInGB'
-    :type name: str or ~azure.mgmt.servicefabricmesh.models.enum
+    :param name: Name of the resource. Possible values include: 'cpu',
+     'memoryInGB'
+    :type name: str or
+     ~azure.mgmt.servicefabricmesh.models.AutoScalingResourceMetricName
     """
 
     _validation = {

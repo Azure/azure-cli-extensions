@@ -34,6 +34,18 @@ class SecretResourceDescription(TrackedResource):
     :vartype provisioning_state: str
     :param kind: Constant filled by server.
     :type kind: str
+    :param description: User readable description of the secret.
+    :type description: str
+    :param status: Status of the resource. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the secret.
+    :vartype status_details: str
+    :param content_type: The type of the content stored in the secret value.
+     The value of this property is opaque to Service Fabric. Once set, the
+     value of this property cannot be changed.
+    :type content_type: str
     """
 
     _validation = {
@@ -43,6 +55,7 @@ class SecretResourceDescription(TrackedResource):
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
         'kind': {'required': True},
+        'status_details': {'readonly': True},
     }
 
     _attribute_map = {
@@ -53,9 +66,17 @@ class SecretResourceDescription(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'kind': {'key': 'properties.kind', 'type': 'str'},
+        'description': {'key': 'properties.description', 'type': 'str'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
+        'content_type': {'key': 'properties.contentType', 'type': 'str'},
     }
 
-    def __init__(self, location, kind, tags=None):
+    def __init__(self, location, kind, tags=None, description=None, status=None, content_type=None):
         super(SecretResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.kind = kind
+        self.description = description
+        self.status = status
+        self.status_details = None
+        self.content_type = content_type

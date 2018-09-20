@@ -9,5 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2018-09-01-privatepreview"
+from msrest.serialization import Model
 
+
+class EndpointRef(Model):
+    """Describes a reference to a service endpoint.
+
+    :param name: Name of the endpoint.
+    :type name: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(self, name=None):
+        super(EndpointRef, self).__init__()
+        self.name = name

@@ -22,7 +22,7 @@ class SecretOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
     """
 
     models = models
@@ -32,7 +32,7 @@ class SecretOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-preview"
+        self.api_version = "2018-09-01-privatepreview"
 
         self.config = config
 
@@ -40,8 +40,9 @@ class SecretOperations(object):
             self, resource_group_name, secret_resource_name, secret_resource_description, custom_headers=None, raw=False, **operation_config):
         """Creates or updates a secret resource.
 
-        Creates a secret resource of the specified kind, and with the specified
-        name, description and metadata describing its value.
+        Creates a secret resource with the specified name, description and
+        properties. If a secret resource with the same name exists, then it is
+        updated with the specified description and properties.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -115,8 +116,7 @@ class SecretOperations(object):
         """Gets the secret resource with the given name.
 
         Gets the information about the secret resource with the given name. The
-        information includes the secret's kind, description and the metadata
-        describing its value. The secret's value is not included.
+        information include the description and other properties of the secret.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -177,10 +177,9 @@ class SecretOperations(object):
 
     def delete(
             self, resource_group_name, secret_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Deletes the specified secret, including all of its versions.
+        """Deletes the secret resource.
 
-        Deletes the secret resource identified by the name; all of the
-        versioned values of this secret, if any exist, are also deleted.
+        Deletes the secret resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -236,8 +235,8 @@ class SecretOperations(object):
         """Gets all the secret resources in a given resource group.
 
         Gets the information about all secret resources in a given resource
-        group. The information include the kind of secret resource, description
-        and metadata about its value. It does not include the secret value.
+        group. The information include the description and other properties of
+        the Secret.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -306,10 +305,9 @@ class SecretOperations(object):
             self, custom_headers=None, raw=False, **operation_config):
         """Gets all the secret resources in a given subscription.
 
-        Gets the information about all secret resources in a given
-        subscription. The information include the kind of secret resource,
-        description and metadata about its value. It does not include the
-        secret value.
+        Gets the information about all secret resources in a given resource
+        group. The information include the description and other properties of
+        the secret.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

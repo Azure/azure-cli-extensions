@@ -15,14 +15,14 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class Operations(object):
-    """Operations operations.
+class VersionedSecretOperations(object):
+    """VersionedSecretOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
     """
 
     models = models
@@ -32,25 +32,30 @@ class Operations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-privatepreview"
+        self.api_version = "2018-07-01-preview"
 
         self.config = config
 
-    def list(
-            self, custom_headers=None, raw=False, **operation_config):
-        """Lists all of the available operations.
+    def list_versions(
+            self, resource_group_name, secret_name, custom_headers=None, raw=False, **operation_config):
+        """List all versions of the specified secret resource.
 
-        Lists all the available operations provided by Service Fabric SeaBreeze
-        resource provider.
+        Lists the available versions of the specified secret resource. The
+        information does not includes the actual value.
 
+        :param resource_group_name: Azure resource group name
+        :type resource_group_name: str
+        :param secret_name: The name of the secret resource.
+        :type secret_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of OperationResult
+        :return: An iterator like instance of
+         VersionedSecretValueResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.OperationResultPaged[~azure.mgmt.servicefabricmesh.models.OperationResult]
+         ~azure.mgmt.servicefabricmesh.models.VersionedSecretValueResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.VersionedSecretValueResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -58,7 +63,13 @@ class Operations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.list.metadata['url']
+                url = self.list_versions.metadata['url']
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'secretName': self._serialize.url("secret_name", secret_name, 'str', skip_quote=True)
+                }
+                url = self._client.format_url(url, **path_format_arguments)
 
                 # Construct parameters
                 query_parameters = {}
@@ -89,12 +100,12 @@ class Operations(object):
             return response
 
         # Deserialize response
-        deserialized = models.OperationResultPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.VersionedSecretValueResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.OperationResultPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.VersionedSecretValueResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list.metadata = {'url': '/providers/Microsoft.ServiceFabricMesh/operations'}
+    list_versions.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/secrets/{secretName}/versioned_values'}
