@@ -63,3 +63,4 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('secret_name', options_list=('-n', '--secret-name'), help="The name of the secret resource", id_part='secret_name')
         c.argument('secret_value_resource_name', options_list=('-v', '--version'), help="The name of the secret version", id_part='secret_value_resource_name')
+        c.argument('show_value', options_list=['--show-value'], help="Pass this flag to receive the value of the secret", id_part='show_value')

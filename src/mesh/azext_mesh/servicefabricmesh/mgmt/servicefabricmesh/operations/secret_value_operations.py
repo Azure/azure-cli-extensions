@@ -8,8 +8,10 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+import json
 import uuid
+from pprint import pprint
+
 from msrest.pipeline import ClientRawResponse
 
 from .. import models
@@ -380,9 +382,13 @@ class SecretValueOperations(object):
             raise models.ErrorModelException(self._deserialize, response)
 
         deserialized = None
+        body = json.loads(response.content)
+        body['other'] = body['value']
+        del body['value']
 
+        # pprint(json.dumps(body).encode())
         if response.status_code == 200:
-            deserialized = self._deserialize('SecretValue', response)
+            deserialized = json.loads(response.content)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
