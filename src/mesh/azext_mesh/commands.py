@@ -28,8 +28,8 @@ def transform_application(result):
     """Transform an application to table output. """
     return OrderedDict([('Name', result['name']),
                         ('ResourceGroup', result['resourceGroup']),
-                        ('ProvisioningState', result['provisioningState']),
-                        ('Location', result['location'])])
+                        ('Location', result['location']),
+                        ('ProvisioningState', result['provisioningState'])])
 
 
 def transform_application_list(result):
@@ -42,12 +42,14 @@ def transform_network(result):
     ingressConfig = result.get('ingressConfig')
     if ingressConfig is not None:
         return OrderedDict([('Name', result['name']),
-                            ('Description', result['description']),
+                            ('ResourceGroup', result['resourceGroup']),
+                            ('Location', result['location']),
                             ('ProvisioningState', result['provisioningState']),
-                            ('PublicIP', ingressConfig['publicIpAddress']),
-                            ('AddressPrefix', result['addressPrefix'])])
+                            ('AddressPrefix', result['addressPrefix']),
+                            ('PublicIP', ingressConfig['publicIpAddress'])])
     return OrderedDict([('Name', result['name']),
-                        ('Description', result['description']),
+                        ('ResourceGroup', result['resourceGroup']),
+                        ('Location', result['location']),
                         ('ProvisioningState', result['provisioningState']),
                         ('AddressPrefix', result['addressPrefix'])])
 
@@ -100,13 +102,10 @@ def transform_volume_list(result):
 def transform_secret(result):
     """Transform a volume to table output. """
     return OrderedDict([('Name', result['name']),
-                        ('Kind', result['kind']),
-                        ('type', result.get('contentType')),
-                        ('tags', result.get('tags')),
                         ('ResourceGroup', result.get('resourceGroup')),
                         ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioningState'))
-                        ])
+                        ('ProvisioningState', result.get('provisioningState')),
+                        ('Kind', result['kind'])])
 
 
 def transform_secret_list(result):
@@ -116,8 +115,10 @@ def transform_secret_list(result):
 
 def transform_secretvalue(result):
     """Transform a volume to table output. """
-    return OrderedDict([('Version', result['name'])
-                        ])
+    return OrderedDict([('Version', result['name']),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result['location']),
+                        ('ProvisioningState', result.get('provisioningState'))])
 
 
 def transform_secretvalue_list(result):
