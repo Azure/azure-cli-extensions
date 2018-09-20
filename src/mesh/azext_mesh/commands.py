@@ -29,12 +29,25 @@ def transform_application(result):
     return OrderedDict([('Name', result['name']),
                         ('ResourceGroup', result['resourceGroup']),
                         ('Location', result['location']),
-                        ('ProvisioningState', result['provisioningState'])])
+                        ('ProvisioningState', result.get('provisioningState'))])
 
 
 def transform_application_list(result):
     """Transform an application list to table output. """
     return [transform_application(application) for application in result]
+
+
+
+def transform_service(result):
+    return OrderedDict([('Name', result['name']),
+                        ('ProvisioningState', result.get('provisioningState')),
+                        ('Status', result.get('status')),
+                        ('HealthState', result.get('healthState')),
+                        ('ReplicaCount', result.get('replicaCount'))])
+
+
+def transform_service_list(result):
+    return [transform_service(service) for service in result]
 
 
 def transform_network(result):
@@ -44,13 +57,13 @@ def transform_network(result):
         return OrderedDict([('Name', result['name']),
                             ('ResourceGroup', result['resourceGroup']),
                             ('Location', result['location']),
-                            ('ProvisioningState', result['provisioningState']),
+                            ('ProvisioningState', result.get('provisioningState')),
                             ('AddressPrefix', result['addressPrefix']),
                             ('PublicIP', ingressConfig['publicIpAddress'])])
     return OrderedDict([('Name', result['name']),
                         ('ResourceGroup', result['resourceGroup']),
                         ('Location', result['location']),
-                        ('ProvisioningState', result['provisioningState']),
+                        ('ProvisioningState', result.get('provisioningState')),
                         ('AddressPrefix', result['addressPrefix'])])
 
 
@@ -178,8 +191,8 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
 
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
-        g.command('list', 'list_by_application_name')
-        g.command('show', 'get')
+        g.command('list', 'list', table_transformer=transform_service_list)
+        g.command('show', 'get',  table_transformer=transform_service)
 
     with self.command_group('mesh service-replica', mesh_replica_util, client_factory=cf_mesh_replica) as g:
         g.command('list', 'list_by_service_name')

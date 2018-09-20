@@ -24,7 +24,8 @@ def load_arguments(self, _):
         c.argument('name', options_list=('--name', '-n'), help="The name of the application", id_part='name')
 
     with self.argument_context('mesh service') as c:
-        c.argument('service_name', options_list=('--name', '-n'), help="The name of the service", id_part='service_name')
+        c.argument('service_resource_name', options_list=('--name', '-n'), help="The name of the service", id_part='service_resource_name')
+        c.argument('application_resource_name', options_list=('--app-name', '--application-name'), help="The name of the application", id_part='application_resource_name')
 
     with self.argument_context('mesh servicereplica') as c:
         c.argument('replica_name', options_list=('--name', '-n'), help="The name of the service replica", id_part='replica_name')
