@@ -6,13 +6,14 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_sa, cf_blob_container_mgmt, cf_blob_data_gen_update, blob_data_service_factory,
+from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_container_mgmt, cf_blob_data_gen_update,
+                              blob_data_service_factory,
                               page_blob_service_factory, file_data_service_factory,
                               queue_data_service_factory, table_data_service_factory,
                               cloud_storage_account_service_factory,
                               multi_service_properties_factory)
 from .sdkutil import cosmosdb_table_exists
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 from ._format import transform_immutability_policy
 
 
@@ -60,8 +61,20 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage account', cloud_data_plane_sdk) as g:
         g.storage_command('generate-sas', 'generate_shared_access_signature')
 
-    with self.command_group('storage account management-policy', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
-                            custom_command_type=storage_account_custom_type) as g:
+    storage_account_sdk_preview = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.'
+                        'storage_accounts_operations#StorageAccountsOperations.{}',
+        client_factory=cf_sa_preview,
+        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    )
+
+    storage_account_custom_preview_type = CliCommandType(
+        operations_tmpl='azext_storage_preview.operations.account#{}',
+        client_factory=cf_sa_preview)
+
+    with self.command_group('storage account management-policy', storage_account_sdk_preview,
+                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE,
+                            custom_command_type=storage_account_custom_preview_type) as g:
         g.show_command('show', 'get_management_policies')
         g.custom_command('create', 'create_management_policies')
         g.generic_update_command('update', getter_name='get_management_policies',
