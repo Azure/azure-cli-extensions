@@ -14,30 +14,26 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.command_modules.resource._validators import process_deployment_create_namespace
 from ._client_factory import (cf_mesh_deployments,
                               cf_mesh_application, cf_mesh_service,
-                              cf_mesh_replica, cf_mesh_code_package, cf_mesh_network,
+                              cf_mesh_service_replica, cf_mesh_code_package, cf_mesh_network,
                               cf_mesh_volume, cf_mesh_secret, cf_mesh_secret_value)
 from ._exception_handler import resource_exception_handler
 
+#
+# Table Output formatting for various top level and proxy resources
+#
 
-def transform_log_output(result):
-    """Print log. """
-    return result
-
-
+# Application Resource table output formatting
 def transform_application(result):
-    """Transform an application to table output. """
     return OrderedDict([('Name', result['name']),
-                        ('ResourceGroup', result['resourceGroup']),
-                        ('Location', result['location']),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result.get('location')),
                         ('ProvisioningState', result.get('provisioningState'))])
 
-
 def transform_application_list(result):
-    """Transform an application list to table output. """
     return [transform_application(application) for application in result]
 
 
-
+# Service Resource table output formatting
 def transform_service(result):
     return OrderedDict([('Name', result['name']),
                         ('ProvisioningState', result.get('provisioningState')),
@@ -45,35 +41,85 @@ def transform_service(result):
                         ('HealthState', result.get('healthState')),
                         ('ReplicaCount', result.get('replicaCount'))])
 
-
 def transform_service_list(result):
     return [transform_service(service) for service in result]
 
+# Service Replica table output formatting
+def transform_service_replica(result):
+    return OrderedDict([('Name', result['replicaName'])])
 
+def transform_service_replica_list(result):
+    return [transform_service_replica(replica) for replica in result]
+
+# Volume Resource table output formatting
+def transform_volume(result):
+    return OrderedDict([('Name', result['name']),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result.get('location')),
+                        ('ProvisioningState', result.get('provisioningState')),
+                        ('Provider', result.get('provider'))])
+
+
+def transform_volume_list(result):
+    return [transform_volume(volume) for volume in result]
+
+
+# Network Resource table output formatting
 def transform_network(result):
-    """Transform a network to table output. """
     ingressConfig = result.get('ingressConfig')
     if ingressConfig is not None:
         return OrderedDict([('Name', result['name']),
-                            ('ResourceGroup', result['resourceGroup']),
-                            ('Location', result['location']),
+                            ('ResourceGroup', result.get('resourceGroup')),
+                            ('Location', result.get('location')),
                             ('ProvisioningState', result.get('provisioningState')),
-                            ('AddressPrefix', result['addressPrefix']),
-                            ('PublicIP', ingressConfig['publicIpAddress'])])
+                            ('AddressPrefix', result.get('addressPrefix')),
+                            ('PublicIP', ingressConfig.get('publicIpAddress'))])
+
     return OrderedDict([('Name', result['name']),
-                        ('ResourceGroup', result['resourceGroup']),
-                        ('Location', result['location']),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result.get('location')),
                         ('ProvisioningState', result.get('provisioningState')),
-                        ('AddressPrefix', result['addressPrefix'])])
+                        ('AddressPrefix', result.get('addressPrefix'))])
 
 
 def transform_network_list(result):
-    """Transform a network list to table output. """
     return [transform_network(network) for network in result]
 
+# Secret Resource table output formatting
+def transform_secret(result):
+    return OrderedDict([('Name', result['name']),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result.get('location')),
+                        ('ProvisioningState', result.get('provisioningState')),
+                        ('Kind', result['kind'])])
 
+
+def transform_secret_list(result):
+    return [transform_secret(secret) for secret in result]
+
+
+# Secret valuetable output formatting
+def transform_secretvalue(result):
+    return OrderedDict([('Version', result['name']),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result.get('location')),
+                        ('ProvisioningState', result.get('provisioningState'))])
+
+
+def transform_secretvalue_list(result):
+    return [transform_secretvalue(secret) for secret in result]
+
+
+#
+# Custom formatting for additional types
+#
+
+# print log
+def transform_log_output(result):
+    return result.content
+
+# CPU and memory
 def format_cpu_memory(container_group):
-    """Format CPU and memory. """
     containers = container_group.get('containers')
     if containers is not None and containers:
         total_cpu = 0
@@ -88,55 +134,14 @@ def format_cpu_memory(container_group):
             return '{0} core/{1} gb'.format(total_cpu, total_memory)
     return None
 
-
+# IP Address and port
 def format_ip_address(container_group):
-    """Format IP address. """
     ip_address = container_group.get('ipAddress')
     if ip_address is not None:
         ports = ','.join(str(p['port']) for p in ip_address['ports'])
         return '{0}:{1}'.format(ip_address.get('ip'), ports)
     return None
 
-
-def transform_volume(result):
-    """Transform a volume to table output. """
-    return OrderedDict([('Name', result['name']),
-                        ('ResourceGroup', result['resourceGroup']),
-                        ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioningState')),
-                        ('Provider', result.get('provider'))])
-
-
-def transform_volume_list(result):
-    """Transform a volume list to table output. """
-    return [transform_volume(volume) for volume in result]
-
-
-def transform_secret(result):
-    """Transform a volume to table output. """
-    return OrderedDict([('Name', result['name']),
-                        ('ResourceGroup', result.get('resourceGroup')),
-                        ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioningState')),
-                        ('Kind', result['kind'])])
-
-
-def transform_secret_list(result):
-    """Transform a secret list to table output. """
-    return [transform_secret(secret) for secret in result]
-
-
-def transform_secretvalue(result):
-    """Transform a volume to table output. """
-    return OrderedDict([('Version', result['name']),
-                        ('ResourceGroup', result.get('resourceGroup')),
-                        ('Location', result['location']),
-                        ('ProvisioningState', result.get('provisioningState'))])
-
-
-def transform_secretvalue_list(result):
-    """Transform a secret list to table output. """
-    return [transform_secretvalue(secret) for secret in result]
 
 
 def load_command_table(self, _):
@@ -150,8 +155,8 @@ def load_command_table(self, _):
         exception_handler=resource_exception_handler
     )
 
-    mesh_replica_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.replica_operations#ReplicaOperations.{}',
+    mesh_service_replica_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.service_replica_operations#ServiceReplicaOperations.{}',
         exception_handler=resource_exception_handler
     )
 
@@ -194,12 +199,12 @@ def load_command_table(self, _):
         g.command('list', 'list', table_transformer=transform_service_list)
         g.command('show', 'get',  table_transformer=transform_service)
 
-    with self.command_group('mesh service-replica', mesh_replica_util, client_factory=cf_mesh_replica) as g:
-        g.command('list', 'list_by_service_name')
-        g.command('show', 'get')
+    with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
+        g.command('list', 'list', table_transformer=transform_service_replica_list)
+        g.command('show', 'get', table_transformer=transform_service_replica)
 
     with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
-        g.command('get', 'get_container_log', transform=transform_log_output)
+        g.command('get', 'get_container_logs', transform=transform_log_output)
 
     with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
         g.command('show', 'get', table_transformer=transform_network)

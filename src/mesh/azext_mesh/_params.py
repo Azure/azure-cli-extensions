@@ -11,23 +11,22 @@ import azure.cli.core.commands.arm  # pylint: disable=unused-import
 
 # pylint: disable=line-too-long, import-error
 
-
 def load_arguments(self, _):
     from argcomplete.completers import FilesCompleter
 
     with self.argument_context('mesh') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('application_name', options_list=('--app-name', '--application-name'), help="The name of the application", id_part='application_name')
+        c.argument('application_resource_name', options_list=('--app-name', '--application-name'), help="The name of the application", id_part='application_name') 
+        c.argument('service_resource_name', options_list=('--service-name' ), help="The name of the service", id_part='service_resource_name')
 
     with self.argument_context('mesh app') as c:
         c.argument('name', options_list=('--name', '-n'), help="The name of the application", id_part='name')
 
     with self.argument_context('mesh service') as c:
         c.argument('service_resource_name', options_list=('--name', '-n'), help="The name of the service", id_part='service_resource_name')
-        c.argument('application_resource_name', options_list=('--app-name', '--application-name'), help="The name of the application", id_part='application_resource_name')
 
-    with self.argument_context('mesh servicereplica') as c:
+    with self.argument_context('mesh service-replica') as c:
         c.argument('replica_name', options_list=('--name', '-n'), help="The name of the service replica", id_part='replica_name')
 
     with self.argument_context('mesh codepackage') as c:

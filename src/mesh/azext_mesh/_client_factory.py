@@ -18,8 +18,8 @@ def cf_mesh_service(cli_ctx, _):
     return _cf_mesh(cli_ctx).service
 
 
-def cf_mesh_replica(cli_ctx, _):
-    return _cf_mesh(cli_ctx).replica
+def cf_mesh_service_replica(cli_ctx, _):
+    return _cf_mesh(cli_ctx).service_replica
 
 
 def cf_mesh_code_package(cli_ctx, _):
