@@ -229,8 +229,9 @@ def _get_gateway(template_resources, network_name):
     gateway = None
     for resource in template_resources:
         if resource['type'] in ['Microsoft.ServiceFabricMesh/gateways']:
+            destination_network = resource.get('properties', {}).get('destinationNetwork')
             source_network = resource.get('properties', {}).get('sourceNetwork')
-            if source_network == network_name:
+            if destination_network['name'] == network_name and source_network['name'] == 'Open':
                 gateway = resource
                 break
     return gateway
@@ -251,17 +252,19 @@ def _get_first_network_ref_name(application_resource):
 def _display_successful_application(resource_group_name, resource, template_resources, cli_ctx):
     application_name = resource['name']
     network_name = _get_first_network_ref_name(resource)
+    # to be populated with gateway resource information from rp if available
     gateway_resource_information = None
 
     if network_name:
-        gateway_resource_information = _get_gateway(template_resources, network_name)
+        # gateway resource info in template
+        gateway_resource_template_info = _get_gateway(template_resources, network_name)
         cfg = cf_mesh_gateway(cli_ctx, '')
 
-        try:
-            gateway_resource_information = cfg.get(resource_group_name, gateway_resource_information['name'])
-        except ErrorModelException:
-            logger.warning("{application} gateway resource {network_name} can not be found."
-                           .format(application=application_name, network_name=network_name))
+        if gateway_resource_template_info:
+            try:
+                gateway_resource_information = cfg.get(resource_group_name, gateway_resource_template_info['name'])
+            except ErrorModelException:
+                logger.warning("{application} gateway resource can not be found.".format(application=application_name))
 
     if gateway_resource_information:
         public_ip_address = gateway_resource_information.ip_address

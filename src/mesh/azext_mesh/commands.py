@@ -130,11 +130,11 @@ def transform_secretvalue_list(result):
 def transform_gateway(result):
     """Transform a gateway list to table output. """
     return OrderedDict([('Name', result.get('name')),
+                        ('SourceNetwork', result.get('source_network')),
+                        ('DestinationNetwork', result.get('destination_network')),
                         ('Location', result.get('location')),
                         ('ProvisioningState', result.get('provisioning_state')),
-                        ('Status', result.get('status')),
-                        ('SourceNetwork', result.get('source_network')),
-                        ('DestinationNetwork', result.get('destination_network'))
+                        ('Status', result.get('status'))
                         ])
 
 
@@ -200,7 +200,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_application', client_factory=cf_mesh_application, confirmation=True)
 
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
-        g.command('list', 'list_by_application_name')
+        g.command('list', 'list')
         g.command('show', 'get')
 
     with self.command_group('mesh service-replica', mesh_replica_util, client_factory=cf_mesh_replica) as g:
@@ -208,7 +208,7 @@ def load_command_table(self, _):
         g.command('show', 'get')
 
     with self.command_group('mesh code-package-log', mesh_cp_util, client_factory=cf_mesh_code_package) as g:
-        g.command('get', 'get_container_log', transform=transform_log_output)
+        g.command('get', 'get_container_logs', transform=transform_log_output)
 
     with self.command_group('mesh network', mesh_network_util, client_factory=cf_mesh_network) as g:
         g.command('show', 'get', table_transformer=transform_network)
