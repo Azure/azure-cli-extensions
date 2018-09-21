@@ -20,7 +20,7 @@ from azure.cli.core.commands.parameters import (
 from .advanced_filter import EventSubscriptionAddFilter
 
 included_event_types_type = CLIArgumentType(
-    help="A space-separated list of event types. To subscribe to all event types, the string \"All\" should be specified.",
+    help="A space-separated list of event types. Example: Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted. To subscribe to all event types, the string \"All\" should be specified.",
     nargs='+'
 )
 
@@ -59,7 +59,6 @@ def load_arguments(self, _):
         c.argument('input_schema', arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventv01schema'], default='eventgridschema'), help='Schema in which incoming events will be published for this domain. If customeventschema is specified, either input_mapping_default_values or input_mapping_fields must be specified as well.')
 
     with self.argument_context('eventgrid event-subscription') as c:
-        c.argument('topic_name', help='Name of the Event Grid topic', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventv01schema']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
@@ -67,14 +66,12 @@ def load_arguments(self, _):
         c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
 
     with self.argument_context('eventgrid event-subscription create') as c:
-        c.argument('topic_name', help='Name of the Event Grid topic to which the event subscription needs to be created.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the new event subscription')
         c.argument('resource_id', help="Fully qualified identifier of the Azure resource to which the event subscription needs to be created.")
         c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
         c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
 
     with self.argument_context('eventgrid event-subscription delete') as c:
-        c.argument('topic_name', help='Name of the Event Grid topic whose event subscription needs to be deleted.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
         c.argument('resource_id', help="Fully qualified identifier of the Azure resource whose event subscription needs to be deleted.")
 
