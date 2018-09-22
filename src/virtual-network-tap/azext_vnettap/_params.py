@@ -32,3 +32,6 @@ def load_arguments(self, _):
         c.argument('vnet_tap', help='Name or ID of the virtual network tap.', validator=validate_vnet_tap)
         for dest in ['vtap_config_name', 'tap_configuration_name']:
             c.argument(dest, options_list=['--name', '-n'], help='Name of the virtual network tap configuration.', id_part='child_name_1')
+
+    with self.argument_context('network nic vtap-config list') as c:
+        c.argument('network_interface_name', options_list='--nic-name', help='Name of the network interface (NIC).', id_part=None)
