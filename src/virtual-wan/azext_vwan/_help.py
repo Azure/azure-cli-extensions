@@ -57,11 +57,6 @@ helps['network vhub connection show'] = """
     short-summary: Get the details of a virtual hub VNet connection.
 """
 
-helps['network vhub connection update'] = """
-    type: command
-    short-summary: Update settings of a virtual hub VNet connection.
-"""
-
 helps['network vhub connection delete'] = """
     type: command
     short-summary: Delete a virtual hub VNet connection.

@@ -120,34 +120,25 @@ def list_virtual_wans(cmd, resource_group_name=None):
 
 # region VirtualHubs
 def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefix, virtual_wan,
-                       location=None, tags=None, express_route_gateway=None, p2s_vpn_gateway=None,
-                       vpn_gateway=None, no_wait=False):
+                       location=None, tags=None, no_wait=False):
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
     VirtualHub, SubResource = cmd.get_models('VirtualHub', 'SubResource')
     hub = VirtualHub(
         tags=tags,
         location=location,
         address_prefix=address_prefix,
-        virtual_wan=SubResource(id=virtual_wan),
-        express_route_gateway=SubResource(id=express_route_gateway) if express_route_gateway else None,
-        p2_svpn_gatway=SubResource(id=p2s_vpn_gateway) if p2s_vpn_gateway else None,
-        vpn_gateway=SubResource(id=vpn_gateway) if vpn_gateway else None
+        virtual_wan=SubResource(id=virtual_wan)
     )
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name, virtual_hub_name, hub)
 
 
-def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None,
-                       vpn_gateway=None, express_route_gateway=None, p2s_vpn_gateway=None):
+def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None):
     SubResource = cmd.get_models('SubResource')
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('address_prefix', address_prefix, False)
         c.update_param('virtual_wan', SubResource(id=virtual_wan) if virtual_wan else None, False)
-        c.update_param('express_route_gateway',
-                       SubResource(id=express_route_gateway) if express_route_gateway else None, True)
-        c.update_param('vpn_gateway', SubResource(id=vpn_gateway) if vpn_gateway else None, True)
-        c.update_param('p2_svpn_gateway', SubResource(id=p2s_vpn_gateway) if p2s_vpn_gateway else None, True)
     return instance
 
 
@@ -335,7 +326,7 @@ def remove_vpn_conn_ipsec_policy(cmd, resource_group_name, gateway_name, connect
 
 # region VpnSites
 def create_vpn_site(cmd, resource_group_name, vpn_site_name, ip_address,
-                    asn, bgp_peering_address,
+                    asn=None, bgp_peering_address=None,
                     virtual_wan=None, location=None, tags=None,
                     site_key=None, address_prefixes=None, is_security_site=None,
                     device_vendor=None, device_model=None, link_speed=None,
@@ -361,6 +352,8 @@ def create_vpn_site(cmd, resource_group_name, vpn_site_name, ip_address,
             'peerWeight': peer_weight
         }
     )
+    if not any([asn, bgp_peering_address, peer_weight]):
+        site.bgp_properties = None
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name, vpn_site_name, site)
 

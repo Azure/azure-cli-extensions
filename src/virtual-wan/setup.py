@@ -29,7 +29,7 @@ DEPENDENCIES = []
 setup(
     name='virtual-wan',
     version=VERSION,
-    description='Manage virtual WANs and virtual hubs.',
+    description='Manage virtual WAN, hubs, VPN gateways and VPN sites.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
