@@ -181,6 +181,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         'https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.')
         c.argument('account_name', help='The name of the storage account within the specified resource group.')
 
+    with self.argument_context('storage account management-policy update') as c:
+        c.argument('account_name', help='The name of the storage account within the specified resource group.')
+
     with self.argument_context('storage logging show') as c:
         c.extra('services', validator=get_char_options_validator('bqt', 'services'), default='bqt')
 
