@@ -42,5 +42,3 @@ def load_arguments(self, _):
         c.argument('code_dir', options_list=['--code-dir'], help='The directory to upload bot code from.')
         c.argument('proj_file', options_list=['--proj-file'], help='The startup project file name (without the .csproj) that needs to be published. Eg: EnterpriseBot.')
         c.argument('sdk_version', options_list=['--sdk-version'], help='The Microsoft Bot Builder SDK version.', arg_type=get_enum_type(['v3', 'v4']))
-
-

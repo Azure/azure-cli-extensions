@@ -6,11 +6,13 @@
 import json
 import os
 import shutil
-import adal  # pylint: disable=import-error
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.mgmt.botservice.models import Bot, BotProperties, Sku
-from azure.cli.command_modules.botservice.custom import create_app, provisionConvergedApp, get_bot_site_name, publish_app as publish_appv3
+from azure.cli.command_modules.botservice.custom import (
+    provisionConvergedApp,
+    get_bot_site_name,
+    publish_app as publish_appv3)
 from azure.cli.command_modules.botservice._webutils import (
     deploy_arm_template,
     enable_zip_deploy,
@@ -126,8 +128,8 @@ def create_bot_json(cmd, client, resource_group_name, resource_name, app_passwor
     }
 
 
-def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,
-               location, sku_name, appInsightsLocation, language, version):
+def create_app(cmd, client, resource_group_name, resource_name, description, kind, appid, password, storageAccountName,  # pylint: disable=too-many-locals
+               location, sku_name, appInsightsLocation, language, version):  # pylint: disable=too-many-locals
     if version == 'v3':
         if kind == 'function':
             template_name = 'functionapp.template.json'
@@ -165,7 +167,7 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
                                     ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(4)))
         site_name = re.sub(r'[^a-z0-9]', '', resource_name[:15] +
                            ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(4)))
-    
+
     appInsightsLocation = get_app_insights_location(location.lower().replace(' ', ''))
     paramsdict = {
         "location": location,
@@ -225,7 +227,7 @@ def get_bot(cmd, client, resource_group_name, resource_name, bot_json=None):
     return raw_bot_properties
 
 
-def create_upload_zip(code_dir, include_node_modules = True):
+def create_upload_zip(code_dir, include_node_modules=True):
     import zipfile
     file_excludes = ['upload.zip', 'db.lock', '.env']
     folder_excludes = ['packages', 'bin', 'obj']
@@ -318,10 +320,10 @@ def publish_app(cmd, client, resource_group_name, resource_name, code_dir=None, 
         raise CLIError('Please supply a valid directory path containing your source code')
     # ensure that the directory contains appropriate post deploy scripts folder
     if 'PostDeployScripts' not in os.listdir(code_dir):
-        prepare_publish_v4(code_dir , proj_file)
+        prepare_publish_v4(code_dir, proj_file)
     #if no package.json present
 
-    zip_filepath = create_upload_zip(code_dir,include_node_modules=False)
+    zip_filepath = create_upload_zip(code_dir, include_node_modules=False)
     site_name = get_bot_site_name(raw_bot_properties.properties.endpoint)
     # first try to put the zip in clirepo
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, site_name, None)
@@ -358,7 +360,7 @@ def publish_app(cmd, client, resource_group_name, resource_name, code_dir=None, 
     return output
 
 
-def download_app(cmd, client, resource_group_name, resource_name, file_save_path=None):
+def download_app(cmd, client, resource_group_name, resource_name, file_save_path=None):  # pylint: disable=too-many-statements, too-many-locals
     # get the bot and ensure it's not a registration only bot
     raw_bot_properties = client.bots.get(
         resource_group_name=resource_group_name,
@@ -372,7 +374,7 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
         raise CLIError('Path name not valid')
     folder_path = os.path.join(file_save_path, resource_name)
     if os.path.exists(folder_path):
-        raise CLIError('The path {0} already exists. Please delete this folder or specify an alternate path'.format(folder_path))
+        raise CLIError('The path {0} already exists. Please delete this folder or specify an alternate path'.format(folder_path))  # pylint: disable=line-too-long
     os.mkdir(folder_path)
 
     site_name = get_bot_site_name(raw_bot_properties.properties.endpoint)
@@ -419,7 +421,7 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
             resource_group_name=resource_group_name,
             name=site_name
         )
-        bot_secret = [item['value'] for item in app_settings if item['name'] == 'BotFileEncryptionKey' or item['name'] == 'botFileSecret']
+        bot_secret = [item['value'] for item in app_settings if item['name'] == 'botFileSecret']
         # write a .env file #todo: write an appsettings.json file
         bot_env = {
             'botFileSecret': bot_secret[0],
@@ -427,9 +429,9 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
             'NODE_ENV': 'development'
         }
         if os.path.exists(os.path.join(folder_path, 'package.json')):
-            with open(os.path.join(folder_path,'.env'), 'w') as f:
+            with open(os.path.join(folder_path, '.env'), 'w') as f:
                 for key, value in bot_env.items():
-                    f.write('{0}={1}\n'.format(key,value))
+                    f.write('{0}={1}\n'.format(key, value))
         else:
             app_settings_path = os.path.join(folder_path, 'appsettings.json')
             existing = None
@@ -442,7 +444,6 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
                 for key, value in bot_env.items():
                     existing[key] = value
                 f.write(json.dumps(existing))
-                                    
 
         if len(bot_secret) != 0:
             bot_env['downloadPath'] = folder_path
