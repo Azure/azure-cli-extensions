@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.8"
+VERSION = "0.2.9"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -32,7 +32,7 @@ setup(
     description='An Azure CLI Extension to manage appservice resources',
     long_description='An Azure CLI Extension to manage appservice resources',
     license='MIT',
-    author='Sisira Panchagnula, Lukasz Stempniewicz',
+    author='Sisira Panchagnula',
     author_email='sisirap@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
