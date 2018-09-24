@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
-      "date": "2018-05-29T19:38:21Z"}}'
+      "date": "2018-09-12T19:25:58Z"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -9,49 +9,48 @@ interactions:
       Connection: [keep-alive]
       Content-Length: ['110']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.29 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
-          AZURECLI/2.0.34]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
+          msrest_azure/0.4.34 resourcemanagementclient/2.0.0 Azure-SDK-For-Python
+          AZURECLI/2.0.46]
       accept-language: [en-US]
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
   response:
-    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2018-05-29T19:38:21Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2018-09-12T19:25:58Z"},"properties":{"provisioningState":"Succeeded"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['384']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 29 May 2018 19:38:23 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:01 GMT']
       expires: ['-1']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 201, message: Created}
 - request:
-    body: '{"sku": {"name": "Standard_LRS"}, "kind": "Storage", "location": "westus",
-      "properties": {"supportsHttpsTrafficOnly": false}}'
+    body: '{"sku": {"name": "Standard_LRS"}, "kind": "Storage", "location": "westus"}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
       CommandName: [storage account create]
       Connection: [keep-alive]
-      Content-Length: ['125']
+      Content-Length: ['74']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc2 Azure-SDK-For-Python AZURECLI/2.0.34]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
+          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.46]
       accept-language: [en-US]
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2018-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002?api-version=2018-07-01
   response:
     body: {string: ''}
     headers:
       cache-control: [no-cache]
       content-length: ['0']
       content-type: [text/plain; charset=utf-8]
-      date: ['Tue, 29 May 2018 19:38:24 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:03 GMT']
       expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/5f08d046-bdb4-4470-a318-b7367bc145e9?monitor=true&api-version=2018-03-01-preview']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/53172315-30f2-40ac-a3d1-113837b3a0a8?monitor=true&api-version=2018-07-01']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
           Microsoft-HTTPAPI/2.0']
@@ -66,17 +65,17 @@ interactions:
       Accept-Encoding: ['gzip, deflate']
       CommandName: [storage account create]
       Connection: [keep-alive]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc2 Azure-SDK-For-Python AZURECLI/2.0.34]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
+          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.46]
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/5f08d046-bdb4-4470-a318-b7367bc145e9?monitor=true&api-version=2018-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/53172315-30f2-40ac-a3d1-113837b3a0a8?monitor=true&api-version=2018-07-01
   response:
-    body: {string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"trustedDirectories":["72f988bf-86f1-41af-91ab-2d7cd011db47"],"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2018-05-29T19:38:24.8090262Z"},"blob":{"enabled":true,"lastEnabledTime":"2018-05-29T19:38:24.8090262Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2018-05-29T19:38:24.6996393Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'}
+    body: {string: '{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002","name":"clitest000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"trustedDirectories":["72f988bf-86f1-41af-91ab-2d7cd011db47"],"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2018-09-12T19:26:03.6149020Z"},"blob":{"enabled":true,"lastEnabledTime":"2018-09-12T19:26:03.6149020Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2018-09-12T19:26:03.3649067Z","primaryEndpoints":{"blob":"https://clitest000002.blob.core.windows.net/","queue":"https://clitest000002.queue.core.windows.net/","table":"https://clitest000002.table.core.windows.net/","file":"https://clitest000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available"}}'}
     headers:
       cache-control: [no-cache]
       content-length: ['1231']
       content-type: [application/json]
-      date: ['Tue, 29 May 2018 19:38:41 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:20 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
@@ -94,19 +93,18 @@ interactions:
       CommandName: [storage account keys list]
       Connection: [keep-alive]
       Content-Length: ['0']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc2 Azure-SDK-For-Python AZURECLI/2.0.34]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
+          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.46]
       accept-language: [en-US]
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2018-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2018-07-01
   response:
-    body: {string: '{"keys":[{"keyName":"key1","value":"hl0+750jGTpxGguugVdQ5aB9CwGAahKhlzqd36L80rf/3O4z489FrcKmlOd3DcF8ihuFd9AeZBiQiAnfrxjuUw==","permissions":"FULL"},{"keyName":"key2","value":"QdA/yDSFCaSHXbuC/V1umKpPyqXSGjF9h+wPvCe1iik8hu20QfJBniQEpops9AKUr+TxoU8uc6JaDvNU3+A7Fg==","permissions":"FULL"}]}'}
+    body: {string: '{"keys":[{"keyName":"key1","value":"jpYRXHWU9WQyfXFQjbyRIUPR7bqyS2pfDsKzWhpWdtBgv/dukOFQXqnBTMEjClBa+2VVTZUplLKWcS/nwNe+cw==","permissions":"FULL"},{"keyName":"key2","value":"X41Cy9o3+Y+c410smUaDYBIvWTsXmb/vFEYfq145rUfPINlGR35EZn/7uxs348ezgg8wlhUPd14vTIJ+tU9BDA==","permissions":"FULL"}]}'}
     headers:
       cache-control: [no-cache]
       content-length: ['288']
       content-type: [application/json]
-      date: ['Tue, 29 May 2018 19:38:43 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:22 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
@@ -125,19 +123,18 @@ interactions:
       CommandName: [storage account keys list]
       Connection: [keep-alive]
       Content-Length: ['0']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.29 azure-mgmt-storage/2.0.0rc2 Azure-SDK-For-Python AZURECLI/2.0.34]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
+          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.46]
       accept-language: [en-US]
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2018-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2018-07-01
   response:
-    body: {string: '{"keys":[{"keyName":"key1","value":"hl0+750jGTpxGguugVdQ5aB9CwGAahKhlzqd36L80rf/3O4z489FrcKmlOd3DcF8ihuFd9AeZBiQiAnfrxjuUw==","permissions":"FULL"},{"keyName":"key2","value":"QdA/yDSFCaSHXbuC/V1umKpPyqXSGjF9h+wPvCe1iik8hu20QfJBniQEpops9AKUr+TxoU8uc6JaDvNU3+A7Fg==","permissions":"FULL"}]}'}
+    body: {string: '{"keys":[{"keyName":"key1","value":"jpYRXHWU9WQyfXFQjbyRIUPR7bqyS2pfDsKzWhpWdtBgv/dukOFQXqnBTMEjClBa+2VVTZUplLKWcS/nwNe+cw==","permissions":"FULL"},{"keyName":"key2","value":"X41Cy9o3+Y+c410smUaDYBIvWTsXmb/vFEYfq145rUfPINlGR35EZn/7uxs348ezgg8wlhUPd14vTIJ+tU9BDA==","permissions":"FULL"}]}'}
     headers:
       cache-control: [no-cache]
       content-length: ['288']
       content-type: [application/json]
-      date: ['Tue, 29 May 2018 19:38:43 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:22 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
@@ -153,110 +150,110 @@ interactions:
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:44 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:24 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003?restype=share
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:44 GMT']
-      etag: ['"0x8D5C59BCA377123"']
-      last-modified: ['Tue, 29 May 2018 19:38:44 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:24 GMT']
+      etag: ['"0x8D618E5A0CD0F00"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:24 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 201, message: Created}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:44 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:24 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000004?restype=share
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:44 GMT']
-      etag: ['"0x8D5C59BCA73DFDA"']
-      last-modified: ['Tue, 29 May 2018 19:38:44 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:24 GMT']
+      etag: ['"0x8D618E5A121073D"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:24 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 201, message: Created}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:45 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:25 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/dir1?restype=directory
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:44 GMT']
-      etag: ['"0x8D5C59BCAAA3C2A"']
-      last-modified: ['Tue, 29 May 2018 19:38:45 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:24 GMT']
+      etag: ['"0x8D618E5A17BE3AD"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:25 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-request-server-encrypted: ['true']
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 201, message: Created}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:45 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:25 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000004/dir2?restype=directory
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:45 GMT']
-      etag: ['"0x8D5C59BCAE665B7"']
-      last-modified: ['Tue, 29 May 2018 19:38:45 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:25 GMT']
+      etag: ['"0x8D618E5A1DA2055"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:26 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-request-server-encrypted: ['true']
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 201, message: Created}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
       x-ms-content-length: ['524288']
-      x-ms-date: ['Tue, 29 May 2018 19:38:46 GMT']
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:26 GMT']
       x-ms-type: [file]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/dir1/source_file.txt
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:46 GMT']
-      etag: ['"0x8D5C59BCB45FC37"']
-      last-modified: ['Tue, 29 May 2018 19:38:46 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:25 GMT']
+      etag: ['"0x8D618E5A2240CCC"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:26 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-request-server-encrypted: ['true']
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 201, message: Created}
 - request:
     body: '!!! The request body has been omitted from the recording because its size
@@ -264,11 +261,11 @@ interactions:
     headers:
       Connection: [keep-alive]
       Content-Length: ['524288']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:46 GMT']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:26 GMT']
       x-ms-range: [bytes=0-524287]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
       x-ms-write: [update]
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000003/dir1/source_file.txt?comp=range
@@ -276,22 +273,22 @@ interactions:
     body: {string: ''}
     headers:
       content-md5: [WQcVkAmdId1DmJZZIzi/lQ==]
-      date: ['Tue, 29 May 2018 19:38:46 GMT']
-      etag: ['"0x8D5C59BCB65E614"']
-      last-modified: ['Tue, 29 May 2018 19:38:46 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:26 GMT']
+      etag: ['"0x8D618E5A245CDF8"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:26 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
       x-ms-request-server-encrypted: ['true']
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 201, message: Created}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:46 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:27 GMT']
+      x-ms-version: ['2018-03-28']
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000003/dir1/source_file.txt
   response:
@@ -299,46 +296,46 @@ interactions:
     headers:
       content-length: ['524288']
       content-type: [application/octet-stream]
-      date: ['Tue, 29 May 2018 19:38:46 GMT']
-      etag: ['"0x8D5C59BCB65E614"']
-      last-modified: ['Tue, 29 May 2018 19:38:46 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:27 GMT']
+      etag: ['"0x8D618E5A245CDF8"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:26 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       x-ms-server-encrypted: ['true']
       x-ms-type: [File]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-copy-source: ['https://clitestnoihgzqsrptijn64v.file.core.windows.net/sharei3f5p3oyefjldaqdxji/dir1/source_file.txt']
-      x-ms-date: ['Tue, 29 May 2018 19:38:47 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-copy-source: ['https://clitestvk4xpeo4ghsrieu5l.file.core.windows.net/sharevleh2uic6nbvn2tinmy/dir1/source_file.txt']
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:28 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000004/dir2/destination_file.txt
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:48 GMT']
-      etag: ['"0x8D5C59BCCC6EEEC"']
-      last-modified: ['Tue, 29 May 2018 19:38:48 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:27 GMT']
+      etag: ['"0x8D618E5A32BF9DC"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:28 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
-      x-ms-copy-id: [a3d87539-dfa4-4da5-adae-f8d8b99970a0]
+      x-ms-copy-id: [edaaa614-875d-465e-ad64-c6ef5af80344]
       x-ms-copy-status: [success]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 202, message: Accepted}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:49 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:28 GMT']
+      x-ms-version: ['2018-03-28']
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000004/dir2/destination_file.txt
   response:
@@ -346,51 +343,51 @@ interactions:
     headers:
       content-length: ['524288']
       content-type: [application/octet-stream]
-      date: ['Tue, 29 May 2018 19:38:48 GMT']
-      etag: ['"0x8D5C59BCCC6EEEC"']
-      last-modified: ['Tue, 29 May 2018 19:38:48 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:28 GMT']
+      etag: ['"0x8D618E5A32BF9DC"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:28 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
-      x-ms-copy-completion-time: ['Tue, 29 May 2018 19:38:48 GMT']
-      x-ms-copy-id: [a3d87539-dfa4-4da5-adae-f8d8b99970a0]
+      x-ms-copy-completion-time: ['Wed, 12 Sep 2018 19:26:28 GMT']
+      x-ms-copy-id: [edaaa614-875d-465e-ad64-c6ef5af80344]
       x-ms-copy-progress: [524288/524288]
-      x-ms-copy-source: ['https://clitestnoihgzqsrptijn64v.file.core.windows.net/sharei3f5p3oyefjldaqdxji/dir1/source_file.txt']
+      x-ms-copy-source: ['https://clitestvk4xpeo4ghsrieu5l.file.core.windows.net/sharevleh2uic6nbvn2tinmy/dir1/source_file.txt']
       x-ms-copy-status: [success]
       x-ms-server-encrypted: ['true']
       x-ms-type: [File]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-copy-source: ['https://clitestnoihgzqsrptijn64v.file.core.windows.net/sharei3f5p3oyefjldaqdxji/dir1/source_file.txt']
-      x-ms-date: ['Tue, 29 May 2018 19:38:49 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-copy-source: ['https://clitestvk4xpeo4ghsrieu5l.file.core.windows.net/sharevleh2uic6nbvn2tinmy/dir1/source_file.txt']
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:29 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000004/dir2/destination_file.txt
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:49 GMT']
-      etag: ['"0x8D5C59BCD7A59FA"']
-      last-modified: ['Tue, 29 May 2018 19:38:50 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:28 GMT']
+      etag: ['"0x8D618E5A3BBB2C1"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:29 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
-      x-ms-copy-id: [94d28d98-bd63-446f-bc95-2f0bd82e43c2]
+      x-ms-copy-id: [1b74881e-04cd-4a09-b73f-24ec36f777fe]
       x-ms-copy-status: [success]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 202, message: Accepted}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-date: ['Tue, 29 May 2018 19:38:50 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:29 GMT']
+      x-ms-version: ['2018-03-28']
     method: HEAD
     uri: https://clitest000002.file.core.windows.net/share000004/dir2/destination_file.txt
   response:
@@ -398,42 +395,42 @@ interactions:
     headers:
       content-length: ['524288']
       content-type: [application/octet-stream]
-      date: ['Tue, 29 May 2018 19:38:50 GMT']
-      etag: ['"0x8D5C59BCD7A59FA"']
-      last-modified: ['Tue, 29 May 2018 19:38:50 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:29 GMT']
+      etag: ['"0x8D618E5A3BBB2C1"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:29 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
-      x-ms-copy-completion-time: ['Tue, 29 May 2018 19:38:49 GMT']
-      x-ms-copy-id: [94d28d98-bd63-446f-bc95-2f0bd82e43c2]
+      x-ms-copy-completion-time: ['Wed, 12 Sep 2018 19:26:29 GMT']
+      x-ms-copy-id: [1b74881e-04cd-4a09-b73f-24ec36f777fe]
       x-ms-copy-progress: [524288/524288]
-      x-ms-copy-source: ['https://clitestnoihgzqsrptijn64v.file.core.windows.net/sharei3f5p3oyefjldaqdxji/dir1/source_file.txt']
+      x-ms-copy-source: ['https://clitestvk4xpeo4ghsrieu5l.file.core.windows.net/sharevleh2uic6nbvn2tinmy/dir1/source_file.txt']
       x-ms-copy-status: [success]
       x-ms-server-encrypted: ['true']
       x-ms-type: [File]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 200, message: OK}
 - request:
     body: null
     headers:
       Connection: [keep-alive]
       Content-Length: ['0']
-      User-Agent: [Azure-Storage/1.2.0rc0-1.1.0 (Python CPython 3.6.2; Windows 10)
-          AZURECLI/2.0.34]
-      x-ms-copy-source: ['https://clitestnoihgzqsrptijn64v.file.core.windows.net/sharei3f5p3oyefjldaqdxji/dir1%5Csource_file.txt']
-      x-ms-date: ['Tue, 29 May 2018 19:38:50 GMT']
-      x-ms-version: ['2017-07-29']
+      User-Agent: [Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.6.5; Windows
+          10) AZURECLI/2.0.46]
+      x-ms-copy-source: ['https://clitestvk4xpeo4ghsrieu5l.file.core.windows.net/sharevleh2uic6nbvn2tinmy/dir1%5Csource_file.txt']
+      x-ms-date: ['Wed, 12 Sep 2018 19:26:30 GMT']
+      x-ms-version: ['2018-03-28']
     method: PUT
     uri: https://clitest000002.file.core.windows.net/share000004/dir2/destination_file.txt
   response:
     body: {string: ''}
     headers:
-      date: ['Tue, 29 May 2018 19:38:50 GMT']
-      etag: ['"0x8D5C59BCE0D17A7"']
-      last-modified: ['Tue, 29 May 2018 19:38:51 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:30 GMT']
+      etag: ['"0x8D618E5A4577CE5"']
+      last-modified: ['Wed, 12 Sep 2018 19:26:30 GMT']
       server: [Windows-Azure-File/1.0 Microsoft-HTTPAPI/2.0]
       transfer-encoding: [chunked]
-      x-ms-copy-id: [f95ecfd3-8b8d-4334-b158-75b974259f89]
+      x-ms-copy-id: [7e596b33-c4e8-4700-99bc-b1286e534db7]
       x-ms-copy-status: [success]
-      x-ms-version: ['2017-07-29']
+      x-ms-version: ['2018-03-28']
     status: {code: 202, message: Accepted}
 - request:
     body: null
@@ -444,20 +441,20 @@ interactions:
       Connection: [keep-alive]
       Content-Length: ['0']
       Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.2 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.29 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
-          AZURECLI/2.0.34]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
+          msrest_azure/0.4.34 resourcemanagementclient/2.0.0 Azure-SDK-For-Python
+          AZURECLI/2.0.46]
       accept-language: [en-US]
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
   response:
     body: {string: ''}
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 29 May 2018 19:38:51 GMT']
+      date: ['Wed, 12 Sep 2018 19:26:30 GMT']
       expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkc0QUVZT0lUSDdXWkVSNUpTTlBOSVdHUEpQSlM2NVRLTDUyNnwzM0FERUQ4NjczN0M0MjU2LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdOTVlHSTU3QkVIS0RRNjNKTDNEQ0gzWFJOU1dVNkxCNUdCNHxCODEyRkE0RThBNUFBM0YwLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01']
       pragma: [no-cache]
       strict-transport-security: [max-age=31536000; includeSubDomains]
       x-content-type-options: [nosniff]

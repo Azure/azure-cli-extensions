@@ -47,12 +47,14 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
     def test_storage_blob_upload_small_file(self, resource_group, storage_account):
-        self.verify_blob_upload_and_download(resource_group, storage_account, 1, 'block', 0)
+        for blob_type in ['block', 'page']:
+            self.verify_blob_upload_and_download(resource_group, storage_account, 1, blob_type, 0)
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
     def test_storage_blob_upload_midsize_file(self, resource_group, storage_account):
-        self.verify_blob_upload_and_download(resource_group, storage_account, 4096, 'block', 0)
+        for blob_type in ['block', 'page']:
+            self.verify_blob_upload_and_download(resource_group, storage_account, 4096, 'block', 0)
 
     def verify_blob_upload_and_download(self, group, account, file_size_kb, blob_type,
                                         block_count=0, skip_download=False):
@@ -72,8 +74,13 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob list -c {} -otable --num-results 1', account_info, container)
 
-        self.storage_cmd('storage blob show -n {} -c {}', account_info, blob_name, container) \
-            .assert_with_checks(JMESPathCheck('name', blob_name))
+        show_result = self.storage_cmd('storage blob show -n {} -c {}', account_info, blob_name,
+                                       container).get_output_in_json()
+        self.assertEqual(show_result.get('name'), blob_name)
+        if blob_type == 'page':
+            self.assertEqual(type(show_result.get('properties').get('pageRanges')), list)
+        else:
+            self.assertEqual(show_result.get('properties').get('pageRanges'), None)
 
         expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
         sas = self.storage_cmd('storage blob generate-sas -n {} -c {} --expiry {} --permissions '
@@ -366,6 +373,22 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
         with self.assertRaises(Exception):
             self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --type append --if-none-match *', account_info,
                              container, local_file, blob_name)
+
+    @ResourceGroupPreparer(location='westcentralus')
+    def test_storage_blob_update_service_properties(self, resource_group):
+        storage_account = self.create_random_name(prefix='account', length=24)
+
+        self.cmd('storage account create -n {} -g {} --kind StorageV2'.format(storage_account, resource_group))
+        account_info = self.get_account_info(resource_group, storage_account)
+
+        self.storage_cmd('storage blob service-properties show', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', False))
+
+        self.storage_cmd('storage blob service-properties update --static-website --index-document index.html '
+                         '--404-document error.html', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', True),
+                                JMESPathCheck('staticWebsite.errorDocument_404Path', 'error.html'),
+                                JMESPathCheck('staticWebsite.indexDocument', 'index.html'))
 
 
 if __name__ == '__main__':

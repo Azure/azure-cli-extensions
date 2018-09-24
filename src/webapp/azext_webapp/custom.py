@@ -10,6 +10,7 @@ from knack.util import CLIError
 from azure.mgmt.web.models import (AppServicePlan, SkuDescription, SnapshotRecoveryRequest, SnapshotRecoveryTarget)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.custom import (
+    enable_zip_deploy,
     create_webapp,
     update_app_settings,
     _get_site_credential,
@@ -29,7 +30,7 @@ from .create_util import (
     get_lang_from_content,
     web_client_factory
 )
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, JAVA_RUNTIME_NAME, STATIC_RUNTIME_NAME)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME)
 logger = get_logger(__name__)
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
@@ -41,7 +42,6 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     client = web_client_factory(cmd.cli_ctx)
     # the code to deploy is expected to be the current directory the command is running from
     src_dir = os.getcwd()
-
     # if dir is empty, show a message in dry run
     do_deployment = False if os.listdir(src_dir) == [] else True
 
@@ -58,9 +58,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     else:
         sku = lang_details.get("default_sku")
         language = lang_details.get("language")
-        is_java = language.lower() == JAVA_RUNTIME_NAME
-        is_skip_build = is_java or language.lower() == STATIC_RUNTIME_NAME
-        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME or is_java else OS_DEFAULT
+        is_skip_build = language.lower() == STATIC_RUNTIME_NAME
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME else OS_DEFAULT
         # detect the version
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')
@@ -157,24 +156,20 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
         _ping_scm_site(cmd, rg_name, name)
 
-        if is_java:
-            zip_file_path = src_path + '\\\\' + lang_details.get('file_loc')[0]
-        else:
-            logger.warning("Creating zip with contents of dir %s ...", src_dir)
-            # zip contents & deploy
-            zip_file_path = zip_contents_from_dir(src_dir, language)
+        logger.warning("Creating zip with contents of dir %s ...", src_dir)
+        # zip contents & deploy
+        zip_file_path = zip_contents_from_dir(src_dir, language)
 
         logger.warning("Preparing to deploy %s contents to app.",
                        '' if is_skip_build else 'and build')
-        _zip_deploy(cmd, rg_name, name, zip_file_path)
-        if not is_java:
-            # Remove the file afer deployment, handling exception if user removed the file manually
-            try:
-                os.remove(zip_file_path)
-            except OSError:
-                pass
+        enable_zip_deploy(cmd, rg_name, name, zip_file_path)
+        # Remove the file afer deployment, handling exception if user removed the file manually
+        try:
+            os.remove(zip_file_path)
+        except OSError:
+            pass
     else:
-        logger.warning('No known package (Node, ASP.NET, .NETCORE, Java or Static Html) '
+        logger.warning('No known package (Node, ASP.NET, .NETCORE, or Static Html) '
                        'found skipping zip and deploy process')
     create_json.update({'app_url': url})
     logger.warning("All done.")
@@ -247,7 +242,10 @@ def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
     if port is None:
         port = 0  # Will auto-select a free port from 1024-65535
         logger.info('No port defined, creating on random free port')
-    tunnel_server = TunnelServer('', port, name, user_name, user_password)
+    host_name = name
+    if slot is not None:
+        host_name += "-" + slot
+    tunnel_server = TunnelServer('', port, host_name, user_name, user_password)
     config = get_site_configs(cmd, resource_group_name, name, slot)
     _ping_scm_site(cmd, resource_group_name, name)
 
@@ -272,49 +270,3 @@ def _start_tunnel(tunnel_server, remote_debugging_enabled):
     if remote_debugging_enabled is False:
         logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
-
-
-def _zip_deploy(cmd, rg_name, name, zip_path):
-    user_name, password = _get_site_credential(cmd.cli_ctx, rg_name, name)
-    scm_url = _get_scm_url(cmd, rg_name, name)
-    zip_url = scm_url + '/api/zipdeploy?isAsync=true'
-
-    import urllib3
-    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
-    headers = authorization
-    headers['content-type'] = 'application/octet-stream'
-
-    import requests
-    import os
-    # Read file content
-    with open(os.path.realpath(os.path.expanduser(zip_path)), 'rb') as fs:
-        zip_content = fs.read()
-        requests.post(zip_url, data=zip_content, headers=headers)
-    # keep checking for status of the deployment
-    deployment_url = scm_url + '/api/deployments/latest'
-    response = requests.get(deployment_url, headers=authorization)
-    if response.json()['status'] != 4:
-        logger.warning(response.json()['progress'])
-        _check_deployment_status(deployment_url, authorization)
-
-
-def _check_deployment_status(deployment_url, authorization):
-    num_trials = 1
-    import requests
-    while num_trials < 200:
-        response = requests.get(deployment_url, headers=authorization)
-        res_dict = response.json()
-        num_trials = num_trials + 1
-        if res_dict['status'] == 5:
-            logger.warning("Zip deployment failed status {}".format(
-                res_dict['status_text']
-            ))
-            break
-        elif res_dict['status'] == 4:
-            break
-        logger.warning(res_dict['progress'])
-    # if the deployment is taking longer than expected
-    r = requests.get(deployment_url, headers=authorization)
-    if r.json()['status'] != 4:
-        logger.warning("""Deployment is taking longer than expected. Please verify status at '{}'
-            beforing launching the app""".format(deployment_url))

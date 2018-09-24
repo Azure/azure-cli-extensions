@@ -1,0 +1,67 @@
+interactions:
+- request:
+    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
+      "query": "project id", "options": {"$top": 2, "$skip": 2}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [graph query]
+      Connection: [keep-alive]
+      Content-Length: ['958']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
+          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
+          AZURECLI/2.0.46]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
+  response:
+    body: {string: '{"totalRecords":9969,"count":2,"data":{"columns":[{"name":"id","type":"string"}],"rows":[["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AaaaaAaaaaaaaaAaaaaAaaaaaaaaaaa-AAA-a/providers/Microsoft.EventHub/namespaces/eventhub-local-aaaaaaa"],["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AaaaaAaaaaaaaaAaaaaAaaaaaaaaaaa-AAA-a/providers/Microsoft.Network/loadBalancers/LB-aaa-aaa-aaa-aa-a-aa"]]},"facets":[],"resultTruncated":"false","$skipToken":"82aw3vQlArEastJ24LABY8oPgQLesIyAyzYs2g6/aOOOmJHSYFj39fODurJV5e2tTFFebWcfxn7n5edicA8u6HgSJe1GCEk5HjxwLkeJiye2LVZDC7TaValkJbsk9JqY4yv5c7iRiLqgO34RbHEeVfLJpa56u4RZu0K+GpQvnBRPyAhy3KbwhZWpU5Nnqnud2whGb5WKdlL8xF7wnQaUnUN2lns8WwqwM4rc0VK4BbQt/WfWWcYJivSAyB3m4Z5g73df1KiU4C+K8auvUMpLPYVxxnKC/YZz42YslVAWXXUmuGOaM2SfLHRO6o4O9DgXlUgYjeFWqIbAkmMiVEqU"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['773']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 11 Sep 2018 18:28:34 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-tenant-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
+      "query": "project id", "options": {"$skipToken": "82aw3vQlArEastJ24LABY8oPgQLesIyAyzYs2g6/aOOOmJHSYFj39fODurJV5e2tTFFebWcfxn7n5edicA8u6HgSJe1GCEk5HjxwLkeJiye2LVZDC7TaValkJbsk9JqY4yv5c7iRiLqgO34RbHEeVfLJpa56u4RZu0K+GpQvnBRPyAhy3KbwhZWpU5Nnqnud2whGb5WKdlL8xF7wnQaUnUN2lns8WwqwM4rc0VK4BbQt/WfWWcYJivSAyB3m4Z5g73df1KiU4C+K8auvUMpLPYVxxnKC/YZz42YslVAWXXUmuGOaM2SfLHRO6o4O9DgXlUgYjeFWqIbAkmMiVEqU",
+      "$top": 1, "$skip": 4}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [graph query]
+      Connection: [keep-alive]
+      Content-Length: ['1256']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
+          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
+          AZURECLI/2.0.46]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
+  response:
+    body: {string: '{"totalRecords":9969,"count":1,"data":{"columns":[{"name":"id","type":"string"}],"rows":[["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AaaaaAaaaaaaaaAaaaaAaaaaaaaaaaa-AAA-a/providers/Microsoft.Network/networkSecurityGroups/nsgSubnet-0"]]},"facets":[],"resultTruncated":"false","$skipToken":"ceXHDV/5yajn1stYtSCyQ32ULLF0jGv9oazG14qvdgwdAQNDUPHjt6MIlJZ2Y/K8z7fb+qo9wguegf8QYW0c7rqwtXUghJvKkPBENcn1O17nQxtjXeq6s8sD64D8t5P9NIHntl70D95yuVUjHF6/dsvVK33wKyvORwPTCbZrSj+pfz2yd5spa93izzOu06PcyFvcvCJAzZ5scImnVDqS700hR63izVwyETJtQluoqSPYkhxAOVk/+ThWlN0DKy9OfUE34M9PZSQz2QTWXKpUK1+okRfH/B2RVdXro60ZnNMrdPtglA5w7oEs5Ivq20IE4RtPfg97UEbkfyMP9huC="}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['597']
+      content-type: [application/json; charset=utf-8]
+      date: ['Tue, 11 Sep 2018 18:28:33 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-tenant-writes: ['1197']
+    status: {code: 200, message: OK}
+version: 1

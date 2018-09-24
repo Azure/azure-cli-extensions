@@ -9,4 +9,4 @@ This checklist is used to make sure that common guidelines for a pull request ar
 
 For new extensions:
 
-- [ ] My extension description/summary conforms to the [Extension Summary Guidelines](https://github.com/Azure/azure-cli-extensions/blob/master/docs/extension_summary_guidelines.md).
+- [ ] My extension description/summary conforms to the [Extension Summary Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/extension_summary_guidelines.md).

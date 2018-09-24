@@ -8,15 +8,16 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
-        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2017-11-09')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-03-01-preview')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2018-07-01')
+        register_resource_type('latest', CUSTOM_MGMT_PREVIEW_STORAGE, '2018-03-01-preview')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
@@ -113,6 +114,10 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.argument('https_only', help='Allows https traffic only to storage service.',
                       arg_type=get_three_state_flag())
+        self.argument('file_aad', arg_type=get_three_state_flag(),
+                      help='Allows Azure File Active Directory integration, which will support SMB access to '
+                           'azure files using AAD. Requires AAD domain service setup: https://'
+                           'docs.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-enable')
         self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
         self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_STORAGE,
                       min_api='2017-06-01',
@@ -132,10 +137,13 @@ class StorageArgumentContext(AzArgumentContext):
 
 
 class StorageCommandGroup(AzCommandGroup):
-    def storage_command(self, name, method_name=None, command_type=None, oauth=False, **kwargs):
+    def storage_command(self, name, method_name=None, command_type=None, oauth=False, generic_update=None, **kwargs):
         """ Registers an Azure CLI Storage Data Plane command. These commands always include the four parameters which
         can be used to obtain a storage client: account-name, account-key, connection-string, and sas-token. """
-        if command_type:
+        if generic_update:
+            command_name = '{} {}'.format(self.group_name, name) if self.group_name else name
+            self.generic_update_command(name, **kwargs)
+        elif command_type:
             command_name = self.command(name, method_name, command_type=command_type, **kwargs)
         else:
             command_name = self.command(name, method_name, **kwargs)
@@ -156,19 +164,6 @@ class StorageCommandGroup(AzCommandGroup):
     def storage_custom_command_oauth(self, *args, **kwargs):
         _merge_new_exception_handler(kwargs, self.get_handler_suppress_403())
         self.storage_custom_command(*args, oauth=True, **kwargs)
-
-    def get_handler_suppress_404(self):
-        def handler(ex):
-            from azure.cli.core.profiles import get_sdk
-
-            t_error = get_sdk(self.command_loader.cli_ctx,
-                              CUSTOM_DATA_STORAGE,
-                              'common._error#AzureMissingResourceHttpError')
-            if isinstance(ex, t_error):
-                return
-            raise ex
-
-        return handler
 
     def get_handler_suppress_403(self):
         def handler(ex):
@@ -241,16 +236,16 @@ If you want to use the old authentication method and allow querying for the righ
 
 
 def _merge_new_exception_handler(kwargs, handler):
-    if kwargs.get('exception_handler'):
-        def new_handler(ex):
-            first = kwargs['exception_handler']
-            try:
-                first(ex)
-            except Exception as raised_ex:  # pylint: disable=broad-except
-                handler(raised_ex)
-        kwargs['exception_handler'] = new_handler
-    else:
-        kwargs['exception_handler'] = handler
+    first = kwargs.get('exception_handler')
+
+    def new_handler(ex):
+        try:
+            handler(ex)
+        except Exception:  # pylint: disable=broad-except
+            if not first:
+                raise
+            first(ex)
+    kwargs['exception_handler'] = new_handler
 
 
 COMMAND_LOADER_CLS = StorageCommandsLoader
