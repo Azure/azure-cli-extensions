@@ -445,7 +445,7 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
                     existing[key] = value
                 f.write(json.dumps(existing))
 
-        if len(bot_secret) != 0:
+        if not bot_secret:
             bot_env['downloadPath'] = folder_path
             return bot_env
 
