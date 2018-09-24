@@ -23,6 +23,7 @@ from azure.cli.core._profile import Profile  # pylint: disable=unused-import
 
 logger = get_logger(__name__)
 
+
 def get_app_insights_location(key):
     region_map = {
         'australiaeast': 'southeastasia',
@@ -215,7 +216,6 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
     return create_bot_json(cmd, client, resource_group_name, resource_name, app_password=password)
 
 
-
 def get_bot(cmd, client, resource_group_name, resource_name, bot_json=None):
     raw_bot_properties = client.bots.get(
         resource_group_name=resource_group_name,
@@ -282,7 +282,6 @@ def prepare_publish_v4(code_dir, proj_file):
                 raise CLIError('expected --proj-file parameter for csharp v4 project.')
             with open('.deployment', 'w') as f:
                 f.write('[config]\n')
-                #f.write('SCM_SCRIPT_GENERATOR_ARGS=--aspNetCore {0}/{0}.csproj\n'.format(proj_file))
                 proj_file = proj_file.lower()
                 proj_file = proj_file if proj_file.endswith('.csproj') else proj_file + '.csproj'
                 f.write('SCM_SCRIPT_GENERATOR_ARGS=--aspNetCore {0}\n'.format(find_proj(proj_file)))
@@ -321,7 +320,6 @@ def publish_app(cmd, client, resource_group_name, resource_name, code_dir=None, 
     # ensure that the directory contains appropriate post deploy scripts folder
     if 'PostDeployScripts' not in os.listdir(code_dir):
         prepare_publish_v4(code_dir, proj_file)
-    #if no package.json present
 
     zip_filepath = create_upload_zip(code_dir, include_node_modules=False)
     site_name = get_bot_site_name(raw_bot_properties.properties.endpoint)
@@ -350,7 +348,6 @@ def publish_app(cmd, client, resource_group_name, resource_name, code_dir=None, 
     output = enable_zip_deploy(cmd, resource_group_name, site_name, 'upload.zip')
     os.remove('upload.zip')
     if os.path.exists(os.path.join('.', 'package.json')):
-        #rungulp for node if file is present (NOTE: temporary measure! add deploy.cmd to all bot templates)
         payload = {
             'command': 'npm install',
             'dir': r'site\wwwroot'
@@ -413,7 +410,7 @@ def download_app(cmd, client, resource_group_name, resource_name, file_save_path
             os.path.exists(os.path.join(folder_path, 'deploy.cmd'))):
         shutil.copyfile(os.path.join(folder_path, 'deploy.cmd'),
                         os.path.join(folder_path, 'PostDeployScripts', 'deploy.cmd.template'))
-    #if the bot contains a bot
+    # if the bot contains a bot
     bot_file_path = os.path.join(folder_path, '{0}.bot'.format(resource_name))
     if os.path.exists(bot_file_path):
         app_settings = get_app_settings(
