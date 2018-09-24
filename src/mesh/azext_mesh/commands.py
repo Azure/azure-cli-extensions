@@ -130,17 +130,18 @@ def transform_secretvalue_list(result):
 def transform_gateway(result):
     """Transform a gateway list to table output. """
     return OrderedDict([('Name', result.get('name')),
-                        ('SourceNetwork', result.get('source_network')),
-                        ('DestinationNetwork', result.get('destination_network')),
+                        # ('SourceNetwork', result.get('sourceNetwork')),
+                        # ('DestinationNetwork', result.get('destinationNetwork')),
                         ('Location', result.get('location')),
-                        ('ProvisioningState', result.get('provisioning_state')),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('ProvisioningState', result.get('provisioningState')),
                         ('Status', result.get('status'))
                         ])
 
 
 def transform_gateway_list(result):
     """Transform a gateway list to table output. """
-    return [transform_secret(secret) for secret in result]
+    return [transform_gateway(gateway) for gateway in result]
 
 
 def load_command_table(self, _):
@@ -238,7 +239,7 @@ def load_command_table(self, _):
     #     g.command('list', 'list_versions', table_transformer=transform_secretvalue_list)
 
     with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
-        g.command('show', 'get')
+        g.command('show', 'get', table_transformer=transform_gateway)
         g.command('delete', 'delete', confirmation=True)
 
     with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:

@@ -11,6 +11,7 @@ import json
 import ssl
 import sys
 import os
+from pprint import pprint
 from time import sleep
 
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
@@ -243,7 +244,7 @@ def _get_first_network_ref_name(application_resource):
     for service in services:
         if service['properties']['networkRefs']:
             for network_ref in service['properties']['networkRefs']:
-                network_name = _parse_network_ref(network_ref['name'])
+                network_name = network_ref['name']
                 if network_name:
                     break
     return network_name
@@ -254,7 +255,6 @@ def _display_successful_application(resource_group_name, resource, template_reso
     network_name = _get_first_network_ref_name(resource)
     # to be populated with gateway resource information from rp if available
     gateway_resource_information = None
-
     if network_name:
         # gateway resource info in template
         gateway_resource_template_info = _get_gateway(template_resources, network_name)
@@ -269,7 +269,7 @@ def _display_successful_application(resource_group_name, resource, template_reso
     if gateway_resource_information:
         public_ip_address = gateway_resource_information.ip_address
         logger.warning("application {application} is deployed on network {network} with public ip address {ip}"
-                       .format(application=application_name, network=network_name, ip=public_ip_address))
+                       .format(application=application_name, network=_parse_network_ref(network_name), ip=public_ip_address))
     else:
         logger.warning("application {application} is deployed".format(application=application_name))
 
@@ -380,8 +380,10 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
         logger.warning("deployment template validation failed:")
         logger.warning(validation.error)
     else:
+        kwargs = {'long_running_operation_timeout': 5}
+
         operation_status_poller = sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name,
-                                              deployment_name, properties)
+                                              deployment_name, properties, **kwargs)
         if no_wait:
             return operation_status_poller
 
@@ -392,7 +394,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
             wait_time += timestep
 
         parsed_template = smc.deployments.validate(resource_group_name, deployment_name, properties).properties.additional_properties['validatedResources']
-
+        # pprint(parsed_template)
         return _display_deployment_status(cli_ctx, operation_status_poller.status(), resource_group_name,
                                           deployment_name, parsed_template)
 
