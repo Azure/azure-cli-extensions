@@ -18,3 +18,7 @@ def load_command_table(self, _):
 
     with self.command_group('bot', botOperations_commandType) as g:
         g.custom_command('create', 'create')
+        g.custom_command('show', 'get_bot')
+        g.custom_command('download', 'download_app')
+        g.custom_command('prepare-publish', 'prepare_publish')
+        g.custom_command('publish', 'publish_app')
