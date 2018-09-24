@@ -273,7 +273,7 @@ def find_proj(proj_file):
     raise CLIError('project file not found. Please pass a valid --proj-file.')
 
 
-def prepare_publish_v4(code_dir, proj_file):
+def _prepare_publish_v4(code_dir, proj_file):
     save_cwd = os.getcwd()
     os.chdir(code_dir)
     try:
@@ -319,7 +319,7 @@ def publish_app(cmd, client, resource_group_name, resource_name, code_dir=None, 
         raise CLIError('Please supply a valid directory path containing your source code')
     # ensure that the directory contains appropriate post deploy scripts folder
     if 'PostDeployScripts' not in os.listdir(code_dir):
-        prepare_publish_v4(code_dir, proj_file)
+        _prepare_publish_v4(code_dir, proj_file)
 
     zip_filepath = create_upload_zip(code_dir, include_node_modules=False)
     site_name = get_bot_site_name(raw_bot_properties.properties.endpoint)
