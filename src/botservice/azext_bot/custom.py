@@ -24,7 +24,7 @@ from azure.cli.core._profile import Profile  # pylint: disable=unused-import
 logger = get_logger(__name__)
 
 
-def get_app_insights_location(key):
+def _get_app_insights_location(key):
     region_map = {
         'australiaeast': 'southeastasia',
         'australiacentral': 'southeastasia',
@@ -169,7 +169,7 @@ def create_app(cmd, client, resource_group_name, resource_name, description, kin
         site_name = re.sub(r'[^a-z0-9]', '', resource_name[:15] +
                            ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(4)))
 
-    appInsightsLocation = get_app_insights_location(location.lower().replace(' ', ''))
+    appInsightsLocation = _get_app_insights_location(location.lower().replace(' ', ''))
     paramsdict = {
         "location": location,
         "kind": kind,
