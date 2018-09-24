@@ -216,7 +216,7 @@ helps['eventgrid event-subscription create'] = """
             az eventgrid event-subscription create  --name es3 \\
                 --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
-                --advanced-filter data.blobType Stringin BlockBlob
+                --advanced-filter data.blobType StringIn BlockBlob
                 --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
         - name: Create a new event subscription for an Azure subscription, with a filter specifying a subject prefix.
           text: |
