@@ -9,7 +9,7 @@ from knack.help_files import helps
 
 helps['monitor log-analytics'] = """
     type: group
-    short-summary: Commands for querying data in Log Analytics workspaces.
+git    short-summary: Commands for querying data in Log Analytics workspaces.
 """
 
 helps['monitor log-analytics query'] = """
