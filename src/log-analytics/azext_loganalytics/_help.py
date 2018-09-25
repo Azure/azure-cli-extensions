@@ -16,16 +16,16 @@ helps['monitor log-analytics query'] = """
     type: command
     short-summary: Query a Log Analytics workspace.
     parameters:
-        - workspace: --workspace -w
+        - name: --workspace
           type: string
           short-summary: GUID of the Log Analytics workspace.
-        - analytics-query: --analytics-query
+        - name: --analytics-query
           type: string
           short-summary: Query to execute over the Log Analytics data.
-        - timespan: --timespan -t
+        - name: --timespan
           type: string
           short-summary: Timespan over which to query data. Defaults to all data.
-        - workspaces: --workspaces
+        - name: --workspaces
           type: array
           short-summary: Additional workspaces to union data for querying. Specify additional workspace IDs separated by commas.
     examples:
