@@ -29,7 +29,7 @@ DEPENDENCIES = []
 setup(
     name='webapp',
     version=VERSION,
-    description='An Azure CLI Extension to manage appservice resources',
+    description='Additional commands for Azure AppService.',
     long_description='An Azure CLI Extension to manage appservice resources',
     license='MIT',
     author='Sisira Panchagnula',
