@@ -16,20 +16,18 @@ helps['monitor log-analytics query'] = """
     type: command
     short-summary: Query a Log Analytics workspace.
     parameters:
-        - name: |
-            --workspace -w
-          type: string
-          short-summary: GUID of the Log Analytics workspace.
-        - name: --analytics-query
-          type: string
-          short-summary: Query to execute over the Log Analytics data.
-        - name: |
-            --timespan -t
-          type: string
-          short-summary: Timespan over which to query data. Defaults to all data.
-        - name: --workspaces
-          type: array
-          short-summary: Additional workspaces to union data for querying. Specify additional workspace IDs separated by commas.
+      - name: --workspace
+        type: string
+        short-summary: GUID of the Log Analytics workspace.
+      - name: --analytics-query
+        type: string
+        short-summary: Query to execute over the Log Analytics data.
+      - name: --timespan
+        type: string
+        short-summary: Timespan over which to query data. Defaults to all data.
+      - name: --workspaces
+        type: array
+        short-summary: Additional workspaces to union data for querying. Specify additional workspace IDs separated by space.
     examples:
         - name: Execute a simple query over past 3.5 days.
           text: |
