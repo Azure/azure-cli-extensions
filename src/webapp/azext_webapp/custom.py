@@ -69,7 +69,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         locs = client.list_geo_regions(sku, True)
         available_locs = []
         for loc in locs:
-            available_locs.append(loc.geo_region_name)
+            available_locs.append(loc.name)
         location = available_locs[0]
     # Remove spaces from the location string, incase the GeoRegion string is used
     loc_name = location.replace(" ", "")
