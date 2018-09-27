@@ -15,10 +15,6 @@ helps['monitor log-analytics'] = """
 helps['monitor log-analytics query'] = """
     type: command
     short-summary: Query a Log Analytics workspace.
-    parameters:
-      - name: --analytics-query
-        type: string
-        short-summary: Query to execute over the Log Analytics data.
     examples:
       - name: Execute a simple query over past 3.5 days.
         text: |
