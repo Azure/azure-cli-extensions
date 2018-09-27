@@ -1,8 +1,3 @@
-0.1.4
-++++++++++++++++++
-
-* Fix generation for --analytics-query help text.
-
 0.1.3
 ++++++++++++++++++
 
