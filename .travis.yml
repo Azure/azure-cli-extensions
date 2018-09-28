@@ -28,6 +28,10 @@ jobs:
       script: ./scripts/ci/verify_linter.sh
       python: 3.6
     - stage: verify
+      env: PURPOSE='Load All Commands'
+      script: ./scripts/ci/verify_module_load.sh
+      python: 3.6
+    - stage: verify
       env: PURPOSE='IndexRefDocVerify'
       script: ./scripts/ci/test_index_ref_doc.sh
       python: 3.6
