@@ -31,6 +31,8 @@ while read line; do
         continue
     fi
     set -e
+    echo "Load all commands"
+    azdev verify load-all
     echo "Running linter"
     azdev cli-lint --ci --extensions $ext
     az extension remove -n $ext

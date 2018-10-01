@@ -24,8 +24,8 @@ jobs:
       script: ./scripts/ci/test_source.sh
       python: 3.6
     - stage: verify
-      env: PURPOSE='Run Linter On Modified Index Entries'
-      script: ./scripts/ci/verify_linter.sh
+      env: PURPOSE='Load and Lint Modified Index Entries'
+      script: ./scripts/ci/verify_modified_index.sh
       python: 3.6
     - stage: verify
       env: PURPOSE='IndexRefDocVerify'
