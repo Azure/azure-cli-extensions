@@ -39,4 +39,4 @@ while read line; do
     echo $ext "extension has been removed."
 done <<< "$modified_extensions"
 
-echo "OK. Completed Verification of Modified Extensions"
+echo "OK. Completed Verification of Modified Extensions."
