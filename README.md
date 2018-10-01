@@ -35,7 +35,7 @@ Add your extension to the index to make it available in these CLI commands:
 
 ## FAQ
 
-### How to generate sha256digest for index.json?
+### How to generate sha256 digest for index.json?
 
 MacOS
 ```
@@ -47,6 +47,10 @@ Windows / PowerShell
 Get-FileHash path_to_whl.whl -Algorithm SHA256
 ```
 
+Linux
+```
+echo -n foobar | sha256sum
+```
 Note: It should all be lowercase in index.json otherwise CI will fail.
 
 # Contributing
