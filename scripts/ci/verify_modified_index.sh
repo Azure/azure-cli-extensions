@@ -31,10 +31,12 @@ while read line; do
         continue
     fi
     set -e
+    echo "Load all commands"
+    azdev verify load-all
     echo "Running linter"
     azdev cli-lint --ci --extensions $ext
     az extension remove -n $ext
     echo $ext "extension has been removed."
 done <<< "$modified_extensions"
 
-echo "OK. Completed Linting"
+echo "OK. Completed Verification of Modified Extensions."
