@@ -11,7 +11,9 @@ docker build . -t sttramer/az-ext-list-publisher:0.2.0
 To run locally:
 
 ```bash
-docker run --rm -e TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID \
+docker run \
+    --rm \
+    -e TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID \
     -e TRAVIS_REPO_SLUG=$TRAVIS_REPO_SLUG \
     -e TRAVIS_COMMIT=$TRAVIS_COMMIT \
     -e GH_TOKEN=$GH_TOKEN \
@@ -24,7 +26,9 @@ docker run --rm -e TRAVIS_BUILD_ID=$TRAVIS_BUILD_ID \
 For example:
 
 ```bash
-docker run --rm -e TRAVIS_BUILD_ID=1234 \
+docker run \
+    --rm \
+    -e TRAVIS_BUILD_ID=1234 \
     -e TRAVIS_REPO_SLUG='azure/azure-cli-extensions' \
     -e TRAVIS_COMMIT=abcdef1234 \
     -e GH_TOKEN=$GH_TOKEN \

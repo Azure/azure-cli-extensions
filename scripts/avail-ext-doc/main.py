@@ -58,18 +58,15 @@ def update_extensions_list(template_file, output_file):
         template = Template(doc_template.read())
     if template is None:
         logger.error("Failed to read template %s", template_file)
-        exit(1)
+        raise RuntimeError("Failed to read template file.")
     with open(output_file, 'w') as output:
-        output.write(template.render(extensions=get_extensions(),
-                        date=datetime.date.today().strftime("%m/%d/%Y")))
+        output.write(template.render(extensions=get_extensions(), date=datetime.date.today().strftime("%m/%d/%Y")))
 
 def date_only_diff(diff):
     if not diff:
         return True
     stats = diff.split('\t')
-    if stats[0] == 1 and stats[1] == 1:
-        return True
-    return False
+    return stats[0] == 1 and stats[1] == 1
 
 def commit_update(doc_repo):
     doc_repo.git.add(doc_repo.working_tree_dir)
@@ -103,4 +100,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
