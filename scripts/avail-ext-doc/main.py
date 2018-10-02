@@ -57,8 +57,7 @@ def update_extensions_list(template_file, output_file):
     with open(template_file, 'r') as doc_template:
         template = Template(doc_template.read())
     if template is None:
-        logger.error("Failed to read template %s", template_file)
-        raise RuntimeError("Failed to read template file.")
+        raise RuntimeError("Failed to read template file {}".format(template_file))
     with open(output_file, 'w') as output:
         output.write(template.render(extensions=get_extensions(), date=datetime.date.today().strftime("%m/%d/%Y")))
 
