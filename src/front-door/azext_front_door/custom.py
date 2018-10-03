@@ -7,9 +7,10 @@ import sys
 
 from azure.cli.core.util import sdk_no_wait
 
+from knack.log import get_logger
+
 from ._client_factory import cf_frontdoor, cf_waf_policies, cf_fd_frontend_endpoints
 
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -91,7 +92,6 @@ def delete_frontdoor_resource_property_entry(resource, prop):
     """ Factory method for creating delete functions. """
 
     def delete_func(cmd, resource_group_name, resource_name, item_name, no_wait=False):  # pylint: disable=unused-argument
-        from azure.cli.core.util import sdk_no_wait
 
         client = cf_frontdoor(cmd.cli_ctx, None)
         item = client.get(resource_group_name, resource_name)
@@ -129,14 +129,15 @@ def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type,
         child_name_1=child_name)
 
 
+# pylint: disable=too-many-locals
 def create_front_door(cmd, resource_group_name, front_door_name, backend_address,
-                     friendly_name=None, tags=None, disabled=None, no_wait=False,
-                     backend_host_header=None, frontend_host_name=None,
-                     probe_path='/', probe_protocol='Https', probe_interval=30,
-                     accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest'):
+                      friendly_name=None, tags=None, disabled=None, no_wait=False,
+                      backend_host_header=None, frontend_host_name=None,
+                      probe_path='/', probe_protocol='Https', probe_interval=30,
+                      accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest'):
     from azext_front_door.vendored_sdks.models import (
         FrontDoor, FrontendEndpoint, BackendPool, Backend, HealthProbeSettingsModel, LoadBalancingSettingsModel,
-        RoutingRule, CacheConfiguration)
+        RoutingRule)
 
     # set the default names (consider making user-settable)
     backend_pool_name = 'DefaultBackendPool'
@@ -217,7 +218,8 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
             )
         ]
     )
-    return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update, resource_group_name, front_door_name, front_door)
+    return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
+                       resource_group_name, front_door_name, front_door)
 
 
 def update_front_door(instance, tags=None):
@@ -248,7 +250,7 @@ def create_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item
                                          endpoint, 'name')
 
 
-def update_fd_frontend_endpoints(instance, cmd, host_name=None, session_affinity_enabled=None,
+def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enabled=None,
                                  session_affinity_ttl=None, waf_policy=None):
     from azext_front_door.vendored_sdks.models import SubResource
     with UpdateContext(instance) as c:
@@ -264,7 +266,7 @@ def configure_fd_frontend_endpoint_https(cmd, resource_group_name, front_door_na
                                          certificate_type=None, certificate_source=None, vault=None):
     if disable:
         return cf_fd_frontend_endpoints(cmd.cli_ctx, None).disable_https(resource_group_name, front_door_name,
-                                                                             frontend_endpoint_name)
+                                                                         frontend_endpoint_name)
     # if not being disabled, then must be enabled
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
     config = CustomHttpsConfiguration(
@@ -290,24 +292,25 @@ def create_fd_backend_pools(cmd, resource_group_name, front_door_name, item_name
         health_probe_settings=SubResource(id=probe_settings) if probe_settings else None,
         resource_state='Disabled' if disabled else 'Enabled',
         backends=[
-        {
-            'address': address,
-            'http_port': http_port,
-            'https_port': https_port,
-            'enabled_state': 'Disabled' if disabled else 'Enabled',
-            'priority': priority,
-            'weight': weight,
-            'backend_host_header': backend_host_header or address
-        }]
+            {
+                'address': address,
+                'http_port': http_port,
+                'https_port': https_port,
+                'enabled_state': 'Disabled' if disabled else 'Enabled',
+                'priority': priority,
+                'weight': weight,
+                'backend_host_header': backend_host_header or address
+            }
+        ]
     )
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'backend_pools', pool, 'name')
 
 
-def update_fd_backend_pools(instance, cmd, load_balancing_settings=None, probe_settings=None):
+def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settings=None):
     from azext_front_door.vendored_sdks.models import SubResource
     with UpdateContext(instance) as c:
-        c.update_param('loadBalancingSettings', SubResource(id=load_balancing_settings) \
-            if load_balancing_settings else None, False)
+        c.update_param('loadBalancingSettings', SubResource(id=load_balancing_settings)
+                       if load_balancing_settings else None, False)
         c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
     return instance
 
@@ -430,13 +433,13 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name')
 
 
-def update_fd_routing_rules(instance, cmd, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None,
+def update_fd_routing_rules(instance, frontend_endpoints=None, accepted_protocols=None, patterns_to_match=None,
                             custom_forwarding_path=None, forwarding_protocol=None, backend_pool=None, enabled=None,
                             dynamic_compression=None, query_parameter_strip_directive=None):
     from azext_front_door.vendored_sdks.models import SubResource
     with UpdateContext(instance) as c:
-        c.update_param('frontend_endpoints', [SubResource(id=x) for x in frontend_endpoints] \
-            if frontend_endpoints else None, False)
+        c.update_param('frontend_endpoints', [SubResource(id=x) for x in frontend_endpoints]
+                       if frontend_endpoints else None, False)
         c.update_param('accepted_protocols', accepted_protocols, False)
         c.update_param('patterns_to_match', patterns_to_match, False)
         c.update_param('custom_forwarding_path', custom_forwarding_path, False)

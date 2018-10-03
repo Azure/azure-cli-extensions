@@ -3,11 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import sys
+from knack.log import get_logger
 
 from ._client_factory import network_client_factory
-
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -30,6 +28,7 @@ class UpdateContext(object):
             setattr(self.instance, prop, value)
 
 
+# pylint: disable=unused-argument
 def create_express_route_connection(cmd, resource_group_name, express_route_gateway_name, connection_name,
                                     peering, circuit_name=None, authorization_key=None, routing_weight=None):
     ExpressRouteConnection, SubResource = cmd.get_models('ExpressRouteConnection', 'SubResource')
@@ -43,6 +42,7 @@ def create_express_route_connection(cmd, resource_group_name, express_route_gate
     return client.create_or_update(resource_group_name, express_route_gateway_name, connection_name, connection)
 
 
+# pylint: disable=unused-argument
 def update_express_route_connection(instance, cmd, circuit_name=None, peering=None, authorization_key=None,
                                     routing_weight=None):
     SubResource = cmd.get_models('SubResource')
@@ -56,7 +56,7 @@ def update_express_route_connection(instance, cmd, circuit_name=None, peering=No
 
 
 def create_express_route_gateway(cmd, resource_group_name, express_route_gateway_name, location=None, tags=None,
-                                 min=2, max=None, virtual_hub=None):
+                                 min_val=2, max_val=None, virtual_hub=None):
     ExpressRouteGateway, SubResource = cmd.get_models('ExpressRouteGateway', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).express_route_gateways
     gateway = ExpressRouteGateway(
@@ -65,11 +65,11 @@ def create_express_route_gateway(cmd, resource_group_name, express_route_gateway
         virtual_hub=SubResource(id=virtual_hub) if virtual_hub else None
     )
     if min or max:
-        gateway.auto_scale_configuration = {'bounds': {'min': min, 'max': max}}
+        gateway.auto_scale_configuration = {'bounds': {'min': min_val, 'max': max_val}}
     return client.create_or_update(resource_group_name, express_route_gateway_name, gateway)
 
 
-def update_express_route_gateway(instance, cmd, tags=None, min=None, max=None):
+def update_express_route_gateway(instance, cmd, tags=None, min_val=None, max_val=None):
 
     def _ensure_autoscale():
         if not instance.auto_scale_configuration:
@@ -84,10 +84,10 @@ def update_express_route_gateway(instance, cmd, tags=None, min=None, max=None):
         instance.tags = tags
     if min is not None:
         _ensure_autoscale()
-        instance.auto_scale_configuration.bounds.min = min
+        instance.auto_scale_configuration.bounds.min = min_val
     if max is not None:
         _ensure_autoscale()
-        instance.auto_scale_configuration.bounds.max = max
+        instance.auto_scale_configuration.bounds.max = max_val
     return instance
 
 
@@ -131,7 +131,7 @@ def list_express_route_ports(cmd, resource_group_name=None):
 def create_express_route(cmd, circuit_name, resource_group_name, bandwidth_in_mbps, peering_location=None,
                          service_provider_name=None, location=None, tags=None, no_wait=False,
                          sku_family=None, sku_tier=None, allow_global_reach=None, express_route_port=None):
-    
+
     ExpressRouteCircuit, ExpressRouteCircuitSku, ExpressRouteCircuitServiceProviderProperties, SubResource = \
         cmd.get_models(
             'ExpressRouteCircuit', 'ExpressRouteCircuitSku', 'ExpressRouteCircuitServiceProviderProperties',
@@ -172,9 +172,9 @@ def update_express_route(instance, cmd, bandwidth_in_mbps=None, peering_location
 
     if bandwidth_in_mbps is not None:
         if not instance.express_route_port:
-            instance.service_provider_properties.bandwith_in_mbps = bandwidth_in_mbps
+            instance.service_provider_properties.bandwith_in_mbps = float(bandwidth_in_mbps)
         else:
-            instance.bandwidth_in_gbps = (int(bandwidth_in_mbps) / 1000)
+            instance.bandwidth_in_gbps = (float(bandwidth_in_mbps) / 1000)
 
     if sku_family is not None:
         instance.sku.family = sku_family
@@ -189,6 +189,7 @@ def update_express_route(instance, cmd, bandwidth_in_mbps=None, peering_location
         instance.allow_global_reach = allow_global_reach
 
     return instance
+
 
 def _generic_list(cli_ctx, operation_name, resource_group_name):
     ncf = network_client_factory(cli_ctx)

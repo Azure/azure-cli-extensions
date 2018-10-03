@@ -44,7 +44,7 @@ def get_name_or_id_validator(dest, child_type=None, resource_type='Frontdoors', 
         setattr(namespace, dest, ids if is_list else ids[0])
 
     return _validate_name_or_id
-    
+
 
 def validate_waf_policy(cmd, namespace):
     get_name_or_id_validator(
@@ -77,9 +77,11 @@ def validate_backend_pool(cmd, namespace):
     get_name_or_id_validator('backend_pool', 'backendPools')(cmd, namespace)
 
 
+# pylint: disable=protected-access
 class MatchConditionAction(argparse._AppendAction):
 
-    def parse_match_condition(self, values, option_string):
+    # pylint: disable=no-self-use
+    def parse_match_condition(self, values):
 
         from azext_front_door.vendored_sdks.models import MatchCondition1
 
@@ -97,5 +99,5 @@ class MatchConditionAction(argparse._AppendAction):
             raise CLIError('usage error: --match-condition VARIABLE OPERATOR [VALUE [VALUE ...]]')
 
     def __call__(self, parser, namespace, values, option_string=None):
-        match_condition = self.parse_match_condition(values, option_string)
+        match_condition = self.parse_match_condition(values)
         super(MatchConditionAction, self).__call__(parser, namespace, match_condition, option_string)

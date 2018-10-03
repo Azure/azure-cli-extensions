@@ -3,13 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands.client_factory import get_subscription_id
+
 from knack.util import CLIError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
-
-
-from azure.cli.core.commands.client_factory import get_subscription_id
 
 
 def validate_express_route_peering(cmd, namespace):
@@ -59,25 +58,30 @@ def validate_virtual_hub(cmd, namespace):
         )
 
 
-def validate_circuit_bandwidth(cmd, namespace):
+def validate_circuit_bandwidth(namespace):
     try:
         bandwidth = namespace.bandwidth_in_mbps
     except AttributeError:
         return
 
-    bandwidth_comps = bandwidth.split(' ')
+    if len(bandwidth) == 1:
+        bandwidth_comps = bandwidth[0].split(' ')
+    else:
+        bandwidth_comps = bandwidth
+
     usage_error = CLIError('usage error: --bandwidth INT {Mbps,Gbps}')
     if len(bandwidth_comps) == 1:
         logger.warning('interpretting --bandwidth as Mbps. Consider being explicit: Mbps, Gbps')
+        namespace.bandwidth_in_mbps = float(bandwidth_comps[0])
         return
-    elif len(bandwidth_comps > 2):
+    elif len(bandwidth_comps) > 2:
         raise usage_error
 
-    if int(bandwidth_comps[0]) and bandwidth_comps[1].lower() in ['mbps', 'gbps']:
+    if float(bandwidth_comps[0]) and bandwidth_comps[1].lower() in ['mbps', 'gbps']:
         unit = bandwidth_comps[1].lower()
         if unit == 'gbps':
-            namespace.bandwidth_in_mbps = int(bandwidth_comps[0]) * 1000
+            namespace.bandwidth_in_mbps = float(bandwidth_comps[0]) * 1000
         else:
-            namespace.bandwidth_in_mbps = int(bandwidth_comps[0])
+            namespace.bandwidth_in_mbps = float(bandwidth_comps[0])
     else:
         raise usage_error

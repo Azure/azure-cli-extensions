@@ -4,15 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType, DeploymentOutputLongRunningOperation
-from azure.cli.core.commands.arm import deployment_validate_table_format, handle_template_based_exception
+from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import (
     cf_express_route_gateways, cf_express_route_connections, cf_express_route_ports, cf_express_route_port_locations,
     cf_express_route_links, cf_express_route_circuits)
 
 
-# pylint: disable=too-many-locals, too-many-statements`
+# pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
     network_er_sdk = CliCommandType(

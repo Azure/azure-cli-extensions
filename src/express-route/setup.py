@@ -33,7 +33,7 @@ setup(
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/express_route',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/express-route',
     classifiers=CLASSIFIERS,
     package_data={'azext_express_route': ['azext_metadata.json']},
     packages=find_packages(),

@@ -4,20 +4,17 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType, DeploymentOutputLongRunningOperation
-from azure.cli.core.commands.arm import deployment_validate_table_format, handle_template_based_exception
+from azure.cli.core.commands import CliCommandType
 
 from .custom import (
     list_frontdoor_resource_property, get_frontdoor_resource_property_entry, delete_frontdoor_resource_property_entry)
-from ._client_factory import (
-    cf_frontdoor, cf_fd_backend_pools, cf_fd_endpoints, cf_fd_frontend_endpoints, cf_fd_probes, cf_fd_load_balancing,
-    cf_fd_routing_rules, cf_waf_policies)
+from ._client_factory import cf_frontdoor, cf_fd_endpoints, cf_waf_policies
 
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
-    frontdoor_custom=CliCommandType(operations_tmpl='azext_front_door.custom#{}')
+    frontdoor_custom = CliCommandType(operations_tmpl='azext_front_door.custom#{}')
 
     frontdoor_sdk = CliCommandType(
         operations_tmpl='azext_front_door.vendored_sdks.operations.front_doors_operations#FrontDoorsOperations.{}',
@@ -96,7 +93,7 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_fd_backend')
         g.custom_command('list', 'list_fd_backends')
         g.custom_command('remove', 'remove_fd_backend')
- 
+
     # with self.command_group('network front-door frontend-endpoint', frontdoor_sdk) as g:
     #     g.custom_command('create', 'create_fd_frontend_endpoint')
     #     g.command('delete', 'delete')

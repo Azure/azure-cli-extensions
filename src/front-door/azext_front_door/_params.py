@@ -12,8 +12,9 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
-    validate_waf_policy, validate_keyvault, validate_load_balancing_settings, validate_probe_settings,
+    validate_waf_policy, validate_load_balancing_settings, validate_probe_settings,
     validate_frontend_endpoints, validate_backend_pool, MatchConditionAction)
+
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
@@ -74,7 +75,7 @@ def load_arguments(self, _):
         c.argument('session_affinity_enabled', arg_type=get_three_state_flag(), help='Whether to allow session affinity on this host.')
         c.argument('session_affinity_ttl', help='The TTL to use in seconds for session affinity.', type=int)
         c.argument('waf_policy', help='Name or ID of a web application firewall policy.', validator=validate_waf_policy)
-    
+
     with self.argument_context('network front-door load-balancing') as c:
         c.argument('additional_latency', type=int, help='The additional latency in milliseconds for probes to fall in the lowest latency bucket.')
         c.argument('sample_size', type=int, help='The number of samples to consider for load balancing decisions.')

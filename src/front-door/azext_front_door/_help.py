@@ -64,11 +64,6 @@ helps['network front-door backend-pool show'] = """
     short-summary: Get the details of a Front Door backend pool.
 """
 
-helps['network front-door backend-pool update'] = """
-    type: command
-    short-summary: Update settings of a Front Door backend pool.
-"""
-
 helps['network front-door backend-pool delete'] = """
     type: command
     short-summary: Delete a Front Door backend pool.
@@ -118,11 +113,6 @@ helps['network front-door frontend-endpoint show'] = """
     short-summary: Get the details of a Front Door frontend endpoint.
 """
 
-helps['network front-door frontend-endpoint update'] = """
-    type: command
-    short-summary: Update settings of a Front Door frontend endpoint.
-"""
-
 helps['network front-door frontend-endpoint delete'] = """
     type: command
     short-summary: Delete a Front Door frontend endpoint.
@@ -148,11 +138,6 @@ helps['network front-door load-balancing list'] = """
 helps['network front-door load-balancing show'] = """
     type: command
     short-summary: Get the details of a Front Door load-balancing settings bundle.
-"""
-
-helps['network front-door load-balancing update'] = """
-    type: command
-    short-summary: Update settings of Front Door load-balancing settings bundle.
 """
 
 helps['network front-door load-balancing delete'] = """
@@ -182,11 +167,6 @@ helps['network front-door probe show'] = """
     short-summary: Get the details of a Front Door health probe settings bundle.
 """
 
-helps['network front-door probe update'] = """
-    type: command
-    short-summary: Update settings of a Front Door health probe settings bundle.
-"""
-
 helps['network front-door probe delete'] = """
     type: command
     short-summary: Delete Front Door health probe settings.
@@ -212,11 +192,6 @@ helps['network front-door routing-rule list'] = """
 helps['network front-door routing-rule show'] = """
     type: command
     short-summary: Get the details of a Front Door routing rule.
-"""
-
-helps['network front-door routing-rule update'] = """
-    type: command
-    short-summary: Update settings of a Front Door routing rule.
 """
 
 helps['network front-door routing-rule delete'] = """
@@ -280,7 +255,7 @@ helps['network waf-policy custom-rule create'] = """
 
               Operator allowed values: {operators}
 
-            Multiple match conditions can be specified by using more than one `--match-condition` argument.            
+            Multiple match conditions can be specified by using more than one `--match-condition` argument.
 """.format(
     variables=', '.join([x.value for x in MatchCondition]),
     operators=', '.join([x.value for x in Operator])

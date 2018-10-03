@@ -31,8 +31,8 @@ def load_arguments(self, _):
 
     with self.argument_context('network express-route gateway') as c:
         c.argument('express_route_gateway_name', er_gateway_name_type, options_list=['--name', '-n'])
-        c.argument('min', help='Minimum number of scale units deployed for gateway.', type=int, arg_group='Autoscale')
-        c.argument('max', help='Maximum number of scale units deployed for gateway.', type=int, arg_group='Autoscale')
+        c.argument('min_val', help='Minimum number of scale units deployed for gateway.', type=int, arg_group='Autoscale')
+        c.argument('max_val', help='Maximum number of scale units deployed for gateway.', type=int, arg_group='Autoscale')
         c.argument('virtual_hub', help='Name or ID of the virtual hub to associate with the gateway.', validator=validate_virtual_hub)
 
     with self.argument_context('network express-route gateway connection') as c:
@@ -72,7 +72,7 @@ def load_arguments(self, _):
         c.argument('circuit_name', er_circuit_name_type, options_list=('--name', '-n'))
         c.argument('sku_family', sku_family_type)
         c.argument('sku_tier', sku_tier_type)
-        c.argument('bandwidth_in_mbps', options_list='--bandwidth', help='Bandwidth of the circuit. Should be Mbps for service providers or Gbps for ExpressRoute ports. Usage: INT {Mbps,Gbps}', validator=validate_circuit_bandwidth)
+        c.argument('bandwidth_in_mbps', nargs='+', options_list='--bandwidth', help='Bandwidth of the circuit. Should be Mbps for service providers or Gbps for ExpressRoute ports. Usage: INT {Mbps,Gbps}', validator=validate_circuit_bandwidth)
         c.argument('service_provider_name', options_list=('--provider',), help="Name of the ExpressRoute Service Provider.")
         c.argument('peering_location', help="Name of the peering location.")
         c.argument('device_path', options_list=('--path',), arg_type=get_enum_type(device_path_values))
