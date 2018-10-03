@@ -351,8 +351,8 @@ def update_event_subscription(
     event_delivery_schema = instance.event_delivery_schema
     retry_policy = instance.retry_policy
 
-    if event_delivery_schema is None:
-        event_delivery_schema = EVENTGRID_SCHEMA
+    if endpoint_type.lower() != WEBHOOK_DESTINATION.lower() and endpoint is None:
+        raise CLIError('Invalid usage: Since --endpoint-type is specified, a valid endpoint must also be specified.')
 
     if endpoint is not None:
         event_subscription_destination = _get_endpoint_destination(endpoint_type, endpoint)

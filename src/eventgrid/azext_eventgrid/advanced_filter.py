@@ -82,12 +82,12 @@ class EventSubscriptionAddFilter(argparse._AppendAction):
         elif operator.lower() == STRINGCONTAINS.lower():
             advanced_filter = StringContainsAdvancedFilter(key=key, values=values[2:])
         else:
-            raise CLIError('--advanced-filter: The specified filter operator is not a valid operator. Supported values are ' +
-                NUMBERIN + ',' + NUMBERNOTIN + ',' + STRINGIN + ',' +
-                STRINGNOTIN + ',' + STRINGBEGINSWITH + ',' +
-                STRINGCONTAINS + ',' + STRINGENDSWITH + ',' +
-                NUMBERGREATERTHAN + ',' + NUMBERGREATERTHANOREQUALS + ',' +
-                NUMBERLESSTHAN + ',' + NUMBERLESSTHANOREQUALS + ',' + BOOLEQUALS)
+            raise CLIError("--advanced-filter: The specified filter operator '{}' is not a valid operator. Supported values are ".format(operator) +
+                NUMBERIN + "," + NUMBERNOTIN + "," + STRINGIN + "," +
+                STRINGNOTIN + "," + STRINGBEGINSWITH + "," +
+                STRINGCONTAINS + "," + STRINGENDSWITH + "," +
+                NUMBERGREATERTHAN + "," + NUMBERGREATERTHANOREQUALS + "," +
+                NUMBERLESSTHAN + "," + NUMBERLESSTHANOREQUALS + "," + BOOLEQUALS + ".")
         if namespace.advanced_filter is None:
             namespace.advanced_filter = []
         namespace.advanced_filter.append(advanced_filter)

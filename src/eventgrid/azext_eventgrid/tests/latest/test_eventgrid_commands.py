@@ -10,7 +10,7 @@ from knack.util import CLIError
 
 
 class EventGridTests(ScenarioTest):
-    # @unittest.skip("Temporarily disabled as this is not yet enabled with the 2018-09-15-preview API version")
+    @unittest.skip("Temporarily disabled as this is not yet enabled with the 2018-09-15-preview API version")
     def test_topic_types(self):
 
         self.kwargs.update({
@@ -42,7 +42,7 @@ class EventGridTests(ScenarioTest):
             'domain_name': domain_name,
             'domain_name2': domain_name2,
             'domain_name3': domain_name3,
-            'location': 'eastus2euap',
+            'location': 'westcentralus',
             'event_subscription_name': event_subscription_name,
             'endpoint_url': endpoint_url,
             'endpoint_baseurl': endpoint_baseurl
@@ -206,7 +206,7 @@ class EventGridTests(ScenarioTest):
             'topic_name': topic_name,
             'topic_name2': topic_name2,
             'topic_name3': topic_name3,
-            'location': 'eastus2euap',
+            'location': 'westcentralus',
             'event_subscription_name': event_subscription_name,
             'endpoint_url': endpoint_url,
             'endpoint_baseurl': endpoint_baseurl
@@ -367,8 +367,8 @@ class EventGridTests(ScenarioTest):
 
         self.cmd('az eventgrid event-subscription delete --resource-id {scope} --name {event_subscription_name}')
 
-    @ResourceGroupPreparer(name_prefix='clieventgridrg', location='eastus2euap')
-    @StorageAccountPreparer(name_prefix='clieventgrid', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='clieventgridrg', location='westcentralus')
+    @StorageAccountPreparer(name_prefix='clieventgrid', location='westcentralus')
     def test_create_event_subscriptions_to_resource(self, resource_group, resource_group_location, storage_account):
         event_subscription_name = self.create_random_name(prefix='cli', length=40)
         endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
@@ -547,7 +547,7 @@ class EventGridTests(ScenarioTest):
 
         self.kwargs.update({
             'topic_name': topic_name,
-            'location': 'eastus2euap',
+            'location': 'westcentralus',
             'event_subscription_name': event_subscription_name,
             'endpoint_url': endpoint_url,
             'endpoint_baseurl': endpoint_baseurl
