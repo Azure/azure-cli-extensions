@@ -4,13 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import re
-from six.moves.urllib.parse import quote  # pylint: disable=import-error,relative-import
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
 from dateutil import parser
 
-from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_eventgrid.mgmt.eventgrid.models import (
     EventSubscription,
     EventSubscriptionUpdateParameters,
@@ -127,7 +125,6 @@ def cli_domain_create_or_update(
 
 
 def cli_eventgrid_event_subscription_create(
-        cmd,
         client,
         event_subscription_name,
         endpoint,
@@ -188,7 +185,6 @@ def cli_eventgrid_event_subscription_create(
 
 
 def cli_eventgrid_event_subscription_delete(
-        cmd,
         client,
         event_subscription_name,
         resource_id):
@@ -199,7 +195,6 @@ def cli_eventgrid_event_subscription_delete(
 
 
 def event_subscription_setter(
-        cmd,
         client,
         parameters,
         event_subscription_name,
@@ -213,7 +208,6 @@ def event_subscription_setter(
 
 
 def cli_eventgrid_event_subscription_get(
-        cmd,
         client,
         event_subscription_name,
         resource_id,
@@ -276,7 +270,6 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
 
 
 def event_subscription_getter(
-        cmd,
         client,
         event_subscription_name,
         resource_id):
@@ -441,8 +434,8 @@ def _validate_retry_policy(max_delivery_attempts, event_ttl):
 
 def _get_event_delivery_schema(event_delivery_schema):
     if event_delivery_schema is None:
-        return None        
-    elif event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
+        return None
+    if event_delivery_schema.lower() == EVENTGRID_SCHEMA.lower():
         event_delivery_schema = EVENTGRID_SCHEMA
     elif event_delivery_schema.lower() == CUSTOM_INPUT_SCHEMA.lower():
         event_delivery_schema = CUSTOM_INPUT_SCHEMA
@@ -464,8 +457,7 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
        "azure-automation" not in endpoint.lower() and \
        "eventgridextension" not in endpoint.lower() and \
-       "logic.azure.com" not in endpoint.lower() and \
-       "hookbin" not in endpoint.lower():
+       "logic.azure" not in endpoint.lower():
         logger.warning("If the provided endpoint doesn't support subscription validation " +
                        "handshake, navigate to the validation URL that you receive in the " +
                        "subscription validation event, in order to complete the event " +
@@ -487,7 +479,7 @@ def _get_input_schema_and_mapping(
         raise CLIError('The provided --input-schema is not valid. The supported values are: ' +
                        EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
 
-    if input_schema == EVENTGRID_SCHEMA or input_schema == CLOUDEVENTV01_SCHEMA:
+    if input_schema in (EVENTGRID_SCHEMA, CLOUDEVENTV01_SCHEMA):
         # Ensure that custom input mappings are not specified
         if input_mapping_fields is not None or input_mapping_default_values is not None:
             raise CLIError('--input-mapping-default-values and --input-mapping-fields should be ' +
@@ -520,20 +512,28 @@ def _list_event_subscriptions_by_resource_id(client, resource_id):
             id_parts = list(filter(None, resource_id.split('/')))
             if len(id_parts) < 5:
                 # Azure subscriptions or Resource group
-                if (id_parts[0].lower() == "subscriptions"):
-                    client.config.subscription_id = id_parts[1]
-                    if client.config.subscription_id is None:
-                        raise CLIError("The specified value for resource-id is not in the expected format. A valid value for subscription must be provided.")
-                    if len(id_parts) == 2:
-                        return client.list_global_by_subscription_for_topic_type("Microsoft.Resources.Subscriptions")
-                    elif len(id_parts) == 4:
-                        if (id_parts[2].lower() == "resourcegroups"):
-                            resource_group_name = id_parts[3]
-                            if resource_group_name is None:
-                                raise CLIError("The specified value for resource-id is not in the expected format. A valid value for resource group must be provided.")
-                            return client.list_global_by_resource_group_for_topic_type(resource_group_name, "Microsoft.Resources.ResourceGroups")
-                else:
-                    raise CLIError("The specified value for resource-id is not in the expected format. It should start with /subscriptions.")
+                if id_parts[0].lower() != "subscriptions":
+                    raise CLIError('The specified value for resource-id is not in the'
+                                   ' expected format. It should start with /subscriptions.')
+
+                client.config.subscription_id = id_parts[1]
+                if client.config.subscription_id is None:
+                    raise CLIError('The specified value for resource-id is not in'
+                                   ' the expected format. A valid value for subscription'
+                                   ' must be provided.')
+
+                if len(id_parts) == 2:
+                    return client.list_global_by_subscription_for_topic_type("Microsoft.Resources.Subscriptions")
+
+                if len(id_parts) == 4 and id_parts[2].lower() == "resourcegroups":
+                    resource_group_name = id_parts[3]
+                    if resource_group_name is None:
+                        raise CLIError('The specified value for resource-id is not'
+                                       ' in the expected format. A valid value for'
+                                       ' resource group must be provided.')
+                    return client.list_global_by_resource_group_for_topic_type(
+                        resource_group_name,
+                        "Microsoft.Resources.ResourceGroups")
 
         id_parts = parse_resource_id(resource_id)
         client.config.subscription_id = id_parts.get('subscription')
@@ -542,15 +542,18 @@ def _list_event_subscriptions_by_resource_id(client, resource_id):
         namespace = id_parts.get('namespace')
         resource_type = id_parts.get('type')
 
-        if client.config.subscription_id is None or rg_name is None or resource_name is None or namespace is None or resource_type is None:
-            raise CLIError('The specified value for resource-id is not in the expected format.')
+        if (client.config.subscription_id is None or rg_name is None or resource_name is None or
+                namespace is None or resource_type is None):
+            raise CLIError('The specified value for resource-id is not'
+                           ' in the expected format.')
 
         # If this is for a domain topic, invoke the appropriate operation
         if (namespace.lower() == EVENTGRID_NAMESPACE.lower() and resource_type.lower() == EVENTGRID_DOMAINS.lower()):
             child_resource_type = id_parts.get('child_type_1')
             child_resource_name = id_parts.get('child_name_1')
 
-            if (child_resource_type is not None and child_resource_type.lower() == EVENTGRID_TOPICS.lower() and child_resource_name is not None):
+            if (child_resource_type is not None and child_resource_type.lower() == EVENTGRID_TOPICS.lower() and
+                    child_resource_name is not None):
                 return client.list_by_domain_topic(rg_name, resource_name, child_resource_name)
 
         # Not a domain topic, invoke the standard list_by_resource
@@ -571,7 +574,7 @@ def _is_topic_type_global_resource(topic_type_name):
     TOPIC_TYPE_AZURE_RESOURCE_GROUP = "Microsoft.Resources.ResourceGroups"
 
     if (topic_type_name.lower() == TOPIC_TYPE_AZURE_SUBSCRIPTIONS.lower() or
-        topic_type_name.lower() == TOPIC_TYPE_AZURE_RESOURCE_GROUP.lower()):
+            topic_type_name.lower() == TOPIC_TYPE_AZURE_RESOURCE_GROUP.lower()):
         return True
 
     return False

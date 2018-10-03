@@ -7,9 +7,6 @@ import argparse
 from knack.util import CLIError
 
 from azext_eventgrid.mgmt.eventgrid.models import (
-    EventSubscription,
-    EventSubscriptionUpdateParameters,
-    AdvancedFilter,
     NumberGreaterThanAdvancedFilter,
     NumberGreaterThanOrEqualsAdvancedFilter,
     NumberInAdvancedFilter,
@@ -21,8 +18,7 @@ from azext_eventgrid.mgmt.eventgrid.models import (
     StringEndsWithAdvancedFilter,
     StringInAdvancedFilter,
     StringNotInAdvancedFilter,
-    BoolEqualsAdvancedFilter,
-    EventSubscriptionFilter)
+    BoolEqualsAdvancedFilter)
 
 NUMBERIN = "NumberIn"
 NUMBERNOTIN = "NumberNotIn"
@@ -47,7 +43,7 @@ class EventSubscriptionAddFilter(argparse._AppendAction):
         key = values[0]
         operator = values[1]
 
-# operators that support single value 
+# operators that support single value
         if operator.lower() == NUMBERLESSTHAN.lower():
             _validate_only_single_value_is_specified(NUMBERLESSTHAN, values)
             advanced_filter = NumberLessThanAdvancedFilter(key=key, value=float(values[2]))
@@ -82,12 +78,13 @@ class EventSubscriptionAddFilter(argparse._AppendAction):
         elif operator.lower() == STRINGCONTAINS.lower():
             advanced_filter = StringContainsAdvancedFilter(key=key, values=values[2:])
         else:
-            raise CLIError("--advanced-filter: The specified filter operator '{}' is not a valid operator. Supported values are ".format(operator) +
-                NUMBERIN + "," + NUMBERNOTIN + "," + STRINGIN + "," +
-                STRINGNOTIN + "," + STRINGBEGINSWITH + "," +
-                STRINGCONTAINS + "," + STRINGENDSWITH + "," +
-                NUMBERGREATERTHAN + "," + NUMBERGREATERTHANOREQUALS + "," +
-                NUMBERLESSTHAN + "," + NUMBERLESSTHANOREQUALS + "," + BOOLEQUALS + ".")
+            raise CLIError("--advanced-filter: The specified filter operator '{}' is not"
+                           " a valid operator. Supported values are ".format(operator) +
+                           NUMBERIN + "," + NUMBERNOTIN + "," + STRINGIN + "," +
+                           STRINGNOTIN + "," + STRINGBEGINSWITH + "," +
+                           STRINGCONTAINS + "," + STRINGENDSWITH + "," +
+                           NUMBERGREATERTHAN + "," + NUMBERGREATERTHANOREQUALS + "," +
+                           NUMBERLESSTHAN + "," + NUMBERLESSTHANOREQUALS + "," + BOOLEQUALS + ".")
         if namespace.advanced_filter is None:
             namespace.advanced_filter = []
         namespace.advanced_filter.append(advanced_filter)
@@ -95,4 +92,5 @@ class EventSubscriptionAddFilter(argparse._AppendAction):
 
 def _validate_only_single_value_is_specified(operator_type, values):
     if len(values) != 3:
-        raise CLIError("--advanced-filter: For '{}' operator, only one filter value must be specified.".format(operator_type))
+        raise CLIError("--advanced-filter: For '{}' operator, only one filter value "
+                       "must be specified.".format(operator_type))
