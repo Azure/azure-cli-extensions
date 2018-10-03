@@ -66,7 +66,7 @@ class TunnelServer(object):
     def is_port_open(self):
         is_port_open = False
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-            if sock.connect_ex('', self.local_port) == 0:
+            if sock.connect_ex(('', self.local_port)) == 0:
                 logger.info('Port %s is NOT open', self.local_port)
             else:
                 logger.warning('Port %s is open', self.local_port)
