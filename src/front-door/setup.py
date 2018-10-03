@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,7 +29,7 @@ DEPENDENCIES = []
 setup(
     name='front-door',
     version=VERSION,
-    description='Manage networking FrontDoors.',
+    description='Manage networking Front Doors.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',

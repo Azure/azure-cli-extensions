@@ -10,44 +10,44 @@ from azext_front_door.vendored_sdks.models import MatchCondition, Operator
 # region FrontDoor
 helps['network front-door'] = """
     type: group
-    short-summary: Manage FrontDoors.
+    short-summary: Manage Front Doors.
 """
 
 helps['network front-door create'] = """
     type: command
-    short-summary: Create a FrontDoor.
+    short-summary: Create a Front Door.
 """
 
 helps['network front-door list'] = """
     type: command
-    short-summary: List FrontDoors.
+    short-summary: List Front Doors.
 """
 
 helps['network front-door show'] = """
     type: command
-    short-summary: Get the details of a FrontDoor.
+    short-summary: Get the details of a Front Door.
 """
 
 helps['network front-door update'] = """
     type: command
-    short-summary: Update settings of a FrontDoor.
+    short-summary: Update settings of a Front Door.
 """
 
 helps['network front-door delete'] = """
     type: command
-    short-summary: Delete a FrontDoor.
+    short-summary: Delete a Front Door.
 """
 # endregion
 
 # region FrontDoor BackendPool
 helps['network front-door backend-pool'] = """
     type: group
-    short-summary: Manage FrontDoor backend pools.
+    short-summary: Manage Front Door backend pools.
 """
 
 helps['network front-door backend-pool create'] = """
     type: command
-    short-summary: Create a FrontDoor backend pool.
+    short-summary: Create a Front Door backend pool.
     long-summary: >
         Since a backend pool must contain a backend, this command
         also creates the first backend. To add additional backends,
@@ -56,76 +56,76 @@ helps['network front-door backend-pool create'] = """
 
 helps['network front-door backend-pool list'] = """
     type: command
-    short-summary: List FrontDoor backend pools.
+    short-summary: List Front Door backend pools.
 """
 
 helps['network front-door backend-pool show'] = """
     type: command
-    short-summary: Get the details of a FrontDoor backend pool.
+    short-summary: Get the details of a Front Door backend pool.
 """
 
 helps['network front-door backend-pool update'] = """
     type: command
-    short-summary: Update settings of a FrontDoor backend pool.
+    short-summary: Update settings of a Front Door backend pool.
 """
 
 helps['network front-door backend-pool delete'] = """
     type: command
-    short-summary: Delete a FrontDoor backend pool.
+    short-summary: Delete a Front Door backend pool.
 """
 # endregion
 
 # region FrontDoor BackendPool Backend
 helps['network front-door backend-pool backend'] = """
     type: group
-    short-summary: Manage backends of FrontDoor backend pools.
+    short-summary: Manage backends of Front Door backend pools.
 """
 
 helps['network front-door backend-pool backend add'] = """
     type: command
-    short-summary: Add a backend to a FrontDoor backend pool.
+    short-summary: Add a backend to a Front Door backend pool.
 """
 
 helps['network front-door backend-pool backend list'] = """
     type: command
-    short-summary: List backends of a FrontDoor backend pool.
+    short-summary: List backends of a Front Door backend pool.
 """
 
 helps['network front-door backend-pool backend remove'] = """
     type: command
-    short-summary: Remove a backend from a FrontDoor backend pool.
+    short-summary: Remove a backend from a Front Door backend pool.
 """
 # endregion
 
 # region FrontDoor FrontendEndpoint
 helps['network front-door frontend-endpoint'] = """
     type: group
-    short-summary: Manage FrontDoor frontend endpoints.
+    short-summary: Manage Front Door frontend endpoints.
 """
 
 helps['network front-door frontend-endpoint create'] = """
     type: command
-    short-summary: Create a FrontDoor frontend endpoint.
+    short-summary: Create a Front Door frontend endpoint.
 """
 
 helps['network front-door frontend-endpoint list'] = """
     type: command
-    short-summary: List FrontDoor frontend endpoints.
+    short-summary: List Front Door frontend endpoints.
 """
 
 helps['network front-door frontend-endpoint show'] = """
     type: command
-    short-summary: Get the details of a FrontDoor frontend endpoint.
+    short-summary: Get the details of a Front Door frontend endpoint.
 """
 
 helps['network front-door frontend-endpoint update'] = """
     type: command
-    short-summary: Update settings of a FrontDoor frontend endpoint.
+    short-summary: Update settings of a Front Door frontend endpoint.
 """
 
 helps['network front-door frontend-endpoint delete'] = """
     type: command
-    short-summary: Delete a FrontDoor frontend endpoint.
+    short-summary: Delete a Front Door frontend endpoint.
 """
 
 # endregion
@@ -133,31 +133,31 @@ helps['network front-door frontend-endpoint delete'] = """
 # region FrontDoor LoadBalancingSettings
 helps['network front-door load-balancing'] = """
     type: group
-    short-summary: Manage FrontDoor load-balancing settings.
+    short-summary: Manage Front Door load-balancing settings.
 """
 helps['network front-door load-balancing create'] = """
     type: command
-    short-summary: Create FrontDoor load-balancing settings.
+    short-summary: Create Front Door load-balancing settings.
 """
 
 helps['network front-door load-balancing list'] = """
     type: command
-    short-summary: List FrontDoor load-balancing settingss.
+    short-summary: List Front Door load-balancing settingss.
 """
 
 helps['network front-door load-balancing show'] = """
     type: command
-    short-summary: Get the details of a FrontDoor load-balancing settings bundle.
+    short-summary: Get the details of a Front Door load-balancing settings bundle.
 """
 
 helps['network front-door load-balancing update'] = """
     type: command
-    short-summary: Update settings of FrontDoor load-balancing settings bundle.
+    short-summary: Update settings of Front Door load-balancing settings bundle.
 """
 
 helps['network front-door load-balancing delete'] = """
     type: command
-    short-summary: Delete FrontDoor load-balancing settings.
+    short-summary: Delete Front Door load-balancing settings.
 """
 
 # endregion
@@ -165,31 +165,31 @@ helps['network front-door load-balancing delete'] = """
 # region FrontDoor HealthProbeSettings
 helps['network front-door probe'] = """
     type: group
-    short-summary: Manage FrontDoor health probe settings.
+    short-summary: Manage Front Door health probe settings.
 """
 helps['network front-door probe create'] = """
     type: command
-    short-summary: Create FrontDoor health probe settings.
+    short-summary: Create Front Door health probe settings.
 """
 
 helps['network front-door probe list'] = """
     type: command
-    short-summary: List FrontDoor health probe settings.
+    short-summary: List Front Door health probe settings.
 """
 
 helps['network front-door probe show'] = """
     type: command
-    short-summary: Get the details of a FrontDoor health probe settings bundle.
+    short-summary: Get the details of a Front Door health probe settings bundle.
 """
 
 helps['network front-door probe update'] = """
     type: command
-    short-summary: Update settings of a FrontDoor health probe settings bundle.
+    short-summary: Update settings of a Front Door health probe settings bundle.
 """
 
 helps['network front-door probe delete'] = """
     type: command
-    short-summary: Delete FrontDoor health probe settings.
+    short-summary: Delete Front Door health probe settings.
 """
 
 # endregion
@@ -197,31 +197,31 @@ helps['network front-door probe delete'] = """
 # region FrontDoor RoutingRule
 helps['network front-door routing-rule'] = """
     type: group
-    short-summary: Manage FrontDoor routing rules.
+    short-summary: Manage Front Door routing rules.
 """
 helps['network front-door routing-rule create'] = """
     type: command
-    short-summary: Create a FrontDoor routing rule.
+    short-summary: Create a Front Door routing rule.
 """
 
 helps['network front-door routing-rule list'] = """
     type: command
-    short-summary: List FrontDoor routing rules.
+    short-summary: List Front Door routing rules.
 """
 
 helps['network front-door routing-rule show'] = """
     type: command
-    short-summary: Get the details of a FrontDoor routing rule.
+    short-summary: Get the details of a Front Door routing rule.
 """
 
 helps['network front-door routing-rule update'] = """
     type: command
-    short-summary: Update settings of a FrontDoor routing rule.
+    short-summary: Update settings of a Front Door routing rule.
 """
 
 helps['network front-door routing-rule delete'] = """
     type: command
-    short-summary: Delete a FrontDoor routing rule.
+    short-summary: Delete a Front Door routing rule.
 """
 # endregion
 

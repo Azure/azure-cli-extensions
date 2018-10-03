@@ -21,7 +21,7 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         Mode, FrontDoorProtocol, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform)
 
-    frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the FrontDoor.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
+    frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
     waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
 
     # region FrontDoors
@@ -40,7 +40,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door') as c:
         c.argument('front_door_name', frontdoor_name_type, options_list=['--name', '-n'])
-        c.argument('friendly_name', help='Friendly name of the FrontDoor.')
+        c.argument('friendly_name', help='Friendly name of the Front Door.')
         c.argument('tags', tags_type)
         c.argument('disabled', arg_type=get_three_state_flag(), help='Create in a disabled state.')
         c.argument('enabled', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Enabled status.')

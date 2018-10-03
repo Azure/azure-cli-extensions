@@ -1,5 +1,5 @@
 # Azure CLI Frontdoor Extension #
-This is an extension to Azure CLI to manage networking FrontDoor resources.
+This is an extension to Azure CLI to manage networking Front Door resources.
 
 ## How to use ##
 First, install the extension:
