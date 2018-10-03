@@ -127,7 +127,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     if not check_if_asp_exists(cmd, rg_name, asp):
         logger.warning("Creating App service plan '%s' ...", asp)
         sku_def = SkuDescription(tier=full_sku, name=sku, capacity=(1 if is_linux else None))
-        plan_def = AppServicePlan(loc_name, app_service_plan_name=asp,
+        plan_def = AppServicePlan(location=loc_name, app_service_plan_name=asp,
                                   sku=sku_def, reserved=(is_linux or None))
         client.app_service_plans.create_or_update(rg_name, asp, plan_def)
         logger.warning("App service plan creation complete")
