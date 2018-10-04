@@ -11,6 +11,7 @@ from ._validators import (get_datetime_type, validate_metadata, validate_custom_
                           validate_bypass, validate_encryption_source)
 from .profiles import CUSTOM_MGMT_STORAGE
 
+
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
     from argcomplete.completers import FilesCompleter
     from knack.arguments import CLIArgumentType
