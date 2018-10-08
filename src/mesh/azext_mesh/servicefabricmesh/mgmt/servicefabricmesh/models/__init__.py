@@ -9,110 +9,190 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .resource import Resource
+from .available_operation_display import AvailableOperationDisplay
+from .error_model import ErrorModel, ErrorModelException
+from .operation_result import OperationResult
+from .provisioned_resource_properties import ProvisionedResourceProperties
 from .proxy_resource import ProxyResource
 from .managed_proxy_resource import ManagedProxyResource
+from .resource import Resource
 from .tracked_resource import TrackedResource
-from .provisioned_resource_properties import ProvisionedResourceProperties
+from .secret_resource_properties import SecretResourceProperties
+from .simple_secret_resource_properties import SimpleSecretResourceProperties
+from .secret_resource_properties_base import SecretResourcePropertiesBase
+from .secret_resource_description import SecretResourceDescription
+from .secret_value import SecretValue
+from .secret_value_properties import SecretValueProperties
+from .secret_value_resource_description import SecretValueResourceDescription
+from .volume_provider_parameters_azure_file import VolumeProviderParametersAzureFile
+from .volume_properties import VolumeProperties
+from .volume_reference import VolumeReference
+from .application_scoped_volume_creation_parameters import ApplicationScopedVolumeCreationParameters
+from .application_scoped_volume import ApplicationScopedVolume
+from .application_scoped_volume_creation_parameters_service_fabric_volume_disk import ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk
+from .volume_resource_description import VolumeResourceDescription
 from .layer4_ingress_config import Layer4IngressConfig
 from .ingress_config import IngressConfig
-from .network_resource_description import NetworkResourceDescription
 from .network_properties import NetworkProperties
-from .volume_provider_parameters_azure_file import VolumeProviderParametersAzureFile
-from .volume_resource_description import VolumeResourceDescription
-from .volume_properties import VolumeProperties
+from .network_ref import NetworkRef
+from .network_resource_description import NetworkResourceDescription
+from .gateway_destination import GatewayDestination
+from .tcp_config import TcpConfig
+from .http_route_match_path import HttpRouteMatchPath
+from .http_route_match_header import HttpRouteMatchHeader
+from .http_route_match_rule import HttpRouteMatchRule
+from .http_route_config import HttpRouteConfig
+from .http_host_config import HttpHostConfig
+from .http_config import HttpConfig
+from .gateway_properties import GatewayProperties
+from .gateway_resource_description import GatewayResourceDescription
+from .gateway_resource_description_list import GatewayResourceDescriptionList
+from .auto_scaling_trigger import AutoScalingTrigger
+from .auto_scaling_mechanism import AutoScalingMechanism
+from .auto_scaling_policy import AutoScalingPolicy
 from .service_resource_description import ServiceResourceDescription
 from .diagnostics_sink_properties import DiagnosticsSinkProperties
 from .diagnostics_description import DiagnosticsDescription
-from .application_resource_description import ApplicationResourceDescription
 from .application_properties import ApplicationProperties
+from .azure_internal_monitoring_pipeline_sink_description import AzureInternalMonitoringPipelineSinkDescription
+from .diagnostics_ref import DiagnosticsRef
+from .application_resource_description import ApplicationResourceDescription
+from .add_remove_replica_scaling_mechanism import AddRemoveReplicaScalingMechanism
+from .auto_scaling_metric import AutoScalingMetric
+from .auto_scaling_resource_metric import AutoScalingResourceMetric
+from .image_registry_credential import ImageRegistryCredential
+from .environment_variable import EnvironmentVariable
+from .setting import Setting
+from .container_label import ContainerLabel
+from .endpoint_properties import EndpointProperties
+from .resource_requests import ResourceRequests
+from .resource_limits import ResourceLimits
+from .resource_requirements import ResourceRequirements
+from .reliable_collections_ref import ReliableCollectionsRef
 from .container_state import ContainerState
 from .container_event import ContainerEvent
 from .container_instance_view import ContainerInstanceView
-from .container_label import ContainerLabel
-from .container_logs import ContainerLogs
-from .image_registry_credential import ImageRegistryCredential
-from .resource_limits import ResourceLimits
-from .resource_requests import ResourceRequests
-from .resource_requirements import ResourceRequirements
-from .available_operation_display import AvailableOperationDisplay
-from .operation_result import OperationResult
-from .error_model import ErrorModel, ErrorModelException
-from .environment_variable import EnvironmentVariable
-from .setting import Setting
-from .endpoint_properties import EndpointProperties
-from .container_volume import ContainerVolume
-from .diagnostics_ref import DiagnosticsRef
 from .container_code_package_properties import ContainerCodePackageProperties
-from .service_replica_description import ServiceReplicaDescription
-from .network_ref import NetworkRef
+from .service_properties import ServiceProperties
 from .service_replica_properties import ServiceReplicaProperties
-from .azure_internal_monitoring_pipeline_sink_description import AzureInternalMonitoringPipelineSinkDescription
+from .service_replica_description import ServiceReplicaDescription
+from .average_load_scaling_trigger import AverageLoadScalingTrigger
+from .container_logs import ContainerLogs
+from .operation_result_paged import OperationResultPaged
+from .secret_resource_description_paged import SecretResourceDescriptionPaged
+from .secret_value_resource_description_paged import SecretValueResourceDescriptionPaged
+from .volume_resource_description_paged import VolumeResourceDescriptionPaged
+from .network_resource_description_paged import NetworkResourceDescriptionPaged
 from .application_resource_description_paged import ApplicationResourceDescriptionPaged
 from .service_resource_description_paged import ServiceResourceDescriptionPaged
 from .service_replica_description_paged import ServiceReplicaDescriptionPaged
-from .operation_result_paged import OperationResultPaged
-from .network_resource_description_paged import NetworkResourceDescriptionPaged
-from .volume_resource_description_paged import VolumeResourceDescriptionPaged
 from .service_fabric_mesh_management_client_enums import (
-    IngressQoSLevel,
+    ResourceStatus,
     HealthState,
-    ServiceResourceStatus,
-    ApplicationResourceStatus,
-    OperatingSystemTypes,
+    SecretKind,
+    VolumeProvider,
+    SizeTypes,
+    ApplicationScopedVolumeKind,
+    IngressQoSLevel,
+    HeaderMatchType,
     DiagnosticsSinkKind,
+    AutoScalingMechanismKind,
+    AutoScalingMetricKind,
+    AutoScalingResourceMetricName,
+    AutoScalingTriggerKind,
+    OperatingSystemType,
 )
 
 __all__ = [
-    'Resource',
+    'AvailableOperationDisplay',
+    'ErrorModel', 'ErrorModelException',
+    'OperationResult',
+    'ProvisionedResourceProperties',
     'ProxyResource',
     'ManagedProxyResource',
+    'Resource',
     'TrackedResource',
-    'ProvisionedResourceProperties',
+    'SecretResourceProperties',
+    'SimpleSecretResourceProperties',
+    'SecretResourcePropertiesBase',
+    'SecretResourceDescription',
+    'SecretValue',
+    'SecretValueProperties',
+    'SecretValueResourceDescription',
+    'VolumeProviderParametersAzureFile',
+    'VolumeProperties',
+    'VolumeReference',
+    'ApplicationScopedVolumeCreationParameters',
+    'ApplicationScopedVolume',
+    'ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk',
+    'VolumeResourceDescription',
     'Layer4IngressConfig',
     'IngressConfig',
-    'NetworkResourceDescription',
     'NetworkProperties',
-    'VolumeProviderParametersAzureFile',
-    'VolumeResourceDescription',
-    'VolumeProperties',
+    'NetworkRef',
+    'NetworkResourceDescription',
+    'GatewayDestination',
+    'TcpConfig',
+    'HttpRouteMatchPath',
+    'HttpRouteMatchHeader',
+    'HttpRouteMatchRule',
+    'HttpRouteConfig',
+    'HttpHostConfig',
+    'HttpConfig',
+    'GatewayProperties',
+    'GatewayResourceDescription',
+    'GatewayResourceDescriptionList',
+    'AutoScalingTrigger',
+    'AutoScalingMechanism',
+    'AutoScalingPolicy',
     'ServiceResourceDescription',
     'DiagnosticsSinkProperties',
     'DiagnosticsDescription',
-    'ApplicationResourceDescription',
     'ApplicationProperties',
+    'AzureInternalMonitoringPipelineSinkDescription',
+    'DiagnosticsRef',
+    'ApplicationResourceDescription',
+    'AddRemoveReplicaScalingMechanism',
+    'AutoScalingMetric',
+    'AutoScalingResourceMetric',
+    'ImageRegistryCredential',
+    'EnvironmentVariable',
+    'Setting',
+    'ContainerLabel',
+    'EndpointProperties',
+    'ResourceRequests',
+    'ResourceLimits',
+    'ResourceRequirements',
+    'ReliableCollectionsRef',
     'ContainerState',
     'ContainerEvent',
     'ContainerInstanceView',
-    'ContainerLabel',
-    'ContainerLogs',
-    'ImageRegistryCredential',
-    'ResourceLimits',
-    'ResourceRequests',
-    'ResourceRequirements',
-    'AvailableOperationDisplay',
-    'OperationResult',
-    'ErrorModel', 'ErrorModelException',
-    'EnvironmentVariable',
-    'Setting',
-    'EndpointProperties',
-    'ContainerVolume',
-    'DiagnosticsRef',
     'ContainerCodePackageProperties',
-    'ServiceReplicaDescription',
-    'NetworkRef',
+    'ServiceProperties',
     'ServiceReplicaProperties',
-    'AzureInternalMonitoringPipelineSinkDescription',
+    'ServiceReplicaDescription',
+    'AverageLoadScalingTrigger',
+    'ContainerLogs',
+    'OperationResultPaged',
+    'SecretResourceDescriptionPaged',
+    'SecretValueResourceDescriptionPaged',
+    'VolumeResourceDescriptionPaged',
+    'NetworkResourceDescriptionPaged',
     'ApplicationResourceDescriptionPaged',
     'ServiceResourceDescriptionPaged',
     'ServiceReplicaDescriptionPaged',
-    'OperationResultPaged',
-    'NetworkResourceDescriptionPaged',
-    'VolumeResourceDescriptionPaged',
-    'IngressQoSLevel',
+    'ResourceStatus',
     'HealthState',
-    'ServiceResourceStatus',
-    'ApplicationResourceStatus',
-    'OperatingSystemTypes',
+    'SecretKind',
+    'VolumeProvider',
+    'SizeTypes',
+    'ApplicationScopedVolumeKind',
+    'IngressQoSLevel',
+    'HeaderMatchType',
     'DiagnosticsSinkKind',
+    'AutoScalingMechanismKind',
+    'AutoScalingMetricKind',
+    'AutoScalingResourceMetricName',
+    'AutoScalingTriggerKind',
+    'OperatingSystemType',
 ]

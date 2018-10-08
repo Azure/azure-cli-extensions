@@ -249,10 +249,10 @@ def _display_successful_application(cfn, resource_group_name, resource):
 
     if network_resource_information and network_resource_information.ingress_config:
         public_ip_address = network_resource_information.ingress_config.public_ip_address
-        logger.warning("application {application} has been deployed successfully on network {network} with public ip address {ip}"
+        logger.warning("application {application} is deployed on network {network} with public ip address {ip}"
                        .format(application=application_name, network=network_name, ip=public_ip_address))
     else:
-        logger.warning("application {application} has been deployed successfully".format(application=application_name))
+        logger.warning("application {application} is deployed".format(application=application_name))
 
 
 def _display_application_status(mesh_network_client, resource, resource_group_name, mesh_application_client):
@@ -361,8 +361,10 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
         logger.warning("deployment template validation failed:")
         logger.warning(validation.error)
     else:
+        kwargs = {'long_running_operation_timeout': 5}
+
         operation_status_poller = sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name,
-                                              deployment_name, properties)
+                                              deployment_name, properties, **kwargs)
         if no_wait:
             return operation_status_poller
 
@@ -426,3 +428,28 @@ def show_volume(client, resource_group_name, name):
 def delete_volume(client, resource_group_name, name, **kwargs):
     """Delete a volume. """
     return client.delete(resource_group_name, name)
+
+
+def create_secret_value(client, resource_group_name, secret_name, version_id):
+    value = prompt_pass(msg='Value: ')
+    return client.create(resource_group_name, secret_name, version_id, value=value,)
+
+
+def list_secrets(client, resource_group_name=None):
+    """List all networks in a resource group. """
+    if resource_group_name is None:
+        return client.list_by_subscription()
+    return client.list_by_resource_group(resource_group_name)
+
+
+def secret_show(client, resource_group_name, secret_name, secret_value_resource_name, show_value=False):
+    secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
+    if show_value:
+        secret_value = client.list_value(resource_group_name, secret_name, secret_value_resource_name)
+        secret_data.value = secret_value['value']
+    return secret_data
+
+
+def list_secret_values(client, resource_group_name, secret_name):
+    secret_data = client.list(resource_group_name, secret_name)
+    return secret_data

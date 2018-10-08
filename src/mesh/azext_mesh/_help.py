@@ -124,3 +124,43 @@ helps['mesh volume show'] = """
     type: command
     short-summary: Get the details of a volume.
 """
+
+helps['mesh secret'] = """
+    type: group
+    short-summary: Manage secret resources.
+"""
+
+helps['mesh secret delete'] = """
+    type: command
+    short-summary: Delete a secret.
+"""
+
+helps['mesh secret list'] = """
+    type: command
+    short-summary: List Secrets.
+"""
+
+helps['mesh secret show'] = """
+    type: command
+    short-summary: Get the details of a secret.
+"""
+
+helps['mesh secretvalue'] = """
+    type: group
+    short-summary: Manage secret values.
+"""
+
+helps['mesh secretvalue delete'] = """
+    type: command
+    short-summary: Delete a secret version.
+"""
+
+helps['mesh secretvalue list'] = """
+    type: command
+    short-summary: List Secrets versions.
+"""
+
+helps['mesh secretvalue show'] = """
+    type: command
+    short-summary: Get the details of a secret value.
+"""
