@@ -15,7 +15,8 @@ from azure.cli.command_modules.resource._validators import process_deployment_cr
 from ._client_factory import (cf_mesh_deployments,
                               cf_mesh_application, cf_mesh_service,
                               cf_mesh_service_replica, cf_mesh_code_package, cf_mesh_network,
-                              cf_mesh_volume, cf_mesh_secret, cf_mesh_secret_value)
+                              cf_mesh_volume, cf_mesh_secret, cf_mesh_secret_value,
+                              cf_mesh_gateway)
 from ._exception_handler import resource_exception_handler
 
 #
@@ -144,6 +145,23 @@ def format_ip_address(container_group):
 
 
 
+def transform_gateway(result):
+    """Transform a gateway list to table output. """
+    return OrderedDict([('Name', result.get('name')),
+                        # ('SourceNetwork', result.get('sourceNetwork')),
+                        # ('DestinationNetwork', result.get('destinationNetwork')),
+                        ('Location', result.get('location')),
+                        ('ResourceGroup', result.get('resourceGroup')),
+                        ('ProvisioningState', result.get('provisioningState')),
+                        ('Status', result.get('status'))
+                        ])
+
+
+def transform_gateway_list(result):
+    """Transform a gateway list to table output. """
+    return [transform_gateway(gateway) for gateway in result]
+
+
 def load_command_table(self, _):
     cmd_util = CliCommandType(
         operations_tmpl='azext_mesh.custom#{}',
@@ -180,6 +198,11 @@ def load_command_table(self, _):
         exception_handler=resource_exception_handler
     )
 
+    mesh_gateway_util = CliCommandType(
+        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.gateway_operations#GatewayOperations.{}',
+        exception_handler=resource_exception_handler
+    )
+
     resource_deployment_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.resource.resources.operations.deployments_operations#DeploymentsOperations.{}',
         client_factory=cf_mesh_deployments,
@@ -198,6 +221,7 @@ def load_command_table(self, _):
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
         g.command('list', 'list', table_transformer=transform_service_list)
         g.command('show', 'get',  table_transformer=transform_service)
+
 
     with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
         g.command('list', 'list', table_transformer=transform_service_replica_list)
@@ -233,3 +257,10 @@ def load_command_table(self, _):
     with self.command_group('mesh secretvalue', cmd_util, client_factory=cf_mesh_secret_value) as g:
         g.custom_command('show', 'secret_show')
         g.custom_command('list', 'list_secret_values', table_transformer=transform_secretvalue_list)
+
+    with self.command_group('mesh gateway', mesh_gateway_util, client_factory=cf_mesh_gateway) as g:
+        g.command('show', 'get', table_transformer=transform_gateway)
+        g.command('delete', 'delete', confirmation=True)
+
+    with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
+        g.command('list', 'list_secrets', table_transformer=transform_gateway_list)

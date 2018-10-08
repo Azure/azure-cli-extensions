@@ -18,6 +18,7 @@ from .operations.secret_operations import SecretOperations
 from .operations.secret_value_operations import SecretValueOperations
 from .operations.volume_operations import VolumeOperations
 from .operations.network_operations import NetworkOperations
+from .operations.gateway_operations import GatewayOperations
 from .operations.application_operations import ApplicationOperations
 from .operations.service_operations import ServiceOperations
 from .operations.service_replica_operations import ServiceReplicaOperations
@@ -73,6 +74,8 @@ class ServiceFabricMeshManagementClient(object):
     :vartype volume: azure.mgmt.servicefabricmesh.operations.VolumeOperations
     :ivar network: Network operations
     :vartype network: azure.mgmt.servicefabricmesh.operations.NetworkOperations
+    :ivar gateway: Gateway operations
+    :vartype gateway: azure.mgmt.servicefabricmesh.operations.GatewayOperations
     :ivar application: Application operations
     :vartype application: azure.mgmt.servicefabricmesh.operations.ApplicationOperations
     :ivar service: Service operations
@@ -97,7 +100,7 @@ class ServiceFabricMeshManagementClient(object):
         self._client = ServiceClient(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-09-01-preview'
+        self.api_version = '2018-09-01-privatepreview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -110,6 +113,8 @@ class ServiceFabricMeshManagementClient(object):
         self.volume = VolumeOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.network = NetworkOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.gateway = GatewayOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.application = ApplicationOperations(
             self._client, self.config, self._serialize, self._deserialize)

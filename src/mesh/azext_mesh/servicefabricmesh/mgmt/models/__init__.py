@@ -10,6 +10,7 @@
 # --------------------------------------------------------------------------
 
 from .available_operation_display import AvailableOperationDisplay
+from .error_error_model import ErrorErrorModel
 from .error_model import ErrorModel, ErrorModelException
 from .operation_result import OperationResult
 from .provisioned_resource_properties import ProvisionedResourceProperties
@@ -31,10 +32,11 @@ from .application_scoped_volume_creation_parameters import ApplicationScopedVolu
 from .application_scoped_volume import ApplicationScopedVolume
 from .application_scoped_volume_creation_parameters_service_fabric_volume_disk import ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk
 from .volume_resource_description import VolumeResourceDescription
-from .layer4_ingress_config import Layer4IngressConfig
-from .ingress_config import IngressConfig
-from .network_properties import NetworkProperties
+from .network_resource_properties import NetworkResourceProperties
+from .local_network_resource_properties import LocalNetworkResourceProperties
+from .endpoint_ref import EndpointRef
 from .network_ref import NetworkRef
+from .network_resource_properties_base import NetworkResourcePropertiesBase
 from .network_resource_description import NetworkResourceDescription
 from .gateway_destination import GatewayDestination
 from .tcp_config import TcpConfig
@@ -46,7 +48,6 @@ from .http_host_config import HttpHostConfig
 from .http_config import HttpConfig
 from .gateway_properties import GatewayProperties
 from .gateway_resource_description import GatewayResourceDescription
-from .gateway_resource_description_list import GatewayResourceDescriptionList
 from .auto_scaling_trigger import AutoScalingTrigger
 from .auto_scaling_mechanism import AutoScalingMechanism
 from .auto_scaling_policy import AutoScalingPolicy
@@ -83,6 +84,7 @@ from .secret_resource_description_paged import SecretResourceDescriptionPaged
 from .secret_value_resource_description_paged import SecretValueResourceDescriptionPaged
 from .volume_resource_description_paged import VolumeResourceDescriptionPaged
 from .network_resource_description_paged import NetworkResourceDescriptionPaged
+from .gateway_resource_description_paged import GatewayResourceDescriptionPaged
 from .application_resource_description_paged import ApplicationResourceDescriptionPaged
 from .service_resource_description_paged import ServiceResourceDescriptionPaged
 from .service_replica_description_paged import ServiceReplicaDescriptionPaged
@@ -93,7 +95,7 @@ from .service_fabric_mesh_management_client_enums import (
     VolumeProvider,
     SizeTypes,
     ApplicationScopedVolumeKind,
-    IngressQoSLevel,
+    NetworkKind,
     HeaderMatchType,
     DiagnosticsSinkKind,
     AutoScalingMechanismKind,
@@ -105,6 +107,7 @@ from .service_fabric_mesh_management_client_enums import (
 
 __all__ = [
     'AvailableOperationDisplay',
+    'ErrorErrorModel',
     'ErrorModel', 'ErrorModelException',
     'OperationResult',
     'ProvisionedResourceProperties',
@@ -126,10 +129,11 @@ __all__ = [
     'ApplicationScopedVolume',
     'ApplicationScopedVolumeCreationParametersServiceFabricVolumeDisk',
     'VolumeResourceDescription',
-    'Layer4IngressConfig',
-    'IngressConfig',
-    'NetworkProperties',
+    'NetworkResourceProperties',
+    'LocalNetworkResourceProperties',
+    'EndpointRef',
     'NetworkRef',
+    'NetworkResourcePropertiesBase',
     'NetworkResourceDescription',
     'GatewayDestination',
     'TcpConfig',
@@ -141,7 +145,6 @@ __all__ = [
     'HttpConfig',
     'GatewayProperties',
     'GatewayResourceDescription',
-    'GatewayResourceDescriptionList',
     'AutoScalingTrigger',
     'AutoScalingMechanism',
     'AutoScalingPolicy',
@@ -178,6 +181,7 @@ __all__ = [
     'SecretValueResourceDescriptionPaged',
     'VolumeResourceDescriptionPaged',
     'NetworkResourceDescriptionPaged',
+    'GatewayResourceDescriptionPaged',
     'ApplicationResourceDescriptionPaged',
     'ServiceResourceDescriptionPaged',
     'ServiceReplicaDescriptionPaged',
@@ -187,7 +191,7 @@ __all__ = [
     'VolumeProvider',
     'SizeTypes',
     'ApplicationScopedVolumeKind',
-    'IngressQoSLevel',
+    'NetworkKind',
     'HeaderMatchType',
     'DiagnosticsSinkKind',
     'AutoScalingMechanismKind',

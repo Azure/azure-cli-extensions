@@ -11,6 +11,7 @@ import json
 import ssl
 import sys
 import os
+from pprint import pprint
 from time import sleep
 
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
@@ -22,7 +23,7 @@ from azure.cli.core.util import get_file_json, shell_safe_json_parse, sdk_no_wai
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType, get_sdk
 
-from azext_mesh._client_factory import cf_mesh_network, cf_mesh_application, cf_mesh_deployments
+from ._client_factory import cf_mesh_network, cf_mesh_application, cf_mesh_deployments, cf_mesh_gateway
 from azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.models import ErrorModelException
 
 logger = get_logger(__name__)
@@ -225,44 +226,64 @@ def _parse_network_ref(network_ref_name):
     return resource_parts[-1]
 
 
-def _display_successful_application(cfn, resource_group_name, resource):
-    application_name = resource['name']
-    services = resource['properties']['services']
-    network_resource_information = None
+def _get_gateway(template_resources, network_name):
+    gateway = None
+    for resource in template_resources:
+        if resource['type'] in ['Microsoft.ServiceFabricMesh/gateways']:
+            destination_network = resource.get('properties', {}).get('destinationNetwork')
+            source_network = resource.get('properties', {}).get('sourceNetwork')
+            if destination_network['name'] == network_name and source_network['name'] == 'Open':
+                gateway = resource
+                break
+    return gateway
+
+
+def _get_first_network_ref_name(application_resource):
     network_name = None
+    services = application_resource.get('properties', {}).get('services', [])
+    for service in services:
+        if service['properties']['networkRefs']:
+            for network_ref in service['properties']['networkRefs']:
+                network_name = network_ref['name']
+                if network_name:
+                    break
+    return network_name
 
-    if services:
 
-        for service in services:
-            if service['properties']['networkRefs']:
-                for network_ref in service['properties']['networkRefs']:
-                    network_name = _parse_network_ref(network_ref['name'])
-                    if network_name:
-                        break
+def _display_successful_application(resource_group_name, resource, template_resources, cli_ctx):
+    application_name = resource['name']
+    network_name = _get_first_network_ref_name(resource)
+    # to be populated with gateway resource information from rp if available
+    gateway_resource_information = None
+    if network_name:
+        # gateway resource info in template
+        gateway_resource_template_info = _get_gateway(template_resources, network_name)
+        cfg = cf_mesh_gateway(cli_ctx, '')
 
-        if network_name:
+        if gateway_resource_template_info:
             try:
-                network_resource_information = cfn.get(resource_group_name, network_name)
+                gateway_resource_information = cfg.get(resource_group_name, gateway_resource_template_info['name'])
             except ErrorModelException:
-                logger.warning("{application} network resource {network_name} can not be found."
-                               .format(application=application_name, network_name=network_name))
+                logger.warning("{application} gateway resource can not be found.".format(application=application_name))
 
-    if network_resource_information and network_resource_information.ingress_config:
-        public_ip_address = network_resource_information.ingress_config.public_ip_address
+    if gateway_resource_information:
+        public_ip_address = gateway_resource_information.ip_address
         logger.warning("application {application} is deployed on network {network} with public ip address {ip}"
-                       .format(application=application_name, network=network_name, ip=public_ip_address))
+                       .format(application=application_name, network=_parse_network_ref(network_name), ip=public_ip_address))
     else:
         logger.warning("application {application} is deployed".format(application=application_name))
 
 
-def _display_application_status(mesh_network_client, resource, resource_group_name, mesh_application_client):
+def _display_application_status(resource, resource_group_name, template_resources, cli_ctx):
 
     application_name = resource['name']
     try:
+        mesh_application_client = cf_mesh_application(cli_ctx, '')
+
         application_operation_information = mesh_application_client.get(resource_group_name, application_name)
         application_status = application_operation_information.provisioning_state
         if application_status in ['Succeeded']:
-            _display_successful_application(mesh_network_client, resource_group_name, resource)
+            _display_successful_application(resource_group_name, resource, template_resources, cli_ctx)
         elif application_status in ['Failed']:
             status_details = application_operation_information.status_details
             if status_details:
@@ -278,9 +299,8 @@ def _display_application_status(mesh_network_client, resource, resource_group_na
                        .format(application_name))
 
 
-def _display_deployment_status(cli_ctx, operation_status, resource_group_name, deployment_name, template_obj):
+def _display_deployment_status(cli_ctx, operation_status, resource_group_name, deployment_name, template_resources):
     mesh_deployment_client = cf_mesh_deployments(cli_ctx, '')
-    mesh_network_client = cf_mesh_network(cli_ctx, '')
 
     deployment_status = mesh_deployment_client.get(resource_group_name, deployment_name)
 
@@ -291,10 +311,9 @@ def _display_deployment_status(cli_ctx, operation_status, resource_group_name, d
 
     application_count = 0
     only_application_name = None
-    mesh_application_client = cf_mesh_application(cli_ctx, '')
-    for resource in template_obj:
+    for resource in template_resources:
         if resource['type'] in ['Microsoft.ServiceFabricMesh/applications']:
-            _display_application_status(mesh_network_client, resource, resource_group_name, mesh_application_client)
+            _display_application_status(resource, resource_group_name, template_resources, cli_ctx)
             only_application_name = resource['name']
             application_count += 1
 
@@ -375,7 +394,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
             wait_time += timestep
 
         parsed_template = smc.deployments.validate(resource_group_name, deployment_name, properties).properties.additional_properties['validatedResources']
-
+        # pprint(parsed_template)
         return _display_deployment_status(cli_ctx, operation_status_poller.status(), resource_group_name,
                                           deployment_name, parsed_template)
 
@@ -453,3 +472,5 @@ def secret_show(client, resource_group_name, secret_name, secret_value_resource_
 def list_secret_values(client, resource_group_name, secret_name):
     secret_data = client.list(resource_group_name, secret_name)
     return secret_data
+
+

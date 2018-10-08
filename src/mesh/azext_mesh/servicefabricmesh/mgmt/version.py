@@ -9,20 +9,5 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+VERSION = "2018-09-01-privatepreview"
 
-
-class NetworkRef(Model):
-    """Describes a network reference in a service.
-
-    :param name: Name of the network.
-    :type name: str
-    """
-
-    _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-    }
-
-    def __init__(self, name=None):
-        super(NetworkRef, self).__init__()
-        self.name = name

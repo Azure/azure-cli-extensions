@@ -15,14 +15,14 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class VolumeOperations(object):
-    """VolumeOperations operations.
+class GatewayOperations(object):
+    """GatewayOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
     """
 
     models = models
@@ -32,34 +32,37 @@ class VolumeOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-preview"
+        self.api_version = "2018-09-01-privatepreview"
 
         self.config = config
 
     def create(
-            self, resource_group_name, volume_resource_name, volume_resource_description, custom_headers=None, raw=False, **operation_config):
-        """Creates or updates a volume resource.
+            self, resource_group_name, gateway_resource_name, gateway_resource_description, custom_headers=None, raw=False, **operation_config):
+        """Creates or updates a gateway resource.
 
-        Creates a volume resource with the specified name, description and
-        properties. If a volume resource with the same name exists, then it is
-        updated with the specified description and properties.
+        Creates a gateway resource with the specified name, description and
+        properties. If a gateway resource with the same name exists, then it is
+        updated with the specified description and properties. Use gateway
+        resources to create a gateway for public connectivity for services
+        within your application.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param volume_resource_name: The identity of the volume.
-        :type volume_resource_name: str
-        :param volume_resource_description: Description for creating a Volume
-         resource.
-        :type volume_resource_description:
-         ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
+        :param gateway_resource_name: The identity of the gateway.
+        :type gateway_resource_name: str
+        :param gateway_resource_description: Description for creating a
+         Gateway resource.
+        :type gateway_resource_description:
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: VolumeResourceDescription or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
-         or ~msrest.pipeline.ClientRawResponse
+        :return: GatewayResourceDescription or ClientRawResponse if raw=true
+        :rtype:
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription or
+         ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -68,7 +71,7 @@ class VolumeOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
+            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -87,7 +90,7 @@ class VolumeOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(volume_resource_description, 'VolumeResourceDescription')
+        body_content = self._serialize.body(gateway_resource_description, 'GatewayResourceDescription')
 
         # Construct and send request
         request = self._client.put(url, query_parameters)
@@ -100,36 +103,38 @@ class VolumeOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('VolumeResourceDescription', response)
+            deserialized = self._deserialize('GatewayResourceDescription', response)
         if response.status_code == 201:
-            deserialized = self._deserialize('VolumeResourceDescription', response)
+            deserialized = self._deserialize('GatewayResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
 
     def get(
-            self, resource_group_name, volume_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the volume resource with the given name.
+            self, resource_group_name, gateway_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the gateway resource with the given name.
 
-        Gets the information about the volume resource with the given name. The
-        information include the description and other properties of the volume.
+        Gets the information about the gateway resource with the given name.
+        The information include the description and other properties of the
+        gateway.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param volume_resource_name: The identity of the volume.
-        :type volume_resource_name: str
+        :param gateway_resource_name: The identity of the gateway.
+        :type gateway_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: VolumeResourceDescription or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
-         or ~msrest.pipeline.ClientRawResponse
+        :return: GatewayResourceDescription or ClientRawResponse if raw=true
+        :rtype:
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription or
+         ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -138,7 +143,7 @@ class VolumeOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
+            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -166,25 +171,25 @@ class VolumeOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('VolumeResourceDescription', response)
+            deserialized = self._deserialize('GatewayResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
 
     def delete(
-            self, resource_group_name, volume_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Deletes the volume resource.
+            self, resource_group_name, gateway_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Deletes the gateway resource.
 
-        Deletes the volume resource identified by the name.
+        Deletes the gateway resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param volume_resource_name: The identity of the volume.
-        :type volume_resource_name: str
+        :param gateway_resource_name: The identity of the gateway.
+        :type gateway_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -200,7 +205,7 @@ class VolumeOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
+            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -228,15 +233,15 @@ class VolumeOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
-        """Gets all the volume resources in a given resource group.
+        """Gets all the gateway resources in a given resource group.
 
-        Gets the information about all volume resources in a given resource
+        Gets the information about all gateway resources in a given resource
         group. The information include the description and other properties of
-        the Volume.
+        the Gateway.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -245,9 +250,9 @@ class VolumeOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of VolumeResourceDescription
+        :return: An iterator like instance of GatewayResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -291,32 +296,32 @@ class VolumeOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
-        """Gets all the volume resources in a given subscription.
+        """Gets all the gateway resources in a given subscription.
 
-        Gets the information about all volume resources in a given resource
+        Gets the information about all gateway resources in a given resource
         group. The information include the description and other properties of
-        the volume.
+        the gateway.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of VolumeResourceDescription
+        :return: An iterator like instance of GatewayResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -359,12 +364,12 @@ class VolumeOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/volumes'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/gateways'}

@@ -9,10 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .service_fabric_mesh_management_client import ServiceFabricMeshManagementClient
-from .version import VERSION
+from msrest.serialization import Model
 
-__all__ = ['ServiceFabricMeshManagementClient']
 
-__version__ = VERSION
+class EndpointRef(Model):
+    """Describes a reference to a service endpoint.
 
+    :param name: Name of the endpoint.
+    :type name: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(self, name=None):
+        super(EndpointRef, self).__init__()
+        self.name = name

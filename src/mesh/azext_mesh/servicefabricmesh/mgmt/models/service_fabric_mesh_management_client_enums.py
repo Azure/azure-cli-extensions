@@ -53,9 +53,9 @@ class ApplicationScopedVolumeKind(Enum):
     service_fabric_volume_disk = "ServiceFabricVolumeDisk"
 
 
-class IngressQoSLevel(Enum):
+class NetworkKind(Enum):
 
-    bronze = "Bronze"
+    local = "Local"
 
 
 class HeaderMatchType(Enum):

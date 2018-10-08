@@ -15,14 +15,14 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class NetworkOperations(object):
-    """NetworkOperations operations.
+class VolumeOperations(object):
+    """VolumeOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
     """
 
     models = models
@@ -32,35 +32,34 @@ class NetworkOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-preview"
+        self.api_version = "2018-09-01-privatepreview"
 
         self.config = config
 
     def create(
-            self, resource_group_name, network_resource_name, network_resource_description, custom_headers=None, raw=False, **operation_config):
-        """Creates or updates a network resource.
+            self, resource_group_name, volume_resource_name, volume_resource_description, custom_headers=None, raw=False, **operation_config):
+        """Creates or updates a volume resource.
 
-        Creates a network resource with the specified name, description and
-        properties. If a network resource with the same name exists, then it is
+        Creates a volume resource with the specified name, description and
+        properties. If a volume resource with the same name exists, then it is
         updated with the specified description and properties.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param network_resource_name: The identity of the network.
-        :type network_resource_name: str
-        :param network_resource_description: Description for creating a
-         Network resource.
-        :type network_resource_description:
-         ~azure.mgmt.servicefabricmesh.models.NetworkResourceDescription
+        :param volume_resource_name: The identity of the volume.
+        :type volume_resource_name: str
+        :param volume_resource_description: Description for creating a Volume
+         resource.
+        :type volume_resource_description:
+         ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: NetworkResourceDescription or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.servicefabricmesh.models.NetworkResourceDescription or
-         ~msrest.pipeline.ClientRawResponse
+        :return: VolumeResourceDescription or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
+         or ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -69,7 +68,7 @@ class NetworkOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkResourceName': self._serialize.url("network_resource_name", network_resource_name, 'str', skip_quote=True)
+            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -88,7 +87,7 @@ class NetworkOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(network_resource_description, 'NetworkResourceDescription')
+        body_content = self._serialize.body(volume_resource_description, 'VolumeResourceDescription')
 
         # Construct and send request
         request = self._client.put(url, query_parameters)
@@ -101,38 +100,36 @@ class NetworkOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('NetworkResourceDescription', response)
+            deserialized = self._deserialize('VolumeResourceDescription', response)
         if response.status_code == 201:
-            deserialized = self._deserialize('NetworkResourceDescription', response)
+            deserialized = self._deserialize('VolumeResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/networks/{networkResourceName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
 
     def get(
-            self, resource_group_name, network_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the network resource with the given name.
+            self, resource_group_name, volume_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the volume resource with the given name.
 
-        Gets the information about the network resource with the given name.
-        The information include the description and other properties of the
-        network.
+        Gets the information about the volume resource with the given name. The
+        information include the description and other properties of the volume.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param network_resource_name: The identity of the network.
-        :type network_resource_name: str
+        :param volume_resource_name: The identity of the volume.
+        :type volume_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: NetworkResourceDescription or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.servicefabricmesh.models.NetworkResourceDescription or
-         ~msrest.pipeline.ClientRawResponse
+        :return: VolumeResourceDescription or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
+         or ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -141,7 +138,7 @@ class NetworkOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkResourceName': self._serialize.url("network_resource_name", network_resource_name, 'str', skip_quote=True)
+            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -169,25 +166,25 @@ class NetworkOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('NetworkResourceDescription', response)
+            deserialized = self._deserialize('VolumeResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/networks/{networkResourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
 
     def delete(
-            self, resource_group_name, network_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Deletes the network resource.
+            self, resource_group_name, volume_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Deletes the volume resource.
 
-        Deletes the network resource identified by the name.
+        Deletes the volume resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param network_resource_name: The identity of the network.
-        :type network_resource_name: str
+        :param volume_resource_name: The identity of the volume.
+        :type volume_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -203,7 +200,7 @@ class NetworkOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'networkResourceName': self._serialize.url("network_resource_name", network_resource_name, 'str', skip_quote=True)
+            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -231,15 +228,15 @@ class NetworkOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/networks/{networkResourceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
-        """Gets all the network resources in a given resource group.
+        """Gets all the volume resources in a given resource group.
 
-        Gets the information about all network resources in a given resource
+        Gets the information about all volume resources in a given resource
         group. The information include the description and other properties of
-        the Network.
+        the Volume.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -248,9 +245,9 @@ class NetworkOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of NetworkResourceDescription
+        :return: An iterator like instance of VolumeResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.NetworkResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.NetworkResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -294,32 +291,32 @@ class NetworkOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.NetworkResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.NetworkResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/networks'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
-        """Gets all the network resources in a given subscription.
+        """Gets all the volume resources in a given subscription.
 
-        Gets the information about all network resources in a given resource
+        Gets the information about all volume resources in a given resource
         group. The information include the description and other properties of
-        the network.
+        the volume.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of NetworkResourceDescription
+        :return: An iterator like instance of VolumeResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.NetworkResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.NetworkResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -362,12 +359,12 @@ class NetworkOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.NetworkResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.NetworkResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.VolumeResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/networks'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/volumes'}

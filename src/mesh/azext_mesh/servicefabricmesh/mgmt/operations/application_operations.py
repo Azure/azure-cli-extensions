@@ -15,14 +15,14 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class GatewayOperations(object):
-    """GatewayOperations operations.
+class ApplicationOperations(object):
+    """ApplicationOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-privatepreview`. Constant value: "2018-09-01-privatepreview".
     """
 
     models = models
@@ -32,36 +32,35 @@ class GatewayOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-07-01-preview"
+        self.api_version = "2018-09-01-privatepreview"
 
         self.config = config
 
     def create(
-            self, resource_group_name, gateway_resource_name, gateway_resource_description, custom_headers=None, raw=False, **operation_config):
-        """Creates or updates a gateway resource.
+            self, resource_group_name, application_resource_name, application_resource_description, custom_headers=None, raw=False, **operation_config):
+        """Creates or updates an application resource.
 
-        Creates a gateway resource with the specified name and description. If
-        a gateway with the same name already exists,  then its description is
-        updated to the one indicated in this request. Use gateway resources to
-        create a gateway for public connectivity for services within your
-        application. .
+        Creates an application resource with the specified name, description
+        and properties. If an application resource with the same name exists,
+        then it is updated with the specified description and properties.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param gateway_resource_name: The identity of the gateway.
-        :type gateway_resource_name: str
-        :param gateway_resource_description: Description for creating a
-         Gateway resource.
-        :type gateway_resource_description:
-         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
+        :param application_resource_description: Description for creating a
+         Application resource.
+        :type application_resource_description:
+         ~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescription
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: GatewayResourceDescription or ClientRawResponse if raw=true
+        :return: ApplicationResourceDescription or ClientRawResponse if
+         raw=true
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription or
+         ~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescription or
          ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
@@ -71,7 +70,7 @@ class GatewayOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -90,7 +89,7 @@ class GatewayOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(gateway_resource_description, 'GatewayResourceDescription')
+        body_content = self._serialize.body(application_resource_description, 'ApplicationResourceDescription')
 
         # Construct and send request
         request = self._client.put(url, query_parameters)
@@ -103,37 +102,38 @@ class GatewayOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('GatewayResourceDescription', response)
+            deserialized = self._deserialize('ApplicationResourceDescription', response)
         if response.status_code == 201:
-            deserialized = self._deserialize('GatewayResourceDescription', response)
+            deserialized = self._deserialize('ApplicationResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}'}
 
     def get(
-            self, resource_group_name, gateway_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the gateway resource with the given name.
+            self, resource_group_name, application_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the application resource with the given name.
 
-        Gets the information about the gateway resource with the given name.
-        The information include the description, configuration and other
-        runtime properties of the gateway.
+        Gets the information about the application resource with the given
+        name. The information include the description and other properties of
+        the application.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param gateway_resource_name: The identity of the gateway.
-        :type gateway_resource_name: str
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: GatewayResourceDescription or ClientRawResponse if raw=true
+        :return: ApplicationResourceDescription or ClientRawResponse if
+         raw=true
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription or
+         ~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescription or
          ~msrest.pipeline.ClientRawResponse
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
@@ -143,7 +143,7 @@ class GatewayOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -171,25 +171,25 @@ class GatewayOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('GatewayResourceDescription', response)
+            deserialized = self._deserialize('ApplicationResourceDescription', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}'}
 
     def delete(
-            self, resource_group_name, gateway_resource_name, custom_headers=None, raw=False, **operation_config):
-        """Deletes the gateway resource.
+            self, resource_group_name, application_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Deletes the application resource.
 
-        Deletes the gateway resource identified by the name.
+        Deletes the application resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param gateway_resource_name: The identity of the gateway.
-        :type gateway_resource_name: str
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -205,7 +205,7 @@ class GatewayOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'gatewayResourceName': self._serialize.url("gateway_resource_name", gateway_resource_name, 'str', skip_quote=True)
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -233,15 +233,15 @@ class GatewayOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways/{gatewayResourceName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
-        """Gets all the gateway resources in a given resource group.
+        """Gets all the application resources in a given resource group.
 
-        Gets the information about all gateway resources in a given resource
-        group. The information include the description, configuration and other
-        runtime properties of the gateway.
+        Gets the information about all application resources in a given
+        resource group. The information include the description and other
+        properties of the Application.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -250,9 +250,9 @@ class GatewayOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of GatewayResourceDescription
+        :return: An iterator like instance of ApplicationResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -296,32 +296,32 @@ class GatewayOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.ApplicationResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.ApplicationResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/gateways'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
-        """Gets all the gateway resources in a given subscription.
+        """Gets all the application resources in a given subscription.
 
-        Gets the information about all gateway resources in a given resource
-        group. The information include the description, configuration and other
-        runtime properties of the gateway.
+        Gets the information about all application resources in a given
+        resource group. The information include the description and other
+        properties of the application.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of GatewayResourceDescription
+        :return: An iterator like instance of ApplicationResourceDescription
         :rtype:
-         ~azure.mgmt.servicefabricmesh.models.GatewayResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.GatewayResourceDescription]
+         ~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescription]
         :raises:
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
@@ -364,12 +364,12 @@ class GatewayOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.ApplicationResourceDescriptionPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.GatewayResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.ApplicationResourceDescriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/gateways'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ServiceFabricMesh/applications'}
