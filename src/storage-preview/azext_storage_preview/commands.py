@@ -35,8 +35,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage account', storage_account_sdk, resource_type=CUSTOM_MGMT_STORAGE,
                             custom_command_type=storage_account_custom_type) as g:
         g.custom_command('create', 'create_storage_account', min_api='2016-01-01')
+        g.show_command('show', 'get_properties')
         g.generic_update_command('update', getter_name='get_properties', setter_name='update',
                                  custom_func_name='update_storage_account', min_api='2016-12-01')
+        g.command('failover', 'failover')
 
     storage_account_sdk_preview = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.'
