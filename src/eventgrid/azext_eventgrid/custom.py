@@ -4,11 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 import re
+from six.moves.urllib.parse import quote  # pylint: disable=import-error,relative-import
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
 from dateutil import parser
 
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_eventgrid.mgmt.eventgrid.models import (
     EventSubscription,
     EventSubscriptionUpdateParameters,
@@ -42,6 +44,9 @@ CLOUDEVENTV01_SCHEMA = "CloudEventV01Schema"
 CUSTOM_EVENT_SCHEMA = "CustomEventSchema"
 CUSTOM_INPUT_SCHEMA = "CustomInputSchema"
 GLOBAL = "global"
+
+# Deprecated event delivery schema value (starting 2018-09-15-preview)
+INPUT_EVENT_SCHEMA = "InputEventSchema"
 
 # Constants for the target field names of the mapping
 TOPIC = "topic"
@@ -125,10 +130,14 @@ def cli_domain_create_or_update(
 
 
 def cli_eventgrid_event_subscription_create(
+        cmd,
         client,
         event_subscription_name,
         endpoint,
-        resource_id,
+        resource_id=None,
+        source_resource_id=None,
+        resource_group_name=None,
+        topic_name=None,
         endpoint_type=WEBHOOK_DESTINATION,
         included_event_types=None,
         subject_begins_with=None,
@@ -141,6 +150,13 @@ def cli_eventgrid_event_subscription_create(
         labels=None,
         expiration_date=None,
         advanced_filter=None):
+    scope = _get_scope_for_event_subscription(
+        cli_ctx=cmd.cli_ctx,
+        source_resource_id=source_resource_id,
+        resource_id=resource_id,
+        topic_name=topic_name,
+        resource_group_name=resource_group_name)
+
     # Construct RetryPolicy based on max_delivery_attempts and event_ttl
     max_delivery_attempts = int(max_delivery_attempts)
     event_ttl = int(event_ttl)
@@ -178,29 +194,50 @@ def cli_eventgrid_event_subscription_create(
     _warn_if_manual_handshake_needed(endpoint_type, endpoint)
 
     async_event_subscription_create = client.create_or_update(
-        resource_id,
+        scope,
         event_subscription_name,
         event_subscription_info)
     return async_event_subscription_create.result()
 
 
 def cli_eventgrid_event_subscription_delete(
+        cmd,
         client,
         event_subscription_name,
-        resource_id):
+        resource_id=None,
+        source_resource_id=None,
+        resource_group_name=None,
+        topic_name=None):
+    scope = _get_scope_for_event_subscription(
+        cli_ctx=cmd.cli_ctx,
+        source_resource_id=source_resource_id,
+        resource_id=resource_id,
+        topic_name=topic_name,
+        resource_group_name=resource_group_name)
     async_event_subscription_delete = client.delete(
-        resource_id,
+        scope,
         event_subscription_name)
     return async_event_subscription_delete.result()
 
 
 def event_subscription_setter(
+        cmd,
         client,
         parameters,
         event_subscription_name,
-        resource_id):
+        source_resource_id=None,
+        resource_id=None,
+        resource_group_name=None,
+        topic_name=None):
+    scope = _get_scope_for_event_subscription(
+        cli_ctx=cmd.cli_ctx,
+        source_resource_id=source_resource_id,
+        resource_id=resource_id,
+        topic_name=topic_name,
+        resource_group_name=resource_group_name)
+
     async_event_subscription_update = client.update(
-        resource_id,
+        scope,
         event_subscription_name,
         parameters)
     updated_event_subscription = async_event_subscription_update.result()
@@ -208,11 +245,21 @@ def event_subscription_setter(
 
 
 def cli_eventgrid_event_subscription_get(
+        cmd,
         client,
         event_subscription_name,
-        resource_id,
+        source_resource_id=None,
+        resource_id=None,
+        resource_group_name=None,
+        topic_name=None,
         include_full_endpoint_url=False):
-    scope = resource_id
+    scope = _get_scope_for_event_subscription(
+        cli_ctx=cmd.cli_ctx,
+        source_resource_id=source_resource_id,
+        resource_id=resource_id,
+        topic_name=topic_name,
+        resource_group_name=resource_group_name)
+
     retrieved_event_subscription = client.get(scope, event_subscription_name)
     destination = retrieved_event_subscription.destination
     if include_full_endpoint_url and isinstance(destination, WebHookEventSubscriptionDestination):
@@ -224,22 +271,22 @@ def cli_eventgrid_event_subscription_get(
 
 def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         client,
-        resource_id=None,
+        source_resource_id=None,
         resource_group_name=None,
         location=None,
         topic_type_name=None):
-    if resource_id is not None:
-        # If Resource ID is specified, we need to list event subscriptions for that particular resource.
+    if source_resource_id is not None:
+        # If Source Resource ID is specified, we need to list event subscriptions for that particular resource.
         # No other parameters must be specified
         if resource_group_name is not None or location is not None or topic_type_name is not None:
-            raise CLIError('Invalid usage: Since --resource-id is specified, none of the other parameters must'
+            raise CLIError('usage error: Since --source-resource-id is specified, none of the other parameters must'
                            'be specified.')
 
-        return _list_event_subscriptions_by_resource_id(client, resource_id)
+        return _list_event_subscriptions_by_resource_id(client, source_resource_id)
 
     if location is None:
         # Since resource-id was not specified, location must be specified: e.g. "westus2" or "global". If not error OUT.
-        raise CLIError('Invalid usage: Either resource-id or location must be specified.')
+        raise CLIError('usage error: --source-resource-id ID | --location LOCATION [--resource-group-name RG] [--topic-type-name TOPIC_TYPE_NAME]')
 
     if topic_type_name is None:
         # No topic-type is specified: return event subscriptions across all topic types for this location.
@@ -269,11 +316,96 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     return client.list_regional_by_subscription_for_topic_type(location, topic_type_name)
 
 
+def _get_scope(
+        cli_ctx,
+        resource_group_name,
+        provider_namespace,
+        resource_type,
+        resource_name):
+    subscription_id = get_subscription_id(cli_ctx)
+
+    if provider_namespace == RESOURCES_NAMESPACE:
+        if resource_group_name:
+            scope = (
+                '/subscriptions/{}/resourceGroups/{}'
+                .format(quote(subscription_id),
+                        quote(resource_group_name)))
+        else:
+            scope = (
+                '/subscriptions/{}'
+                .format(quote(subscription_id)))
+    else:
+        scope = (
+            '/subscriptions/{}/resourceGroups/{}/providers/{}/{}/{}'
+            .format(quote(subscription_id),
+                    quote(resource_group_name),
+                    quote(provider_namespace),
+                    quote(resource_type),
+                    quote(resource_name)))
+
+    return scope
+
+
+def _get_scope_for_event_subscription(
+        cli_ctx,
+        resource_id,
+        source_resource_id,
+        topic_name,
+        resource_group_name):
+    if all([resource_id, source_resource_id]):
+        raise CLIError('usage error: specify either "--resource-id" or "--source-resource-id", not both.')
+
+    if all([resource_id, topic_name]):
+        raise CLIError('usage error: specify either "--topic-name" or "--resource-id", not both.')
+
+    if all([resource_id, resource_group_name]):
+        raise CLIError('usage error: specify either "--resource_group_name" or "--resource-id", not both.')
+
+    if all([source_resource_id, topic_name]):
+        raise CLIError('usage error: specify either "--topic-name" or "--source-resource-id", not both.')
+
+    if all([source_resource_id, resource_group_name]):
+        raise CLIError('usage error: specify either "--resource_group_name" or "--source-resource-id", not both.')
+
+    if source_resource_id:
+        # Source Resource ID is provided, use that as the scope for the event subscription.
+        # This is the latest non-deprecated way of specifying the source resource.
+        scope = source_resource_id
+    elif resource_id:
+        # Deprecated
+        scope = resource_id
+    elif topic_name:
+        # DEPRECATED: Topic name is provided, use the topic and resource group to build a scope for the user topic
+        if resource_group_name is None:
+            raise CLIError("When --topic-name is specified, the --resource-group-name must also be specified.")
+
+        scope = _get_scope(cli_ctx, resource_group_name, EVENTGRID_NAMESPACE, EVENTGRID_TOPICS, topic_name)
+    elif resource_group_name:
+        # DEPRECATED: Event subscription to a resource group.
+        scope = _get_scope(cli_ctx, resource_group_name, RESOURCES_NAMESPACE, RESOURCE_GROUPS, resource_group_name)
+    else:
+        # DEPRECATED
+        logger.warning("This option has been deprecated and will be removed in a future release. Use `--source-resource-id` instead.")
+        scope = _get_scope(cli_ctx, None, RESOURCES_NAMESPACE, SUBSCRIPTIONS, get_subscription_id(cli_ctx))
+
+    return scope
+
+
 def event_subscription_getter(
+        cmd,
         client,
         event_subscription_name,
-        resource_id):
-    return client.get(resource_id, event_subscription_name)
+        source_resource_id=None,
+        resource_id=None,
+        resource_group_name=None,
+        topic_name=None):
+    scope = _get_scope_for_event_subscription(
+        cli_ctx=cmd.cli_ctx,
+        source_resource_id=source_resource_id,
+        resource_id=resource_id,
+        topic_name=topic_name,
+        resource_group_name=resource_group_name)
+    return client.get(scope, event_subscription_name)
 
 
 def get_input_schema_mapping(
@@ -441,9 +573,14 @@ def _get_event_delivery_schema(event_delivery_schema):
         event_delivery_schema = CUSTOM_INPUT_SCHEMA
     elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
         event_delivery_schema = CLOUDEVENTV01_SCHEMA
+    # NO LONGER SUPPORTED
+    elif event_delivery_schema.lower() == INPUT_EVENT_SCHEMA.lower():
+        raise CLIError('usage error: InputEventSchema is not supported anymore. --event-delivery-schema supported values are '
+                       ' :' + EVENTGRID_SCHEMA + ',' + CUSTOM_INPUT_SCHEMA +
+                       ',' + CLOUDEVENTV01_SCHEMA)
     else:
-        raise CLIError('The provided --event-delivery-schema is not valid. The supported '
-                       ' values are:' + EVENTGRID_SCHEMA + ',' + CUSTOM_INPUT_SCHEMA +
+        raise CLIError('usage error: --event-delivery-schema supported values are'
+                       ' :' + EVENTGRID_SCHEMA + ',' + CUSTOM_INPUT_SCHEMA +
                        ',' + CLOUDEVENTV01_SCHEMA)
 
     return event_delivery_schema
@@ -499,82 +636,82 @@ def _get_input_schema_and_mapping(
 
 
 def _list_event_subscriptions_by_resource_id(client, resource_id):
-    # Since we take a resource_id as an argument,
-    # we need to override the default subscription_id if the provided resource_id is
-    # different than the default subscription ID. At the same time, the value of the
-    # default subscription ID should be preserved.
-    default_subscription_id = client.config.subscription_id
+    # parse_resource_id doesn't handle resource_ids for Azure subscriptions and RGs
+    # so, first try to look for those two patterns.
+    if resource_id is not None:
+        id_parts = list(filter(None, resource_id.split('/')))
+        if len(id_parts) < 5:
+            # Azure subscriptions or Resource group
+            if id_parts[0].lower() != "subscriptions":
+                raise CLIError('The specified value for resource-id is not in the'
+                                ' expected format. It should start with /subscriptions.')
 
-    try:
-        # parse_resource_id doesn't handle resource_ids for Azure subscriptions and RGs
-        # so, first try to look for those two patterns.
-        if resource_id is not None:
-            id_parts = list(filter(None, resource_id.split('/')))
-            if len(id_parts) < 5:
-                # Azure subscriptions or Resource group
-                if id_parts[0].lower() != "subscriptions":
-                    raise CLIError('The specified value for resource-id is not in the'
-                                   ' expected format. It should start with /subscriptions.')
+            subscription_id = id_parts[1]
+            _validate_subscription_id_matches_default_subscription_id(subscription_id)
 
-                client.config.subscription_id = id_parts[1]
-                if client.config.subscription_id is None:
-                    raise CLIError('The specified value for resource-id is not in'
-                                   ' the expected format. A valid value for subscription'
-                                   ' must be provided.')
+            if len(id_parts) == 2:
+                return client.list_global_by_subscription_for_topic_type("Microsoft.Resources.Subscriptions")
 
-                if len(id_parts) == 2:
-                    return client.list_global_by_subscription_for_topic_type("Microsoft.Resources.Subscriptions")
+            if len(id_parts) == 4 and id_parts[2].lower() == "resourcegroups":
+                resource_group_name = id_parts[3]
+                if resource_group_name is None:
+                    raise CLIError('The specified value for resource-id is not'
+                                    ' in the expected format. A valid value for'
+                                    ' resource group must be provided.')
+                return client.list_global_by_resource_group_for_topic_type(
+                    resource_group_name,
+                    "Microsoft.Resources.ResourceGroups")
 
-                if len(id_parts) == 4 and id_parts[2].lower() == "resourcegroups":
-                    resource_group_name = id_parts[3]
-                    if resource_group_name is None:
-                        raise CLIError('The specified value for resource-id is not'
-                                       ' in the expected format. A valid value for'
-                                       ' resource group must be provided.')
-                    return client.list_global_by_resource_group_for_topic_type(
-                        resource_group_name,
-                        "Microsoft.Resources.ResourceGroups")
+    id_parts = parse_resource_id(resource_id)
+    subscription_id = id_parts.get('subscription')
+    _validate_subscription_id_matches_default_subscription_id(subscription_id)
 
-        id_parts = parse_resource_id(resource_id)
-        client.config.subscription_id = id_parts.get('subscription')
-        rg_name = id_parts.get('resource_group')
-        resource_name = id_parts.get('name')
-        namespace = id_parts.get('namespace')
-        resource_type = id_parts.get('type')
+    rg_name = id_parts.get('resource_group')
+    resource_name = id_parts.get('name')
+    namespace = id_parts.get('namespace')
+    resource_type = id_parts.get('type')
 
-        if (client.config.subscription_id is None or rg_name is None or resource_name is None or
-                namespace is None or resource_type is None):
-            raise CLIError('The specified value for resource-id is not'
-                           ' in the expected format.')
+    if (subscription_id is None or rg_name is None or resource_name is None or
+            namespace is None or resource_type is None):
+        raise CLIError('The specified value for resource-id is not'
+                        ' in the expected format.')
 
-        # If this is for a domain topic, invoke the appropriate operation
-        if (namespace.lower() == EVENTGRID_NAMESPACE.lower() and resource_type.lower() == EVENTGRID_DOMAINS.lower()):
-            child_resource_type = id_parts.get('child_type_1')
-            child_resource_name = id_parts.get('child_name_1')
+    # If this is for a domain topic, invoke the appropriate operation
+    if (namespace.lower() == EVENTGRID_NAMESPACE.lower() and resource_type.lower() == EVENTGRID_DOMAINS.lower()):
+        child_resource_type = id_parts.get('child_type_1')
+        child_resource_name = id_parts.get('child_name_1')
 
-            if (child_resource_type is not None and child_resource_type.lower() == EVENTGRID_TOPICS.lower() and
-                    child_resource_name is not None):
-                return client.list_by_domain_topic(rg_name, resource_name, child_resource_name)
+        if (child_resource_type is not None and child_resource_type.lower() == EVENTGRID_TOPICS.lower() and
+                child_resource_name is not None):
+            return client.list_by_domain_topic(rg_name, resource_name, child_resource_name)
 
-        # Not a domain topic, invoke the standard list_by_resource
-        return client.list_by_resource(
-            rg_name,
-            namespace,
-            resource_type,
-            resource_name)
-
-    finally:
-        # Reset the default subscription ID back to what it originally was.
-        client.config.subscription_id = default_subscription_id
+    # Not a domain topic, invoke the standard list_by_resource
+    return client.list_by_resource(
+        rg_name,
+        namespace,
+        resource_type,
+        resource_name)
 
 
 def _is_topic_type_global_resource(topic_type_name):
     # TODO: Add here if any other global topic types get added in the future.
     TOPIC_TYPE_AZURE_SUBSCRIPTIONS = "Microsoft.Resources.Subscriptions"
     TOPIC_TYPE_AZURE_RESOURCE_GROUP = "Microsoft.Resources.ResourceGroups"
+    TOPIC_TYPE_MAPS_ACCOUNTS = "Microsoft.Maps.Accounts"
 
     if (topic_type_name.lower() == TOPIC_TYPE_AZURE_SUBSCRIPTIONS.lower() or
+            topic_type_name.lower() == TOPIC_TYPE_MAPS_ACCOUNTS or
             topic_type_name.lower() == TOPIC_TYPE_AZURE_RESOURCE_GROUP.lower()):
         return True
 
     return False
+
+
+def _validate_subscription_id_matches_default_subscription_id(subscription_id):
+    # The CLI/SDK infrastructure doesn't support overriding the subscription ID.
+    # Hence, we validate that the provided subscription ID is the same as the default
+    # configured subscription.
+    if subscription_id.lower() != client.config.subscription_id.lower():
+        raise CLIError('The subscription ID in the specified resource-id'
+                       ' does not match the default subscription ID. To set the default subscription ID,'
+                       ' use az account set.')

@@ -9,15 +9,15 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['eventgrid'] = """
     type: group
-    short-summary: Manage Azure Event Grid resources such as topics and event subscriptions.
+    short-summary: Manage Azure Event Grid topics, event subscriptions and domains.
     """
 helps['eventgrid topic'] = """
     type: group
-    short-summary: Manage custom topics.
+    short-summary: Manage topics.
     """
 helps['eventgrid topic create'] = """
     type: command
-    short-summary: Create a new topic.
+    short-summary: Create a topic.
     examples:
         - name: Create a new topic.
           text: az eventgrid topic create -g rg1 --name topic1 -l westus2
@@ -56,7 +56,7 @@ helps['eventgrid topic show'] = """
         - name: Show the details of a topic.
           text: az eventgrid topic show -g rg1 -n topic1
         - name: Show the details of a topic based on resource ID.
-          text: az eventgrid topic show --ids /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/topics/topic1
+          text: az eventgrid topic show --ids /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1
     """
 helps['eventgrid topic key'] = """
     type: group
@@ -115,7 +115,7 @@ helps['eventgrid domain show'] = """
         - name: Show the details of a domain.
           text: az eventgrid domain show -g rg1 -n domain1
         - name: Show the details of a domain based on resource ID.
-          text: az eventgrid domain show --ids /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1
+          text: az eventgrid domain show --ids /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/domain1
     """
 helps['eventgrid domain key'] = """
     type: group
@@ -173,97 +173,96 @@ helps['eventgrid event-subscription create'] = """
             NumberGreaterThanOrEquals: --advanced-filter data.property2 NumberGreaterThanOrEquals 100
             BoolEquals:                --advanced-filter data.property3 BoolEquals true
             Multiple advanced filters can be specified by using more than one `--advanced-filter` argument.
-        - name: --resource-id
+        - name: --source-resource-id
           short-summary: Fully qualified identifier of the Azure resource to which the event subscription needs to be created.
           long-summary: |
-            Usage:                      --resource-id Azure-Resource-ID
-            For Azure subscription:     --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
-            For resource group:         --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1
-            For EventGrid topic:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
-            For storage account:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
-            For EventGrid domain:       --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
-            For EventGrid domain topic: --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            Usage:                      --source-resource-id Azure-Resource-ID
+            For Azure subscription:     --source-resource-id /subscriptions/{SubID}
+            For resource group:         --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1
+            For EventGrid topic:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
+            For storage account:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
+            For EventGrid domain:       --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
         - name: --deadletter-endpoint
           short-summary: The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.
           long-summary: |
-            Usage:   --deadletter-endpoint Azure-Resource-ID-Of-Storage-Blob-Container
-            Example: --deadletter-endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName
+            Example: --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/containerName
         - name: --endpoint-type
           short-summary: The type of the destination endpoint.
     examples:
         - name: Create a new event subscription for an Event Grid topic, using default filters.
           text: |
             az eventgrid event-subscription create --name es1 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/topics/topic1 \\
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Create a new event subscription for an Azure subscription subscription, using default filters.
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2 \\
+                --source-resource-id /subscriptions/{SubID} \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Create a new event subscription for a resource group, using default filters.
           text: |
             az eventgrid event-subscription create --name es3 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest \\
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG} \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Create a new event subscription for a storage account, using default filters.
           text: |
             az eventgrid event-subscription create --name es3 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob"  \\
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/s1"  \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Create a new event subscription for a storage account, using advanced filters.
           text: |
             az eventgrid event-subscription create  --name es3 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/s1" \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
                 --advanced-filter data.blobType StringIn BlockBlob
                 --advanced-filter data.url StringBeginsWith https://myaccount.blob.core.windows.net
         - name: Create a new event subscription for an Azure subscription, with a filter specifying a subject prefix.
           text: |
             az eventgrid event-subscription create --name es4 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2 \\
+                --source-resource-id /subscriptions/{SubID} \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
                 --subject-begins-with mysubject_prefix
         - name: Create a new event subscription for a resource group, with a filter specifying a subject suffix.
           text: |
             az eventgrid event-subscription create --name es5 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest \\
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG} \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
                 --subject-ends-with mysubject_suffix
         - name: Create a new event subscription for an Azure subscription, using default filters, and an EventHub as a destination.
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2 \\
+                --source-resource-id /subscriptions/{SubID} \\
                 --endpoint-type eventhub \\
-                --endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.EventHub/namespaces/ContosoNamespace/eventhubs/EH1
+                --endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.EventHub/namespaces/n1/eventhubs/EH1
         - name: Create a new event subscription for an Azure subscription, using default filters, and an Azure Storage queue as a destination.
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2 \\
+                --source-resource-id /subscriptions/{SubID} \\
                 --endpoint-type storagequeue \\
-                --endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/queueservices/default/queues/queue1
+                --endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/queueservices/default/queues/q1
         - name: Create a new event subscription for an Event Grid domain, using default filters, and CloudEventV01 as the delivery schema.
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1 \\
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1 \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
                 --event-delivery-schema cloudeventv01schema
         - name: Create a new event subscription for a storage account, with a deadletter destination and custom retry policy of maximum 10 delivery attempts and an Event TTL of 2 hours (whichever happens earlier).
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/s1" \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code \\
-                --deadletter-endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1 \\
+                --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/s2/blobServices/default/containers/blobcontainer1 \\
                 --max-delivery-attempts 10 --event-ttl 120
         - name: Create a new event subscription for a domain topic.
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1/topics/topic1" \\
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/domain1/topics/t1" \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Create a new event subscription (for a storage account) with an expiration date.
           text: |
             az eventgrid event-subscription create --name es2 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/sa1" \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
                 --expiration-date "2018-10-31"
     """
@@ -271,83 +270,83 @@ helps['eventgrid event-subscription update'] = """
     type: command
     short-summary: Update an event subscription.
     parameters:
-        - name: --resource-id
+        - name: --source-resource-id
           short-summary: Fully qualified identifier of the Azure resource whose event subscription needs to be updated.
           long-summary: |
-            Usage:                      --resource-id Azure-Resource-ID
-            For Azure subscription:     --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
-            For resource group:         --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1
-            For EventGrid topic:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
-            For storage account:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
-            For EventGrid domain:       --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
-            For EventGrid domain topic: --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            Usage:                      --source-resource-id Azure-Resource-ID
+            For Azure subscription:     --source-resource-id /subscriptions/{SubID}
+            For resource group:         --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1
+            For EventGrid topic:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
+            For storage account:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
+            For EventGrid domain:       --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
     examples:
         - name: Update an event subscription for an Event Grid topic to specify a new endpoint.
           text: |
             az eventgrid event-subscription update --name es1 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/topics/topic1 \\
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Update an event subscription for an Azure subscription to specify a new subject-ends-with filter.
           text: |
             az eventgrid event-subscription update --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2 \\
+                --source-resource-id /subscriptions/{SubID} \\
                 --subject-ends-with .jpg
         - name: Update an event subscription for a resource group to specify a new endpoint and a new subject-ends-with filter.
           text: |
             az eventgrid event-subscription update --name es3 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest \\
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG} \\
                 --subject-ends-with .png \\
                 --endpoint https://contoso.azurewebsites.net/api/f1?code=code
         - name: Update an event subscription for a storage account to specify a new list of included event types.
           text: |
             az eventgrid event-subscription update --name es3 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/microsoft.storage/storageaccounts/kalsegblob" \\
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/microsoft.storage/storageaccounts/kalsegblob" \\
                 --included-event-types Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted
         - name: Update an event subscription for a storage account, to include a deadletter destination.
           text: |
             az eventgrid event-subscription update --name es2 \\
-                --resource-id "/subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
-                --deadletter-endpoint /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
+                --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/kalsegblob" \\
+                --deadletter-endpoint /subscriptions/{SubID}/resourceGroups/TestRG/providers/Microsoft.Storage/storageAccounts/sa1/blobServices/default/containers/blobcontainer1
     """
 helps['eventgrid event-subscription delete'] = """
     type: command
     short-summary: Delete an event subscription.
     parameters:
-        - name: --resource-id
+        - name: --source-resource-id
           short-summary: Fully qualified identifier of the Azure resource whose event subscription needs to be deleted.
           long-summary: |
-            Usage:                      --resource-id Azure-Resource-ID
-            For Azure subscription:     --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
-            For resource group:         --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1
-            For EventGrid topic:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
-            For storage account:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
-            For EventGrid domain:       --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
-            For EventGrid domain topic: --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            Usage:                      --source-resource-id Azure-Resource-ID
+            For Azure subscription:     --source-resource-id /subscriptions/{SubID}
+            For resource group:         --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1
+            For EventGrid topic:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
+            For storage account:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
+            For EventGrid domain:       --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
     examples:
         - name: Delete an event subscription for an Event Grid topic.
           text: |
             az eventgrid event-subscription delete --name es1 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/topics/topic1
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1
         - name: Delete an event subscription for an Event Grid domain topic.
           text: |
             az eventgrid event-subscription delete --name es1 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1/topics/topic1
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/domain1/topics/topic1
         - name: Delete an event subscription for an Event Grid domain.
           text: |
             az eventgrid event-subscription delete --name es1 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/domain1
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/domain1
         - name: Delete an event subscription for an Azure subscription.
           text: |
             az eventgrid event-subscription delete --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
+                --source-resource-id /subscriptions/{SubID}
         - name: Delete an event subscription for a resource group.
           text: |
             az eventgrid event-subscription delete --name es3 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}
         - name: Delete an event subscription for a storage account.
           text: |
             az eventgrid event-subscription delete --name es3 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/microsoft.storage/storageaccounts/kalsegblob
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/microsoft.storage/storageaccounts/kalsegblob
     """
 helps['eventgrid event-subscription list'] = """
     type: command
@@ -355,7 +354,7 @@ helps['eventgrid event-subscription list'] = """
     long-summary: |
         Event Grid supports both regional and global event subscriptions: Event subscriptions on regional resources (such as Storage accounts or Event Grid topics) are regional, while event subscriptions on global resources (such as an Azure subscription or resource group) are global.
         Hence, you can list event subscriptions in a few different ways:
-        1. To list by the resource ID of the resource whose event subscriptions you want to list, specify the --resource-id parameter. No other parameters must be specified.
+        1. To list by the resource ID of the resource whose event subscriptions you want to list, specify the --source-resource-id parameter. No other parameters must be specified.
         2. To list by a topic-type (e.g. storage accounts), specify the --topic-type parameter along with --location (e.g. "westus2") parameter. For global topic types (e.g. "Microsoft.Resources.Subcriptions"), specify the location value as "global".
         3. To list all event subscriptions in a region (across all topic types), specify only the --location parameter.
         4. For both #2 and #3 above, to filter only by a resource group, you can additionally specify the --resource-group parameter.
@@ -374,16 +373,16 @@ helps['eventgrid event-subscription list'] = """
                 --resource-group TestRG --topic-type-name Microsoft.Storage.StorageAccounts --location westus2
             Example 2: List all event subscriptions on Azure subscriptions
                 --topic-type-name Microsoft.Resources.Subscriptions --location global
-        - name: --resource-id
+        - name: --source-resource-id
           short-summary: Fully qualified identifier of the Azure resource whose event subscription needs to be listed.
           long-summary: |
-            Usage:                      --resource-id Azure-Resource-ID
-            For Azure subscription:     --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
-            For resource group:         --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1
-            For EventGrid topic:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
-            For storage account:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
-            For EventGrid domain:       --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
-            For EventGrid domain topic: --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            Usage:                      --source-resource-id Azure-Resource-ID
+            For Azure subscription:     --source-resource-id /subscriptions/{SubID}
+            For resource group:         --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1
+            For EventGrid topic:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
+            For storage account:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
+            For EventGrid domain:       --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
         - name: --location
           short-summary: This is used to list event subscriptions by location.
           long-summary: |
@@ -394,68 +393,68 @@ helps['eventgrid event-subscription list'] = """
     examples:
         - name: List all event subscriptions created for an Event Grid topic.
           text: |
-            az eventgrid event-subscription list --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/topics/topic1
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1
         - name: List all event subscriptions created for a storage account.
           text: |
-            az eventgrid event-subscription list --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.Storage/storageaccounts/kalsegblob
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/kalsegblob
         - name: List all event subscriptions created for an Azure subscription.
           text: |
-            az eventgrid event-subscription list --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}
         - name: List all event subscriptions created for a resource group.
           text: |
-            az eventgrid event-subscription list --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}
         - name: List all event subscriptions for an Event Grid domain.
           text: |
-            az eventgrid event-subscription list --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/d1
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1
         - name: List all event subscriptions for an Event Grid domain topic.
           text: |
-            az eventgrid event-subscription list --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/kalstest/providers/Microsoft.EventGrid/domains/d1/topics/topic1"
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1/topics/topic1"
         - name: List all event subscriptions for a topic-type in a specific location (under the currently selected Azure subscription).
           text: |
             az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location westus2
         - name: List all event subscriptions under a specified resource group for a topic-type in a specific location.
           text: |
-            az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location westus2 --resource-group kalstest
+            az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location westus2 --resource-group {RG}
         - name: List all regional or global event subscriptions (under the currently selected Azure subscription).
           text: |
             az eventgrid event-subscription list --location westus2
             az eventgrid event-subscription list --location global
         - name: List all regional or global event subscriptions under a specified resource group.
           text: |
-            az eventgrid event-subscription list --location westus2 --resource-group kalstest
-            az eventgrid event-subscription list --location global --resource-group kalstest
+            az eventgrid event-subscription list --location westus2 --resource-group {RG}
+            az eventgrid event-subscription list --location global --resource-group {RG}
     """
 helps['eventgrid event-subscription show'] = """
     type: command
     short-summary: Get the details of an event subscription.
     parameters:
-        - name: --resource-id
+        - name: --source-resource-id
           short-summary: Fully qualified identifier of the Azure resource whose event subscription needs to be shown.
           long-summary: |
-            Usage:                      --resource-id Azure-Resource-ID
-            For Azure subscription:     --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
-            For resource group:         --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1
-            For EventGrid topic:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
-            For storage account:        --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
-            For EventGrid domain:       --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
-            For EventGrid domain topic: --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            Usage:                      --source-resource-id Azure-Resource-ID
+            For Azure subscription:     --source-resource-id /subscriptions/{SubID}
+            For resource group:         --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1
+            For EventGrid topic:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/t1
+            For storage account:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
+            For EventGrid domain:       --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
+            For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
     examples:
         - name: Show the details of an event subscription for an Event Grid topic.
           text: |
             az eventgrid event-subscription show --name es1 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/topic1
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/topics/topic1
         - name: Show the details of an event subscription for an Azure subscription.
           text: |
             az eventgrid event-subscription show --name es2 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2
+                --source-resource-id /subscriptions/{SubID}
         - name: Show the details of an event subscription for a resource group.
           text: |
             az eventgrid event-subscription show --name es3 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1
         - name: Show the details of an event subscription for a storage account.
           text: |
             az eventgrid event-subscription show --name es3 \\
-                --resource-id /subscriptions/55f3dcd4-cac7-43b4-990b-a139d62a1eb2/resourceGroups/rg1/providers/microsoft.storage/storageaccounts/kalsegblob
+                --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/microsoft.storage/storageaccounts/kalsegblob
     """
 helps['eventgrid topic-type'] = """
     type: group

@@ -274,6 +274,78 @@ class EventGridTests(ScenarioTest):
         self.assertIsNotNone(output['key1'])
         self.assertIsNotNone(output['key2'])
 
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {scope} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {scope} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription update --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription list --source-resource-id {scope}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --topic-type Microsoft.EventGrid.Topics --location {location}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription delete --source-resource-id {scope} --name {event_subscription_name}')
+
+# TESTS FOR DEPRECATED ARGUMENTS
+# Using TopicName and ResourceGroup combination
+        self.cmd('az eventgrid event-subscription create --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription show --topic-name {topic_name} -g {rg} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+        ])
+
+        self.cmd('az eventgrid event-subscription show --topic-name {topic_name} -g {rg} --name {event_subscription_name} --include-full-endpoint-url', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription update --topic-name {topic_name} -g {rg} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription list --topic-name {topic_name} --resource-group {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+        self.cmd('az eventgrid event-subscription delete --topic-name {topic_name} -g {rg} --name {event_subscription_name}')
+# END OF Using TopicName and ResourceGroup combination
+
+# Using --resource-id approach
         self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
@@ -310,6 +382,9 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --resource-id {scope} --name {event_subscription_name}')
+# END of using --resource-id approach
+
+# END OF DEPRECATED ARGUMENTS
         self.cmd('az eventgrid topic delete --name {topic_name} --resource-group {rg}')
 
     @ResourceGroupPreparer()
@@ -327,6 +402,48 @@ class EventGridTests(ScenarioTest):
             'scope' : scope
         })
 
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --subject-begins-with mysubject_prefix', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl']),
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {scope} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('filter.subjectBeginsWith', 'mysubject_prefix')
+        ])
+        self.cmd('az eventgrid event-subscription show --source-resource-id {scope} --include-full-endpoint-url --name {event_subscription_name}', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+        ])
+
+        self.cmd('az eventgrid event-subscription update --source-resource-id {scope} --name {event_subscription_name}  --endpoint {endpoint_url} --subject-ends-with .jpg', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl']),
+            self.check('filter.subjectEndsWith', '.jpg'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --source-resource-id {scope}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --topic-type Microsoft.Resources.ResourceGroups --location global', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --location global --resource-group {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription delete --source-resource-id {scope} --name {event_subscription_name}')
+
+# TESTS FOR DEPRECATED ARGUMENTS
+# --resource-id
         self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --subject-begins-with mysubject_prefix', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
@@ -366,6 +483,40 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --resource-id {scope} --name {event_subscription_name}')
+# end --resource-id
+# --resource-group
+       self.cmd('az eventgrid event-subscription create -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --subject-begins-with mysubject_prefix', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
+
+        self.cmd('az eventgrid event-subscription show -g {rg} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('filter.subjectBeginsWith', 'mysubject_prefix')
+        ])
+        self.cmd('az eventgrid event-subscription show --include-full-endpoint-url --resource-group {rg} --name {event_subscription_name}', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+        ])
+
+        self.cmd('az eventgrid event-subscription update -g {rg} --name {event_subscription_name}  --endpoint {endpoint_url} --subject-ends-with .jpg', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl']),
+            self.check('filter.subjectEndsWith', '.jpg'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list -g {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription delete --resource-group {rg} --name {event_subscription_name}')
+
+# end --resource-group
+# END OF TESTS FOR DEPRECATED ARGUMENTS
 
     @ResourceGroupPreparer(name_prefix='clieventgridrg', location='westcentralus')
     @StorageAccountPreparer(name_prefix='clieventgrid', location='westcentralus')
@@ -381,8 +532,62 @@ class EventGridTests(ScenarioTest):
             'endpoint_baseurl': endpoint_baseurl
         })
 
-        self.kwargs['resource_id'] = self.cmd('storage account create -g {rg} -n {sa} --sku Standard_LRS -l {location}').get_output_in_json()['id']
+        self.kwargs['source_resource_id'] = self.cmd('storage account create -g {rg} -n {sa} --sku Standard_LRS -l {location}').get_output_in_json()['id']
         self.cmd('az storage account update -g {rg} -n {sa} --set kind=StorageV2')
+
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+        ])
+
+        self.cmd('az eventgrid event-subscription show --source-resource-id {source_resource_id} --name {event_subscription_name}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+        ])
+        self.cmd('az eventgrid event-subscription show --include-full-endpoint-url --resource-id {source_resource_id} --name {event_subscription_name}', checks=[
+            self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
+        ])
+
+        self.cmd('az eventgrid event-subscription update --source-resource-id {source_resource_id} --name {event_subscription_name} --endpoint {endpoint_url} --subject-ends-with .jpg', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl']),
+            self.check('filter.subjectEndsWith', '.jpg')
+        ])
+
+        self.cmd('az eventgrid event-subscription list --source-resource-id {source_resource_id}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location {location}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location {location} --resource-group {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --location {location} --resource-group {rg}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription list --location {location}', checks=[
+            self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('[0].provisioningState', 'Succeeded'),
+        ])
+
+        self.cmd('az eventgrid event-subscription delete --source-resource-id {source_resource_id} --name {event_subscription_name}')
+
+# TESTS FOR DEPRECATED ARGUMENTS
+
+        self.kwargs['resource_id'] = self.cmd('storage account show -g {rg} -n {sa}').get_output_in_json()['id']
 
         self.cmd('az eventgrid event-subscription create --resource-id {resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
@@ -433,6 +638,9 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --resource-id {resource_id} --name {event_subscription_name}')
+        self.cmd('storage account delete -g {rg} -n {sa}')
+
+# END OF TESTS FOR DEPRECATED ARGUMENTS
 
     @ResourceGroupPreparer()
     def test_create_event_subscriptions_with_filters(self, resource_group):
@@ -459,10 +667,10 @@ class EventGridTests(ScenarioTest):
             'scope': scope
         })
 
-        self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --subject-ends-with {subject_ends_with} --included-event-types {event_type_1} {event_type_2} --subject-case-sensitive --labels {label_1} {label_2}')
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --subject-ends-with {subject_ends_with} --included-event-types {event_type_1} {event_type_2} --subject-case-sensitive --labels {label_1} {label_2}')
 
         # TODO: Add a verification that filter.isSubjectCaseSensitive is true after resolving why it shows as null in the response
-        self.cmd('az eventgrid event-subscription show --resource-id {scope} --name {event_subscription_name}', checks=[
+        self.cmd('az eventgrid event-subscription show --source-resource-id {scope} --name {event_subscription_name}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('filter.subjectEndsWith', self.kwargs['subject_ends_with']),
             self.check('filter.includedEventTypes[0]', self.kwargs['event_type_1']),
@@ -470,10 +678,10 @@ class EventGridTests(ScenarioTest):
             self.check('labels[0]', self.kwargs['label_1']),
             self.check('labels[1]', self.kwargs['label_2']),
         ])
-        self.cmd('az eventgrid event-subscription show --include-full-endpoint-url --resource-id {scope} --name {event_subscription_name}', checks=[
+        self.cmd('az eventgrid event-subscription show --include-full-endpoint-url --source-resource-id {scope} --name {event_subscription_name}', checks=[
             self.check('destination.endpointUrl', self.kwargs['endpoint_url']),
         ])
-        self.cmd('az eventgrid event-subscription list --resource-id {scope}', checks=[
+        self.cmd('az eventgrid event-subscription list --source-resource-id {scope}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('[0].provisioningState', 'Succeeded'),
         ])
@@ -483,7 +691,7 @@ class EventGridTests(ScenarioTest):
             self.check('[0].provisioningState', 'Succeeded'),
         ])
 
-        self.cmd('az eventgrid event-subscription delete --resource-id {scope} --name {event_subscription_name}')
+        self.cmd('az eventgrid event-subscription delete --source-resource-id {scope} --name {event_subscription_name}')
 
     @ResourceGroupPreparer()
     def test_create_event_subscriptions_with_20180501_features(self, resource_group):
@@ -507,24 +715,24 @@ class EventGridTests(ScenarioTest):
         # Failure cases
         # Invalid Event TTL value
         with self.assertRaises(CLIError):
-            self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --event-ttl 2000 --deadletter-endpoint {deadletter_endpoint_id}')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --event-ttl 2000 --deadletter-endpoint {deadletter_endpoint_id}')
 
         # Invalid max delivery attempts value
         with self.assertRaises(CLIError):
-            self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --max-delivery-attempts 31 --deadletter-endpoint {deadletter_endpoint_id}')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name1} --endpoint-type storagequeue --endpoint {storagequeue_endpoint_id} --max-delivery-attempts 31 --deadletter-endpoint {deadletter_endpoint_id}')
 
         # Create a storage queue destination based event subscription with cloud event schema as the delivery schema
-        self.cmd('az eventgrid event-subscription create  --resource-id {scope} --name {event_subscription_name1} --endpoint-type stoRAgequeue --endpoint {storagequeue_endpoint_id} --event-delivery-schema cloudeventv01schema --deadletter-endpoint {deadletter_endpoint_id}')
+        self.cmd('az eventgrid event-subscription create  --source-resource-id {scope} --name {event_subscription_name1} --endpoint-type stoRAgequeue --endpoint {storagequeue_endpoint_id} --event-delivery-schema cloudeventv01schema --deadletter-endpoint {deadletter_endpoint_id}')
 
-        self.cmd('az eventgrid event-subscription show --resource-id {scope} --name {event_subscription_name1}', checks=[
+        self.cmd('az eventgrid event-subscription show --source-resource-id {scope} --name {event_subscription_name1}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
         ])
 
         # Create a hybridconnection destination based event subscription with default eventgrid event schema as the delivery schema
-        self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name2} --endpoint-type HybRidConnection --endpoint {hybridconnection_endpoint_id} --deadletter-endpoint {deadletter_endpoint_id} --max-delivery-attempts 20 --event-ttl 1000')
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name2} --endpoint-type HybRidConnection --endpoint {hybridconnection_endpoint_id} --deadletter-endpoint {deadletter_endpoint_id} --max-delivery-attempts 20 --event-ttl 1000')
 
-        self.cmd('az eventgrid event-subscription show  --resource-id {scope} --name {event_subscription_name2}', checks=[
+        self.cmd('az eventgrid event-subscription show  --source-resource-id {scope} --name {event_subscription_name2}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -534,7 +742,7 @@ class EventGridTests(ScenarioTest):
             self.check('[0].provisioningState', 'Succeeded'),
         ])
 
-        self.cmd('az eventgrid event-subscription delete  --resource-id {scope} --name {event_subscription_name1}')
+        self.cmd('az eventgrid event-subscription delete  --source-resource-id {scope} --name {event_subscription_name1}')
 
 
     @ResourceGroupPreparer()
@@ -568,38 +776,37 @@ class EventGridTests(ScenarioTest):
         # Error cases
         with self.assertRaises(CLIError):
             # No operator/values provided
-            self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1')
 
         with self.assertRaises(CLIError):
             # No filter value provided
-            self.cmd('az eventgrid event-subscription create --resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn')
 
         with self.assertRaises(CLIError):
             # Invalid operator type provided
-            self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 FooNumberLessThan 2 3')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 FooNumberLessThan 2 3')
 
         with self.assertRaises(CLIError):
             # Multiple values provided for a single value filter
-            self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberLessThan 2 3')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberLessThan 2 3')
 
-        # TODO: Uncomment the below once the service side changes are deployed.
         # One advanced filter for NumberIn operator
-        # self.cmd('az eventgrid event-subscription create --resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200', checks=[
-        #     self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
-        #     self.check('provisioningState', 'Succeeded'),
-        #     self.check('name', self.kwargs['event_subscription_name']),
-        #     self.check(len('filter.advanced_filters'), 1)
-        #     self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
-        # ])
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check(len('filter.advanced_filters'), 1)
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
 
         # Two advanced filters for NumberIn, StringIn operators
-        # self.cmd('az eventgrid event-subscription create --resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200 --advanced-filter key1.key2 StringIn 2 3 4 100 200', checks=[
-        #     self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
-        #     self.check('provisioningState', 'Succeeded'),
-        #     self.check('name', self.kwargs['event_subscription_name']),
-        #     self.check(len('filter.advanced_filters'), 1)
-        #     self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
-        # ])
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200 --advanced-filter key1.key2 StringIn 2 3 4 100 200', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('name', self.kwargs['event_subscription_name']),
+            self.check(len('filter.advanced_filters'), 1)
+            self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
+        ])
 
-        self.cmd('az eventgrid event-subscription delete --resource-id {scope} --name {event_subscription_name}')
+        self.cmd('az eventgrid event-subscription delete --source-resource-id {scope} --name {event_subscription_name}')
         self.cmd('az eventgrid topic delete --name {topic_name} --resource-group {rg}')

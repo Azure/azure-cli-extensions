@@ -38,7 +38,7 @@ def load_arguments(self, _):
         c.argument('included_event_types', arg_type=included_event_types_type)
         c.argument('labels', arg_type=labels_type)
         c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection'], default='webhook'))
-        c.argument('resource_id', help="Fully qualified identifier of the Azure resource.")
+        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True), help="Fully qualified identifier of the Azure resource.")
         c.argument('endpoint', help="Endpoint where EventGrid should deliver events matching this event subscription. For webhook endpoint type, this should be the corresponding webhook URL. For other endpoint types, this should be the Azure resource identifier of the endpoint.")
         c.argument('event_subscription_name', help="Name of the event subscription.")
         c.argument('subject_begins_with', help="An optional string to filter events for an event subscription based on a prefix. Wildcard characters are not supported.")
@@ -59,6 +59,7 @@ def load_arguments(self, _):
         c.argument('input_schema', arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventv01schema'], default='eventgridschema'), help='Schema in which incoming events will be published for this domain. If customeventschema is specified, either input_mapping_default_values or input_mapping_fields must be specified as well.')
 
     with self.argument_context('eventgrid event-subscription') as c:
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of Event Grid topic', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventv01schema']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
@@ -66,16 +67,36 @@ def load_arguments(self, _):
         c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
 
     with self.argument_context('eventgrid event-subscription create') as c:
+        c.argument('source_resource_id', help="Fully qualified identifier of the Azure resource to which the event subscription needs to be created.")
+        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True))
+        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0'), arg_type=resource_group_name_type)
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0'), help='Name of the Event Grid topic to which the event subscription needs to be created.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the new event subscription')
-        c.argument('resource_id', help="Fully qualified identifier of the Azure resource to which the event subscription needs to be created.")
         c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
         c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
 
     with self.argument_context('eventgrid event-subscription delete') as c:
+        c.argument('source_resource_id', help="Fully qualified identifier of the Azure resource whose event subscription needs to be deleted.")
+        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True))
+        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of the Event Grid topic whose event subscription needs to be deleted.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
-        c.argument('resource_id', help="Fully qualified identifier of the Azure resource whose event subscription needs to be deleted.")
+
+    with self.argument_context('eventgrid event-subscription list') as c:
+        c.argument('source_resource_id', help="Fully qualified identifier of the Azure resource whose event subscriptions need to be listed.")
+        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True))
+
+    with self.argument_context('eventgrid event-subscription update') as c:
+        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of the Event Grid topic whose event subscription needs to be updated.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+        c.argument('source_resource_id', help="Fully qualified identifier of the Azure resource whose event subscription needs to be updated.")
+        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True))
 
     with self.argument_context('eventgrid event-subscription show') as c:
+        c.argument('source_resource_id', help="Fully qualified identifier of the Azure resource whose event subscription needs to be shown.")
+        c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True))
+        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of the Event Grid topic whose event subscription needs to be updated.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('include_full_endpoint_url', arg_type=get_three_state_flag(), options_list=['--include-full-endpoint-url'], help="Specify to indicate whether the full endpoint URL should be returned. True if flag present.", )
 
     with self.argument_context('eventgrid topic-type') as c:
