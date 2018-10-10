@@ -4,7 +4,7 @@ set -ex
 # Install CLI
 echo "Installing azure-cli..."
 
-pip install "azure-cli" -q
+pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge -q
 pip install "sphinx==1.7.0" -q
 echo "Installed."
 

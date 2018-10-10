@@ -3,9 +3,9 @@
     "extensions": {
         "azure-batch-cli-extensions": [
             {
-                "filename": "azure_batch_cli_extensions-2.5.0-py2.py3-none-any.whl",
-                "sha256Digest": "52f739e9c1e9f0f838e07bed2513690733a5f82617e575c9c69d4ec8094baf68",
-                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.5.0/azure_batch_cli_extensions-2.5.0-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-2.5.1-py2.py3-none-any.whl",
+                "sha256Digest": "d44fd28509f6d47b4c0fcc7866f199281bb4eb24856da0a2144bebe7b606f093",
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.5.1/azure_batch_cli_extensions-2.5.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "azext.maxCliCoreVersion": "2.1.0",
@@ -34,12 +34,13 @@
                     "run_requires": [
                         {
                             "requires": [
-                                "azure-batch-extensions (<4.1,>=4.0.0)"
+                                "azure-batch-extensions (<4.1,>=4.0.0)",
+                                "pycparser (==2.18)"
                             ]
                         }
                     ],
                     "summary": "Additional commands for working with Azure Batch service",
-                    "version": "2.5.0"
+                    "version": "2.5.1"
                 }
             }
         ],
@@ -817,9 +818,9 @@
         ],
         "storage-preview": [
             {
-                "filename": "storage_preview-0.1.5-py2.py3-none-any.whl",
-                "sha256Digest": "9ab33715c0ee28057aadec7351ce9ec45322839ed8e1652f670eaf07ef5b72b8",
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.5-py2.py3-none-any.whl",
+                "filename": "storage_preview-0.1.6-py2.py3-none-any.whl",
+                "sha256Digest": "f44557a4887b5e4a710c4ef1ad88796678fee8beb1fd76f2c8b4428672e6b5ba",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.6-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.43",
@@ -858,7 +859,7 @@
                     "metadata_version": "2.0",
                     "name": "storage-preview",
                     "summary": "Provides a preview for upcoming storage features.",
-                    "version": "0.1.5"
+                    "version": "0.1.6"
                 }
             }
         ],
@@ -1062,9 +1063,9 @@
         ],
         "dms-preview": [
             {
-                "filename": "dms_preview-0.4.0-py2.py3-none-any.whl",
-                "sha256Digest": "975b5d9cf871ad1cf675e764b1a674d97df264b6413960e8ebdbf5c40375a2e5",
-                "downloadUrl": "https://azcliorcas.blob.core.windows.net/azclipath/dms_preview-0.4.0-py2.py3-none-any.whl",
+                "filename": "dms_preview-0.5.0-py2.py3-none-any.whl",
+                "sha256Digest": "8d5c9437bcf71eefe1ee2d291bf1824463e4586da760462e0ce162d6365629de",
+                "downloadUrl": "https://azcliorcas.blob.core.windows.net/azclipath/dms_preview-0.5.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.43",
                     "azext.isPreview": true,
@@ -1103,7 +1104,7 @@
                     "metadata_version": "2.0",
                     "name": "dms-preview",
                     "summary": "Support for new Database Migration Service scenarios.",
-                    "version": "0.4.0"
+                    "version": "0.5.0"
                 }
             }
         ],
@@ -1250,9 +1251,9 @@
         ],
         "front-door": [
             {
-                "filename": "front_door-0.1.0-py2.py3-none-any.whl",
-                "sha256Digest": "bce0c6cd4d02ca45bd45892fafecd669713aff02849e10016d4f8ff7ac473a70",
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/front_door-0.1.0-py2.py3-none-any.whl",
+                "filename": "front_door-0.1.1-py2.py3-none-any.whl",
+                "sha256Digest": "c0efbf48a82bb7cd3e06608d75f5a4417ab70ee81b98c67b1d863c42a9b197d9",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/front_door-0.1.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.46",
@@ -1279,7 +1280,7 @@
                                 }
                             ],
                             "document_names": {
-                              "description": "DESCRIPTION.rst"
+                                "description": "DESCRIPTION.rst"
                             },
                             "project_urls": {
                                 "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/front-door"
@@ -1290,8 +1291,8 @@
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "front-door",
-                    "summary": "Manage networking FrontDoors.",
-                    "version": "0.1.0"
+                    "summary": "Manage networking Front Doors.",
+                    "version": "0.1.1"
                 }
             }
         ],

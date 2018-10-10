@@ -107,7 +107,7 @@ helps['dms project task create'] = """
             [
                 {
                     "name": "source database",
-                    "target_database_name": "target database",
+                    "target_database_name": "target database"
                 },
                 ...n
             ]
