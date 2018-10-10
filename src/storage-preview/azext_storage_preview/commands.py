@@ -38,7 +38,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.show_command('show', 'get_properties')
         g.generic_update_command('update', getter_name='get_properties', setter_name='update',
                                  custom_func_name='update_storage_account', min_api='2016-12-01')
-        g.command('failover', 'failover')
+        g.command('failover', 'failover', supports_no_wait=True)
 
     storage_account_sdk_preview = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.'
