@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 
 from knack.arguments import CLIArgumentType
 
