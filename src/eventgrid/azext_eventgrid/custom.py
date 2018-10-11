@@ -271,18 +271,41 @@ def cli_eventgrid_event_subscription_get(
 
 def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         client,
+        resource_id=None,
         source_resource_id=None,
+        topic_name=None,
         resource_group_name=None,
         location=None,
         topic_type_name=None):
     if source_resource_id is not None:
         # If Source Resource ID is specified, we need to list event subscriptions for that particular resource.
         # No other parameters must be specified
-        if resource_group_name is not None or location is not None or topic_type_name is not None:
+        if resource_group_name is not None or location is not None or topic_type_name is not None or resource_id is not None:
             raise CLIError('usage error: Since --source-resource-id is specified, none of the other parameters must'
                            'be specified.')
 
         return _list_event_subscriptions_by_resource_id(client, source_resource_id)
+
+    if resource_id is not None:
+        # DEPRECATED
+        # If resource ID is specified, we need to list event subscriptions for that particular resource.
+        # No other parameters must be specified
+        if resource_group_name is not None or location is not None or topic_type_name is not None:
+            raise CLIError('usage error: Since --resource-id is specified, none of the other parameters must'
+                           'be specified.')
+
+        return _list_event_subscriptions_by_resource_id(client, resource_id)
+
+    if topic_name:
+        # DEPRECATED
+        if resource_group_name is None:
+            raise CLIError('Since --topic-name is specified, --resource-group-name must also be specified.')
+
+        return client.list_by_resource(
+            resource_group_name,
+            EVENTGRID_NAMESPACE,
+            EVENTGRID_TOPICS,
+            topic_name)
 
     if location is None:
         # Since resource-id was not specified, location must be specified: e.g. "westus2" or "global". If not error OUT.

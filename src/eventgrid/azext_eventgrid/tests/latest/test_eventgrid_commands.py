@@ -133,7 +133,7 @@ class EventGridTests(ScenarioTest):
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid event-subscription list --resource-id {resource_id}', checks=[
+        self.cmd('az eventgrid event-subscription list --source-resource-id {resource_id}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('[0].provisioningState', 'Succeeded'),
         ])
@@ -184,7 +184,7 @@ class EventGridTests(ScenarioTest):
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
-        self.cmd('az eventgrid event-subscription list --resource-id {domain_topic_resource_id}', checks=[
+        self.cmd('az eventgrid event-subscription list --source-resource-id {domain_topic_resource_id}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('[0].provisioningState', 'Succeeded'),
         ])
