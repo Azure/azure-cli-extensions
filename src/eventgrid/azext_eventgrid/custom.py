@@ -8,7 +8,6 @@ from six.moves.urllib.parse import quote  # pylint: disable=import-error,relativ
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.tools import parse_resource_id
-from dateutil.parser import parse
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_eventgrid.mgmt.eventgrid.models import (
@@ -150,6 +149,8 @@ def cli_eventgrid_event_subscription_create(
         labels=None,
         expiration_date=None,
         advanced_filter=None):
+    from dateutil.parser import parse
+
     scope = _get_scope_for_event_subscription(
         cli_ctx=cmd.cli_ctx,
         source_resource_id=source_resource_id,

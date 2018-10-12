@@ -485,7 +485,7 @@ class EventGridTests(ScenarioTest):
         self.cmd('az eventgrid event-subscription delete --resource-id {scope} --name {event_subscription_name}')
 # end --resource-id
 # --resource-group
-       self.cmd('az eventgrid event-subscription create -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --subject-begins-with mysubject_prefix', checks=[
+        self.cmd('az eventgrid event-subscription create -g {rg} --name {event_subscription_name} --endpoint {endpoint_url} --subject-begins-with mysubject_prefix', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
@@ -508,7 +508,7 @@ class EventGridTests(ScenarioTest):
             self.check('filter.subjectEndsWith', '.jpg'),
         ])
 
-        self.cmd('az eventgrid event-subscription list -g {rg}', checks=[
+        self.cmd('az eventgrid event-subscription list --location global -g {rg}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('[0].provisioningState', 'Succeeded'),
         ])
@@ -587,7 +587,7 @@ class EventGridTests(ScenarioTest):
 
 # TESTS FOR DEPRECATED ARGUMENTS
 
-        self.kwargs['resource_id'] = self.cmd('storage account show -g {rg} -n {sa}').get_output_in_json()['id']
+        self.kwargs['resource_id'] = self.cmd('az storage account show -g {rg} -n {sa}').get_output_in_json()['id']
 
         self.cmd('az eventgrid event-subscription create --resource-id {resource_id} --name {event_subscription_name} --endpoint {endpoint_url}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
@@ -638,7 +638,9 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --resource-id {resource_id} --name {event_subscription_name}')
-        self.cmd('storage account delete -g {rg} -n {sa}')
+
+
+        self.cmd('az storage account delete -y -g {rg} -n {sa}')
 
 # END OF TESTS FOR DEPRECATED ARGUMENTS
 
@@ -776,35 +778,33 @@ class EventGridTests(ScenarioTest):
         # Error cases
         with self.assertRaises(CLIError):
             # No operator/values provided
-            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter eventType')
 
         with self.assertRaises(CLIError):
             # No filter value provided
-            self.cmd('az eventgrid event-subscription create --source-resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter data.key2 NumberIn')
 
         with self.assertRaises(CLIError):
             # Invalid operator type provided
-            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 FooNumberLessThan 2 3')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter data.key2 FooNumberLessThan 2 3')
 
         with self.assertRaises(CLIError):
             # Multiple values provided for a single value filter
-            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberLessThan 2 3')
+            self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter data.key2 NumberLessThan 2 3')
 
         # One advanced filter for NumberIn operator
-        self.cmd('az eventgrid event-subscription create --source-resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200', checks=[
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope}  --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter data.key2 NumberIn 2 3 4 100 200', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
-            self.check(len('filter.advanced_filters'), 1)
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 
         # Two advanced filters for NumberIn, StringIn operators
-        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter key1.key2 NumberIn 2 3 4 100 200 --advanced-filter key1.key2 StringIn 2 3 4 100 200', checks=[
+        self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --advanced-filter data.key1 NumberIn 2 3 4 100 200 --advanced-filter data.key2 StringIn 2 3 4 100 200', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['event_subscription_name']),
-            self.check(len('filter.advanced_filters'), 1)
             self.check('destination.endpointBaseUrl', self.kwargs['endpoint_baseurl'])
         ])
 

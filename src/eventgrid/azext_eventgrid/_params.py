@@ -71,7 +71,7 @@ def load_arguments(self, _):
         c.argument('source_resource_id', help="Fully qualified identifier of the Azure resource to which the event subscription needs to be created.")
         c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True))
         c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0'), arg_type=resource_group_name_type)
-        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0'), help='Name of the Event Grid topic to which the event subscription needs to be created.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of the Event Grid topic to which the event subscription needs to be created.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the new event subscription')
         c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
         c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
