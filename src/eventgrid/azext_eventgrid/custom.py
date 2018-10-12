@@ -128,7 +128,7 @@ def cli_domain_create_or_update(
     return created_domain
 
 
-def cli_eventgrid_event_subscription_create(
+def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         cmd,
         client,
         event_subscription_name,
@@ -737,8 +737,8 @@ def _is_topic_type_global_resource(topic_type_name):
 
 
 def _validate_subscription_id_matches_default_subscription_id(
-    default_subscription_id,
-    provided_subscription_id):
+        default_subscription_id,
+        provided_subscription_id):
     # The CLI/SDK infrastructure doesn't support overriding the subscription ID.
     # Hence, we validate that the provided subscription ID is the same as the default
     # configured subscription.

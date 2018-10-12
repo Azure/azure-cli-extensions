@@ -30,7 +30,7 @@ class EventGridTests(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_create_domain(self, resource_group):
-        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
         endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
 
         domain_name = self.create_random_name(prefix='cli', length=40)
@@ -194,7 +194,7 @@ class EventGridTests(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_create_topic(self, resource_group):
-        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
         endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
 
         topic_name = self.create_random_name(prefix='cli', length=40)
@@ -390,7 +390,7 @@ class EventGridTests(ScenarioTest):
     @ResourceGroupPreparer()
     def test_create_event_subscriptions_to_arm_resource_group(self, resource_group):
         event_subscription_name = 'eventsubscription2'
-        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
         endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
 
         scope = self.cmd('az group show -n {} -ojson'.format(resource_group)).get_output_in_json()['id']
@@ -522,7 +522,7 @@ class EventGridTests(ScenarioTest):
     @StorageAccountPreparer(name_prefix='clieventgrid', location='westcentralus')
     def test_create_event_subscriptions_to_resource(self, resource_group, resource_group_location, storage_account):
         event_subscription_name = self.create_random_name(prefix='cli', length=40)
-        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
         endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
 
         self.kwargs.update({
@@ -647,7 +647,7 @@ class EventGridTests(ScenarioTest):
     @ResourceGroupPreparer()
     def test_create_event_subscriptions_with_filters(self, resource_group):
         event_subscription_name = 'eventsubscription2'
-        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
         endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
         subject_ends_with = 'mysubject_suffix'
         event_type_1 = 'blobCreated'
@@ -749,7 +749,7 @@ class EventGridTests(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_advanced_filters(self, resource_group):
-        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=D5/lX4xgFOvJrgvgZsjhMpg9h/eC3XVdQzGuDvwQuGmrDUfxFNeyiQ=='
+        endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
         endpoint_baseurl = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1'
 
         topic_name = self.create_random_name(prefix='cli', length=40)
