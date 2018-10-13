@@ -191,7 +191,6 @@ class EventGridTests(ScenarioTest):
         self.cmd('az eventgrid event-subscription delete --resource-id {domain_topic_resource_id} --name {event_subscription_name}')
         self.cmd('az eventgrid domain delete --name {domain_name} --resource-group {rg}')
 
-
     @ResourceGroupPreparer()
     def test_create_topic(self, resource_group):
         endpoint_url = 'https://kalsfunc1.azurewebsites.net/api/HttpTriggerCSharp1?code=PLACEHOLDER'
@@ -399,7 +398,7 @@ class EventGridTests(ScenarioTest):
             'event_subscription_name': event_subscription_name,
             'endpoint_url': endpoint_url,
             'endpoint_baseurl': endpoint_baseurl,
-            'scope' : scope
+            'scope': scope
         })
 
         self.cmd('az eventgrid event-subscription create --source-resource-id {scope} --name {event_subscription_name} --endpoint {endpoint_url} --subject-begins-with mysubject_prefix', checks=[
@@ -638,10 +637,7 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete --resource-id {resource_id} --name {event_subscription_name}')
-
-
         self.cmd('az storage account delete -y -g {rg} -n {sa}')
-
 # END OF TESTS FOR DEPRECATED ARGUMENTS
 
     @ResourceGroupPreparer()
@@ -745,7 +741,6 @@ class EventGridTests(ScenarioTest):
         ])
 
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {scope} --name {event_subscription_name1}')
-
 
     @ResourceGroupPreparer()
     def test_advanced_filters(self, resource_group):

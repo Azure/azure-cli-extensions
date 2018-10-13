@@ -13,14 +13,18 @@ def cf_eventgrid(cli_ctx, **_):
 def topics_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).topics
 
+
 def domains_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).domains
+
 
 def domain_topics_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).domain_topics
 
+
 def event_subscriptions_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).event_subscriptions
+
 
 def topic_types_factory(cli_ctx, _):
     return cf_eventgrid(cli_ctx).topic_types

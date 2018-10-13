@@ -33,6 +33,7 @@ NUMBERLESSTHAN = "NumberLessThan"
 NUMBERLESSTHANOREQUALS = "NumberLessThanOrEquals"
 BOOLEQUALS = "BoolEquals"
 
+
 # pylint: disable=protected-access
 # pylint: disable=too-few-public-methods
 class EventSubscriptionAddFilter(argparse._AppendAction):
