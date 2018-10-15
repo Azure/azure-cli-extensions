@@ -44,6 +44,7 @@ input_mapping_default_values_type = CLIArgumentType(
     arg_type=tags_type
 )
 
+
 def load_arguments(self, _):
     with self.argument_context('eventgrid') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
