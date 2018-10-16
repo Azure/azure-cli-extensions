@@ -85,7 +85,7 @@ def load_arguments(self, _):
         c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
 
     with self.argument_context('eventgrid event-subscription create') as c:
-        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0'), arg_type=resource_group_name_type)
+        c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
 
     with self.argument_context('eventgrid event-subscription delete') as c:
         c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
