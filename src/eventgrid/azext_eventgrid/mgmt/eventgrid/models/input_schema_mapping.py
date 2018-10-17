@@ -21,7 +21,9 @@ class InputSchemaMapping(Model):
     You probably want to use the sub-classes and not this class directly. Known
     sub-classes are: JsonInputSchemaMapping
 
-    :param input_schema_mapping_type: Constant filled by server.
+    All required parameters must be populated in order to send to Azure.
+
+    :param input_schema_mapping_type: Required. Constant filled by server.
     :type input_schema_mapping_type: str
     """
 
@@ -37,6 +39,6 @@ class InputSchemaMapping(Model):
         'input_schema_mapping_type': {'Json': 'JsonInputSchemaMapping'}
     }
 
-    def __init__(self):
-        super(InputSchemaMapping, self).__init__()
+    def __init__(self, **kwargs):
+        super(InputSchemaMapping, self).__init__(**kwargs)
         self.input_schema_mapping_type = None
