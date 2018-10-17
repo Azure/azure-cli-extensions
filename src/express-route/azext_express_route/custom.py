@@ -99,24 +99,24 @@ def list_express_route_gateways(cmd, resource_group_name=None):
 
 
 def create_express_route_port(cmd, resource_group_name, express_route_port_name, location=None, tags=None,
-                              peering_location=None, bandwidth=None, encapsulation=None):
+                              peering_location=None, bandwidth_in_gbps=None, encapsulation=None):
     client = network_client_factory(cmd.cli_ctx).express_route_ports
     ExpressRoutePort = cmd.get_models('ExpressRoutePort')
     port = ExpressRoutePort(
         location=location,
         tags=tags,
         peering_location=peering_location,
-        bandwidth_in_gbps=bandwidth,
+        bandwidth_in_gbps=int(bandwidth_in_gbps),
         encapsulation=encapsulation
     )
     return client.create_or_update(resource_group_name, express_route_port_name, port)
 
 
-def update_express_route_port(instance, tags=None, peering_location=None, bandwidth=None):
+def update_express_route_port(instance, tags=None, peering_location=None, bandwidth_in_gbps=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('peeringLocation', peering_location, False)
-        c.update_param('bandwidthInGbps', bandwidth, False)
+        c.update_param('bandwidthInGbps', int(bandwidth_in_gbps), False)
     return instance
 
 
@@ -131,7 +131,6 @@ def list_express_route_ports(cmd, resource_group_name=None):
 def create_express_route(cmd, circuit_name, resource_group_name, bandwidth_in_mbps, peering_location=None,
                          service_provider_name=None, location=None, tags=None, no_wait=False,
                          sku_family=None, sku_tier=None, allow_global_reach=None, express_route_port=None):
-
     ExpressRouteCircuit, ExpressRouteCircuitSku, ExpressRouteCircuitServiceProviderProperties, SubResource = \
         cmd.get_models(
             'ExpressRouteCircuit', 'ExpressRouteCircuitSku', 'ExpressRouteCircuitServiceProviderProperties',
