@@ -69,7 +69,6 @@ def validate_circuit_bandwidth(namespace, mbps=True):
     unit = 'mbps' if mbps else 'gbps'
     try:
         bandwidth = getattr(namespace, 'bandwidth_in_{}'.format(unit))
-        print(bandwidth)
     except AttributeError:
         return
 
