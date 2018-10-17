@@ -24,7 +24,7 @@ def load_arguments(self, _):
     er_circuit_name_type = CLIArgumentType(options_list=('--circuit-name',), metavar='NAME', help='ExpressRoute circuit name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteCircuits'))
     er_gateway_name_type = CLIArgumentType(options_list=('--gateway-name',), metavar='NAME', help='ExpressRoute gateway name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteGateways'))
     er_port_name_type = CLIArgumentType(options_list=('--port-name',), metavar='NAME', help='ExpressRoute port name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRoutePorts'))
-    er_bandwidth_type = CLIArgumentType(options_list='--bandwidth', nargs='+', help='Bandwidth of the circuit. Should be Mbps for service providers or Gbps for ExpressRoute ports. Usage: INT {Mbps,Gbps}')
+    er_bandwidth_type = CLIArgumentType(options_list='--bandwidth', nargs='+', help='Bandwidth of the circuit. Usage: INT {Mbps,Gbps}')
 
     with self.argument_context('network express-route') as c:
         c.argument('tags', tags_type)
