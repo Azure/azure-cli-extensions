@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 from codecs import open
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # Version is also defined in azclishell.__init__.py.
 VERSION = "0.3.31"
@@ -25,12 +25,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'applicationinsights~=0.11.4',
-    'azure-cli-core',
-    'jmespath~=0.9.3',
-    'prompt_toolkit~=1.0.15',
-    'pyyaml~=3.13',
-    'six~=1.11.0',
+    'prompt_toolkit~=1.0.15'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
@@ -39,7 +34,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='azure-cli-interactive',
+    name='interactive',
     version=VERSION,
     description='Microsoft Azure Command-Line Interactive Shell',
     long_description=README + '\n\n' + HISTORY,
@@ -48,12 +43,7 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli',
     classifiers=CLASSIFIERS,
-    packages=[
-         'azure',
-         'azure.cli',
-         'azure.cli.command_modules',
-         'azext_interactive',
-         'azext_interactive.azclishell',
-    ],
+    package_data={'azext_interactive': ['azext_metadata.json']},
+    packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
