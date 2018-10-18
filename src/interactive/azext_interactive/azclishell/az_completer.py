@@ -6,7 +6,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
-from prompt_toolkit.completion import Completer, Completion
+from prompt_toolkit.completion import Completer, Completion  # pylint: disable=import-error
 from azure.cli.core.parser import AzCliCommandParser
 from azext_interactive.events import (
     EVENT_INTERACTIVE_PRE_COMPLETER_TEXT_PARSING,

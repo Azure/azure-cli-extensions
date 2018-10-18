@@ -5,7 +5,7 @@
 
 import json
 import os
-import yaml
+import yaml  # pylint: disable=import-error
 
 from knack.help import REQUIRED_TAG
 from knack.help_files import helps

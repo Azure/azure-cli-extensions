@@ -14,10 +14,10 @@ import subprocess
 import sys
 from threading import Thread
 
-import jmespath
 from six.moves import configparser
 
 # pylint: disable=import-error
+import jmespath
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
@@ -25,9 +25,8 @@ from prompt_toolkit.enums import DEFAULT_BUFFER
 from prompt_toolkit.filters import Always
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.interface import Application
-# pylint: enable=import-error
 from prompt_toolkit.shortcuts import create_eventloop
-
+# pylint: enable=import-error
 
 from knack.log import get_logger
 from knack.util import CLIError

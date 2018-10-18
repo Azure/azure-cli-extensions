@@ -3,14 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-error
-
 from __future__ import print_function
 
+# pylint: disable=import-error
 from prompt_toolkit import prompt
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.key_binding.manager import KeyBindingManager
+# pylint: enable=import-error
+
 from . import telemetry
 
 
