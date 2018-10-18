@@ -2,8 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from pygments.lexer import RegexLexer, words
-from pygments.token import Name, Keyword, Operator, Number
+from pygments.lexer import RegexLexer, words  # pylint: disable=import-error
+from pygments.token import Name, Keyword, Operator, Number  # pylint: disable=import-error
 
 
 def get_az_lexer(commands):

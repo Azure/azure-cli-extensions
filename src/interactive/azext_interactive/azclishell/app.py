@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+
 from __future__ import unicode_literals, print_function
 
 import datetime
@@ -16,6 +17,7 @@ from threading import Thread
 import jmespath
 from six.moves import configparser
 
+# pylint: disable=import-error
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
@@ -23,7 +25,9 @@ from prompt_toolkit.enums import DEFAULT_BUFFER
 from prompt_toolkit.filters import Always
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.interface import Application
+# pylint: enable=import-error
 from prompt_toolkit.shortcuts import create_eventloop
+
 
 from knack.log import get_logger
 from knack.util import CLIError
