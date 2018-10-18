@@ -58,9 +58,17 @@ def validate_virtual_hub(cmd, namespace):
         )
 
 
-def validate_circuit_bandwidth(namespace):
+def bandwidth_validator_factory(mbps=True):
+    def validator(namespace):
+        return validate_circuit_bandwidth(namespace, mbps=mbps)
+    return validator
+
+
+def validate_circuit_bandwidth(namespace, mbps=True):
+    # use gbps if mbps is False
+    unit = 'mbps' if mbps else 'gbps'
     try:
-        bandwidth = namespace.bandwidth_in_mbps
+        bandwidth = getattr(namespace, 'bandwidth_in_{}'.format(unit))
     except AttributeError:
         return
 
@@ -71,17 +79,20 @@ def validate_circuit_bandwidth(namespace):
 
     usage_error = CLIError('usage error: --bandwidth INT {Mbps,Gbps}')
     if len(bandwidth_comps) == 1:
-        logger.warning('interpretting --bandwidth as Mbps. Consider being explicit: Mbps, Gbps')
-        namespace.bandwidth_in_mbps = float(bandwidth_comps[0])
+        logger.warning('interpretting --bandwidth as %s. Consider being explicit: Mbps, Gbps', unit)
+        setattr(namespace, 'bandwidth_in_{}'.format(unit), float(bandwidth_comps[0]))
         return
     elif len(bandwidth_comps) > 2:
         raise usage_error
 
     if float(bandwidth_comps[0]) and bandwidth_comps[1].lower() in ['mbps', 'gbps']:
-        unit = bandwidth_comps[1].lower()
-        if unit == 'gbps':
-            namespace.bandwidth_in_mbps = float(bandwidth_comps[0]) * 1000
+        input_unit = bandwidth_comps[1].lower()
+        if input_unit == unit:
+            converted_bandwidth = float(bandwidth_comps[0])
+        elif input_unit == 'gbps':
+            converted_bandwidth = float(bandwidth_comps[0]) * 1000
         else:
-            namespace.bandwidth_in_mbps = float(bandwidth_comps[0])
+            converted_bandwidth = float(bandwidth_comps[0]) / 1000
+        setattr(namespace, 'bandwidth_in_{}'.format(unit), converted_bandwidth)
     else:
         raise usage_error
