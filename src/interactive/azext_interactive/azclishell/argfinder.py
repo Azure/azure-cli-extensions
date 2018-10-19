@@ -9,7 +9,7 @@ from argcomplete import CompletionFinder
 from argcomplete.compat import USING_PYTHON2, ensure_bytes
 
 
-class ArgsFinder(CompletionFinder):  #pylint: disable=too-few-public-methods
+class ArgsFinder(CompletionFinder):  # pylint: disable=too-few-public-methods
     """ gets the parsed args """
     def __init__(self, parser, outstream=None):
         super(ArgsFinder, self).__init__(parser)
