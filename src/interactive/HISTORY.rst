@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.4.0
++++++
+* Converted from interactive module to extension.
 
 0.3.31
 ++++++
