@@ -8,37 +8,7 @@ az extension add --name storage-preview
 ```
 
 ### Included Features
-**OAuth:**
-Allow use of login credentials for authorization of storage operations: [more info](https://docs.microsoft.com/en-us/rest/api/storageservices/authenticate-with-azure-active-directory)\
-*Examples:*
-```
-az storage container list \
-    --account-name wilxstoragev2 \
-    --auth-mode login
-```
-
-**Immutable Storage-WORM(Write-Once-Read-Many):**
-Manage immutability storage with Azure blobs: [more info](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-immutable-storage)\
-*Examples:*
-```
-az storage container immutability-policy create \
-    --account-name accountName \
-    --resource-group groupName \
-    --container-name containerName \
-    --period 2
-
-az storage container immutability-policy lock \
-    --account-name accountName \
-    --resource-group groupName \
-    --if-match "\"12345678abcdefg\""
-
-az storage container legal-hold set \
-    --account-name accountName \
-    --resource-group groupName \
-    --tags tag1 tag2
-```
-
-**Management Policy:**
+#### Management Policy:
 Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts)\
 *Examples:*
 ```
@@ -48,8 +18,8 @@ az storage account management-policy create \
     --policy @{path}
 ```
 
-**Static Website:**
-Manage static website configurations.\
+#### Static Website:
+Manage static website configurations: [more info](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website)\
 *Examples:*
 ```
 az storage blob service-properties update \
@@ -59,12 +29,46 @@ az storage blob service-properties update \
     --index-document index.html
 ```
 
-**Hierarchical Namespace:**
-Enable the blob service to exhibit filesystem semantics.\
+#### Hierarchical Namespace:
+Enable the blob service to exhibit filesystem semantics: [more info](https://docs.microsoft.com/en-us/azure/storage/data-lake-storage/namespace)\
 *Examples:*
 ```
 az storage account create \
     --name accountName \
     --resource-group groupName \
+    --kind StorageV2 \
     --hierarchical-namespace
+```
+
+#### File AAD Integration:
+Enable AAD integration for Azure files, which will support SMB access: [more info](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-enable)\
+*Examples:*
+```
+az storage account create \
+    --name accountName \
+    --resource-group groupName \
+    --kind StorageV2 \
+    --file-aad
+
+az storage account update \
+    --name accountName \
+    --resource-group groupName \
+    --file-aad false
+```
+
+#### Premium Blobs/Files:
+Create premium blob/file storage accounts. More info:[premium blobs](https://azure.microsoft.com/en-us/blog/introducing-azure-premium-blob-storage-limited-public-preview/) [premium files](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction)\
+*Examples:*
+```
+az storage account create \
+    --name accountName \
+    --resource-group groupName \
+    --sku Premium_LRS \
+    --kind BlockBlobStorage
+
+az storage account create \
+    --name accountName \
+    --resource-group groupName \
+    --sku Premium_LRS \
+    --kind FileStorage
 ```

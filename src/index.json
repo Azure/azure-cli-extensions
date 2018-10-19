@@ -3,9 +3,9 @@
     "extensions": {
         "azure-batch-cli-extensions": [
             {
-                "filename": "azure_batch_cli_extensions-2.4.1-py2.py3-none-any.whl",
-                "sha256Digest": "e4bace92de317d2c50dabc4676ef2795133d30bbb253214978b809b84807861e",
-                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.4.1/azure_batch_cli_extensions-2.4.1-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-2.5.1-py2.py3-none-any.whl",
+                "sha256Digest": "d44fd28509f6d47b4c0fcc7866f199281bb4eb24856da0a2144bebe7b606f093",
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.5.1/azure_batch_cli_extensions-2.5.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "azext.maxCliCoreVersion": "2.1.0",
@@ -34,20 +34,21 @@
                     "run_requires": [
                         {
                             "requires": [
-                                "azure-batch-extensions (<3.2,>=3.0.0)"
+                                "azure-batch-extensions (<4.1,>=4.0.0)",
+                                "pycparser (==2.18)"
                             ]
                         }
                     ],
                     "summary": "Additional commands for working with Azure Batch service",
-                    "version": "2.4.1"
+                    "version": "2.5.1"
                 }
             }
         ],
         "azure-cli-iot-ext": [
             {
-                "filename": "azure_cli_iot_ext-0.5.4-py2.py3-none-any.whl",
-                "sha256Digest": "fed1a6698d4ca1cb836b8e54ca48b9cbecf5991ce1ef70a3f9945cc7a94d16f8",
-                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.5.4/azure_cli_iot_ext-0.5.4-py2.py3-none-any.whl",
+                "filename": "azure_cli_iot_ext-0.6.0-py2.py3-none-any.whl",
+                "sha256Digest": "e42c6ff05eaf691b589529f73692818dcb6d10bbda6cf29e54bfc1e8e6501bd7",
+                "downloadUrl": "https://github.com/Azure/azure-iot-cli-extension/releases/download/v0.6.0/azure_cli_iot_ext-0.6.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.24",
                     "classifiers": [
@@ -93,7 +94,7 @@
                         }
                     ],
                     "summary": "Provides the data plane command layer for Azure IoT Hub, IoT Edge and IoT Device Provisioning Service",
-                    "version": "0.5.4"
+                    "version": "0.6.0"
                 }
             }
         ],
@@ -284,13 +285,12 @@
         ],
         "webapp": [
             {
-                "filename": "webapp-0.2.8-py2.py3-none-any.whl",
-                "sha256Digest": "f070374b29c07b18f77e03dc6acac52c6f947b821dd085643aad464e98aca51f",
-                "downloadUrl": "https://github.com/panchagnula/azure-cli-extensions/raw/sisirap-extensions-whl/dist/webapp-0.2.8-py2.py3-none-any.whl",
+                "filename": "webapp-0.2.11-py2.py3-none-any.whl",
+                "sha256Digest": "8cea6558656509d3f6d4c93c586502f5ad5f7d9420aa5265b83c501089169dec",
+                "downloadUrl": "https://github.com/Nking92/azure-cli-extensions/raw/sisirap-extensions-whl/dist/webapp-0.2.11-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
-                    "azext.minCliCoreVersion": "2.0.24",
-                    "azext.maxCliCoreVersion": "2.0.45",
+                    "azext.minCliCoreVersion": "2.0.46",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -309,7 +309,7 @@
                             "contacts": [
                                 {
                                     "email": "sisirap@microsoft.com",
-                                    "name": "Sisira Panchagnula, Lukasz Stempniewicz",
+                                    "name": "Sisira Panchagnula",
                                     "role": "author"
                                 }
                             ],
@@ -325,8 +325,8 @@
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "webapp",
-                    "summary": "An Azure CLI Extension to manage appservice resources",
-                    "version": "0.2.8"
+                    "summary": "Additional commands for Azure AppService.",
+                    "version": "0.2.11"
                 }
             }
         ],
@@ -784,9 +784,9 @@
                 }
             },
             {
-                "filename": "botservice-0.4.0-py2.py3-none-any.whl",
-                "sha256Digest": "0d5e27f47d06393b51e22e2bde68a4f00ece42580c50f668d16feeff493e172f",
-                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.4.0-py2.py3-none-any.whl",
+                "filename": "botservice-0.4.1-py2.py3-none-any.whl",
+                "sha256Digest": "8c84c0c2806c2fc0bfb182b2819151c15a33bb6fa46ae208063cbfde1cf98fe3",
+                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.4.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.45",
                     "azext.isPreview": true,
@@ -812,15 +812,15 @@
                     "metadata_version": "2.0",
                     "name": "botservice",
                     "summary": "Bug fixes for issues in the native botservice cli command module.",
-                    "version": "0.4.0"
+                    "version": "0.4.1"
                 }
             }
         ],
         "storage-preview": [
             {
-                "filename": "storage_preview-0.1.4-py2.py3-none-any.whl",
-                "sha256Digest": "23a16ca387f9288339f2b18559cdf60fa305fb637bd62821a430e99955ab1d84",
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.4-py2.py3-none-any.whl",
+                "filename": "storage_preview-0.1.6-py2.py3-none-any.whl",
+                "sha256Digest": "f44557a4887b5e4a710c4ef1ad88796678fee8beb1fd76f2c8b4428672e6b5ba",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.1.6-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.43",
@@ -859,7 +859,7 @@
                     "metadata_version": "2.0",
                     "name": "storage-preview",
                     "summary": "Provides a preview for upcoming storage features.",
-                    "version": "0.1.4"
+                    "version": "0.1.6"
                 }
             }
         ],
@@ -899,9 +899,9 @@
         ],
         "log-analytics": [
             {
-                "filename": "log_analytics-0.1.2-py2.py3-none-any.whl",
-                "sha256Digest": "b958800232b5340871999f1e90aa3b198e1be645d5d7553e2f023759912f87a8",
-                "downloadUrl": "https://files.pythonhosted.org/packages/0c/06/78ddfe634d2af7b35a4931b7a17aea9f026c202316b18f861f462857a2fc/log_analytics-0.1.2-py2.py3-none-any.whl",
+                "filename": "log_analytics-0.1.3-py2.py3-none-any.whl",
+                "sha256Digest": "941c5c4bcd336e2192da624e21cd6310950fbc10d01d923d2255d049c68a23e0",
+                "downloadUrl": "https://loganalyticscli.blob.core.windows.net/log-analytics-cli/log_analytics-0.1.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "extensions": {
@@ -926,7 +926,7 @@
                     "metadata_version": "2.0",
                     "name": "log-analytics",
                     "summary": "Support for Azure Log Analytics query capabilities.",
-                    "version": "0.1.2"
+                    "version": "0.1.3"
                 }
             }
         ],
@@ -960,7 +960,7 @@
                                 }
                             ],
                             "document_names": {
-                              "description": "DESCRIPTION.rst"
+                                "description": "DESCRIPTION.rst"
                             },
                             "project_urls": {
                                 "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/find"
@@ -1063,9 +1063,9 @@
         ],
         "dms-preview": [
             {
-                "filename": "dms_preview-0.4.0-py2.py3-none-any.whl",
-                "sha256Digest": "975b5d9cf871ad1cf675e764b1a674d97df264b6413960e8ebdbf5c40375a2e5",
-                "downloadUrl": "https://azcliorcas.blob.core.windows.net/azclipath/dms_preview-0.4.0-py2.py3-none-any.whl",
+                "filename": "dms_preview-0.5.0-py2.py3-none-any.whl",
+                "sha256Digest": "8d5c9437bcf71eefe1ee2d291bf1824463e4586da760462e0ce162d6365629de",
+                "downloadUrl": "https://azcliorcas.blob.core.windows.net/azclipath/dms_preview-0.5.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.43",
                     "azext.isPreview": true,
@@ -1104,6 +1104,283 @@
                     "metadata_version": "2.0",
                     "name": "dms-preview",
                     "summary": "Support for new Database Migration Service scenarios.",
+                    "version": "0.5.0"
+                }
+            }
+        ],
+        "virtual-network-tap": [
+            {
+                "filename": "virtual_network_tap-0.1.0-py2.py3-none-any.whl",
+                "sha256Digest": "7e3f634f8eb701cf6fef504159785bc90e6f5bd2482e459469dd9ab30601aa35",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/virtual_network_tap-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.46",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/virtual-network-tap"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "virtual-network-tap",
+                    "summary": "Manage virtual network taps (VTAP).",
+                    "version": "0.1.0"
+                }
+            }
+        ],
+        "azure-firewall": [
+            {
+                "filename": "azure_firewall-0.1.0-py2.py3-none-any.whl",
+                "sha256Digest": "f6925655d25bc9e8a2b729de5496491599f0ca340c6090759ca0063f3cbe1704",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/azure_firewall-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.46",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/azure-firewall"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "azure-firewall",
+                    "summary": "Manage Azure Firewall resources.",
+                    "version": "0.1.0"
+                }
+            }
+        ],
+        "virtual-wan": [
+            {
+                "filename": "virtual_wan-0.1.0-py2.py3-none-any.whl",
+                "sha256Digest": "f29f98cac402f6b22e3af37ec9f70e9d0aaafd44958b8e7737c98c9f4998b886",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/virtual_wan-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.46",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/virtual-wan"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "virtual-wan",
+                    "summary": "Manage virtual WAN, hubs, VPN gateways and VPN sites.",
+                    "version": "0.1.0"
+                }
+            }
+        ],
+        "front-door": [
+            {
+                "filename": "front_door-0.1.1-py2.py3-none-any.whl",
+                "sha256Digest": "c0efbf48a82bb7cd3e06608d75f5a4417ab70ee81b98c67b1d863c42a9b197d9",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/front_door-0.1.1-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.46",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/front-door"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "front-door",
+                    "summary": "Manage networking Front Doors.",
+                    "version": "0.1.1"
+                }
+            }
+        ],
+        "express-route": [
+            {
+                "filename": "express_route-0.1.2-py2.py3-none-any.whl",
+                "sha256Digest": "3bc9fb9673563df3b846cf82ba3ff89d30d2d213a4547dcb06b5829fe908e19f",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/express_route-0.1.2-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.46",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/express-route"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.29.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "express-route",
+                    "summary": "Manage ExpressRoutes with preview features.",
+                    "version": "0.1.2"
+                }
+            }
+        ],
+        "interactive": [ 
+            {
+                "filename": "interactive-0.4.0-py2.py3-none-any.whl",
+                "sha256Digest": "034185fc9ea586e38b85e798f8e001a8e879fa3c36a173ba90232745b0b7b6cd",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/interactive-0.4.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.49",
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.29.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "interactive",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "prompt-toolkit (~=1.0.15)"
+                            ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Interactive Shell",
                     "version": "0.4.0"
                 }
             }

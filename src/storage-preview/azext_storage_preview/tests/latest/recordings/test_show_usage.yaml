@@ -6,19 +6,20 @@ interactions:
       Accept-Encoding: ['gzip, deflate']
       CommandName: [storage account show-usage]
       Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
       User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
-          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.46]
+          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0rc4 Azure-SDK-For-Python AZURECLI/2.0.47]
       accept-language: [en-US]
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/usages?api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/usages?api-version=2018-03-01-preview
   response:
-    body: {string: '{"value":[{"unit":"Count","currentValue":22,"limit":250,"name":{"value":"StorageAccounts","localizedValue":"Storage
+    body: {string: '{"value":[{"unit":"Count","currentValue":14,"limit":250,"name":{"value":"StorageAccounts","localizedValue":"Storage
         Accounts"}}]}'}
     headers:
       cache-control: [no-cache]
       content-length: ['129']
       content-type: [application/json]
-      date: ['Wed, 12 Sep 2018 19:31:21 GMT']
+      date: ['Wed, 03 Oct 2018 23:55:52 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0

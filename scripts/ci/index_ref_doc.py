@@ -13,7 +13,7 @@ import tempfile
 import unittest
 import shutil
 from subprocess import check_call
-from pkg_resources import parse_version
+from pkg_resources import parse_version, get_distribution
 
 from six import with_metaclass
 
@@ -30,8 +30,18 @@ if not os.path.isdir(REF_DOC_OUT_DIR):
 
 ALL_TESTS = []
 
+CLI_VERSION = get_distribution('azure-cli').version
+
 for extension_name, exts in get_index_data()['extensions'].items():
-    candidates_sorted = sorted(exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
+    parsed_cli_version = parse_version(CLI_VERSION)
+    filtered_exts = []
+    for ext in exts:
+        if parsed_cli_version <= parse_version(ext['metadata'].get('azext.maxCliCoreVersion', CLI_VERSION)):
+            filtered_exts.append(ext)
+    if not filtered_exts:
+        continue
+
+    candidates_sorted = sorted(filtered_exts, key=lambda c: parse_version(c['metadata']['version']), reverse=True)
     chosen = candidates_sorted[0]
     ALL_TESTS.append((extension_name, chosen['downloadUrl'], chosen['filename']))
 
