@@ -6,6 +6,7 @@ from pygments.lexer import RegexLexer, words  # pylint: disable=import-error
 from pygments.token import Name, Keyword, Operator, Number  # pylint: disable=import-error
 
 
+#pylint: disable=too-few-public-methods
 def get_az_lexer(commands):
 
     class AzLexer(RegexLexer):

@@ -24,7 +24,7 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.enums import DEFAULT_BUFFER
 from prompt_toolkit.filters import Always
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.interface import Application
+from prompt_toolkit.interface import Application, CommandLineInterface
 from prompt_toolkit.shortcuts import create_eventloop
 # pylint: enable=import-error
 
@@ -371,7 +371,6 @@ class AzInteractiveShell(object):
 
     def create_interface(self):
         """ instantiates the interface """
-        from prompt_toolkit.interface import CommandLineInterface
         return CommandLineInterface(
             application=self.create_application(),
             eventloop=create_eventloop())
@@ -431,8 +430,6 @@ class AzInteractiveShell(object):
 
     def example_repl(self, text, example, start_index, continue_flag):
         """ REPL for interactive tutorials """
-        from prompt_toolkit.interface import CommandLineInterface
-
         if start_index:
             start_index = start_index + 1
             cmd = ' '.join(text.split()[:start_index])

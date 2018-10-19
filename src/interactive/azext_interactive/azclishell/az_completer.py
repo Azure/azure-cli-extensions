@@ -146,7 +146,7 @@ class AzCompleter(Completer):
         if self.validate_completion(completion):
             yield Completion(completion, -len(self.unfinished_word))
 
-    def get_completions(self, document, complete_event):
+    def get_completions(self, document, complete_event):  # pylint: disable=unused-argument
         if not self.started:
             return
 

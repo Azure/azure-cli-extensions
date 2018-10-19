@@ -16,7 +16,7 @@ from azure.cli.core import MainCommandsLoader
 logger = get_logger(__name__)
 
 
-class AzInteractiveCommandsLoader(MainCommandsLoader):
+class AzInteractiveCommandsLoader(MainCommandsLoader):  #pylint: disable=too-few-public-methods
 
     def __init__(self, cli_ctx=None):
         super(AzInteractiveCommandsLoader, self).__init__(cli_ctx)

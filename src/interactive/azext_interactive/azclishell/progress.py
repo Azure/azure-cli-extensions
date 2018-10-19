@@ -23,7 +23,7 @@ class ShellProgressView(ProgressViewBase):
     def __init__(self):
         super(ShellProgressView, self).__init__(None)
 
-    def write(self, args):
+    def write(self, args):  # pylint: disable=no-self-use
         """ writes the progres """
         ShellProgressView.done = False
         message = args.get('message', '')
@@ -38,7 +38,7 @@ class ShellProgressView(ProgressViewBase):
     def flush(self):
         pass
 
-    def clear(self):
+    def clear(self):  # pylint: disable=no-self-use
         ShellProgressView.done = True
         ShellProgressView.progress = ''
         ShellProgressView.progress_bar = ''

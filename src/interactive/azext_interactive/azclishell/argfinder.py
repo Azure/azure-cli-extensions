@@ -9,10 +9,11 @@ from argcomplete import CompletionFinder
 from argcomplete.compat import USING_PYTHON2, ensure_bytes
 
 
-class ArgsFinder(CompletionFinder):
+class ArgsFinder(CompletionFinder):  #pylint: disable=too-few-public-methods
     """ gets the parsed args """
     def __init__(self, parser, outstream=None):
         super(ArgsFinder, self).__init__(parser)
+        self.completing = False
         self.outstream = outstream
 
     def get_parsed_args(self, comp_words):
