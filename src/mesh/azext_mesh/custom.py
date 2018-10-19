@@ -24,7 +24,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType, get_sdk
 
 from ._client_factory import cf_mesh_network, cf_mesh_application, cf_mesh_deployments, cf_mesh_gateway
-from azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.models import ErrorModelException
+from .servicefabricmesh.mgmt.servicefabricmesh.models import ErrorModelException
 
 logger = get_logger(__name__)
 
@@ -340,6 +340,7 @@ def _display_deployment_status(cli_ctx, operation_status, resource_group_name, d
     if operation_status in ['Running']:
         logger.warning("The output should point to the potential issue. If the above cmd response does not have any errors listed, then it could just be that your image is taking long to download, rerun the above command again after 5 minutes.")
 
+    return deployment_status
 
 def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
                               template_file=None, template_uri=None, deployment_name=None,
@@ -389,12 +390,11 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
 
         wait_time = 0
         timestep = 5
-        while operation_status_poller.status() in ['Running', 'InProgress'] and wait_time < 600:
+        while operation_status_poller.status() in ['Running', 'InProgress'] and wait_time < 150:
             sleep(timestep)
             wait_time += timestep
 
-        parsed_template = smc.deployments.validate(resource_group_name, deployment_name, properties).properties.additional_properties['validatedResources']
-        # pprint(parsed_template)
+        parsed_template = validation.properties.additional_properties['validatedResources']
         return _display_deployment_status(cli_ctx, operation_status_poller.status(), resource_group_name,
                                           deployment_name, parsed_template)
 
