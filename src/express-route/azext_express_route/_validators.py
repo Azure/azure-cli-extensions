@@ -67,9 +67,9 @@ def bandwidth_validator_factory(mbps=True):
 def validate_circuit_bandwidth(namespace, mbps=True):
     # use gbps if mbps is False
     unit = 'mbps' if mbps else 'gbps'
-    try:
-        bandwidth = getattr(namespace, 'bandwidth_in_{}'.format(unit))
-    except AttributeError:
+    bandwidth = None
+    bandwidth = getattr(namespace, 'bandwidth_in_{}'.format(unit), None)
+    if bandwidth is None:
         return
 
     if len(bandwidth) == 1:
