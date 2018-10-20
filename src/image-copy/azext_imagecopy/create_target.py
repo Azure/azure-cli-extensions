@@ -24,7 +24,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     # create the target storage account. storage account name must be lowercase.
     logger.warn(
         "%s - Creating target storage account (can be slow sometimes)", location)
-    target_storage_account_name = location.lower() + random_string.lower()
+    target_storage_account_name = location.lower() + random_string
     cli_cmd = prepare_cli_command(['storage', 'account', 'create',
                                    '--name', target_storage_account_name,
                                    '--resource-group', transient_resource_group_name,
