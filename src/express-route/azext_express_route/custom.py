@@ -114,13 +114,9 @@ def create_express_route_port(cmd, resource_group_name, express_route_port_name,
     return client.create_or_update(resource_group_name, express_route_port_name, port)
 
 
-def update_express_route_port(instance, tags=None, peering_location=None, bandwidth_in_gbps=None):
-    if bandwidth_in_gbps is not None:
-        bandwidth_in_gbps = int(bandwidth_in_gbps)
+def update_express_route_port(instance, tags=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
-        c.update_param('peering_location', peering_location, False)
-        c.update_param('bandwidth_in_gbps', bandwidth_in_gbps, False)
     return instance
 
 
