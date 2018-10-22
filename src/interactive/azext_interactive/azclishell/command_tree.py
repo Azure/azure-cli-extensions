@@ -23,7 +23,6 @@ class CommandTree(object):
     def add_child(self, child):
         """ adds a child to this branch """
         # TODO allow adding child_name
-        assert isinstance(child, CommandTree)
         self.children[child.data] = child
 
     def has_child(self, name):
