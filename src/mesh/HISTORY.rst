@@ -3,6 +3,13 @@
 Release History
 ===============
 
+0.9.4 (2018-10-19)
+++++++++++++++++++
+
+* Added gateway/network changes.
+* Changed api version to 2018-09-01-preview.
+* Fixed issue with displaying error messages
+
 0.9.3 (2018-08-27)
 ++++++++++++++++++
 
