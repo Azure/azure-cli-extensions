@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -8,8 +7,10 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.2"
-
+# Version is also defined in azclishell.__init__.py.
+VERSION = "0.4.0"
+# The full list of classifiers is available at
+# https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -21,21 +22,28 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
-    'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'prompt_toolkit~=1.0.15'
+]
+
+with open('README.rst', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
 
 setup(
-    name='express-route',
+    name='interactive',
     version=VERSION,
-    description='Manage ExpressRoutes with preview features.',
+    description='Microsoft Azure Command-Line Interactive Shell',
+    long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/express-route',
+    url='https://github.com/Azure/azure-cli',
     classifiers=CLASSIFIERS,
-    package_data={'azext_express_route': ['azext_metadata.json']},
-    packages=find_packages(),
+    package_data={'azext_interactive': ['azext_metadata.json']},
+    packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
