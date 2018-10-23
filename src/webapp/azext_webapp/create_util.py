@@ -19,7 +19,7 @@ from ._constants import (
     DOTNET_VERSIONS,
     STATIC_RUNTIME_NAME,
     PYTHON_RUNTIME_NAME,
-    PYTHON_VETSION_DEFAULT)
+    PYTHON_VERSION_DEFAULT)
 
 
 def _resource_client_factory(cli_ctx, **_):
@@ -75,7 +75,7 @@ def get_runtime_version_details(file_path, lang_name):
         version_to_create = "-"
     elif lang_name.lower() == PYTHON_RUNTIME_NAME:
         version_detected = "-"
-        version_to_create = PYTHON_VETSION_DEFAULT
+        version_to_create = PYTHON_VERSION_DEFAULT
     return {'detected': version_detected, 'to_create': version_to_create}
 
 
