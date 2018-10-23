@@ -7,11 +7,9 @@ from argcomplete.completers import FilesCompleter  # pylint: disable=import-erro
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.decorators import Completer
-from azure.cli.core.commands.events import EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE, EVENT_INVOKER_ON_TAB_COMPLETION
-from azure.cli.command_modules.interactive.events import (
-    EVENT_INTERACTIVE_PRE_COMPLETER_TEXT_PARSING,
-    EVENT_INTERACTIVE_POST_SUB_TREE_CREATE
-)
+from azure.cli.core.commands.events import (
+    EVENT_INVOKER_PRE_CMD_TBL_TRUNCATE, EVENT_INVOKER_ON_TAB_COMPLETION, EVENT_INTERACTIVE_PRE_COMPLETER_TEXT_PARSING,
+    EVENT_INTERACTIVE_POST_SUB_TREE_CREATE)
 
 from azext_alias.util import get_alias_table
 from azext_alias._validators import (
