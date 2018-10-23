@@ -57,7 +57,8 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         sku = lang_details.get("default_sku")
         language = lang_details.get("language")
         is_skip_build = language.lower() == STATIC_RUNTIME_NAME or language.lower() == PYTHON_RUNTIME_NAME
-        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME or language.lower() == PYTHON_RUNTIME_NAME else OS_DEFAULT
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME \
+            or language.lower() == PYTHON_RUNTIME_NAME else OS_DEFAULT
         # detect the version
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')
