@@ -8,7 +8,6 @@ import timeit
 
 from knack.log import get_logger
 
-from azure.cli.command_modules.interactive.azclishell.command_tree import CommandBranch
 from azext_alias import telemetry
 from azext_alias.alias import AliasManager
 from azext_alias.util import (
@@ -18,6 +17,7 @@ from azext_alias.util import (
     filter_aliases
 )
 from azext_alias._const import DEBUG_MSG_WITH_TIMING, GLOBAL_ALIAS_TAB_COMP_TABLE_PATH
+from azext_alias.command_tree import CommandBranch
 
 logger = get_logger(__name__)
 
