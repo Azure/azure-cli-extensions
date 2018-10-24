@@ -28,7 +28,7 @@ from .create_util import (
     get_lang_from_content,
     web_client_factory
 )
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME, PYTHON_RUNTIME_NAME)
 logger = get_logger(__name__)
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
@@ -56,8 +56,9 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     else:
         sku = lang_details.get("default_sku")
         language = lang_details.get("language")
-        is_skip_build = language.lower() == STATIC_RUNTIME_NAME
-        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME else OS_DEFAULT
+        is_skip_build = language.lower() == STATIC_RUNTIME_NAME or language.lower() == PYTHON_RUNTIME_NAME
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME \
+            or language.lower() == PYTHON_RUNTIME_NAME else OS_DEFAULT
         # detect the version
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')

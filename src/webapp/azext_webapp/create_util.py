@@ -17,7 +17,9 @@ from ._constants import (
     DOTNET_RUNTIME_NAME,
     DOTNET_VERSION_DEFAULT,
     DOTNET_VERSIONS,
-    STATIC_RUNTIME_NAME)
+    STATIC_RUNTIME_NAME,
+    PYTHON_RUNTIME_NAME,
+    PYTHON_VERSION_DEFAULT)
 
 
 def _resource_client_factory(cli_ctx, **_):
@@ -71,6 +73,9 @@ def get_runtime_version_details(file_path, lang_name):
     elif lang_name.lower() == STATIC_RUNTIME_NAME:
         version_detected = "-"
         version_to_create = "-"
+    elif lang_name.lower() == PYTHON_RUNTIME_NAME:
+        version_detected = "-"
+        version_to_create = PYTHON_VERSION_DEFAULT
     return {'detected': version_detected, 'to_create': version_to_create}
 
 
@@ -126,6 +131,7 @@ def get_lang_from_content(src_path):
     package_json_file = os.path.join(src_path, 'package.json')
     package_netlang_glob = glob.glob("**/*.csproj", recursive=True)
     static_html_file = glob.glob("**/*.html", recursive=True)
+    package_python_file = glob.glob("**/*.py", recursive=True)
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
@@ -140,6 +146,11 @@ def get_lang_from_content(src_path):
         runtime_details_dict['language'] = STATIC_RUNTIME_NAME
         runtime_details_dict['file_loc'] = static_html_file[0]
         runtime_details_dict['default_sku'] = 'F1'
+    elif package_python_file:
+        runtime_details_dict['language'] = PYTHON_RUNTIME_NAME
+        runtime_details_dict['file_loc'] = os.path.join(src_path, package_json_file[0])
+        runtime_details_dict['default_sku'] = 'B1'
+
     return runtime_details_dict
 
 

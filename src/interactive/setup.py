@@ -8,7 +8,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # Version is also defined in azclishell.__init__.py.
-VERSION = "0.4.0"
+VERSION = "0.4.1"
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
