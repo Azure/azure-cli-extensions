@@ -26,9 +26,9 @@ helps['mesh deployment create'] = """
     parameters:
     - name: --mode
       type: string
-      short-summary: The mode for deployment, can be incremental(resources are only added) or 
+      short-summary: The mode for deployment, can be incremental(resources are only added) or
         complete(previous resources will be deleted)
-    - name: --parameters 
+    - name: --parameters
       type: string
       short-summary: json string to supplement parameters of the deployment template
 """
