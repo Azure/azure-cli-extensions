@@ -220,128 +220,6 @@ def _get_missing_parameters(parameters, template, prompt_fn):
     return parameters
 
 
-def _parse_network_ref(network_ref_name):
-    # assume format of /subscriptions/subscriptionID/resourcegroups/resourcegroupname/providers/Microsoft.ServiceFabricMesh/networks/networkname
-    resource_parts = network_ref_name.split('/')
-    return resource_parts[-1]
-
-
-def _get_gateway(template_resources, network_name):
-    gateway = None
-    for resource in template_resources:
-        if resource['type'] in ['Microsoft.ServiceFabricMesh/gateways']:
-            destination_network = resource.get('properties', {}).get('destinationNetwork')
-            source_network = resource.get('properties', {}).get('sourceNetwork')
-            if destination_network['name'] == network_name and source_network['name'] == 'Open':
-                gateway = resource
-                break
-    return gateway
-
-
-def _get_first_network_ref_name(application_resource):
-    network_name = None
-    services = application_resource.get('properties', {}).get('services', [])
-    for service in services:
-        if service['properties']['networkRefs']:
-            for network_ref in service['properties']['networkRefs']:
-                network_name = network_ref['name']
-                if network_name:
-                    break
-    return network_name
-
-
-def _display_successful_application(resource_group_name, resource, template_resources, cli_ctx):
-    application_name = resource['name']
-    network_name = _get_first_network_ref_name(resource)
-    # to be populated with gateway resource information from rp if available
-    gateway_resource_information = None
-    if network_name:
-        # gateway resource info in template
-        gateway_resource_template_info = _get_gateway(template_resources, network_name)
-        cfg = cf_mesh_gateway(cli_ctx, '')
-
-        if gateway_resource_template_info:
-            try:
-                gateway_resource_information = cfg.get(resource_group_name, gateway_resource_template_info['name'])
-            except ErrorModelException:
-                logger.warning("{application} gateway resource can not be found.".format(application=application_name))
-
-    if gateway_resource_information:
-        public_ip_address = gateway_resource_information.ip_address
-        logger.warning("application {application} is deployed on network {network} with public ip address {ip}"
-                       .format(application=application_name, network=_parse_network_ref(network_name), ip=public_ip_address))
-    else:
-        logger.warning("application {application} is deployed".format(application=application_name))
-
-
-def _display_application_status(resource, resource_group_name, template_resources, cli_ctx):
-
-    application_name = resource['name']
-    try:
-        mesh_application_client = cf_mesh_application(cli_ctx, '')
-
-        application_operation_information = mesh_application_client.get(resource_group_name, application_name)
-        application_status = application_operation_information.provisioning_state
-        if application_status in ['Succeeded']:
-            _display_successful_application(resource_group_name, resource, template_resources, cli_ctx)
-        elif application_status in ['Failed']:
-            status_details = application_operation_information.status_details
-            if status_details:
-                logger.warning("application {application} deployment failed with {status_details}"
-                               .format(application=application_name, status_details=status_details))
-            else:
-                logger.warning("application {application} deployment failed".format(application=application_name))
-        else:
-            logger.warning("application {application} deployment not complete with status {status}"
-                           .format(application=application_name, status=application_status))
-    except ErrorModelException:
-        logger.warning("There was an error when getting application resource {0}."
-                       .format(application_name))
-
-
-def _display_deployment_status(cli_ctx, operation_status, resource_group_name, deployment_name, template_resources):
-    mesh_deployment_client = cf_mesh_deployments(cli_ctx, '')
-
-    deployment_status = mesh_deployment_client.get(resource_group_name, deployment_name)
-
-    if operation_status in ['Failed']:
-        logger.warning("Deployment failed")
-        logger.warning("deployment correlation ID: {deployment_correlation_id}"
-                       .format(deployment_correlation_id=deployment_status.properties.correlation_id))
-
-    application_count = 0
-    only_application_name = None
-    for resource in template_resources:
-        if resource['type'] in ['Microsoft.ServiceFabricMesh/applications']:
-            _display_application_status(resource, resource_group_name, template_resources, cli_ctx)
-            only_application_name = resource['name']
-            application_count += 1
-
-    if application_count is 1:
-        logger.warning(
-            "To recieve additional information run the following to get the status of the application deployment.")
-        logger.warning("az mesh app show --resource-group {resource_group_name} --name {application_name}"
-                       .format(resource_group_name=resource_group_name, application_name=only_application_name))
-    elif application_count > 1:
-        logger.warning(
-            "To recieve additional information run the following to get the status of the application's deployments")
-        logger.warning("az mesh app list --resource-group {resource_group_name}"
-                       .format(resource_group_name=resource_group_name))
-
-    if 'error' in deployment_status.properties.additional_properties:
-        logger.warning("Deployment Errors: ")
-        for error in deployment_status.properties.additional_properties['error']['details']:
-            # load error message into object to parse
-            error_message = json.loads(error['message'])
-            if 'innerError' in error_message['error']:
-                del error_message['error']['innerError']
-            logger.warning(json.dumps(error_message['error'], indent=4, sort_keys=True))
-
-    if operation_status in ['Running']:
-        logger.warning("The output should point to the potential issue. If the above cmd response does not have any errors listed, then it could just be that your image is taking long to download, rerun the above command again after 5 minutes.")
-
-    return deployment_status
-
 def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
                               template_file=None, template_uri=None, deployment_name=None,
                               parameters=None, mode=None, validate_only=False,
@@ -375,28 +253,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
     if validate_only:
         return sdk_no_wait(no_wait, smc.deployments.validate, resource_group_name, deployment_name, properties)
 
-    validation = smc.deployments.validate(resource_group_name, deployment_name, properties)
-
-    if validation.error:
-        logger.warning("deployment template validation failed:")
-        logger.warning(validation.error)
-    else:
-        kwargs = {'long_running_operation_timeout': 5}
-
-        operation_status_poller = sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name,
-                                              deployment_name, properties, **kwargs)
-        if no_wait:
-            return operation_status_poller
-
-        wait_time = 0
-        timestep = 5
-        while operation_status_poller.status() in ['Running', 'InProgress'] and wait_time < 150:
-            sleep(timestep)
-            wait_time += timestep
-
-        parsed_template = validation.properties.additional_properties['validatedResources']
-        return _display_deployment_status(cli_ctx, operation_status_poller.status(), resource_group_name,
-                                          deployment_name, parsed_template)
+    return sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name, deployment_name, properties)
 
 
 def deploy_arm_template(cmd, resource_group_name,
@@ -447,11 +304,6 @@ def show_volume(client, resource_group_name, name):
 def delete_volume(client, resource_group_name, name, **kwargs):
     """Delete a volume. """
     return client.delete(resource_group_name, name)
-
-
-def create_secret_value(client, resource_group_name, secret_name, version_id):
-    value = prompt_pass(msg='Value: ')
-    return client.create(resource_group_name, secret_name, version_id, value=value,)
 
 
 def list_secrets(client, resource_group_name=None):
