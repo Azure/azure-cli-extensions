@@ -102,21 +102,21 @@ def create_express_route_port(cmd, resource_group_name, express_route_port_name,
                               peering_location=None, bandwidth_in_gbps=None, encapsulation=None):
     client = network_client_factory(cmd.cli_ctx).express_route_ports
     ExpressRoutePort = cmd.get_models('ExpressRoutePort')
+    if bandwidth_in_gbps is not None:
+        bandwidth_in_gbps = int(bandwidth_in_gbps)
     port = ExpressRoutePort(
         location=location,
         tags=tags,
         peering_location=peering_location,
-        bandwidth_in_gbps=int(bandwidth_in_gbps),
+        bandwidth_in_gbps=bandwidth_in_gbps,
         encapsulation=encapsulation
     )
     return client.create_or_update(resource_group_name, express_route_port_name, port)
 
 
-def update_express_route_port(instance, tags=None, peering_location=None, bandwidth_in_gbps=None):
+def update_express_route_port(instance, tags=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
-        c.update_param('peeringLocation', peering_location, False)
-        c.update_param('bandwidthInGbps', int(bandwidth_in_gbps), False)
     return instance
 
 

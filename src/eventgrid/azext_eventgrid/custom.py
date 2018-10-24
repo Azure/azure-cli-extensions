@@ -275,10 +275,10 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         topic_type_name=None):
     if source_resource_id is not None:
         # If Source Resource ID is specified, we need to list event subscriptions for that particular resource.
+        # Since a full resource ID is specified, it should override all other defaults such as default location and RG
         # No other parameters must be specified
-        if (resource_group_name is not None or location is not None or
-                topic_type_name is not None or resource_id is not None):
-            raise CLIError('usage error: Since --source-resource-id is specified, none of the other parameters must'
+        if (topic_type_name is not None or resource_id is not None):
+            raise CLIError('usage error: Since --source-resource-id is specified, none of the other parameters must '
                            'be specified.')
 
         return _list_event_subscriptions_by_resource_id(client, source_resource_id)
@@ -286,10 +286,11 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     if resource_id is not None:
         # DEPRECATED
         # If resource ID is specified, we need to list event subscriptions for that particular resource.
+        # Since a full resource ID is specified, it should override all other defaults such as default location and RG
         # No other parameters must be specified
-        if resource_group_name is not None or location is not None or topic_type_name is not None:
-            raise CLIError('usage error: Since --resource-id is specified, none of the other parameters must'
-                           ' be specified.')
+        if topic_type_name is not None:
+            raise CLIError('usage error: Since --resource-id is specified, none of the other parameters must '
+                           'be specified.')
 
         return _list_event_subscriptions_by_resource_id(client, resource_id)
 
@@ -379,14 +380,11 @@ def _get_scope_for_event_subscription(
     if all([resource_id, topic_name]):
         raise CLIError('usage error: specify either "--topic-name" or "--resource-id", not both.')
 
-    if all([resource_id, resource_group_name]):
-        raise CLIError('usage error: specify either "--resource_group_name" or "--resource-id", not both.')
-
     if all([source_resource_id, topic_name]):
         raise CLIError('usage error: specify either "--topic-name" or "--source-resource-id", not both.')
 
-    if all([source_resource_id, resource_group_name]):
-        raise CLIError('usage error: specify either "--resource_group_name" or "--source-resource-id", not both.')
+    # A default resource Group Name could have been configured
+    # but if --resource-id or --source-resource-id is provided, it always overrides it.
 
     if source_resource_id:
         # Source Resource ID is provided, use that as the scope for the event subscription.
