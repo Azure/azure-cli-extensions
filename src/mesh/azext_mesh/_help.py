@@ -23,6 +23,14 @@ helps['mesh deployment create'] = """
           text: az mesh deployment create --resource-group mygroup --template-uri https://seabreezequickstart.blob.core.windows.net/templates/quickstart/sbz_rp.linux.json
         - name: Create a deployment with a template file on local disk.
           text: az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
+    parameters:
+    - name: --mode
+      type: string
+      short-summary: The mode for deployment, can be incremental(resources are only added) or
+        complete(previous resources will be deleted)
+    - name: --parameters
+      type: string
+      short-summary: json string to supplement parameters of the deployment template
 """
 
 helps['mesh app'] = """
