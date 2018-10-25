@@ -22,4 +22,5 @@ class InteractiveCommandsLoader(AzCommandsLoader):
     def load_arguments(self, _):
         pass
 
+
 COMMAND_LOADER_CLS = InteractiveCommandsLoader
