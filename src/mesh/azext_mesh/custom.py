@@ -250,16 +250,21 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
     properties.mode = 'incremental'
     smc = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
 
+    kwargs = {'long_running_operation_timeout': 5}
+
+    logger.warning("Deploying . . .")
+    logger.warning("You can get the state of the deployment with the cmd")
+    logger.warning("az group deployment show --name {0} --resource-group {1}".format(deployment_name, resource_group_name))
     if validate_only:
         return sdk_no_wait(no_wait, smc.deployments.validate, resource_group_name, deployment_name, properties)
 
-    return sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name, deployment_name, properties)
+    return sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name, deployment_name, properties,
+                       **kwargs)
 
 
 def deploy_arm_template(cmd, resource_group_name,
                         template_file=None, template_uri=None, deployment_name=None,
                         parameters=None, mode=None, no_wait=False):
-    logger.warning("Deploying . . .")
     return _deploy_arm_template_core(cmd.cli_ctx, resource_group_name, template_file, template_uri,
                                      deployment_name, parameters, mode, no_wait=no_wait)
 

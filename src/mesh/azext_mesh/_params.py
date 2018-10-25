@@ -42,7 +42,7 @@ def load_arguments(self, _):
 
     with self.argument_context('mesh network') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('network_name', options_list=('--name', '-n'), help="The name of the network", id_part='network_name')
+        c.argument('network_resource_name', options_list=('--name', '-n'), help="The name of the network", id_part='network_name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('mesh volume') as c:
