@@ -10,27 +10,28 @@ import requests
 
 
 from azure.cli.core import telemetry as telemetry_core
-
+from knack.prompting import prompt
 from knack.log import get_logger
 logger = get_logger(__name__)
 
-wait_messages = ['Ok, let me find an answer to that question.',
-                 'I\'m working on finding the right answer for you.', 'Let me see if I can answer that for you.']
+WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/azref); Let me see if I can help you...']
 
+EXTENSION_NAME = 'find'
+ALIAS_EXTENSION_PREFIX = 'Context.Default.Extension.Find.'
 
-def process_query(question):
-    print(random.choice(wait_messages))
-    response = call_aladdin_service(question)
+def process_query(cli_command):
+    print(random.choice(WAIT_MESSAGE))
+    response = call_aladdin_service(cli_command)
 
     if response.status_code != 200:
         logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
     else:
         answer_list = json.loads(response.content)
         if (not answer_list or answer_list[0]['source'] == 'bing'):
-            logger.warning("Sorry I am not able to help with that. \nTry typing the beginning of a "
-                           "command e.g. 'az vm' or explain the task you want to accomplish e.g. 'create a vm'.")
+            logger.warning("Sorry I am not recognizing [" + cli_command + "] as an Azure CLI command. "
+                           "\nTry typing the beginning of a command e.g. 'az vm'.")
         else:
-            print("Here are some information I was able to gather for you: \n")
+            print("Here are the most common ways to use [" + cli_command + "]: \n")
             num_results_to_show = min(3, len(answer_list))
             for i in range(num_results_to_show):
                 current_title = answer_list[i]['title'].strip()
@@ -46,9 +47,16 @@ def process_query(question):
                 print('\033[1m' + current_title + '\033[0m')
                 print(current_snippet)
 
-                if i + 1 < num_results_to_show:
-                    print("\n")
+                print("")
+            feedback = prompt("[Enter to close. Press + or - to give feedback]:")
+            properties = {}
+            set_custom_properties(properties, 'Feedback', feedback)
+            telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
+def set_custom_properties(prop, name, value):
+    if name and value is not None:
+        # 10 characters limit for strings
+        prop['{}{}'.format(ALIAS_EXTENSION_PREFIX, name)] = value[:10] if isinstance(value, str) else value
 
 def call_aladdin_service(query):
     context = {
