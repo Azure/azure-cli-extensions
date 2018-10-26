@@ -6,7 +6,8 @@
 
 from azure.cli.core import AzCommandsLoader
 
-import azure.cli.command_modules.acs._help  # pylint: disable=unused-import
+# pylint: disable=unused-import
+import azext_aks_preview._help
 
 
 class ContainerServiceCommandsLoader(AzCommandsLoader):
