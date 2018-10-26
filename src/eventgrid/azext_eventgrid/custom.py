@@ -297,7 +297,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     if topic_name:
         # DEPRECATED
         if resource_group_name is None:
-            raise CLIError('Since --topic-name is specified, --resource-group-name must also be specified.')
+            raise CLIError('Since --topic-name is specified, --resource-group must also be specified.')
 
         return client.list_by_resource(
             resource_group_name,
@@ -308,7 +308,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
     if location is None:
         # Since resource-id was not specified, location must be specified: e.g. "westus2" or "global". If not error OUT.
         raise CLIError('usage error: --source-resource-id ID | --location LOCATION'
-                       ' [--resource-group-name RG] [--topic-type-name TOPIC_TYPE_NAME]')
+                       ' [--resource-group RG] [--topic-type-name TOPIC_TYPE_NAME]')
 
     if topic_type_name is None:
         # No topic-type is specified: return event subscriptions across all topic types for this location.
