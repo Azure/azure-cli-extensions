@@ -361,13 +361,6 @@ helps['eventgrid event-subscription list'] = """
         3. To list all event subscriptions in a region (across all topic types), specify only the --location parameter.
         4. For both #2 and #3 above, to filter only by a resource group, you can additionally specify the --resource-group parameter.
     parameters:
-        - name: --resource-group
-          short-summary: This is used to list event subscriptions by a resource group.
-          long-summary: |
-            Example 1: List all Storage event subscriptions in WestUS2 under the resource group TestRG
-                --resource-group TestRG --topic-type-name Microsoft.Storage.StorageAccounts --location westus2
-            Example 2: List all regional event subscriptions in WestUS2 (across all topic types) under the resource group TestRG
-                --resource-group TestRG --location westus2
         - name: --topic-type-name
           short-summary: Name of the topic-type whose event subscriptions need to be listed. When this is specified, you must also specify --location.
           long-summary: |
@@ -385,13 +378,6 @@ helps['eventgrid event-subscription list'] = """
             For storage account:        --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.Storage/storageaccounts/sa1
             For EventGrid domain:       --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
             For EventGrid domain topic: --source-resource-id /subscriptions/{SubID}/resourceGroups/rg1/providers/Microsoft.EventGrid/domains/d1/topics/t1
-        - name: --location
-          short-summary: This is used to list event subscriptions by location.
-          long-summary: |
-            Example 1: List all Storage event subscriptions in WestUS2
-                --topic-type-name Microsoft.Storage.StorageAccounts --location westus2
-            Example 2: List all regional event subscriptions in WestUS2 (across all topic types)
-                --location westus2
     examples:
         - name: List all event subscriptions created for an Event Grid topic.
           text: |
@@ -411,10 +397,10 @@ helps['eventgrid event-subscription list'] = """
         - name: List all event subscriptions for an Event Grid domain topic.
           text: |
             az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1/topics/topic1"
-        - name: List all event subscriptions for a topic-type in a specific location (under the currently selected Azure subscription).
+        - name: List all Storage event subscriptions (under the currently selected Azure subscription) in westus2.
           text: |
             az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location westus2
-        - name: List all event subscriptions under a specified resource group for a topic-type in a specific location.
+        - name: List all Storage event subscriptions (under the given resource group) in westus2.
           text: |
             az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location westus2 --resource-group {RG}
         - name: List all regional or global event subscriptions (under the currently selected Azure subscription).
