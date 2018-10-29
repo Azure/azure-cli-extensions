@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('template_file', options_list=['--template-file'], help="The full file path of creation template")
         c.argument('template_uri', options_list=['--template-uri'], help="The full file path of creation template on a http or https link")
+        c.argument('input_yaml_files_path', options_list=['--input-yaml-files-path'], help="List of comma seperated yaml files or a directory which contains all the yaml files")
         c.argument('parameters', action='append', nargs='+', completer=FilesCompleter())
 
     with self.argument_context('mesh network') as c:
