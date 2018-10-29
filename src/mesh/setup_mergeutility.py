@@ -13,14 +13,14 @@ DEPENDENCIES = [
 
 setup(
     name='sfmergeutility',
-    version='0.4',
+    version='0.1',
     packages=find_packages(include=["sfmergeutility"]),
     license='MIT',
     description='Service Fabric Yaml merge utility',
     install_requires=DEPENDENCIES,
     url='https://github.com/Azure/azure-cli-extensions',
     author='Microsoft Corporation',
-    author_email='vinaybhat001@gmail.com',
+    author_email='azpycli@microsoft.com',
     package_data={'sfmergeutility': ['settings.json']},
     include_package_data=True,
 )
