@@ -61,21 +61,18 @@ def load_arguments(self, _):
         c.argument('subject_ends_with', help="An optional string to filter events for an event subscription based on a suffix. Wildcard characters are not supported.")
         c.argument('topic_type_name', help="Name of the topic type.")
         c.argument('is_subject_case_sensitive', arg_type=get_three_state_flag(), options_list=['--subject-case-sensitive'], help="Specify to indicate whether the subject fields should be compared in a case sensitive manner. True if flag present.", )
-
-    with self.argument_context('eventgrid topic') as c:
-        c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('input_mapping_fields', arg_type=input_mapping_fields_type)
         c.argument('input_mapping_default_values', arg_type=input_mapping_default_values_type)
         c.argument('input_schema', arg_type=input_schema_type)
+
+    with self.argument_context('eventgrid topic') as c:
+        c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
 
     with self.argument_context('eventgrid topic key list') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
 
     with self.argument_context('eventgrid domain') as c:
         c.argument('domain_name', arg_type=name_type, help='Name of the domain', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
-        c.argument('input_mapping_fields', arg_type=input_mapping_fields_type)
-        c.argument('input_mapping_default_values', arg_type=input_mapping_default_values_type)
-        c.argument('input_schema', arg_type=input_schema_type)
 
     with self.argument_context('eventgrid domain key list') as c:
         c.argument('domain_name', arg_type=name_type, help='Name of the domain', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
