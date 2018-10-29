@@ -9,8 +9,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from azext_aks_preview.vendored_sdks.msrest.service_client import SDKClient
-from azext_aks_preview.vendored_sdks.msrest import Serializer, Deserializer
+# from azext_aks_preview.vendored_sdks.msrest.service_client import SDKClient
+# from azext_aks_preview.vendored_sdks.msrest import Serializer, Deserializer
+from msrest.service_client import SDKClient
+from msrest import Serializer, Deserializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
 from .operations.container_services_operations import ContainerServicesOperations

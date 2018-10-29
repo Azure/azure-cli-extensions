@@ -9,10 +9,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .container_service_client import ContainerServiceClient
-from .version import VERSION
-
-__all__ = ['ContainerServiceClient']
-
-__version__ = VERSION
-
+from .v2017_07_01.models import *
+from .v2018_03_31.models import *
+from .v2018_08_01_preview.models import *
+from .v2018_09_30_preview.models import *

@@ -463,7 +463,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value, # pylint: 
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
-            return sdk_no_wait(no_wait, client.create_or_update,
+            return sdk_no_wait(no_wait, client.managed_clusters.create_or_update,
                                resource_group_name=resource_group_name, resource_name=name, parameters=mc)
         except CloudError as ex:
             retry_exception = ex
@@ -489,7 +489,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--update_cluster_autoscaler".')
 
     # TODO: change this approach when we support multiple agent pools.
-    instance = client.get(resource_group_name, name)
+    instance = client.managed_clusters.get(resource_group_name, name)
     node_count = instance.agent_pool_profiles[0].count
 
     if not min_count or not max_count:
@@ -526,10 +526,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
 
 def aks_show(cmd, client, resource_group_name, name):
-    mc = client.get(resource_group_name, name)
+    mc = client.managed_clusters.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
 def _remove_nulls(managed_clusters):
@@ -562,7 +562,7 @@ ADDONS = {
 }
 
 def aks_scale(cmd, client, resource_group_name, name, node_count, no_wait=False):
-    instance = client.get(resource_group_name, name)
+    instance = client.managed_clusters.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
     instance.agent_pool_profiles[0].count = int(node_count)  # pylint: disable=no-member
 
@@ -570,18 +570,18 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, no_wait=False)
     instance.service_principal_profile = None
     instance.aad_profile = None
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
 
 
 def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument
-    instance = client.get(resource_group_name, name)
+    instance = client.managed_clusters.get(resource_group_name, name)
     instance.kubernetes_version = kubernetes_version
 
     # null out the SP and AAD profile because otherwise validation complains
     instance.service_principal_profile = None
     instance.aad_profile = None
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
                         workspace_resource_id=None):
