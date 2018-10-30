@@ -12,14 +12,18 @@ CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.az
 CUSTOM_MGMT_AKS = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_aks',
                                      'ContainerServiceClient')
 
+
 def cf_compute_service(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
+
 
 def cf_container_services(cli_ctx, *_):
     return get_container_service_client(cli_ctx).container_services
 
+
 def get_container_service_client(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS)
+
 
 def cf_managed_clusters(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW)
@@ -44,7 +48,6 @@ def get_auth_management_client(cli_ctx, scope=None, **_):
         if matched:
             subscription_id = matched.groupdict()['subscription']
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION, subscription_id=subscription_id)
-
 
 
 def get_graph_rbac_management_client(cli_ctx, **_):

@@ -9,6 +9,7 @@ from azure.cli.core.decorators import Completer
 # pylint: disable=line-too-long
 from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ContainerServiceVMSizeTypes
 
+
 @Completer
 def get_k8s_upgrades_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return Kubernetes versions available for upgrading an existing cluster."""
@@ -34,7 +35,7 @@ def get_k8s_versions_completion_list(cmd, prefix, namespace, **kwargs):  # pylin
 def get_k8s_versions(cli_ctx, location):
     """Return a list of Kubernetes versions available for a new cluster."""
     from ._client_factory import cf_container_services
-    from jmespath import search # pylint: disable=import-error
+    from jmespath import search  # pylint: disable=import-error
 
     results = cf_container_services(cli_ctx).list_orchestrators(location, resource_type='managedClusters').as_dict()
     # Flatten all the "orchestrator_version" fields into one array

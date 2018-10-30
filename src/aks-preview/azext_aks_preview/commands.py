@@ -8,6 +8,7 @@ from azure.cli.core.commands import CliCommandType
 from ._client_factory import cf_managed_clusters
 from ._format import aks_show_table_format
 
+
 def load_command_table(self, _):
 
     managed_clusters_sdk = CliCommandType(

@@ -73,7 +73,6 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
 
 
-
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == 'Windows':

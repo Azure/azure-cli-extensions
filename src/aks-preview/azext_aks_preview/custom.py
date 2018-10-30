@@ -12,8 +12,8 @@ import os.path
 import re
 import time
 import uuid
-import dateutil.parser # pylint: disable=import-error
-from dateutil.relativedelta import relativedelta # pylint: disable=import-error
+import dateutil.parser  # pylint: disable=import-error
+from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
@@ -103,6 +103,7 @@ def _get_subscription_id(cli_ctx):
     _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
     return sub_id
 
+
 def _get_default_dns_prefix(name, resource_group_name, subscription_id):
     # Use subscription id to provide uniqueness and prevent DNS name clashes
     name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
@@ -110,6 +111,7 @@ def _get_default_dns_prefix(name, resource_group_name, subscription_id):
         name_part = (str('a') + name_part)[0:10]
     resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
     return '{}-{}-{}'.format(name_part, resource_group_part, subscription_id[0:6])
+
 
 # pylint: disable=too-many-locals
 def store_acs_service_principal(subscription_id, client_secret, service_principal,
@@ -149,6 +151,7 @@ def load_service_principals(config_path):
     except:  # pylint: disable=bare-except
         return None
 
+
 def _invoke_deployment(cli_ctx, resource_group_name, deployment_name, template, parameters, validate, no_wait,
                        subscription_id=None):
     from azure.mgmt.resource.resources import ResourceManagementClient
@@ -162,6 +165,7 @@ def _invoke_deployment(cli_ctx, resource_group_name, deployment_name, template, 
         logger.info('==== END TEMPLATE ====')
         return smc.validate(resource_group_name, deployment_name, properties)
     return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, properties)
+
 
 def create_application(client, display_name, homepage, identifier_uris,
                        available_to_other_tenants=False, password=None, reply_urls=None,
@@ -316,6 +320,7 @@ def _get_object_stubs(graph_client, assignees):
     params = GetObjectsParameters(include_directory_object_references=True,
                                   object_ids=assignees)
     return list(graph_client.objects.get_objects_by_object_ids(params))
+
 
 def subnet_role_assignment_exists(cli_ctx, scope):
     network_contributor_role_id = "4d97b98b-1d4f-4787-a291-c67834d212e7"
@@ -473,6 +478,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value, # pylint: 
                 raise ex
     raise retry_exception
 
+
 def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler=False,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
@@ -528,9 +534,11 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
 
     return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
 
+
 def aks_show(cmd, client, resource_group_name, name):
     mc = client.managed_clusters.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
+
 
 def _remove_nulls(managed_clusters):
     """
@@ -556,10 +564,12 @@ def _remove_nulls(managed_clusters):
                 delattr(managed_cluster.service_principal_profile, attr)
     return managed_clusters
 
+
 ADDONS = {
     'http_application_routing': 'httpApplicationRouting',
     'monitoring': 'omsagent'
 }
+
 
 def aks_scale(cmd, client, resource_group_name, name, node_count, no_wait=False):
     instance = client.managed_clusters.get(resource_group_name, name)
@@ -860,11 +870,13 @@ def _ensure_aks_service_principal(cli_ctx,
     store_acs_service_principal(subscription_id, client_secret, service_principal, file_name=file_name_aks)
     return load_acs_service_principal(subscription_id, file_name=file_name_aks)
 
+
 def _get_rg_location(ctx, resource_group_name, subscription_id=None):
     groups = cf_resource_groups(ctx, subscription_id=subscription_id)
     # Just do the get, we don't need the result, it will error out if the group doesn't exist.
     rg = groups.get(resource_group_name)
     return rg.location
+
 
 def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
                                    min_count,
