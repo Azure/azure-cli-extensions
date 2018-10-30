@@ -34,7 +34,7 @@ def get_k8s_versions_completion_list(cmd, prefix, namespace, **kwargs):  # pylin
 def get_k8s_versions(cli_ctx, location):
     """Return a list of Kubernetes versions available for a new cluster."""
     from ._client_factory import cf_container_services
-    from jmespath import search
+    from jmespath import search # pylint: disable=import-error
 
     results = cf_container_services(cli_ctx).list_orchestrators(location, resource_type='managedClusters').as_dict()
     # Flatten all the "orchestrator_version" fields into one array

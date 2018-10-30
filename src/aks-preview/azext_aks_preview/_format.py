@@ -17,6 +17,7 @@ def aks_show_table_format(result):
 
 
 def _aks_table_format(result):
+    # pylint: disable=import-error
     from jmespath import compile as compile_jmes, Options
 
     parsed = compile_jmes("""{

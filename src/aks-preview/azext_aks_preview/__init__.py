@@ -25,14 +25,13 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
                                                              min_profile='2017-03-10-profile')
 
     def load_command_table(self, args):
-        #super(ContainerServiceCommandsLoader, self).load_command_table(args)
-        super().load_command_table(args)
+        super(ContainerServiceCommandsLoader, self).load_command_table(args)
         from .commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        #super(ContainerServiceCommandsLoader, self).load_arguments(command) python 2 works, but not for python 3
+        #super(ContainerServiceCommandsLoader, self).load_arguments(command)
         super().load_arguments(command)
         from ._params import load_arguments
         load_arguments(self, command)

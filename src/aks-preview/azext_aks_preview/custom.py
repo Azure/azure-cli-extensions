@@ -12,8 +12,8 @@ import os.path
 import re
 import time
 import uuid
-import dateutil.parser
-from dateutil.relativedelta import relativedelta
+import dateutil.parser # pylint: disable=import-error
+from dateutil.relativedelta import relativedelta # pylint: disable=import-error
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
