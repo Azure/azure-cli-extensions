@@ -322,7 +322,7 @@ def secret_show(client, resource_group_name, secret_name, secret_value_resource_
     secret_data = client.get(resource_group_name, secret_name, secret_value_resource_name)
     if show_value:
         secret_value = client.list_value(resource_group_name, secret_name, secret_value_resource_name)
-        secret_data.value = secret_value['value']
+        secret_data.value = secret_value.value
     return secret_data
 
 

@@ -67,20 +67,18 @@ def transform_volume_list(result):
 
 # Network Resource table output formatting
 def transform_network(result):
-    ingressConfig = result.get('ingressConfig')
-    if ingressConfig is not None:
-        return OrderedDict([('Name', result['name']),
-                            ('ResourceGroup', result.get('resourceGroup')),
-                            ('Location', result.get('location')),
-                            ('ProvisioningState', result.get('provisioningState')),
-                            ('AddressPrefix', result.get('addressPrefix')),
-                            ('PublicIP', ingressConfig.get('publicIpAddress'))])
-
+    address_prefix = None
+    if result.get('properties', {}).get('kind') == 'Local':
+        address_prefix = result.get('properties', {}).get('networkAddressPrefix')
     return OrderedDict([('Name', result['name']),
                         ('ResourceGroup', result.get('resourceGroup')),
                         ('Location', result.get('location')),
-                        ('ProvisioningState', result.get('provisioningState')),
-                        ('AddressPrefix', result.get('addressPrefix'))])
+                        ('Kind', result.get('properties', {}).get('kind')),
+                        ('AddressPrefix', address_prefix),
+                        ('ProvisioningState', result.get('properties', {}).get('provisioningState')),
+                        ('status', result.get('properties', {}).get('status'))
+                        # ('ProvisioningState', result.get('properties', {}).get('provisioningState'))
+                        ])
 
 
 def transform_network_list(result):
@@ -91,8 +89,9 @@ def transform_secret(result):
     return OrderedDict([('Name', result['name']),
                         ('ResourceGroup', result.get('resourceGroup')),
                         ('Location', result.get('location')),
-                        ('ProvisioningState', result.get('provisioningState')),
-                        ('Kind', result['kind'])])
+                        ('ProvisioningState', result.get('properties', {}).get('provisioningState')),
+                        ('Kind', result.get('properties', {}).get('kind')),
+                        ])
 
 
 def transform_secret_list(result):
@@ -148,12 +147,11 @@ def format_ip_address(container_group):
 def transform_gateway(result):
     """Transform a gateway list to table output. """
     return OrderedDict([('Name', result.get('name')),
-                        # ('SourceNetwork', result.get('sourceNetwork')),
-                        # ('DestinationNetwork', result.get('destinationNetwork')),
-                        ('Location', result.get('location')),
                         ('ResourceGroup', result.get('resourceGroup')),
+                        ('Location', result.get('location')),
                         ('ProvisioningState', result.get('provisioningState')),
-                        ('Status', result.get('status'))
+                        ('Status', result.get('status')),
+                        ('PublicIP', result.get('ipAddress'))
                         ])
 
 
