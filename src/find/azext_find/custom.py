@@ -14,7 +14,7 @@ from knack.prompting import prompt
 from knack.log import get_logger
 logger = get_logger(__name__)
 
-WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/azref); Let me see if I can help you...']
+WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/aladdin); Let me see if I can help you...']
 
 EXTENSION_NAME = 'find'
 ALIAS_EXTENSION_PREFIX = 'Context.Default.Extension.Find.'
@@ -31,7 +31,7 @@ def process_query(cli_command):
             logger.warning("Sorry I am not recognizing [" + cli_command + "] as an Azure CLI command. "
                            "\nTry typing the beginning of a command e.g. 'az vm'.")
         else:
-            print("Here are the most common ways to use [" + cli_command + "]: \n")
+            print("\nHere are the most common ways to use [" + cli_command + "]: \n")
             num_results_to_show = min(3, len(answer_list))
             for i in range(num_results_to_show):
                 current_title = answer_list[i]['title'].strip()
@@ -48,7 +48,16 @@ def process_query(cli_command):
                 print(current_snippet)
 
                 print("")
-            feedback = prompt("[Enter to close. Press + or - to give feedback]:")
+            feedback = prompt("[\033[1mEnter to close.\033[0m Press + or - to give feedback]:")
+            if feedback in ['+', '-']:
+                print('Wow, you are a true hero!')
+                print("""\
+        O_
+       <T>`-.
+        |`-‘
+        I  
+                        """)
+                print('My human overloads review each of these reports; they tell me it makes me smarter.')
             properties = {}
             set_custom_properties(properties, 'Feedback', feedback)
             telemetry_core.add_extension_event(EXTENSION_NAME, properties)
