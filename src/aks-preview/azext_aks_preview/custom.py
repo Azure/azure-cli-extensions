@@ -334,7 +334,7 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
-def aks_create(cmd, client, resource_group_name, name, ssh_key_value, # pylint: disable=too-many-locals
+def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
                dns_name_prefix=None,
                location=None,
                admin_username="azureuser",
@@ -592,6 +592,7 @@ def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_w
     instance.aad_profile = None
 
     return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
+
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
                         workspace_resource_id=None):
