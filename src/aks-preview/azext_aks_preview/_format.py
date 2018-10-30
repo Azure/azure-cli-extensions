@@ -34,6 +34,7 @@ def _aks_table_format(result):
 
 def aks_upgrades_table_format(result):
     """Format get-upgrades results as a summary for display with "-o table"."""
+    # pylint: disable=import-error
     from jmespath import compile as compile_jmes, Options
 
     # This expression assumes there is one node pool, and that the master and nodes upgrade in lockstep.
@@ -50,6 +51,7 @@ def aks_upgrades_table_format(result):
 
 def aks_versions_table_format(result):
     """Format get-versions results as a summary for display with "-o table"."""
+    # pylint: disable=import-error
     from jmespath import compile as compile_jmes, Options
 
     parsed = compile_jmes("""orchestrators[].{
@@ -67,7 +69,7 @@ def version_to_tuple(v):
 
 
 def _custom_functions():
-
+    # pylint: disable=import-error
     from jmespath import functions
 
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
