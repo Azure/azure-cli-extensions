@@ -19,6 +19,7 @@ WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/aladdin); Let me see if I ca
 EXTENSION_NAME = 'find'
 ALIAS_EXTENSION_PREFIX = 'Context.Default.Extension.Find.'
 
+
 def process_query(cli_command):
     print(random.choice(WAIT_MESSAGE))
     response = call_aladdin_service(cli_command)
@@ -55,17 +56,19 @@ def process_query(cli_command):
         O_
        <T>`-.
         |`-‘
-        I  
+        I
                         """)
                 print('My human overloads review each of these reports; they tell me it makes me smarter.')
             properties = {}
             set_custom_properties(properties, 'Feedback', feedback)
             telemetry_core.add_extension_event(EXTENSION_NAME, properties)
 
+
 def set_custom_properties(prop, name, value):
     if name and value is not None:
         # 10 characters limit for strings
         prop['{}{}'.format(ALIAS_EXTENSION_PREFIX, name)] = value[:10] if isinstance(value, str) else value
+
 
 def call_aladdin_service(query):
     context = {
