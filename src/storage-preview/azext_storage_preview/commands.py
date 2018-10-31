@@ -46,7 +46,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.command('keys renew', 'regenerate_key', transform=lambda x: getattr(x, 'keys', x))
         g.command('keys list', 'list_keys', transform=lambda x: getattr(x, 'keys', x))
 
-
     with self.command_group('storage account network-rule', storage_account_sdk,
                             custom_command_type=storage_account_custom_type,
                             resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
