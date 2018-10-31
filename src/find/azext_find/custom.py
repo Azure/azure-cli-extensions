@@ -79,9 +79,6 @@ def call_aladdin_service(query):
         'installation_id': telemetry_core._get_installation_id()  # pylint: disable=protected-access
     }
 
-    #if (query and query.startswith("az ")):
-    #    query = '"' + query + '"'
-
     service_input = {
         'paragraphText': "<div id='dummyHeader'></div>",
         'currentPageUrl': "",
