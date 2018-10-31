@@ -30,7 +30,7 @@ def process_query(cli_command):
         answer_list = json.loads(response.content)
         if (not answer_list or answer_list[0]['source'] == 'bing'):
             print("\nSorry I am not recognizing [" + cli_command + "] as an Azure CLI command. "
-                           "\nTry typing the beginning of a command e.g. \033[1m'az vm'\033[0m.")
+                  "\nTry typing the beginning of a command e.g. \033[1m'az vm'\033[0m.")
         else:
             print("\nHere are the most common ways to use [" + cli_command + "]: \n")
             num_results_to_show = min(3, len(answer_list))
@@ -54,11 +54,12 @@ def process_query(cli_command):
                 print('Wow, you are a true hero!')
                 print("""\
         O_
-       <T>`-.
-        |`-‘
-        I
+       \033[1m<T>\033[0m`-.
+        \033[1m|\033[0m`-‘
+        \033[1mI\033[0m
                         """)
-                print('My human overloads review each of these reports; they tell me it makes me smarter.')
+                print('My human overloads review each of these reports; I\'m told these reports makes me smarter.')
+                print('Send us more feedback by email: aladdindoc@microsoft.com')
             properties = {}
             set_custom_properties(properties, 'Feedback', feedback)
             telemetry_core.add_extension_event(EXTENSION_NAME, properties)
@@ -78,8 +79,8 @@ def call_aladdin_service(query):
         'installation_id': telemetry_core._get_installation_id()  # pylint: disable=protected-access
     }
 
-    if (query and query.startswith("az ")):
-        query = '"' + query + '"'
+    #if (query and query.startswith("az ")):
+    #    query = '"' + query + '"'
 
     service_input = {
         'paragraphText': "<div id='dummyHeader'></div>",
