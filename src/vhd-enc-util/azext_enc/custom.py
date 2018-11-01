@@ -110,14 +110,14 @@ def _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
     kek_name, kek_version = parts[-2], parts[-1]
     logger.warning('Wrapping data encryption key with key encryption key:\n    vault_base_url: %s\n    key encrypton key: %s\n    key version: %s',
                    vault_base_url, kek_name, kek_version)
-    wraped = kv_client.wrap_key(vault_base_url, kek_name, kek_version, 'RSA-OAEP', base64.b64encode(key))
+    wraped = kv_client.wrap_key(vault_base_url, kek_name, kek_version, 'RSA-OAEP', key)
     secret_name = str(uuid.uuid4()).replace('-', '')
     logger.warning('Uploading wrapped key as secret:\n    secret name: %s', secret_name)
-    secret_result = kv_client.set_secret(vault_base_url, secret_name, wraped.result)
+    secret_result = kv_client.set_secret(vault_base_url, secret_name, (base64.b64encode(wraped.result)).decode("UTF-8"))
     metadate_value = {
         "encryptionSettingsVersion": "2.0",
         "dataEncryptionMetadata": {
-            "encryptionCipherMode": "AES-XTS",
+            "encryptionCipherMode": "XTS-AES",
             "encryptionKeyLength": 512,
             "encryptionBlockSize": 512
         },
