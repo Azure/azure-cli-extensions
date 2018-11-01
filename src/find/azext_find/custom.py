@@ -17,7 +17,8 @@ logger = get_logger(__name__)
 WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/aladdin); Let me see if I can help you...']
 
 EXTENSION_NAME = 'find'
-ALIAS_EXTENSION_PREFIX = 'Context.Default.Extension.Find.'
+
+FIND_EXTENSION_PREFIX = 'Context.Default.Extension.Find.'
 
 
 def process_query(cli_command):
@@ -68,7 +69,7 @@ def process_query(cli_command):
 def set_custom_properties(prop, name, value):
     if name and value is not None:
         # 10 characters limit for strings
-        prop['{}{}'.format(ALIAS_EXTENSION_PREFIX, name)] = value[:10] if isinstance(value, str) else value
+        prop['{}{}'.format(FIND_EXTENSION_PREFIX, name)] = value[:10] if isinstance(value, str) else value
 
 
 def call_aladdin_service(query):
