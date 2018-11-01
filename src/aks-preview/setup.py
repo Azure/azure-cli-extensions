@@ -7,14 +7,8 @@
 
 from codecs import open as open1
 from setuptools import setup, find_packages
-try:
-    from azure_bdist_wheel import cmdclass
-except ImportError:
-    from distutils import log as logger
-    logger.warn("Wheel is not available, disabling bdist_wheel hook")
-    cmdclass = {}
 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 CLASSIFIERS = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
@@ -48,6 +42,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
     package_data={'azext_aks_preview': ['azext_metadata.json']},
-    install_requires=DEPENDENCIES,
-    cmdclass=cmdclass
+    install_requires=DEPENDENCIES
 )
