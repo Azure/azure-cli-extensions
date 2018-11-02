@@ -31,7 +31,7 @@ def process_query(cli_term):
     if response.status_code != 200:
         logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
     else:
-        if platform == 'Windows':
+        if (platform.system() == 'Windows' and should_enable_styling()):
             colorama.init(convert=True)
 
         answer_list = json.loads(response.content)
