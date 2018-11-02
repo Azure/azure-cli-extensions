@@ -9,7 +9,7 @@ import re
 import sys
 import platform
 import requests
-import colorama
+import colorama #pylint: disable=import-error
 
 
 from azure.cli.core import telemetry as telemetry_core
