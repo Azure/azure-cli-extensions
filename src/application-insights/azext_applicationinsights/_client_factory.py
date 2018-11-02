@@ -22,6 +22,5 @@ def cf_metrics(cli_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).metrics
 
 
-def cf_events(c
-li_ctx, _):
+def cf_events(cli_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).events
