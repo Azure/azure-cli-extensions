@@ -1,0 +1,80 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults?timespan=PT5M
+  response:
+    body: {string: '{"@odata.context":"https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/$metadata#availabilityResults","@ai.messages":[{"code":"AddedLimitToQuery","message":"The
+        query was limited to 500 rows"}],"value":[{"id":"28655193-de87-11e8-aef8-071a1a8e9e04","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:07:37.706Z","customDimensions":{"WebtestLocationId":"us-il-ch1-azr","FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-il-ch1-azr"},"customMeasurements":null,"operation":{"name":"","id":"627f343f715b44968a7ba725c17814ce","parentId":"627f343f715b44968a7ba725c17814ce","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":446,"performanceBucket":"","message":"Passed","location":"North
+        Central US","id":"627f343f715b44968a7ba725c17814ce","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Chicago","stateOrProvince":"Illinois","countryOrRegion":"United
+        States"}},{"id":"078f19bf-de87-11e8-b4d8-e3e9af1e205a","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:06:52.235Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-va-ash-azr","WebtestLocationId":"us-va-ash-azr"},"customMeasurements":null,"operation":{"name":"","id":"54575ed287cb4273b1c6fdbd7cbac171","parentId":"54575ed287cb4273b1c6fdbd7cbac171","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":497,"performanceBucket":"","message":"Passed","location":"East
+        US","id":"54575ed287cb4273b1c6fdbd7cbac171","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Boydton","stateOrProvince":"Virginia","countryOrRegion":"United
+        States"}},{"id":"0604822a-de87-11e8-bc74-038ab0c1a169","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:06:45.684Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"google-ace-test","SyntheticMonitorId":"default_google-ace-test_us-fl-mia-edge","WebtestLocationId":"us-fl-mia-edge"},"customMeasurements":null,"operation":{"name":"","id":"6e49afb1c093441f92cbe492001f11b9","parentId":"6e49afb1c093441f92cbe492001f11b9","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"google","success":"1","duration":219,"performanceBucket":"","message":"Passed","location":"Central
+        US","id":"6e49afb1c093441f92cbe492001f11b9","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Des
+        Moines","stateOrProvince":"Iowa","countryOrRegion":"United States"}},{"id":"fd9feb23-de86-11e8-a7c1-ed4f4c0aeeee","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:06:08.157Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-ca-sjc-azr","WebtestLocationId":"us-ca-sjc-azr"},"customMeasurements":null,"operation":{"name":"","id":"b88aae81c54744c8bf71e6c8e6dfc428","parentId":"b88aae81c54744c8bf71e6c8e6dfc428","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":767,"performanceBucket":"","message":"Passed","location":"West
+        US","id":"b88aae81c54744c8bf71e6c8e6dfc428","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"San
+        Jose","stateOrProvince":"California","countryOrRegion":"United States"}},{"id":"f11ec6c2-de86-11e8-a77e-5b759f41f354","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:05:51.004Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-fl-mia-edge","WebtestLocationId":"us-fl-mia-edge"},"customMeasurements":null,"operation":{"name":"","id":"ba96924c93ee4e64a74edbe95f972de2","parentId":"ba96924c93ee4e64a74edbe95f972de2","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":689,"performanceBucket":"","message":"Passed","location":"Central
+        US","id":"ba96924c93ee4e64a74edbe95f972de2","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Des
+        Moines","stateOrProvince":"Iowa","countryOrRegion":"United States"}}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      age: ['59']
+      connection: [keep-alive]
+      content-length: ['5740']
+      content-type: [application/json; charset=utf-8; ieee754compatible=false; odata.metadata=none;
+          odata.streaming=false]
+      date: ['Fri, 02 Nov 2018 10:10:56 GMT']
+      odata-version: [4.0;]
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-green.babb6db7-de2d-11e8-a442-70b3d5800006]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults?timespan=PT5M
+  response:
+    body: {string: '{"@odata.context":"https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/$metadata#availabilityResults","@ai.messages":[{"code":"AddedLimitToQuery","message":"The
+        query was limited to 500 rows"}],"value":[{"id":"28655193-de87-11e8-aef8-071a1a8e9e04","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:07:37.706Z","customDimensions":{"WebtestLocationId":"us-il-ch1-azr","FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-il-ch1-azr"},"customMeasurements":null,"operation":{"name":"","id":"627f343f715b44968a7ba725c17814ce","parentId":"627f343f715b44968a7ba725c17814ce","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":446,"performanceBucket":"","message":"Passed","location":"North
+        Central US","id":"627f343f715b44968a7ba725c17814ce","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Chicago","stateOrProvince":"Illinois","countryOrRegion":"United
+        States"}},{"id":"078f19bf-de87-11e8-b4d8-e3e9af1e205a","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:06:52.235Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-va-ash-azr","WebtestLocationId":"us-va-ash-azr"},"customMeasurements":null,"operation":{"name":"","id":"54575ed287cb4273b1c6fdbd7cbac171","parentId":"54575ed287cb4273b1c6fdbd7cbac171","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":497,"performanceBucket":"","message":"Passed","location":"East
+        US","id":"54575ed287cb4273b1c6fdbd7cbac171","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Boydton","stateOrProvince":"Virginia","countryOrRegion":"United
+        States"}},{"id":"0604822a-de87-11e8-bc74-038ab0c1a169","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:06:45.684Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"google-ace-test","SyntheticMonitorId":"default_google-ace-test_us-fl-mia-edge","WebtestLocationId":"us-fl-mia-edge"},"customMeasurements":null,"operation":{"name":"","id":"6e49afb1c093441f92cbe492001f11b9","parentId":"6e49afb1c093441f92cbe492001f11b9","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"google","success":"1","duration":219,"performanceBucket":"","message":"Passed","location":"Central
+        US","id":"6e49afb1c093441f92cbe492001f11b9","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Des
+        Moines","stateOrProvince":"Iowa","countryOrRegion":"United States"}},{"id":"fd9feb23-de86-11e8-a7c1-ed4f4c0aeeee","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:06:08.157Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-ca-sjc-azr","WebtestLocationId":"us-ca-sjc-azr"},"customMeasurements":null,"operation":{"name":"","id":"b88aae81c54744c8bf71e6c8e6dfc428","parentId":"b88aae81c54744c8bf71e6c8e6dfc428","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":767,"performanceBucket":"","message":"Passed","location":"West
+        US","id":"b88aae81c54744c8bf71e6c8e6dfc428","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"San
+        Jose","stateOrProvince":"California","countryOrRegion":"United States"}},{"id":"f11ec6c2-de86-11e8-a77e-5b759f41f354","count":1,"type":"availabilityResult","timestamp":"2018-11-02T10:05:51.004Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"microsoft-ace-test","SyntheticMonitorId":"default_microsoft-ace-test_us-fl-mia-edge","WebtestLocationId":"us-fl-mia-edge"},"customMeasurements":null,"operation":{"name":"","id":"ba96924c93ee4e64a74edbe95f972de2","parentId":"ba96924c93ee4e64a74edbe95f972de2","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"microsoft","success":"1","duration":689,"performanceBucket":"","message":"Passed","location":"Central
+        US","id":"ba96924c93ee4e64a74edbe95f972de2","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Des
+        Moines","stateOrProvince":"Iowa","countryOrRegion":"United States"}}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      age: ['59']
+      connection: [keep-alive]
+      content-length: ['5740']
+      content-type: [application/json; charset=utf-8; ieee754compatible=false; odata.metadata=none;
+          odata.streaming=false]
+      date: ['Fri, 02 Nov 2018 10:10:56 GMT']
+      odata-version: [4.0;]
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-green.bb8c263c-de64-11e8-a442-70b3d5800006]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+version: 1

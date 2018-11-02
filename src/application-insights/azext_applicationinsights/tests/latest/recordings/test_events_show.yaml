@@ -1,0 +1,32 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults/1f492e8f-de80-11e8-8fec-e18ec74f57af
+  response:
+    body: {string: '{"@odata.context":"https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults/$metadata#availabilityResults","value":[{"id":"1f492e8f-de80-11e8-8fec-e18ec74f57af","count":1,"type":"availabilityResult","timestamp":"2018-11-02T09:17:22.327Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"google-ace-test","SyntheticMonitorId":"default_google-ace-test_us-va-ash-azr","WebtestLocationId":"us-va-ash-azr"},"customMeasurements":null,"operation":{"name":"","id":"ae5a90c5d01d4f91a8d958a99065937d","parentId":"ae5a90c5d01d4f91a8d958a99065937d","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"google","success":"1","duration":104,"performanceBucket":"","message":"Passed","location":"East
+        US","id":"ae5a90c5d01d4f91a8d958a99065937d","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Boydton","stateOrProvince":"Virginia","countryOrRegion":"United
+        States"}}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      age: ['87']
+      connection: [keep-alive]
+      content-length: ['1256']
+      content-type: [application/json; charset=utf-8; ieee754compatible=false; odata.metadata=none;
+          odata.streaming=false]
+      date: ['Fri, 02 Nov 2018 10:10:56 GMT']
+      odata-version: [4.0;]
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-green.fb48d558-de34-11e8-a442-70b3d5800006]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+version: 1

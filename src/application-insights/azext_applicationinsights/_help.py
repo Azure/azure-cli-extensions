@@ -55,7 +55,7 @@ helps['monitor app-insights events show'] = """
     examples:
       - name: Get an availability result by ID.
         text: |
-          az monitor app-insights events show --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --event-type availabilityResults --event-id b2cf08df-bf42-4278-8d2c-5b55f85901fe
+          az monitor app-insights events show --app-id 578f0e27-12e9-4631-bc02-50b965da2633 --event-type availabilityResults --event-id b2cf08df-bf42-4278-8d2c-5b55f85901fe
 """
 
 helps['monitor app-insights events list'] = """
@@ -64,5 +64,5 @@ helps['monitor app-insights events list'] = """
     examples:
       - name: List availability results from the last 24 hours.
         text: |
-          az monitor app-insights events list --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --event-type availabilityResults -t PT24H
+          az monitor app-insights events list --app-id 578f0e27-12e9-4631-bc02-50b965da2633 --event-type availabilityResults -t PT24H
 """
