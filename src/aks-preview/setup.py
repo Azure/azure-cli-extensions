@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 VERSION = "0.1.0"
 CLASSIFIERS = [
-    'Development Status :: 5 - Production/Stable',
+    'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
