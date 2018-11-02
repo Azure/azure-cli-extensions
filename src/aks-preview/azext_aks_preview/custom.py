@@ -483,15 +483,8 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False):
-    update_flags = []
-    if enable_cluster_autoscaler:
-        update_flags.append("enable_cluster_autoscaler")
-    if disable_cluster_autoscaler:
-        update_flags.append("disable_cluster_autoscaler")
-    if update_cluster_autoscaler:
-        update_flags.append("update_cluster_autoscaler")
-
-    if len(update_flags) != 1:
+    update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+    if update_flags != 1:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler".')
