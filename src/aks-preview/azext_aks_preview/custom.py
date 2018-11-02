@@ -496,7 +496,6 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler".')
 
-
     # TODO: change this approach when we support multiple agent pools.
     instance = client.managed_clusters.get(resource_group_name, name)
     node_count = instance.agent_pool_profiles[0].count
