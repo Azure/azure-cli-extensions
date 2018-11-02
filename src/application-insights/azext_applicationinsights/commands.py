@@ -18,7 +18,7 @@ def load_command_table(self, _):
     metrics_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.vendored_sdks.applicationinsights.operations.metrics_operations#MetricsOperations.{}',
         client_factory=cf_metrics
-  )
+    )
 
     events_sdk = CliCommandType(
         operations_tmpl='azext_applicationinsights.vendored_sdks.applicationinsights.operations.events_operations#EventsOperations.{}',
