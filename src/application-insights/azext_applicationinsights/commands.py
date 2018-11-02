@@ -33,7 +33,6 @@ def load_command_table(self, _):
 
     with self.command_group('monitor app-insights metrics', metrics_sdk) as g:
         g.command('show', 'get')
-        g.custom_command('list', 'get_metrics')
         g.command('get-metadata', 'get_metadata')
 
     with self.command_group('monitor app-insights events', events_sdk) as g:

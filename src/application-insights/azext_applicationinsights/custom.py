@@ -28,9 +28,5 @@ def get_metric(client, application, metric_id, timespan=None, aggregation=None, 
     return client.metrics.get(application, metric_id, timespan=timespan, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
 
 
-def get_metrics(client, application, metric_id, timespan=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None):
-    return client.metrics.get(application, metric_id, timespan=timespan, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
-
-
 def get_metrics_metadata(client, application):
     return client.metrics.get_metadata(application)
