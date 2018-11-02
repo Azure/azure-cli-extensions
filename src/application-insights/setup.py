@@ -34,7 +34,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='application-insights',
     version=VERSION,
-    description='Support for Azure Application Insights metrics, events, and log queries.',
+    description='Support for querying Azure Application Insights metrics, events, and logs.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Ace Eldeib',
