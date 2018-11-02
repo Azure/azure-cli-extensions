@@ -37,7 +37,7 @@ helps['monitor app-insights metrics show'] = """
     examples:
       - name: View the count of availabilityResults events.
         text: |
-          az monitor app-insights query -a e292531c-eb03-4079-9bb0-fe6b56b99f8b --metric-id availabilityResults/count
+          az monitor app-insights metrics show --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --metric-id availabilityResults/count
 """
 
 helps['monitor app-insights metrics get-metadata'] = """
