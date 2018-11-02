@@ -6,6 +6,8 @@
 import random
 import json
 import re
+import sys
+import platform
 import requests
 import colorama
 
@@ -22,19 +24,22 @@ EXTENSION_NAME = 'find'
 FIND_EXTENSION_PREFIX = 'Context.Default.Extension.Find.'
 
 
-def process_query(cli_command):
+def process_query(cli_term):
     print(random.choice(WAIT_MESSAGE))
-    response = call_aladdin_service(cli_command)
+    response = call_aladdin_service(cli_term)
 
     if response.status_code != 200:
         logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
     else:
+        if platform == 'Windows':
+            colorama.init(convert=True)
+
         answer_list = json.loads(response.content)
         if (not answer_list or answer_list[0]['source'] == 'bing'):
-            print("\nSorry I am not recognizing [" + cli_command + "] as an Azure CLI command. "
-                  "\nTry typing the beginning of a command e.g. \033[1m'az vm'\033[0m.")
+            print("\nSorry I am not recognizing [" + cli_term + "] as an Azure CLI command. "
+                  "\nTry typing the beginning of a command e.g. " + style_message('az vm') + ".")
         else:
-            print("\nHere are the most common ways to use [" + cli_command + "]: \n")
+            print("\nHere are the most common ways to use [" + cli_term + "]: \n")
             num_results_to_show = min(3, len(answer_list))
             for i in range(num_results_to_show):
                 current_title = answer_list[i]['title'].strip()
@@ -51,7 +56,7 @@ def process_query(cli_command):
                 print(current_snippet)
 
                 print("")
-            feedback = prompt("[" + style_message("Enter to close.") + "Press + or - to give feedback]:")
+            feedback = prompt("[Enter to close. Press + or - to give feedback]:")
             if feedback in ['+', '-']:
                 print('Wow, you are a true hero!')
                 print("""\
@@ -68,7 +73,22 @@ def process_query(cli_command):
 
 
 def style_message(msg):
-    return colorama.Style.BRIGHT + msg + colorama.Style.RESET_ALL
+    if should_enable_styling():
+        try:
+            msg = colorama.Style.BRIGHT + msg + colorama.Style.RESET_ALL
+        except KeyError:
+            pass
+    return msg
+
+
+def should_enable_styling():
+    try:
+        # Style if tty stream available
+        if sys.stdout.isatty():
+            return True
+    except AttributeError:
+        pass
+    return False
 
 
 def set_custom_properties(prop, name, value):
