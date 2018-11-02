@@ -14,17 +14,17 @@ helps['monitor app-insights'] = """
 
 helps['monitor app-insights metrics'] = """
     type: group
-    short-summary: Retrieve metrics from an Application Insights application.
+    short-summary: Retrieve metrics from an application.
 """
 
 helps['monitor app-insights events'] = """
     type: group
-    short-summary: Retrieve events from an Application Insights application.
+    short-summary: Retrieve events from an application.
 """
 
 helps['monitor app-insights query'] = """
     type: command
-    short-summary: Query an Application Insights application.
+    short-summary: Execute a query over data in your application.
     examples:
       - name: Execute a simple query over past 3.5 days.
         text: |
@@ -35,7 +35,7 @@ helps['monitor app-insights metrics show'] = """
     type: command
     short-summary: View the value of a single metric.
     examples:
-      - name: Execute a simple query over past 3.5 days.
+      - name: View the count of availabilityResults events.
         text: |
           az monitor app-insights query -a e292531c-eb03-4079-9bb0-fe6b56b99f8b --metric-id availabilityResults/count
 """
@@ -62,7 +62,7 @@ helps['monitor app-insights events list'] = """
     type: command
     short-summary: View a list of events from an application, filtered by type.
     examples:
-      - name: List availabilit results from the last 24 hours.
+      - name: List availability results from the last 24 hours.
         text: |
-          az monitor app-insights events list --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --event-type availabilityResults
+          az monitor app-insights events list --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --event-type availabilityResults -t PT24H
 """
