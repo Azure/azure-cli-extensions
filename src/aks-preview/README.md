@@ -1,5 +1,5 @@
 #Azure CLI AKS Preview Extension#
-This is a extension for AKS features. This will replace the full AKS module
+This is an extension for AKS features. This will replace the full AKS module.
 
 ## How to use ##
 Install this extension using the below CLI command
@@ -9,7 +9,7 @@ az extension add --name aks-preview
 
 ## Included Features
 ### Cluster Auto Scaler: 
-[more info](https://docs.microsoft.com/en-us/azure/aks/autoscaler)\
+[more info](https://docs.microsoft.com/en-us/azure/aks/autoscaler)
 
 
 #### create aks cluster with enabled cluster autoscaler 

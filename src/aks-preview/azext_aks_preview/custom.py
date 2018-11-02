@@ -483,36 +483,40 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False):
-    if (all([enable_cluster_autoscaler, disable_cluster_autoscaler]) or
-            all([enable_cluster_autoscaler, update_cluster_autoscaler]) or
-            all([disable_cluster_autoscaler, update_cluster_autoscaler])):
-        raise CLIError('specify either "--enable_cluster_autoscaler" or '
-                       '"--disable_cluster_autoscaler" or '
-                       '"--update_cluster_autoscaler".')
-    if all([not enable_cluster_autoscaler, not disable_cluster_autoscaler, not update_cluster_autoscaler]):
-        raise CLIError('specify either "--enable_cluster_autoscaler" or '
-                       '"--disable_cluster_autoscaler" or '
-                       '"--update_cluster_autoscaler".')
+    update_flags = []
+    if enable_cluster_autoscaler:
+        update_flags.append("enable_cluster_autoscaler")
+    if disable_cluster_autoscaler:
+        update_flags.append("disable_cluster_autoscaler")
+    if update_cluster_autoscaler:
+        update_flags.append("update_cluster_autoscaler")
+
+    if len(update_flags) != 1:
+        raise CLIError('Please specify "--enable-cluster-autoscaler" or '
+                       '"--disable-cluster-autoscaler" or '
+                       '"--update-cluster-autoscaler".')
+
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.managed_clusters.get(resource_group_name, name)
     node_count = instance.agent_pool_profiles[0].count
 
-    if not min_count or not max_count:
+    if min_count is None or max_count is None:
         if enable_cluster_autoscaler or update_cluster_autoscaler:
-            raise CLIError('Please specifying both min_count and max_count when --enable_cluster_autoscaler or'
-                           '--update_cluster_autoscaler set.')
-    if min_count and max_count:
+            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
+                           '--update-cluster-autoscaler set.')
+    if min_count is not None and max_count is not None:
         if int(min_count) > int(max_count):
-            raise CLIError('value of min_count should be less than or equal to value of max_count.')
+            raise CLIError('value of min-count should be less than or equal to value of max-count.')
         if int(node_count) < int(min_count) or int(node_count) > int(max_count):
-            raise CLIError("current node count '{}' is not in the range of min_count and max_count.".format(node_count))
+            raise CLIError("current node count '{}' is not in the range of min-count and max-count.".format(node_count))
 
     if enable_cluster_autoscaler:
         if instance.agent_pool_profiles[0].enable_auto_scaling:
-            raise CLIError('Cluster autoscaler is already enabled for this managed cluster.\n'
-                           'Run "az aks update --update-cluster-autoscaler" '
-                           'if you wanna to update min-count or max-count.')
+            logger.warning('Cluster autoscaler is already enabled for this managed cluster.\n'
+                           'Please run "az aks update --update-cluster-autoscaler" '
+                           'if you want to update min-count or max-count.')
+            return None
         instance.agent_pool_profiles[0].min_count = int(min_count)
         instance.agent_pool_profiles[0].max_count = int(max_count)
         instance.agent_pool_profiles[0].enable_auto_scaling = True
@@ -527,7 +531,8 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
 
     if disable_cluster_autoscaler:
         if not instance.agent_pool_profiles[0].enable_auto_scaling:
-            raise CLIError('Cluster autoscaler is already disabled for this managed clsuter.')
+            logger.warning('Cluster autoscaler is already disabled for this managed cluster.')
+            return None
         instance.agent_pool_profiles[0].enable_auto_scaling = False
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
@@ -885,15 +890,15 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
                                    node_count,
                                    agent_pool_profile):
     if enable_cluster_autoscaler:
-        if not min_count or not max_count:
-            raise CLIError('Please specifying min-count and max-count when --enable-cluster-autoscaler enabled')
+        if min_count is None or max_count is None:
+            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler enabled')
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count')
         if int(node_count) < int(min_count) or int(node_count) > int(max_count):
-            raise CLIError('node_count is not in the range of min_count and max_count')
+            raise CLIError('node-count is not in the range of min-count and max-count')
         agent_pool_profile.min_count = int(min_count)
         agent_pool_profile.max_count = int(max_count)
         agent_pool_profile.enable_auto_scaling = True
     else:
-        if min_count or max_count:
-            raise CLIError('min_count and max_count are required for --enable-cluster-autoscaler, please use the flag')
+        if min_count is not None or max_count is not None:
+            raise CLIError('min-count and max-count are required for --enable-cluster-autoscaler, please use the flag')
