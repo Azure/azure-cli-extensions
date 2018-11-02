@@ -9,7 +9,7 @@ import re
 import sys
 import platform
 import requests
-import colorama #pylint: disable=import-error
+import colorama  # pylint: disable=import-error
 
 
 from azure.cli.core import telemetry as telemetry_core
@@ -61,9 +61,9 @@ def process_query(cli_term):
                 print('Wow, you are a true hero!')
                 print("""\
         O_
-       """+style_message("""<T>""")+"""`-.
-        """+style_message("""|""")+"""`-‘
-        """+style_message("""I""")+"""
+       """ + style_message("""<T>""") + """`-.
+        """ + style_message("""|""") + """`-‘
+        """ + style_message("""I""") + """
                         """)
                 print('My human overloads review each of these reports; I\'m told these reports makes me smarter.')
                 print('Send us more feedback by email: aladdindoc@microsoft.com')
