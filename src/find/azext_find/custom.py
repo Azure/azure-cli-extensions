@@ -7,6 +7,7 @@ import random
 import json
 import re
 import requests
+import colorama
 
 
 from azure.cli.core import telemetry as telemetry_core
@@ -14,7 +15,7 @@ from knack.prompting import prompt
 from knack.log import get_logger
 logger = get_logger(__name__)
 
-WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/aladdin); Let me see if I can help you...']
+WAIT_MESSAGE = ['I\'m an AI bot (learn more: aka.ms/aladdin); Let me see how I can help you...']
 
 EXTENSION_NAME = 'find'
 
@@ -46,24 +47,28 @@ def process_query(cli_command):
                     current_snippet = current_snippet[start_index:]
                 current_snippet = current_snippet.replace('```', '').replace(current_title, '').strip()
                 current_snippet = re.sub(r'\[.*\]', '', current_snippet).strip()
-                print('\033[1m' + current_title + '\033[0m')
+                print(style_message(current_title))
                 print(current_snippet)
 
                 print("")
-            feedback = prompt("[\033[1mEnter to close.\033[0m Press + or - to give feedback]:")
+            feedback = prompt("[" + style_message("Enter to close.") + "Press + or - to give feedback]:")
             if feedback in ['+', '-']:
                 print('Wow, you are a true hero!')
                 print("""\
         O_
-       \033[1m<T>\033[0m`-.
-        \033[1m|\033[0m`-‘
-        \033[1mI\033[0m
+       """+style_message("""<T>""")+"""`-.
+        """+style_message("""|""")+"""`-‘
+        """+style_message("""I""")+"""
                         """)
                 print('My human overloads review each of these reports; I\'m told these reports makes me smarter.')
                 print('Send us more feedback by email: aladdindoc@microsoft.com')
             properties = {}
             set_custom_properties(properties, 'Feedback', feedback)
             telemetry_core.add_extension_event(EXTENSION_NAME, properties)
+
+
+def style_message(msg):
+    return colorama.Style.BRIGHT + msg + colorama.Style.RESET_ALL
 
 
 def set_custom_properties(prop, name, value):
