@@ -42,5 +42,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/application-insights',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
+    package_data={'azext_loganalytics': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
