@@ -13,11 +13,15 @@ def applicationinsights_data_plane_client(cli_ctx, _):
         resource="https://api.applicationinsights.io")
     return ApplicationInsightsDataClient(cred)
 
+
 def cf_query(cli_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).query
+
 
 def cf_metrics(cli_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).metrics
 
-def cf_events(cli_ctx, _):
+
+def cf_events(c
+li_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).events

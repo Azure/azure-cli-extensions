@@ -17,5 +17,3 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         query_result = self.cmd('az monitor app-insights query --app cab864ad-d0c1-496b-bc5e-4418315621bf --analytics-query "Heartbeat | getschema"').get_output_in_json()
         assert len(query_result['tables'][0]['rows']) == 29
         assert isinstance(query_result['tables'][0]['rows'][0][1], (int, float, complex))
-
-    

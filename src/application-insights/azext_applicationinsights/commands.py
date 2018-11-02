@@ -13,6 +13,7 @@ from azext_applicationinsights._client_factory import (
 
 from azure.cli.core.commands import CliCommandType
 
+
 def load_command_table(self, _):
 
     metrics_sdk = CliCommandType(

@@ -46,12 +46,12 @@ helps['monitor app-insights metrics get-metadata'] = """
     examples:
       - name: Views the metadata for the provided app.
         text: |
-          az monitor app-insights metrics get-metadata --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b 
+          az monitor app-insights metrics get-metadata --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b
 """
 
 helps['monitor app-insights events show'] = """
     type: command
-    short-summary: View a single event from an application, specified by type and ID. 
+    short-summary: View a single event from an application, specified by type and ID.
     examples:
       - name: Get an availability result by ID.
         text: |

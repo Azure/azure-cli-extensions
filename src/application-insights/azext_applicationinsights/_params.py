@@ -12,4 +12,3 @@ def load_arguments(self, _):
         c.argument('analytics_query', help='Query to execute over Application Insights data.')
         c.argument('timespan', options_list=['--timespan', '-t'], help='Timespan over which to query. Defaults to querying all available data.')
         c.argument('applications', nargs='+', help='Additional applications over which to union data for querying. Specify additional workspace IDs separated by space.')
-    
