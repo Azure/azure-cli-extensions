@@ -23,7 +23,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['colorama']
+DEPENDENCIES = [
+    'colorama~=0.3.7'
+]
 
 setup(
     name='find',
