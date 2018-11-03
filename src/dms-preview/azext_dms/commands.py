@@ -25,5 +25,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_or_update_project')
 
     with self.command_group('dms project task', dms_tasks_sdk, client_factory=dms_cf_tasks) as g:
+        g.custom_command('cancel', 'stop_task')
         g.custom_command('create', 'create_task')
         g.custom_command('cutover', 'cutover_sync_task')
+        g.custom_command('restart', 'restart_task')
+        g.custom_command('stop', 'stop_task')

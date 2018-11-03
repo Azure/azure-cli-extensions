@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+from enum import Enum
 from knack.prompting import prompt, prompt_pass
 from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MySqlConnectionInfo,
@@ -11,10 +12,20 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MigrateSyncCompleteCommandInput,
                                                           MigrateMySqlAzureDbForMySqlSyncTaskProperties,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties,
-                                                          MigrateSyncCompleteCommandProperties)
+                                                          MigrateSyncCompleteCommandProperties,
+                                                          MigrateMongoDbTaskProperties,
+                                                          MongoDbConnectionInfo,
+                                                          MongoDbCancelCommand,
+                                                          MongoDbCommandInput,
+                                                          MongoDbFinishCommand,
+                                                          MongoDbFinishCommandInput,
+                                                          MongoDbRestartCommand,
+                                                          ValidateMongoDbTaskProperties)
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
-                                       get_migrate_postgresql_to_azuredbforpostgresql_sync_input)
+                                       get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
+                                       get_mongo_to_mongo_input)
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
+from azure.cli.command_modules.dms._client_factory import dms_cf_projects
 from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
                                                   create_task as core_create_task)
 
@@ -33,15 +44,16 @@ def create_or_update_project(
     # Set inputs to lowercase
     source_platform = source_platform.lower()
     target_platform = target_platform.lower()
+    scenario_handled_in_core = core_handles_scenario(source_platform, target_platform)
 
     # Validation: Test scenario eligibility
-    if not determine_source_target_eligibility(source_platform, target_platform):
+    if scenario_handled_in_core:
         # If not an extension scenario, run CLI core method
         # TODO: We currently don't have any CLI core code to perform any validations
         # because of this we need to raise the error here.
         try:
             # TODO: Remove this check after validations are added to core
-            if source_platform != "sql" or target_platform != "sqldb":
+            if not scenario_handled_in_core:
                 raise ValueError
 
             core_res = core_create_or_update_project(
@@ -69,6 +81,12 @@ def create_or_update_project(
                                    group_name=resource_group_name,
                                    service_name=service_name,
                                    project_name=project_name)
+
+
+def get_project(cmd, project_name, service_name, resource_group_name):
+    client = dms_cf_projects(cmd.cli_ctx)
+    proj = client.get(group_name=resource_group_name, service_name=service_name, project_name=project_name)
+    return (proj.source_platform.lower(), proj.target_platform.lower())
 # endregion
 
 
@@ -87,72 +105,58 @@ def create_task(
         database_options_json,
         enable_schema_validation=False,
         enable_data_integrity_validation=False,
-        enable_query_analysis_validation=False):
+        enable_query_analysis_validation=False,
+        validate_only=False):
 
     # Set inputs to lowercase
     task_type = task_type.lower()
     source_platform = source_platform.lower()
     target_platform = target_platform.lower()
+    scenario_handled_in_core = core_handles_scenario(source_platform, target_platform, task_type)
 
     # Validation: Test scenario eligibility
-    if not determine_scenario_eligibility(source_platform, target_platform, task_type):
+    if scenario_handled_in_core:
         # If not an extension scenario, run CLI core method
-        # TODO: We currently don't have any CLI core code to perform any validations
-        # because of this we need to raise the error here.
         try:
-            # CLI core doesnt currently support task types - it only supports offline migrations.
-            # TODO: Remove this check after task types are supported
-            if source_platform != "sql" or target_platform != "sqldb" or task_type != "offlinemigration":
+            # TODO: Remove this check after validations are added to core
+            if not scenario_handled_in_core:
                 raise ValueError
 
-            core_res = core_create_task(
-                client,
-                resource_group_name,
-                service_name,
-                project_name,
-                task_name,
-                source_connection_json,
-                target_connection_json,
-                database_options_json,
-                enable_schema_validation,
-                enable_data_integrity_validation,
-                enable_query_analysis_validation)
+            core_res = core_create_task(client,
+                                    resource_group_name,
+                                    service_name,
+                                    project_name,
+                                    task_name,
+                                    source_connection_json,
+                                    target_connection_json,
+                                    database_options_json,
+                                    enable_schema_validation,
+                                    enable_data_integrity_validation,
+                                    enable_query_analysis_validation)
         except:
+            # TODO: We currently don't have any CLI core code to perform any validations
+            # because of this we need to raise the error here.
             raise ValueError("The provided source-platform, target-platform, and task-type \
-                combination is not appropriate. \n\
-                Please refer to the help file 'az dms project task create -h' for the supported scenarios.")
+                              combination is not appropriate. \n\
+                              Please refer to the help file 'az dms project task create -h' for the supported scenarios.")
         else:
             return core_res
 
     # Run extension scenario
-
-    # Source connection info
-    if os.path.exists(source_connection_json):
-        source_connection_json = get_file_json(source_connection_json)
-    else:
-        source_connection_json = shell_safe_json_parse(source_connection_json)
-    source_connection_info = create_connection(source_connection_json, "Source Database", source_platform)
-
-    # Target connection info
-    if os.path.exists(target_connection_json):
-        target_connection_json = get_file_json(target_connection_json)
-    else:
-        target_connection_json = shell_safe_json_parse(target_connection_json)
-    target_connection_info = create_connection(target_connection_json, "Target Database", target_platform)
-
-    # Database options
-    if os.path.exists(database_options_json):
-        database_options_json = get_file_json(database_options_json)
-    else:
-        database_options_json = shell_safe_json_parse(database_options_json)
+    source_connection_info, target_connection_info, database_options_json = transform_json_inputs(source_connection_json,
+                                                                                                  source_platform,
+                                                                                                  target_connection_json,
+                                                                                                  target_platform,
+                                                                                                  database_options_json)
 
     # Get the task properties
-    task_properties = get_task_migration_properties(database_options_json,
-                                                    source_platform,
-                                                    target_platform,
-                                                    task_type,
-                                                    source_connection_info,
-                                                    target_connection_info)
+    properties_model = get_task_validation_properties if validate_only else get_task_migration_properties
+    task_properties = properties_model(database_options_json,
+                                       source_platform,
+                                       target_platform,
+                                       task_type,
+                                       source_connection_info,
+                                       target_connection_info)
 
     return client.create_or_update(group_name=resource_group_name,
                                    service_name=service_name,
@@ -162,42 +166,121 @@ def create_task(
 
 
 def cutover_sync_task(
+        cmd,
         client,
         resource_group_name,
         service_name,
         project_name,
         task_name,
-        database_name):
-    sync_input = MigrateSyncCompleteCommandInput(database_name=database_name)
-
+        object_name=None,
+        immediate=False):
+    # If object name is empty, treat this as cutting over the entire online migration.
+    # Otherwise, for scenarios that support it, just cut over the migration on the specified object.
     # 'input' is a built in function. Even though we can technically use it, it's not recommended.
     # https://stackoverflow.com/questions/20670732/is-input-a-keyword-in-python
-    sync_properties_params = {'input': sync_input}
-    sync_properties = MigrateSyncCompleteCommandProperties(**sync_properties_params)
 
-    client.command(group_name=resource_group_name,
-                   service_name=service_name,
-                   project_name=project_name,
-                   task_name=task_name,
-                   parameters=sync_properties)
+    src, tgt = get_project(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+    st = get_scenario_type(src, tgt, "onlinemigration")
 
+    if st in [ScenarioType.mysql_azuremysql_online, ScenarioType.postgres_azurepostgres_online]:
+        command_input = MigrateSyncCompleteCommandInput(database_name=object_name)
+        command_properties_model = MigrateSyncCompleteCommandProperties
+    elif st == ScenarioType.mongo_mongo_online:
+        command_input = MongoDbFinishCommandInput(object_name=object_name, immediate=immediate)
+        command_properties_model = MongoDbFinishCommand
+
+    run_command(command_input, command_properties_model, resource_group_name, service_name, project_name, task_name)
+
+
+def restart_task(
+    cmd,
+    client,
+    resource_group_name,
+    service_name,
+    project_name,
+    task_name,
+    task_type,
+    object_name=None):
+    # For scenarios that support it, restart the entire migration if object name is empty, otherwise restart the specified object.
+    src, tgt = get_project(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+    st = get_scenario_type(src, tgt, task_type)
+
+    if st in [ScenarioType.mongo_mongo_offline, ScenarioType.mongo_mongo_online]:
+        command_input = MongoDbCommandInput(object_name=object_name)
+        command_properties_model = MongoDbRestartCommand
+    else:
+        raise ValueError("The suppplied project's source and target does not support restarting the migration.")
+
+    run_command(command_input, command_properties_model, resource_group_name, service_name, project_name, task_name)
+
+
+def stop_task(
+        cmd,
+        client,
+        resource_group_name,
+        service_name,
+        project_name,
+        task_name,
+        task_type,
+        object_name=None):
+
+    # If object name is empty, treat this as stopping/cancelling the entire task.
+    if object_name == None:
+        client.cancel(group_name=resource_group_name,
+                      service_name=service_name,
+                      project_name=project_name,
+                      task_name=task_name)
+    # Otherwise, for scenarios that support it, just stop migration on the specified object.
+    else:
+        src, tgt = get_project(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+        st = get_scenario_type(src, tgt, task_type)
+
+        if st in [ScenarioType.mongo_mongo_offline, ScenarioType.mongo_mongo_online]:
+            command_input = MongoDbCommandInput(object_name=object_name)
+            command_properties_model = MongoDbCancelCommand
+        else:
+            raise ValueError("The supplied project's source and target does not support cancelling at the object level. \n\
+                              To cancel this task do not supply the object-name parameter.")
+
+        run_command(command_input, command_properties_model, resource_group_name, service_name, project_name, task_name)
 # endregion
 
 
 # region Helper Methods
-def determine_scenario_eligibility(
+def core_handles_scenario(
         source_type,
         target_type,
-        task_type):
-    return (source_type == "mysql" and target_type == "azuredbformysql" and task_type == "onlinemigration") or \
-           (source_type == "postgresql" and target_type == "azuredbforpostgresql" and task_type == "onlinemigration")
+        task_type=None):
+    # Add scenario types to this list when moving them out of this extension (preview) and into the core CLI (GA)
+    CoreScenarioTypes = [ScenarioType.sql_sqldb_offline]
+    return get_scenario_type(source_type, target_type, task_type) in CoreScenarioTypes
 
 
-def determine_source_target_eligibility(
-        source_type,
-        target_type):
-    return (source_type == "mysql" and target_type == "azuredbformysql") or \
-           (source_type == "postgresql" and target_type == "azuredbforpostgresql")
+def transform_json_inputs(
+        source_connection_json,
+        source_platform,
+        target_connection_json,
+        target_platform,
+        database_options_json):
+    # Source connection info
+    source_connection_json = get_file_or_parse_json(source_connection_json)
+    source_connection_info = create_connection(source_connection_json, "Source Database", source_platform)
+
+    # Target connection info
+    target_connection_json = get_file_or_parse_json(target_connection_json)
+    target_connection_info = create_connection(target_connection_json, "Target Database", target_platform)
+
+    # Database options
+    database_options_json = get_file_or_parse_json(database_options_json)
+
+    return (source_connection_info, target_connection_info, database_options_json)
+
+
+def get_file_or_parse_json(value):
+    if os.path.exists(value):
+        return get_file_json(value)
+    else:
+        return shell_safe_json_parse(value)
 
 
 def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
@@ -210,14 +293,22 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                    password=password,
                                    server_name=server_name,
                                    port=port)
-
-    database_name = connection_info_json.get('databaseName', "postgres")
-    port = connection_info_json.get('port', 5432)
-    return PostgreSqlConnectionInfo(user_name=user_name,
-                                    password=password,
-                                    server_name=server_name,
-                                    database_name=database_name,
-                                    port=port)
+    elif "postgres" in typeOfInfo:
+        database_name = connection_info_json.get('databaseName', "postgres")
+        port = connection_info_json.get('port', 5432)
+        return PostgreSqlConnectionInfo(user_name=user_name,
+                                        password=password,
+                                        server_name=server_name,
+                                        database_name=database_name,
+                                        port=port)
+    elif "mongo" in typeOfInfo:
+        connection_string = connection_info_json['connectionString']
+        return MongoDbConnectionInfo(connection_string=connection_string,
+                                     user_name=user_name,
+                                     password=password)
+    else:
+        # If no match, Pass the connection info through
+        return connection_info_json
 
 
 def get_task_migration_properties(
@@ -227,18 +318,100 @@ def get_task_migration_properties(
         task_type,
         source_connection_info,
         target_connection_info):
-    if source_type == 'mysql' and target_type == 'azuredbformysql' and task_type == "onlinemigration":
+    st = get_scenario_type(source_type, target_type, task_type)
+    if st.name == "mysql_azuremysql_online":
         TaskProperties = MigrateMySqlAzureDbForMySqlSyncTaskProperties
         GetInput = get_migrate_mysql_to_azuredbformysql_sync_input
-    elif source_type == 'postgresql' and target_type == 'azuredbforpostgresql' and task_type == "onlinemigration":
+    elif st.name == "postgres_azurepostgres_online":
         TaskProperties = MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties
         GetInput = get_migrate_postgresql_to_azuredbforpostgresql_sync_input
+    elif "mongo_mongo" in st.name:
+        TaskProperties = MigrateMongoDbTaskProperties
+        GetInput = get_mongo_to_mongo_input
+    else:
+        raise ValueError("The supplied source, target, and task type is not supported for migration.")
 
-    task_input = GetInput(
+    return get_task_properties(GetInput, TaskProperties, database_options_json, source_connection_info, target_connection_info)
+
+
+def get_task_validation_properties(
+        database_options_json,
+        source_type,
+        target_type,
+        task_type,
+        source_connection_info,
+        target_connection_info):
+    st = get_scenario_type(source_type, target_type, task_type)
+    if "mongo_mongo" in st.name:
+        input_func = get_mongo_to_mongo_input
+        task_properties_type = ValidateMongoDbTaskProperties
+    else:
+        raise ValueError("The supplied source, target, and task type is not supported for validation.")
+
+    return get_task_properties(input_func, task_properties_type, database_options_json, source_connection_info, target_connection_info)
+
+
+def get_task_properties(input_func, task_properties_type, database_options_json, source_connection_info, target_connection_info):
+    task_input = input_func(
         database_options_json,
         source_connection_info,
         target_connection_info)
-
     task_properties_params = {'input': task_input}
-    return TaskProperties(**task_properties_params)
+
+    return task_properties_type(**task_properties_params)
+
+
+def run_command(command_input,
+                command_properties_model,
+                resource_group_name,
+                service_name,
+                task_name):
+
+    command_properties_params = {'input': command_input}
+    command_properties = command_properties_model(**command_properties_params)
+
+    client.command(group_name=resource_group_name,
+                   service_name=service_name,
+                   project_name=project_name,
+                   task_name=task_name,
+                   parameters=command_properties)
+
+
+def get_scenario_type(source_platform, target_platform, task_type=None):
+    if source_platform == "sql":
+        if target_platform == "sqldb":
+            return (ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline)
+        elif target_platform == "sqlmi":
+            return (ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline)
+    elif source_platform == "mysql" and target_platform == "azuredbformysql":
+        return (ScenarioType.mysql_azuremysql_online if "online" in task_type else ScenarioType.mysql_azuremysql_offline)
+    elif source_platform == "postgresql" and target_platform == "azuredbforpostgresql":
+        return (ScenarioType.postgres_azurepostgres_online if "online" in task_type else ScenarioType.postgres_azurepostgres_offline)
+    elif source_platform == "mongodb" and target_platform == "mongodb":
+        return (ScenarioType.mongo_mongo_validation if "validation" in task_type else \
+            (ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline))
+    else:
+        return ScenarioType.unknown
+
+
+class ScenarioType(Enum):
+    
+    unknown = 0
+    # SQL to SQLDB
+    sql_sqldb_offline = 1
+    sql_sqldb_online = 2
+    # SQL to SQLMI
+    sql_sqlmi_offline = 10
+    sql_sqlmi_online = 11
+    # MySQL to Azure for MySQL
+    mysql_azuremysql_offline = 20
+    mysql_azuremysql_online = 21
+    # PostgresSQL to Azure for PostgresSQL
+    postgres_azurepostgres_offline = 30
+    postgres_azurepostgres_online = 31
+    # MongoDB to MongoDB (including Cosmos DB using MongoDB API)
+    mongo_mongo_offline = 40
+    mongo_mongo_online = 41
+    mongo_mongo_validation = 42
+
 # endregion
