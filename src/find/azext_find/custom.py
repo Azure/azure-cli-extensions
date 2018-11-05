@@ -112,7 +112,7 @@ def call_aladdin_service(query):
         'context': context
     }
 
-    api_url = 'https://aladdinservice-staging.azurewebsites.net/api/aladdin/generateCards'
+    api_url = 'https://aladdinservice-prod.azurewebsites.net/api/aladdin/generateCards'
     headers = {'Content-Type': 'application/json'}
 
     response = requests.post(api_url, headers=headers, json=service_input)
