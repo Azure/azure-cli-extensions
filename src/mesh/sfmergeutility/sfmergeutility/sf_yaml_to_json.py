@@ -20,9 +20,9 @@ class YamlToJson(object):
 
         if output_property_filter:
             desc_node = ordered_dict['description']
-            for k in desc_node:
-                if k == output_property_filter:
-                    ordered_dict['description'] = desc_node[k]
+            for node in desc_node:
+                if node == output_property_filter:
+                    ordered_dict['description'] = desc_node[node]
                     break
 
         return ordered_dict

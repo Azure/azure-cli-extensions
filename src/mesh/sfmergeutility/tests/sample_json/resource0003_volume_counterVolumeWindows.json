@@ -1,0 +1,19 @@
+{
+  "type": "volume",
+  "name": "counterVolumeWindows",
+  "api-version": "6.4-preview",
+  "fullyQualifiedResourceName": "counterVolumeWindows",
+  "description": {
+    "schemaVersion": "1.0.0-preview2",
+    "name": "counterVolumeWindows",
+    "properties": {
+      "description": "Azure Files storage volume for counter App.",
+      "provider": "SFAzureFile",
+      "azureFileParameters": {
+        "shareName": "volshare",
+        "accountName": "ashankvoltest",
+        "accountKey": "[reference('secrets/azurefilesecret/values/v1')]"
+      }
+    }
+  }
+}
