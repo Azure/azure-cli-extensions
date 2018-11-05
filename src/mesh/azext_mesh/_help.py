@@ -23,7 +23,7 @@ helps['mesh deployment create'] = """
           text: az mesh deployment create --resource-group mygroup --template-uri https://seabreezequickstart.blob.core.windows.net/templates/quickstart/sbz_rp.linux.json
         - name: Create a deployment with a template file on local disk.
           text: az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
-        - name: List of comma seperated yaml files or a directory which contains all the yaml files.
+        - name: List of comma separated yaml files or a directory which contains all the yaml files.
           text: az mesh deployment create --resource-group mygroup --input-yaml-file-paths ./app.yaml,./network.yaml
 """
 
