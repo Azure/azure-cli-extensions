@@ -99,8 +99,8 @@ def transform_volume_list(result):
 
 
 def process_deployment_create_namespace(namespace):
-    if bool(namespace.template_uri) == bool(namespace.template_file) == bool(namespace.input_yaml_files_path):
-        raise CLIError('incorrect usage: --template-file FILE | --template-uri URI | --input-yaml-files-path PATH')
+    if bool(namespace.template_uri) == bool(namespace.template_file) == bool(namespace.input_yaml_file_paths):
+        raise CLIError('incorrect usage: --template-file FILE | --template-uri URI | --input-yaml-file-paths PATH')
     _validate_deployment_name(namespace)
 
 
