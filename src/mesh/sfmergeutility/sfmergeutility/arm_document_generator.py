@@ -18,6 +18,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def generate(sf_json_resources, region, output_file_name):
+        """ Entry point to this class. This function constructs and writes the ARM template """
         with open(output_file_name, 'w') as fp:
             arm_dict = OrderedDict()
             parameter_info = OrderedDict()
@@ -33,16 +34,19 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def begin_write_arm_document(writer):
+        """ Adds the ARM schema and content version to the writer """
         writer[PropertyNames.Schema] = Constants.ArmSchemaVersion
         writer[PropertyNames.ContentVersion] = Constants.ContentVersion
         return writer
 
     @staticmethod
     def end_write_arm_document(writer):
+        """ Converts the dictionary to writer"""
         return json.dumps(writer, indent=4)
 
     @staticmethod
     def write_parameters(writer, parameters_info):
+        """ Adds the parameter section of the ARM template to the writer """
         if PropertyNames.Parameters not in writer:
             writer[PropertyNames.Parameters] = OrderedDict()
         for parameter in parameters_info.keys():
@@ -51,6 +55,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def write_arm_resources(writer, sf_json_resources, property_value_map):
+        """ Writes all the provided resources one by one in ARM format to the writer """
         dependencies = ArmDocumentGenerator.get_dependencies(sf_json_resources)
         for sf_json_resource_iter in sf_json_resources:
             sf_resource = sf_json_resources[sf_json_resource_iter]
@@ -69,10 +74,12 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def get_location_parameter(region):
+        """ Returns a ARM parameter object based on the region provided """
         return ArmParameter(region, "String", "Location of the resources.")
 
     @staticmethod
     def get_dependencies(sf_json_resources):  # pylint: disable=too-many-branches
+        """ Constructs the dependencies section for every resource based on the provided resources """
         dependencies = OrderedDict()
         resource_types = OrderedDict()
         for sf_json_resource in sf_json_resources:
@@ -132,6 +139,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def process_application(writer, application, dependencies, property_value_map):
+        """ Writes Application resource in ARM format to writer"""
         sf_application_writer = OrderedDict()
         if PropertyNames.Name not in application:
             raise ValueError("name is not specified in description")
@@ -184,6 +192,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def process_services(services, schema_version):
+        """ Writes all services of application resource in ARM format to writer """
         sf_services_writer = []
         for service in services:
             sf_services_writer.append(ArmDocumentGenerator.process_service(service, schema_version))
@@ -191,6 +200,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def process_service(service, schema_version):
+        """ Writes service of list of services in ARM format to writer """
         service_writer = OrderedDict()
         if PropertyNames.Name not in service:
             raise ValueError("name is not specified in description")
@@ -221,6 +231,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def process_resource_refs(properties, schema_version):
+        """ Process resource ref to the correct format """
         # fix refs for ARM
         for resource_kind in Schema.SchemaVersionSupportedResourcesKindMap[schema_version]:
             resource_refs = properties.get(resource_kind + "Refs", [])
@@ -238,6 +249,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def process_resource_refs_for_gateway(properties, schema_version):
+        """ Process resource ref for gateway to the correct format """
         #  Process resources which are specified as {resourceKind}Refs
         properties = ArmDocumentGenerator.process_resource_refs(properties, schema_version)
         # networkRefs in Gateways are specified as sourceNetwork & destinationNetwork
@@ -252,6 +264,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def process_sf_resource(writer, sf_resource, resource_kind, dependencies, property_value_map, function_delegate):
+        """ This method processes and writes a resource (excluding application resource)  to writer """
         sf_resource_writer = OrderedDict()
         if PropertyNames.Name not in sf_resource:
             raise ValueError("name is not specified for %s resource" % resource_kind)
@@ -295,6 +308,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def get_sbz_resource_type(resource_type, schema_version):
+        """ Returns the resource type for the provided resource type and schema version"""
         if resource_type == Constants.Secret:
             return Schema.SchemaVersionSupportedResourcesTypeMap[schema_version][Constants.Secrets]
         elif resource_type == Constants.SecretValue:
@@ -313,6 +327,7 @@ class ArmDocumentGenerator(object):
 
     @staticmethod
     def get_sbz_resource_name(resource_type, name):
+        """ Returns the resource name for the provided resource type and name"""
         if resource_type in Schema.HierarchichalSbzResourceNameBuilderMap:
             resource_format_string = Schema.HierarchichalSbzResourceNameBuilderMap[resource_type]
             name = name.split('/')
