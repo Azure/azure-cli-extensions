@@ -104,7 +104,7 @@ class YamlToJson(object):
 
     @staticmethod
     def fix_property(nodes_data_store, path_components, primitive_type, level):
-        """Fix the property of the node in the path as defined in path_components""""
+        """Fix the property of the node in the path as defined in path_components"""
         remaining = len(path_components) - level
         if remaining == 0:
             return
