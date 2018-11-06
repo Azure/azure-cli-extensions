@@ -11,7 +11,8 @@ from collections import OrderedDict
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.commands import CliCommandType
 
-from azure.cli.command_modules.resource._validators import process_deployment_create_namespace
+from azure.cli.command_modules.resource._validators import _validate_deployment_name
+from knack.util import CLIError
 from ._client_factory import (cf_mesh_deployments,
                               cf_mesh_application, cf_mesh_service,
                               cf_mesh_replica, cf_mesh_code_package, cf_mesh_network,
@@ -95,6 +96,12 @@ def transform_volume(result):
 def transform_volume_list(result):
     """Transform a volume list to table output. """
     return [transform_volume(volume) for volume in result]
+
+
+def process_deployment_create_namespace(namespace):
+    if bool(namespace.template_uri) == bool(namespace.template_file) == bool(namespace.input_yaml_file_paths):
+        raise CLIError('incorrect usage: --template-file FILE | --template-uri URI | --input-yaml-file-paths PATH')
+    _validate_deployment_name(namespace)
 
 
 def load_command_table(self, _):

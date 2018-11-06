@@ -1,0 +1,51 @@
+{
+  "type": "application",
+  "name": "helloWorldApp",
+  "api-version": "6.4-preview",
+  "fullyQualifiedResourceName": "helloWorldApp",
+  "description": {
+    "schemaVersion": "1.0.0-preview2",
+    "name": "helloWorldApp",
+    "properties": {
+      "description": "app1 description2.",
+      "services": [
+        {
+          "name": "helloWorldService",
+          "properties": {
+            "description": "svc1 description.",
+            "osType": "Windows",
+            "codePackages": [
+              {
+                "name": "helloWorldCode",
+                "image": "seabreeze/azure-mesh-helloworld:1.1-windowsservercore-1709",
+                "endpoints": [
+                  {
+                    "name": "helloWorldListener",
+                    "port": 80
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": 0.5,
+                    "memoryInGB": 1.0
+                  }
+                }
+              }
+            ],
+            "replicaCount": 1,
+            "networkRefs": [
+              {
+                "name": "helloWorldNetwork",
+                "endpointRefs": [
+                  {
+                    "name": "helloWorldListener"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
