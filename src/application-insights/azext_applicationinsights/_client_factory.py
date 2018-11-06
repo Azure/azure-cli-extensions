@@ -22,7 +22,7 @@ def applicationinsights_mgmt_plane_client(cli_ctx, _):
     cred, _, _ = profile.get_login_credentials()
     return ApplicationInsightsManagementClient(
         cred,
-        get_subscription_id(cli_ctx)    
+        get_subscription_id(cli_ctx)
     )
 
 def cf_query(cli_ctx, _):
