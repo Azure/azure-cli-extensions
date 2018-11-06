@@ -38,6 +38,7 @@ class YamlMerge(object):
 
     @staticmethod
     def Merge(partial_documents, object_identifier, object_primary_key):
+        """Merge partial_documents into a final merged root yaml node"""
         # Nothing to merge
         if not partial_documents:
             return None
@@ -67,6 +68,7 @@ class YamlMerge(object):
 
     @staticmethod
     def ensure_same_object_primary_key(partial_nodes, object_primary_key):
+        """Ensure that object primary key exists and is scalar and correct"""
         primary_key_value = None
         for partial_node in partial_nodes:
             key_found_flag = False
@@ -91,6 +93,7 @@ class YamlMerge(object):
 
     @staticmethod
     def merge_partial_nodes(partial_nodes, object_primary_key):
+        """Merge partial nodes into a final destination node"""
         if object_primary_key:
             YamlMerge.ensure_same_object_primary_key(partial_nodes, object_primary_key)
         dest_node = YamlMerge.create_dest_node(yaml.MappingNode('', None), "")
@@ -100,6 +103,7 @@ class YamlMerge(object):
 
     @staticmethod
     def get_child_node(parent, key):
+        """Get the child node from a parent as addressed by the key"""
         for k, v in parent.value:
             if k.value == key:
                 return v
@@ -107,6 +111,7 @@ class YamlMerge(object):
 
     @staticmethod
     def get_child_from_seq_node(node, key):
+        """Get the child node from a parent sequence node as addressed by the key"""
         for child_node in node.value:
             # if mapping node's scalar node's value is key
             if child_node.value[0].value == key:
@@ -115,6 +120,7 @@ class YamlMerge(object):
 
     @staticmethod
     def merge_mapping_nodes(dest_node, src_node, src_identifier, object_primary_key):
+        """"Merge destination and source mapping nodes"""
         dest_key_set = set(map(lambda x: x[0].value, dest_node.value))
         for key_node, val_node in src_node.value:
             if key_node.value not in dest_key_set:
@@ -126,6 +132,7 @@ class YamlMerge(object):
 
     @staticmethod
     def merge_nodes(dest, src, src_identifier, object_primary_key):
+        """Merge nodes by first identifying the type and merging individual pairs"""
         dest_type = type(dest)
         src_type = type(src)
         if dest_type != src_type:
@@ -144,15 +151,18 @@ class YamlMerge(object):
 
     @staticmethod
     def merge_scalar_nodes(dest, src):
+        """Merge scalar nodes"""
         dest.value = src.value
 
     @staticmethod
     def seq_node_contains(node, key):
+        """Check if sequence node contains a certain key"""
         keys = set(map(lambda x: x.value[0].value, node.value))
         return key in keys
 
     @staticmethod
     def merge_sequence_nodes(dest, src, src_identifier, object_primary_key):
+        """Merge destination and source sequence nodes"""
         if isinstance(src.value[0], yaml.MappingNode) and not object_primary_key:
             # add it to the list of mapping nodes
             for src_child_node in src.value:
@@ -172,6 +182,7 @@ class YamlMerge(object):
 
     @staticmethod
     def create_dest_node(src_node, src_identifier):
+        """Create a destination yaml node to merge source node in"""
         if isinstance(src_node, yaml.ScalarNode):
             return yaml.ScalarNode(YamlMerge.TAG_STR, '')
         elif isinstance(src_node, yaml.MappingNode):
@@ -181,20 +192,3 @@ class YamlMerge(object):
         else:
             raise ArgumentException(YamlMerge.YAML_ERR_UNSUPPORTED_NODE_TYPE,
                                     src_identifier)
-
-    @staticmethod
-    def test_yaml_merge():
-        file_sample = '../samples/Input/counterApp-sfbd.yaml'
-        file_sample2 = '../samples/Input/service.yaml'
-
-        with open(file_sample, 'r') as f:
-            text = f.read()
-
-        with open(file_sample2, 'r') as f:
-            text2 = f.read()
-
-        pds = []
-        pds.append(PartialDocument(yaml.compose(text), "counterApp-sfbd.yaml"))
-        pds.append(PartialDocument(yaml.compose(text2), "service.yaml"))
-
-        return YamlMerge.Merge(pds, "application", "name")

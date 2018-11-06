@@ -28,6 +28,9 @@ class SFMergeUtility(object):
 
     @staticmethod
     def sf_merge_utility(input_list, output_format, parameter_file=None, output_dir=None, prefix="merged-", region="westus"):
+        """Method which is the main interface to the utility, merges yaml files
+           into given output_format
+        """
 
         if(not output_dir or not output_dir.strip()):
             output_dir = os.getcwd()
@@ -68,6 +71,7 @@ class SFMergeUtility(object):
 
     @staticmethod
     def get_parameters(parameter_file):
+        """Get Parameters from the parameter_file if passed"""
         params_list = None
         json_object = None
         if parameter_file:
@@ -89,6 +93,7 @@ class SFMergeUtility(object):
 
     @staticmethod
     def replace_parameter_values(merged_resource_documents, parameters_to_replace):
+        """Replace parameter values with values in parameters_to_replace"""
         yaml_string = yaml.serialize(merged_resource_documents)
 
         for parameter_iter in parameters_to_replace:
@@ -100,6 +105,7 @@ class SFMergeUtility(object):
 
     @staticmethod
     def save_merged_documents_as_yaml(merged_document, output_dir, file_name):
+        """Save merged dcouments as yaml into the provided output_dir"""
         final_yaml = yaml.serialize(merged_document)
         output_file_path = os.path.join(output_dir, file_name + ".yaml")
         with open(output_file_path, 'w+') as f:
@@ -107,6 +113,7 @@ class SFMergeUtility(object):
 
     @staticmethod
     def save_merged_documents_as_json(merged_document, kind, output_dir, file_name, primitives_list):
+        """Save merged documents as json into the provided output_dir"""
         final_json = YamlToJson.to_json(merged_document, kind, primitives_list)
         output_file_path = os.path.join(output_dir, file_name + ".json")
         with open(output_file_path, 'w+') as f:
@@ -114,13 +121,16 @@ class SFMergeUtility(object):
 
     @staticmethod
     def save_all_merged_documents(resource_merged_document_map, file_name_prefix, output_dir, yaml_json_switch, primitives_list):
+        """Group all documents into their kinds, and merge into complete yaml/json files"""
         count = 1
         for kind in SFMergeUtility.resourceCreationOrder:
-            items = [key for key in resource_merged_document_map if key[0] == kind]
-            for item in items:
-                mapping_node = resource_merged_document_map[item]
-                key_node = mapping_node.value[0][0]
-                value_node = mapping_node.value[0][1]
+            # Group documents by kind
+            docs = [key for key in resource_merged_document_map if key[0] == kind]
+            for doc in docs:
+                root_mapping_node = resource_merged_document_map[doc]
+                # Root node is wrapped in arr, hence extracting along with key and value
+                key_node = root_mapping_node.value[0][0]
+                value_node = root_mapping_node.value[0][1]
                 selected_name_node = YamlMerge.get_child_node(value_node, Constants.PrimaryPropertyName)
                 selected_schema_version_node = YamlMerge.get_child_node(value_node, Constants.SchemaVersion)
                 resource_kind = key_node.value
@@ -154,17 +164,18 @@ class SFMergeUtility(object):
 
     @staticmethod
     def load_and_merge_partial_documents(input_list):
+        """Classify input yamls into their kinds and package into resource_document_map"""
         # load all yamls inputs
         partial_resource_document_map = {}
-        for s in input_list:
-            my_dict = yaml.load(open(s))
-            mapping_node = yaml.compose(open(s))
+        for input_file in input_list:
+            my_dict = yaml.load(open(input_file))
+            mapping_node = yaml.compose(open(input_file))
 
             kind = list(my_dict.keys())[0]
             name = my_dict.get(kind).get(Constants.PrimaryPropertyName)
             key = (kind, name)
 
-            yaml_document = PartialDocument(mapping_node, s)
+            yaml_document = PartialDocument(mapping_node, input_file)
 
             # create a map inputs, group by kind and name
             if key in partial_resource_document_map:
