@@ -6,6 +6,7 @@
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_applicationinsights._client_factory import cf_components
 
+
 def get_id_from_azure_resource(cli_ctx, app):
     if is_valid_resource_id(app):
         parsed = parse_resource_id(app)

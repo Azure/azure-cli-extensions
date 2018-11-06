@@ -13,6 +13,7 @@ def applicationinsights_data_plane_client(cli_ctx, _):
         resource="https://api.applicationinsights.io")
     return ApplicationInsightsDataClient(cred)
 
+
 def applicationinsights_mgmt_plane_client(cli_ctx, _):
     """Initialize Log Analytics data client for use with CLI."""
     from azure.cli.core.commands.client_factory import get_subscription_id
@@ -24,6 +25,7 @@ def applicationinsights_mgmt_plane_client(cli_ctx, _):
         cred,
         get_subscription_id(cli_ctx)
     )
+
 
 def cf_query(cli_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).query
