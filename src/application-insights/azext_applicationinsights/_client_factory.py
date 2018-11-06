@@ -35,3 +35,7 @@ def cf_metrics(cli_ctx, _):
 
 def cf_events(cli_ctx, _):
     return applicationinsights_data_plane_client(cli_ctx, _).events
+
+
+def cf_components(cli_ctx, _):
+    return applicationinsights_mgmt_plane_client(cli_ctx, _).components

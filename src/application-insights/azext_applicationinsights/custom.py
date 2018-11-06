@@ -6,27 +6,28 @@
 # pylint: disable=line-too-long
 
 from knack.log import get_logger
+from .util import get_id_from_azure_resource
 
 logger = get_logger(__name__)
 
 
-def execute_query(client, application, analytics_query, timespan=None, applications=None):
+def execute_query(cmd, client, application, analytics_query, timespan=None, applications=None):
     """Executes a query against the provided Application Insights application."""
     from .vendored_sdks.applicationinsights.models import QueryBody
-    return client.query.execute(application, QueryBody(query=analytics_query, timespan=timespan, applications=applications))
+    return client.query.execute(get_id_from_azure_resource(cmd.cli_ctx, application), QueryBody(query=analytics_query, timespan=timespan, applications=applications))
 
 
-def get_event(client, application, event_type, event_id, timespan=None):
-    return client.events.get(application, event_type, event_id, timespan=timespan)
+def get_event(cmd, client, application, event_type, event, timespan=None):
+    return client.events.get(get_id_from_azure_resource(cmd.cli_ctx, application), event_type, event, timespan=timespan)
 
 
-def get_events_by_type(client, application, event_type, event_id, timespan=None):
-    return client.events.get(application, event_type, event_id, timespan=timespan)
+def get_events_by_type(cmd, client, application, event_type, timespan=None):
+    return client.events.get_by_type(get_id_from_azure_resource(cmd.cli_ctx, application), event_type, timespan=timespan)
 
 
-def get_metric(client, application, metric_id, timespan=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None):
-    return client.metrics.get(application, metric_id, timespan=timespan, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
+def get_metric(cmd, client, application, metric, timespan=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None):
+    return client.metrics.get(get_id_from_azure_resource(cmd.cli_ctx, application), metric, timespan=timespan, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
 
 
-def get_metrics_metadata(client, application):
-    return client.metrics.get_metadata(application)
+def get_metrics_metadata(cmd, client, application):
+    return client.metrics.get_metadata(get_id_from_azure_resource(cmd.cli_ctx, application))
