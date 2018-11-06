@@ -65,7 +65,7 @@ def process_query(cli_term):
         """ + style_message("""|""") + """`-‘
         """ + style_message("""I""") + """
                         """)
-                print('My human overloads review each of these reports; I\'m told these reports makes me smarter.')
+                print('My human overlords review each of these reports; I\'m told these reports makes me smarter.')
                 print('Send us more feedback by email: aladdindoc@microsoft.com')
             properties = {}
             set_custom_properties(properties, 'Feedback', feedback)
