@@ -12,7 +12,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 from ._validators import (
     validate_express_route_peering, validate_virtual_hub, validate_express_route_port,
-    validate_circuit_bandwidth)
+    bandwidth_validator_factory)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -24,6 +24,7 @@ def load_arguments(self, _):
     er_circuit_name_type = CLIArgumentType(options_list=('--circuit-name',), metavar='NAME', help='ExpressRoute circuit name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteCircuits'))
     er_gateway_name_type = CLIArgumentType(options_list=('--gateway-name',), metavar='NAME', help='ExpressRoute gateway name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteGateways'))
     er_port_name_type = CLIArgumentType(options_list=('--port-name',), metavar='NAME', help='ExpressRoute port name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRoutePorts'))
+    er_bandwidth_type = CLIArgumentType(options_list='--bandwidth', nargs='+')
 
     with self.argument_context('network express-route') as c:
         c.argument('tags', tags_type)
@@ -51,7 +52,8 @@ def load_arguments(self, _):
     with self.argument_context('network express-route port') as c:
         c.argument('express_route_port_name', er_port_name_type, options_list=['--name', '-n'])
         c.argument('encapsulation', arg_type=get_enum_type(ExpressRoutePortsEncapsulation), help='Encapsulation method on physical ports.')
-        c.argument('bandwidth', help='Bandwidth of procured ports in Gbps', nargs='+')
+        c.argument('bandwidth_in_gbps', er_bandwidth_type, validator=bandwidth_validator_factory(mbps=False),
+                   help='Bandwidth of the circuit. Usage: INT {Mbps,Gbps}. Defaults to Gbps')
         c.argument('peering_location', help='The name of the peering location that the port is mapped to physically.')
 
     with self.argument_context('network express-route port link') as c:
@@ -72,7 +74,8 @@ def load_arguments(self, _):
         c.argument('circuit_name', er_circuit_name_type, options_list=('--name', '-n'))
         c.argument('sku_family', sku_family_type)
         c.argument('sku_tier', sku_tier_type)
-        c.argument('bandwidth_in_mbps', nargs='+', options_list='--bandwidth', help='Bandwidth of the circuit. Should be Mbps for service providers or Gbps for ExpressRoute ports. Usage: INT {Mbps,Gbps}', validator=validate_circuit_bandwidth)
+        c.argument('bandwidth_in_mbps', er_bandwidth_type, validator=bandwidth_validator_factory(mbps=True),
+                   help='Bandwidth of the circuit. Usage: INT {Mbps,Gbps}. Defaults to Mbps')
         c.argument('service_provider_name', options_list=('--provider',), help="Name of the ExpressRoute Service Provider.")
         c.argument('peering_location', help="Name of the peering location.")
         c.argument('device_path', options_list=('--path',), arg_type=get_enum_type(device_path_values))

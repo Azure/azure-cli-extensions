@@ -12,8 +12,8 @@
 import uuid
 from msrest.pipeline import ClientRawResponse
 from msrestazure.azure_exceptions import CloudError
-from msrest.exceptions import DeserializationError
-from msrestazure.azure_operation import AzureOperationPoller
+from msrest.polling import LROPoller, NoPolling
+from msrestazure.polling.arm_polling import ARMPolling
 
 from .. import models
 
@@ -25,7 +25,7 @@ class EventSubscriptionsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-05-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-09-15-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class EventSubscriptionsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-05-01-preview"
+        self.api_version = '2018-09-15-preview'
 
         self.config = config
 
@@ -64,7 +64,7 @@ class EventSubscriptionsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: EventSubscription or ClientRawResponse if raw=true
-        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.EventSubscription or
+        :rtype: ~azure.mgmt.eventgrid.models.EventSubscription or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -161,7 +161,7 @@ class EventSubscriptionsOperations(object):
         return deserialized
 
     def create_or_update(
-            self, scope, event_subscription_name, event_subscription_info, custom_headers=None, raw=False, **operation_config):
+            self, scope, event_subscription_name, event_subscription_info, custom_headers=None, raw=False, polling=True, **operation_config):
         """Create or update an event subscription.
 
         Asynchronously creates a new event subscription or updates an existing
@@ -186,15 +186,18 @@ class EventSubscriptionsOperations(object):
         :param event_subscription_info: Event subscription properties
          containing the destination and filter information
         :type event_subscription_info:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscription
+         ~azure.mgmt.eventgrid.models.EventSubscription
         :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :return: An instance of AzureOperationPoller that returns
-         EventSubscription or ClientRawResponse if raw=true
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns EventSubscription or
+         ClientRawResponse<EventSubscription> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
-         or ~msrest.pipeline.ClientRawResponse
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.EventSubscription]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.eventgrid.models.EventSubscription]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -205,30 +208,8 @@ class EventSubscriptionsOperations(object):
             raw=True,
             **operation_config
         )
-        if raw:
-            return raw_result
-
-        # Construct and send request
-        def long_running_send():
-            return raw_result.response
-
-        def get_long_running_status(status_link, headers=None):
-
-            request = self._client.get(status_link)
-            if headers:
-                request.headers.update(headers)
-            header_parameters = {}
-            header_parameters['x-ms-client-request-id'] = raw_result.response.request.headers['x-ms-client-request-id']
-            return self._client.send(
-                request, header_parameters, stream=False, **operation_config)
 
         def get_long_running_output(response):
-
-            if response.status_code not in [201]:
-                exp = CloudError(response)
-                exp.request_id = response.headers.get('x-ms-request-id')
-                raise exp
-
             deserialized = self._deserialize('EventSubscription', response)
 
             if raw:
@@ -237,12 +218,13 @@ class EventSubscriptionsOperations(object):
 
             return deserialized
 
-        long_running_operation_timeout = operation_config.get(
+        lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        return AzureOperationPoller(
-            long_running_send, get_long_running_output,
-            get_long_running_status, long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     create_or_update.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
 
@@ -284,7 +266,7 @@ class EventSubscriptionsOperations(object):
             return client_raw_response
 
     def delete(
-            self, scope, event_subscription_name, custom_headers=None, raw=False, **operation_config):
+            self, scope, event_subscription_name, custom_headers=None, raw=False, polling=True, **operation_config):
         """Delete an event subscription.
 
         Delete an existing event subscription.
@@ -303,12 +285,14 @@ class EventSubscriptionsOperations(object):
         :param event_subscription_name: Name of the event subscription
         :type event_subscription_name: str
         :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :return: An instance of AzureOperationPoller that returns None or
-         ClientRawResponse if raw=true
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns None or
+         ClientRawResponse<None> if raw==True
         :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
-         ~msrest.pipeline.ClientRawResponse
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._delete_initial(
@@ -318,40 +302,19 @@ class EventSubscriptionsOperations(object):
             raw=True,
             **operation_config
         )
-        if raw:
-            return raw_result
-
-        # Construct and send request
-        def long_running_send():
-            return raw_result.response
-
-        def get_long_running_status(status_link, headers=None):
-
-            request = self._client.get(status_link)
-            if headers:
-                request.headers.update(headers)
-            header_parameters = {}
-            header_parameters['x-ms-client-request-id'] = raw_result.response.request.headers['x-ms-client-request-id']
-            return self._client.send(
-                request, header_parameters, stream=False, **operation_config)
 
         def get_long_running_output(response):
-
-            if response.status_code not in [200, 202, 204]:
-                exp = CloudError(response)
-                exp.request_id = response.headers.get('x-ms-request-id')
-                raise exp
-
             if raw:
                 client_raw_response = ClientRawResponse(None, response)
                 return client_raw_response
 
-        long_running_operation_timeout = operation_config.get(
+        lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        return AzureOperationPoller(
-            long_running_send, get_long_running_output,
-            get_long_running_status, long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     delete.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
 
@@ -404,7 +367,7 @@ class EventSubscriptionsOperations(object):
         return deserialized
 
     def update(
-            self, scope, event_subscription_name, event_subscription_update_parameters, custom_headers=None, raw=False, **operation_config):
+            self, scope, event_subscription_name, event_subscription_update_parameters, custom_headers=None, raw=False, polling=True, **operation_config):
         """Update an event subscription.
 
         Asynchronously updates an existing event subscription.
@@ -426,15 +389,18 @@ class EventSubscriptionsOperations(object):
         :param event_subscription_update_parameters: Updated event
          subscription information
         :type event_subscription_update_parameters:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionUpdateParameters
+         ~azure.mgmt.eventgrid.models.EventSubscriptionUpdateParameters
         :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :return: An instance of AzureOperationPoller that returns
-         EventSubscription or ClientRawResponse if raw=true
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns EventSubscription or
+         ClientRawResponse<EventSubscription> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
-         or ~msrest.pipeline.ClientRawResponse
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.eventgrid.models.EventSubscription]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.eventgrid.models.EventSubscription]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -445,30 +411,8 @@ class EventSubscriptionsOperations(object):
             raw=True,
             **operation_config
         )
-        if raw:
-            return raw_result
-
-        # Construct and send request
-        def long_running_send():
-            return raw_result.response
-
-        def get_long_running_status(status_link, headers=None):
-
-            request = self._client.get(status_link)
-            if headers:
-                request.headers.update(headers)
-            header_parameters = {}
-            header_parameters['x-ms-client-request-id'] = raw_result.response.request.headers['x-ms-client-request-id']
-            return self._client.send(
-                request, header_parameters, stream=False, **operation_config)
 
         def get_long_running_output(response):
-
-            if response.status_code not in [201]:
-                exp = CloudError(response)
-                exp.request_id = response.headers.get('x-ms-request-id')
-                raise exp
-
             deserialized = self._deserialize('EventSubscription', response)
 
             if raw:
@@ -477,12 +421,13 @@ class EventSubscriptionsOperations(object):
 
             return deserialized
 
-        long_running_operation_timeout = operation_config.get(
+        lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        return AzureOperationPoller(
-            long_running_send, get_long_running_output,
-            get_long_running_status, long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     update.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}'}
 
     def get_full_url(
@@ -510,8 +455,7 @@ class EventSubscriptionsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: EventSubscriptionFullUrl or ClientRawResponse if raw=true
-        :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionFullUrl or
+        :rtype: ~azure.mgmt.eventgrid.models.EventSubscriptionFullUrl or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -573,7 +517,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -643,7 +587,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -716,7 +660,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -791,7 +735,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -863,7 +807,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -938,7 +882,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -1013,7 +957,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -1091,7 +1035,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -1171,7 +1115,7 @@ class EventSubscriptionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventSubscription
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventSubscriptionPaged[~azext_eventgrid.mgmt.eventgrid.models.EventSubscription]
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -1228,3 +1172,81 @@ class EventSubscriptionsOperations(object):
 
         return deserialized
     list_by_resource.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerNamespace}/{resourceTypeName}/{resourceName}/providers/Microsoft.EventGrid/eventSubscriptions'}
+
+    def list_by_domain_topic(
+            self, resource_group_name, domain_name, topic_name, custom_headers=None, raw=False, **operation_config):
+        """List all event subscriptions for a specific domain topic.
+
+        List all event subscriptions that have been created for a specific
+        domain topic.
+
+        :param resource_group_name: The name of the resource group within the
+         user's subscription.
+        :type resource_group_name: str
+        :param domain_name: Name of the top level domain
+        :type domain_name: str
+        :param topic_name: Name of the domain topic
+        :type topic_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: An iterator like instance of EventSubscription
+        :rtype:
+         ~azure.mgmt.eventgrid.models.EventSubscriptionPaged[~azure.mgmt.eventgrid.models.EventSubscription]
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+        """
+        def internal_paging(next_link=None, raw=False):
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_domain_topic.metadata['url']
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'domainName': self._serialize.url("domain_name", domain_name, 'str'),
+                    'topicName': self._serialize.url("topic_name", topic_name, 'str')
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+
+                # Construct parameters
+                query_parameters = {}
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+            else:
+                url = next_link
+                query_parameters = {}
+
+            # Construct headers
+            header_parameters = {}
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            if self.config.generate_client_request_id:
+                header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+            if custom_headers:
+                header_parameters.update(custom_headers)
+            if self.config.accept_language is not None:
+                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+            # Construct and send request
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
+
+            if response.status_code not in [200]:
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
+
+            return response
+
+        # Deserialize response
+        deserialized = models.EventSubscriptionPaged(internal_paging, self._deserialize.dependencies)
+
+        if raw:
+            header_dict = {}
+            client_raw_response = models.EventSubscriptionPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            return client_raw_response
+
+        return deserialized
+    list_by_domain_topic.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/domains/{domainName}/topics/{topicName}/providers/Microsoft.EventGrid/eventSubscriptions'}
