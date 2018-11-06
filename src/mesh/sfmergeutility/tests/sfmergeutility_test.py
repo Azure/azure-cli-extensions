@@ -12,17 +12,8 @@ import json
 import os
 import shutil
 from sfmergeutility import SFMergeUtility
+from sfmergeutility.utility import get_resource_type, get_resource_name, list_files_in_directory, ResourceType
 
-class ResourceType(enum.Enum):
-    """ Defines the valid yaml resource types
-        which are parseable by CLI
-    """
-    application = 1
-    volume = 2
-    network = 3
-    secret = 4
-    secretValue = 5
-    gateway = 6
 
 class SFMergeUtilityTests(unittest.TestCase):
     """SF Merge utility tests """
@@ -67,36 +58,31 @@ class SFMergeUtilityTests(unittest.TestCase):
         if os.path.exists(output_file_path):
             os.remove(output_file_path)
 
-def list_files_in_directory(directory, extension):
-    """ List files of a directory recursively w.r.t the extension provided"""
-    file_path_list = []
-    for root, _, files in os.walk(directory):
-        for filename in files:
-            if filename.endswith(extension):
-                file_path_list.append(os.path.join(root, filename))
-    return file_path_list
+    def test_resource_type(self):
+        """Test if resource type is correctly identified or not"""
+        resource_type = get_resource_type("merged-0006_application_counterApp-AZFiles.json")  # pylint: disable=line-too-long
+        self.assertEqual(resource_type, ResourceType.application)
+        resource_type = get_resource_type("merged-0001_secret_azurefilesecret.json")
+        self.assertEqual(resource_type, ResourceType.secret)
+        resource_type = get_resource_type("merged-0002_secretValue_azurefilesecret_v1.json")  # pylint: disable=line-too-long
+        self.assertEqual(resource_type, ResourceType.secretValue)
+        resource_type = get_resource_type("merged-0003_volume_counterVolumeWindows.json")  # pylint: disable=line-too-long
+        self.assertEqual(resource_type, ResourceType.volume)
+        resource_type = get_resource_type("merged-0004_network_counterAppNetwork.json")
+        self.assertEqual(resource_type, ResourceType.network)
+        resource_type = get_resource_type("merged-0005_gateway_counterAppGateway.json")
+        self.assertEqual(resource_type, ResourceType.gateway)
+        with self.assertRaises(Exception):
+            resource_type = get_resource_type("merged-0005_something_counterAppGateway.json")  # pylint: disable=line-too-long
+        with self.assertRaises(Exception):
+            resource_type = get_resource_type("invalid-file-name.json")
 
-def get_resource_type(file_name):
-    """ Gets the resource type form the file name"""
-    file_name = os.path.basename(file_name)
-    file_name_splitted = file_name.split('_')
-    if len(file_name_splitted) < 3:
-        raise Exception('Invalid resource file name %s. The file name should be of format id_resourcetype_resourcename.json' %(file_name)) # pylint: disable=line-too-long
-    resource_type = file_name_splitted[1]
-    try:
-        return ResourceType[resource_type]
-    except:
-        raise Exception('The resource type %s is unknown' %(resource_type))
-
-def get_resource_name(file_name):
-    """ Gets resource name form the file name"""
-    file_name = os.path.basename(file_name)
-    file_name_splitted = file_name.split('_')
-    if len(file_name_splitted) < 3:
-        raise Exception('Invalid resource file name %s. The file name should be of format id_resourcetype_resourcename.json' %(file_name)) # pylint: disable=line-too-long
-    file_name_with_extension = file_name_splitted[2]
-    resource_name = file_name_with_extension.split('.')
-    return resource_name[0]
+    def test_resource_name(self):
+        """Test if resource name is correctly identified or not"""
+        resource_name = get_resource_name("merged-0006_application_counterApp-AZFiles.json")  # pylint: disable=line-too-long
+        self.assertEqual("counterApp-AZFiles", resource_name)
+        with self.assertRaises(Exception):
+            resource_name = get_resource_type("invalid-file-name.json")
 
 def get_actual_json_file(actual_json_files, generated_json_file):
     """Gets the actual json file w.r.t the generated json file"""
