@@ -16,7 +16,7 @@ def execute_query(client, application, analytics_query, timespan=None, applicati
     return client.query.execute(application, QueryBody(query=analytics_query, timespan=timespan, applications=applications))
 
 
-def get_events(client, application, event_type, event_id, timespan=None):
+def get_event(client, application, event_type, event_id, timespan=None):
     return client.events.get(application, event_type, event_id, timespan=timespan)
 
 

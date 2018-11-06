@@ -7,8 +7,10 @@
 
 
 def load_arguments(self, _):
+    with self.argument_context('monitor app-insights') as c:
+        c.argument('application', options_list=['--app, -a'], help='GUID or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal')
+
     with self.argument_context('monitor app-insights query') as c:
-        c.argument('application', options_list=['--app-id'], help='GUID of the Application Insights applications')
         c.argument('analytics_query', help='Query to execute over Application Insights data.')
         c.argument('timespan', options_list=['--timespan', '-t'], help='Timespan over which to query. Defaults to querying all available data.')
         c.argument('applications', nargs='+', help='Additional applications over which to union data for querying. Specify additional workspace IDs separated by space.')
