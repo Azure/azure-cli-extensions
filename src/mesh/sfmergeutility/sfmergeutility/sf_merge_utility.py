@@ -153,7 +153,7 @@ class SFMergeUtility(object):
                 root_n.value.append((yaml.ScalarNode(YamlMerge.TAG_STR, 'name'), yaml.ScalarNode(YamlMerge.TAG_STR, resource_name)))
                 root_n.value.append((yaml.ScalarNode(YamlMerge.TAG_STR, 'api-version'), yaml.ScalarNode(YamlMerge.TAG_STR, Schema.SchemaVersionFabricApiVersionMap[schema_version])))
                 root_n.value.append((yaml.ScalarNode(YamlMerge.TAG_STR, 'fullyQualifiedResourceName'), yaml.ScalarNode(YamlMerge.TAG_STR, fully_qualified_resource_name)))
-                root_n.value.append((yaml.ScalarNode(YamlMerge.TAG_STR, 'description'), mapping_node))
+                root_n.value.append((yaml.ScalarNode(YamlMerge.TAG_STR, 'description'), root_mapping_node))
 
                 if yaml_json_switch == 'yaml':
                     SFMergeUtility.save_merged_documents_as_yaml(root_n, output_dir, file_name)
