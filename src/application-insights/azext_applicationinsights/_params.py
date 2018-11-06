@@ -18,6 +18,9 @@ def load_arguments(self, _):
         c.argument('top', help='The number of segments to return.  This value is only valid when segment is specified.')
         c.argument('filter_arg', options_list=['--filter'], help=' An expression used to filter the results.  This value should be a valid OData filter expression where the keys of each clause should be applicable dimensions for the metric you are retrieving.')
 
+    with self.argument_context('monitor app-insights metrics get-metadata') as c:
+        c.argument('application', options_list=['--app, -a'], help='GUID or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal')
+
     with self.argument_context('monitor app-insights events list') as c:
         c.argument('application', options_list=['--app, -a'], help='GUID or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal')
         c.argument('event_type', options_list=['--type'], help='The type of events to retrieve.')
