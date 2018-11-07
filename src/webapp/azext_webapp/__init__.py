@@ -12,6 +12,7 @@ from azure.cli.core.commands.parameters import (get_resource_name_completion_lis
 
 import azext_webapp._help
 
+
 class WebappExtCommandLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
