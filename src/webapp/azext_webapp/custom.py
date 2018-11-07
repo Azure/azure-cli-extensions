@@ -34,7 +34,7 @@ logger = get_logger(__name__)
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
 
 
-def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
+def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     import os
 
     client = web_client_factory(cmd.cli_ctx)
@@ -49,16 +49,12 @@ def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
     # and skip deployment
     if lang_details['language'] is None:
         do_deployment = False
-        sku = sku |'F1'
+        sku = 'F1'
         os_val = OS_DEFAULT
         detected_version = '-'
         runtime_version = '-'
     else:
-        # update SKU to user set value
-        if sku is None:
-            sku = lang_details.get("default_sku")
-        else:
-            sku = sku
+        sku = lang_details.get("default_sku")
         language = lang_details.get("language")
         is_skip_build = language.lower() == STATIC_RUNTIME_NAME or language.lower() == PYTHON_RUNTIME_NAME
         os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME \
@@ -159,8 +155,9 @@ def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
             update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
             # work around until the timeout limits issue for linux is investigated & fixed
             # wakeup kudu, by making an SCM call
+        # TODO: replace this with a call to check if AppSettings, was set before calling zip deployment
         import time
-        time.sleep(10)
+        time.sleep(5)
         _ping_scm_site(cmd, rg_name, name)
 
         logger.warning("Creating zip with contents of dir %s ...", src_dir)
