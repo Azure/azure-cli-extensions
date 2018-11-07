@@ -4,40 +4,49 @@
 # --------------------------------------------------------------------------------------------
 
 
-def applicationinsights_data_plane_client(cli_ctx, _):
+def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
     """Initialize Log Analytics data client for use with CLI."""
     from .vendored_sdks.applicationinsights import ApplicationInsightsDataClient
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(
-        resource="https://api.applicationinsights.io")
+        resource="https://api.applicationinsights.io",
+        subscription_id=subscription
+    )
     return ApplicationInsightsDataClient(cred)
 
 
-def applicationinsights_mgmt_plane_client(cli_ctx, _):
+def applicationinsights_mgmt_plane_client(cli_ctx, _, subscription=None):
     """Initialize Log Analytics mgmt client for use with CLI."""
     from azure.cli.core.commands.client_factory import get_subscription_id
     from .vendored_sdks.mgmt_applicationinsights import ApplicationInsightsManagementClient
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
-    cred, _, _ = profile.get_login_credentials()
+    # Use subscription from resource_id where possible, otherwise use login.
+    if subscription:
+        cred, _, _ = profile.get_login_credentials(subscription_id=subscription)
+        return ApplicationInsightsManagementClient(
+            cred,
+            subscription
+        )
+    cred, sub_id, _ = profile.get_login_credentials()
     return ApplicationInsightsManagementClient(
         cred,
-        get_subscription_id(cli_ctx)
+        sub_id
     )
 
 
-def cf_query(cli_ctx, _):
-    return applicationinsights_data_plane_client(cli_ctx, _).query
+def cf_query(cli_ctx, _, subscription=None):
+    return applicationinsights_data_plane_client(cli_ctx, _, subscription=subscription).query
 
 
-def cf_metrics(cli_ctx, _):
-    return applicationinsights_data_plane_client(cli_ctx, _).metrics
+def cf_metrics(cli_ctx, _, subscription=None):
+    return applicationinsights_data_plane_client(cli_ctx, _, subscription=subscription).metrics
 
 
-def cf_events(cli_ctx, _):
-    return applicationinsights_data_plane_client(cli_ctx, _).events
+def cf_events(cli_ctx, _, subscription=None):
+    return applicationinsights_data_plane_client(cli_ctx, _, subscription=subscription).events
 
 
-def cf_components(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx, _).components
+def cf_components(cli_ctx, _, subscription=None):
+    return applicationinsights_mgmt_plane_client(cli_ctx, _, subscription=subscription).components
