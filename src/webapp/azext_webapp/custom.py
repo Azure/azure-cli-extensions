@@ -10,6 +10,7 @@ from azure.mgmt.web.models import (AppServicePlan, SkuDescription)
 from azure.cli.command_modules.appservice.custom import (
     enable_zip_deploy,
     create_webapp,
+    show_webapp,
     update_app_settings,
     _get_site_credential,
     _get_scm_url,
@@ -204,6 +205,11 @@ def _check_for_ready_tunnel(remote_debugging, tunnel_server):
 
 
 def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
+    webapp = show_webapp(cmd, resource_group_name, name, slot)
+    is_linux = webapp.reserved
+    if not is_linux:
+        logger.error("Only Linux App Service Plans supported, Found a Windows App Service Plan")
+        return
     import time
     profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
     user_name = next(p['userName'] for p in profiles)
