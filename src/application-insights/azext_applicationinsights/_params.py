@@ -38,7 +38,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name')
 
     with self.argument_context('monitor app-insights query') as c:
-        c.argument('application', validator=validate_applications,options_list=['--app', '--apps', '-a'], nargs='+', id_part='name', help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
+        c.argument('application', validator=validate_applications, options_list=['--app', '--apps', '-a'], nargs='+', id_part='name', help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
         c.argument('analytics_query', help='Query to execute over Application Insights data.')
         c.argument('timespan', options_list=['--timespan', '-t'], help='Timespan over which to query. Defaults to querying all available data.')
         c.argument('resource_group_name')
