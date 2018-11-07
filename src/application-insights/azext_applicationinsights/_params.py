@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long,no-ids-for-list-commands
+# pylint: disable=line-too-long
 from ._validators import validate_applications
 
 
