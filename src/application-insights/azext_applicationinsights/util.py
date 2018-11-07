@@ -3,13 +3,27 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
 from azext_applicationinsights._client_factory import cf_components
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 
-def get_id_from_azure_resource(cli_ctx, app):
+def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
     if is_valid_resource_id(app):
         parsed = parse_resource_id(app)
         resource_group, name = parsed["resource_group"], parsed["name"]
         return cf_components(cli_ctx, None).get(resource_group, name).app_id
+    if resource_group:
+        return cf_components(cli_ctx, None).get(resource_group, app).app_id
     return app
+
+def get_query_targets(cli_ctx, apps, resource_group):
+    """Produces a list of uniform GUIDs representing applications to query."""
+    if isinstance(apps, list):
+        if resource_group:
+            return [get_id_from_azure_resource(cli_ctx, apps[0], resource_group)]
+        return list(map(lambda x: get_id_from_azure_resource(cli_ctx, x), apps))
+    else:
+        if resource_group:
+            return [get_id_from_azure_resource(cli_ctx, apps, resource_group)]
+        return apps

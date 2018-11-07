@@ -28,7 +28,7 @@ helps['monitor app-insights query'] = """
     examples:
       - name: Execute a simple query over past 3.5 days.
         text: |
-          az monitor app-insights query --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query "requests | summarize count() by bin(timestamp, 1h)" -t P3DT12H
+          az monitor app-insights query --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --analytics-query "requests | summarize count() by bin(timestamp, 1h)" -t P3DT12H
 """
 
 helps['monitor app-insights metrics show'] = """
@@ -37,7 +37,7 @@ helps['monitor app-insights metrics show'] = """
     examples:
       - name: View the count of availabilityResults events.
         text: |
-          az monitor app-insights metrics show --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b --metric-id availabilityResults/count
+          az monitor app-insights metrics show --app e292531c-eb03-4079-9bb0-fe6b56b99f8b --metric availabilityResults/count
 """
 
 helps['monitor app-insights metrics get-metadata'] = """
@@ -46,7 +46,7 @@ helps['monitor app-insights metrics get-metadata'] = """
     examples:
       - name: Views the metadata for the provided app.
         text: |
-          az monitor app-insights metrics get-metadata --app-id e292531c-eb03-4079-9bb0-fe6b56b99f8b
+          az monitor app-insights metrics get-metadata --app e292531c-eb03-4079-9bb0-fe6b56b99f8b
 """
 
 helps['monitor app-insights events show'] = """
@@ -55,7 +55,7 @@ helps['monitor app-insights events show'] = """
     examples:
       - name: Get an availability result by ID.
         text: |
-          az monitor app-insights events show --app-id 578f0e27-12e9-4631-bc02-50b965da2633 --event-type availabilityResults --event-id b2cf08df-bf42-4278-8d2c-5b55f85901fe
+          az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event b2cf08df-bf42-4278-8d2c-5b55f85901fe
 """
 
 helps['monitor app-insights events list'] = """
@@ -64,5 +64,5 @@ helps['monitor app-insights events list'] = """
     examples:
       - name: List availability results from the last 24 hours.
         text: |
-          az monitor app-insights events list --app-id 578f0e27-12e9-4631-bc02-50b965da2633 --event-type availabilityResults -t PT24H
+          az monitor app-insights events list --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults -t PT24H
 """

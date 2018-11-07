@@ -11,13 +11,17 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
     """Test class for Application Insights data client."""
     def test_query_execute(self):
         """Tests data plane query capabilities for Application Insights."""
-        self.cmd('az monitor app-insights query --app 578f0e27-12e9-4631-bc02-50b965da2633 --analytics-query "availabilityResults | summarize count() by bin(timestamp, 6h), name | order by name desc" --extra-apps 578f0e27-12e9-4631-bc02-50b965da2633 578f0e27-12e9-4631-bc02-50b965da2633', checks=[
-            self.check('tables[0].rows[0][1]', 'microsoft'),
-            self.check('tables[0].rows[-1][1]', 'google')
+        self.cmd('az monitor app-insights query --apps 578f0e27-12e9-4631-bc02-50b965da2633 f4963800-c77d-40a3-8b0b-448678904c33 --analytics-query "availabilityResults | distinct name | order by name asc"', checks=[
+            self.check('tables[0].rows[-1][0]', 'microsoft'),
+            self.check('tables[0].rows[-2][0]', 'google')
         ])
-        query_result = self.cmd('az monitor app-insights query --app 578f0e27-12e9-4631-bc02-50b965da2633 --analytics-query "requests | getschema"').get_output_in_json()
-        assert len(query_result['tables'][0]['rows']) == 37
-        assert isinstance(query_result['tables'][0]['rows'][0][1], (int, float, complex))
+        query_guid = self.cmd('az monitor app-insights query --app 578f0e27-12e9-4631-bc02-50b965da2633 --analytics-query "requests | getschema"').get_output_in_json()
+        query_name_rg = self.cmd('az monitor app-insights query --apps ace-test -g ace-test --analytics-query "requests | getschema"').get_output_in_json()
+        query_azure_id = self.cmd('az monitor app-insights query --analytics-query "requests | getschema" --ids /subscriptions/b98981de-4152-480f-a515-59b099299283/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test').get_output_in_json()
+        assert query_guid == query_name_rg
+        assert query_name_rg == query_azure_id
+        assert len(query_guid['tables'][0]['rows']) == 37
+        assert isinstance(query_guid['tables'][0]['rows'][0][1], (int, float, complex))
 
     def test_metrics_show(self):
         result = self.cmd('az monitor app-insights metrics show --app /subscriptions/b98981de-4152-480f-a515-59b099299283/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test -m availabilityResults/count').get_output_in_json()
