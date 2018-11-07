@@ -36,7 +36,7 @@ def process_query(cli_term):
 
         answer_list = json.loads(response.content)
         if (not answer_list or answer_list[0]['source'] == 'bing'):
-            print("\nSorry I am not recognizing [" + cli_term + "] as an Azure CLI command. "
+            print("\nSorry I am not able to help with [" + cli_term + "]."
                   "\nTry typing the beginning of a command e.g. " + style_message('az vm') + ".")
         else:
             print("\nHere are the most common ways to use [" + cli_term + "]: \n")
