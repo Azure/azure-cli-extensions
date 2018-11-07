@@ -66,15 +66,18 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         runtime_version = "{}|{}".format(language, version_used_create) if \
             version_used_create != "-" else version_used_create
 
+    full_sku = get_sku_name(sku)
+
     if location is None:
         locs = client.list_geo_regions(sku, True)
         available_locs = []
         for loc in locs:
             available_locs.append(loc.name)
         location = available_locs[0]
+    else:
+        location = location
     # Remove spaces from the location string, incase the GeoRegion string is used
     loc_name = location.replace(" ", "")
-    full_sku = get_sku_name(sku)
 
     is_linux = True if os_val == 'Linux' else False
 
@@ -152,7 +155,9 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
             update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
             # work around until the timeout limits issue for linux is investigated & fixed
             # wakeup kudu, by making an SCM call
-
+        # TODO: replace this with a call to check if AppSettings, was set before calling zip deployment
+        import time
+        time.sleep(5)
         _ping_scm_site(cmd, rg_name, name)
 
         logger.warning("Creating zip with contents of dir %s ...", src_dir)

@@ -3,9 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=ungrouped-imports
 from azure.cli.core import AzCommandsLoader
 from azure.cli.command_modules.appservice.commands import ex_handler_factory
-
+from knack.arguments import CLIArgumentType
+from azure.cli.core.commands.parameters import (get_resource_name_completion_list)
 # pylint: disable=unused-import
 
 import azext_webapp._help
@@ -27,8 +29,13 @@ class WebappExtCommandLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, _):
+        # pylint: disable=line-too-long
+        # PARAMETER REGISTRATION
+        webapp_name_arg_type = CLIArgumentType(configured_default='web', options_list=['--name', '-n'], metavar='NAME',
+                                               completer=get_resource_name_completion_list('Microsoft.Web/sites'), id_part='name',
+                                               help="name of the webapp. You can configure the default using 'az configure --defaults web=<name>'")
         with self.argument_context('webapp up') as c:
-            c.argument('name', options_list=['--name', '-n'], help='name of the webapp to be created')
+            c.argument('name', arg_type=webapp_name_arg_type)
             c.argument('dryrun',
                        help="shows summary of the create and deploy operation instead of executing it",
                        default=False, action='store_true')
