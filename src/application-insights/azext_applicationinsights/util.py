@@ -17,6 +17,7 @@ def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
         return cf_components(cli_ctx, None).get(resource_group, app).app_id
     return app
 
+
 def get_query_targets(cli_ctx, apps, resource_group):
     """Produces a list of uniform GUIDs representing applications to query."""
     if isinstance(apps, list):
