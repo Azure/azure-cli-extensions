@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azure.cli.command_modules.appservice.commands import ex_handler_factory
 
 # pylint: disable=unused-import
 
@@ -11,7 +12,6 @@ import azext_webapp._help
 
 
 class WebappExtCommandLoader(AzCommandsLoader):
-
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         webapp_custom = CliCommandType(
@@ -22,10 +22,8 @@ class WebappExtCommandLoader(AzCommandsLoader):
 
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
-            g.custom_command('up', 'create_deploy_webapp')
+            g.custom_command('up', 'create_deploy_webapp', exception_handler=ex_handler_factory())
             g.custom_command('remote-connection create', 'create_tunnel')
-            g.custom_command('config snapshot list', 'list_webapp_snapshots')
-            g.custom_command('config snapshot restore', 'restore_webapp_snapshot')
         return self.command_table
 
     def load_arguments(self, _):
@@ -38,24 +36,6 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('port', options_list=['--port', '-p'],
                        help='Port for the remote connection. Default: Random available port', type=int)
             c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
-        with self.argument_context('webapp config snapshot list') as c:
-            c.argument('resource_group', options_list=['--resource-group', '-g'], help='Name of resource group.')
-            c.argument('name', options_list=['--webapp-name', '-n'], help='Name of the webapp.')
-            c.argument('slot', options_list=['--slot', '-s'], help='Name of the webapp slot.')
-        with self.argument_context('webapp config snapshot restore') as c:
-            c.argument('resource_group', options_list=['--resource-group', '-g'],
-                       help='Name of resource group to restore to.')
-            c.argument('name', options_list=['--webapp-name', '-n'], help='Name of the webapp to restore to.')
-            c.argument('time', options_list=['--time', '-t'], help='Timestamp of the snapshot to restore.')
-            c.argument('slot', options_list=['--slot', '-s'], help='Name of the webapp slot to restore to.')
-            c.argument('restore_config', options_list=['--restore-config'],
-                       help='Restore the previous configuration along with web app content.')
-            c.argument('source_resource_group', options_list=['--source-resource-group'],
-                       help='Name of the resource group to retrieve snapshot from.')
-            c.argument('source_name', options_list=['--source-webapp-name'],
-                       help='Name of the webapp to retrieve snapshot from.')
-            c.argument('source_slot', options_list=['--source-slot'],
-                       help='Name of the webapp slot to retrieve snapshot from.')
 
 
 COMMAND_LOADER_CLS = WebappExtCommandLoader

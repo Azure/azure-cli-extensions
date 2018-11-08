@@ -8,6 +8,7 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_enum_type,
+    get_three_state_flag,
     tags_type)
 
 name_arg_type = CLIArgumentType(metavar='NAME', configured_default='botname')
@@ -33,3 +34,11 @@ def load_arguments(self, _):
         c.argument('appInsightsLocation', help='The location for the app insights to be used with the bot.', options_list=['--insights-location'], arg_group='Web/Function bot Specific',
                    arg_type=get_enum_type(['South Central US', 'East US', 'West US 2', 'North Europe', 'West Europe', 'Southeast Asia']))
         c.argument('version', options_list=['-v', '--version'], help='The Microsoft Bot Builder SDK version to be used to create the bot', arg_type=get_enum_type(['v3', 'v4']), arg_group='Web/Function bot Specific')
+
+    with self.argument_context('bot show') as c:
+        c.argument('bot_json', options_list=['--msbot'], help='Show the output as JSON compatible with a .bot file.', arg_type=get_three_state_flag())
+
+    with self.argument_context('bot publish') as c:
+        c.argument('code_dir', options_list=['--code-dir'], help='The directory to upload bot code from.')
+        c.argument('proj_file', options_list=['--proj-file'], help='The startup project file name (without the .csproj) that needs to be published. Eg: EnterpriseBot.')
+        c.argument('sdk_version', options_list=['--sdk-version'], help='The Microsoft Bot Builder SDK version.', arg_type=get_enum_type(['v3', 'v4']))

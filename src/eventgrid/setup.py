@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.1"
+VERSION = "0.4.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='eventgrid',
     version=VERSION,
-    description='Support for Azure EventGrid 2018-05-01-preview features',
-    long_description='Support for Azure EventGrid features in 2018-05-01-preview version.',
+    description='Support for Azure EventGrid 2018-09-15-preview features',
+    long_description='Support for Azure EventGrid features in 2018-09-15-preview version.',
     license='MIT',
     author='J. Kalyana Sundaram',
     author_email='kalyanaj@microsoft.com',

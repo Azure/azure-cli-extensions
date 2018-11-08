@@ -6,9 +6,7 @@
 from __future__ import print_function
 import json
 from knack.log import get_logger
-from knack.util import CLIError
-from azure.mgmt.web.models import (AppServicePlan, SkuDescription, SnapshotRecoveryRequest, SnapshotRecoveryTarget)
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.mgmt.web.models import (AppServicePlan, SkuDescription)
 from azure.cli.command_modules.appservice.custom import (
     enable_zip_deploy,
     create_webapp,
@@ -30,7 +28,7 @@ from .create_util import (
     get_lang_from_content,
     web_client_factory
 )
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME)
+from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME, PYTHON_RUNTIME_NAME)
 logger = get_logger(__name__)
 
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
@@ -58,8 +56,9 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     else:
         sku = lang_details.get("default_sku")
         language = lang_details.get("language")
-        is_skip_build = language.lower() == STATIC_RUNTIME_NAME
-        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME else OS_DEFAULT
+        is_skip_build = language.lower() == STATIC_RUNTIME_NAME or language.lower() == PYTHON_RUNTIME_NAME
+        os_val = "Linux" if language.lower() == NODE_RUNTIME_NAME \
+            or language.lower() == PYTHON_RUNTIME_NAME else OS_DEFAULT
         # detect the version
         data = get_runtime_version_details(lang_details.get('file_loc'), language)
         version_used_create = data.get('to_create')
@@ -71,7 +70,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         locs = client.list_geo_regions(sku, True)
         available_locs = []
         for loc in locs:
-            available_locs.append(loc.geo_region_name)
+            available_locs.append(loc.name)
         location = available_locs[0]
     # Remove spaces from the location string, incase the GeoRegion string is used
     loc_name = location.replace(" ", "")
@@ -129,7 +128,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     if not check_if_asp_exists(cmd, rg_name, asp):
         logger.warning("Creating App service plan '%s' ...", asp)
         sku_def = SkuDescription(tier=full_sku, name=sku, capacity=(1 if is_linux else None))
-        plan_def = AppServicePlan(loc_name, app_service_plan_name=asp,
+        plan_def = AppServicePlan(location=loc_name, app_service_plan_name=asp,
                                   sku=sku_def, reserved=(is_linux or None))
         client.app_service_plans.create_or_update(rg_name, asp, plan_def)
         logger.warning("App service plan creation complete")
@@ -185,38 +184,6 @@ def _ping_scm_site(cmd, resource_group, name):
     import urllib3
     authorization = urllib3.util.make_headers(basic_auth='{}:{}'.format(user_name, password))
     requests.get(scm_url + '/api/settings', headers=authorization)
-
-
-def list_webapp_snapshots(cmd, resource_group, name, slot=None):
-    client = web_client_factory(cmd.cli_ctx)
-    if slot is None:
-        return client.web_apps.list_snapshots(resource_group, name)
-    return client.web_apps.list_snapshots_slot(resource_group, name, slot)
-
-
-def restore_webapp_snapshot(cmd, resource_group, name, time, slot=None, restore_config=False,
-                            source_resource_group=None, source_name=None, source_slot=None):
-    client = web_client_factory(cmd.cli_ctx)
-
-    if all([source_resource_group, source_name]):
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        target_id = "/subscriptions/" + sub_id + "/resourceGroups/" + resource_group + \
-            "/providers/Microsoft.Web/sites/" + name
-        if slot:
-            target_id = target_id + "/slots/" + slot
-        target = SnapshotRecoveryTarget(id=target_id)
-        request = SnapshotRecoveryRequest(False, snapshot_time=time, recovery_target=target,
-                                          recover_configuration=restore_config)
-        if source_slot:
-            return client.web_apps.recover_slot(source_resource_group, source_name, request, source_slot)
-        return client.web_apps.recover(source_resource_group, source_name, request)
-    elif any([source_resource_group, source_name]):
-        raise CLIError('usage error: --source-resource-group and --source-name must both be specified if one is used')
-    else:
-        request = SnapshotRecoveryRequest(True, snapshot_time=time, recover_configuration=restore_config)
-        if slot:
-            return client.web_apps.recover_slot(resource_group, name, request, slot)
-        return client.web_apps.recover(resource_group, name, request)
 
 
 def _get_app_url(cmd, rg_name, app_name):

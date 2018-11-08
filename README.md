@@ -35,7 +35,7 @@ Add your extension to the index to make it available in these CLI commands:
 
 ## FAQ
 
-### How to generate sha256digest for index.json?
+### How to generate sha256digest for an index.json entry?
 
 MacOS
 ```
@@ -47,7 +47,15 @@ Windows / PowerShell
 Get-FileHash path_to_whl.whl -Algorithm SHA256
 ```
 
-Note: It should all be lowercase in index.json otherwise CI will fail.
+Note: Hash should be in lowercase in index.json otherwise CI will fail.
+
+### How to fill in the metadata for an index.json entry?
+
+The metadata needed to be filled is a combination of the contents present in:
+- `metadata.json` located in your unzipped extension artifact (`.whl` file) in the `<package>-<version>.dist-info` directory. This metadata is garnered from the `setup.py` folder.
+- `azext_metadata.json` (if it exists) under your extension.
+
+Note that CI will fail if this metadata does not match the contents of your published extension.
 
 # Contributing
 

@@ -33,12 +33,12 @@ class TopicTypeInfo(Resource):
     :param resource_region_type: Region type of the resource. Possible values
      include: 'RegionalResource', 'GlobalResource'
     :type resource_region_type: str or
-     ~azext_eventgrid.mgmt.eventgrid.models.ResourceRegionType
+     ~azure.mgmt.eventgrid.models.ResourceRegionType
     :param provisioning_state: Provisioning state of the topic type. Possible
      values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :type provisioning_state: str or
-     ~azext_eventgrid.mgmt.eventgrid.models.TopicTypeProvisioningState
+     ~azure.mgmt.eventgrid.models.TopicTypeProvisioningState
     :param supported_locations: List of locations supported by this topic
      type.
     :type supported_locations: list[str]
@@ -62,11 +62,11 @@ class TopicTypeInfo(Resource):
         'supported_locations': {'key': 'properties.supportedLocations', 'type': '[str]'},
     }
 
-    def __init__(self, provider=None, display_name=None, description=None, resource_region_type=None, provisioning_state=None, supported_locations=None):
-        super(TopicTypeInfo, self).__init__()
-        self.provider = provider
-        self.display_name = display_name
-        self.description = description
-        self.resource_region_type = resource_region_type
-        self.provisioning_state = provisioning_state
-        self.supported_locations = supported_locations
+    def __init__(self, **kwargs):
+        super(TopicTypeInfo, self).__init__(**kwargs)
+        self.provider = kwargs.get('provider', None)
+        self.display_name = kwargs.get('display_name', None)
+        self.description = kwargs.get('description', None)
+        self.resource_region_type = kwargs.get('resource_region_type', None)
+        self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.supported_locations = kwargs.get('supported_locations', None)
