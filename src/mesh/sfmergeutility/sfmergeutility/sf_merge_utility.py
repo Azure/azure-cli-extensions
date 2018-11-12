@@ -168,8 +168,11 @@ class SFMergeUtility(object):
         # load all yamls inputs
         partial_resource_document_map = {}
         for input_file in input_list:
-            my_dict = yaml.load(open(input_file))
-            mapping_node = yaml.compose(open(input_file))
+            with open(input_file) as input_file_handle:
+                my_dict = yaml.load(input_file_handle)
+
+            with open(input_file) as input_file_handle:
+                mapping_node = yaml.compose(input_file_handle)
 
             kind = list(my_dict.keys())[0]
             name = my_dict.get(kind).get(Constants.PrimaryPropertyName)
