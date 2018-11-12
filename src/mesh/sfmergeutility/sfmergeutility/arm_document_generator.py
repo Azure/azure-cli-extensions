@@ -28,7 +28,9 @@ class ArmDocumentGenerator(object):
             property_value_map[PropertyNames.Location] = "[" + PropertyNames.Parameters + \
                                                          "('" + PropertyNames.Location + "')]"
             arm_dict = ArmDocumentGenerator.write_parameters(arm_dict, parameter_info)
-            arm_dict = ArmDocumentGenerator.write_arm_resources(arm_dict, sf_json_resources, property_value_map)
+            outputs_list = []
+            arm_dict = ArmDocumentGenerator.write_arm_resources(arm_dict, sf_json_resources, property_value_map, outputs_list)
+            arm_dict = ArmDocumentGenerator.WriteArmOutputs(arm_dict, outputs_list)
             arm_doc_string = ArmDocumentGenerator.end_write_arm_document(arm_dict)
             fp.write(arm_doc_string)
 
@@ -54,7 +56,17 @@ class ArmDocumentGenerator(object):
         return writer
 
     @staticmethod
-    def write_arm_resources(writer, sf_json_resources, property_value_map):
+    def WriteArmOutputs(writer, outputs_list):
+        writer[PropertyNames.Outputs] = OrderedDict()
+        if len(outputs_list) > 0:
+            writer[PropertyNames.Outputs][PropertyNames.PublicIPAddress] = OrderedDict()
+            writer[PropertyNames.Outputs][PropertyNames.PublicIPAddress]["value"] = outputs_list.pop()
+            writer[PropertyNames.Outputs][PropertyNames.PublicIPAddress]["type"] = "string"
+
+        return writer
+
+    @staticmethod
+    def write_arm_resources(writer, sf_json_resources, property_value_map, outputs_list):
         """ Writes all the provided resources one by one in ARM format to the writer """
         dependencies = ArmDocumentGenerator.get_dependencies(sf_json_resources)
         for sf_json_resource_iter in sf_json_resources:
@@ -66,10 +78,10 @@ class ArmDocumentGenerator(object):
                 writer = ArmDocumentGenerator.process_application(writer, description, dependencies, property_value_map)
             elif kind == Constants.Gateway:
                 writer = ArmDocumentGenerator.process_sf_resource(writer, description, kind, dependencies,
-                                                                  property_value_map, ArmDocumentGenerator.process_resource_refs_for_gateway)
+                                                                  property_value_map, ArmDocumentGenerator.process_resource_refs_for_gateway, outputs_list)
             else:
                 writer = ArmDocumentGenerator.process_sf_resource(writer, description, kind,
-                                                                  dependencies, property_value_map, ArmDocumentGenerator.process_resource_refs)
+                                                                  dependencies, property_value_map, ArmDocumentGenerator.process_resource_refs, outputs_list)
         return writer
 
     @staticmethod
@@ -263,7 +275,7 @@ class ArmDocumentGenerator(object):
         return properties
 
     @staticmethod
-    def process_sf_resource(writer, sf_resource, resource_kind, dependencies, property_value_map, function_delegate):
+    def process_sf_resource(writer, sf_resource, resource_kind, dependencies, property_value_map, function_delegate, outputs_list):
         """ This method processes and writes a resource (excluding application resource)  to writer """
         sf_resource_writer = OrderedDict()
         if PropertyNames.Name not in sf_resource:
@@ -277,10 +289,19 @@ class ArmDocumentGenerator(object):
             # schemaVersion is not needed by RP, so remove it.
             del sf_resource[PropertyNames.SchemaVersion]
 
-        sf_resource_writer[PropertyNames.ApiVersion] = Schema.SchemaVersionRpApiVersionMap[schema_version]
+        api_version = Schema.SchemaVersionRpApiVersionMap[schema_version]
+        sf_resource_writer[PropertyNames.ApiVersion] = api_version
 
         # name
         sf_resource_writer[PropertyNames.Name] = name
+
+        if api_version == Constants.RpApiVersion_2018_07_01_preview:
+            if resource_kind == Constants.Network:
+                outputs_list.append("[reference('{}').ingressConfig.publicIpAddress]".format(name))
+        elif api_version == Constants.RpApiVersion_2018_09_01_preview:
+            if resource_kind == Constants.Gateway:
+                outputs_list.append("[reference('{}').ipAddress]".format(name))
+
         del sf_resource[PropertyNames.Name]
 
         # "type" : "Microsoft.Seabreeze/<resource name>"

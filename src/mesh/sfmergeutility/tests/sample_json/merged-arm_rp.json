@@ -225,5 +225,11 @@
                 ]
             }
         }
-    ]
+    ],
+    "outputs": {
+      "publicIPAddress": {
+        "value": "[reference('helloWorldGateway').ipAddress]",
+        "type": "string"
+      }
+    }
 }
