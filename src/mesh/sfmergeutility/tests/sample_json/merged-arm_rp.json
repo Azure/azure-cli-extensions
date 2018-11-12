@@ -207,10 +207,10 @@
             "properties": {
                 "description": "Gateway to connect to public internet.", 
                 "sourceNetwork": {
-                    "name": "[resourceId('Microsoft.ServiceFabricMesh/networks','Open')]"
+                    "name": "Open"
                 }, 
                 "destinationNetwork": {
-                    "name": "helloWorldNetwork"
+                    "name": "[resourceId('Microsoft.ServiceFabricMesh/networks', 'helloWorldNetwork')]"
                 }, 
                 "tcp": [
                     {

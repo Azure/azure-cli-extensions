@@ -257,9 +257,9 @@ class ArmDocumentGenerator(object):
             resource_ref = properties.get(resource, "")
             if resource_ref != "":
                 ref_value = resource_ref[PropertyNames.Name]
-                # Do not add reference for Open
-                if ref_value.lower() == "open":
-                    properties[resource]["name"] = "[resourceId('{0}','{1}')]".format(ArmDocumentGenerator.get_sbz_resource_type(Constants.Network, schema_version), ref_value)
+                # Do not resolve reference for Open
+                if ref_value.lower() != "open":
+                    properties[resource]["name"] = "[resourceId('{0}', '{1}')]".format(ArmDocumentGenerator.get_sbz_resource_type(Constants.Network, schema_version), ref_value)
         return properties
 
     @staticmethod
