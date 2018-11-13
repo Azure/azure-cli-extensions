@@ -67,7 +67,7 @@ class YamlToJson(object):
         """Serialize yaml sequence node which has many yaml_nodes in a sequence"""
         yaml_data_store = []
 
-        # Serialize recursively all children 
+        # Serialize recursively all children
         # of sequence node and store in list
         for yaml_node_val in yaml_node.value:
             yaml_data_store.append(YamlToJson.serialize(yaml_node_val))
@@ -100,7 +100,8 @@ class YamlToJson(object):
                     # root path_head
                     YamlToJson.fix_property(nodes_data_store, path_components, primitive_type, level)
                 else:
-                    YamlToJson.find_root_and_fix_property(nodes_data_store[node], path_components, primitive_type, level)
+                    YamlToJson.find_root_and_fix_property(nodes_data_store[node], path_components,
+                                                          primitive_type, level)
 
     @staticmethod
     def fix_property(nodes_data_store, path_components, primitive_type, level):
