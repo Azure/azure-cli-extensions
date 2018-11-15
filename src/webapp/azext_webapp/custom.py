@@ -37,7 +37,6 @@ logger = get_logger(__name__)
 
 def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     import os
-
     client = web_client_factory(cmd.cli_ctx)
     # the code to deploy is expected to be the current directory the command is running from
     src_dir = os.getcwd()
@@ -78,7 +77,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     else:
         location = location
     # Remove spaces from the location string, incase the GeoRegion string is used
-    loc_name = location.replace(" ", "")
+    loc_name = location.replace(" ", "").lower()
 
     is_linux = True if os_val == 'Linux' else False
 
