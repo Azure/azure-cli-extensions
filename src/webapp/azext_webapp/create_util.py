@@ -98,7 +98,7 @@ def check_resource_group_supports_os(cmd, rg_name, is_linux):
         # for Linux if an app with reserved==False exists, ASP doesn't support Linux
         if is_linux and not item.reserved:
             return False
-        elif not is_linux  and item.reserved:
+        elif not is_linux and item.reserved:
             return False
     return True
 
