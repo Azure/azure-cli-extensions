@@ -36,7 +36,7 @@ def zip_contents_from_dir(dirPath, lang):
     relroot = os.path.abspath(os.path.join(dirPath, os.pardir))
     path_and_file = os.path.splitdrive(dirPath)[1]
     file_val = os.path.split(path_and_file)[1]
-    zip_file_path = relroot + "\\" + file_val + ".zip"
+    zip_file_path = relroot + os.path.sep + file_val + ".zip"
     abs_src = os.path.abspath(dirPath)
     with zipfile.ZipFile("{}".format(zip_file_path), "w", zipfile.ZIP_DEFLATED) as zf:
         for dirname, subdirs, files in os.walk(dirPath):

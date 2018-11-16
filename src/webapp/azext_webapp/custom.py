@@ -32,7 +32,7 @@ from .create_util import (
 from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME, PYTHON_RUNTIME_NAME)
 logger = get_logger(__name__)
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches,line-too-long
 
 
 def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
@@ -99,7 +99,7 @@ def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
     default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
 
     if default_rg and check_resource_group_exists(cmd, default_rg) and check_resource_group_supports_os(cmd, default_rg, is_linux):
-          create_new_rg = False
+        create_new_rg = False
     elif check_resource_group_exists(cmd, rg_name) and check_resource_group_supports_os(cmd, rg_name, is_linux):
         create_new_rg = False
     else:
