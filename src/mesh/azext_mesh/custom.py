@@ -324,7 +324,7 @@ def _display_deployment_status(cli_ctx, operation_status, resource_group_name, d
 
 
 def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
-                              template_file=None, template_uri=None, input_yaml_file_paths=None, deployment_name=None,
+                              template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                               parameters=None, mode=None, validate_only=False,
                               no_wait=False):
     DeploymentProperties, TemplateLink = get_sdk(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
@@ -343,13 +343,13 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
         file_path_list = []
         prefix = "merged-"
         output_file_path = os.path.join(os.getcwd(), prefix + 'arm_rp.json')
-        if os.path.isdir(input_yaml_file_paths):
-            for root, _, files in os.walk(input_yaml_file_paths):
+        if os.path.isdir(input_yaml_files):
+            for root, _, files in os.walk(input_yaml_files):
                 for filename in files:
                     if filename.endswith(".yaml"):
                         file_path_list.append(os.path.join(root, filename))
         else:
-            file_path_list = input_yaml_file_paths.split(',')
+            file_path_list = input_yaml_files.split(',')
         if os.path.exists(output_file_path):
             os.remove(output_file_path)
         SFMergeUtility.sf_merge_utility(file_path_list, "SF_SBZ_RP_JSON", parameter_file=None, output_dir=None, prefix=prefix)
@@ -397,11 +397,11 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
 
 
 def deploy_arm_template(cmd, resource_group_name,
-                        template_file=None, template_uri=None, input_yaml_file_paths=None, deployment_name=None,
+                        template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                         parameters=None, mode=None, no_wait=False):
     logger.warning("Deploying . . .")
     return _deploy_arm_template_core(cmd.cli_ctx, resource_group_name, template_file, template_uri,
-                                     input_yaml_file_paths, deployment_name, parameters, mode, no_wait=no_wait)
+                                     input_yaml_files, deployment_name, parameters, mode, no_wait=no_wait)
 
 
 def list_networks(client, resource_group_name=None):

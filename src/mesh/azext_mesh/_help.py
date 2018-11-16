@@ -24,7 +24,7 @@ helps['mesh deployment create'] = """
         - name: Create a deployment with a template file on local disk.
           text: az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
         - name: List of comma separated yaml files or a directory which contains all the yaml files.
-          text: az mesh deployment create --resource-group mygroup --input-yaml-file-paths ./app.yaml,./network.yaml
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml
 """
 
 helps['mesh app'] = """
