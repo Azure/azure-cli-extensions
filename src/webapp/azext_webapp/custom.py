@@ -83,7 +83,7 @@ def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
         location = available_locs[0]
     else:
         location = location
-    # Remove spaces from the location string, incase the GeoRegion string is used    
+    # Remove spaces from the location string, incase the GeoRegion string is used
     loc_name = location.replace(" ", "").lower()
 
     is_linux = True if os_val == 'Linux' else False
@@ -177,7 +177,7 @@ def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
             _app_settings = get_app_settings(cmd, rg_name, name)
             if all(not d for d in _app_settings): # check if empty
                 set_build_appSetting = True
-            elif '"name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true"' not in (json.dumps(_app_settings[0])):
+            elif '"name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true"' not in json.dumps(_app_settings[0]):
                 set_build_appSetting = True
             else:
                 set_build_appSetting = False
