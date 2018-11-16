@@ -107,8 +107,6 @@ def check_if_asp_exists(cmd, rg_name, asp_name, location):
     # get all appservice plans from RG
     client = web_client_factory(cmd.cli_ctx)
     for item in list(client.app_service_plans.list_by_resource_group(rg_name)):
-        print(item.name)
-        print(item.location)
         if item.name == asp_name and item.location.replace(" ", "").lower() == location:
             return True
     return False
