@@ -12,6 +12,7 @@ from azure.cli.command_modules.appservice.custom import (
     create_webapp,
     show_webapp,
     update_app_settings,
+    get_app_settings,
     _get_site_credential,
     _get_scm_url,
     get_sku_name,
@@ -35,13 +36,16 @@ logger = get_logger(__name__)
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches
 
 
-def create_deploy_webapp(cmd, name, location=None, dryrun=False):
+def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
     import os
     client = web_client_factory(cmd.cli_ctx)
     # the code to deploy is expected to be the current directory the command is running from
     src_dir = os.getcwd()
     # if dir is empty, show a message in dry run
     do_deployment = False if os.listdir(src_dir) == [] else True
+    create_new_rg = True
+    create_new_asp = True
+    set_build_appSetting = False
 
     # determine the details for app to be created from src contents
     lang_details = get_lang_from_content(src_dir)
@@ -49,7 +53,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
     # and skip deployment
     if lang_details['language'] is None:
         do_deployment = False
-        sku = 'F1'
+        sku = sku | 'F1'
         os_val = OS_DEFAULT
         detected_version = '-'
         runtime_version = '-'
@@ -80,7 +84,7 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         location = available_locs[0]
     else:
         location = location
-    # Remove spaces from the location string, incase the GeoRegion string is used
+    # Remove spaces from the location string, incase the GeoRegion string is used    
     loc_name = location.replace(" ", "").lower()
 
     is_linux = True if os_val == 'Linux' else False
@@ -94,15 +98,16 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
 
     # Resource group: check if default RG is set
     default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
-    if default_rg and check_resource_group_exists(cmd, default_rg) and \
-            check_resource_group_supports_os(cmd, default_rg, location, is_linux):
-        rg_name = default_rg
-        rg_mssg = "[Using default Resource group]"
+
+    if default_rg and check_resource_group_exists(cmd, default_rg) and check_resource_group_supports_os(cmd, default_rg, is_linux):
+          create_new_rg = False
+    elif check_resource_group_exists(cmd, rg_name) and check_resource_group_supports_os(cmd, rg_name, is_linux):
+        create_new_rg = False
     else:
-        rg_mssg = ""
+        create_new_rg = True
 
     src_path = "{} {}".format(src_dir.replace("\\", "\\\\"), str_no_contents_warn)
-    rg_str = "{} {}".format(rg_name, rg_mssg)
+    rg_str = "{}".format(rg_name)
     dry_run_str = r""" {
             "name" : "%s",
             "serverfarm" : "%s",
@@ -124,36 +129,62 @@ def create_deploy_webapp(cmd, name, location=None, dryrun=False):
         return create_json
 
     # create RG if the RG doesn't already exist
-    if not check_resource_group_exists(cmd, rg_name):
+    if create_new_rg:
         logger.warning("Creating Resource group '%s' ...", rg_name)
         create_resource_group(cmd, rg_name, location)
         logger.warning("Resource group creation complete")
     else:
         logger.warning("Resource group '%s' already exists.", rg_name)
 
-    # create asp
-    if not check_if_asp_exists(cmd, rg_name, asp):
+    # create asp ], if are creating a new RG we can skip the checks for if asp exists
+    if create_new_rg:
         logger.warning("Creating App service plan '%s' ...", asp)
         sku_def = SkuDescription(tier=full_sku, name=sku, capacity=(1 if is_linux else None))
         plan_def = AppServicePlan(location=loc_name, app_service_plan_name=asp,
                                   sku=sku_def, reserved=(is_linux or None))
         client.app_service_plans.create_or_update(rg_name, asp, plan_def)
         logger.warning("App service plan creation complete")
+        create_new_asp = True
+
+    elif not check_if_asp_exists(cmd, rg_name, asp, location):
+        logger.warning("Creating App service plan '%s' ...", asp)
+        sku_def = SkuDescription(tier=full_sku, name=sku, capacity=(1 if is_linux else None))
+        plan_def = AppServicePlan(location=loc_name, app_service_plan_name=asp,
+                                  sku=sku_def, reserved=(is_linux or None))
+        client.app_service_plans.create_or_update(rg_name, asp, plan_def)
+        create_new_asp = True
+        logger.warning("App service plan creation complete")
     else:
         logger.warning("App service plan '%s' already exists.", asp)
+        create_new_asp = False
 
-    # create the app
-    if not check_app_exists(cmd, rg_name, name):
+    # create the app, skip checks for if app exists if a New RG or New ASP is created
+    if create_new_rg or create_new_asp:
         logger.warning("Creating app '%s' ....", name)
         create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
         logger.warning("Webapp creation complete")
+        set_build_appSetting = True
+    elif not check_app_exists(cmd, rg_name, name):
+        logger.warning("Creating app '%s' ....", name)
+        create_webapp(cmd, rg_name, name, asp, runtime_version if is_linux else None)
+        logger.warning("Webapp creation complete")
+        set_build_appSetting = True
     else:
         logger.warning("App '%s' already exists", name)
+        if do_deployment:
+        # we check to see if we the build app setting already exists, setting the appsettings causes a app restart so we avoid if not needed
+            set_build_appSetting = False
+            _app_settings = get_app_settings(cmd, rg_name, name)
+            if '"name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true"' not in (json.dumps(_app_settings[0])):
+                set_build_appSetting = True
+            else:
+                set_build_appSetting = False
+
     # update create_json to include the app_url
     url = _get_app_url(cmd, rg_name, name)  # picks the custom domain URL incase a domain is assigned
 
     if do_deployment:
-        if not is_skip_build:
+        if not is_skip_build and set_build_appSetting:
             # setting to build after deployment
             logger.warning("Updating app settings to enable build after deployment")
             update_app_settings(cmd, rg_name, name, ["SCM_DO_BUILD_DURING_DEPLOYMENT=true"])
