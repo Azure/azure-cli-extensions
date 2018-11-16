@@ -171,10 +171,11 @@ def create_deploy_webapp(cmd, name, location=None, sku=None, dryrun=False):
     else:
         logger.warning("App '%s' already exists", name)
         if do_deployment:
-        # we check to see if we the build app setting already exists, setting the appsettings causes a app restart so we avoid if not needed
+        # we check to see if we the build app setting already exists
+        # setting the appsettings causes a app restart so we avoid if not needed
             set_build_appSetting = False
             _app_settings = get_app_settings(cmd, rg_name, name)
-            if all(not d for d in _app_settings): #check if empty
+            if all(not d for d in _app_settings): # check if empty
                 set_build_appSetting = True
             elif '"name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true"' not in (json.dumps(_app_settings[0])):
                 set_build_appSetting = True
