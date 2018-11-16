@@ -8,7 +8,6 @@ import json
 from knack.log import get_logger
 from azure.mgmt.web.models import (AppServicePlan, SkuDescription)
 from azure.cli.command_modules.appservice.custom import (
-    enable_zip_deploy,
     create_webapp,
     show_webapp,
     update_app_settings,
@@ -282,3 +281,62 @@ def _start_tunnel(tunnel_server, remote_debugging_enabled):
     if remote_debugging_enabled is False:
         logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
+
+
+# zip deployment copies from core with some error handling enabled, once we get the fix in core we will remove this
+def enable_zip_deploy(cmd, resource_group_name, name, src, slot=None):
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+    scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    zip_url = scm_url + '/api/zipdeploy?isAsync=true'
+    deployment_status_url = scm_url + '/api/deployments/latest'
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['content-type'] = 'application/octet-stream'
+
+    import requests
+    import os
+    # Read file content
+    with open(os.path.realpath(os.path.expanduser(src)), 'rb') as fs:
+        zip_content = fs.read()
+        requests.post(zip_url, data=zip_content, headers=headers)
+    # check the status of async deployment
+    try:
+        from json.decoder import JSONDecodeError
+    except ImportError:
+        JSONDecodeError = ValueError
+
+    response = requests.get(deployment_status_url, headers=authorization)
+    try:
+        response = response.json()
+        if response.get('status', 0) != 4:
+            logger.warning(response.get('progress', ''))
+            response = _check_zip_deployment_status(deployment_status_url, authorization)
+        return response
+    except JSONDecodeError:
+        logger.warning("""Unable to fetch status of deployment. Please check status manually using link '%s'
+            """, deployment_status_url)
+
+
+def _check_zip_deployment_status(deployment_status_url, authorization):
+    import requests
+    import time
+    num_trials = 1
+    while num_trials < 10:
+        time.sleep(15)
+        response = requests.get(deployment_status_url, headers=authorization)
+        res_dict = response.json()
+        num_trials = num_trials + 1
+        if res_dict.get('status', 0) == 5:
+            logger.warning("Zip deployment failed status %s", res_dict['status_text'])
+            break
+        elif res_dict.get('status', 0) == 4:
+            break
+        if 'progress' in res_dict:
+            logger.info(res_dict['progress'])  # show only in debug mode, customers seem to find this confusing
+    # if the deployment is taking longer than expected
+    if res_dict.get('status', 0) != 4:
+        logger.warning("""Deployment is taking longer than expected. Please verify status at '%s'
+            beforing launching the app""", deployment_status_url)
+    return res_dict
