@@ -95,14 +95,12 @@ def set_custom_properties(prop, name, value):
     if name and value is not None:
         # 10 characters limit for strings
         prop['{}{}'.format(FIND_EXTENSION_PREFIX, name)] = value[:10] if isinstance(value, str) else value
-        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'session_id')] = telemetry_core._session._get_base_properties()[
+        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'session_id')] = telemetry_core._session._get_base_properties()[  # pylint: disable=protected-access
             'Reserved.SessionId']  # pylint: disable=protected-access
-        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'subscription_id')
-             ] = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
-        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'client_request_id')
-             ] = telemetry_core._session.application.data['headers']['x-ms-client-request-id']  # pylint: disable=protected-access
-        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'installation_id')
-             ] = telemetry_core._get_installation_id()  # pylint: disable=protected-access
+        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'subscription_id')] = telemetry_core._get_azure_subscription_id()  # pylint: disable=protected-access
+        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'client_request_id')] = telemetry_core._session.application.data[   # pylint: disable=protected-access
+            'headers']['x-ms-client-request-id']  # pylint: disable=protected-access
+        prop['{}{}'.format(FIND_EXTENSION_PREFIX, 'installation_id')] = telemetry_core._get_installation_id()  # pylint: disable=protected-access
 
 
 def call_aladdin_service(query):
