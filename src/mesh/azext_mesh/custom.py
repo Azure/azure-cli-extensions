@@ -352,17 +352,20 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
             file_path_list = input_yaml_files.split(',')
         if os.path.exists(output_file_path):
             os.remove(output_file_path)
-        SFMergeUtility.sf_merge_utility(file_path_list, "SF_SBZ_RP_JSON", parameter_file=None, output_dir=None, prefix=prefix)
+        SFMergeUtility.sf_merge_utility(file_path_list, "SF_SBZ_RP_JSON", parameters=parameters, output_dir=None, prefix=prefix)
+        parameters = None
         template = get_file_json(output_file_path, preserve_order=True)
         template_obj = template
 
     template_param_defs = template_obj.get('parameters', {})
     template_obj['resources'] = template_obj.get('resources', [])
-    parameters = _process_parameters(template_param_defs, parameters) or {}
-    parameters = _get_missing_parameters(parameters, template_obj, _prompt_for_parameters)
 
     template = json.loads(json.dumps(template))
-    parameters = json.loads(json.dumps(parameters))
+
+    if(parameters != None):
+        parameters = _process_parameters(template_param_defs, parameters) or {}
+        parameters = _get_missing_parameters(parameters, template_obj, _prompt_for_parameters)
+        parameters = json.loads(json.dumps(parameters))
 
     properties = DeploymentProperties(template=template, template_link=template_link,
                                       parameters=parameters, mode=mode)
