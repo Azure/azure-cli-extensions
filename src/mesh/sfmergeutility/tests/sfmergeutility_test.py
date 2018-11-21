@@ -29,7 +29,7 @@ class SFMergeUtilityTests(unittest.TestCase):
         """Test if merge utility is generating the correct jsons"""
         yaml_file_path_list = list_files_in_directory(self.sample_yaml_path, ".yaml")
         output_dir = os.path.join(os.path.dirname(__file__), self.local_deployment_folder_name)
-        SFMergeUtility.sf_merge_utility(yaml_file_path_list, "SF_SBZ_JSON", parameter_file=None, output_dir=output_dir, prefix="resource", region="westus") # pylint: disable=line-too-long
+        SFMergeUtility.sf_merge_utility(yaml_file_path_list, "SF_SBZ_JSON", parameters=None, output_dir=output_dir, prefix="resource", region="westus") # pylint: disable=line-too-long
         generated_json_files = list_files_in_directory(output_dir, ".json")
         actual_json_files = list_files_in_directory(self.sample_json_path, ".json")
         del actual_json_files[actual_json_files.index(os.path.join(self.sample_json_path, self.arm_template_file_name))]
@@ -48,7 +48,7 @@ class SFMergeUtilityTests(unittest.TestCase):
         """Test if merge utility if is generating the correct ARM template"""
         yaml_file_path_list = list_files_in_directory(self.sample_yaml_path, ".yaml")
         output_file_path = os.path.join(os.getcwd(), self.arm_template_file_name)
-        SFMergeUtility.sf_merge_utility(yaml_file_path_list, "SF_SBZ_RP_JSON", parameter_file=None, output_dir=None, prefix="merged-", region="westus") # pylint: disable=line-too-long
+        SFMergeUtility.sf_merge_utility(yaml_file_path_list, "SF_SBZ_RP_JSON", parameters=None, output_dir=None, prefix="merged-", region="westus") # pylint: disable=line-too-long
         generated_json_file_fp = open(output_file_path, "r")
         generated_json = json.load(generated_json_file_fp)
         generated_json_file_fp.close()
