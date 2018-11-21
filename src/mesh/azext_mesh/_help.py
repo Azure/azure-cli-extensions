@@ -25,6 +25,12 @@ helps['mesh deployment create'] = """
           text: az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
         - name: List of comma separated yaml files or a directory which contains all the yaml files.
           text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml
+        - name: Create a deployment with yaml files, along with parameters.
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters ../params.yaml
+        - name: Create a deployment with parameters in json.
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters "params.json"
+        - name: Create a deployment with parameters passed directly.
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters "{ 'location': {'value': 'eastus'}, 'myparam' : {'value': 'myvalue'} }"
 """
 
 helps['mesh app'] = """
