@@ -140,7 +140,7 @@ helps['dms project task create'] = """
                         // see https://docs.microsoft.com/th-th/azure/cosmos-db/request-units,     ||
                         // set to null to use default
                         // or 0 if throughput should not be provisioned at the database level
-                        "targetRUs": 0,  
+                        "targetRUs": 0,
                         "collections": {
                             "collection_name_1": {
                                 // Whether the target database/collection will be deleted if exists

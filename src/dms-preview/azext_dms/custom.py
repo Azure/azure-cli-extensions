@@ -3,9 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os, re
+import os
+import re
 from enum import Enum
 from knack.prompting import prompt, prompt_pass
+from azure.cli.core.util import get_file_json, shell_safe_json_parse
+from azure.cli.command_modules.dms._client_factory import dms_cf_projects
+from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
+                                                  create_task as core_create_task)
 from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MySqlConnectionInfo,
                                                           PostgreSqlConnectionInfo,
@@ -24,10 +29,6 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                        get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
                                        get_mongo_to_mongo_input)
-from azure.cli.core.util import get_file_json, shell_safe_json_parse
-from azure.cli.command_modules.dms._client_factory import dms_cf_projects
-from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
-                                                  create_task as core_create_task)
 
 
 # region Project
@@ -108,7 +109,10 @@ def create_task(
         validate_only=False):
 
     # Get source and target platform abd set inputs to lowercase
-    src, tgt = get_project_platforms(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+    src, tgt = get_project_platforms(cmd,
+                                     project_name=project_name,
+                                     service_name=service_name,
+                                     resource_group_name=resource_group_name)
     task_type = task_type.lower()
     scenario_handled_in_core = core_handles_scenario(src, tgt, task_type)
 
@@ -121,31 +125,33 @@ def create_task(
                 raise ValueError
 
             core_res = core_create_task(client,
-                                    resource_group_name,
-                                    service_name,
-                                    project_name,
-                                    task_name,
-                                    source_connection_json,
-                                    target_connection_json,
-                                    database_options_json,
-                                    enable_schema_validation,
-                                    enable_data_integrity_validation,
-                                    enable_query_analysis_validation)
+                                        resource_group_name,
+                                        service_name,
+                                        project_name,
+                                        task_name,
+                                        source_connection_json,
+                                        target_connection_json,
+                                        database_options_json,
+                                        enable_schema_validation,
+                                        enable_data_integrity_validation,
+                                        enable_query_analysis_validation)
         except:
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
             raise ValueError("The provided source-platform, target-platform, and task-type \
                               combination is not appropriate. \n\
-                              Please refer to the help file 'az dms project task create -h' for the supported scenarios.")
+                              Please refer to the help file 'az dms project task create -h' \
+                              for the supported scenarios.")
         else:
             return core_res
 
     # Run extension scenario
-    source_connection_info, target_connection_info, database_options_json = transform_json_inputs(source_connection_json,
-                                                                                                  src,
-                                                                                                  target_connection_json,
-                                                                                                  tgt,
-                                                                                                  database_options_json)
+    source_connection_info, target_connection_info, database_options_json = \
+        transform_json_inputs(source_connection_json,
+                              src,
+                              target_connection_json,
+                              tgt,
+                              database_options_json)
 
     # Get the task properties
     properties_model = get_task_validation_properties if validate_only else get_task_migration_properties
@@ -177,7 +183,10 @@ def cutover_sync_task(
     # 'input' is a built in function. Even though we can technically use it, it's not recommended.
     # https://stackoverflow.com/questions/20670732/is-input-a-keyword-in-python
 
-    src, tgt = get_project_platforms(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+    src, tgt = get_project_platforms(cmd,
+                                     project_name=project_name,
+                                     service_name=service_name,
+                                     resource_group_name=resource_group_name)
     st = get_scenario_type(src, tgt, "onlinemigration")
 
     if st in [ScenarioType.mysql_azuremysql_online, ScenarioType.postgres_azurepostgres_online]:
@@ -187,20 +196,30 @@ def cutover_sync_task(
         command_input = MongoDbFinishCommandInput(object_name=object_name, immediate=immediate)
         command_properties_model = MongoDbFinishCommand
 
-    run_command(client, command_input, command_properties_model, resource_group_name, service_name, project_name, task_name)
+    run_command(client,
+                command_input,
+                command_properties_model,
+                resource_group_name,
+                service_name,
+                project_name,
+                task_name)
 
 
 def restart_task(
-    cmd,
-    client,
-    resource_group_name,
-    service_name,
-    project_name,
-    task_name,
-    task_type,
-    object_name=None):
-    # For scenarios that support it, restart the entire migration if object name is empty, otherwise restart the specified object.
-    src, tgt = get_project_platforms(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+        cmd,
+        client,
+        resource_group_name,
+        service_name,
+        project_name,
+        task_name,
+        task_type,
+        object_name=None):
+    # For scenarios that support it, restart the entire migration if object name is empty,
+    # otherwise restart the specified object.
+    src, tgt = get_project_platforms(cmd,
+                                     project_name=project_name,
+                                     service_name=service_name,
+                                     resource_group_name=resource_group_name)
     st = get_scenario_type(src, tgt, task_type)
 
     if st in [ScenarioType.mongo_mongo_offline, ScenarioType.mongo_mongo_online]:
@@ -209,7 +228,13 @@ def restart_task(
     else:
         raise ValueError("The suppplied project's source and target does not support restarting the migration.")
 
-    run_command(client, command_input, command_properties_model, resource_group_name, service_name, project_name, task_name)
+    run_command(client,
+                command_input,
+                command_properties_model,
+                resource_group_name,
+                service_name,
+                project_name,
+                task_name)
 
 
 def stop_task(
@@ -223,24 +248,34 @@ def stop_task(
         object_name=None):
 
     # If object name is empty, treat this as stopping/cancelling the entire task.
-    if object_name == None:
+    if object_name is None:
         client.cancel(group_name=resource_group_name,
                       service_name=service_name,
                       project_name=project_name,
                       task_name=task_name)
     # Otherwise, for scenarios that support it, just stop migration on the specified object.
     else:
-        src, tgt = get_project_platforms(cmd, project_name=project_name, service_name=service_name, resource_group_name=resource_group_name)
+        src, tgt = get_project_platforms(cmd,
+                                         project_name=project_name,
+                                         service_name=service_name,
+                                         resource_group_name=resource_group_name)
         st = get_scenario_type(src, tgt, task_type)
 
         if st in [ScenarioType.mongo_mongo_offline, ScenarioType.mongo_mongo_online]:
             command_input = MongoDbCommandInput(object_name=object_name)
             command_properties_model = MongoDbCancelCommand
         else:
-            raise ValueError("The supplied project's source and target does not support cancelling at the object level. \n\
+            raise ValueError("The supplied project's source and target does not support \
+                              cancelling at the object level. \n\
                               To cancel this task do not supply the object-name parameter.")
 
-        run_command(client, command_input, command_properties_model, resource_group_name, service_name, project_name, task_name)
+        run_command(client,
+                    command_input,
+                    command_properties_model,
+                    resource_group_name,
+                    service_name,
+                    project_name,
+                    task_name)
 # endregion
 
 
@@ -277,8 +312,8 @@ def transform_json_inputs(
 def get_file_or_parse_json(value):
     if os.path.exists(value):
         return get_file_json(value)
-    else:
-        return shell_safe_json_parse(value)
+
+    return shell_safe_json_parse(value)
 
 
 def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
@@ -302,7 +337,7 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
     elif "mongo" in typeOfInfo:
         connection_string = connection_info_json['connectionString']
         # Strip out the username and password from the connection string (if they exist) to store them securely.
-        rex_conn_string = re.compile('^(mongodb://|mongodb\+srv://|http://|https://)(.*:.*@)?(.*)')
+        rex_conn_string = re.compile(r'^(mongodb://|mongodb\+srv://|http://|https://)(.*:.*@)?(.*)')
         connection_string_match = rex_conn_string.search(connection_string)
         connection_string = connection_string_match.group(1) + connection_string_match.group(3)
         if connection_string_match.group(2) is not None and not user_name and not password:
@@ -338,7 +373,11 @@ def get_task_migration_properties(
     else:
         raise ValueError("The supplied source, target, and task type is not supported for migration.")
 
-    return get_task_properties(GetInput, TaskProperties, database_options_json, source_connection_info, target_connection_info)
+    return get_task_properties(GetInput,
+                               TaskProperties,
+                               database_options_json,
+                               source_connection_info,
+                               target_connection_info)
 
 
 def get_task_validation_properties(
@@ -355,10 +394,18 @@ def get_task_validation_properties(
     else:
         raise ValueError("The supplied source, target, and task type is not supported for validation.")
 
-    return get_task_properties(input_func, task_properties_type, database_options_json, source_connection_info, target_connection_info)
+    return get_task_properties(input_func,
+                               task_properties_type,
+                               database_options_json,
+                               source_connection_info,
+                               target_connection_info)
 
 
-def get_task_properties(input_func, task_properties_type, database_options_json, source_connection_info, target_connection_info):
+def get_task_properties(input_func,
+                        task_properties_type,
+                        database_options_json,
+                        source_connection_info,
+                        target_connection_info):
     task_input = input_func(
         database_options_json,
         source_connection_info,
@@ -389,22 +436,26 @@ def run_command(client,
 def get_scenario_type(source_platform, target_platform, task_type=""):
     if source_platform == "sql":
         if target_platform == "sqldb":
-            return (ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline)
+            scenario_type = ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline
         elif target_platform == "sqlmi":
-            return (ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline)
+            scenario_type = ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline
     elif source_platform == "mysql" and target_platform == "azuredbformysql":
-        return (ScenarioType.mysql_azuremysql_online if "online" in task_type else ScenarioType.mysql_azuremysql_offline)
+        scenario_type = ScenarioType.mysql_azuremysql_online if "online" in task_type else \
+            ScenarioType.mysql_azuremysql_offline
     elif source_platform == "postgresql" and target_platform == "azuredbforpostgresql":
-        return (ScenarioType.postgres_azurepostgres_online if "online" in task_type else ScenarioType.postgres_azurepostgres_offline)
+        scenario_type = ScenarioType.postgres_azurepostgres_online if "online" in task_type else \
+            ScenarioType.postgres_azurepostgres_offline
     elif source_platform == "mongodb" and target_platform == "mongodb":
-        return (ScenarioType.mongo_mongo_validation if "validation" in task_type else \
-            (ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline))
+        scenario_type = ScenarioType.mongo_mongo_validation if "validation" in task_type else \
+            ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline
     else:
-        return ScenarioType.unknown
+        scenario_type = ScenarioType.unknown
+
+    return scenario_type
 
 
 class ScenarioType(Enum):
-    
+
     unknown = 0
     # SQL to SQLDB
     sql_sqldb_offline = 1
