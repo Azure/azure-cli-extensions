@@ -49,6 +49,8 @@ class SFMergeUtility(object):
         # read parametes file and replace params
         kvparameters = SFMergeUtility.get_parameters(parameters)
         if kvparameters and kvparameters.keys:
+            if 'location' in kvparameters:
+                region = kvparameters['location']
             for merged_resource_doc in merged_resource_documents:
                 merged_resource_documents[merged_resource_doc] = SFMergeUtility.replace_parameter_values(merged_resource_documents[merged_resource_doc], kvparameters)
 
