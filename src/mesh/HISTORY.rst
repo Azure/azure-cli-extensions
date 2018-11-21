@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.9.3 (2018-08-03)
+++++++++++++++++++
+
+* Fix bug of displaying previous deployment.
+
+
 0.9.2 (2018-08-03)
 ++++++++++++++++++
 

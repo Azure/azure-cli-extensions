@@ -11,7 +11,6 @@ PYLINT_EXCLUDES=$(echo "$AZURE_SDK_AUTOGEN_FILES" | sed -e s=\./src/=src/=g -e '
 echo "Running pylint on extensions..."
 pylint ./src/*/azext_*/ --ignore=$PYLINT_EXCLUDES,vendored_sdks --ignore-patterns=test_* --rcfile=./pylintrc -j $proc_number
 
-
 echo "Pylint OK."
 echo "Running flake8 on extensions..."
 flake8 --statistics --append-config=./.flake8 ./src/*/azext_*/
