@@ -31,7 +31,7 @@ helps['mesh deployment create'] = """
           text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters "params.json"
         - name: Create a deployment with parameters passed directly as a json object.
           text: >
-                az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters: "{ 'location' : {'value' : 'eastus'}, 'myparam' : {'value' : 'myvalue'} }"
+                az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters "{ 'location' : {'value' : 'eastus'}, 'myparam' : {'value' : 'myvalue'} }"
 """
 
 helps['mesh app'] = """
