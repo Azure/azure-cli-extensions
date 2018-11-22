@@ -43,6 +43,7 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
                        help='Name of the final image that will be created')
             c.argument('target_subscription', options_list=['--target-subscription'],
                        help='Name or ID of the subscription where the final image should be created.')
-
+            c.argument('time_out', options_list=['--timeout'], type=int, default=3600,
+                       help='Seconds before the command return timeout.')
 
 COMMAND_LOADER_CLS = ImageCopyCommandsLoader
