@@ -79,7 +79,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     # Get SAS URL for the snapshotName
     logger.warn("Getting sas url for the source snapshot with timeout seconds: %d", time_out )
-    if time_out<=0 :
+    if time_out <= 0:
         logger.warn("Timeout should be greater than 0")
         raise CLIError('Inavlid Timeout')
 
