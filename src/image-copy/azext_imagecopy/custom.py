@@ -130,7 +130,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             tasks.append((location, transient_resource_group_name, source_type,
                           source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                           source_os_type, target_resource_group_name, azure_pool_frequency,
-                          tags, target_name, target_subscription))
+                          tags, target_name, target_subscription, time_out))
 
         logger.warn("Starting async process for all locations")
 
