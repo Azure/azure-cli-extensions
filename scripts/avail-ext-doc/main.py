@@ -64,9 +64,9 @@ def update_extensions_list(output_file):
 def needs_update(doc_repo):
     date_format="%Y-%m-%d %H:%M:%S %z"
     ext_repo = Repo(REPO_LOCATION)
-    doc_updated = datetime.datetime.strptime(doc_repo.git.log(AVAILABLE_EXTENSIONS_DOC, pretty="format:'%ai'", n=1), date_format)
-    template_updated = datetime.datetime.strptime(ext_repo.git.log(TEMPLATE_FILE, pretty="format:'%ai'", n=1), date_format)
-    index_updated = datetime.datetime.strptime(ext_repo.git.log(INDEX_PATH, pretty="format:'%ai'", n=1), date_format)
+    doc_updated = datetime.datetime.strptime(doc_repo.git.log(AVAILABLE_EXTENSIONS_DOC, pretty="format:%ai", n=1), date_format)
+    template_updated = datetime.datetime.strptime(ext_repo.git.log(TEMPLATE_FILE, pretty="format:%ai", n=1), date_format)
+    index_updated = datetime.datetime.strptime(ext_repo.git.log(INDEX_PATH, pretty="format:%ai", n=1), date_format)
 
     return (doc_updated < index_updated) or (doc_updated < template_updated)
 
