@@ -11,6 +11,7 @@ import azure.cli.core.commands.arm  # pylint: disable=unused-import
 
 # pylint: disable=line-too-long, import-error
 
+
 def load_arguments(self, _):
     from argcomplete.completers import FilesCompleter
 

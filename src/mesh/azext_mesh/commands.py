@@ -31,6 +31,7 @@ def transform_application(result):
                         ('Location', result.get('location')),
                         ('ProvisioningState', result.get('provisioningState'))])
 
+
 def transform_application_list(result):
     return [transform_application(application) for application in result]
 
@@ -43,15 +44,19 @@ def transform_service(result):
                         ('HealthState', result.get('healthState')),
                         ('ReplicaCount', result.get('replicaCount'))])
 
+
 def transform_service_list(result):
     return [transform_service(service) for service in result]
+
 
 # Service Replica table output formatting
 def transform_service_replica(result):
     return OrderedDict([('Name', result['replicaName'])])
 
+
 def transform_service_replica_list(result):
     return [transform_service_replica(replica) for replica in result]
+
 
 # Volume Resource table output formatting
 def transform_volume(result):
@@ -82,6 +87,7 @@ def transform_network(result):
 
 def transform_network_list(result):
     return [transform_network(network) for network in result]
+
 
 # Secret Resource table output formatting
 def transform_secret(result):
@@ -116,6 +122,7 @@ def transform_secretvalue_list(result):
 def transform_log_output(result):
     return result.content
 
+
 # CPU and memory
 def format_cpu_memory(container_group):
     containers = container_group.get('containers')
@@ -132,6 +139,7 @@ def format_cpu_memory(container_group):
             return '{0} core/{1} gb'.format(total_cpu, total_memory)
     return None
 
+
 # IP Address and port
 def format_ip_address(container_group):
     ip_address = container_group.get('ipAddress')
@@ -139,7 +147,6 @@ def format_ip_address(container_group):
         ports = ','.join(str(p['port']) for p in ip_address['ports'])
         return '{0}:{1}'.format(ip_address.get('ip'), ports)
     return None
-
 
 
 def transform_gateway(result):
@@ -222,7 +229,6 @@ def load_command_table(self, _):
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
         g.command('list', 'list', table_transformer=transform_service_list)
         g.command('show', 'get', table_transformer=transform_service)
-
 
     with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:
         g.command('list', 'list', table_transformer=transform_service_replica_list)

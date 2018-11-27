@@ -256,7 +256,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
 
     template = json.loads(json.dumps(template))
 
-    if parameters != None:
+    if parameters is not None:
         parameters = _process_parameters(template_param_defs, parameters) or {}
         parameters = _get_missing_parameters(parameters, template_obj, _prompt_for_parameters)
         parameters = json.loads(json.dumps(parameters))
