@@ -24,6 +24,7 @@ from ._exception_handler import resource_exception_handler
 # Table Output formatting for various top level and proxy resources
 #
 
+
 # Application Resource table output formatting
 def transform_application(result):
     return OrderedDict([('Name', result['name']),
