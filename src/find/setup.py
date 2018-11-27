@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -23,7 +23,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'colorama~=0.3.7'
+]
 
 setup(
     name='find',
