@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.10.2 (2018-11-27)
+++++++++++++++++++
+
+* Added yaml support
+* simplified deployment logic
+
 0.9.4 (2018-10-19)
 ++++++++++++++++++
 
