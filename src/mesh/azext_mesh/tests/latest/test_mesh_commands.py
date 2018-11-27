@@ -28,11 +28,11 @@ class AzureMeshServiceScenarioTest(ScenarioTest):
             'resource_group': resource_group,
             'deployment_name': self.create_random_name(prefix='cli', length=24),
             'app_name': app_name,
-            'input_yaml_file_paths': yaml_files_path
+            'input_yaml_files': yaml_files_path
         })
 
         # Test create
-        self.cmd('az mesh deployment create -g {rg} --input-yaml-file-paths {input_yaml_file_paths} --name {deployment_name}')
+        self.cmd('az mesh deployment create -g {rg} --input-yaml-files {input_yaml_files} --name {deployment_name}')
 
         # Test delete
         self.cmd('az mesh app delete -g {rg} --name {app_name} --yes')

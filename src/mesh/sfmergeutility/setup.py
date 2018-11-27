@@ -13,7 +13,7 @@ DEPENDENCIES = [
 
 setup(
     name='sfmergeutility',
-    version='0.1.2',
+    version='0.1.4',
     packages=find_packages(exclude=("tests",)),
     license='MIT',
     description='Service Fabric Yaml merge utility',

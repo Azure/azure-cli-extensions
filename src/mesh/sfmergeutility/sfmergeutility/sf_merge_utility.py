@@ -27,7 +27,7 @@ class SFMergeUtility(object):
     ]
 
     @staticmethod
-    def sf_merge_utility(input_list, output_format, parameter_file=None, output_dir=None, prefix="merged-", region="westus"):
+    def sf_merge_utility(input_list, output_format, parameters=None, output_dir=None, prefix="merged-", region="westus"):
         """Method which is the main interface to the utility, merges yaml files
            into given output_format
         """
@@ -47,10 +47,12 @@ class SFMergeUtility(object):
 
         merged_resource_documents = SFMergeUtility.load_and_merge_partial_documents(input_list)
         # read parametes file and replace params
-        parameters = SFMergeUtility.get_parameters(parameter_file)
-        if parameters and parameters.keys:
+        kvparameters = SFMergeUtility.get_parameters(parameters)
+        if kvparameters and kvparameters.keys:
+            if 'location' in kvparameters:
+                region = kvparameters['location']
             for merged_resource_doc in merged_resource_documents:
-                merged_resource_documents[merged_resource_doc] = SFMergeUtility.replace_parameter_values(merged_resource_documents[merged_resource_doc], parameters)
+                merged_resource_documents[merged_resource_doc] = SFMergeUtility.replace_parameter_values(merged_resource_documents[merged_resource_doc], kvparameters)
 
         if output_format.upper() == "SF_SBZ_YAML":
             # for mode generate yaml
@@ -70,24 +72,51 @@ class SFMergeUtility(object):
             ArmDocumentGenerator.generate(merged_jsons, region, os.path.join(output_dir, prefix + "arm_rp.json"))
 
     @staticmethod
-    def get_parameters(parameter_file):
-        """Get Parameters from the parameter_file if passed"""
-        params_list = None
+    def get_parameters(parameters_arr):
+        """Get Parameters from the parameters if passed"""
+        params_store = {}
         json_object = None
-        if parameter_file:
-            extension = os.path.splitext(parameter_file)[1]
-            if extension.lower() == ".yaml":
-                # load yaml
-                yaml_file = yaml.compose(open(parameter_file))
-                json_object = YamlToJson.to_ordered_dict(yaml_file, None, None)
-            elif extension.lower() == ".json":
-                # load json
-                with open(parameter_file, 'r') as parameter_file_fp:
-                    json_object = json.load(parameter_file_fp)
+        if parameters_arr:
+            for parameters_i in parameters_arr:
+                parameters = parameters_i[0]
+                if os.path.isfile(parameters):
+                    extension = os.path.splitext(parameters)[1]
+                    if extension.lower() == ".yaml":
+                        # load yaml
+                        yaml_file = yaml.compose(open(parameters))
+                        json_object = YamlToJson.to_ordered_dict(yaml_file, None, None)
+                        params_store.update(json_object)
 
-            params_list = {}
-            for obj in json_object['parameters']:
-                params_list[obj] = json_object['parameters'][obj]['value']
+                    elif extension.lower() == ".json":
+                        # load json
+                        with open(parameters, 'r') as parameter_file_fp:
+                            json_object = json.load(parameter_file_fp)
+                        params_store.update(SFMergeUtility.transform_to_kv(json_object['parameters']))
+                else:
+                    try:
+                        # load direct json
+                        parameters = parameters.replace("\'", "\"")
+                        params = json.loads(parameters)
+                        params_store.update(SFMergeUtility.transform_to_kv(params))
+                    except json.decoder.JSONDecodeError:
+                        print("Could not load parameters as files or direct json object.")
+                        pass
+        return params_store
+
+    @staticmethod
+    def transform_to_kv(json_obj):
+        """Transform json obj of the form {
+                                            'key'  : {
+                                                'value': 'actualvalue'
+                                            },
+                                            'key2' : {
+                                                'value : 'actualvalue2'
+                                            }
+                                          }
+           to {'key' : 'actualvalue', 'key2': 'actualvalue2'}"""
+        params_list = {}
+        for obj in json_obj:
+            params_list[obj] = json_obj[obj]['value']
 
         return params_list
 
@@ -168,8 +197,11 @@ class SFMergeUtility(object):
         # load all yamls inputs
         partial_resource_document_map = {}
         for input_file in input_list:
-            my_dict = yaml.load(open(input_file))
-            mapping_node = yaml.compose(open(input_file))
+            with open(input_file) as input_file_handle:
+                my_dict = yaml.load(input_file_handle)
+
+            with open(input_file) as input_file_handle:
+                mapping_node = yaml.compose(input_file_handle)
 
             kind = list(my_dict.keys())[0]
             name = my_dict.get(kind).get(Constants.PrimaryPropertyName)
