@@ -82,7 +82,7 @@ helps['dms project task create'] = """
         - name: --validate-only
           type: bool
           short-summary: >
-            (For MongoDB to Cosmos DB only) Whether to run validation only and NOT run migration. This is usefull for verifying connections, shard keys, RU settings, etc.
+            (For MongoDB to Cosmos DB only) Whether to run validation only and NOT run migration. This is useful for verifying connections, shard keys, RU settings, etc.
     examples:
         - name: Create and start a SQL Task which performs no validation checks.
           text: >
