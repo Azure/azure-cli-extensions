@@ -10,6 +10,7 @@ from setuptools import setup, find_packages
 
 VERSION = "0.10.1"
 
+
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
