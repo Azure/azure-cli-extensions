@@ -372,7 +372,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
             sleep(timestep)
             wait_time += timestep
 
-        parsed_template = smc.deployments.validate(resource_group_name, deployment_name, properties).properties.additional_properties['validatedResources']
+        parsed_template = validation.properties.additional_properties['validatedResources']
 
         return _display_deployment_status(cli_ctx, operation_status_poller.status(), resource_group_name,
                                           deployment_name, parsed_template)

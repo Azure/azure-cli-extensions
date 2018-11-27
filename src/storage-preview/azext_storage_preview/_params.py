@@ -8,7 +8,7 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
                                                 get_three_state_flag)
 
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
-                          validate_bypass, validate_encryption_source)
+                          validate_bypass, validate_encryption_source, storage_account_key_options, validate_key)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -59,10 +59,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_match')
         c.argument('if_none_match')
 
-    for item in ['update']:  # keeping this to retain similarity with storage module
+    for item in ['delete', 'show', 'update', 'show-connection-string', 'keys', 'network-rule']:
         with self.argument_context('storage account {}'.format(item)) as c:
             c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
             c.argument('resource_group_name', required=False, validator=process_resource_group)
+
+    with self.argument_context('storage account check-name') as c:
+        c.argument('name', options_list=['--name', '-n'])
 
     with self.argument_context('storage account create') as c:
         t_account_type, t_sku_name, t_kind = self.get_models('AccountType', 'SkuName', 'Kind',
@@ -109,6 +112,29 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Bypass traffic for space-separated uses.')
             c.argument('default_action', arg_type=get_enum_type(t_default_action),
                        help='Default action to apply when no rule matches.')
+
+    with self.argument_context('storage account show-connection-string') as c:
+        c.argument('protocol', help='The default endpoint protocol.', arg_type=get_enum_type(['http', 'https']))
+        c.argument('key_name', options_list=['--key'], help='The key to use.',
+                   arg_type=get_enum_type(list(storage_account_key_options.keys())))
+        for item in ['blob', 'file', 'queue', 'table']:
+            c.argument('{}_endpoint'.format(item), help='Custom endpoint for {}s.'.format(item))
+
+    with self.argument_context('storage account keys renew') as c:
+        c.argument('key_name', options_list=['--key'], help='The key to regenerate.', validator=validate_key,
+                   arg_type=get_enum_type(list(storage_account_key_options.keys())))
+        c.argument('account_name', acct_name_type, id_part=None)
+
+    with self.argument_context('storage account keys list') as c:
+        c.argument('account_name', acct_name_type, id_part=None)
+
+    with self.argument_context('storage account network-rule') as c:
+        from ._validators import validate_subnet
+        c.argument('account_name', acct_name_type, id_part=None)
+        c.argument('ip_address', help='IPv4 address or CIDR range.')
+        c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
+        c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
+        c.argument('action', help='The action of virtual network rule.')
 
     with self.argument_context('storage account management-policy create') as c:
         c.argument('policy', type=file_type, completer=FilesCompleter(),
