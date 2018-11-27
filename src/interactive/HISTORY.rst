@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.1
++++++
+* Remove command registration, rely on module to be called.
+
 0.4.0
 +++++
 * Converted from interactive module to extension.

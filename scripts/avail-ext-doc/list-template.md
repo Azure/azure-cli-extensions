@@ -17,7 +17,7 @@ This article is a complete list of the available extensions for the Azure CLI wh
 
 The list of extensions is also available  from the CLI. To get it, run [az extension list-available](/cli/azure/extension?view=azure-cli-latest#az-extension-list-available):
 
-```azurecli
+```azurecli-interactive
 az extension list-available --output table
 ```
 
