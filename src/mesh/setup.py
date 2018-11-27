@@ -10,6 +10,7 @@ from setuptools import setup, find_packages
 
 VERSION = "0.10.0"
 
+
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -25,6 +26,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
+    'sfmergeutility'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:

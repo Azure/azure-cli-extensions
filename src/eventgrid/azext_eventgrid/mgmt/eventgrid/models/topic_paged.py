@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class TopicPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`Topic <azext_eventgrid.mgmt.eventgrid.models.Topic>` object
+    A paging container for iterating over a list of :class:`Topic <azure.mgmt.eventgrid.models.Topic>` object
     """
 
     _attribute_map = {

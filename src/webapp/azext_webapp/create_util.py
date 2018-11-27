@@ -17,7 +17,9 @@ from ._constants import (
     DOTNET_RUNTIME_NAME,
     DOTNET_VERSION_DEFAULT,
     DOTNET_VERSIONS,
-    STATIC_RUNTIME_NAME)
+    STATIC_RUNTIME_NAME,
+    PYTHON_RUNTIME_NAME,
+    PYTHON_VERSION_DEFAULT)
 
 
 def _resource_client_factory(cli_ctx, **_):
@@ -34,7 +36,7 @@ def zip_contents_from_dir(dirPath, lang):
     relroot = os.path.abspath(os.path.join(dirPath, os.pardir))
     path_and_file = os.path.splitdrive(dirPath)[1]
     file_val = os.path.split(path_and_file)[1]
-    zip_file_path = relroot + "\\" + file_val + ".zip"
+    zip_file_path = relroot + os.path.sep + file_val + ".zip"
     abs_src = os.path.abspath(dirPath)
     with zipfile.ZipFile("{}".format(zip_file_path), "w", zipfile.ZIP_DEFLATED) as zf:
         for dirname, subdirs, files in os.walk(dirPath):
@@ -68,6 +70,9 @@ def get_runtime_version_details(file_path, lang_name):
     elif lang_name.lower() == NODE_RUNTIME_NAME:
         version_detected = parse_node_version(file_path)[0]
         version_to_create = detect_node_version_tocreate(version_detected)
+    elif lang_name.lower() == PYTHON_RUNTIME_NAME:
+        version_detected = "-"
+        version_to_create = PYTHON_VERSION_DEFAULT
     elif lang_name.lower() == STATIC_RUNTIME_NAME:
         version_detected = "-"
         version_to_create = "-"
@@ -85,24 +90,24 @@ def check_resource_group_exists(cmd, rg_name):
     return rcf.resource_groups.check_existence(rg_name)
 
 
-def check_resource_group_supports_os(cmd, rg_name, location, is_linux):
+def check_resource_group_supports_os(cmd, rg_name, is_linux):
     # get all appservice plans from RG
     client = web_client_factory(cmd.cli_ctx)
     plans = list(client.app_service_plans.list_by_resource_group(rg_name))
     for item in plans:
         # for Linux if an app with reserved==False exists, ASP doesn't support Linux
-        if is_linux and item.location == location and not item.reserved:
+        if is_linux and not item.reserved:
             return False
-        elif not is_linux and item.location == location and item.reserved:
+        elif not is_linux and item.reserved:
             return False
     return True
 
 
-def check_if_asp_exists(cmd, rg_name, asp_name):
+def check_if_asp_exists(cmd, rg_name, asp_name, location):
     # get all appservice plans from RG
     client = web_client_factory(cmd.cli_ctx)
     for item in list(client.app_service_plans.list_by_resource_group(rg_name)):
-        if item.name == asp_name:
+        if item.name == asp_name and (item.location.replace(" ", "").lower() == location or item.location == location):
             return True
     return False
 
@@ -124,11 +129,16 @@ def get_lang_from_content(src_path):
     # DOTNET: <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     runtime_details_dict = dict.fromkeys(['language', 'file_loc', 'default_sku'])
     package_json_file = os.path.join(src_path, 'package.json')
+    package_python_file = glob.glob("**/*.py", recursive=True)
     package_netlang_glob = glob.glob("**/*.csproj", recursive=True)
     static_html_file = glob.glob("**/*.html", recursive=True)
     if os.path.isfile(package_json_file):
         runtime_details_dict['language'] = NODE_RUNTIME_NAME
         runtime_details_dict['file_loc'] = package_json_file
+        runtime_details_dict['default_sku'] = 'B1'
+    elif package_python_file:
+        runtime_details_dict['language'] = PYTHON_RUNTIME_NAME
+        runtime_details_dict['file_loc'] = os.path.join(src_path, package_json_file[0])
         runtime_details_dict['default_sku'] = 'B1'
     elif package_netlang_glob:
         package_netcore_file = os.path.join(src_path, package_netlang_glob[0])

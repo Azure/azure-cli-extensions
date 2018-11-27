@@ -10,10 +10,12 @@ Release History
 * Changed api version to 2018-09-01-preview.
 * Fixed issue with displaying error messages
 
-0.9.3 (2018-08-27)
+
+0.9.3 (2018-08-03)
 ++++++++++++++++++
 
-* Added secret resource and secret value resource commands.
+* Fix bug of displaying previous deployment.
+
 
 
 0.9.2 (2018-08-03)

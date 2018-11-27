@@ -18,13 +18,15 @@ class Topic(TrackedResource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: Fully qualified identifier of the resource
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
     :ivar type: Type of the resource
     :vartype type: str
-    :param location: Location of the resource
+    :param location: Required. Location of the resource
     :type location: str
     :param tags: Tags of the resource
     :type tags: dict[str, str]
@@ -32,20 +34,20 @@ class Topic(TrackedResource):
      include: 'Creating', 'Updating', 'Deleting', 'Succeeded', 'Canceled',
      'Failed'
     :vartype provisioning_state: str or
-     ~azext_eventgrid.mgmt.eventgrid.models.TopicProvisioningState
+     ~azure.mgmt.eventgrid.models.TopicProvisioningState
     :ivar endpoint: Endpoint for the topic.
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the topic. Possible values
-     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventV01Schema'
-    :type input_schema: str or
-     ~azext_eventgrid.mgmt.eventgrid.models.InputSchema
+     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventV01Schema'.
+     Default value: "EventGridSchema" .
+    :type input_schema: str or ~azure.mgmt.eventgrid.models.InputSchema
     :param input_schema_mapping: This enables publishing using custom event
      schemas. An InputSchemaMapping can be specified to map various properties
      of a source schema to various required properties of the EventGridEvent
      schema.
     :type input_schema_mapping:
-     ~azext_eventgrid.mgmt.eventgrid.models.InputSchemaMapping
+     ~azure.mgmt.eventgrid.models.InputSchemaMapping
     """
 
     _validation = {
@@ -69,9 +71,9 @@ class Topic(TrackedResource):
         'input_schema_mapping': {'key': 'properties.inputSchemaMapping', 'type': 'InputSchemaMapping'},
     }
 
-    def __init__(self, location, tags=None, input_schema=None, input_schema_mapping=None):
-        super(Topic, self).__init__(location=location, tags=tags)
+    def __init__(self, **kwargs):
+        super(Topic, self).__init__(**kwargs)
         self.provisioning_state = None
         self.endpoint = None
-        self.input_schema = input_schema
-        self.input_schema_mapping = input_schema_mapping
+        self.input_schema = kwargs.get('input_schema', "EventGridSchema")
+        self.input_schema_mapping = kwargs.get('input_schema_mapping', None)

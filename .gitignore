@@ -80,13 +80,14 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# dotenv
-.env
-
 # virtualenv
 .venv
+.env
+.python-version
 venv/
 ENV/
+env/
+env27/
 
 # Spyder project settings
 .spyderproject
@@ -99,10 +100,16 @@ ENV/
 /site
 
 # VS Code
-.vscode/settings.json
+.vscode
 
 # mypy
 .mypy_cache/
 
 # Sphinx
 _build/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+.vs/

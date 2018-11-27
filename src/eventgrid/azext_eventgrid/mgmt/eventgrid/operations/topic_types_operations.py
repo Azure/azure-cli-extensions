@@ -23,7 +23,7 @@ class TopicTypesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-05-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2018-09-15-preview".
     """
 
     models = models
@@ -33,7 +33,7 @@ class TopicTypesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-05-01-preview"
+        self.api_version = '2018-09-15-preview'
 
         self.config = config
 
@@ -50,7 +50,7 @@ class TopicTypesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of TopicTypeInfo
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.TopicTypeInfoPaged[~azext_eventgrid.mgmt.eventgrid.models.TopicTypeInfo]
+         ~azure.mgmt.eventgrid.models.TopicTypeInfoPaged[~azure.mgmt.eventgrid.models.TopicTypeInfo]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -114,7 +114,7 @@ class TopicTypesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicTypeInfo or ClientRawResponse if raw=true
-        :rtype: ~azext_eventgrid.mgmt.eventgrid.models.TopicTypeInfo or
+        :rtype: ~azure.mgmt.eventgrid.models.TopicTypeInfo or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -175,7 +175,7 @@ class TopicTypesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventType
         :rtype:
-         ~azext_eventgrid.mgmt.eventgrid.models.EventTypePaged[~azext_eventgrid.mgmt.eventgrid.models.EventType]
+         ~azure.mgmt.eventgrid.models.EventTypePaged[~azure.mgmt.eventgrid.models.EventType]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
