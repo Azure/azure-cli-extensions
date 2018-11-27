@@ -7,7 +7,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.command_modules.appservice.commands import ex_handler_factory
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import (get_resource_name_completion_list)
+from azure.cli.core.commands.parameters import (get_enum_type, get_resource_name_completion_list)
 # pylint: disable=unused-import
 
 import azext_webapp._help
@@ -31,11 +31,14 @@ class WebappExtCommandLoader(AzCommandsLoader):
     def load_arguments(self, _):
         # pylint: disable=line-too-long
         # PARAMETER REGISTRATION
+        sku_arg_type = CLIArgumentType(help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1(Premium Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large)',
+                                       arg_type=get_enum_type(['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1', 'P2', 'P3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4']))
         webapp_name_arg_type = CLIArgumentType(configured_default='web', options_list=['--name', '-n'], metavar='NAME',
                                                completer=get_resource_name_completion_list('Microsoft.Web/sites'), id_part='name',
                                                help="name of the webapp. You can configure the default using 'az configure --defaults web=<name>'")
         with self.argument_context('webapp up') as c:
             c.argument('name', arg_type=webapp_name_arg_type)
+            c.argument('sku', arg_type=sku_arg_type)
             c.argument('dryrun',
                        help="shows summary of the create and deploy operation instead of executing it",
                        default=False, action='store_true')
