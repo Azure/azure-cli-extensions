@@ -77,9 +77,7 @@ def transform_network(result):
                         ('Kind', result.get('properties', {}).get('kind')),
                         ('AddressPrefix', address_prefix),
                         ('ProvisioningState', result.get('properties', {}).get('provisioningState')),
-                        ('status', result.get('properties', {}).get('status'))
-                        # ('ProvisioningState', result.get('properties', {}).get('provisioningState'))
-                        ])
+                        ('status', result.get('properties', {}).get('status'))])
 
 
 def transform_network_list(result):
@@ -91,8 +89,7 @@ def transform_secret(result):
                         ('ResourceGroup', result.get('resourceGroup')),
                         ('Location', result.get('location')),
                         ('ProvisioningState', result.get('properties', {}).get('provisioningState')),
-                        ('Kind', result.get('properties', {}).get('kind')),
-                        ])
+                        ('Kind', result.get('properties', {}).get('kind'))])
 
 
 def transform_secret_list(result):
@@ -152,8 +149,7 @@ def transform_gateway(result):
                         ('Location', result.get('location')),
                         ('ProvisioningState', result.get('provisioningState')),
                         ('Status', result.get('status')),
-                        ('PublicIP', result.get('ipAddress'))
-                        ])
+                        ('PublicIP', result.get('ipAddress'))])
 
 
 def transform_gateway_list(result):
@@ -225,7 +221,7 @@ def load_command_table(self, _):
 
     with self.command_group('mesh service', mesh_service_util, client_factory=cf_mesh_service) as g:
         g.command('list', 'list', table_transformer=transform_service_list)
-        g.command('show', 'get',  table_transformer=transform_service)
+        g.command('show', 'get', table_transformer=transform_service)
 
 
     with self.command_group('mesh service-replica', mesh_service_replica_util, client_factory=cf_mesh_service_replica) as g:

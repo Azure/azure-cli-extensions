@@ -11,8 +11,6 @@ import json
 import ssl
 import sys
 import os
-from pprint import pprint
-from time import sleep
 
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from knack.log import get_logger
@@ -22,10 +20,8 @@ from knack.util import CLIError
 from azure.cli.core.util import get_file_json, shell_safe_json_parse, sdk_no_wait
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType, get_sdk
-from sfmergeutility import SFMergeUtility
+from sfmergeutility import SFMergeUtility # pylint: disable=import-error
 
-from ._client_factory import cf_mesh_network, cf_mesh_application, cf_mesh_deployments, cf_mesh_gateway
-from .servicefabricmesh.mgmt.servicefabricmesh.models import ErrorModelException
 
 logger = get_logger(__name__)
 
@@ -260,7 +256,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
 
     template = json.loads(json.dumps(template))
 
-    if(parameters != None):
+    if parameters != None:
         parameters = _process_parameters(template_param_defs, parameters) or {}
         parameters = _get_missing_parameters(parameters, template_obj, _prompt_for_parameters)
         parameters = json.loads(json.dumps(parameters))
@@ -347,5 +343,3 @@ def secret_show(client, resource_group_name, secret_name, secret_value_resource_
 def list_secret_values(client, resource_group_name, secret_name):
     secret_data = client.list(resource_group_name, secret_name)
     return secret_data
-
-
