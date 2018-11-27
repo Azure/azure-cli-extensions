@@ -22,13 +22,13 @@ class DiagnosticsDescription(Model):
     :type enabled: bool
     :param default_sink_refs: The sinks to be used if diagnostics is enabled.
      Sink choices can be overridden at the service and code package level.
-    :type default_sink_refs: str
+    :type default_sink_refs: list[str]
     """
 
     _attribute_map = {
         'sinks': {'key': 'sinks', 'type': '[DiagnosticsSinkProperties]'},
         'enabled': {'key': 'enabled', 'type': 'bool'},
-        'default_sink_refs': {'key': 'defaultSinkRefs', 'type': 'str'},
+        'default_sink_refs': {'key': 'defaultSinkRefs', 'type': '[str]'},
     }
 
     def __init__(self, sinks=None, enabled=None, default_sink_refs=None):

@@ -26,14 +26,21 @@ class VolumeResourceDescription(TrackedResource):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The geo-location where the resource lives
-    :type location: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
+    :param location: The geo-location where the resource lives
+    :type location: str
     :ivar provisioning_state: State of the resource.
     :vartype provisioning_state: str
     :param description: User readable description of the volume.
     :type description: str
+    :ivar status: Status of the volume. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :vartype status: str or
+     ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the volume.
+    :vartype status_details: str
     :ivar provider: Provider of the volume. Default value: "SFAzureFile" .
     :vartype provider: str
     :param azure_file_parameters: This type describes a volume provided by an
@@ -46,7 +53,10 @@ class VolumeResourceDescription(TrackedResource):
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'location': {'required': True},
         'provisioning_state': {'readonly': True},
+        'status': {'readonly': True},
+        'status_details': {'readonly': True},
         'provider': {'required': True, 'constant': True},
     }
 
@@ -54,18 +64,22 @@ class VolumeResourceDescription(TrackedResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'description': {'key': 'properties.description', 'type': 'str'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'status_details': {'key': 'properties.statusDetails', 'type': 'str'},
         'provider': {'key': 'properties.provider', 'type': 'str'},
         'azure_file_parameters': {'key': 'properties.azureFileParameters', 'type': 'VolumeProviderParametersAzureFile'},
     }
 
     provider = "SFAzureFile"
 
-    def __init__(self, location=None, tags=None, description=None, azure_file_parameters=None):
-        super(VolumeResourceDescription, self).__init__(location=location, tags=tags)
+    def __init__(self, location, tags=None, description=None, azure_file_parameters=None):
+        super(VolumeResourceDescription, self).__init__(tags=tags, location=location)
         self.provisioning_state = None
         self.description = description
+        self.status = None
+        self.status_details = None
         self.azure_file_parameters = azure_file_parameters
