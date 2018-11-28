@@ -47,14 +47,6 @@ helps['dms project task create'] = """
           type: string
           short-summary: >
             The type of data movement the task will support. The supported types are: OnlineMigration, OfflineMigration.
-        - name: --source-platform
-          type: string
-          short-summary: >
-            The type of server for the source database. The supported types are: SQL, MySQL, PostgreSQL, MongoDB.
-        - name: --target-platform
-          type: string
-          short-summary: >
-            The type of server for the target database. The supported types are: SQLDB, AzureDbForMySql, AzureDbForPostgreSQL, MongoDB.
         - name: --database-options-json
           type: string
           short-summary: >
