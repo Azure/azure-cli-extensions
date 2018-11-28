@@ -14,7 +14,7 @@ helps['dms project create'] = """
             1) SQL -> SQLDB
             2) MySQL -> AzureDbForMySql
             3) PostgreSQL -> AzureDbForPostgreSQL
-            4) MongoDB -> Cosmos DB (via MongoDB API)
+            4) MongoDB -> MongoDB (for migrating to Cosmos DB via their MongoDB API)
 
     parameters:
         - name: --source-platform
@@ -40,21 +40,13 @@ helps['dms project task create'] = """
             1) SQL -> SQLDB :: OfflineMigration
             2) MySQL -> AzureDbForMySql :: OnlineMigration
             3) PostgreSQL -> AzureDbForPostgreSQL :: OnlineMigration
-            4) MongoDB -> Cosmos DB (via MongoDB API) :: OfflineMigration
+            4) MongoDB -> MongoDB (for migrating to Cosmos DB via their MongoDB API) :: OfflineMigration
 
     parameters:
         - name: --task-type
           type: string
           short-summary: >
             The type of data movement the task will support. The supported types are: OnlineMigration, OfflineMigration.
-        - name: --source-platform
-          type: string
-          short-summary: >
-            The type of server for the source database. The supported types are: SQL, MySQL, PostgreSQL, MongoDB.
-        - name: --target-platform
-          type: string
-          short-summary: >
-            The type of server for the target database. The supported types are: SQLDB, AzureDbForMySql, AzureDbForPostgreSQL, MongoDB.
         - name: --database-options-json
           type: string
           short-summary: >

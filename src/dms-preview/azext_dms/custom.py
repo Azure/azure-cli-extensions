@@ -45,16 +45,16 @@ def create_or_update_project(
     # Set inputs to lowercase
     source_platform = source_platform.lower()
     target_platform = target_platform.lower()
-    scenario_handled_in_core = core_handles_scenario(source_platform, target_platform)
+    scenario_handled_in_extension = extension_handles_scenario(source_platform, target_platform)
 
     # Validation: Test scenario eligibility
-    if scenario_handled_in_core:
+    if not scenario_handled_in_extension:
         # If not an extension scenario, run CLI core method
         # TODO: We currently don't have any CLI core code to perform any validations
         # because of this we need to raise the error here.
         try:
             # TODO: Remove this check after validations are added to core
-            if not scenario_handled_in_core:
+            if scenario_handled_in_extension:
                 raise ValueError
 
             core_res = core_create_or_update_project(
@@ -114,14 +114,14 @@ def create_task(
                                      service_name=service_name,
                                      resource_group_name=resource_group_name)
     task_type = task_type.lower()
-    scenario_handled_in_core = core_handles_scenario(src, tgt, task_type)
+    scenario_handled_in_extension = extension_handles_scenario(src, tgt, task_type)
 
     # Validation: Test scenario eligibility
-    if scenario_handled_in_core:
+    if not scenario_handled_in_extension:
         # If not an extension scenario, run CLI core method
         try:
             # TODO: Remove this check after validations are added to core
-            if not scenario_handled_in_core:
+            if scenario_handled_in_extension:
                 raise ValueError
 
             core_res = core_create_task(client,
@@ -212,7 +212,6 @@ def restart_task(
         service_name,
         project_name,
         task_name,
-        task_type,
         object_name=None):
     # For scenarios that support it, restart the entire migration if object name is empty,
     # otherwise restart the specified object.
@@ -220,13 +219,13 @@ def restart_task(
                                      project_name=project_name,
                                      service_name=service_name,
                                      resource_group_name=resource_group_name)
-    st = get_scenario_type(src, tgt, task_type)
+    st = get_scenario_type(src, tgt, "offlinemigration")
 
-    if st in [ScenarioType.mongo_mongo_offline, ScenarioType.mongo_mongo_online]:
+    if st in [ScenarioType.mongo_mongo_offline]:
         command_input = MongoDbCommandInput(object_name=object_name)
         command_properties_model = MongoDbRestartCommand
     else:
-        raise ValueError("The suppplied project's source and target does not support restarting the migration.")
+        raise ValueError("The supplied project's source and target do not support restarting the migration.")
 
     run_command(client,
                 command_input,
@@ -244,7 +243,6 @@ def stop_task(
         service_name,
         project_name,
         task_name,
-        task_type,
         object_name=None):
 
     # If object name is empty, treat this as stopping/cancelling the entire task.
@@ -259,9 +257,9 @@ def stop_task(
                                          project_name=project_name,
                                          service_name=service_name,
                                          resource_group_name=resource_group_name)
-        st = get_scenario_type(src, tgt, task_type)
+        st = get_scenario_type(src, tgt, "offlinemigration")
 
-        if st in [ScenarioType.mongo_mongo_offline, ScenarioType.mongo_mongo_online]:
+        if st in [ScenarioType.mongo_mongo_offline]:
             command_input = MongoDbCommandInput(object_name=object_name)
             command_properties_model = MongoDbCancelCommand
         else:
@@ -280,13 +278,18 @@ def stop_task(
 
 
 # region Helper Methods
-def core_handles_scenario(
+def extension_handles_scenario(
         source_type,
         target_type,
         task_type=""):
     # Add scenario types to this list when moving them out of this extension (preview) and into the core CLI (GA)
-    CoreScenarioTypes = [ScenarioType.sql_sqldb_offline]
-    return get_scenario_type(source_type, target_type, task_type) in CoreScenarioTypes
+    ExtensionScenarioTypes = [
+        ScenarioType.sql_sqldb_online,
+        ScenarioType.mysql_azuremysql_online,
+        ScenarioType.postgres_azurepostgres_online,
+        ScenarioType.mongo_mongo_offline
+        ]
+    return get_scenario_type(source_type, target_type, task_type) in ExtensionScenarioTypes
 
 
 def transform_json_inputs(
