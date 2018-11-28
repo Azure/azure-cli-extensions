@@ -338,8 +338,8 @@ def _get_storage_prerequisites(cmd, storage_account, container):
 
         t_storage_account_keys, t_storage_account_list_keys_results = get_sdk(
             cmd.cli_ctx, ResourceType.MGMT_STORAGE,
-            'models.storage_account_keys#StorageAccountKeys',
-            'models.storage_account_list_keys_result#StorageAccountListKeysResult')
+            'models#StorageAccountKeys',
+            'models#StorageAccountListKeysResult')
 
         if t_storage_account_keys:
             account_key = mgmt_client.storage_accounts.list_keys(rg, storage_account).key1
