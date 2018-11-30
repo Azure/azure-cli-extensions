@@ -35,5 +35,6 @@ class ENCCommandsLoader(AzCommandsLoader):
             c.argument('vhd_file_enc', help="File name of encrypted VHD. This is required if you don't want to upload to storage")
             c.argument('no_progress', action='store_true', help="disable progress reporting")
             c.argument('max_connections', help="Maximum number of parallel connections to use to upload encrypted VHD")
+            c.argument('staging_dir', help="staging folder to contain the temporary encrypted VHD before upload to the storage account. Default to the temp folder")
 
 COMMAND_LOADER_CLS = ENCCommandsLoader
