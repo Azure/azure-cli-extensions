@@ -218,7 +218,7 @@ helps['dms project task cancel'] = """
           type: string
           short-summary: >
             Supported by MongoDB migrations only.
-            The qualified name of the database or collection you wish to stop, or leave blank to stop the entire migration.
+            The qualified name of the database or collection you wish to stop. Leave blank to stop the entire migration.
 """
 
 helps['dms project task cutover'] = """
@@ -232,8 +232,8 @@ helps['dms project task cutover'] = """
         - name: --object-name
           type: string
           short-summary: >
-            For MongoDB migrations, the qualified name of the database or collection you wish to cutover,
-            or leave blank to cutover the entire migration.
+            For MongoDB migrations, the qualified name of the database or collection you wish to cutover.
+            Leave blank to cutover the entire migration.
             For all other migration types, the name of the database on the source you wish to cutover.
         - name: --immediate
           type: bool
@@ -258,7 +258,7 @@ helps['dms project task restart'] = """
         - name: --object-name
           type: string
           short-summary: >
-            The qualified name of the database or collection you wish to restart, or leave blank to restart the entire migration.
+            The qualified name of the database or collection you wish to restart. Leave blank to restart the entire migration.
 """
 
 helps['dms project task stop'] = """
@@ -277,5 +277,5 @@ helps['dms project task stop'] = """
           type: string
           short-summary: >
             Supported by MongoDB migrations only.
-            The qualified name of the database or collection you wish to stop, or leave blank to stop the entire migration.
+            The qualified name of the database or collection you wish to stop. Leave blank to stop the entire migration.
 """
