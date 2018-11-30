@@ -289,8 +289,7 @@ def extension_handles_scenario(
         ScenarioType.sql_sqldb_online,
         ScenarioType.mysql_azuremysql_online,
         ScenarioType.postgres_azurepostgres_online,
-        ScenarioType.mongo_mongo_offline
-    ]
+        ScenarioType.mongo_mongo_offline]
     return get_scenario_type(source_platform, target_platform, task_type) in ExtensionScenarioTypes
 
 
