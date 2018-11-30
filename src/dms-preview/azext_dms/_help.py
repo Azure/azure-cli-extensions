@@ -210,10 +210,6 @@ helps['dms project task cancel'] = """
             az dms project task stop
 
     parameters:
-        - name: --task-type
-          type: string
-          short-summary: >
-            The type of data movement the task was created for. The supported types are: OnlineMigration, OfflineMigration.
         - name: --object-name
           type: string
           short-summary: >
@@ -251,10 +247,6 @@ helps['dms project task restart'] = """
             az dms project task show ... --expand command
 
     parameters:
-        - name: --task-type
-          type: string
-          short-summary: >
-            The type of data movement the task was created for. The supported types are: OnlineMigration, OfflineMigration.
         - name: --object-name
           type: string
           short-summary: >
@@ -269,10 +261,6 @@ helps['dms project task stop'] = """
             az dms project task show ... --expand command
 
     parameters:
-        - name: --task-type
-          type: string
-          short-summary: >
-            The type of data movement the task was created for. The supported types are: OnlineMigration, OfflineMigration.
         - name: --object-name
           type: string
           short-summary: >
