@@ -54,8 +54,12 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
         data_client = _get_storage_prerequisites(cmd, storage_account, container)
 
     # check there is enough disk-space
-    if staging_dir and not os.path.exists(staging_dir):
-        os.makedirs(staging_dir)     
+    if staging_dir:
+        if not os.path.exists(staging_dir):
+            os.makedirs(staging_dir)
+    else:
+        staging_dir = tempfile.gettempdir()
+
     working_dir = tempfile.mkdtemp(dir=staging_dir)
 
     required_size = os.path.getsize(vhd_file)
@@ -64,8 +68,8 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
     else:
         target_path = staging_dir
     if _get_disk_free_spaces(target_path) < required_size:
-        raise CLIError('No enough disk space to contain encryption result. Please free up at least {} GB from the drive of "{}"'.format(
-            required_size // (1024**3), target_path))
+        raise CLIError('No enough disk space to contain encryption result. Please free up at least {} GB from the drive of "{}" or '
+                       'use "--staging-dir" to use a bigger dirve'.format(required_size // (1024**3), target_path))
 
     if not vhd_file_enc:
         fd, vhd_file_enc = tempfile.mkstemp(dir=target_path)
