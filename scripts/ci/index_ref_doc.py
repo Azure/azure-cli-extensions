@@ -33,8 +33,6 @@ ALL_TESTS = []
 CLI_VERSION = get_distribution('azure-cli').version
 
 for extension_name, exts in get_index_data()['extensions'].items():
-    if extension_name == 'botservice':
-        continue
     parsed_cli_version = parse_version(CLI_VERSION)
     filtered_exts = []
     for ext in exts:
