@@ -5,7 +5,12 @@
 
 from knack.help_files import helps
 
-helps['bot create'] = """
+helps['bot publish'] = """
     type: command
-    short-summary: Create a new bot.
+    short-summary: Publish to a bot's associated app service.
+    long-summary: Publish your source code to your bot's associated app service.
+    examples:
+        - name: Publish source code to your Azure App, from within the bot code folder
+          text: |-
+            az bot publish -n botName -g MyResourceGroup --verbose
 """
