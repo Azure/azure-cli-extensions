@@ -49,7 +49,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     expiry_format = "%Y-%m-%dT%H:%MZ"
     expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=time_out)
-    logger.warn("create target storage sas using timeout seconds: %d", time_out)
+    logger.debug("create target storage sas using timeout seconds: %d", time_out)
 
     cli_cmd = prepare_cli_command(['storage', 'account', 'generate-sas',
                                    '--account-name', target_storage_account_name,
