@@ -1,0 +1,235 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json", 
+    "contentVersion": "1.0.0.0", 
+    "parameters": {
+        "location": {
+            "defaultValue": "westus", 
+            "type": "String", 
+            "metadata": {
+                "description": "Location of the resources."
+            }
+        }
+    }, 
+    "resources": [
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "counterApp-az", 
+            "type": "Microsoft.ServiceFabricMesh/applications", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [
+                "Microsoft.ServiceFabricMesh/networks/helloWorldNetwork", 
+                "Microsoft.ServiceFabricMesh/networks/counterAppNetwork", 
+                "Microsoft.ServiceFabricMesh/secrets/azurefilesecret/values/v1", 
+                "Microsoft.ServiceFabricMesh/volumes/counterVolumeWindows"
+            ], 
+            "properties": {
+                "description": "Azure Service Fabric Mesh Counter Application.", 
+                "services": [
+                    {
+                        "name": "counterService", 
+                        "properties": {
+                            "description": "A web service that serves the counter value stored in the Azure Files volume.", 
+                            "osType": "Windows", 
+                            "codePackages": [
+                                {
+                                    "name": "counterService", 
+                                    "image": "seabreeze/azure-mesh-counter:0.1-nanoserver-1709", 
+                                    "volumeRefs": [
+                                        {
+                                            "name": "[resourceId('Microsoft.ServiceFabricMesh/volumes','counterVolumeWindows')]", 
+                                            "destinationPath": "C:\\app\\data"
+                                        }
+                                    ], 
+                                    "endpoints": [
+                                        {
+                                            "name": "counterServiceListener2", 
+                                            "port": 8080
+                                        }
+                                    ], 
+                                    "environmentVariables": [
+                                        {
+                                            "name": "STATE_FOLDER_NAME", 
+                                            "value": "CounterService13"
+                                        }
+                                    ], 
+                                    "resources": {
+                                        "requests": {
+                                            "cpu": 0.5, 
+                                            "memoryInGB": 1.0
+                                        }
+                                    }
+                                }
+                            ], 
+                            "replicaCount": 1, 
+                            "networkRefs": [
+                                {
+                                    "name": "[resourceId('Microsoft.ServiceFabricMesh/networks','counterAppNetwork')]", 
+                                    "endpointRefs": [
+                                        {
+                                            "name": "counterServiceListener2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "helloWorldNetwork", 
+            "type": "Microsoft.ServiceFabricMesh/networks", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [], 
+            "properties": {
+                "kind": "Local", 
+                "description": "Network_app1svc1 description.", 
+                "networkAddressPrefix": "8.0.0.0/16"
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "counterVolumeWindows", 
+            "type": "Microsoft.ServiceFabricMesh/volumes", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [
+                "Microsoft.ServiceFabricMesh/secrets/azurefilesecret/values/v1"
+            ], 
+            "properties": {
+                "description": "Azure Files storage volume for counter App.", 
+                "provider": "SFAzureFile", 
+                "azureFileParameters": {
+                    "shareName": "volshare", 
+                    "accountName": "ashankvoltest", 
+                    "accountKey": "[reference('secrets/azurefilesecret/values/v1')]"
+                }
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "counterAppNetwork", 
+            "type": "Microsoft.ServiceFabricMesh/networks", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [], 
+            "properties": {
+                "kind": "Local", 
+                "description": "counterAppNetwork description.", 
+                "networkAddressPrefix": "7.0.0.0/16"
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "azurefilesecret/v1", 
+            "type": "Microsoft.ServiceFabricMesh/secrets/values", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [
+                "Microsoft.ServiceFabricMesh/secrets/azurefilesecret"
+            ], 
+            "properties": {
+                "value": "secretvalue"
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "azurefilesecret", 
+            "type": "Microsoft.ServiceFabricMesh/secrets", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [], 
+            "properties": {
+                "kind": "inlinedValue", 
+                "description": "Account key for azure files", 
+                "contentType": "text/plain"
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "helloWorldApp", 
+            "type": "Microsoft.ServiceFabricMesh/applications", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [
+                "Microsoft.ServiceFabricMesh/networks/helloWorldNetwork", 
+                "Microsoft.ServiceFabricMesh/networks/counterAppNetwork", 
+                "Microsoft.ServiceFabricMesh/secrets/azurefilesecret/values/v1", 
+                "Microsoft.ServiceFabricMesh/volumes/counterVolumeWindows"
+            ], 
+            "properties": {
+                "description": "app1 description2.", 
+                "services": [
+                    {
+                        "name": "helloWorldService", 
+                        "properties": {
+                            "description": "svc1 description.", 
+                            "osType": "Windows", 
+                            "codePackages": [
+                                {
+                                    "name": "helloWorldCode", 
+                                    "image": "seabreeze/azure-mesh-helloworld:1.1-windowsservercore-1709", 
+                                    "endpoints": [
+                                        {
+                                            "name": "helloWorldListener", 
+                                            "port": 80
+                                        }
+                                    ], 
+                                    "resources": {
+                                        "requests": {
+                                            "cpu": 0.5, 
+                                            "memoryInGB": 1.0
+                                        }
+                                    }
+                                }
+                            ], 
+                            "replicaCount": 1, 
+                            "networkRefs": [
+                                {
+                                    "name": "[resourceId('Microsoft.ServiceFabricMesh/networks','helloWorldNetwork')]", 
+                                    "endpointRefs": [
+                                        {
+                                            "name": "helloWorldListener"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }, 
+        {
+            "apiVersion": "2018-09-01-preview", 
+            "name": "helloWorldGateway", 
+            "type": "Microsoft.ServiceFabricMesh/gateways", 
+            "location": "[parameters('location')]", 
+            "dependsOn": [
+                "Microsoft.ServiceFabricMesh/networks/helloWorldNetwork", 
+                "Microsoft.ServiceFabricMesh/networks/counterAppNetwork"
+            ], 
+            "properties": {
+                "description": "Gateway to connect to public internet.", 
+                "sourceNetwork": {
+                    "name": "Open"
+                }, 
+                "destinationNetwork": {
+                    "name": "[resourceId('Microsoft.ServiceFabricMesh/networks', 'helloWorldNetwork')]"
+                }, 
+                "tcp": [
+                    {
+                        "name": "PublicConnection", 
+                        "port": 80, 
+                        "destination": {
+                            "applicationName": "helloWorldApp", 
+                            "serviceName": "helloWorldService", 
+                            "endpointName": "helloWorldListener"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+      "publicIPAddress": {
+        "value": "[reference('helloWorldGateway').ipAddress]",
+        "type": "string"
+      }
+    }
+}

@@ -12,9 +12,14 @@
 from enum import Enum
 
 
-class IngressQoSLevel(Enum):
+class ResourceStatus(Enum):
 
-    bronze = "Bronze"
+    unknown = "Unknown"
+    ready = "Ready"
+    upgrading = "Upgrading"
+    creating = "Creating"
+    deleting = "Deleting"
+    failed = "Failed"
 
 
 class HealthState(Enum):
@@ -26,27 +31,39 @@ class HealthState(Enum):
     unknown = "Unknown"
 
 
-class ServiceResourceStatus(Enum):
+class SecretKind(Enum):
 
-    unknown = "Unknown"
-    active = "Active"
-    upgrading = "Upgrading"
-    deleting = "Deleting"
-    creating = "Creating"
-    failed = "Failed"
+    inlined_value = "inlinedValue"
 
 
-class ApplicationResourceStatus(Enum):
+class VolumeProvider(Enum):
 
-    invalid = "Invalid"
-    ready = "Ready"
-    upgrading = "Upgrading"
-    creating = "Creating"
-    deleting = "Deleting"
-    failed = "Failed"
+    sf_azure_file = "SFAzureFile"
 
 
-class OperatingSystemTypes(Enum):
+class SizeTypes(Enum):
+
+    small = "Small"
+    medium = "Medium"
+    large = "Large"
+
+
+class ApplicationScopedVolumeKind(Enum):
+
+    service_fabric_volume_disk = "ServiceFabricVolumeDisk"
+
+
+class NetworkKind(Enum):
+
+    local = "Local"
+
+
+class HeaderMatchType(Enum):
+
+    exact = "exact"
+
+
+class OperatingSystemType(Enum):
 
     linux = "Linux"
     windows = "Windows"
@@ -56,3 +73,24 @@ class DiagnosticsSinkKind(Enum):
 
     invalid = "Invalid"
     azure_internal_monitoring_pipeline = "AzureInternalMonitoringPipeline"
+
+
+class AutoScalingMechanismKind(Enum):
+
+    add_remove_replica = "AddRemoveReplica"
+
+
+class AutoScalingMetricKind(Enum):
+
+    resource = "Resource"
+
+
+class AutoScalingResourceMetricName(Enum):
+
+    cpu = "cpu"
+    memory_in_gb = "memoryInGB"
+
+
+class AutoScalingTriggerKind(Enum):
+
+    average_load = "AverageLoad"

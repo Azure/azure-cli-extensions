@@ -23,6 +23,15 @@ helps['mesh deployment create'] = """
           text: az mesh deployment create --resource-group mygroup --template-uri https://seabreezequickstart.blob.core.windows.net/templates/quickstart/sbz_rp.linux.json
         - name: Create a deployment with a template file on local disk.
           text: az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
+        - name: List of comma separated yaml files or a directory which contains all the yaml files.
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml
+        - name: Create a deployment with yaml files, along with a yaml parameters file, which consists of key/value pairs.
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters ../params.yaml
+        - name: Create a deployment with parameters in arm json format.
+          text: az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters "params.json"
+        - name: Create a deployment with parameters passed directly as a json object.
+          text: >
+                az mesh deployment create --resource-group mygroup --input-yaml-files ./app.yaml,./network.yaml --parameters "{ 'location' : {'value' : 'eastus'}, 'myparam' : {'value' : 'myvalue'} }"
     parameters:
     - name: --mode
       type: string
@@ -30,7 +39,7 @@ helps['mesh deployment create'] = """
         complete(previous resources will be deleted)
     - name: --parameters
       type: string
-      short-summary: json string to supplement parameters of the deployment template
+      short-summary: json string or json arm parameter file to supplement parameters of the deployment template
 """
 
 helps['mesh app'] = """
@@ -131,4 +140,64 @@ helps['mesh volume list'] = """
 helps['mesh volume show'] = """
     type: command
     short-summary: Get the details of a volume.
+"""
+
+helps['mesh secret'] = """
+    type: group
+    short-summary: Manage secret resources.
+"""
+
+helps['mesh secret delete'] = """
+    type: command
+    short-summary: Delete a secret.
+"""
+
+helps['mesh secret list'] = """
+    type: command
+    short-summary: List Secrets.
+"""
+
+helps['mesh secret show'] = """
+    type: command
+    short-summary: Get the details of a secret.
+"""
+
+helps['mesh secretvalue'] = """
+    type: group
+    short-summary: Manage secret values.
+"""
+
+helps['mesh secretvalue delete'] = """
+    type: command
+    short-summary: Delete a secret version.
+"""
+
+helps['mesh secretvalue list'] = """
+    type: command
+    short-summary: List Secrets versions.
+"""
+
+helps['mesh secretvalue show'] = """
+    type: command
+    short-summary: Get the details of a secret value.
+"""
+
+helps['mesh gateway'] = """
+    type: group
+    short-summary: Manage gateway resources.
+"""
+
+helps['mesh gateway delete'] = """
+    type: command
+    short-summary: Delete a gateway resource.
+"""
+
+helps['mesh gateway list'] = """
+    type: command
+    short-summary: List gateway resources.
+"""
+
+helps['mesh gateway show'] = """
+    type: command
+    short-summary: Get the details of a gateway.
 """

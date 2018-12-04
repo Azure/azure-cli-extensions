@@ -18,8 +18,8 @@ def cf_mesh_service(cli_ctx, _):
     return _cf_mesh(cli_ctx).service
 
 
-def cf_mesh_replica(cli_ctx, _):
-    return _cf_mesh(cli_ctx).replica
+def cf_mesh_service_replica(cli_ctx, _):
+    return _cf_mesh(cli_ctx).service_replica
 
 
 def cf_mesh_code_package(cli_ctx, _):
@@ -42,3 +42,15 @@ def _resource_client_factory(cli_ctx, **_):
 
 def cf_mesh_deployments(cli_ctx, _):
     return _resource_client_factory(cli_ctx).deployments
+
+
+def cf_mesh_secret(cli_ctx, _):
+    return _cf_mesh(cli_ctx).secret
+
+
+def cf_mesh_secret_value(cli_ctx, _):
+    return _cf_mesh(cli_ctx).secret_value
+
+
+def cf_mesh_gateway(cli_ctx, _):
+    return _cf_mesh(cli_ctx).gateway

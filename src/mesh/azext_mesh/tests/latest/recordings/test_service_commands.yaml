@@ -1,0 +1,444 @@
+interactions:
+- request:
+    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
+      "date": "2018-10-19T18:36:56Z"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group create]
+      Connection: [keep-alive]
+      Content-Length: ['110']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2018-10-19T18:36:56Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['274']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:01 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 201, message: Created}
+- request:
+    body: '{"properties": {"template": {"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
+      "contentVersion": "1.0.0.0", "parameters": {"location": {"type": "string", "metadata":
+      {"description": "Location of the resources."}, "defaultValue": "eastus"}}, "resources":
+      [{"apiVersion": "2018-07-01-preview", "name": "helloWorldNetwork", "type": "Microsoft.ServiceFabricMesh/networks",
+      "location": "[parameters(''location'')]", "dependsOn": [], "properties": {"addressPrefix":
+      "10.0.0.4/22", "ingressConfig": {"layer4": [{"name": "helloWorldIngress", "publicPort":
+      "80", "applicationName": "helloWorldApp", "serviceName": "helloWorldService",
+      "endpointName": "helloWorldListener"}]}}}, {"apiVersion": "2018-07-01-preview",
+      "name": "helloWorldApp", "type": "Microsoft.ServiceFabricMesh/applications",
+      "location": "[parameters(''location'')]", "dependsOn": ["Microsoft.ServiceFabricMesh/networks/helloWorldNetwork"],
+      "properties": {"description": "Service Fabric Mesh HelloWorld Application!",
+      "services": [{"type": "Microsoft.ServiceFabricMesh/services", "location": "[parameters(''location'')]",
+      "name": "helloWorldService", "properties": {"description": "Service Fabric Mesh
+      Hello World Service.", "osType": "linux", "codePackages": [{"name": "helloWorldCode",
+      "image": "seabreeze/azure-mesh-helloworld:1.1-alpine", "endpoints": [{"name":
+      "helloWorldListener", "port": "80"}], "resources": {"requests": {"cpu": "1",
+      "memoryInGB": "1"}}}, {"name": "helloWorldSideCar", "image": "seabreeze/azure-mesh-helloworld-sidecar:1.0-alpine",
+      "resources": {"requests": {"cpu": "1", "memoryInGB": "1"}}}], "replicaCount":
+      "1", "networkRefs": [{"name": "[resourceId(''Microsoft.ServiceFabricMesh/networks'',
+      ''helloWorldNetwork'')]"}]}}]}}]}, "parameters": {}, "mode": "Incremental"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Length: ['1794']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/validate?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002","name":"cli000002","properties":{"templateHash":"8082464397853678251","parameters":{"location":{"type":"String","value":"eastus"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2018-10-19T18:37:03.6853623Z","duration":"PT0S","correlationId":"c620d76f-274a-4d0e-8306-28b61c013fc8","providers":[{"namespace":"Microsoft.ServiceFabricMesh","resourceTypes":[{"resourceType":"networks","locations":["eastus"]},{"resourceType":"applications","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork","resourceType":"Microsoft.ServiceFabricMesh/networks","resourceName":"helloWorldNetwork"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp","resourceType":"Microsoft.ServiceFabricMesh/applications","resourceName":"helloWorldApp"}],"validatedResources":[{"apiVersion":"2018-07-01-preview","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork","name":"helloWorldNetwork","type":"Microsoft.ServiceFabricMesh/networks","location":"eastus","properties":{"addressPrefix":"10.0.0.4/22","ingressConfig":{"layer4":[{"name":"helloWorldIngress","publicPort":"80","applicationName":"helloWorldApp","serviceName":"helloWorldService","endpointName":"helloWorldListener"}]}}},{"dependsOn":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork"],"apiVersion":"2018-07-01-preview","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp","name":"helloWorldApp","type":"Microsoft.ServiceFabricMesh/applications","location":"eastus","properties":{"description":"Service
+        Fabric Mesh HelloWorld Application!","services":[{"type":"Microsoft.ServiceFabricMesh/services","location":"eastus","name":"helloWorldService","properties":{"description":"Service
+        Fabric Mesh Hello World Service.","osType":"linux","codePackages":[{"name":"helloWorldCode","image":"seabreeze/azure-mesh-helloworld:1.1-alpine","endpoints":[{"name":"helloWorldListener","port":"80"}],"resources":{"requests":{"cpu":"1","memoryInGB":"1"}}},{"name":"helloWorldSideCar","image":"seabreeze/azure-mesh-helloworld-sidecar:1.0-alpine","resources":{"requests":{"cpu":"1","memoryInGB":"1"}}}],"replicaCount":"1","networkRefs":[{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork"}]}}]}}]}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['3010']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:03 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"template": {"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
+      "contentVersion": "1.0.0.0", "parameters": {"location": {"type": "string", "metadata":
+      {"description": "Location of the resources."}, "defaultValue": "eastus"}}, "resources":
+      [{"apiVersion": "2018-07-01-preview", "name": "helloWorldNetwork", "type": "Microsoft.ServiceFabricMesh/networks",
+      "location": "[parameters(''location'')]", "dependsOn": [], "properties": {"addressPrefix":
+      "10.0.0.4/22", "ingressConfig": {"layer4": [{"name": "helloWorldIngress", "publicPort":
+      "80", "applicationName": "helloWorldApp", "serviceName": "helloWorldService",
+      "endpointName": "helloWorldListener"}]}}}, {"apiVersion": "2018-07-01-preview",
+      "name": "helloWorldApp", "type": "Microsoft.ServiceFabricMesh/applications",
+      "location": "[parameters(''location'')]", "dependsOn": ["Microsoft.ServiceFabricMesh/networks/helloWorldNetwork"],
+      "properties": {"description": "Service Fabric Mesh HelloWorld Application!",
+      "services": [{"type": "Microsoft.ServiceFabricMesh/services", "location": "[parameters(''location'')]",
+      "name": "helloWorldService", "properties": {"description": "Service Fabric Mesh
+      Hello World Service.", "osType": "linux", "codePackages": [{"name": "helloWorldCode",
+      "image": "seabreeze/azure-mesh-helloworld:1.1-alpine", "endpoints": [{"name":
+      "helloWorldListener", "port": "80"}], "resources": {"requests": {"cpu": "1",
+      "memoryInGB": "1"}}}, {"name": "helloWorldSideCar", "image": "seabreeze/azure-mesh-helloworld-sidecar:1.0-alpine",
+      "resources": {"requests": {"cpu": "1", "memoryInGB": "1"}}}], "replicaCount":
+      "1", "networkRefs": [{"name": "[resourceId(''Microsoft.ServiceFabricMesh/networks'',
+      ''helloWorldNetwork'')]"}]}}]}}]}, "parameters": {}, "mode": "Incremental"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Length: ['1794']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002","name":"cli000002","properties":{"templateHash":"8082464397853678251","parameters":{"location":{"type":"String","value":"eastus"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2018-10-19T18:37:05.5457615Z","duration":"PT0.3142795S","correlationId":"392d2cfb-7f00-421f-a78c-cb5e6051df1e","providers":[{"namespace":"Microsoft.ServiceFabricMesh","resourceTypes":[{"resourceType":"networks","locations":["eastus"]},{"resourceType":"applications","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork","resourceType":"Microsoft.ServiceFabricMesh/networks","resourceName":"helloWorldNetwork"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp","resourceType":"Microsoft.ServiceFabricMesh/applications","resourceName":"helloWorldApp"}]}}'}
+    headers:
+      azure-asyncoperation: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002/operationStatuses/08586616326602461287?api-version=2017-05-10']
+      cache-control: [no-cache]
+      content-length: ['1201']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:05 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586616326602461287?api-version=2017-05-10
+  response:
+    body: {string: '{"status":"Running"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['20']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:10 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586616326602461287?api-version=2017-05-10
+  response:
+    body: {string: '{"status":"Running"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['20']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:15 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586616326602461287?api-version=2017-05-10
+  response:
+    body: {string: '{"status":"Running"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['20']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:21 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586616326602461287?api-version=2017-05-10
+  response:
+    body: {string: '{"status":"Failed","error":{"code":"DeploymentFailed","message":"At
+        least one resource deployment operation failed. Please list deployment operations
+        for details. Please see https://aka.ms/arm-debug for usage details.","details":[{"code":"BadRequest","message":"{\r\n  \"error\":
+        {\r\n    \"code\": \"QuotaValidationError\",\r\n    \"message\": \"One or
+        more quotas were exceeded by current request. Resource: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RGPIZLY7ZWRB/providers/Microsoft.ServiceFabricMesh/networks/HELLOWORLDNETWORK.
+        Details: NetworkQuota validations failed.\",\r\n    \"details\": [\r\n      {\r\n        \"code\":
+        \"ResourceCountExceededQuota\",\r\n        \"message\": \"Request exceeds
+        quota for count of resource type: Network. Quota: 5/subscription. Requested
+        resource count:6\"\r\n      }\r\n    ],\r\n    \"innerError\": \"Microsoft.ServiceFabric.Rp.Errors.WrpException:
+        One or more quotas were exceeded by current request. Resource: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RGPIZLY7ZWRB/providers/Microsoft.ServiceFabricMesh/networks/HELLOWORLDNETWORK.
+        Details: NetworkQuota validations failed.\\r\\n   at Microsoft.ServiceFabric.Services.Communication.Client.ServicePartitionClient`1.<InvokeWithRetryAsync>d__24`1.MoveNext()\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.ServiceFabric.Services.Communication.Client.ServicePartitionClient`1.<InvokeWithRetryAsync>d__26.MoveNext()\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.NetworkResourceManager.StateMachine.Network.NetworkStateMachineBase.<RegisterResourceWithSubscriptionManager>d__27.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\NetworkResourceManager\\\\StateMachine\\\\Network\\\\NetworkStateMachineBase.cs:line
+        114\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.ResourceStateMachine.ResourceStateMachineBase`5.<AddOrUpdateAsync>d__6`1.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\ResourceStateMachine\\\\ResourceStateMachineBase.cs:line
+        99\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.Actors.RealActorProxy`2.<InvokeMethod>d__16`1.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\Actors\\\\RealActorProxy.cs:line 0\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.Actors.RealActorProxy`2.<InvokeMethodWithReturnValue>d__15`1.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\Actors\\\\RealActorProxy.cs:line 0\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.NetworkResourceManager.Operation.Networks.PutNetworkOperation`1.<CreateOrUpdate>d__8.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\NetworkResourceManager\\\\Operation\\\\Networks\\\\PutNetworkOperation.cs:line
+        94\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.NetworkResourceManager.Operation.Networks.PutNetworkOperation`1.<ExecuteAsync>d__6.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\NetworkResourceManager\\\\Operation\\\\Networks\\\\PutNetworkOperation.cs:line
+        45\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.ServiceFabric.Rp.Operation.OperationBaseWithoutInstrumentation`1.<RunAsync>d__49.MoveNext()\"\r\n  }\r\n}"}]}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['4962']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:25 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2017-05-10
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002","name":"cli000002","properties":{"templateHash":"8082464397853678251","parameters":{"location":{"type":"String","value":"eastus"}},"mode":"Incremental","provisioningState":"Failed","timestamp":"2018-10-19T18:37:21.3895189Z","duration":"PT16.1580369S","correlationId":"392d2cfb-7f00-421f-a78c-cb5e6051df1e","providers":[{"namespace":"Microsoft.ServiceFabricMesh","resourceTypes":[{"resourceType":"networks","locations":["eastus"]},{"resourceType":"applications","locations":["eastus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork","resourceType":"Microsoft.ServiceFabricMesh/networks","resourceName":"helloWorldNetwork"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp","resourceType":"Microsoft.ServiceFabricMesh/applications","resourceName":"helloWorldApp"}],"error":{"code":"DeploymentFailed","message":"At
+        least one resource deployment operation failed. Please list deployment operations
+        for details. Please see https://aka.ms/arm-debug for usage details.","details":[{"code":"BadRequest","message":"{\r\n  \"error\":
+        {\r\n    \"code\": \"QuotaValidationError\",\r\n    \"message\": \"One or
+        more quotas were exceeded by current request. Resource: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RGPIZLY7ZWRB/providers/Microsoft.ServiceFabricMesh/networks/HELLOWORLDNETWORK.
+        Details: NetworkQuota validations failed.\",\r\n    \"details\": [\r\n      {\r\n        \"code\":
+        \"ResourceCountExceededQuota\",\r\n        \"message\": \"Request exceeds
+        quota for count of resource type: Network. Quota: 5/subscription. Requested
+        resource count:6\"\r\n      }\r\n    ],\r\n    \"innerError\": \"Microsoft.ServiceFabric.Rp.Errors.WrpException:
+        One or more quotas were exceeded by current request. Resource: /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLITEST.RGPIZLY7ZWRB/providers/Microsoft.ServiceFabricMesh/networks/HELLOWORLDNETWORK.
+        Details: NetworkQuota validations failed.\\r\\n   at Microsoft.ServiceFabric.Services.Communication.Client.ServicePartitionClient`1.<InvokeWithRetryAsync>d__24`1.MoveNext()\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.ServiceFabric.Services.Communication.Client.ServicePartitionClient`1.<InvokeWithRetryAsync>d__26.MoveNext()\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.NetworkResourceManager.StateMachine.Network.NetworkStateMachineBase.<RegisterResourceWithSubscriptionManager>d__27.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\NetworkResourceManager\\\\StateMachine\\\\Network\\\\NetworkStateMachineBase.cs:line
+        114\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.ResourceStateMachine.ResourceStateMachineBase`5.<AddOrUpdateAsync>d__6`1.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\ResourceStateMachine\\\\ResourceStateMachineBase.cs:line
+        99\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.Actors.RealActorProxy`2.<InvokeMethod>d__16`1.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\Actors\\\\RealActorProxy.cs:line 0\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.Actors.RealActorProxy`2.<InvokeMethodWithReturnValue>d__15`1.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\Actors\\\\RealActorProxy.cs:line 0\\r\\n---
+        End of stack trace from previous location where exception was thrown ---\\r\\n   at
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.NetworkResourceManager.Operation.Networks.PutNetworkOperation`1.<CreateOrUpdate>d__8.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\NetworkResourceManager\\\\Operation\\\\Networks\\\\PutNetworkOperation.cs:line
+        94\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.SeaBreeze.NetworkResourceManager.Operation.Networks.PutNetworkOperation`1.<ExecuteAsync>d__6.MoveNext()
+        in F:\\\\aw\\\\1\\\\s\\\\src\\\\NetworkResourceManager\\\\Operation\\\\Networks\\\\PutNetworkOperation.cs:line
+        45\\r\\n--- End of stack trace from previous location where exception was
+        thrown ---\\r\\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\\r\\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\\r\\n   at Microsoft.ServiceFabric.Rp.Operation.OperationBaseWithoutInstrumentation`1.<RunAsync>d__49.MoveNext()\"\r\n  }\r\n}"}]}}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['6143']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh deployment create]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-servicefabricmesh/2018-09-01-privatepreview
+          Azure-SDK-For-Python AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp?api-version=2018-09-01-privatepreview
+  response:
+    body: {string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ServiceFabricMesh/applications/helloWorldApp''
+        under resource group ''clitest.rg000001'' was not found."}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['178']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-failure-cause: [gateway]
+    status: {code: 404, message: Not Found}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [mesh app list]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-servicefabricmesh/2018-09-01-privatepreview
+          Azure-SDK-For-Python AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications?api-version=2018-09-01-privatepreview
+  response:
+    body: {string: '{"value":[]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['12']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 19 Oct 2018 18:37:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 resourcemanagementclient/1.2.1 Azure-SDK-For-Python
+          AZURECLI/2.0.39]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2017-05-10
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Fri, 19 Oct 2018 18:37:32 GMT']
+      expires: ['-1']
+      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdQSVpMWTdaV1JCLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2017-05-10']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-deletes: ['14999']
+    status: {code: 202, message: Accepted}
+version: 1
