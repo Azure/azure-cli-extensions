@@ -7,9 +7,7 @@ from knack.arguments import CLIArgumentType
 
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
-    get_enum_type,
-    get_three_state_flag,
-    tags_type)
+    get_enum_type)
 
 name_arg_type = CLIArgumentType(metavar='NAME', configured_default='botname')
 

@@ -25,15 +25,15 @@ def __install_node_dependencies(kudu_client):
 
     :return: Dictionary with results of the HTTP KUDU request
     """
-    if not kudu_client.__initialized:
-        kudu_client.__initialize()
+    if not kudu_client.__initialized:  # pylint:disable=protected-access
+        kudu_client.__initialize()  # pylint:disable=protected-access
 
     payload = {
         'command': 'npm install',
         'dir': r'site\wwwroot'
     }
-    response = requests.post(kudu_client.__scm_url + '/api/command', data=json.dumps(payload),
-                             headers=kudu_client.__get_application_json_headers())
+    response = requests.post(kudu_client.__scm_url + '/api/command', data=json.dumps(payload),  # pylint:disable=protected-access
+                             headers=kudu_client.__get_application_json_headers())   # pylint:disable=protected-access
     HttpResponseValidator.check_response_status(response)
     return response.json()
 
