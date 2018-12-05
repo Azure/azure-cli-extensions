@@ -26,8 +26,6 @@ class Resource(Model):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The geo-location where the resource lives
-    :type location: str
     """
 
     _validation = {
@@ -40,12 +38,10 @@ class Resource(Model):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, location=None):
+    def __init__(self):
         super(Resource, self).__init__()
         self.id = None
         self.name = None
         self.type = None
-        self.location = location

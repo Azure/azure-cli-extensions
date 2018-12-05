@@ -13,7 +13,10 @@ from msrest.serialization import Model
 
 
 class NetworkProperties(Model):
-    """Describes a network.
+    """Describes properties of a network resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
 
     :param description: User readable description of the network.
     :type description: str
@@ -22,20 +25,30 @@ class NetworkProperties(Model):
     :param ingress_config: Configuration for public connectivity for this
      network.
     :type ingress_config: ~azure.mgmt.servicefabricmesh.models.IngressConfig
+    :param status: Status of the network. Possible values include: 'Unknown',
+     'Ready', 'Upgrading', 'Creating', 'Deleting', 'Failed'
+    :type status: str or ~azure.mgmt.servicefabricmesh.models.ResourceStatus
+    :ivar status_details: Gives additional information about the current
+     status of the network.
+    :vartype status_details: str
     """
 
     _validation = {
-        'address_prefix': {'required': True},
+        'status_details': {'readonly': True},
     }
 
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
         'address_prefix': {'key': 'addressPrefix', 'type': 'str'},
         'ingress_config': {'key': 'ingressConfig', 'type': 'IngressConfig'},
+        'status': {'key': 'status', 'type': 'str'},
+        'status_details': {'key': 'statusDetails', 'type': 'str'},
     }
 
-    def __init__(self, address_prefix, description=None, ingress_config=None):
+    def __init__(self, description=None, address_prefix=None, ingress_config=None, status=None):
         super(NetworkProperties, self).__init__()
         self.description = description
         self.address_prefix = address_prefix
         self.ingress_config = ingress_config
+        self.status = status
+        self.status_details = None

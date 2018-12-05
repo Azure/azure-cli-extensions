@@ -1,0 +1,30 @@
+{
+  "type": "gateway",
+  "name": "helloWorldGateway",
+  "api-version": "6.4-preview",
+  "fullyQualifiedResourceName": "helloWorldGateway",
+  "description": {
+    "schemaVersion": "1.0.0-preview2",
+    "name": "helloWorldGateway",
+    "properties": {
+      "description": "Gateway to connect to public internet.",
+      "sourceNetwork": {
+        "name": "Open"
+      },
+      "destinationNetwork": {
+        "name": "helloWorldNetwork"
+      },
+      "tcp": [
+        {
+          "name": "PublicConnection",
+          "port": 80,
+          "destination": {
+            "applicationName": "helloWorldApp",
+            "serviceName": "helloWorldService",
+            "endpointName": "helloWorldListener"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -11,13 +11,10 @@ from azure.cli.command_modules.botservice._exception_handler import bot_exceptio
 
 def load_command_table(self, _):
     botOperations_commandType = CliCommandType(
-        operations_tmpl='azext_bot.botservice.operations.bots_operations#BotsOperations.{}',  # pylint: disable=line-too-long
+        operations_tmpl='azext_bot.botservice.operations.bots_operations#BotsOperations.{}',
         client_factory=get_botservice_management_client,
         exception_handler=bot_exception_handler
     )
 
     with self.command_group('bot', botOperations_commandType) as g:
-        g.custom_command('create', 'create')
-        g.custom_command('show', 'get_bot')
-        g.custom_command('download', 'download_app')
         g.custom_command('publish', 'publish_app')

@@ -13,9 +13,9 @@ from msrest.serialization import Model
 
 
 class ContainerLogs(Model):
-    """The logs of the container.
+    """Container logs.
 
-    :param content: content of the log.
+    :param content: Container logs.
     :type content: str
     """
 

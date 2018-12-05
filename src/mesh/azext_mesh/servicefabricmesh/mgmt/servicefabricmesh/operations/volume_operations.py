@@ -22,7 +22,7 @@ class VolumeOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
     """
 
     models = models
@@ -32,24 +32,23 @@ class VolumeOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-07-01-preview"
+        self.api_version = "2018-09-01-preview"
 
         self.config = config
 
     def create(
-            self, resource_group_name, volume_name, volume_resource_description, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, volume_resource_name, volume_resource_description, custom_headers=None, raw=False, **operation_config):
         """Creates or updates a volume resource.
 
-        Creates a volume resource with the specified name and description. If a
-        volume with the same name already exists, then its description is
-        updated to the one indicated in this request.
-        .
+        Creates a volume resource with the specified name, description and
+        properties. If a volume resource with the same name exists, then it is
+        updated with the specified description and properties.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param volume_name: The identity of the volume.
-        :type volume_name: str
-        :param volume_resource_description: Description for creating a volume
+        :param volume_resource_name: The identity of the volume.
+        :type volume_resource_name: str
+        :param volume_resource_description: Description for creating a Volume
          resource.
         :type volume_resource_description:
          ~azure.mgmt.servicefabricmesh.models.VolumeResourceDescription
@@ -69,7 +68,7 @@ class VolumeOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'volumeName': self._serialize.url("volume_name", volume_name, 'str', skip_quote=True)
+            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -95,7 +94,7 @@ class VolumeOperations(object):
         response = self._client.send(
             request, header_parameters, body_content, stream=False, **operation_config)
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 202]:
             raise models.ErrorModelException(self._deserialize, response)
 
         deserialized = None
@@ -110,21 +109,19 @@ class VolumeOperations(object):
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
 
     def get(
-            self, resource_group_name, volume_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the volume resource.
+            self, resource_group_name, volume_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the volume resource with the given name.
 
-        Gets the information about the volume resource with a given name. This
-        information includes the volume description and other runtime
-        information.
-        .
+        Gets the information about the volume resource with the given name. The
+        information include the description and other properties of the volume.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param volume_name: The identity of the volume.
-        :type volume_name: str
+        :param volume_resource_name: The identity of the volume.
+        :type volume_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -141,7 +138,7 @@ class VolumeOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'volumeName': self._serialize.url("volume_name", volume_name, 'str', skip_quote=True)
+            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -176,18 +173,18 @@ class VolumeOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
 
     def delete(
-            self, resource_group_name, volume_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, volume_resource_name, custom_headers=None, raw=False, **operation_config):
         """Deletes the volume resource.
 
-        Deletes the volume identified by the name.
+        Deletes the volume resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param volume_name: The identity of the volume.
-        :type volume_name: str
+        :param volume_resource_name: The identity of the volume.
+        :type volume_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -203,7 +200,7 @@ class VolumeOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'volumeName': self._serialize.url("volume_name", volume_name, 'str', skip_quote=True)
+            'volumeResourceName': self._serialize.url("volume_resource_name", volume_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -225,22 +222,21 @@ class VolumeOperations(object):
         request = self._client.delete(url, query_parameters)
         response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             raise models.ErrorModelException(self._deserialize, response)
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/volumes/{volumeResourceName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
         """Gets all the volume resources in a given resource group.
 
         Gets the information about all volume resources in a given resource
-        group. The information includes the volume description and other
-        runtime information.
-        .
+        group. The information include the description and other properties of
+        the Volume.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -309,10 +305,9 @@ class VolumeOperations(object):
             self, custom_headers=None, raw=False, **operation_config):
         """Gets all the volume resources in a given subscription.
 
-        Gets the information about all volume resources in a given
-        subscription. The information includes the volume description and other
-        runtime information.
-        .
+        Gets the information about all volume resources in a given resource
+        group. The information include the description and other properties of
+        the volume.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

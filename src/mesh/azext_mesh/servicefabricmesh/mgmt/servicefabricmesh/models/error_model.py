@@ -16,21 +16,21 @@ from msrest.exceptions import HttpOperationError
 class ErrorModel(Model):
     """The error details.
 
-    :param code: The error code.
-    :type code: str
-    :param message: The error message.
-    :type message: str
+    :param error: Error model information
+    :type error: ~azure.mgmt.servicefabricmesh.models.ErrorErrorModel
     """
 
-    _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
+    _validation = {
+        'error': {'required': True},
     }
 
-    def __init__(self, code=None, message=None):
+    _attribute_map = {
+        'error': {'key': 'error', 'type': 'ErrorErrorModel'},
+    }
+
+    def __init__(self, error):
         super(ErrorModel, self).__init__()
-        self.code = code
-        self.message = message
+        self.error = error
 
 
 class ErrorModelException(HttpOperationError):
