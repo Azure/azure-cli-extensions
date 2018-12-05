@@ -43,7 +43,7 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
                        help='Name of the final image that will be created')
             c.argument('target_subscription', options_list=['--target-subscription'],
                        help='Name or ID of the subscription where the final image should be created.')
-            c.argument('time_out', options_list=['--timeout'], type=int, default=3600,
+            c.argument('timeout', options_list=['--timeout'], type=int, default=3600,
                        help='Time in seconds for the copy operation to finish. Increase this time if '
                        'you are going to copy large images (disks) like 512GB or more.')
 
