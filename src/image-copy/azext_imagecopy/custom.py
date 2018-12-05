@@ -79,8 +79,8 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     # Get SAS URL for the snapshotName
     logger.warn("Getting sas url for the source snapshot with timeout seconds: %d", timeout)
-    if time_out <= 0:
-        logger.warn("Timeout should be greater than 0")
+    if timeout < 3600:
+        logger.warn("Timeout should be greater than 3600")
         raise CLIError('Inavlid Timeout')
 
     cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
