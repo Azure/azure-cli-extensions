@@ -23,7 +23,7 @@ def __install_node_dependencies(kudu_client):
 
     This method is only called when the detected bot is a Node.js bot.
 
-    :return: Dictionary with results of the HTTP KUDU request
+    :return: Dictionary with results of the HTTP Kudu request
     """
     if not kudu_client._KuduClient__initialized:  # pylint:disable=protected-access
         kudu_client._KuduClient__initialize()  # pylint:disable=protected-access
