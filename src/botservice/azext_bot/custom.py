@@ -23,17 +23,17 @@ def __install_node_dependencies(kudu_client):
 
     This method is only called when the detected bot is a Node.js bot.
 
-    :return: Dictionary with results of the HTTP KUDU request
+    :return: Dictionary with results of the HTTP Kudu request
     """
-    if not kudu_client.__initialized:  # pylint:disable=protected-access
-        kudu_client.__initialize()  # pylint:disable=protected-access
+    if not kudu_client._KuduClient__initialized:  # pylint:disable=protected-access
+        kudu_client._KuduClient__initialize()  # pylint:disable=protected-access
 
     payload = {
         'command': 'npm install',
         'dir': r'site\wwwroot'
     }
-    response = requests.post(kudu_client.__scm_url + '/api/command', data=json.dumps(payload),  # pylint:disable=protected-access
-                             headers=kudu_client.__get_application_json_headers())   # pylint:disable=protected-access
+    response = requests.post(kudu_client._KuduClient__scm_url + '/api/command', data=json.dumps(payload),  # pylint:disable=protected-access
+                             headers=kudu_client._KuduClient__get_application_json_headers())   # pylint:disable=protected-access
     HttpResponseValidator.check_response_status(response)
     return response.json()
 
@@ -90,5 +90,16 @@ def publish_app(cmd, client, resource_group_name, resource_name, code_dir=None, 
     if os.path.exists(os.path.join('.', 'package.json')):
         logger.info('Detected language javascript. Installing node dependencies in remote bot.')
         __install_node_dependencies(kudu_client)
+
+    if output.get('active'):
+        logger.info('Deployment successful!')
+
+    if not output.get('active'):
+        scm_url = output.get('url')
+        deployment_id = output.get('id')
+        # Instead of replacing "latest", which would could be in the bot name, we replace "deployments/latest"
+        deployment_url = scm_url.replace('deployments/latest', 'deployments/%s' % deployment_id)
+        logger.error('Deployment failed. To find out more information about this deployment, please visit %s.'
+                     % deployment_url)
 
     return output
