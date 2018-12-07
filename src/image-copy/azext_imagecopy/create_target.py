@@ -168,6 +168,9 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
 
     if copy_status != 'success':
         logger.error("The copy operation didn't succeed. Last status: %s", copy_status)
+        logger.error("Command run: %s", cli_cmd)
+        logger.error("Command output: %s", json_output)
+
         raise CLIError('Blob copy failed')
 
 
