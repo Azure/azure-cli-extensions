@@ -6,7 +6,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -27,7 +27,7 @@ DEPENDENCIES = []
 setup(
     name='sqlvm-preview',
     version=VERSION,
-    description='An azure CLI extension to manage SQL virtual machine resources.',
+    description='Tools for managing SQL virtual machines, groups and availability group listeners.',
     long_description='An Azure CLI Extension for SQL virtual machine preview features.',
     license='MIT',
     author='Microsoft Corporation',
