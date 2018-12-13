@@ -27,9 +27,8 @@ def transform_sqlvm_group_output(result):
                               ('tags', result.tags)])
         return output
     except AttributeError:
-        from msrest.pipeline import ClientRawResponse
         # Return the response object if the formating fails
-        return None if isinstance(result, ClientRawResponse) else result
+        return result
 
 
 def transform_sqlvm_group_list(group_list):
@@ -65,9 +64,8 @@ def transform_sqlvm_output(result):
 
         return output
     except AttributeError:
-        from msrest.pipeline import ClientRawResponse
         # Return the response object if the formating fails
-        return None if isinstance(result, ClientRawResponse) else result
+        return result
 
 
 def transform_sqlvm_list(vm_list):
@@ -98,9 +96,8 @@ def transform_aglistener_output(result):
 
         return output
     except AttributeError:
-        from msrest.pipeline import ClientRawResponse
         # Return the response object if the formating fails
-        return None if isinstance(result, ClientRawResponse) else result
+        return result
 
 
 def transform_aglistener_list(ag_list):

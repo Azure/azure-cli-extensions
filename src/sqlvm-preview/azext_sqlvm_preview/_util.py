@@ -5,6 +5,7 @@
 
 
 def get_sqlvirtualmachine_management_client(cli_ctx):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_sqlvm_preview.vendored_sdks.sqlvirtualmachine import SqlVirtualMachineManagementClient
 
     # Normal production scenario.
