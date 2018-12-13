@@ -27,7 +27,7 @@ DEPENDENCIES = []
 setup(
     name='sqlvm-preview',
     version=VERSION,
-    description='An azure CLI extension to manage SQL virtual machine resources',
+    description='An azure CLI extension to manage SQL virtual machine resources.',
     long_description='An Azure CLI Extension for SQL virtual machine preview features.',
     license='MIT',
     author='Microsoft Corporation',
