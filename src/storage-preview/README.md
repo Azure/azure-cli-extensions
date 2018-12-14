@@ -72,3 +72,11 @@ az storage account create \
     --sku Premium_LRS \
     --kind FileStorage
 ```
+
+ **Customer-Controlled Failover**
+Failover RA-GRS storage accounts from the primary cluster to the secondary cluster.
+*Examples:*
+```
+az storage account show-last-sync --name accountName
+ az storage account failover --name accountName
+```
