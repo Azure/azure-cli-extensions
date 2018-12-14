@@ -77,6 +77,10 @@ az storage account create \
 Failover RA-GRS storage accounts from the primary cluster to the secondary cluster.
 *Examples:*
 ```
-az storage account show-last-sync --name accountName
- az storage account failover --name accountName
+az storage account show \
+    --name accountName \
+    --expand geoReplicationStats
+
+az storage account failover \
+    --name accountName
 ```
