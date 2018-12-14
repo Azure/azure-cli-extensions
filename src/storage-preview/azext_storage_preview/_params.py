@@ -113,6 +113,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('default_action', arg_type=get_enum_type(t_default_action),
                        help='Default action to apply when no rule matches.')
 
+    with self.argument_context('storage account show') as c:
+        c.argument('expand', arg_type=get_enum_type(self.get_models('StorageAccountExpand', resource_type=CUSTOM_MGMT_STORAGE)))
+
     with self.argument_context('storage account show-connection-string') as c:
         c.argument('protocol', help='The default endpoint protocol.', arg_type=get_enum_type(['http', 'https']))
         c.argument('key_name', options_list=['--key'], help='The key to use.',
