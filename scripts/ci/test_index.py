@@ -112,7 +112,6 @@ class TestIndex(unittest.TestCase):
                                                                                    item['sha256Digest'],
                                                                                    item['filename']))
 
-    @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
         self.maxDiff = None
         extensions_dir = tempfile.mkdtemp()
@@ -131,6 +130,8 @@ class TestIndex(unittest.TestCase):
                               "(e.g. `pip install wheel==0.30.0`). "
                               "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
                                                                                                supported_generators))
+                print('printing Item metadata')
+                print(item['metadata'])
                 self.assertDictEqual(metadata, item['metadata'],
                                      "Metadata for {} in index doesn't match the expected of: \n"
                                      "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,

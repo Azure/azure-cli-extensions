@@ -37,9 +37,11 @@ def _get_azext_metadata(ext_dir):
     azext_metadata = None
     ext_modname = _get_extension_modname(ext_dir=ext_dir)
     azext_metadata_filepath = os.path.join(ext_dir, ext_modname, AZEXT_METADATA_FILENAME)
+    print(azext_metadata_filepath)
     if os.path.isfile(azext_metadata_filepath):
         with open(azext_metadata_filepath) as f:
             azext_metadata = json.load(f)
+    print(azext_metadata)
     return azext_metadata
 
 
@@ -61,6 +63,7 @@ def get_ext_metadata(ext_dir, ext_file, ext_name):
             if os.path.isfile(whl_metadata_filepath):
                 with open(whl_metadata_filepath) as f:
                     metadata.update(json.load(f))
+    print(metadata)
     return metadata
 
 
