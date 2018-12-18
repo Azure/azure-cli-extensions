@@ -5,6 +5,8 @@
 
 from __future__ import print_function
 from knack.util import CLIError
+import subprocess
+import os
 
 
 def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,
@@ -36,3 +38,9 @@ def set_service_properties(client, parameters, delete_retention=None, days_retai
 
     client.set_blob_service_properties(**kwargs)
     return client.get_blob_service_properties()
+
+def storage_blob_upload_batch(cmd, client, source, destination):
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
+    azcopy = os.path.join(curr_dir, '..', 'azcopy', 'azcopy_windows_amd64_10.0.4', 'azcopy.exe')
+    args = [azcopy, '-h']
+    subprocess.call(args)

@@ -36,7 +36,9 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/storage-preview',
     classifiers=CLASSIFIERS,
-    package_data={'azext_storage_preview': ['azext_metadata.json']},
+    package_data={
+        'azext_storage_preview': ['azext_metadata.json', 'azcopy/*/*']
+    },
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )

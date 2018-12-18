@@ -93,3 +93,12 @@ The secondary cluster will become the primary cluster after failover. Please und
                                 setter_type=get_custom_sdk('blob', cf_blob_data_gen_update),
                                 setter_name='set_service_properties',
                                 client_factory=cf_blob_data_gen_update)
+
+    block_blob_sdk = CliCommandType(
+        operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
+        client_factory=blob_data_service_factory,
+        resource_type=CUSTOM_DATA_STORAGE)
+
+    with self.command_group('storage blob', command_type=block_blob_sdk,
+                            custom_command_type=get_custom_sdk('blob', blob_data_service_factory)) as g:
+        g.storage_custom_command_oauth('upload-batch', 'storage_blob_upload_batch')
