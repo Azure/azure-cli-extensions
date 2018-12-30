@@ -32,7 +32,7 @@ class CustomDomain(Model):
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'use_sub_domain': {'key': 'useSubDomain', 'type': 'bool'},
+        'use_sub_domain': {'key': 'useSubDomainName', 'type': 'bool'},
     }
 
     def __init__(self, *, name: str, use_sub_domain: bool=None, **kwargs) -> None:
