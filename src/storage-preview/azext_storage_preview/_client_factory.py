@@ -98,6 +98,15 @@ def blob_data_service_factory(cli_ctx, kwargs):
                                         token_credential=kwargs.pop('token_credential', None))
 
 
+def cloud_storage_account_service_factory(cli_ctx, kwargs):
+    t_cloud_storage_account = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#CloudStorageAccount')
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    sas_token = kwargs.pop('sas_token', None)
+    kwargs.pop('connection_string', None)
+    return t_cloud_storage_account(account_name, account_key, sas_token)
+
+
 def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
 
