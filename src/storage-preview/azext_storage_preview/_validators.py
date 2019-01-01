@@ -326,3 +326,29 @@ def ipv4_range_type(string):
         if not re.match("^{}-{}$".format(ip_format, ip_format), string):
             raise ValueError
     return string
+
+
+def resource_type_type(loader):
+    """ Returns a function which validates that resource types string contains only a combination of service,
+    container, and object. Their shorthand representations are s, c, and o. """
+
+    def impl(string):
+        t_resources = loader.get_models('common.models#ResourceTypes')
+        if set(string) - set("sco"):
+            raise ValueError
+        return t_resources(_str=''.join(set(string)))
+
+    return impl
+
+
+def services_type(loader):
+    """ Returns a function which validates that services string contains only a combination of blob, queue, table,
+    and file. Their shorthand representations are b, q, t, and f. """
+
+    def impl(string):
+        t_services = loader.get_models('common.models#Services')
+        if set(string) - set("bqtf"):
+            raise ValueError
+        return t_services(_str=''.join(set(string)))
+
+    return impl
