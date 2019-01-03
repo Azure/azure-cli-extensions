@@ -8,7 +8,8 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
                                                 get_three_state_flag)
 
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
-                          validate_bypass, validate_encryption_source, storage_account_key_options, validate_key)
+                          validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
+                          validate_azcopy_source_url, validate_azcopy_destination_url)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -161,3 +162,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
                    help='Represents the path to the error document that should be shown when an error 404 is issued,'
                         ' in other words, when a browser requests a page that does not exist.')
+
+    with self.argument_context('storage azcopy blob upload') as c:
+        c.argument('destination_container', options_list=['--container', '-c'])
+        c.argument('destination_blob', options_list=['--name', '-n'])
+        c.argument('source', options_list=['--file', '-f'])
+        c.argument('destination', validator=validate_azcopy_destination_url)
+
+    with self.argument_context('storage azcopy blob download') as c:
+        c.argument('source_container', options_list=['--container', '-c'])
+        c.argument('source_blob', options_list=['--name', '-n'])
+        c.argument('source', validator=validate_azcopy_source_url)
+        c.argument('destination', options_list=['--file', '-f'])

@@ -99,6 +99,8 @@ The secondary cluster will become the primary cluster after failover. Please und
         client_factory=blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE)
 
-    with self.command_group('storage blob', command_type=block_blob_sdk,
-                            custom_command_type=get_custom_sdk('blob', blob_data_service_factory)) as g:
+    with self.command_group('storage azcopy blob', command_type=block_blob_sdk,
+                            custom_command_type=get_custom_sdk('azcopy', blob_data_service_factory)) as g:
+        g.storage_custom_command_oauth('upload', 'storage_blob_upload')
         g.storage_custom_command_oauth('upload-batch', 'storage_blob_upload_batch')
+        g.storage_custom_command_oauth('download', 'storage_blob_download')
