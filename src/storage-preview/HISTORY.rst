@@ -3,8 +3,8 @@
  Release History
 ===============
 
-0.2.1 (tbd)
-+++++++++++
+0.2.1 (2019-1-4)
+++++++++++++++++
 * fixed missing `--auth-mode` from data-plane commands
 * add validation for StorageV2 account when using static website
 
