@@ -45,3 +45,6 @@ def get_mysql_management_client(cli_ctx, **_):
 
 def cf_mysql_servers(cli_ctx, _):
     return get_mysql_management_client(cli_ctx).servers
+
+def cf_mysql_firewall_rules(cli_ctx, _):
+    return get_mysql_management_client(cli_ctx).firewall_rules

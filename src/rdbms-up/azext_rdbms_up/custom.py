@@ -3,11 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
+from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms import mysql
+from azure.cli.core.commands import LongRunningOperation, _is_poller
+from ._client_factory import cf_mysql_firewall_rules
 
-def mysql_up(client, resource_group_name, server_name, sku_name,
+
+def mysql_up(cmd, client, resource_group_name, server_name, sku_name=None,
              location=None, administrator_login=None, administrator_login_password=None, backup_retention=None,
              geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None, tags=None, version=None):
-    from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms import mysql
+    import mysql.connector as mysql_connector
+
+    # create mysql server
     parameters = mysql.models.ServerForCreate(
         sku=mysql.models.Sku(name=sku_name),
         properties=mysql.models.ServerPropertiesForDefaultCreate(
@@ -22,4 +29,18 @@ def mysql_up(client, resource_group_name, server_name, sku_name,
         location=location,
         tags=tags)
 
-    return client.create(resource_group_name, server_name, parameters)
+    server_result = client.create(resource_group_name, server_name, parameters)
+    if _is_poller(server_result):
+        server_result = LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name))(server_result)
+
+    # check for user's ip address
+    ip_address = '0.0.0.0'
+    try:
+        mysql_connector.connect(user='wilx@wilxmysqlserver', host='wilxmysqlserver.mysql.database.azure.com')
+    except mysql_connector.errors.DatabaseError as ex:
+        pattern = re.compile(r'.*IP address \'(?P<ipAddress>.*)\' is not allowed.*')
+        ip_address = pattern.match(str(ex)).groupdict().get('ipAddress')
+
+    # create firewall rule
+    firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
+    print(firewall_client.create_or_update(resource_group_name, server_name, 'devbox', ip_address, ip_address))

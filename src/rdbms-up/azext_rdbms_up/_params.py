@@ -4,27 +4,31 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azure.cli.core.commands.parameters import (
-    tags_type, get_location_type,
-    get_enum_type)
+from azure.cli.core.commands.parameters import tags_type, get_location_type, get_enum_type
+from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms.mysql.models.my_sql_management_client_enums import (
+    SslEnforcementEnum, GeoRedundantBackup
+)
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
     with self.argument_context('mysql up') as c:
-        c.argument('sku_name', options_list=['--sku-name'], required=True,
+        c.argument('sku_name', options_list=['--sku-name'], default='GP_Gen5_4',
                    help='The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.')
         c.argument('backup_retention', type=int,
                    help='The number of days a backup is retained.')
-        c.argument('geo_redundant_backup',
-                   help='Enable Geo-redundant or not for server backup.')
+        c.argument('geo_redundant_backup', arg_type=get_enum_type(GeoRedundantBackup),
+                   default=GeoRedundantBackup.disabled.value, help='Enable Geo-redundant or not for server backup.')
         c.argument('storage_mb', options_list=['--storage-size'], type=int,
                    help='The max storage size of the server. Unit is megabytes.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False)
-        c.argument('version', help='Server version')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+                   validator=get_default_location_from_resource_group)
+        c.argument('version', help='Server version', default='5.7')
         c.argument('server_name', options_list=['--name', '-n'], help='Name of the server.')
-        c.argument('administrator_login', options_list=['--admin-user', '-u'], arg_group='Authentication')
-        c.argument('administrator_login_password', options_list=['--admin-password', '-p'], arg_group='Authentication')
-        c.argument('ssl_enforcement', arg_type=get_enum_type(['Enabled', 'Disabled']), options_list=['--ssl-enforcement'], help='Enable ssl enforcement or not when connect to server.')
-        c.argument('capacity', options_list=['--vcore'], type=int, help='Number of vcore.')
-        c.argument('family', options_list=['--family'], arg_type=get_enum_type(['Gen4', 'Gen5']), help='Hardware generation.')
+        c.argument('administrator_login', options_list=['--admin-user', '-u'], arg_group='Authentication',
+                   help='The login username of the administrator.')
+        c.argument('administrator_login_password', options_list=['--admin-password', '-p'], arg_group='Authentication',
+                   help='The login password of the administrator.')
+        c.argument('ssl_enforcement', arg_type=get_enum_type(SslEnforcementEnum),
+                   default=SslEnforcementEnum.disabled.value,
+                   help='Enable ssl enforcement or not when connect to server.')
         c.argument('tags', tags_type)
