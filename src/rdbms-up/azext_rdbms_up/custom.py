@@ -49,7 +49,7 @@ def mysql_up(cmd, client, resource_group_name, server_name, sku_name=None,
 
     # create firewall rule is needed
     if ip_address:
-        logger.warning('Creating firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
+        logger.warning('Configuring firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
         firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
         firewall_result = firewall_client.create_or_update(
             resource_group_name, server_name, 'devbox', ip_address, ip_address)
