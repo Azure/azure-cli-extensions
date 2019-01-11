@@ -38,7 +38,7 @@ setup(
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_rdbms_up': ['azext_metadata.json']},
+    package_data={'azext_rdbms_up': ['azext_metadata.json', 'random_name*']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )

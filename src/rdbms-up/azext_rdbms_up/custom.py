@@ -6,17 +6,17 @@
 import re
 from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms import mysql
 from azure.cli.core.commands import LongRunningOperation, _is_poller
-from ._client_factory import cf_mysql_firewall_rules
 from knack.log import get_logger
-
+from ._client_factory import cf_mysql_firewall_rules
+from .random_name.generate import generate_username
 
 logger = get_logger(__name__)
 
-def mysql_up(cmd, client, resource_group_name, server_name, sku_name=None,
+def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=None,
              location=None, administrator_login=None, administrator_login_password=None, backup_retention=None,
              geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None, tags=None, version=None):
     import mysql.connector as mysql_connector
-
+    print(generate_username())
     # create mysql server
     parameters = mysql.models.ServerForCreate(
         sku=mysql.models.Sku(name=sku_name),
@@ -55,5 +55,6 @@ def mysql_up(cmd, client, resource_group_name, server_name, sku_name=None,
             resource_group_name, server_name, 'devbox', ip_address, ip_address)
         if _is_poller(firewall_result):
             firewall_result = LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name))(firewall_result)
+        print(firewall_result)
 
     return server_result
