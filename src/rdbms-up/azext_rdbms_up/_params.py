@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import tags_type, get_location_type, get_enum_type
 from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms.mysql.models.my_sql_management_client_enums import (
     SslEnforcementEnum, GeoRedundantBackup
@@ -20,8 +19,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    default=GeoRedundantBackup.disabled.value, help='Enable Geo-redundant or not for server backup.')
         c.argument('storage_mb', options_list=['--storage-size'], type=int,
                    help='The max storage size of the server. Unit is megabytes.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
-                   validator=get_default_location_from_resource_group)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('version', help='Server version', default='5.7')
         c.argument('server_name', options_list=['--name', '-n'], help='Name of the server.')
         c.argument('administrator_login', options_list=['--admin-user', '-u'], arg_group='Authentication',

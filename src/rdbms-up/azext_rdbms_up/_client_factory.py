@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 
 # CLIENT FACTORIES
 
@@ -46,5 +47,14 @@ def get_mysql_management_client(cli_ctx, **_):
 def cf_mysql_servers(cli_ctx, _):
     return get_mysql_management_client(cli_ctx).servers
 
+
 def cf_mysql_firewall_rules(cli_ctx, _):
     return get_mysql_management_client(cli_ctx).firewall_rules
+
+
+def cf_mysql_config(cli_ctx, _):
+    return get_mysql_management_client(cli_ctx).configurations
+
+
+def resource_client_factory(cli_ctx, **_):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)

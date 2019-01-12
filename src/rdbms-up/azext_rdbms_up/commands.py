@@ -5,6 +5,8 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.command_modules.rdbms._client_factory import cf_mysql_servers
+from azext_rdbms_up._validators import process_mysql_namespace
+
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
     mysql_servers_sdk = CliCommandType(
@@ -14,4 +16,4 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     )
 
     with self.command_group('mysql', mysql_servers_sdk, client_factory=cf_mysql_servers) as g:
-        g.custom_command('up', 'mysql_up')
+        g.custom_command('up', 'mysql_up', validator=process_mysql_namespace)
