@@ -20,7 +20,7 @@ from knack.util import CLIError
 from azure.cli.core.util import get_file_json, shell_safe_json_parse, sdk_no_wait
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType, get_sdk
-from sfmergeutility import SFMergeUtility  # pylint: disable-msg=E0611
+from sfmergeutility import SFMergeUtility  # pylint: disable=E0611,import-error
 
 
 logger = get_logger(__name__)
