@@ -38,3 +38,6 @@ def process_mysql_namespace(cmd, namespace):
 
     if namespace.administrator_login_password is None:
         namespace.administrator_login_password = str(uuid.uuid4())
+
+    if namespace.database_name is None:
+        namespace.database_name = 'sampledb'

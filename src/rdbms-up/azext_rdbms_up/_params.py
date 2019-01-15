@@ -21,7 +21,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='The max storage size of the server. Unit is megabytes.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('version', help='Server version', default='5.7')
-        c.argument('server_name', options_list=['--name', '-n'], help='Name of the server.')
+        c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the server.')
         c.argument('administrator_login', options_list=['--admin-user', '-u'], arg_group='Authentication',
                    help='The login username of the administrator.')
         c.argument('administrator_login_password', options_list=['--admin-password', '-p'], arg_group='Authentication',
@@ -29,4 +29,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('ssl_enforcement', arg_type=get_enum_type(SslEnforcementEnum),
                    default=SslEnforcementEnum.disabled.value,
                    help='Enable ssl enforcement or not when connect to server.')
+        c.argument('database_name', options_list=['--database-name', '-d'],
+                   help='The name of a database to initialize.')
         c.argument('tags', tags_type)
