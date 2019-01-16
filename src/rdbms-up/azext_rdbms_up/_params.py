@@ -26,6 +26,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='The login username of the administrator.')
         c.argument('administrator_login_password', options_list=['--admin-password', '-p'], arg_group='Authentication',
                    help='The login password of the administrator.')
+        c.extra('generate_password', help='Generate a password.', arg_group='Authentication')
         c.argument('ssl_enforcement', arg_type=get_enum_type(SslEnforcementEnum),
                    default=SslEnforcementEnum.disabled.value,
                    help='Enable ssl enforcement or not when connect to server.')

@@ -4,27 +4,34 @@
 # --------------------------------------------------------------------------------------------
 
 import re
+import uuid
 from msrestazure.azure_exceptions import CloudError
-from azure.cli.core.commands import LongRunningOperation, _is_poller
 from knack.log import get_logger
 from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms import mysql
 from azext_rdbms_up._client_factory import cf_mysql_firewall_rules, cf_mysql_config
 from azext_rdbms_up.mysql_util import ClientType as MySqlClient
+from azext_rdbms_up.util import update_kwargs, resolve_poller
 import mysql.connector as mysql_connector
 
 logger = get_logger(__name__)
 
 
 def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=None,
-             location=None, administrator_login=None, administrator_login_password=None, backup_retention=None,
-             geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None, database_name=None, tags=None,
-             version=None):
+             location=None, administrator_login=None, administrator_login_password=None,
+             backup_retention=None, geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None,
+             database_name=None, tags=None, version=None):
     try:
         server_result = client.get(resource_group_name, server_name)
         logger.warning('Found existing MySql Server \'%s\' ...', server_name)
-    except CloudError as ex:
+        # update server if needed
+        server_result = _update_mysql_server(
+            cmd, client, server_result, resource_group_name, server_name, backup_retention, geo_redundant_backup,
+            storage_mb, administrator_login_password, version, ssl_enforcement, tags)
+    except CloudError:
         # Create mysql server
         logger.warning('Creating MySql Server \'%s\' ...', server_name)
+        if administrator_login_password is None:
+            administrator_login_password = str(uuid.uuid4())
         parameters = mysql.models.ServerForCreate(
             sku=mysql.models.Sku(name=sku_name),
             properties=mysql.models.ServerPropertiesForDefaultCreate(
@@ -39,24 +46,22 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
             location=location,
             tags=tags)
 
-        server_result = client.create(resource_group_name, server_name, parameters)
-        if _is_poller(server_result):
-            server_result = LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name))(server_result)
+        server_result = resolve_poller(
+            client.create(resource_group_name, server_name, parameters), cmd.cli_ctx, 'MySql Server Create')
 
         # Set timeout configuration
         logger.warning('Configuring wait timeout to 8 hours ...')
         config_client = cf_mysql_config(cmd.cli_ctx, None)
-        config_result = config_client.create_or_update(resource_group_name, server_name, 'wait_timeout', '28800')
-        if _is_poller(config_result):
-            config_result = LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name))(config_result)
+        resolve_poller(
+            config_client.create_or_update(resource_group_name, server_name, 'wait_timeout', '28800'),
+            cmd.cli_ctx, 'MySql Configuration Update')
 
         # Create firewall rule to allow for Azure IPs
         logger.warning('Configuring firewall rule, \'azure-access\', to allow for Azure IPs ...')
         firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
-        firewall_result = firewall_client.create_or_update(
-            resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0')
-        if _is_poller(firewall_result):
-            firewall_result = LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name))(firewall_result)
+        resolve_poller(
+            firewall_client.create_or_update(resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0'),
+            cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
 
 
     # Check for user's ip address
@@ -65,21 +70,24 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
     try:
-        mysql_connector.connect(user=user, host=host, password=administrator_login_password)
+        kwargs = {'user': user, 'host': host}
+        if administrator_login_password is not None:
+            kwargs['password'] = administrator_login_password
+        mysql_connector.connect(**kwargs)
     except mysql_connector.errors.DatabaseError as ex:
-        pattern = re.compile(r'.*IP address \'(?P<ipAddress>.*)\' is not allowed.*')
+        pattern = re.compile(r'.*\'(?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\'')
         ip_address = pattern.match(str(ex)).groupdict().get('ipAddress')
 
     # Create firewall rules for devbox if needed
     if ip_address:
         logger.warning('Configuring firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
         firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
-        firewall_result = firewall_client.create_or_update(
-            resource_group_name, server_name, 'devbox', ip_address, ip_address)
-        if _is_poller(firewall_result):
-            firewall_result = LongRunningOperation(cmd.cli_ctx, 'Starting {}'.format(cmd.name))(firewall_result)
+        resolve_poller(
+            firewall_client.create_or_update(resource_group_name, server_name, 'devbox', ip_address, ip_address),
+            cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
 
-    _run_mysql_commands(host, user, administrator_login_password, database_name)
+    if administrator_login_password is not None:
+        _run_mysql_commands(host, user, administrator_login_password, database_name)
 
     return {
         'serverInfo': server_result,
@@ -88,7 +96,7 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
                 host, user, administrator_login_password, database_name),
             'host': host,
             'username': user,
-            'password': administrator_login_password
+            'password': administrator_login_password if administrator_login_password is not None else '*****'
         }
     }
 
@@ -115,7 +123,7 @@ def _create_mysql_connection_string(host, user, password, database):
     connection_kwargs = {
         'host': host,
         'user': user,
-        'password': password,
+        'password': password if password is not None else '{your_password}',
         'database': database
     }
 
@@ -141,3 +149,34 @@ def _run_mysql_commands(host, user, password, database):
         pass
     cursor.execute("GRANT ALL PRIVILEGES ON {}.* TO 'root'".format(database))
     logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON %s.* TO 'root'`", database)
+
+
+def _update_mysql_server(cmd, client, server_result, resource_group_name, server_name, backup_retention,
+                         geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement,
+                         tags):
+    # storage profile params
+    storage_profile_kwargs = {}
+    if backup_retention != server_result.storage_profile.backup_retention_days:
+        update_kwargs(storage_profile_kwargs, 'backup_retention_days', backup_retention)
+    if geo_redundant_backup != server_result.storage_profile.geo_redundant_backup:
+        update_kwargs(storage_profile_kwargs, 'geo_redundant_backup', geo_redundant_backup)
+    if storage_mb != server_result.storage_profile.storage_mb:
+        update_kwargs(storage_profile_kwargs, 'storage_mb', storage_mb)
+
+    # update params
+    server_update_kwargs = {
+        'storage_profile': mysql.models.StorageProfile(**storage_profile_kwargs)
+    } if storage_profile_kwargs else {}
+    update_kwargs(server_update_kwargs, 'administrator_login_password', administrator_login_password)
+    if version != server_result.version:
+        update_kwargs(server_update_kwargs, 'version', version)
+    if ssl_enforcement != server_result.ssl_enforcement:
+        update_kwargs(server_update_kwargs, 'ssl_enforcement', ssl_enforcement)
+    update_kwargs(server_update_kwargs, 'tags', tags)
+
+    if server_update_kwargs:
+        logger.warning('Updating existing MySql Server \'%s\' with given arguments', server_name)
+        params = mysql.models.ServerUpdateParameters(**server_update_kwargs)
+        return resolve_poller(client.update(
+            resource_group_name, server_name, params), cmd.cli_ctx, 'MySql Server Update')
+    return server_result
