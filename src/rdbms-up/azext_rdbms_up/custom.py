@@ -64,28 +64,50 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
             cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
 
 
-    # Check for user's ip address
-    ip_address = None
-    # TODO get user, hostname
+    # Check for user's ip address(es)
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
-    try:
-        kwargs = {'user': user, 'host': host}
-        if administrator_login_password is not None:
-            kwargs['password'] = administrator_login_password
-        mysql_connector.connect(**kwargs)
-    except mysql_connector.errors.DatabaseError as ex:
-        pattern = re.compile(r'.*\'(?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\'')
-        ip_address = pattern.match(str(ex)).groupdict().get('ipAddress')
+    kwargs = {'user': user, 'host': host}
+    if administrator_login_password is not None:
+        kwargs['password'] = administrator_login_password
+
+    addresses = set()
+    for _ in range(50):
+        try:
+            connection = mysql_connector.connect(**kwargs)
+            connection.close()
+        except mysql_connector.errors.DatabaseError as ex:
+            pattern = re.compile(r'.*\'(?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\'')
+            try:
+                addresses.add(pattern.match(str(ex)).groupdict().get('ipAddress'))
+            except AttributeError:
+                pass
 
     # Create firewall rules for devbox if needed
-    if ip_address:
+    firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
+
+    if addresses and len(addresses) == 1:
+        ip_address = addresses.pop()
         logger.warning('Configuring firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
-        firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
         resolve_poller(
             firewall_client.create_or_update(resource_group_name, server_name, 'devbox', ip_address, ip_address),
             cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
+    elif addresses:
+        logger.warning('Detected dynamic IP address, configuring firewall rules for IP addresses encountered ...')
+        logger.warning('IP Addresses: %s', ', '.join(list(addresses)))
+        firewall_results = []
+        for i, ip_address in enumerate(addresses):
+            firewall_results.append(firewall_client.create_or_update(
+                resource_group_name, server_name, 'devbox' + str(i), ip_address, ip_address))
+        for result in firewall_results:
+            resolve_poller(result, cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
+        logger.warning('If upon connecting to MYSQL your IP address is refused, '
+                       'please create an additional firewall rule using:')
+        logger.warning('    `az mysql server firewall-rule create -g %s -s %s -n {rule_name} '
+                       '--start-ip-address {ip_address} --end-ip-address {ip_address}`',
+                       resource_group_name, server_name)
 
+    # connect to mysql and run some commands
     if administrator_login_password is not None:
         _run_mysql_commands(host, user, administrator_login_password, database_name)
 
