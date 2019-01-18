@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=import-error,too-many-locals
 import re
 import uuid
 from msrestazure.azure_exceptions import CloudError

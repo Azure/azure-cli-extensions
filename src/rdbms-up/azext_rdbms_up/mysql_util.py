@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
+# pylint: disable=too-few-public-methods
 class ClientType:
     '''
     Types of MySQL clients whose connection strings we can generate.

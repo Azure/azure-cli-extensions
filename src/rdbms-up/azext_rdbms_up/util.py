@@ -21,7 +21,7 @@ def create_random_resource_name(prefix='azure', length=15):
 
 
 def get_config_value(option, fallback='_fallback_none'):
-    if fallback is '_fallback_none':
+    if fallback == '_fallback_none':
         return RDBMS_CONFIG.get(MYSQL_CONFIG_SECTION, option)
     return RDBMS_CONFIG.get(MYSQL_CONFIG_SECTION, option, fallback=fallback)
 
