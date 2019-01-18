@@ -10,18 +10,19 @@ import jwt
 import platform
 import subprocess
 import datetime
-from azure.cli.core._profile import Profile
+from azure.cli.core._profile import Profile, _CLIENT_ID
 from six.moves.urllib.parse import urlparse
 
 
 STORAGE_RESOURCE_ENDPOINT = "https://storage.azure.com"
 SERVICES = {'blob', 'file'}
+AZCOPY_VERSION = '10.0.5'
 
 class AzCopy(object):
     system_executable_path = {
-        'Darwin': ['azcopy_darwin_amd64_10.0.4', 'azcopy'],
-        'Linux': ['azcopy_linux_amd64_10.0.4', 'azcopy'],
-        'Windows': ['azcopy_windows_amd64_10.0.4', 'azcopy.exe']
+        'Darwin': ['azcopy_darwin_amd64_{}'.format(AZCOPY_VERSION), 'azcopy'],
+        'Linux': ['azcopy_linux_amd64_{}'.format(AZCOPY_VERSION), 'azcopy'],
+        'Windows': ['azcopy_windows_amd64_{}'.format(AZCOPY_VERSION), 'azcopy.exe']
     }
 
     def __init__(self, creds=None):
@@ -59,7 +60,7 @@ def blob_client_auth_for_azcopy(cmd, blob_client):
     try:
         token_info = _unserialize_non_msi_token_payload(token_info)
     except KeyError:  # unserialized MSI token payload
-        pass
+        raise Exception('MSI auth not yet supported.')
     return AzCopyCredentials(token_info=token_info)
 
 
@@ -90,7 +91,7 @@ def _unserialize_non_msi_token_payload(token_info):
         'resource': STORAGE_RESOURCE_ENDPOINT,
         'token_type': token_info['tokenType'],
         '_tenant': parsed_authority.path.strip('/'),
-        # '_tenant': "microsoft.com",
+        '_client_id': token_info['_clientId'],
         '_ad_endpoint': '{uri.scheme}://{uri.netloc}'.format(uri=parsed_authority)
     }
 
