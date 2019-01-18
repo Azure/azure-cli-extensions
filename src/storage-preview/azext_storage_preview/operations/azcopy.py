@@ -14,12 +14,13 @@ def storage_blob_upload(cmd, client, source, destination):
     azcopy_creds = blob_client_auth_for_azcopy(cmd, client)
     azcopy = AzCopy(creds=azcopy_creds)
     # azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])
-    
-    azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''))
+
+    azcopy.copy(source, destination + ('?{}'.format(azcopy.creds.sas_token) if azcopy.creds.sas_token else ''))
 
 
 def storage_blob_upload_batch(cmd, client, source, destination):
     azcopy_creds = blob_client_auth_for_azcopy(cmd, client)
     azcopy = AzCopy(creds=azcopy_creds)
     # azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])
-    azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])
+    azcopy.copy(source, destination + ('?{}'.format(azcopy.creds.sas_token) if azcopy.creds.sas_token else ''),
+                ['--recursive'])
