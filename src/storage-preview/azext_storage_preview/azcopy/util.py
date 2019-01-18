@@ -35,8 +35,8 @@ class AzCopy(object):
         args = [self.executable] + args
         env_kwargs = {}
         if self.creds and self.creds.token_info:
-            print(repr(json.dumps(self.creds.token_info)), type(json.dumps(self.creds.token_info)))
             env_kwargs = {'AZCOPY_OAUTH_TOKEN_INFO': json.dumps(self.creds.token_info)}
+        print(args, env_kwargs)
         subprocess.call(args, env=dict(os.environ, **env_kwargs))
 
     def copy(self, source, destination, flags=None):

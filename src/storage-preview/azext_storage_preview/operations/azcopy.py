@@ -5,22 +5,29 @@
 
 from __future__ import print_function
 from knack.util import CLIError
-import subprocess
-import os
 from ..azcopy.util import AzCopy, blob_client_auth_for_azcopy
 
 
 def storage_blob_upload(cmd, client, source, destination):
-    azcopy_creds = blob_client_auth_for_azcopy(cmd, client)
-    azcopy = AzCopy(creds=azcopy_creds)
-    # azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])
-
-    azcopy.copy(source, destination + ('?{}'.format(azcopy.creds.sas_token) if azcopy.creds.sas_token else ''))
+    azcopy = _azcopy_blob_client(cmd, client)
+    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token))
 
 
 def storage_blob_upload_batch(cmd, client, source, destination):
-    azcopy_creds = blob_client_auth_for_azcopy(cmd, client)
-    azcopy = AzCopy(creds=azcopy_creds)
-    # azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])
-    azcopy.copy(source, destination + ('?{}'.format(azcopy.creds.sas_token) if azcopy.creds.sas_token else ''),
-                ['--recursive'])
+    azcopy = _azcopy_blob_client(cmd, client)
+    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), ['--recursive'])
+
+
+def storage_blob_download(cmd, client, source, destination):
+    azcopy = _azcopy_blob_client(cmd, client)
+    azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination)
+
+
+def _add_url_sas(url, sas):
+    if not sas:
+        return url
+    return '{}?{}'.format(url, sas)
+
+
+def _azcopy_blob_client(cmd, client):
+    return AzCopy(creds=blob_client_auth_for_azcopy(cmd, client))
