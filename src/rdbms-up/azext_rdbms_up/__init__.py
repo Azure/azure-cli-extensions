@@ -28,4 +28,5 @@ class RdbmsUpCommandsLoader(AzCommandsLoader):
         from ._params import load_arguments
         load_arguments(self, command)
 
+
 COMMAND_LOADER_CLS = RdbmsUpCommandsLoader

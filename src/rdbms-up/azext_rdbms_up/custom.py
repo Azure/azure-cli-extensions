@@ -64,7 +64,6 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
             firewall_client.create_or_update(resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0'),
             cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
 
-
     # Check for user's ip address(es)
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
