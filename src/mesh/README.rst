@@ -58,3 +58,8 @@ Commands to create an application
 
      Create a deployment with a template file on local disk.
          az mesh deployment create --resource-group mygroup --template-file ./appTemplate.json
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+::
+Patch 0.10.3:
+- Locking version of dependency 'sfmergeutility' to 0.1.5.

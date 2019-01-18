@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.10.2"
+VERSION = "0.10.3"
 
 
 CLASSIFIERS = [
@@ -26,7 +26,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'sfmergeutility'
+    'sfmergeutility==0.1.5'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
