@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.2.2 (2019-1-18)
++++++++++++++++++
+* set minCliCoreVersion metadata to v2.0.52
+
 0.2.1 (2019-1-4)
 ++++++++++++++++
 * fixed missing `--auth-mode` from data-plane commands
