@@ -101,10 +101,10 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
                 resource_group_name, server_name, 'devbox' + str(i), ip_address, ip_address))
         for result in firewall_results:
             resolve_poller(result, cmd.cli_ctx, 'MySql Firewall Rule Create/Update')
-        logger.warning('If MySql server declines your IP address, please create an additional firewall rule using:')
-        logger.warning('    `az mysql server firewall-rule create -g %s -s %s -n {rule_name} '
-                       '--start-ip-address {ip_address} --end-ip-address {ip_address}`',
-                       resource_group_name, server_name)
+    logger.warning('If MySql server declines your IP address, please create a new firewall rule using:')
+    logger.warning('    `az mysql server firewall-rule create -g %s -s %s -n {rule_name} '
+                   '--start-ip-address {ip_address} --end-ip-address {ip_address}`',
+                   resource_group_name, server_name)
 
     # connect to mysql and run some commands
     if administrator_login_password is not None:
