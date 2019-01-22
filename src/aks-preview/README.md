@@ -59,3 +59,12 @@ az aks update \
     --min-count 1 \
     --max-count 5
 ```
+
+#### Enable VMSS for new cluster
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-VMSS \
+```
