@@ -333,7 +333,8 @@ def subnet_role_assignment_exists(cli_ctx, scope):
             return True
     return False
 
-#pylint: disable=too-many-statements
+
+# pylint: disable=too-many-statements
 def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
                dns_name_prefix=None,
                location=None,
