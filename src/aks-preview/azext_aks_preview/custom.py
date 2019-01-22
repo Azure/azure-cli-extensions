@@ -333,7 +333,7 @@ def subnet_role_assignment_exists(cli_ctx, scope):
             return True
     return False
 
-
+#pylint: disable=too-many-statements
 def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
                dns_name_prefix=None,
                location=None,
@@ -394,7 +394,6 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
 
     if enable_vmss:
         agent_pool_profile.type = "VirtualMachineScaleSets"
-        
     if node_osdisk_size:
         agent_pool_profile.os_disk_size_gb = int(node_osdisk_size)
 
