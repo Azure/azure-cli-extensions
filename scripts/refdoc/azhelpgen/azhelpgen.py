@@ -23,18 +23,31 @@ USER_HOME = expanduser('~')
 
 
 def get_extension_help_files(cli_ctx):
+
+    # 1. Create invoker and load command table and arguments. Remember to turn off applicability check.
     invoker = cli_ctx.invocation_cls(cli_ctx=cli_ctx, commands_loader_cls=cli_ctx.commands_loader_cls,
                                      parser_cls=cli_ctx.parser_cls, help_cls=cli_ctx.help_cls)
     cli_ctx.invocation = invoker
+
+    invoker.commands_loader.skip_applicability = True
     cmd_table = invoker.commands_loader.load_command_table(None)
-    # Filter the command table to only get commands from extensions
+
+    #   turn off applicability check for all loaders
+    for loaders in invoker.commands_loader.cmd_to_loader_map.values():
+        for loader in loaders:
+            loader.skip_applicability = True
+
+    #   filter the command table to only get commands from extensions
     cmd_table = {k: v for k, v in cmd_table.items() if isinstance(v.command_source, ExtensionCommandSource)}
     invoker.commands_loader.command_table = cmd_table
     print('FOUND {} command(s) from the extension.'.format(len(cmd_table)))
+
     for cmd_name in cmd_table:
-            invoker.commands_loader.load_arguments(cmd_name)
+        invoker.commands_loader.load_arguments(cmd_name)
+
     invoker.parser.load_command_table(invoker.commands_loader)
 
+    # 2. Now load applicable help files
     parser_keys = []
     parser_values = []
     sub_parser_keys = []
