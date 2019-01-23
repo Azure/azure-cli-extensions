@@ -8,11 +8,11 @@ az extension add --name aks-preview
 ```
 
 ## Included Features
-### Cluster Auto Scaler: 
+### Cluster Auto Scaler:
 [more info](https://docs.microsoft.com/en-us/azure/aks/autoscaler)
 
 
-#### create aks cluster with enabled cluster autoscaler 
+#### create aks cluster with enabled cluster autoscaler
 *Examples:*
 ```
 az aks create \
@@ -27,7 +27,7 @@ az aks create \
 
 #### enable cluster autoscaler for existing cluster
 Note: make sure following setting:
-1. min-count <= node-count 
+1. min-count <= node-count
 2. max-count >= node-count
 3. kubernetes-version >= 1.10.6
 *Examples:*
@@ -58,6 +58,28 @@ az aks update \
     --update-cluster-autoscaler \
     --min-count 1 \
     --max-count 5
+```
+
+#### Enable apiserver authorized IP ranges
+
+*Examples:*
+
+```
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --api-server-authorized-ip-ranges "172.0.0.10/16,168.10.0.10/18"
+```
+
+#### Disable apiserver authorized IP ranges
+
+*Examples:*
+
+```
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --api-server-authorized-ip-ranges ""
 ```
 
 #### Enable VMSS for new cluster
