@@ -9,8 +9,8 @@ az extension add --name rdbms-up
 
 ### Included Features
 #### MySQL Up:
-Create a Azure Database for MySQL server in one easy to use command:
-*Examples:*
+Create a Azure Database for MySQL server in one easy to use command:\
+*Examples:*\
 The following creates the MySql server, along with a resource group if needed and a sample database. It will also configure firewall-rules to allow for Azure IP addresses as well as that of your local dev box. Information generated from this command is saved, so that when used in the future, the existing resources will be detected.
 ```
 az mysql up
