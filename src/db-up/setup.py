@@ -29,16 +29,16 @@ DEPENDENCIES = [
 ]
 
 setup(
-    name='rdbms-up',
+    name='db-up',
     version=VERSION,
-    description='Additional commands to simplify Azure Database Creation for RDBMS Servers.',
-    long_description='An Azure CLI Extension to provide additional RDBMS commands.',
+    description='Additional commands to simplify Azure Database workflows.',
+    long_description='An Azure CLI Extension to provide additional DB commands.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/rdbms-up',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/db-up',
     classifiers=CLASSIFIERS,
-    package_data={'azext_rdbms_up': ['azext_metadata.json', 'random_name/*']},
+    package_data={'azext_db_up': ['azext_metadata.json', 'random_name/*']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )

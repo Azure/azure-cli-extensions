@@ -1,10 +1,10 @@
-# Azure CLI RDBMS Up Extension #
-This is a extension for simplified RDBMS flows.
+# Azure CLI DB Up Extension #
+This is a extension for simplified DB flows.
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name rdbms-up
+az extension add --name db-up
 ```
 
 ### Included Features
