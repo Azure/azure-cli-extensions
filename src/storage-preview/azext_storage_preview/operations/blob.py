@@ -39,9 +39,3 @@ def set_service_properties(client, parameters, delete_retention=None, days_retai
 
     client.set_blob_service_properties(**kwargs)
     return client.get_blob_service_properties()
-
-def storage_blob_upload_batch(cmd, client, source, destination):
-    azcopy_creds = blob_client_auth_for_azcopy(cmd, client)
-    azcopy = AzCopy(creds=azcopy_creds)
-    # azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])
-    azcopy.copy(source, destination + '?' + (azcopy.creds.sas_token or ''), ['--recursive'])

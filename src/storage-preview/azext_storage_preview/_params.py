@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
 
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
-                          validate_azcopy_source_url)
+                          validate_azcopy_source_url, validate_azcopy_destination_url)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -167,9 +167,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('destination_container', options_list=['--container', '-c'])
         c.argument('destination_blob', options_list=['--name', '-n'])
         c.argument('source', options_list=['--file', '-f'])
+        c.argument('destination', validator=validate_azcopy_destination_url)
 
     with self.argument_context('storage azcopy blob download') as c:
         c.argument('source_container', options_list=['--container', '-c'])
-        c.argument('source_blob', options_list=['--name', '-n'], validator=validate_azcopy_source_url)
+        c.argument('source_blob', options_list=['--name', '-n'])
         c.argument('source', validator=validate_azcopy_source_url)
         c.argument('destination', options_list=['--file', '-f'])

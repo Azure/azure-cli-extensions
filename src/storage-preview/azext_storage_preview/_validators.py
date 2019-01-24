@@ -134,6 +134,10 @@ def validate_azcopy_source_url(cmd, namespace):
     print(cmd, namespace)
 
 
+def validate_azcopy_destination_url(cmd, namespace):
+    print(cmd, namespace)
+
+
 def get_content_setting_validator(settings_class, update, guess_from_file=None):
     def _class_name(class_type):
         return class_type.__module__ + "." + class_type.__class__.__name__
