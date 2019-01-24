@@ -17,7 +17,7 @@ CLIENT_SECRET = 'AZURE_CLIENT_SECRET'
 
 def get_mysql_management_client(cli_ctx, **_):
     from os import getenv
-    from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms.mysql import MySQLManagementClient
+    from azext_db_up.vendored_sdks.azure_mgmt_rdbms.mysql import MySQLManagementClient
 
     # Allow overriding resource manager URI using environment variable
     # for testing purposes. Subscription id is also determined by environment
