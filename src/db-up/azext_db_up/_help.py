@@ -8,7 +8,7 @@ from knack.help_files import helps
 
 helps['mysql up'] = """
     type: command
-    short-summary: Experimental command to create an Azure Database for MySQL server and configure a firewall rule.
+    short-summary: Set up an Azure Database for MySQL server and configurations.
     examples:
         - name: Ensure that a Azure Database for MySQL server is up and running and configured for immediate use.
           text: az mysql up
