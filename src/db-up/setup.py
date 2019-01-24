@@ -31,7 +31,7 @@ DEPENDENCIES = [
 setup(
     name='db-up',
     version=VERSION,
-    description='Additional commands to simplify Azure Database Creation for DB Servers.',
+    description='Additional commands to simplify Azure Database workflows.',
     long_description='An Azure CLI Extension to provide additional DB commands.',
     license='MIT',
     author='Microsoft Corporation',
