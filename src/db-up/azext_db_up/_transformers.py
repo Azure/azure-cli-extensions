@@ -9,7 +9,6 @@ from collections import OrderedDict
 def table_transform_connection_string(result):
     connection_strings = result['connectionStrings']
     table_result = []
-    print(connection_strings)
     for key in sorted(connection_strings.keys()):
         entry = OrderedDict()
         entry['Client'] = key

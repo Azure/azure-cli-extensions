@@ -8,9 +8,9 @@ import uuid
 from six.moves import configparser
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.mgmt.resource.resources.models import ResourceGroup
-from azext_rdbms_up._client_factory import resource_client_factory
-from azext_rdbms_up.random_name.generate import generate_username
-from azext_rdbms_up.util import create_random_resource_name, get_config_value, set_config_value
+from azext_db_up._client_factory import resource_client_factory
+from azext_db_up.random_name.generate import generate_username
+from azext_db_up.util import create_random_resource_name, get_config_value, set_config_value
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError

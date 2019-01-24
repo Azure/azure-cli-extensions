@@ -8,10 +8,10 @@ import re
 import uuid
 from msrestazure.azure_exceptions import CloudError
 from knack.log import get_logger
-from azext_rdbms_up.vendored_sdks.azure_mgmt_rdbms import mysql
-from azext_rdbms_up._client_factory import cf_mysql_firewall_rules, cf_mysql_config
-from azext_rdbms_up.mysql_util import ClientType as MySqlClient
-from azext_rdbms_up.util import update_kwargs, resolve_poller
+from azext_db_up.vendored_sdks.azure_mgmt_rdbms import mysql
+from azext_db_up._client_factory import cf_mysql_firewall_rules, cf_mysql_config
+from azext_db_up.mysql_util import ClientType as MySqlClient
+from azext_db_up.util import update_kwargs, resolve_poller
 import mysql.connector as mysql_connector
 
 logger = get_logger(__name__)
