@@ -334,6 +334,7 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+# pylint: disable=too-many-statements
 def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
                dns_name_prefix=None,
                location=None,
@@ -346,6 +347,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                no_ssh_key=False,
                disable_rbac=None,
                enable_rbac=None,
+               enable_vmss=None,
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
                network_plugin=None,
@@ -391,6 +393,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         max_pods=int(max_pods) if max_pods else None
     )
 
+    if enable_vmss:
+        agent_pool_profile.type = "VirtualMachineScaleSets"
     if node_osdisk_size:
         agent_pool_profile.os_disk_size_gb = int(node_osdisk_size)
 
