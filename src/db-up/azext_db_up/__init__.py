@@ -5,16 +5,16 @@
 
 from azure.cli.core import AzCommandsLoader
 # pylint: disable=unused-import
-import azext_rdbms_up._help
+import azext_db_up._help
 
 
 class RdbmsUpCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        rdbms_up_custom = CliCommandType(
-            operations_tmpl='azext_rdbms_up.custom#{}')
+        db_up_custom = CliCommandType(
+            operations_tmpl='azext_db_up.custom#{}')
         super(RdbmsUpCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    custom_command_type=rdbms_up_custom,
+                                                    custom_command_type=db_up_custom,
                                                     min_profile="2017-03-10-profile")
 
     def load_command_table(self, args):
