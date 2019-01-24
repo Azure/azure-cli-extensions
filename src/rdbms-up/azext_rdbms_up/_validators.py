@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=import-error
 import uuid
 from six.moves import configparser
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
