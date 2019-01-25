@@ -125,17 +125,18 @@ def _create_mysql_connection_string(host, user, password, database):
         MySqlClient.ado_net: "Server={host}; Port=3306; Database={database}; Uid={user}; Pwd={password}; "
                              "SslMode=Preferred;",
         MySqlClient.jdbc: "String url ='jdbc:mysql://{host}:3306/{database}?useSSL=true&requireSSL=false'; "
-                          "myDbConn = DriverManager.getConnection(url, '{user}', {password});",
+                          "Connection myDbConn = DriverManager.getConnection(url, '{user}', '{password}');",
         MySqlClient.nodejs: "var conn = mysql.createConnection({{host: '{host}', user: '{user}', "
                             "password: {password}, database: {database}, port: 3306, "
                             "ssl:{{ca:fs.readFileSync({{ca-cert filename}})}}}});",
         MySqlClient.php: "$con=mysqli_init(); mysqli_ssl_set($con, NULL, NULL, {{ca-cert filename}}, NULL, NULL); "
                          "mysqli_real_connect($con, '{host}', '{user}', {password}, {database}, 3306);",
-        MySqlClient.python: "cnx = mysql.connector.connect(user='{user}', password={password}, host='{host}', "
-                            "port=3306, database={database}, ssl_ca={{ca-cert filename}}, ssl_verify_cert=true)",
-        MySqlClient.ruby: "client = Mysql2::Client.new(username: '{user}', password: {password}, "
-                          "database: {database}, host: '{host}', port: 3306, sslca:{{ca-cert filename}}, "
-                          "sslverify:false, sslcipher:'AES256-SHA')"
+        MySqlClient.python: "cnx = mysql.connector.connect(user='{user}', password='{password}', host='{host}', "
+                            "port=3306, database='{database}', ssl_ca='{{ca-cert filename}}', ssl_verify_cert=True)",
+        MySqlClient.ruby: "client = Mysql2::Client.new(username: '{user}', password: '{password}', "
+                          "database: '{database}', host: '{host}', port: 3306, sslca:'{{ca-cert filename}}', "
+                          "sslverify:false, sslcipher:'AES256-SHA')",
+        MySqlClient.webapp: "Database={database}; Data Source={host}; User Id={user}; Password={password}"
     }
 
     connection_kwargs = {

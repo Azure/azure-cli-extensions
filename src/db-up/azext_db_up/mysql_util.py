@@ -18,3 +18,4 @@ class ClientType:
     python = 'python'
     ruby = 'ruby'
     odbc = 'odbc'
+    webapp = 'webapp'
