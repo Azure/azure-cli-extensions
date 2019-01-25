@@ -218,12 +218,12 @@ class EnhancedMonitoring(object):
                     'disk.sla.iops' + suffix: sla['IOPS'],
                 })
             if disk['is_ultra']:
-                 pub_cfg.update({
+                pub_cfg.update({
                     'disk.type' + suffix: 'Premium',
                     'disk.sla.throughput' + suffix: disk['tp'],
                     'disk.sla.iops' + suffix: disk['iops'],
                 })
-            
+
             if managed_disk and not disk['is_premium'] and not disk['is_ultra']:
                 logger.warning('Standard Managed Disks are not supported. '
                                'Extension will be installed but no disk metrics will be available.')
