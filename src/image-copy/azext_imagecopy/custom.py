@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-locals
 def imagecopy(source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, source_type='image', cleanup='false',
-              parallel_degree=-1, tags=None, target_name=None, target_subscription=None, timeout=3600):
+              parallel_degree=-1, tags=None, target_name=None, target_subscription=None, timeout=3600, temporary_rg_name):
 
     # get the os disk id from source vm/image
     logger.warn("Getting os disk id of the source vm/image")
@@ -96,7 +96,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     # Start processing in the target locations
 
-    transient_resource_group_name = 'image-copy-rg'
+    transient_resource_group_name = temporary_rg_name
     # pick the first location for the temp group
     transient_resource_group_location = target_location[0].strip()
     create_resource_group(transient_resource_group_name,
