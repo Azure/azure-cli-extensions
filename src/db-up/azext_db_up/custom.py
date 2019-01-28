@@ -23,14 +23,14 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
              database_name=None, tags=None, version=None):
     try:
         server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing MySQL Server \'%s\' ...', server_name)
+        logger.warning('Found existing MySQL Server \'%s\'...', server_name)
         # update server if needed
         server_result = _update_mysql_server(
             cmd, client, server_result, resource_group_name, server_name, backup_retention, geo_redundant_backup,
             storage_mb, administrator_login_password, version, ssl_enforcement, tags)
     except CloudError:
         # Create mysql server
-        logger.warning('Creating MySQL Server \'%s\' ...', server_name)
+        logger.warning('Creating MySQL Server \'%s\'...', server_name)
         if administrator_login_password is None:
             administrator_login_password = str(uuid.uuid4())
         parameters = mysql.models.ServerForCreate(
@@ -51,14 +51,15 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
             client.create(resource_group_name, server_name, parameters), cmd.cli_ctx, 'MySQL Server Create')
 
         # Set timeout configuration
-        logger.warning('Configuring wait timeout to 8 hours ...')
+        logger.warning('Configuring wait timeout to 8 hours...')
         config_client = cf_mysql_config(cmd.cli_ctx, None)
         resolve_poller(
             config_client.create_or_update(resource_group_name, server_name, 'wait_timeout', '28800'),
             cmd.cli_ctx, 'MySQL Configuration Update')
 
         # Create firewall rule to allow for Azure IPs
-        logger.warning('Configuring firewall rule, \'azure-access\', to allow for Azure IPs ...')
+        logger.warning('Configuring server firewall rule, \'azure-access\', to accept connections from all '
+                       'Azure resources...')
         firewall_client = cf_mysql_firewall_rules(cmd.cli_ctx, None)
         resolve_poller(
             firewall_client.create_or_update(resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0'),
@@ -88,12 +89,12 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
 
     if addresses and len(addresses) == 1:
         ip_address = addresses.pop()
-        logger.warning('Configuring firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
+        logger.warning('Configuring server firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
         resolve_poller(
             firewall_client.create_or_update(resource_group_name, server_name, 'devbox', ip_address, ip_address),
             cmd.cli_ctx, 'MySQL Firewall Rule Create/Update')
     elif addresses:
-        logger.warning('Detected dynamic IP address, configuring firewall rules for IP addresses encountered ...')
+        logger.warning('Detected dynamic IP address, configuring firewall rules for IP addresses encountered...')
         logger.warning('IP Addresses: %s', ', '.join(list(addresses)))
         firewall_results = []
         for i, ip_address in enumerate(addresses):
