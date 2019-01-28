@@ -42,6 +42,11 @@ def load_arguments(self, _):
         c.argument('input_yaml_files', options_list=['--input-yaml-files'], help="List of comma seperated yaml files or a directory which contains all the yaml files")
         c.argument('parameters', action='append', nargs='+', completer=FilesCompleter())
 
+    with self.argument_context('mesh generate armtemplate') as c:
+        c.argument('input_yaml_files', options_list=['--input-yaml-files'], required=True,
+                   help="List of comma seperated yaml files or a directory which contains all the yaml files")
+        c.argument('parameters', action='append', nargs='+', completer=FilesCompleter())
+
     with self.argument_context('mesh network') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('network_resource_name', options_list=('--name', '-n'), help="The name of the network", id_part='network_name')
