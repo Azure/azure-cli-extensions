@@ -49,7 +49,7 @@ def process_mysql_namespace(cmd, namespace):
     if create_resource_group:
         # create new resource group
         params = ResourceGroup(location=namespace.location)
-        logger.warning('Creating Resource Group \'%s\' ...', namespace.resource_group_name)
+        logger.warning('Creating Resource Group \'%s\'...', namespace.resource_group_name)
         resource_client.resource_groups.create_or_update(namespace.resource_group_name, params)
     _set_value(namespace, 'resource_group_name', 'group', namespace.resource_group_name)
 
