@@ -15,3 +15,13 @@ helps['mysql up'] = """
         - name: To override default names, provide parameters indicating desired values/existing resources.
           text: az mysql up -g MyResourceGroup -s MyServer -d MyDatabase -u MyUsername -p MyPassword
 """
+
+helps['postgres up'] = """
+    type: command
+    short-summary: Set up an Azure Database for PostgreSQL server and configurations.
+    examples:
+        - name: Ensure that a Azure Database for PostgreSQL server is up and running and configured for immediate use.
+          text: az postgres up
+        - name: To override default names, provide parameters indicating desired values/existing resources.
+          text: az postgres up -g MyResourceGroup -s MyServer -d MyDatabase -u MyUsername -p MyPassword
+"""
