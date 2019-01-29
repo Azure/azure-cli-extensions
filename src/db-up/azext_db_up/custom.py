@@ -68,6 +68,16 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
             firewall_client.create_or_update(resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0'),
             cmd.cli_ctx, 'MySQL Firewall Rule Create/Update')
 
+    # Create mysql database if it does not exist
+    database_client = cf_mysql_db(cmd.cli_ctx, None)
+    try:
+        database_client.get(resource_group_name, server_name, database_name)
+    except CloudError:
+        logger.warning('Creating MySQL database \'%s\'...', database_name)
+        resolve_poller(
+            database_client.create_or_update(resource_group_name, server_name, database_name), cmd.cli_ctx,
+            'MySQL Database Create/Update')
+
     # Check for user's ip address(es)
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
@@ -171,6 +181,16 @@ def postgresql_up(cmd, client, resource_group_name=None, server_name=None, sku_n
             firewall_client.create_or_update(resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0'),
             cmd.cli_ctx, 'PostgreSQL Firewall Rule Create/Update')
 
+    # Create postgresql database if it does not exist
+    database_client = cf_postgres_db(cmd.cli_ctx, None)
+    try:
+        database_client.get(resource_group_name, server_name, database_name)
+    except CloudError:
+        logger.warning('Creating PostgreSQL database \'%s\'...', database_name)
+        resolve_poller(
+            database_client.create_or_update(resource_group_name, server_name, database_name), cmd.cli_ctx,
+            'PostgreSQL Database Create/Update')
+
     # Check for user's ip address(es)
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
@@ -264,11 +284,6 @@ def _run_mysql_commands(host, user, password, database):
     logger.warning('Successfully Connected to MySQL.')
     cursor = connection.cursor()
     try:
-        cursor.execute("CREATE DATABASE {}".format(database))
-        logger.warning("Ran Database Query: `CREATE DATABASE %s`", database)
-    except mysql_connector.errors.DatabaseError:
-        pass
-    try:
         cursor.execute("CREATE USER 'root' IDENTIFIED BY '{}'".format(database))
         logger.warning("Ran Database Query: `CREATE USER 'root' IDENTIFIED BY '%s'`", database)
     except mysql_connector.errors.DatabaseError:
@@ -282,11 +297,6 @@ def _run_postgresql_commands(host, user, password, database):
     connection = psycopg2.connect(user=user, host=host, password=password)
     logger.warning('Successfully Connected to PostgreSQL.')
     cursor = connection.cursor()
-    try:
-        cursor.execute("CREATE DATABASE {}".format(database))
-        logger.warning("Ran Database Query: `CREATE DATABASE %s`", database)
-    except psycopg2.errors.DatabaseError:
-        pass
     try:
         cursor.execute("CREATE USER 'root' IDENTIFIED BY '{}'".format(database))
         logger.warning("Ran Database Query: `CREATE USER 'root' IDENTIFIED BY '%s'`", database)
