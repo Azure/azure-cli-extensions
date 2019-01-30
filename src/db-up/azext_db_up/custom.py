@@ -81,12 +81,13 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
     # Check for user's ip address(es)
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
-    kwargs = {'user': user, 'host': host}
+    kwargs = {'user': user, 'host': host, 'database': database_name}
     if administrator_login_password is not None:
         kwargs['password'] = administrator_login_password
 
     addresses = set()
-    for _ in range(50):
+    logger.warning('Checking your ip address...')
+    for _ in range(20):
         try:
             connection = mysql_connector.connect(**kwargs)
             connection.close()
@@ -133,10 +134,10 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
     }
 
 
-def postgresql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=None,
-                  location=None, administrator_login=None, administrator_login_password=None,
-                  backup_retention=None, geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None,
-                  database_name=None, tags=None, version=None):
+def postgres_up(cmd, client, resource_group_name=None, server_name=None, sku_name=None,
+                location=None, administrator_login=None, administrator_login_password=None,
+                backup_retention=None, geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None,
+                database_name=None, tags=None, version=None):
     try:
         server_result = client.get(resource_group_name, server_name)
         logger.warning('Found existing PostgreSQL Server \'%s\'...', server_name)
@@ -170,7 +171,8 @@ def postgresql_up(cmd, client, resource_group_name=None, server_name=None, sku_n
         logger.warning('Configuring wait timeout to 8 hours...')
         config_client = cf_postgres_config(cmd.cli_ctx, None)
         resolve_poller(
-            config_client.create_or_update(resource_group_name, server_name, 'wait_timeout', '28800'),
+            config_client.create_or_update(
+                resource_group_name, server_name, 'idle_in_transaction_session_timeout', '28800000'),
             cmd.cli_ctx, 'PostgreSQL Configuration Update')
 
         # Create firewall rule to allow for Azure IPs
@@ -194,17 +196,18 @@ def postgresql_up(cmd, client, resource_group_name=None, server_name=None, sku_n
     # Check for user's ip address(es)
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
-    kwargs = {'user': user, 'host': host}
+    kwargs = {'user': user, 'host': host, 'database': database_name}
     if administrator_login_password is not None:
         kwargs['password'] = administrator_login_password
 
     addresses = set()
-    for _ in range(50):
+    logger.warning('Checking your ip address...')
+    for _ in range(20):
         try:
             connection = psycopg2.connect(**kwargs)
             connection.close()
-        except psycopg2.errors.DatabaseError as ex:
-            pattern = re.compile(r'.*\'(?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\'')
+        except psycopg2.OperationalError as ex:
+            pattern = re.compile(r'.*[\'"](?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)[\'"]')
             try:
                 addresses.add(pattern.match(str(ex)).groupdict().get('ipAddress'))
             except AttributeError:
@@ -280,7 +283,7 @@ def _create_mysql_connection_string(host, user, password, database):
 
 def _run_mysql_commands(host, user, password, database):
     # Connect to mysql and get cursor to run sql commands
-    connection = mysql_connector.connect(user=user, host=host, password=password)
+    connection = mysql_connector.connect(user=user, host=host, password=password, database=database)
     logger.warning('Successfully Connected to MySQL.')
     cursor = connection.cursor()
     try:
@@ -294,16 +297,17 @@ def _run_mysql_commands(host, user, password, database):
 
 def _run_postgresql_commands(host, user, password, database):
     # Connect to postgresql and get cursor to run sql commands
-    connection = psycopg2.connect(user=user, host=host, password=password)
+    connection = psycopg2.connect(user=user, host=host, password=password, database=database)
+    connection.set_session(autocommit=True)
     logger.warning('Successfully Connected to PostgreSQL.')
     cursor = connection.cursor()
     try:
-        cursor.execute("CREATE USER 'root' IDENTIFIED BY '{}'".format(database))
-        logger.warning("Ran Database Query: `CREATE USER 'root' IDENTIFIED BY '%s'`", database)
-    except psycopg2.errors.DatabaseError:
+        cursor.execute("CREATE USER root WITH ENCRYPTED PASSWORD '{}'".format(database))
+        logger.warning("Ran Database Query: `CREATE USER root WITH ENCRYPTED PASSWORD '%s'`", database)
+    except psycopg2.ProgrammingError:
         pass
-    cursor.execute("GRANT ALL PRIVILEGES ON {}.* TO 'root'".format(database))
-    logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON %s.* TO 'root'`", database)
+    cursor.execute("GRANT ALL PRIVILEGES ON DATABASE {} TO root".format(database))
+    logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON DATABASE %s TO root`", database)
 
 
 def _update_mysql_server(cmd, client, server_result, resource_group_name, server_name, backup_retention,
@@ -366,3 +370,40 @@ def _update_postgresql_server(cmd, client, server_result, resource_group_name, s
         return resolve_poller(client.update(
             resource_group_name, server_name, params), cmd.cli_ctx, 'PostgreSQL Server Update')
     return server_result
+
+
+def _update_server(cmd, client, db_sdk, db_log_name, server_result, resource_group_name, server_name, backup_retention,
+                   geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags):
+    # storage profile params
+    storage_profile_kwargs = {}
+    if backup_retention != server_result.storage_profile.backup_retention_days:
+        update_kwargs(storage_profile_kwargs, 'backup_retention_days', backup_retention)
+    if geo_redundant_backup != server_result.storage_profile.geo_redundant_backup:
+        update_kwargs(storage_profile_kwargs, 'geo_redundant_backup', geo_redundant_backup)
+    if storage_mb != server_result.storage_profile.storage_mb:
+        update_kwargs(storage_profile_kwargs, 'storage_mb', storage_mb)
+
+    # update params
+    server_update_kwargs = {
+        'storage_profile': postgresql.models.StorageProfile(**storage_profile_kwargs)
+    } if storage_profile_kwargs else {}
+    update_kwargs(server_update_kwargs, 'administrator_login_password', administrator_login_password)
+    if version != server_result.version:
+        update_kwargs(server_update_kwargs, 'version', version)
+    if ssl_enforcement != server_result.ssl_enforcement:
+        update_kwargs(server_update_kwargs, 'ssl_enforcement', ssl_enforcement)
+    update_kwargs(server_update_kwargs, 'tags', tags)
+
+    if server_update_kwargs:
+        logger.warning('Updating existing PostgreSQL Server \'%s\' with given arguments', server_name)
+        params = postgresql.models.ServerUpdateParameters(**server_update_kwargs)
+        return resolve_poller(client.update(
+            resource_group_name, server_name, params), cmd.cli_ctx, 'PostgreSQL Server Update')
+    return server_result
+
+
+class DbArguments:
+    def __init__(self, sdk=None, logging_name=None, server_result=None):
+        self.sdk = sdk
+        self.logging_name = logging_name
+        self.server_result = server_result
