@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.2
++++++
+* Fix supports of Python 2.7.x
+
 0.2.1
 +++++
 * add support of apiserver authorized IP ranges
