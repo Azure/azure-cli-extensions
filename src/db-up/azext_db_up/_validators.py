@@ -10,7 +10,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azure.mgmt.resource.resources.models import ResourceGroup
 from azext_db_up._client_factory import resource_client_factory
 from azext_db_up.random_name.generate import generate_username
-from azext_db_up.util import create_random_resource_name, get_config_value, set_config_value
+from azext_db_up.util import create_random_resource_name, get_config_value, set_config_value, remove_section
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
@@ -22,11 +22,15 @@ DEFAULT_LOCATION = 'westus2'
 DEFAULT_DATABASE_NAME = 'sampledb'
 
 
-def db_namespace_processor(db_type):
-    return lambda cmd, namespace: _process_db_namespace(cmd, namespace, db_type=db_type)
+def db_up_namespace_processor(db_type):
+    return lambda cmd, namespace: _process_db_up_namespace(cmd, namespace, db_type=db_type)
 
 
-def _process_db_namespace(cmd, namespace, db_type=None):
+def db_down_namespace_processor(db_type):
+    return lambda cmd, namespace: _process_db_down_namespace(cmd, namespace, db_type=db_type)
+
+
+def _process_db_up_namespace(cmd, namespace, db_type=None):
     # populate from cache if existing
     _set_value(db_type, namespace, 'location', 'location', cache=False)
     _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
@@ -63,6 +67,19 @@ def _process_db_namespace(cmd, namespace, db_type=None):
         namespace.administrator_login_password = str(uuid.uuid4())
     del namespace.generate_password
     _set_value(db_type, namespace, 'database_name', 'database', DEFAULT_DATABASE_NAME)
+
+
+def _process_db_down_namespace(cmd, namespace, db_type=None):
+    # populate from cache if existing
+    _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
+    _set_value(db_type, namespace, 'server_name', 'server', cache=False)
+
+    # delete information in config
+    remove_section(db_type)
+
+    # put resource group info back in config if user does not want to delete it
+    if not namespace.delete_group:
+        _set_value(db_type, namespace, 'resource_group_name', 'group')
 
 
 def _set_value(db_type, namespace, attribute, option, default=None, cache=True):

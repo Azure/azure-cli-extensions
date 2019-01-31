@@ -34,6 +34,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='The name of a database to initialize.')
             c.argument('tags', tags_type)
 
+        with self.argument_context('{} down'.format(scope)) as c:
+            c.ignore('server_name')
+            c.ignore('resource_group_name')
+            c.argument('delete_group', action='store_true', help="Delete the resource group.")
+
     with self.argument_context('mysql up') as c:
         c.argument('version', help='Server version', default='5.7')
 

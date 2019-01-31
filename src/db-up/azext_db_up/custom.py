@@ -8,10 +8,12 @@ import re
 import uuid
 from msrestazure.azure_exceptions import CloudError
 from knack.log import get_logger
+from knack.util import CLIError
 from azext_db_up.vendored_sdks.azure_mgmt_rdbms import mysql, postgresql
 from azext_db_up._client_factory import (
     cf_mysql_firewall_rules, cf_mysql_config, cf_mysql_db,
-    cf_postgres_firewall_rules, cf_postgres_config, cf_postgres_db)
+    cf_postgres_firewall_rules, cf_postgres_config, cf_postgres_db,
+    resource_client_factory)
 from azext_db_up.util import update_kwargs, resolve_poller
 import mysql.connector as mysql_connector
 import psycopg2
@@ -70,8 +72,9 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
     _create_database(db_context, cmd, resource_group_name, server_name, database_name)
 
     # check ip address(es) of the user and configure firewall rules
+    mysql_errors = (mysql_connector.errors.DatabaseError)
     host, user = _configure_firewall_rules(
-        db_context, cmd, server_result, resource_group_name, server_name, administrator_login,
+        db_context, mysql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name)
 
     # connect to mysql and run some commands
@@ -139,8 +142,9 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, sku_nam
     _create_database(db_context, cmd, resource_group_name, server_name, database_name)
 
     # check ip address(es) of the user and configure firewall rules
+    postgres_errors = (psycopg2.OperationalError)
     host, user = _configure_firewall_rules(
-        db_context, cmd, server_result, resource_group_name, server_name, administrator_login,
+        db_context, postgres_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name)
 
     # connect to postgresql and run some commands
@@ -154,6 +158,19 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, sku_nam
         'username': user,
         'password': administrator_login_password if administrator_login_password is not None else '*****'
     }
+
+
+def server_down(cmd, client, resource_group_name=None, server_name=None, delete_group=None):
+    if delete_group:
+        resource_client = resource_client_factory(cmd.cli_ctx)
+        if resource_group_name is None:
+            raise CLIError("Expected a a resource group name saved in cache.")
+
+        # delete resource group
+        logger.warning('Deleting Resource Group \'%s\'...', resource_group_name)
+        return resource_client.resource_groups.delete(resource_group_name)
+    logger.warning('Deleting server \'%s\'...', server_name)
+    return client.delete(resource_group_name, server_name)
 
 
 def _create_mysql_connection_string(host, user, password, database):
@@ -242,7 +259,7 @@ def _run_postgresql_commands(host, user, password, database):
 
 
 def _configure_firewall_rules(
-        db_context, cmd, server_result, resource_group_name, server_name, administrator_login,
+        db_context, connector_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name):
     # unpack from context
     connector, cf_firewall, command_group, logging_name = (
@@ -261,12 +278,14 @@ def _configure_firewall_rules(
         try:
             connection = connector.connect(**kwargs)
             connection.close()
-        except connector.OperationalError as ex:
+        except connector_errors as ex:
             pattern = re.compile(r'.*[\'"](?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)[\'"]')
             try:
                 addresses.add(pattern.match(str(ex)).groupdict().get('ipAddress'))
             except AttributeError:
                 pass
+        except Exception as ex:
+            print(type(ex), ex)
 
     # Create firewall rules for devbox if needed
     firewall_client = cf_firewall(cmd.cli_ctx, None)
