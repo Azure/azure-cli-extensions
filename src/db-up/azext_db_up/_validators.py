@@ -69,7 +69,7 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
     _set_value(db_type, namespace, 'database_name', 'database', DEFAULT_DATABASE_NAME)
 
 
-def _process_db_down_namespace(cmd, namespace, db_type=None):
+def _process_db_down_namespace(namespace, db_type=None):
     # populate from cache if existing
     _set_value(db_type, namespace, 'resource_group_name', 'group', cache=False)
     _set_value(db_type, namespace, 'server_name', 'server', cache=False)

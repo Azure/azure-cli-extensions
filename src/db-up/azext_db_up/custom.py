@@ -365,6 +365,7 @@ def _update_server(db_context, cmd, client, server_result, resource_group_name, 
     return server_result
 
 
+# pylint: disable=too-many-instance-attributes,too-few-public-methods
 class DbContext:
     def __init__(self, azure_sdk=None, cf_firewall=None, cf_db=None, cf_config=None, logging_name=None,
                  connector=None, command_group=None, server_client=None):
