@@ -8,12 +8,12 @@ from azure.cli.core.profiles import ResourceType
 from ._help import helps  # pylint: disable=unused-import
 
 
-class DnsCommandsLoader(AzCommandsLoader):
+class PrivateDnsCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         privatedns_custom = CliCommandType(operations_tmpl='azext_privatedns.custom#{}')
-        super(DnsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+        super(PrivateDnsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                 resource_type=ResourceType.MGMT_NETWORK,
                                                 custom_command_type=privatedns_custom)
 
@@ -27,4 +27,4 @@ class DnsCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = DnsCommandsLoader
+COMMAND_LOADER_CLS = PrivateDnsCommandsLoader

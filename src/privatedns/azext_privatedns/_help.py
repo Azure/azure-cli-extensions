@@ -9,34 +9,64 @@ from knack.help_files import helps
 
 helps['network privatedns'] = """
     type: group
-    short-summary: Manage DNS domains in Azure.
+    short-summary: Manage Private DNS domains in Azure.
 """
 
 helps['network privatedns zone'] = """
     type: group
-    short-summary: Manage DNS zones.
+    short-summary: Manage Private DNS zones.
 """
 
 helps['network privatedns zone create'] = """
     type: command
-    short-summary: Create a DNS zone.
+    short-summary: Create a Private DNS zone.
     parameters:
-        - name: --if-none-match
-          short-summary: Only create a DNS zone if one doesn't exist that matches the given name.
         - name: --tags
-          short-summary: Resource tags for the DNS zone.
+          short-summary: Resource tags for the Private DNS zone.
     examples:
-        - name: Create a DNS zone using a fully qualified domain name.
+        - name: Create a Private DNS zone using a fully qualified domain name.
           text: >
-            az network dns zone create -g MyResourceGroup -n www.mysite.com
+            az network privatedns zone create -g MyResourceGroup -n www.mysite.com
 """
 
 helps['network privatedns zone update'] = """
     type: command
-    short-summary: Update a DNS zone's properties. Does not modify DNS records within the zone.
+    short-summary: Update a Private DNS zone's properties. Does not modify Private DNS records or virtual network links within the zone.
     parameters:
-        - name: --if-match
-          short-summary: Update only if the resource with the same ETAG exists.
         - name: --tags
-          short-summary: Resource tags for the DNS zone.
+          short-summary: Resource tags for the Private DNS zone.
+    examples:
+        - name: Update a Private DNS zone properties to change the user-defined value of a previously set tag.
+          text: >
+            az network privatedns zone update -g MyResourceGroup -n www.mysite.com --tags CostCenter=Marketing
+"""
+
+helps['network privatedns zone list'] = """
+    type: command
+    short-summary: List Private DNS zones.
+    examples:
+        - name: List Private DNS zones in a resource group.
+          text: >
+            az network privatedns zone list -g MyResourceGroup
+"""
+
+helps['network privatedns zone delete'] = """
+    type: command
+    short-summary: Delete a Private DNS zone.
+    long-summary: Delete a Private DNS zone. All DNS records in the zone will
+        also be deleted. This operation cannot be undone. Private DNS zone
+        cannot be deleted unless all virtual network links to it are removed.
+    examples:
+        - name: Delete a Private DNS zone using a fully qualified domain name.
+          text: >
+            az network privatedns zone delete -g MyResourceGroup -n www.mysite.com
+"""
+
+helps['network privatedns zone show'] = """
+    type: command
+    short-summary: Get a Private DNS zone.
+    examples:
+        - name: List DNS zones in a resource group.
+          text: >
+            az network privatedns zone show -g MyResourceGroup -n www.mysite.com
 """
