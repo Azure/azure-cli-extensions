@@ -9,25 +9,25 @@ import uuid
 from msrestazure.azure_exceptions import CloudError
 from knack.log import get_logger
 from knack.util import CLIError
+import mysql.connector as mysql_connector
+import psycopg2
 from azext_db_up.vendored_sdks.azure_mgmt_rdbms import mysql, postgresql
 from azext_db_up._client_factory import (
     cf_mysql_firewall_rules, cf_mysql_config, cf_mysql_db,
     cf_postgres_firewall_rules, cf_postgres_config, cf_postgres_db,
     resource_client_factory)
 from azext_db_up.util import update_kwargs, resolve_poller
-import mysql.connector as mysql_connector
-import psycopg2
 
 logger = get_logger(__name__)
 
 
-def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=None,
-             location=None, administrator_login=None, administrator_login_password=None,
-             backup_retention=None, geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None,
-             database_name=None, tags=None, version=None):
+def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=None, backup_retention=None,
+             sku_name=None, geo_redundant_backup=None, storage_mb=None, administrator_login=None,
+             administrator_login_password=None, version=None, ssl_enforcement=None, database_name=None, tags=None):
     db_context = DbContext(
         azure_sdk=mysql, cf_firewall=cf_mysql_firewall_rules, cf_db=cf_mysql_db,
-        cf_config=cf_mysql_config, logging_name='MySQL', connector=mysql_connector, command_group='mysql')
+        cf_config=cf_mysql_config, logging_name='MySQL', connector=mysql_connector, command_group='mysql',
+        server_client=client)
 
     try:
         server_result = client.get(resource_group_name, server_name)
@@ -38,25 +38,10 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
             geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags)
     except CloudError:
         # Create mysql server
-        logger.warning('Creating MySQL Server \'%s\'...', server_name)
-        if administrator_login_password is None:
-            administrator_login_password = str(uuid.uuid4())
-        parameters = mysql.models.ServerForCreate(
-            sku=mysql.models.Sku(name=sku_name),
-            properties=mysql.models.ServerPropertiesForDefaultCreate(
-                administrator_login=administrator_login,
-                administrator_login_password=administrator_login_password,
-                version=version,
-                ssl_enforcement=ssl_enforcement,
-                storage_profile=mysql.models.StorageProfile(
-                    backup_retention_days=backup_retention,
-                    geo_redundant_backup=geo_redundant_backup,
-                    storage_mb=storage_mb)),
-            location=location,
-            tags=tags)
-
-        server_result = resolve_poller(
-            client.create(resource_group_name, server_name, parameters), cmd.cli_ctx, 'MySQL Server Create')
+        server_result = _create_server(
+            db_context, cmd, resource_group_name, server_name, location, backup_retention,
+            sku_name, geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
+            ssl_enforcement, tags)
 
         # Set timeout configuration
         logger.warning('Configuring wait timeout to 8 hours...')
@@ -90,13 +75,13 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, sku_name=N
     }
 
 
-def postgres_up(cmd, client, resource_group_name=None, server_name=None, sku_name=None,
-                location=None, administrator_login=None, administrator_login_password=None,
-                backup_retention=None, geo_redundant_backup=None, ssl_enforcement=None, storage_mb=None,
-                database_name=None, tags=None, version=None):
+def postgres_up(cmd, client, resource_group_name=None, server_name=None, location=None, backup_retention=None,
+                sku_name=None, geo_redundant_backup=None, storage_mb=None, administrator_login=None,
+                administrator_login_password=None, version=None, ssl_enforcement=None, database_name=None, tags=None):
     db_context = DbContext(
         azure_sdk=postgresql, cf_firewall=cf_postgres_firewall_rules, cf_db=cf_postgres_db,
-        cf_config=cf_postgres_config, logging_name='PostgreSQL', connector=psycopg2, command_group='postgres')
+        cf_config=cf_postgres_config, logging_name='PostgreSQL', connector=psycopg2, command_group='postgres',
+        server_client=client)
 
     try:
         server_result = client.get(resource_group_name, server_name)
@@ -107,25 +92,10 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, sku_nam
             geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags)
     except CloudError:
         # Create postgresql server
-        logger.warning('Creating PostgreSQL Server \'%s\'...', server_name)
-        if administrator_login_password is None:
-            administrator_login_password = str(uuid.uuid4())
-        parameters = postgresql.models.ServerForCreate(
-            sku=postgresql.models.Sku(name=sku_name),
-            properties=postgresql.models.ServerPropertiesForDefaultCreate(
-                administrator_login=administrator_login,
-                administrator_login_password=administrator_login_password,
-                version=version,
-                ssl_enforcement=ssl_enforcement,
-                storage_profile=postgresql.models.StorageProfile(
-                    backup_retention_days=backup_retention,
-                    geo_redundant_backup=geo_redundant_backup,
-                    storage_mb=storage_mb)),
-            location=location,
-            tags=tags)
-
-        server_result = resolve_poller(
-            client.create(resource_group_name, server_name, parameters), cmd.cli_ctx, 'PostgreSQL Server Create')
+        server_result = _create_server(
+            db_context, cmd, resource_group_name, server_name, location, backup_retention,
+            sku_name, geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
+            ssl_enforcement, tags)
 
         # Set timeout configuration
         logger.warning('Configuring wait timeout to 8 hours...')
@@ -284,8 +254,6 @@ def _configure_firewall_rules(
                 addresses.add(pattern.match(str(ex)).groupdict().get('ipAddress'))
             except AttributeError:
                 pass
-        except Exception as ex:
-            print(type(ex), ex)
 
     # Create firewall rules for devbox if needed
     firewall_client = cf_firewall(cmd.cli_ctx, None)
@@ -337,6 +305,32 @@ def _create_azure_firewall_rule(db_context, cmd, resource_group_name, server_nam
         cmd.cli_ctx, '{} Firewall Rule Create/Update'.format(logging_name))
 
 
+def _create_server(db_context, cmd, resource_group_name, server_name, location, backup_retention, sku_name,
+                   geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
+                   ssl_enforcement, tags):
+    logging_name, azure_sdk, server_client = db_context.logging_name, db_context.azure_sdk, db_context.server_client
+    logger.warning('Creating %s Server \'%s\'...', logging_name, server_name)
+    if administrator_login_password is None:
+        administrator_login_password = str(uuid.uuid4())
+    parameters = azure_sdk.models.ServerForCreate(
+        sku=azure_sdk.models.Sku(name=sku_name),
+        properties=azure_sdk.models.ServerPropertiesForDefaultCreate(
+            administrator_login=administrator_login,
+            administrator_login_password=administrator_login_password,
+            version=version,
+            ssl_enforcement=ssl_enforcement,
+            storage_profile=azure_sdk.models.StorageProfile(
+                backup_retention_days=backup_retention,
+                geo_redundant_backup=geo_redundant_backup,
+                storage_mb=storage_mb)),
+        location=location,
+        tags=tags)
+
+    return resolve_poller(
+        server_client.create(resource_group_name, server_name, parameters), cmd.cli_ctx,
+        '{} Server Create'.format(logging_name))
+
+
 def _update_server(db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
                    geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags):
     # storage profile params
@@ -370,7 +364,7 @@ def _update_server(db_context, cmd, client, server_result, resource_group_name, 
 
 class DbContext:
     def __init__(self, azure_sdk=None, cf_firewall=None, cf_db=None, cf_config=None, logging_name=None,
-                 connector=None, command_group=None):
+                 connector=None, command_group=None, server_client=None):
         self.azure_sdk = azure_sdk
         self.cf_firewall = cf_firewall
         self.cf_db = cf_db
@@ -378,3 +372,4 @@ class DbContext:
         self.logging_name = logging_name
         self.connector = connector
         self.command_group = command_group
+        self.server_client = server_client
