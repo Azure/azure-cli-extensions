@@ -38,6 +38,8 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
             geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags)
     except CloudError:
         # Create mysql server
+        if administrator_login_password is None:
+            administrator_login_password = str(uuid.uuid4())
         server_result = _create_server(
             db_context, cmd, resource_group_name, server_name, location, backup_retention,
             sku_name, geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
@@ -92,6 +94,8 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
             geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags)
     except CloudError:
         # Create postgresql server
+        if administrator_login_password is None:
+            administrator_login_password = str(uuid.uuid4())
         server_result = _create_server(
             db_context, cmd, resource_group_name, server_name, location, backup_retention,
             sku_name, geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
@@ -310,8 +314,7 @@ def _create_server(db_context, cmd, resource_group_name, server_name, location, 
                    ssl_enforcement, tags):
     logging_name, azure_sdk, server_client = db_context.logging_name, db_context.azure_sdk, db_context.server_client
     logger.warning('Creating %s Server \'%s\'...', logging_name, server_name)
-    if administrator_login_password is None:
-        administrator_login_password = str(uuid.uuid4())
+
     parameters = azure_sdk.models.ServerForCreate(
         sku=azure_sdk.models.Sku(name=sku_name),
         properties=azure_sdk.models.ServerPropertiesForDefaultCreate(
