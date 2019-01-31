@@ -27,7 +27,7 @@ def db_up_namespace_processor(db_type):
 
 
 def db_down_namespace_processor(db_type):
-    return lambda cmd, namespace: _process_db_down_namespace(cmd, namespace, db_type=db_type)
+    return lambda cmd, namespace: _process_db_down_namespace(namespace, db_type=db_type)
 
 
 def _process_db_up_namespace(cmd, namespace, db_type=None):
