@@ -32,7 +32,7 @@ def update_privatedns_zone(instance, tags=None):
     return instance
 
 
-def create_privatedns_link(client, resource_group_name, private_zone_name, virtual_network_link_name, virtual_network, registration_enabled=None, tags=None):
+def create_privatedns_link(client, resource_group_name, private_zone_name, virtual_network_link_name, virtual_network, registration_enabled, tags=None):
     link = VirtualNetworkLink(location='global', tags=tags)
 
     if registration_enabled is not None:

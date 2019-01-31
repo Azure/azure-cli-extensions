@@ -38,7 +38,8 @@ def transform_privatedns_link_table_output(result):
             ('LinkName', item['name']),
             ('ResourceGroup', item['resourceGroup']),
             ('RegistrationEnabled', item['registrationEnabled']),
-            ('VirtualNetwork', item['virtualNetwork']['id'])
+            ('VirtualNetwork', item['virtualNetwork']['id']),
+            ('LinkState', item['virtualNetworkLinkState'])
         ])
         final_result.append(new_item)
 
