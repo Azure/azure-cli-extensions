@@ -25,7 +25,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'mysql-connector-python==8.0.13'
+    'mysql-connector-python==8.0.13',
+    'psycopg2-binary==2.7.7'
 ]
 
 setup(
