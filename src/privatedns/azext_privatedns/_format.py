@@ -26,6 +26,25 @@ def transform_privatedns_zone_table_output(result):
     return final_result if is_list else final_result[0]
 
 
+def transform_privatedns_link_table_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    final_result = []
+    for item in result:
+        new_item = OrderedDict([
+            ('LinkName', item['name']),
+            ('ResourceGroup', item['resourceGroup']),
+            ('RegistrationEnabled', item['registrationEnabled']),
+            ('VirtualNetwork', item['virtualNetwork']['id'])
+        ])
+        final_result.append(new_item)
+
+    return final_result if is_list else final_result[0]
+
+
 def transform_privatedns_record_set_output(result):
     from azext_privatedns.privatedns.models import RecordSetPaged
 

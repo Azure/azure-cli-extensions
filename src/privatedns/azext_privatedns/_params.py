@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands.parameters import get_enum_type
 from knack.arguments import CLIArgumentType
+from azure.cli.core.commands.parameters import (get_three_state_flag)
 from azext_privatedns._validators import (privatedns_zone_name_type, get_vnet_validator, validate_metadata)
 
 
@@ -19,5 +19,10 @@ def load_arguments(self, _):
         c.argument('metadata', nargs='+', help='Metadata in space-separated key=value pairs. This overwrites any existing metadata.', validator=validate_metadata)
 
     with self.argument_context('network privatedns zone') as c:
-        c.argument('private_zone_name', name_arg_type)
+        c.argument('private_zone_name', name_arg_type, type=privatedns_zone_name_type)
         c.ignore('location')
+
+    with self.argument_context('network privatedns link') as c:
+        c.argument('virtual_network_link_name', name_arg_type, help='The name of the virtual network link to the specified Private DNS zone.')
+        c.argument('virtual_network', help='Name or ID of the virtual network.', options_list=('--virtual-network', '-v'), validator=get_vnet_validator)
+        c.argument('registration_enabled', help='Specify if the link is registration enabled.', options_list=('--registration-enabled', '-e'), arg_type=get_three_state_flag())
