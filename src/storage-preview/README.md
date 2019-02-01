@@ -73,7 +73,7 @@ az storage account create \
     --kind FileStorage
 ```
 
- **Customer-Controlled Failover**
+#### Customer-Controlled Failover:
 Failover RA-GRS storage accounts from the primary cluster to the secondary cluster.
 *Examples:*
 ```
