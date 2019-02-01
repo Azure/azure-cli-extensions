@@ -31,7 +31,8 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
 
     try:
         server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing MySQL Server \'%s\'...', server_name)
+        logger.warning('Found existing MySQL Server \'%s\' in group \'%s\'',
+                       server_name, resource_group_name)
         # update server if needed
         server_result = _update_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
@@ -87,7 +88,8 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
 
     try:
         server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing PostgreSQL Server \'%s\'...', server_name)
+        logger.warning('Found existing PostgreSQL Server \'%s\' in group \'%s\'',
+                       server_name, resource_group_name)
         # update server if needed
         server_result = _update_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
@@ -316,7 +318,7 @@ def _create_server(db_context, cmd, resource_group_name, server_name, location, 
                    geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
                    ssl_enforcement, tags):
     logging_name, azure_sdk, server_client = db_context.logging_name, db_context.azure_sdk, db_context.server_client
-    logger.warning('Creating %s Server \'%s\'...', logging_name, server_name)
+    logger.warning('Creating %s Server \'%s\' in group \'%s\'...', logging_name, server_name, resource_group_name)
 
     parameters = azure_sdk.models.ServerForCreate(
         sku=azure_sdk.models.Sku(name=sku_name),
