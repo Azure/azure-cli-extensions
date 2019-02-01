@@ -73,10 +73,10 @@ def transform_privatedns_record_set_table_output(result):
         table_row['ResourceGroup'] = item['resourceGroup']
         table_row['Ttl'] = item['ttl']
         table_row['Type'] = item['type'].rsplit('/', 1)[1]
+        table_row['AutoRegistered'] = item['isAutoRegistered']
         metadata = item['metadata']
         if metadata:
-            table_row['Metadata'] = ' '.join(
-                ['{}="{}"'.format(x, metadata[x]) for x in sorted(metadata)])
+            table_row['Metadata'] = ' '.join(['{}="{}"'.format(x, metadata[x]) for x in sorted(metadata)])
         else:
             table_row['Metadata'] = ' '
         table_output.append(table_row)

@@ -37,3 +37,12 @@ def get_vnet_validator(cmd, namespace):
         )
 
     namespace.virtual_network = SubResource(id=name_or_id)
+
+
+def validate_privatedns_record_type(namespace):
+    tokens = namespace.command.split(' ')
+    types = ['a', 'aaaa', 'cname', 'mx', 'ptr', 'soa', 'srv', 'txt']
+    for token in tokens:
+        if token in types:
+            namespace.record_type = token
+            return
