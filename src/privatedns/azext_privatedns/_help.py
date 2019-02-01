@@ -73,6 +73,14 @@ helps['network privatedns zone show'] = """
           text: >
             az network privatedns zone show -g MyResourceGroup -n www.mysite.com
 """
+
+helps['network privatedns zone wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the Private DNS zone is met.
+    examples:
+        - name: Pause executing next line of CLI script until the Private DNS zone is successfully provisioned.
+          text: az network privatedns zone wait -g MyResourceGroup -n www.mysite.com --created
+"""
 # endregion
 
 # region PrivateDns link
@@ -133,6 +141,14 @@ helps['network privatedns link show'] = """
         - name: Get a virtual network link to the specified Private DNS zone..
           text: >
             az network privatedns link show -g MyResourceGroup -n MyLinkName -z www.mysite.com
+"""
+
+helps['network privatedns link wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the virtual network link to the specified Private DNS zone is met.
+    examples:
+        - name: Pause executing next line of CLI script until the virtual network link to the specified Private DNS zone is successfully provisioned.
+          text: az network privatedns link wait -g MyResourceGroup -n MyLinkName -z www.mysite.com --created
 """
 # endregion
 
