@@ -124,14 +124,14 @@ class AzHelpGenDirective(Directive):
                             pass
                         yield '{}:default: {}'.format(DOUBLEINDENT, arg.default)
                     if arg.value_sources:
-                        yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(arg.value_sources))
+                        yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(_get_populator_commands(arg)))
                     yield ''
             yield ''
             if len(help_file.examples) > 0:
                for e in help_file.examples:
-                  yield '{}.. cliexample:: {}'.format(INDENT, e.name)
+                  yield '{}.. cliexample:: {}'.format(INDENT, e.short_summary)
                   yield ''
-                  yield DOUBLEINDENT + e.text.replace("\\", "\\\\")
+                  yield DOUBLEINDENT + e.command.replace("\\", "\\\\")
                   yield ''
 
     def run(self):
@@ -164,3 +164,15 @@ def _is_group(parser):
 
 def _get_parser_name(s):
     return (s._prog_prefix if hasattr(s, '_prog_prefix') else s.prog)[3:]
+
+
+def _get_populator_commands(param):
+    commands = []
+    for value_source in param.value_sources:
+        try:
+            commands.append(value_source["link"]["command"])
+        except TypeError:  # old value_sources are strings
+            commands.append(value_source)
+        except KeyError:  # new value_sources are dicts
+            continue
+    return commands
