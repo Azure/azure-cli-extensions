@@ -16,7 +16,7 @@ from six.moves.urllib.parse import urlparse
 
 STORAGE_RESOURCE_ENDPOINT = "https://storage.azure.com"
 SERVICES = {'blob', 'file'}
-AZCOPY_VERSION = '10.0.5'
+AZCOPY_VERSION = '10.0.7'
 
 class AzCopy(object):
     system_executable_path = {
