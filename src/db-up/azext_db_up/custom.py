@@ -186,7 +186,7 @@ def _create_postgresql_connection_string(host, user, password, database):
         'jdbc': "jdbc:postgresql://{host}:5432/{database}?user={user}&password={password}&sslmode=required",
         'node.js': "host={host} port=5432 dbname={database} user={user} password={password} sslmode=required",
         'php': "host={host} port=5432 dbname={database} user={user} password={password} sslmode=required",
-        'python': "dbname='{database}' user='{user}' host='{host}’ password='{password}' port='5432' sslmode=true'",
+        'python': "dbname='{database}' user='{user}' host='{host}' password='{password}' port='5432' sslmode=true'",
         'ruby': "host={host}; dbname={database} user={user} password={password} port=5432 sslmode=require",
         'webapp': "Database={database}; Data Source={host}; User Id={user}; Password={password}"
     }
