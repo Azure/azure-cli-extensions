@@ -129,9 +129,10 @@ class AzHelpGenDirective(Directive):
             yield ''
             if len(help_file.examples) > 0:
                for e in help_file.examples:
-                  yield '{}.. cliexample:: {}'.format(INDENT, e.short_summary)
+                  fields = _get_example_fields(e)
+                  yield '{}.. cliexample:: {}'.format(INDENT, fields['summary'])
                   yield ''
-                  yield DOUBLEINDENT + e.command.replace("\\", "\\\\")
+                  yield DOUBLEINDENT + fields['command'].replace("\\", "\\\\")
                   yield ''
 
     def run(self):
@@ -176,3 +177,14 @@ def _get_populator_commands(param):
         except KeyError:  # new value_sources are dicts
             continue
     return commands
+
+def _get_example_fields(ex):
+    res = {}
+    try:
+        res['summary'] = ex.short_summary
+        res['command'] = ex.command
+    except AttributeError:
+        res['summary'] = ex.name
+        res['command'] = ex.text
+
+    return res
