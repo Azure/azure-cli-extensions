@@ -31,7 +31,8 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
 
     try:
         server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing MySQL Server \'%s\'...', server_name)
+        logger.warning('Found existing MySQL Server \'%s\' in group \'%s\'',
+                       server_name, resource_group_name)
         # update server if needed
         server_result = _update_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
@@ -87,7 +88,8 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
 
     try:
         server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing PostgreSQL Server \'%s\'...', server_name)
+        logger.warning('Found existing PostgreSQL Server \'%s\' in group \'%s\'',
+                       server_name, resource_group_name)
         # update server if needed
         server_result = _update_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
@@ -150,19 +152,18 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
 def _create_mysql_connection_string(host, user, password, database):
     result = {
         'mysql_cmd': "mysql {database} --host {host} --user {user} --password={password}",
-        'ado.net': "Server={host}; Port=3306; Database={database}; Uid={user}; Pwd={password}; SslMode=Preferred;",
-        'jdbc': "String url ='jdbc:mysql://{host}:3306/{database}?useSSL=true&requireSSL=false'; "
-                "Connection myDbConn = DriverManager.getConnection(url, '{user}', '{password}');",
+        'ado.net': "Server={host}; Port=3306; Database={database}; Uid={user}; Pwd={password};",
+        'jdbc': "jdbc:mysql://{host}:3306/{database}?user={user}&password={password}",
+        'jdbc Spring': "spring.datasource.url=jdbc:mysql://{host}:3306/{database}  "
+                       "spring.datasource.username={user}  "
+                       "spring.datasource.password={password}",
         'node.js': "var conn = mysql.createConnection({{host: '{host}', user: '{user}', "
-                   "password: {password}, database: {database}, port: 3306, "
-                   "ssl:{{ca:fs.readFileSync({{ca-cert filename}})}}}});",
-        'php': "$con=mysqli_init(); mysqli_ssl_set($con, NULL, NULL, {{ca-cert filename}}, NULL, NULL); "
-               "mysqli_real_connect($con, '{host}', '{user}', {password}, {database}, 3306);",
+                   "password: {password}, database: {database}, port: 3306}});",
+        'php': "host={host} port=5432 dbname={database} user={user} password={password}",
         'python': "cnx = mysql.connector.connect(user='{user}', password='{password}', host='{host}', "
-                  "port=3306, database='{database}', ssl_ca='{{ca-cert filename}}', ssl_verify_cert=True)",
+                  "port=3306, database='{database}')",
         'ruby': "client = Mysql2::Client.new(username: '{user}', password: '{password}', "
-                "database: '{database}', host: '{host}', port: 3306, sslca:'{{ca-cert filename}}', "
-                "sslverify:false, sslcipher:'AES256-SHA')",
+                "database: '{database}', host: '{host}', port: 3306)",
         'webapp': "Database={database}; Data Source={host}; User Id={user}; Password={password}"
     }
 
@@ -181,13 +182,17 @@ def _create_mysql_connection_string(host, user, password, database):
 def _create_postgresql_connection_string(host, user, password, database):
     result = {
         'psql_cmd': "psql --host={host} --port=5432 --username={user} --dbname={database}",
-        'ado.net': "Server={host};Database={database};Port=5432;User Id={user};Password={password};SSL=true;"
-                   "SslMode=Require;",
-        'jdbc': "jdbc:postgresql://{host}:5432/{database}?user={user}&password={password}&sslmode=required",
-        'node.js': "host={host} port=5432 dbname={database} user={user} password={password} sslmode=required",
-        'php': "host={host} port=5432 dbname={database} user={user} password={password} sslmode=required",
-        'python': "dbname='{database}' user='{user}' host='{host}' password='{password}' port='5432' sslmode=true'",
-        'ruby': "host={host}; dbname={database} user={user} password={password} port=5432 sslmode=require",
+        'ado.net': "Server={host};Database={database};Port=5432;User Id={user};Password={password};",
+        'jdbc': "jdbc:postgresql://{host}:5432/{database}?user={user}&password={password}",
+        'jdbc Spring': "spring.datasource.url=jdbc:postgresql://{host}:5432/{database}  "
+                       "spring.datasource.username={user}  "
+                       "spring.datasource.password={password}",
+        'node.js': "var client = new pg.Client('postgres://{user}:{password}@{host}:5432/{database}');",
+        'php': "host={host} port=5432 dbname={database} user={user} password={password}",
+        'python': "cnx = psycopg2.connect(database='{database}', user='{user}', host='{host}', password='{password}', "
+                  "port='5432')",
+        'ruby': "cnx = PG::Connection.new(:host => '{host}', :user => '{user}', :dbname => '{database}', "
+                ":port => '5432', :password => '{password}')",
         'webapp': "Database={database}; Data Source={host}; User Id={user}; Password={password}"
     }
 
@@ -313,7 +318,7 @@ def _create_server(db_context, cmd, resource_group_name, server_name, location, 
                    geo_redundant_backup, storage_mb, administrator_login, administrator_login_password, version,
                    ssl_enforcement, tags):
     logging_name, azure_sdk, server_client = db_context.logging_name, db_context.azure_sdk, db_context.server_client
-    logger.warning('Creating %s Server \'%s\'...', logging_name, server_name)
+    logger.warning('Creating %s Server \'%s\' in group \'%s\'...', logging_name, server_name, resource_group_name)
 
     parameters = azure_sdk.models.ServerForCreate(
         sku=azure_sdk.models.Sku(name=sku_name),
