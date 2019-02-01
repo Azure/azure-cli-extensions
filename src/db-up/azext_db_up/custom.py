@@ -152,8 +152,8 @@ def _create_mysql_connection_string(host, user, password, database):
         'mysql_cmd': "mysql {database} --host {host} --user {user} --password={password}",
         'ado.net': "Server={host}; Port=3306; Database={database}; Uid={user}; Pwd={password};",
         'jdbc': "jdbc:mysql://{host}:3306/{database}?user={user}&password={password}",
-        'jdbc Spring': "spring.datasource.url=jdbc:mysql://{host}:3306/{database}"
-                       "spring.datasource.username={user}"
+        'jdbc Spring': "spring.datasource.url=jdbc:mysql://{host}:3306/{database}  "
+                       "spring.datasource.username={user}  "
                        "spring.datasource.password={password}",
         'node.js': "var conn = mysql.createConnection({{host: '{host}', user: '{user}', "
                    "password: {password}, database: {database}, port: 3306}});",
@@ -182,8 +182,8 @@ def _create_postgresql_connection_string(host, user, password, database):
         'psql_cmd': "psql --host={host} --port=5432 --username={user} --dbname={database}",
         'ado.net': "Server={host};Database={database};Port=5432;User Id={user};Password={password};",
         'jdbc': "jdbc:postgresql://{host}:5432/{database}?user={user}&password={password}",
-        'jdbc Spring': "spring.datasource.url=jdbc:postgresql://{host}:5432/{database}"
-                       "spring.datasource.username={user}"
+        'jdbc Spring': "spring.datasource.url=jdbc:postgresql://{host}:5432/{database}  "
+                       "spring.datasource.username={user}  "
                        "spring.datasource.password={password}",
         'node.js': "var client = new pg.Client('postgres://{user}:{password}@{host}:5432/{database}');",
         'php': "host={host} port=5432 dbname={database} user={user} password={password}",
