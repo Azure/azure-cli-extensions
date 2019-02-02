@@ -3,13 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
+
 # pylint: disable=line-too-long
 def GeneratePrivateZoneName(self):
     self.kwargs['zone'] = self.create_random_name("clitest.privatedns.com", length=35)
 
 
 def GeneratePrivateZoneArmId(self):
-    return "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/privateDnsZones/{2}".format(self.get_subscription_id(), self.kwargs['rg'], self.kwargs['zone'])
+    regexSubscription = '[0-9a-f]{{8}}-[0-9a-f]{{4}}-[1-5][0-9a-f]{{3}}-[89ab][0-9a-f]{{3}}-[0-9a-f]{{12}}'
+    return "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/privateDnsZones/{2}".format(regexSubscription, self.kwargs['rg'], self.kwargs['zone'])
 
 
 def GenerateTags(self):
