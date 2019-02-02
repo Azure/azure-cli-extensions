@@ -14,8 +14,8 @@ class PrivateDnsCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         privatedns_custom = CliCommandType(operations_tmpl='azext_privatedns.custom#{}')
         super(PrivateDnsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                resource_type=ResourceType.MGMT_NETWORK,
-                                                custom_command_type=privatedns_custom)
+                                                       resource_type=ResourceType.MGMT_NETWORK,
+                                                       custom_command_type=privatedns_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table

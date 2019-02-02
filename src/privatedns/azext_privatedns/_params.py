@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 from knack.arguments import CLIArgumentType, ignore_type
-from azure.cli.core.commands.parameters import (get_three_state_flag)
+from azure.cli.core.commands.parameters import (get_three_state_flag, tags_type)
 from azext_privatedns._validators import (privatedns_zone_name_type, get_vnet_validator, validate_metadata, validate_privatedns_record_type)
 
 
@@ -13,6 +13,7 @@ def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
 
     with self.argument_context('network privatedns') as c:
+        c.argument('tags', tags_type)
         c.argument('relative_record_set_name', name_arg_type, help='The name of the record set, relative to the name of the Private DNS zone.')
         c.argument('private_zone_name', options_list=('--zone-name', '-z'), help='The name of the Private DNS zone.', type=privatedns_zone_name_type)
         c.argument('metadata', nargs='+', help='Metadata in space-separated key=value pairs. This overwrites any existing metadata.', validator=validate_metadata)

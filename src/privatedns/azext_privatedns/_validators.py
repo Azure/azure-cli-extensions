@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint:disable=import-error
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import is_valid_resource_id, resource_id  # pylint:disable=import-error
+from msrestazure.tools import is_valid_resource_id, resource_id
 
 
 # pylint: disable=inconsistent-return-statements
