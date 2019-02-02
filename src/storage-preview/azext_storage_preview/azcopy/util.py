@@ -33,6 +33,7 @@ class AzCopy(object):
 
     def run_command(self, args):
         args = [self.executable] + args
+        args = ' '.join(args)
         env_kwargs = {}
         if self.creds and self.creds.token_info:
             env_kwargs = {'AZCOPY_OAUTH_TOKEN_INFO': json.dumps(self.creds.token_info)}
@@ -48,6 +49,15 @@ class AzCopyCredentials(object):
     def __init__(self, sas_token=None, token_info=None):
         self.sas_token = sas_token
         self.token_info = token_info
+
+
+def login_auth_for_azcopy(cmd):
+    token_info = Profile(cli_ctx=cmd.cli_ctx).get_raw_token(resource=STORAGE_RESOURCE_ENDPOINT)[0][2]
+    try:
+        token_info = _unserialize_non_msi_token_payload(token_info)
+    except KeyError:  # unserialized MSI token payload
+        raise Exception('MSI auth not yet supported.')
+    return AzCopyCredentials(token_info=token_info)
 
 
 def blob_client_auth_for_azcopy(cmd, blob_client):

@@ -4,11 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=protected-access
+import os
+
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
 
-from ._client_factory import get_storage_data_service_client
+from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
 from .profiles import CUSTOM_MGMT_STORAGE
@@ -131,11 +133,27 @@ def validate_client_parameters(cmd, namespace):
 
 
 def validate_azcopy_source_url(cmd, namespace):
-    print(cmd, namespace)
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    blob_name = namespace.source_blob
+    if not blob_name:
+        blob_name = os.path.basename(namespace.destination)
+    url = client.make_blob_url(namespace.source_container, blob_name)
+    namespace.source = url
+    del namespace.source_container
+    del namespace.source_blob
 
 
 def validate_azcopy_destination_url(cmd, namespace):
-    print(cmd, namespace)
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    blob_name = namespace.destination_blob
+    if not blob_name:
+        blob_name = os.path.basename(namespace.source)
+    url = client.make_blob_url(namespace.destination_container, blob_name)
+    namespace.destination = url
+    del namespace.destination_container
+    del namespace.destination_blob
 
 
 def get_content_setting_validator(settings_class, update, guess_from_file=None):

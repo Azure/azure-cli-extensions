@@ -164,13 +164,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         ' in other words, when a browser requests a page that does not exist.')
 
     with self.argument_context('storage azcopy blob upload') as c:
-        c.argument('destination_container', options_list=['--container', '-c'])
-        c.argument('destination_blob', options_list=['--name', '-n'])
+        c.extra('destination_container', options_list=['--container', '-c'], required=True)
+        c.extra('destination_blob', options_list=['--name', '-n'], validator=validate_azcopy_destination_url)
         c.argument('source', options_list=['--file', '-f'])
-        c.argument('destination', validator=validate_azcopy_destination_url)
+        c.ignore('destination')
 
     with self.argument_context('storage azcopy blob download') as c:
-        c.argument('source_container', options_list=['--container', '-c'])
-        c.argument('source_blob', options_list=['--name', '-n'])
-        c.argument('source', validator=validate_azcopy_source_url)
+        c.extra('source_container', options_list=['--container', '-c'], required=True)
+        c.extra('source_blob', options_list=['--name', '-n'], validator=validate_azcopy_source_url)
+        c.ignore('source')
         c.argument('destination', options_list=['--file', '-f'])

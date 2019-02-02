@@ -5,7 +5,7 @@
 
 from __future__ import print_function
 from knack.util import CLIError
-from ..azcopy.util import AzCopy, blob_client_auth_for_azcopy
+from ..azcopy.util import AzCopy, blob_client_auth_for_azcopy, login_auth_for_azcopy
 
 
 def storage_blob_upload(cmd, client, source, destination):
@@ -23,6 +23,11 @@ def storage_blob_download(cmd, client, source, destination):
     azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination)
 
 
+def storage_run_command(cmd, command_args):
+    azcopy = _azcopy_login_client(cmd)
+    azcopy.run_command([command_args])
+
+
 def _add_url_sas(url, sas):
     if not sas:
         return url
@@ -31,3 +36,7 @@ def _add_url_sas(url, sas):
 
 def _azcopy_blob_client(cmd, client):
     return AzCopy(creds=blob_client_auth_for_azcopy(cmd, client))
+
+
+def _azcopy_login_client(cmd):
+    return AzCopy(creds=login_auth_for_azcopy(cmd))
