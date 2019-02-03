@@ -15,7 +15,7 @@ from msrestazure.azure_exceptions import CloudError
 
 logger = get_logger(__name__)
 
-class PrivateDnsZonesTests(ScenarioTest):
+class BaseScenarioTests(ScenarioTest):
 
     def _Validate_Zones(self, expectedZones, actualZones):
         result = all(zone in actualZones for zone in expectedZones)
@@ -45,6 +45,9 @@ class PrivateDnsZonesTests(ScenarioTest):
             self.check('numberOfVirtualNetworkLinks', 0),
             self.check('numberOfVirtualNetworkLinksWithRegistration', 0),
         ]).get_output_in_json()
+
+
+class PrivateDnsZonesTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PutZone_ZoneNotExists_ExpectZoneCreated(self, resource_group):
