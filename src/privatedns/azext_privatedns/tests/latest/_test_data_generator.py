@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 regexSubscription = '[0-9a-f]{{8}}-[0-9a-f]{{4}}-[1-5][0-9a-f]{{3}}-[89ab][0-9a-f]{{3}}-[0-9a-f]{{12}}'
 
+
 def GeneratePrivateZoneName(self):
     self.kwargs['zone'] = self.create_random_name("clitest.privatedns.com", length=35)
 

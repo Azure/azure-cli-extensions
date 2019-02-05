@@ -7,6 +7,7 @@
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, resource_id
 
+
 # pylint: disable=inconsistent-return-statements
 def privatedns_zone_name_type(value):
     if value:

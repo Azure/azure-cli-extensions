@@ -47,7 +47,7 @@ def transform_privatedns_link_table_output(result):
 
 
 def transform_privatedns_record_set_output(result):
-    from azext_privatedns.privatedns.models import RecordSetPaged
+    from azext_privatedns.vendored_sdks.models import RecordSetPaged
 
     def _strip_null_records(item):
         for prop in [x for x in dir(item) if 'record' in x]:

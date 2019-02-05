@@ -8,12 +8,21 @@ import os
 import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from ._test_data_generator import *
+from ._test_data_generator import (GeneratePrivateZoneName,
+                                   GenerateVirtualNetworkName,
+                                   GenerateVirtualNetworkLinkName,
+                                   GenerateRecordSetName,
+                                   GeneratePrivateZoneArmId,
+                                   GenerateVirtualNetworkLinkArmId,
+                                   GenerateVirtualNetworkArmId,
+                                   GenerateRecordSetArmId,
+                                   GenerateTags)
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
 
 logger = get_logger(__name__)
+
 
 class BaseScenarioTests(ScenarioTest):
 
@@ -21,7 +30,7 @@ class BaseScenarioTests(ScenarioTest):
         result = all(zone in actualZones for zone in expectedZones)
         self.check(result, True)
 
-    def _Create_PrivateZones(self, numOfZones = 2):
+    def _Create_PrivateZones(self, numOfZones=2):
         createdZones = list()
         for num in range(numOfZones):
             createdZones.append(self._Create_PrivateZone())
@@ -61,11 +70,11 @@ class BaseScenarioTests(ScenarioTest):
         createdLinks = list()
         for num in range(numOfLinks):
             createdLinks.append(
-                self._Create_VirtualNetworkLink(createZone = False))
+                self._Create_VirtualNetworkLink(createZone=False))
         createdLinks.sort(key=lambda x: x['name'])
         return createdLinks
 
-    def _Create_VirtualNetworkLink(self, registrationEnabled = False, createZone = True):
+    def _Create_VirtualNetworkLink(self, registrationEnabled=False, createZone=True):
         self.kwargs['registrationEnabled'] = registrationEnabled
         if createZone is True:
             self._Create_PrivateZone()
@@ -112,7 +121,7 @@ class BaseScenarioTests(ScenarioTest):
         ]).get_output_in_json()
         return getattr(self, self._RecordType_To_FunctionName(recordType, 'Create'))(self.kwargs['recordset'], zoneName)
 
-    def _Create_ARecord(self, recordset, zone, arecord = '10.0.0.1'):
+    def _Create_ARecord(self, recordset, zone, arecord='10.0.0.1'):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['arecord'] = arecord
@@ -122,7 +131,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(arecord in [o['ipv4Address'] for o in recordsetResult.get('aRecords')])
         return recordsetResult
 
-    def _Create_AAAARecord(self, recordset, zone, aaaarecord = '::1'):
+    def _Create_AAAARecord(self, recordset, zone, aaaarecord='::1'):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['aaaarecord'] = aaaarecord
@@ -132,7 +141,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(aaaarecord in [o['ipv6Address'] for o in recordsetResult.get('aaaaRecords')])
         return recordsetResult
 
-    def _Create_MXRecord(self, recordset, zone, exchange = 'ex.chan.ge', preference = 1):
+    def _Create_MXRecord(self, recordset, zone, exchange='ex.chan.ge', preference=1):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['exchange'] = exchange
@@ -144,7 +153,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(preference in [o['preference'] for o in recordsetResult.get('mxRecords')])
         return recordsetResult
 
-    def _Create_PTRRecord(self, recordset, zone, ptrdname = 'ptrd.name'):
+    def _Create_PTRRecord(self, recordset, zone, ptrdname='ptrd.name'):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['ptrdname'] = ptrdname
@@ -154,7 +163,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(ptrdname in [o['ptrdname'] for o in recordsetResult.get('ptrRecords')])
         return recordsetResult
 
-    def _Create_SRVRecord(self, recordset, zone, target = 'targ.et'):
+    def _Create_SRVRecord(self, recordset, zone, target='targ.et'):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['port'] = 120
@@ -170,7 +179,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(target in [o['target'] for o in recordsetResult.get('srvRecords')])
         return recordsetResult
 
-    def _Create_TXTRecord(self, recordset, zone, txtrecord = 'txt record'):
+    def _Create_TXTRecord(self, recordset, zone, txtrecord='txt record'):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['txtrecord'] = txtrecord
@@ -180,7 +189,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(txtrecord in [o['value'][0] for o in recordsetResult.get('txtRecords')])
         return recordsetResult
 
-    def _Create_CNAMERecord(self, recordset, zone, cname = 'clitestcname'):
+    def _Create_CNAMERecord(self, recordset, zone, cname='clitestcname'):
         self.kwargs['recordset'] = recordset
         self.kwargs['zone'] = zone
         self.kwargs['cname'] = cname
@@ -190,7 +199,7 @@ class BaseScenarioTests(ScenarioTest):
         self.assertTrue(cname == recordsetResult.get('cnameRecord').get('cname'))
         return recordsetResult
 
-    def _Update_RecordSet(self, recordset, recordType, zoneName, etag = None):
+    def _Update_RecordSet(self, recordset, recordType, zoneName, etag=None):
         self.kwargs['recordset'] = recordset
         self.kwargs['recordType'] = recordType.lower()
         self.kwargs['zone'] = zoneName
@@ -302,7 +311,6 @@ class BaseScenarioTests(ScenarioTest):
         self.cmd('az network privatedns record-set {recordType} delete -g {rg} -n {recordset} -z {zone} -y')
 
 
-
 class PrivateDnsZonesTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
@@ -336,7 +344,7 @@ class PrivateDnsZonesTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchZone_ZoneExistsIfMatchFailure_ExpectError(self, resource_group):
-        zoneCreated = self._Create_PrivateZone()
+        self._Create_PrivateZone()
         self.kwargs['etag'] = self.create_guid()
         with self.assertRaisesRegexp(CLIError, 'etag mismatch'):
             self.cmd('az network privatedns zone update -g {rg} -n {zone} --if-match {etag}')
@@ -387,7 +395,6 @@ class PrivateDnsZonesTests(BaseScenarioTests):
         GeneratePrivateZoneName(self)
         with self.assertRaisesRegexp(CloudError, 'ResourceNotFound'):
             self.cmd('az network privatedns zone update -g {rg} -n {zone}')
-
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchZone_ZoneExistsEmptyRequest_ExpectNoError(self, resource_group):
@@ -458,7 +465,7 @@ class PrivateDnsLinksTests(BaseScenarioTests):
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PutLink_LinkExistsIfNoneMatchFailure_ExpectError(self, resource_group):
         self._Create_VirtualNetworkLink()
-        with self.assertRaisesRegexp(CLIError, 'exists already' ):
+        with self.assertRaisesRegexp(CLIError, 'exists already'):
             self.cmd('az network privatedns link create -g {rg} -n {link} -z {zone} -v {vnet}')
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
@@ -472,7 +479,7 @@ class PrivateDnsLinksTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchLink_LinkExistsIfMatchFailure_ExpectError(self, resource_group):
-        linkCreated = self._Create_VirtualNetworkLink()
+        self._Create_VirtualNetworkLink()
         self.kwargs['etag'] = self.create_guid()
         with self.assertRaisesRegexp(CLIError, 'etag mismatch'):
             self.cmd('az network privatedns link update -g {rg} -n {link} -z {zone} --if-match {etag}')
@@ -511,7 +518,7 @@ class PrivateDnsLinksTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchLink_DisableRegistration_ExpectRegistrationDisabled(self, resource_group):
-        self._Create_VirtualNetworkLink(registrationEnabled = True)
+        self._Create_VirtualNetworkLink(registrationEnabled=True)
         self.kwargs['registrationEnabled'] = False
         self.cmd('az network privatedns link update -g {rg} -n {link} -z {zone} -e {registrationEnabled}', checks=[
             self.check('name', '{link}'),
@@ -647,7 +654,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_GetRecordSet_SoaRecord_ExpectRecordSetRetrieved(self, resource_group):
-        zone = self._Create_PrivateZone()
+        self._Create_PrivateZone()
         self.cmd('az network privatedns record-set soa show -g {rg} -z {zone}', checks=[
             self.check('name', '@'),
             self.check('type', 'Microsoft.Network/privateDnsZones/SOA'),
@@ -662,7 +669,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchRecordSet_SoaRecord_ExpectRecordSetUpdated(self, resource_group):
-        zone = self._Create_PrivateZone()
+        self._Create_PrivateZone()
         self.kwargs['email'] = 'example.hostmaster.com'
         self.kwargs['expireTime'] = 1
         self.kwargs['minimumTtl'] = 2
@@ -686,7 +693,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchRecordSet_AddMetadata_ExpectMetadataAdded(self, resource_group):
         zone = self._Create_PrivateZone()
-        recordset = self._Create_RecordSet('a', zone['name'])
+        self._Create_RecordSet('a', zone['name'])
         tagKey, tagVal = GenerateTags(self)
         self.cmd('az network privatedns record-set a update -g {rg} -n {recordset} -z {zone} --metadata {tags}', checks=[
             self.check('name', '{recordset}'),
@@ -696,7 +703,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchRecordSet_ChangeMetadata_ExpectMetadataChanged(self, resource_group):
         zone = self._Create_PrivateZone()
-        recordset = self._Create_RecordSet('a', zone['name'])
+        self._Create_RecordSet('a', zone['name'])
         tagKey, tagVal = GenerateTags(self)
         self.cmd('az network privatedns record-set a update -g {rg} -n {recordset} -z {zone} --metadata {tags}', checks=[
             self.check('name', '{recordset}'),
@@ -711,7 +718,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchRecordSet_RemoveMetadata_ExpectMetadataRemoved(self, resource_group):
         zone = self._Create_PrivateZone()
-        recordset = self._Create_RecordSet('a', zone['name'])
+        self._Create_RecordSet('a', zone['name'])
         tagKey, tagVal = GenerateTags(self)
         self.cmd('az network privatedns record-set a update -g {rg} -n {recordset} -z {zone} --metadata {tags}', checks=[
             self.check('name', '{recordset}'),
@@ -801,7 +808,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_ListRecordSetsByType_NoRecordSetsPresent_ExpectNoRecordSetsRetrieved(self, resource_group):
-        zone = self._Create_PrivateZone()
+        self._Create_PrivateZone()
         self.cmd('az network privatedns record-set a list -g {rg} -z {zone}', checks=[
             self.is_empty()
         ])
@@ -821,7 +828,7 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_ListRecordSetsAcrossType_DefaultRecordSetPresent_ExpectDefaultRecordSetRetrieved(self, resource_group):
-        zone = self._Create_PrivateZone()
+        self._Create_PrivateZone()
         self.cmd('az network privatedns record-set list -g {rg} -z {zone}', checks=[
             self.check('length(@)', 1),
             self.exists('@[0].soaRecord'),
@@ -844,7 +851,6 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
             self.check('length(@)', 8)
         ]).get_output_in_json()
         self.assertTrue(all(recordset in createdRecordsets for recordset in returnedRecordsets))
-
 
 
 if __name__ == '__main__':

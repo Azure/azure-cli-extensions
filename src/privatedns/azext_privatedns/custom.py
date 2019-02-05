@@ -9,7 +9,7 @@ from collections import Counter
 from knack.log import get_logger
 from azure.cli.core.util import CLIError
 from msrestazure.azure_exceptions import CloudError
-from azext_privatedns.privatedns.models import (PrivateZone, VirtualNetworkLink, RecordSet, AaaaRecord, ARecord, SrvRecord, TxtRecord, MxRecord, PtrRecord, CnameRecord)
+from azext_privatedns.vendored_sdks.models import (PrivateZone, VirtualNetworkLink, RecordSet, AaaaRecord, ARecord, SrvRecord, TxtRecord, MxRecord, PtrRecord, CnameRecord)
 
 
 logger = get_logger(__name__)
@@ -255,10 +255,9 @@ def _remove_record(client, record, record_type, relative_record_set_name, resour
 
 def dict_matches_filter(d, filter_dict):
     sentinel = object()
-    return all(not filter_dict.get(key, None) or
-               str(filter_dict[key]) == str(d.get(key, sentinel)) or
-               lists_match(filter_dict[key], d.get(key, []))
-               for key in filter_dict)
+    return all(not filter_dict.get(key, None)
+               or str(filter_dict[key]) == str(d.get(key, sentinel)) # noqa
+               or lists_match(filter_dict[key], d.get(key, [])) for key in filter_dict)  # noqa
 
 
 def lists_match(l1, l2):

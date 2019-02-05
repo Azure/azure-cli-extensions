@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 from knack.arguments import CLIArgumentType, ignore_type
 from azure.cli.core.commands.parameters import (get_three_state_flag, tags_type)
 from azext_privatedns._validators import (privatedns_zone_name_type, get_vnet_validator, validate_metadata, validate_privatedns_record_type)
