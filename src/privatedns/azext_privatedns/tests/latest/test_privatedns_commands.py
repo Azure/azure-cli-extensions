@@ -57,9 +57,9 @@ class BaseScenarioTests(ScenarioTest):
 
     def _Create_VirtualNetwork(self):
         GenerateVirtualNetworkName(self)
-        # return self.cmd('az network vnet create -g {rg} -n {vnet}', checks=[
-        #     self.check('name', '{vnet}')
-        # ]).get_output_in_json()
+        return self.cmd('az network vnet create -g {rg} -n {vnet}', checks=[
+            self.check('name', '{vnet}')
+        ]).get_output_in_json()
 
     def _Validate_Links(self, expectedLinks, actualLinks):
         result = all(link in actualLinks for link in expectedLinks)
