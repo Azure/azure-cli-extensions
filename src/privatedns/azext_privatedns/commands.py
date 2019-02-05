@@ -55,7 +55,7 @@ def load_command_table(self, _):
             g.custom_command('create', 'create_privatedns_record_set', client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
             g.custom_command('add-record', 'add_privatedns_{}_record'.format(record), client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
             g.custom_command('remove-record', 'remove_privatedns_{}_record'.format(record), client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
-            g.generic_update_command('update', custom_func_name='update_privatedns_record_set', transform=transform_privatedns_record_set_output)
+            g.generic_update_command('update', setter_name='update', custom_func_name='update_privatedns_record_set', transform=transform_privatedns_record_set_output)
 
     with self.command_group('network privatedns record-set soa', network_privatedns_record_set_sdk) as g:
         g.show_command('show', 'get', transform=transform_privatedns_record_set_output, table_transformer=transform_privatedns_record_set_table_output)
@@ -68,4 +68,4 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_privatedns_record_set', client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
         g.custom_command('set-record', 'add_privatedns_cname_record', client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
         g.custom_command('remove-record', 'remove_privatedns_cname_record', client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
-        g.generic_update_command('update', custom_func_name='update_privatedns_record_set', transform=transform_privatedns_record_set_output)
+        g.generic_update_command('update', setter_name='update', custom_func_name='update_privatedns_record_set', transform=transform_privatedns_record_set_output)

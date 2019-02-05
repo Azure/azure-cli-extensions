@@ -18,6 +18,10 @@ def GenerateVirtualNetworkLinkName(self):
     self.kwargs['link'] = self.create_random_name("clitestprivatednslink", length=35)
 
 
+def GenerateRecordSetName(self):
+    self.kwargs['recordset'] = self.create_random_name("clitestprivatednsrecordset", length=35)
+
+
 def GeneratePrivateZoneArmId(self):
     return "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/privateDnsZones/{2}".format(
         regexSubscription, self.kwargs['rg'], self.kwargs['zone'])
@@ -31,6 +35,11 @@ def GenerateVirtualNetworkLinkArmId(self):
 def GenerateVirtualNetworkArmId(self):
     return "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}".format(
         regexSubscription, self.kwargs['rg'], self.kwargs['vnet'])
+
+
+def GenerateRecordSetArmId(self):
+    return "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/privateDnsZones/{2}/{3}/{4}".format(
+        regexSubscription, self.kwargs['rg'], self.kwargs['zone'], self.kwargs['recordType'], self.kwargs['recordset'])
 
 
 def GenerateTags(self):

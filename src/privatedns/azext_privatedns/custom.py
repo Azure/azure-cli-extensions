@@ -69,15 +69,12 @@ def list_privatedns_record_set(client, resource_group_name, private_zone_name, r
 
 def _type_to_property_name(key):
     type_dict = {
-        'a': 'arecords',
+        'a': 'a_records',
         'aaaa': 'aaaa_records',
-        'caa': 'caa_records',
         'cname': 'cname_record',
         'mx': 'mx_records',
-        'ns': 'ns_records',
         'ptr': 'ptr_records',
         'soa': 'soa_record',
-        'spf': 'txt_records',
         'srv': 'srv_records',
         'txt': 'txt_records',
     }

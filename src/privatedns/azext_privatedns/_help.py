@@ -373,6 +373,16 @@ helps['network privatedns record-set cname show'] = """
         - name: Get the details of a CNAME record set.
           text: az network privatedns record-set cname show -g MyResourceGroup -z www.mysite.com -n MyRecordSet
 """
+
+helps['network privatedns record-set cname update'] = """
+    type: command
+    short-summary: Update a CNAME record set.
+    examples:
+        - name: Update a CNAME record set.
+          text: |
+            az network privatedns record-set cname update -g MyResourceGroup -z www.mysite.com \\
+                -n MyRecordSet --metadata owner=WebTeam
+"""
 # endregion
 
 # region PrivateDns MX (Mail) records
@@ -596,7 +606,7 @@ helps['network privatedns record-set srv update'] = """
 # region PrivateDns SOA records
 helps['network privatedns record-set soa'] = """
     type: group
-    short-summary: Manage a DNS SOA record.
+    short-summary: Manage Private DNS SOA record.
 """
 
 helps['network privatedns record-set soa show'] = """
