@@ -13,17 +13,17 @@ from azext_privatedns._format import (transform_privatedns_zone_table_output, tr
 def load_command_table(self, _):
 
     network_privatedns_zone_sdk = CliCommandType(
-        operations_tmpl='azext_privatedns.privatedns.operations.private_zones_operations#PrivateZonesOperations.{}',
+        operations_tmpl='azext_privatedns.vendored_sdks.operations.private_zones_operations#PrivateZonesOperations.{}',
         client_factory=cf_privatedns_mgmt_zones
     )
 
     network_privatedns_virtual_network_link_sdk = CliCommandType(
-        operations_tmpl='azext_privatedns.privatedns.operations.virtual_network_links_operations#VirtualNetworkLinksOperations.{}',
+        operations_tmpl='azext_privatedns.vendored_sdks.operations.virtual_network_links_operations#VirtualNetworkLinksOperations.{}',
         client_factory=cf_privatedns_mgmt_virtual_network_links
     )
 
     network_privatedns_record_set_sdk = CliCommandType(
-        operations_tmpl='azext_privatedns.privatedns.operations.record_sets_operations#RecordSetsOperations.{}',
+        operations_tmpl='azext_privatedns.vendored_sdks.operations.record_sets_operations#RecordSetsOperations.{}',
         client_factory=cf_privatedns_mgmt_record_sets
     )
 
