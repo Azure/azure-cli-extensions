@@ -28,8 +28,8 @@ DEPENDENCIES = []
 setup(
     name='privatedns',
     version=VERSION,
-    description='An Azure CLI Extension for PrivateDns zones',
-    long_description='An Azure CLI Extension for PrivateDns zones',
+    description='Commands to manage Private DNS Zones',
+    long_description='Commands to manage Private DNS Zones',
     license='MIT',
     author='Dibya Jyoti Roy',
     author_email='dijyotir@microsoft.com',

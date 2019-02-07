@@ -32,7 +32,7 @@ def load_arguments(self, _):
         c.argument('record_type', ignore_type, validator=validate_privatedns_record_type)
 
     for item in ['', 'a', 'aaaa', 'cname', 'mx', 'ptr', 'srv', 'txt']:
-        with self.argument_context('network dns record-set {} create'.format(item)) as c:
+        with self.argument_context('network privatedns record-set {} create'.format(item)) as c:
             c.argument('ttl', help='Record set TTL (time-to-live)')
 
     for item in ['a', 'aaaa', 'cname', 'mx', 'ptr', 'srv', 'txt']:
