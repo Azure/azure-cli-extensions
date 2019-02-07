@@ -71,7 +71,7 @@ Please refer to the help file 'az dms project create -h' for the supported scena
         except:
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
-            raise 
+            raise
         else:
             return core_res
 
@@ -129,10 +129,10 @@ for the supported scenarios.")
 
             # TODO: Calling this validates our inputes. Remove this check after this function is added to core
             transform_json_inputs(source_connection_json,
-                                source_platform,
-                                target_connection_json,
-                                target_platform,
-                                database_options_json)
+                                  source_platform,
+                                  target_connection_json,
+                                  target_platform,
+                                  database_options_json)
 
             core_res = core_create_task(client,
                                         resource_group_name,
@@ -148,7 +148,7 @@ for the supported scenarios.")
         except:
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
-            raise 
+            raise
         else:
             return core_res
 
@@ -330,9 +330,11 @@ def get_file_or_parse_json(value, value_type):
 
     # Test if provided value is a valid json
     try:
-        shell_safe_json_parse(value)
+        json_parse = shell_safe_json_parse(value)
     except:
         raise CLIError("The supplied input for '" + value_type + "' is not a valid file path or a valid json object.")
+    else:
+        return json_parse
 
 
 def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
@@ -454,9 +456,9 @@ def run_command(client,
 
 def get_scenario_type(source_platform, target_platform, task_type=""):
     if source_platform == "sql" and target_platform == "sqldb":
-            scenario_type = ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline
+        scenario_type = ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline
     elif source_platform == "sql" and target_platform == "sqlmi":
-            scenario_type = ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline
+        scenario_type = ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline
     elif source_platform == "mysql" and target_platform == "azuredbformysql":
         scenario_type = ScenarioType.mysql_azuremysql_online if "online" in task_type else \
             ScenarioType.mysql_azuremysql_offline
