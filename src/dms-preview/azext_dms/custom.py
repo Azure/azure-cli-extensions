@@ -115,7 +115,6 @@ def create_task(
                                                                target_platform,
                                                                task_type)
 
-
     # Validation: Test scenario eligibility
     if not scenario_handled_in_extension:
         # If not an extension scenario, run CLI core method
