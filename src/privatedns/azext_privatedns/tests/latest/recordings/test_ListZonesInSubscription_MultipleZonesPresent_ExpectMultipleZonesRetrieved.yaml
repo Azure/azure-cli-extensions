@@ -1,0 +1,550 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:37 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AQE0D0j0XVZOg7GLolWKs2w; expires=Sat, 09-Mar-2019 05:49:38
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugv426aOn1_yFByrmDZpwtVSwPSR7kLqL0Sc5eWt-7PMmeUiibEmR90wgi4CSe0AKhaEFXDJIDFf6rWjVZACo9D89aN2cX3FKn3MPF2c8lZ8tDe3r4KHxMoZYWHrQYrAFm5i8D4NGOkPKVOEvIYQYiBNsdj_pbgoQoanRCJzxfRSb4gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
+      "date": "2019-02-07T05:49:34Z"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group create]
+      Connection: [keep-alive]
+      Content-Length: ['110']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [--location --name --tag]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          resourcemanagementclient/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_privatedns000001?api-version=2018-05-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001","name":"clitest_privatedns000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-02-07T05:49:34Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['384']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:38 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1196']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:41 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=Af5sF8E3ZWNOg_O1pqJpoGc; expires=Sat, 09-Mar-2019 05:49:42
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugvb4OnMrUf1to-ePJcQcerdWvAWwsYWxGsDF1WSXnW51i9vF65lweE2wShZQP-Q7y5G0OLEO_ehQL2n7ZprW-ZV4H8Qz6QjqLeYrRXAz3cS4tO9Q7tGfB2EQKXhEs3JOF38qmEHlZjCxZXVusKsh7K3kbF3J3BEldWSmP4IdahEUogAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"location": "global"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      Content-Length: ['22']
+      Content-Type: [application/json; charset=utf-8]
+      If-None-Match: ['*']
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002?api-version=2018-09-01
+  response:
+    body: {string: ''}
+    headers:
+      azure-asyncoperation: ['https://api-dogfood.resources.windows-int.net:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiMzAyYWM2Mi02MzMxLTQ2YTktOTg4Ny0yNmVlMDljMjJkZDM=?api-version=2018-09-01']
+      cache-control: [private]
+      content-length: ['0']
+      date: ['Thu, 07 Feb 2019 05:49:43 GMT']
+      location: ['https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationResults/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiMzAyYWM2Mi02MzMxLTQ2YTktOTg4Ny0yNmVlMDljMjJkZDM=?api-version=2018-09-01']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11997']
+      x-powered-by: [ASP.NET]
+    status: {code: 202, message: Accepted}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:46 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AbLcsGlggTRHl4wNKh6qoe8; expires=Sat, 09-Mar-2019 05:49:46
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvP1N3Lo-bSC-hhkxmd8UzywtTBmmB5vQvVbE48Up3kYWr8pFFYukfzTfkGUjcIE2B8-7IZbAxbAtxFytS6gvbTidnx4RrIDDWQotzh7S9VL5GNpzjkrnt0NqkP99zxDzVsNY6-dVeNIBMRYOZnmWwHgk4UIvlrdXikzHLKRf49M4gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiMzAyYWM2Mi02MzMxLTQ2YTktOTg4Ny0yNmVlMDljMjJkZDM=?api-version=2018-09-01
+  response:
+    body: {string: '{"status":"Succeeded"}'}
+    headers:
+      cache-control: [private]
+      content-length: ['22']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:47 GMT']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11995']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:47 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=ASTlux4JZdtEkP0Jlk_vLk8; expires=Sat, 09-Mar-2019 05:49:47
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugv0nk_O_ijKzbxjSqrkWpST-zf8iqEtXt2MjOIz9MHCeHSKfnoSwG1zJMXIuTimmJTd--jaICWe2IM6uawhudpRW64qO166ZoUBYk63vtHObzGuO4cS_QoImaWecOpWHa2ZOpVtvMLK594OcL1HcRSEq6nyFCWlv3s97dfC5--5s8gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002","name":"clitest.privatedns.com000002","type":"Microsoft.Network\/privateDnsZones","etag":"4a0e1609-a7db-479f-a2d5-730a7d305450","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['660']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:48 GMT']
+      etag: [4a0e1609-a7db-479f-a2d5-730a7d305450]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11876']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:50 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AQr-qk2iHn5NnWngf6VHiyg; expires=Sat, 09-Mar-2019 05:49:51
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvL8CdpaQKo-jb6B6W1NJT7Adtkhsf5e_PuZJCP1T097HRaK0Zc1-P7RmDvJ26zr5WLea5FDDbjUo9PdTiCxxpjwX3986qPZf6_4juaFXLuijGPg_kJIBRIINEv0iTTZNfULjkkgqXXjzNt-8xNIQrYhoUiHbn9DGyuo546lWphIggAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"location": "global"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      Content-Length: ['22']
+      Content-Type: [application/json; charset=utf-8]
+      If-None-Match: ['*']
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000003?api-version=2018-09-01
+  response:
+    body: {string: ''}
+    headers:
+      azure-asyncoperation: ['https://api-dogfood.resources.windows-int.net:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiMWRiOTc4Yi0zMzcxLTQ5ZGItOWUyOS1hM2RhZGRjNjRhMGE=?api-version=2018-09-01']
+      cache-control: [private]
+      content-length: ['0']
+      date: ['Thu, 07 Feb 2019 05:49:52 GMT']
+      location: ['https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationResults/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiMWRiOTc4Yi0zMzcxLTQ5ZGItOWUyOS1hM2RhZGRjNjRhMGE=?api-version=2018-09-01']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11998']
+      x-powered-by: [ASP.NET]
+    status: {code: 202, message: Accepted}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:55 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=Aa-HNwoX671AsfcvB0maYY0; expires=Sat, 09-Mar-2019 05:49:56
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvDrRtcFbj-Kz4GN5IQN4Z4komJ7KOVDy9ai9XJpGxk0hQQqKWpWANfWRbN_5iAYCBIFX2NtVemPMwaZav7PhWm1l1jTAtEkeazJUOl5WWK4u7-7YsT65D5hCH07wmMX-H03Pp6cDfO905jU6HECRXo44Gh5FQnAZ5xGnJKIaP9IsgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtiMWRiOTc4Yi0zMzcxLTQ5ZGItOWUyOS1hM2RhZGRjNjRhMGE=?api-version=2018-09-01
+  response:
+    body: {string: '{"status":"Succeeded"}'}
+    headers:
+      cache-control: [private]
+      content-length: ['22']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:56 GMT']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11990']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:57 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AR2iHaRr6f5Du38hcYAHrE8; expires=Sat, 09-Mar-2019 05:49:57
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvS7e6JE-QESGmApQyupO7ynGfUsP8oe4rdcAQU0HpNsdZRa5GFx0NXSZou5rWU6TWXzJY75lY4vWgI4kbRRzgYjv5zscp-q1z5WYeXtiIc_TkF_yMVc_PrdKV-pvy5BbRvjhlVEgWlzXl9lLWhXlWEj6QpN9bdGNmJc_WUY0F2h4gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000003","name":"clitest.privatedns.com000003","type":"Microsoft.Network\/privateDnsZones","etag":"b31a9a03-836b-49ff-9a95-01dd6df19335","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['660']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:49:57 GMT']
+      etag: [b31a9a03-836b-49ff-9a95-01dd6df19335]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11994']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:00 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AQ3SAjlFtxtGsJg5mUuY74A; expires=Sat, 09-Mar-2019 05:50:00
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvGd_KKYvuOp_1Po0UfjHXN6vu3HKF04Mgaswoeb2LWgFY-tCv5Flab1wYQoa1U9iknPF3Se_7WhiUjPq6LspDVTM6X7lrVKmV73x8f-9XiA1Mz6M8QA1M7Fx_QmpaUI_I3DZdUHzokPcy9zcD2-MEeDAfsEHQ6b_PKUePUHby6hggAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone list]
+      Connection: [keep-alive]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/privateDnsZones?api-version=2018-09-01
+  response:
+    body: {string: '{"value":[{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns2inno2qji2w3mtcohx5mljfndblcjnehutwyf6g7xsuivulyst7dd5rvi\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comx2eknvtjbcnbt","name":"clitest.privatedns.comx2eknvtjbcnbt","type":"Microsoft.Network\/privateDnsZones","etag":"6e903c8b-afe4-451f-a086-ac8ad23533d7","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":1,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns2nibbnaycwyjuam34zch7qsvm53t3ud3n64ngx3fb4epr2yhh4zpv4jq6\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comk3lryo4ecq5du","name":"clitest.privatedns.comk3lryo4ecq5du","type":"Microsoft.Network\/privateDnsZones","etag":"f32068e1-dba7-474e-bd90-62cb613c0f7c","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000003","name":"clitest.privatedns.com000003","type":"Microsoft.Network\/privateDnsZones","etag":"b31a9a03-836b-49ff-9a95-01dd6df19335","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002","name":"clitest.privatedns.com000002","type":"Microsoft.Network\/privateDnsZones","etag":"4a0e1609-a7db-479f-a2d5-730a7d305450","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns375lqu6xnwuq3hfoxlmj3zxlgposelrhaj5jl675lg5rsoans6fcvbgrn\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comtzfzckbb73rlv","name":"clitest.privatedns.comtzfzckbb73rlv","type":"Microsoft.Network\/privateDnsZones","etag":"162a42dd-5b9e-4605-9078-cd11dc2402f6","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsab2i6jg5zt7dos5jntpdzzeewhngq6u6q2ifbgpsgnn7nybcteqjdzj3y\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comoysxy66w47h4v","name":"clitest.privatedns.comoysxy66w47h4v","type":"Microsoft.Network\/privateDnsZones","etag":"7c472833-2f4e-4a7b-af0f-15769bf78e4c","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsbhlo7ggpxpfkzzejeykrjn6jmbw64miryhwh2frhnpvzfg5pbcgvpt442\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comvjk5mu3cl44uf","name":"clitest.privatedns.comvjk5mu3cl44uf","type":"Microsoft.Network\/privateDnsZones","etag":"1f2d6cbd-e214-4cff-8ada-680e00daa6a3","location":"global","tags":{"tagKeypizjkqvph":"tagValn7dabxk5h"},"properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsbqn2oamxcut3mcjzltvq46jb2sh6pircezzb7jcpcxvhwyb3nl7euutno\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comf2dxyngylyd4d","name":"clitest.privatedns.comf2dxyngylyd4d","type":"Microsoft.Network\/privateDnsZones","etag":"cb51e6c3-e216-450f-bf33-fbc37f7a2f61","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsdumenf2tstisaq6ipmwmbljx5pytoyatffgjb3mkmlo4hmxxpyq3el5u5\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comjpsyim7qygona","name":"clitest.privatedns.comjpsyim7qygona","type":"Microsoft.Network\/privateDnsZones","etag":"895d1bf0-d06a-405a-b57e-927c6b038871","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsfxfxjpp3lgpahwrjlsskl3scze6a4kc5rffginl7ssjvaagsgjfyazkyv\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comjfzy3tmbhilqx","name":"clitest.privatedns.comjfzy3tmbhilqx","type":"Microsoft.Network\/privateDnsZones","etag":"f73b152a-09f5-4cfe-9ea7-5f83d4fb283f","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsg6ygfwt4l7fnjgope5ijezw4zfto2rpn6cuz4g2rogdfcrrkdrqc2p4p3\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comyznauioftzkup","name":"clitest.privatedns.comyznauioftzkup","type":"Microsoft.Network\/privateDnsZones","etag":"0a255596-eddb-467c-aba3-cc2e67a0683d","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsg6zt6zs7gwgrvfzcr4c4lnmtdvj3yd35rthkjr7dzsxmu3rylmntukr35\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comgqyicaapyhmp5","name":"clitest.privatedns.comgqyicaapyhmp5","type":"Microsoft.Network\/privateDnsZones","etag":"6bd10757-214a-4da3-b072-77e6be9f7252","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsiw3chkslampxryyqn2pgt4xbjxb3wlbtdidhtrwanq3tkz4u33ce6r4da\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comy7xqzb5fpoyd7","name":"clitest.privatedns.comy7xqzb5fpoyd7","type":"Microsoft.Network\/privateDnsZones","etag":"93e3af47-9e64-45d0-aa24-7192895f0146","location":"global","tags":{"tagKey5wmasgjkd":"tagValdfaphciri"},"properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsj3fli4agxchuu3z6f3jzcnd5gc2a3z3242j3nfgls2hcbgkjrrse5can7\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.compysputgwek3by","name":"clitest.privatedns.compysputgwek3by","type":"Microsoft.Network\/privateDnsZones","etag":"3ff875da-1bf7-40de-8076-34a63286e390","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":1,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsjlavyy2agbc347vzuarnjfasqzanmakz4dnkynagslba2wpetvmf7uyuh\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comxdut4acrjhwor","name":"clitest.privatedns.comxdut4acrjhwor","type":"Microsoft.Network\/privateDnsZones","etag":"7154c16d-eccf-4b0b-8a46-7357cadcd9bd","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsjunex67nutc6srsweltx76d7p2t4mcmi75rki4ujfgtgeilnsnvldtbaf\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comv4u6ikcm5irmp","name":"clitest.privatedns.comv4u6ikcm5irmp","type":"Microsoft.Network\/privateDnsZones","etag":"f78c5c1b-c346-46a8-832e-911c60aac6af","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednslgemuka73dtlyuvz4rji4gzrdpsui52lbie2rmpbf6ruj47j24r6zpj5w\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comlyzllbzyrbroz","name":"clitest.privatedns.comlyzllbzyrbroz","type":"Microsoft.Network\/privateDnsZones","etag":"a56258e5-2ee2-4993-a441-eb8b8fef0ac9","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsm2ndkmadjjkim4l6hnfuzb2smeemqisicsuwugyeyme5obo4vy2lcuj6w\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comaihiq6ir66oef","name":"clitest.privatedns.comaihiq6ir66oef","type":"Microsoft.Network\/privateDnsZones","etag":"651aa2ce-f542-40da-8da0-9e005e33d421","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsm67cvuax7jehnhr6mds3mvynue4ytq2lfrx62bgyzk2mhykuau6yslpf4\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comldone4ataevoa","name":"clitest.privatedns.comldone4ataevoa","type":"Microsoft.Network\/privateDnsZones","etag":"4dd6db7b-a4d1-49c3-97db-a937fa1ea4c6","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsmrrgy742yosmc7ghvcdfjfyn2whz6s2m7l3jutxypuqupl6chsk4rmeuc\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comstf5itr67kh7j","name":"clitest.privatedns.comstf5itr67kh7j","type":"Microsoft.Network\/privateDnsZones","etag":"59222983-3ee5-4325-8288-71eab8473787","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":1,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsng6oebvvsm567ltlpx6qxqdmiaqjkexxv7sykkv6dcuihn3wqujmwcygi\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comrvgu36qhtii2c","name":"clitest.privatedns.comrvgu36qhtii2c","type":"Microsoft.Network\/privateDnsZones","etag":"0aa2daac-b5a6-4451-8a19-aca840d65c41","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsnsffmxi73x4g42y7iyoq7h27fl4olmdoxiw7ykts4ptvvuo6cwoqsoxhr\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com4262znrh5xrm6","name":"clitest.privatedns.com4262znrh5xrm6","type":"Microsoft.Network\/privateDnsZones","etag":"44d415d9-88f1-46aa-b19c-d1324b6ef9ef","location":"global","tags":{"test":"hello"},"properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsosy4kbtijyocpipcu2akvyzx4m3czqk3j7osy7ureeqbfpl52ey7rb3bn\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com5xjkl6tehxwdr","name":"clitest.privatedns.com5xjkl6tehxwdr","type":"Microsoft.Network\/privateDnsZones","etag":"1f1259ab-84ca-40ca-b919-3aec8f905b4c","location":"global","tags":{"a":"a","b":"b"},"properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsp6kq55jzugld7uylwb4njiacbfskknajcwp76buj2mjcr6su32ay36mf4\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comxie2vfto7xooy","name":"clitest.privatedns.comxie2vfto7xooy","type":"Microsoft.Network\/privateDnsZones","etag":"cd28b4e8-2f35-4361-b335-8b7c364e8f30","location":"global","tags":{"tagKeybt36vffvm":"tagValejo2apsad"},"properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsphvnutmy4xbwmr7xor5kj3dzmrhfespge5ff4rcq4usvoaxq7252zuf6t\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comvmdffpb4bry6u","name":"clitest.privatedns.comvmdffpb4bry6u","type":"Microsoft.Network\/privateDnsZones","etag":"86d9e2b3-5d8c-41e5-8411-5588223dd7d7","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednspjd4vioe7dqyuvbg7teitg5z7rqbxzti742c7qhxjopwheafc5tze4pby\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com7qao36dib6j4a","name":"clitest.privatedns.com7qao36dib6j4a","type":"Microsoft.Network\/privateDnsZones","etag":"7d592cea-bf7e-4253-ad19-e5333792a06f","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsqytlmjgb5ouvfnwz56qnqkawu7xg3y26cukd675oxlrsk6ouj2w33ailj\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.compjc72fh6zvnd4","name":"clitest.privatedns.compjc72fh6zvnd4","type":"Microsoft.Network\/privateDnsZones","etag":"75a13603-9058-4e78-856e-3677697f9daf","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednss65je2jin5s7x6um2jgygkanvu6l2dng5evcsoqgg26jnhxmku5rw7mjo\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comlpszpu77awp3r","name":"clitest.privatedns.comlpszpu77awp3r","type":"Microsoft.Network\/privateDnsZones","etag":"53fdf429-e483-4afb-b162-7280ecf6605b","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednssxys7ty3ng5agx4yrkeoxunt7mbkxyztaje2hlj3dknl3e7umjhot76lt\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comelvhkp7kopv7w","name":"clitest.privatedns.comelvhkp7kopv7w","type":"Microsoft.Network\/privateDnsZones","etag":"548aa507-d1d6-400a-890c-579d81bf05e0","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsuikwdcwuqhdphmwl26cuhf6bji4hflgtvomm3xfphijhtusnwyhca6s36\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.commrxceu5nbpjay","name":"clitest.privatedns.commrxceu5nbpjay","type":"Microsoft.Network\/privateDnsZones","etag":"b431c0f8-0247-4a03-addb-9b908e45eb5c","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsvsx3osnrslpsfqyssmofdw4xrx2kzdzwypnbucdgsqoxgrchgkxxusp7e\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.come57v7sp6hngfw","name":"clitest.privatedns.come57v7sp6hngfw","type":"Microsoft.Network\/privateDnsZones","etag":"92a3fbdd-fa03-4caa-bbd1-ce7d6cfe6d7e","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsvy527xljwfra2s43clplqwdttscqfzrkhm4qudjaxprcni4yt32ehdsks\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comwisaiv5yjkc3y","name":"clitest.privatedns.comwisaiv5yjkc3y","type":"Microsoft.Network\/privateDnsZones","etag":"6a73941a-6d79-42c2-a0fb-ac02d0dce789","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsw2a6is7zeyx7ykaqgqtwi7u7355abfaxmcnonlnexi73ceaavbvxxgvw4\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comr27q7kp3yen66","name":"clitest.privatedns.comr27q7kp3yen66","type":"Microsoft.Network\/privateDnsZones","etag":"584fe3db-eaab-427c-a4f3-fb4a9364ed86","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsw2a6is7zeyx7ykaqgqtwi7u7355abfaxmcnonlnexi73ceaavbvxxgvw4\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comspfyyscqrgklu","name":"clitest.privatedns.comspfyyscqrgklu","type":"Microsoft.Network\/privateDnsZones","etag":"086794c8-9105-4b67-9b52-0bdfaee118a7","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednswhfcod7g4ht7uxkpicl6inrfeaerh5psv47th2jfcaur6s4zixioeczs7\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comzprtgau3folq7","name":"clitest.privatedns.comzprtgau3folq7","type":"Microsoft.Network\/privateDnsZones","etag":"60fdead5-a0c5-49af-9b68-b004712b9a96","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednswuyubai7wohou23txb27adejw4s4nt7tabxxen6tlbuurbxeummfnotwz\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comkxdlcnsf4neg6","name":"clitest.privatedns.comkxdlcnsf4neg6","type":"Microsoft.Network\/privateDnsZones","etag":"cc706031-cdf3-4777-a692-5d0645f175c1","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednsx5qgrotarynalntcfogyqmnt2bra42bl5k4ar77zfwarrq5ulqrblcmw3\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comaznj3q2tbage4","name":"clitest.privatedns.comaznj3q2tbage4","type":"Microsoft.Network\/privateDnsZones","etag":"c263b730-c9f6-4a2b-954c-b89d3afd649e","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatednszuapbqoiqmejrghwlpjoljzrpzfmulcfkr45vrs4chsz7s4vnlmppm7t6\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.comki6lljxb4e5dk","name":"clitest.privatedns.comki6lljxb4e5dk","type":"Microsoft.Network\/privateDnsZones","etag":"e3fa134d-5423-490a-8af9-e83a026f452a","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":1,"numberOfVirtualNetworkLinksWithRegistration":1,"provisioningState":"Succeeded"}},{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest\/providers\/Microsoft.Network\/privateDnsZones\/abc.xyz","name":"abc.xyz","type":"Microsoft.Network\/privateDnsZones","etag":"a75b5e04-d523-4a3b-b116-4bb2effaa40d","location":"global","tags":{"hello":"world","muw":"aqar"},"properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":2,"numberOfVirtualNetworkLinks":2,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}}]}'}
+    headers:
+      cache-control: [private]
+      content-length: ['25888']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:01 GMT']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11882']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:02 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AZZhPJ8IPhtJv34HQI6-xQQ; expires=Sat, 09-Mar-2019 05:50:03
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvdjboM6YUl59lMLQE1hUsIXCmfbRxxJm5eSUE26b9exdI0iyHDFpMhkx1X_p_dk-re99NkW-BMRgdYTiIGj8pll9Y2vUudvtUV1E0Wkj9uxT7-sWMWLv9GFc0QwS-HJ4yk2xn8W0gnw2k05p5PNIVcL-BtuNyvAJkXtsPE2wX9FIgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      ParameterSetName: [--name --yes --no-wait]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          resourcemanagementclient/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_privatedns000001?api-version=2018-05-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Thu, 07 Feb 2019 05:50:05 GMT']
+      expires: ['-1']
+      location: ['https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUFJJVkFURUROUzJRUUUzNDZCUUVIM0NKTlRHTVU3T09KWlZHTHw0Q0NBNEYxRUE3MDVDRjBFLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-deletes: ['14995']
+    status: {code: 202, message: Accepted}
+version: 1

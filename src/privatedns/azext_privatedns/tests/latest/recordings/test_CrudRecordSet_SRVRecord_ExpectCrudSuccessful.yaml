@@ -1,0 +1,1129 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:47 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AbyVE1H3qcFJgQ8-eZbAYwI; expires=Sat, 09-Mar-2019 05:50:47
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvIDOn99DvB-srVWf_UMcggYSf8s9eNsdKBIqqO_pamGwJ6O-uJzlcI0jnqZ_gXPwZTTiKtquiTb-5MewEQYAYt58f4oW8GGD4GWZuD5U8SAW2zGlFxq5ND5M5fXzgh-65LaIE3IeHOpe06W2GZmShgIF4ZWbOdWw_ULfY0HPHIuIgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
+      "date": "2019-02-07T05:50:46Z"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group create]
+      Connection: [keep-alive]
+      Content-Length: ['110']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [--location --name --tag]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          resourcemanagementclient/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_privatedns000001?api-version=2018-05-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001","name":"clitest_privatedns000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-02-07T05:50:46Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['384']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:49 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1188']
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:50 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=ASoIM6fcl-RFgi19FzWRoWo; expires=Sat, 09-Mar-2019 05:50:50
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvPKD8Wlrn8ER8W4jYBeFwQU4YMtPK2rUxVzNJN4Xig5lm9-x3J3OKwq0KXo17Q2BT2xyiryzR5V2QCKgbOJy9yyZCSvipNRQwfjoi3fkcwlGjkKcxk_n0EQO8ag4LvyiAN65x9LoV5hCMX0hQGb9m_0h0qWMO7KrzPfE2MVgS17cgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"location": "global"}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      Content-Length: ['22']
+      Content-Type: [application/json; charset=utf-8]
+      If-None-Match: ['*']
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002?api-version=2018-09-01
+  response:
+    body: {string: ''}
+    headers:
+      azure-asyncoperation: ['https://api-dogfood.resources.windows-int.net:443/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtlY2NmMTU0My03MzllLTRjM2EtYmQ0Yy00Y2E0MGRjOWYyZGY=?api-version=2018-09-01']
+      cache-control: [private]
+      content-length: ['0']
+      date: ['Thu, 07 Feb 2019 05:50:51 GMT']
+      location: ['https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationResults/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtlY2NmMTU0My03MzllLTRjM2EtYmQ0Yy00Y2E0MGRjOWYyZGY=?api-version=2018-09-01']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11989']
+      x-powered-by: [ASP.NET]
+    status: {code: 202, message: Accepted}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:54 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AXVsXfUnN4VJsCDe07-3SNg; expires=Sat, 09-Mar-2019 05:50:55
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvqtXnZJEUECuXwQV_jFGZN7BrqkGUM3UkjYHsWZsIir98OFFpaC8UApVRMQ6CBB0lnXRA356tk-B2FMHtnmU_ND6xT9cmRANECnrlG3Noi_4WqDZEZgaQuKWro9cTe0xD3q_is6usTR-Mu0uKpp0ryy9AbvQwiPGzXY9Q2Xnbho0gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsOperationStatuses/RnJvbnRFbmRBc3luY09wZXJhdGlvbjtVcHNlcnRQcml2YXRlRG5zWm9uZTtlY2NmMTU0My03MzllLTRjM2EtYmQ0Yy00Y2E0MGRjOWYyZGY=?api-version=2018-09-01
+  response:
+    body: {string: '{"status":"Succeeded"}'}
+    headers:
+      cache-control: [private]
+      content-length: ['22']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:55 GMT']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11977']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:56 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AUaCcpIKCFJOlUoGky1juyU; expires=Sat, 09-Mar-2019 05:50:56
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvtDgJvEL5obrHM-V6E6UPsfVB9e7J-HwOUloPUYDgR6kvoFzZncHcxUoAUdpPSwKizHDOSVUSITIb8U_ZwPAeVA0m-IPh0ZDYFdP1WrTQASte4T7VnOBb9u4_rIRqEtLro8qGt2MzVPbWHR27AyY9li7a9QPVr1DcpZ0znzJtE40gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns zone create]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002","name":"clitest.privatedns.com000002","type":"Microsoft.Network\/privateDnsZones","etag":"87b43dbd-12f1-4d12-993f-84a06f43edda","location":"global","properties":{"maxNumberOfRecordSets":5000,"maxNumberOfVirtualNetworkLinks":10,"maxNumberOfVirtualNetworkLinksWithRegistration":1,"numberOfRecordSets":1,"numberOfVirtualNetworkLinks":0,"numberOfVirtualNetworkLinksWithRegistration":0,"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['660']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:56 GMT']
+      etag: [87b43dbd-12f1-4d12-993f-84a06f43edda]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11984']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:50:59 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AQeawM3QblJLmb8dA5cwCpU; expires=Sat, 09-Mar-2019 05:50:59
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvbD9Iv9C3WYE8HTCNzZBCpe2_kSKhorYjlKpWiQIo1riQkqk5i7lKAp79PhlIl5sD-5voiVzeqGtzPnl9W5LORr5NAE6pNIS2ZCQWIZLfjS_nXXDihogKs6irRAtx0pgDd0AN5Cf-6EQdm3gB28-Ul6vnRWtB6EEsV_MTrwt8nM4gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"ttl": 3600}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv create]
+      Connection: [keep-alive]
+      Content-Length: ['29']
+      Content-Type: [application/json; charset=utf-8]
+      If-None-Match: ['*']
+      ParameterSetName: [-g -n -z]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"d9b98c57-4205-43a5-b2e6-3fea43ad84ff","properties":{"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['545']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:00 GMT']
+      etag: [d9b98c57-4205-43a5-b2e6-3fea43ad84ff]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:02 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AWe680gWOtZJgbd_J8PYjRM; expires=Sat, 09-Mar-2019 05:51:02
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvyTvC3ofUga8me0YqIZPgl8e41A7xqlkfiQ0OPemv9A2oyJY3T64wQoo7qCmT4lbOOSBPZ9xOJXDxZFI_IRE0YmA0vgzMX5QoqlB5EMPDnhu3WEFsyWtapEEuADN75rtIaN22wdUpkqyebqBLzDD9uNy_8kUeyQRjZ9AVe6CStkEgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv add-record]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n -z -r -p -t -w]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"d9b98c57-4205-43a5-b2e6-3fea43ad84ff","properties":{"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['545']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:03 GMT']
+      etag: [d9b98c57-4205-43a5-b2e6-3fea43ad84ff]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:03 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AZhEcrnLyN1NgYpIoETV7R8; expires=Sat, 09-Mar-2019 05:51:03
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvdiFcEPSm18OZrYDpMlWzNDM197l38EP_9vLGZwOVDTWBbsaUdksXCTZU_-GLcP7ky8L67fT4lBcNqpFhJVNAkVyMiucbpoO52_s47N4ySIT1iwm2b1LWklB_P9yqocHPnOIMhes_fvNgsDGLShsrs3vdv0wjTSErbYzQJoqECLggAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"etag": "d9b98c57-4205-43a5-b2e6-3fea43ad84ff", "properties": {"ttl":
+      3600, "srvRecords": [{"priority": 1, "weight": 5, "port": 120, "target": "targ.et"}]}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv add-record]
+      Connection: [keep-alive]
+      Content-Length: ['157']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [-g -n -z -r -p -t -w]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"5f2f824d-6853-40fa-bebb-cc4833ca7319","properties":{"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['600']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:04 GMT']
+      etag: [5f2f824d-6853-40fa-bebb-cc4833ca7319]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:05 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AXrxW91SeYhJkZH2s9FXNQM; expires=Sat, 09-Mar-2019 05:51:06
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugv1R0JYqAvN79b10vpdr_LiufB7QrvBnOz0KkY6UKPQvBSofsJdyRg0PtZz76CZNwnY3zIriENxmeIafgIjhqLLtiMtpSvalGOoqjxTM8tb9vopgaPeSGPUkzfiiONn-xiNbBYgnkHPycfilk78oAbtWL0pu1Xyzx8X1NqALYD4zwgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv update]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n -z --metadata]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"5f2f824d-6853-40fa-bebb-cc4833ca7319","properties":{"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['600']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:07 GMT']
+      etag: [5f2f824d-6853-40fa-bebb-cc4833ca7319]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:07 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AZSdbQ8_8vZPm2DanlM2lZc; expires=Sat, 09-Mar-2019 05:51:08
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugvb2tw_zITBKTtsCOjSeejkoMlo988lMahKRaURc7q5e-qnG6MqIFqKHJCGv27tC1sOvXuKSgtKPENtMcj7mtVUIW7UyGSKel5g55bTE4ggqnFqFbAA7iFVXUVpq_LJg7wQeibtVItKZNqNWWiXObJXh8P9CTcMMtUDedXDPjaEt8gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: 'b''b\''{"etag": "5f2f824d-6853-40fa-bebb-cc4833ca7319", "properties": {"metadata":
+      {"tagKey000004": "tagVal000005"}, "ttl": 3600, "srvRecords": [{"priority": 1,
+      "weight": 5, "port": 120, "target": "targ.et"}]}}\'''''
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv update]
+      Connection: [keep-alive]
+      Content-Length: ['209']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [-g -n -z --metadata]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PATCH
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"2a8150f6-4af8-4d15-a1fb-dceb87df6548","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['649']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:08 GMT']
+      etag: [2a8150f6-4af8-4d15-a1fb-dceb87df6548]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:09 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=ATzUFWXGQ9tPihDT4lDkz8w; expires=Sat, 09-Mar-2019 05:51:10
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvMWJftcygo5EIvTZNiaXCA8k4hrJOroU_Adyn_OQEsnvB1FRovvndr_VG1E66EOgzxnxngRbVGpMbDWndbiWB_hsrMGsRrgTcEI5vr3dgtf4xrG35eY0KzrBn8Thi4zSCs-izTiGH0wyGmlZKw7meDVxG5Wz0aMOmxL_MvXrFwiggAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv add-record]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n -z -r -p -t -w]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"2a8150f6-4af8-4d15-a1fb-dceb87df6548","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['649']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:11 GMT']
+      etag: [2a8150f6-4af8-4d15-a1fb-dceb87df6548]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:10 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AXx_IKqscORPjpZ0I3ok29E; expires=Sat, 09-Mar-2019 05:51:11
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvGD9faGR12FKcHh1r5g_lrm1ja79ApVfxPPOlkONkO_aSzjBkkxIy21M-0UVo328__3L2BOuDx_9VsarEjl3AkADTwy-xmyeMKx8gYjx56XMXU86IegARSWcsT5wvLpgjY8cbnkWBVJEeMxPBnRBLcRSxwmm0I9mJw4dLcTNAkNQgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: 'b''b\''{"etag": "2a8150f6-4af8-4d15-a1fb-dceb87df6548", "properties": {"metadata":
+      {"tagKey000004": "tagVal000005"}, "ttl": 3600, "srvRecords": [{"priority": 1,
+      "weight": 5, "port": 120, "target": "targ.et"}, {"priority": 1, "weight": 5,
+      "port": 120, "target": "newsrv.target"}]}}\'''''
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv add-record]
+      Connection: [keep-alive]
+      Content-Length: ['279']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [-g -n -z -r -p -t -w]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"82e0f0ac-9436-48af-88b1-abbff28bb744","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5},{"port":120,"priority":1,"target":"newsrv.target","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['711']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:12 GMT']
+      etag: [82e0f0ac-9436-48af-88b1-abbff28bb744]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11998']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:13 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=Aeo89fLly-xNu5PCNM4hRSE; expires=Sat, 09-Mar-2019 05:51:14
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugv_ELZ2EA7qzLJ6ABh4yNBMZeiwUHW9mwM0ICGcomU7tvYUdjK95APPneFCjFlshf-0cW4D-Qvc1m-PL9DsDnWu1LCUNQ0IIUsuIs2jKZKVAyONReWXrRTwOrf49yCgRroQb8BdflCCkDVguJfEyoX-5Jz17oxncU18V8cH3TnEcYgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv show]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n -z]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"82e0f0ac-9436-48af-88b1-abbff28bb744","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5},{"port":120,"priority":1,"target":"newsrv.target","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['711']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:15 GMT']
+      etag: [82e0f0ac-9436-48af-88b1-abbff28bb744]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:16 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AVSqJ-wB9RpFprI_y02fG-s; expires=Sat, 09-Mar-2019 05:51:16
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugvxk_sMW8Mco5Ipl4YFN3LAClhDn_tgH2Ef43DyAlREEg60Dkc8D5jDZ1_0pigqcmn70c5ltmmLRnAlrpmq2p5wMEpjeTUG0rqm6WzdeTdhclGskXITe52NnEeFddLBEo3WLqqjKA31Aj5TTk7A85adXB8kVeoNkOe-O5H_VgAqPsgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv remove-record]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n -z -r -p -t -w --keep-empty-record-set]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"82e0f0ac-9436-48af-88b1-abbff28bb744","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5},{"port":120,"priority":1,"target":"newsrv.target","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['711']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:17 GMT']
+      etag: [82e0f0ac-9436-48af-88b1-abbff28bb744]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11998']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:17 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AWual1OOXlxBvpyvH7xGDqM; expires=Sat, 09-Mar-2019 05:51:17
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugv5fe49rba3PwRErQcQWSKvgv3O_IdwEQP-CmeQLXrdmlDBHiPBhKYumG57chDFLLge-y__Z3kM1Ckk_u69g9117rwmhyvbQaUWfjJpFYxknxqUHmwL7WSQbJT_SFLa_Echp5cS2cHPA-5XxM92P8juhl9iKoMkzQrG41-uJn40fYgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: 'b''b\''{"etag": "82e0f0ac-9436-48af-88b1-abbff28bb744", "properties": {"metadata":
+      {"tagKey000004": "tagVal000005"}, "ttl": 3600, "srvRecords": [{"priority": 1,
+      "weight": 5, "port": 120, "target": "targ.et"}]}}\'''''
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv remove-record]
+      Connection: [keep-alive]
+      Content-Length: ['209']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [-g -n -z -r -p -t -w --keep-empty-record-set]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"7d158a4c-3fe6-439d-890c-de1a6661ff2e","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['649']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:18 GMT']
+      etag: [7d158a4c-3fe6-439d-890c-de1a6661ff2e]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11998']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:19 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=Ad-i_jY4igJEgYGo13JvrNs; expires=Sat, 09-Mar-2019 05:51:20
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvQOH0LfZ9SwdcKnoL3zgESsASpc1M_GyClVeE2pfLhqHhdfqsS9Yrfe4F4BQSJtXv3BCDznIu94F1KtmHn-YsbATF0OmP2jWC1Xbo-E6m3RdJUxFVEW66BFYISppsIcE0k49XmJWSf2AB88-dAGRgDKEQDjiYZJE97Ef08z-Q6LEgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv remove-record]
+      Connection: [keep-alive]
+      ParameterSetName: [-g -n -z -r -p -t -w --keep-empty-record-set]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"7d158a4c-3fe6-439d-890c-de1a6661ff2e","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[{"port":120,"priority":1,"target":"targ.et","weight":5}]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['649']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:20 GMT']
+      etag: [7d158a4c-3fe6-439d-890c-de1a6661ff2e]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11998']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:20 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AfE96jfxRtZMhhKcIdfImVw; expires=Sat, 09-Mar-2019 05:51:21
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4Gugvrt0MIuwBF6mnl-s_aokW9XFvKs6uUZRsRG-sA5KToezpqvtw8HY3_dqeW5wZlkFkPJeS03nIxI1Q-3tj6N3tEN4_0DZ4vVWlj6JSKIgdlmcSkg5QTfoosVFav5eVovDAd_wTA1Wm-YXSyH_tMgPX3wgdeR8zKeSVsU7zfyM-BZIgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: 'b''b\''{"etag": "7d158a4c-3fe6-439d-890c-de1a6661ff2e", "properties": {"metadata":
+      {"tagKey000004": "tagVal000005"}, "ttl": 3600, "srvRecords": []}}\'''''
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv remove-record]
+      Connection: [keep-alive]
+      Content-Length: ['147']
+      Content-Type: [application/json; charset=utf-8]
+      ParameterSetName: [-g -n -z -r -p -t -w --keep-empty-record-set]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: '{"id":"\/subscriptions\/ea6ee6cb-28eb-467a-a366-7262dfe56c37\/resourceGroups\/clitest_privatedns000001\/providers\/Microsoft.Network\/privateDnsZones\/clitest.privatedns.com000002\/SRV\/clitestprivatednsrecordset000003","name":"clitestprivatednsrecordset000003","type":"Microsoft.Network\/privateDnsZones\/SRV","etag":"b7e08c1b-cbbf-4cfc-9e6d-495be43460b8","properties":{"metadata":{"tagKey000004":"tagVal000005"},"fqdn":"clitestprivatednsrecordset000003.clitest.privatedns.com000002.","ttl":3600,"srvRecords":[]}}'}
+    headers:
+      cache-control: [private]
+      content-length: ['594']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:21 GMT']
+      etag: [b7e08c1b-cbbf-4cfc-9e6d-495be43460b8]
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11998']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:23 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AVIE-bd_qUNLtf8N0sv1o74; expires=Sat, 09-Mar-2019 05:51:23
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugvRNKJFKaZyxLylLtXVSkJzJBZpgq1qi3hJ4GTMPXrYLLMF86el7XibPVQtXdPwLmyv58ZwAT8A1_G6eeAqpKsT8tUatVq_DBpo5pJO1FQ9w8rjnbxccT-Brm8BEy41eRhJ2dNQZi6UaP63kxjlLRLPmuY3Uvcq3qVSdBqVsk8Z1IgAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [network privatedns record-set srv delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      ParameterSetName: [-g -n -z -y]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          azure-mgmt-privatedns/1.0.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_privatedns000001/providers/Microsoft.Network/privateDnsZones/clitest.privatedns.com000002/SRV/clitestprivatednsrecordset000003?api-version=2018-09-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [private]
+      content-length: ['0']
+      date: ['Thu, 07 Feb 2019 05:51:23 GMT']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-aspnet-version: [4.0.30319]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-resource-requests: ['11999']
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Charset: [utf-8]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.21.0]
+      return-client-request-id: ['true']
+      x-client-CPU: [x86]
+      x-client-OS: [win32]
+      x-client-SKU: [Python]
+      x-client-Ver: [1.2.1]
+    method: GET
+    uri: https://login.windows.net/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body: {string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'}
+    headers:
+      access-control-allow-methods: ['GET, OPTIONS']
+      access-control-allow-origin: ['*']
+      cache-control: ['private, max-age=86400']
+      content-length: ['131']
+      content-type: [application/json; charset=utf-8]
+      date: ['Thu, 07 Feb 2019 05:51:26 GMT']
+      p3p: [CP="DSP CUR OTPi IND OTRi ONL FIN"]
+      set-cookie: ['fpc=AXHG6rEkrpdLvCuTwIW8gzU; expires=Sat, 09-Mar-2019 05:51:26
+          GMT; path=/; secure; HttpOnly', esctx=AQABAAAAAACEfexXxjamQb3OeGQ4GugveSrqAzQ5xxgvyAh5MU86Q0IcTqHwKLOUHVeMLqSLRIZbpeTW5Fi0qhNWkuVrYo7rFNqY_ORi9n5qaFQoRVILo4kKK0CfIS75ovTs8d3vTTeppyz8iQjj9x9NYcQJKGYWQ3lpIRxlLTM0TCMB5uP91dhQiOG6jll7svOtQgUcid4gAA;
+          domain=.login.windows.net; path=/; secure; HttpOnly, x-ms-gateway-slice=corp;
+          path=/; secure; HttpOnly, stsservicecookie=estscorp; path=/; secure; HttpOnly]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [group delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      ParameterSetName: [--name --yes --no-wait]
+      User-Agent: [python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.6.0
+          resourcemanagementclient/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.57]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_privatedns000001?api-version=2018-05-01
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Thu, 07 Feb 2019 05:51:27 GMT']
+      expires: ['-1']
+      location: ['https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjVGUFJJVkFURUROU1kzR1VMUkNWTEszTVpGVkdLVEdGMzZZQVlUSHw3QjY4NUQ1RTNDRjAwNEMwLVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-deletes: ['14986']
+    status: {code: 202, message: Accepted}
+version: 1

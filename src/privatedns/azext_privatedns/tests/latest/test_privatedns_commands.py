@@ -58,7 +58,8 @@ class BaseScenarioTests(ScenarioTest):
     def _Create_VirtualNetwork(self):
         GenerateVirtualNetworkName(self)
         return self.cmd('az network vnet create -g {rg} -n {vnet}', checks=[
-            self.check('name', '{vnet}')
+            self.check('newVNet.name', '{vnet}'),
+            self.check_pattern('newVNet.id', GenerateVirtualNetworkArmId(self))
         ]).get_output_in_json()
 
     def _Validate_Links(self, expectedLinks, actualLinks):
@@ -90,7 +91,7 @@ class BaseScenarioTests(ScenarioTest):
             self.check_pattern('virtualNetwork.id', GenerateVirtualNetworkArmId(self)),
             self.check('registrationEnabled', '{registrationEnabled}'),
             self.check('provisioningState', 'Succeeded'),
-            self.check_pattern('virtualNetworkLinkState', 'InProgress|Succeeded')
+            self.check_pattern('virtualNetworkLinkState', 'InProgress|Completed')
         ]).get_output_in_json()
 
     def _RecordType_To_FunctionName(self, key, operation):
@@ -300,7 +301,7 @@ class BaseScenarioTests(ScenarioTest):
         recordsetResult = self.cmd('az network privatedns record-set cname remove-record -g {rg} -n {recordset} -z {zone} -c {cname} --keep-empty-record-set', checks=[
             self.check('name', '{recordset}')
         ]).get_output_in_json()
-        self.assertTrue(cname != recordsetResult.get('cnameRecord', '').get('cname', ''))
+        self.assertTrue(cname != recordsetResult.get('cnameRecord', {}).get('cname', ''))
         return recordsetResult
 
     def _Delete_RecordSet(self, recordset, recordType, zoneName, etag=None):
@@ -466,13 +467,14 @@ class PrivateDnsLinksTests(BaseScenarioTests):
     def test_PutLink_LinkExistsIfNoneMatchFailure_ExpectError(self, resource_group):
         self._Create_VirtualNetworkLink()
         with self.assertRaisesRegexp(CLIError, 'exists already'):
-            self.cmd('az network privatedns link create -g {rg} -n {link} -z {zone} -v {vnet}')
+            self.cmd('az network privatedns link create -g {rg} -n {link} -z {zone} -v {vnet} -e {registrationEnabled}')
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchLink_LinkExistsIfMatchSuccess_ExpectLinkUpdated(self, resource_group):
         linkCreated = self._Create_VirtualNetworkLink()
         self.kwargs['etag'] = linkCreated['etag']
-        self.cmd('az network privatedns link update -g {rg} -n {link} -z {zone} --if-match {etag}', checks=[
+        cmd = "az network privatedns link update -g {rg} -n {link} -z {zone} --if-match '{etag}'"
+        self.cmd(cmd, checks=[
             self.check('name', '{link}'),
             self.check('provisioningState', 'Succeeded')
         ])
@@ -481,8 +483,9 @@ class PrivateDnsLinksTests(BaseScenarioTests):
     def test_PatchLink_LinkExistsIfMatchFailure_ExpectError(self, resource_group):
         self._Create_VirtualNetworkLink()
         self.kwargs['etag'] = self.create_guid()
+        cmd = "az network privatedns link update -g {rg} -n {link} -z {zone} --if-match '{etag}'"
         with self.assertRaisesRegexp(CLIError, 'etag mismatch'):
-            self.cmd('az network privatedns link update -g {rg} -n {link} -z {zone} --if-match {etag}')
+            self.cmd(cmd)
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_PatchLink_ZoneNotExists_ExpectError(self, resource_group):
@@ -592,6 +595,7 @@ class PrivateDnsLinksTests(BaseScenarioTests):
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
     def test_ListLinks_NoLinksPresent_ExpectNoLinksRetrieved(self, resource_group):
+        self._Create_PrivateZone()
         self.cmd('az network privatedns link list -g {rg} -z {zone}', checks=[
             self.is_empty()
         ])
