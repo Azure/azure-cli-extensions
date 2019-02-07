@@ -217,8 +217,14 @@ class EnhancedMonitoring(object):
                     'disk.sla.throughput' + suffix: sla['TP'],
                     'disk.sla.iops' + suffix: sla['IOPS'],
                 })
+            if disk['is_ultra']:
+                pub_cfg.update({
+                    'disk.type' + suffix: 'Premium',
+                    'disk.sla.throughput' + suffix: disk['tp'],
+                    'disk.sla.iops' + suffix: disk['iops'],
+                })
 
-            if managed_disk and not disk['is_premium']:
+            if managed_disk and not disk['is_premium'] and not disk['is_ultra']:
                 logger.warning('Standard Managed Disks are not supported. '
                                'Extension will be installed but no disk metrics will be available.')
             else:
@@ -295,8 +301,11 @@ class EnhancedMonitoring(object):
                     'name': disk.name,
                     'size': disk.disk_size_gb,
                     'is_premium': disk.sku.tier.lower() == 'premium',
+                    'is_ultra': disk.sku.tier.lower() == 'ultra',
                     'caching': data_disk.caching.value,
-                    'lun': data_disk.lun
+                    'lun': data_disk.lun,
+                    'iops': disk.disk_iops_read_write if disk.sku.tier.lower() == 'ultra' else 0,
+                    'tp': disk.disk_mbps_read_write if disk.sku.tier.lower() == 'ultra' else 0
                 })
         else:
             storage_accounts = list(self._storage_client.storage_accounts.list())
@@ -431,10 +440,22 @@ class EnhancedMonitoring(object):
             # P40
             sla['IOPS'] = 7500
             sla['TP'] = 250
-        elif 0 < disk_size <= 4095:
+        elif 0 < disk_size <= (4 * 1024):
             # P50
             sla['IOPS'] = 7500
             sla['TP'] = 250
+        elif 0 < disk_size <= (8 * 1024):
+            # P60
+            sla['IOPS'] = 12500
+            sla['TP'] = 480
+        elif 0 < disk_size <= (16 * 1024):
+            # P70
+            sla['IOPS'] = 15000
+            sla['TP'] = 750
+        elif 0 < disk_size <= (32 * 1024):
+            # P80
+            sla['IOPS'] = 20000
+            sla['TP'] = 750
         else:
             raise CLIError("unsupported disk size for Premium Storage: '{}'".format(disk_size))
         return sla

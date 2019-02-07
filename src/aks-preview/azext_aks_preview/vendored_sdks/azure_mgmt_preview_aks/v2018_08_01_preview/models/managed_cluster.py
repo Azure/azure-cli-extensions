@@ -38,7 +38,7 @@ class ManagedCluster(Resource):
     :type kubernetes_version: str
     :param dns_prefix: DNS prefix specified when creating the managed cluster.
     :type dns_prefix: str
-    :ivar fqdn: FDQN for the master pool.
+    :ivar fqdn: FQDN for the master pool.
     :vartype fqdn: str
     :param agent_pool_profiles: Properties of the agent pool.
     :type agent_pool_profiles:
@@ -66,6 +66,9 @@ class ManagedCluster(Resource):
     :param aad_profile: Profile of Azure Active Directory configuration.
     :type aad_profile:
      ~azure.mgmt.containerservice.v2018_08_01_preview.models.ManagedClusterAADProfile
+    :param api_server_authorized_ip_ranges: Authorized IP Ranges to kubernetes
+     API server.
+    :type api_server_authorized_ip_ranges: list[str]
     """
 
     _validation = {
@@ -96,6 +99,7 @@ class ManagedCluster(Resource):
         'enable_rbac': {'key': 'properties.enableRBAC', 'type': 'bool'},
         'network_profile': {'key': 'properties.networkProfile', 'type': 'ContainerServiceNetworkProfile'},
         'aad_profile': {'key': 'properties.aadProfile', 'type': 'ManagedClusterAADProfile'},
+        'api_server_authorized_ip_ranges': {'key': 'properties.apiServerAuthorizedIPRanges', 'type': '[str]'},
     }
 
     def __init__(self, **kwargs):
@@ -112,3 +116,4 @@ class ManagedCluster(Resource):
         self.enable_rbac = kwargs.get('enable_rbac', None)
         self.network_profile = kwargs.get('network_profile', None)
         self.aad_profile = kwargs.get('aad_profile', None)
+        self.api_server_authorized_ip_ranges = kwargs.get('api_server_authorized_ip_ranges', None)

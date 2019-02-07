@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import print_function
+from knack.util import CLIError
 
 
 def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,
@@ -18,6 +19,8 @@ def set_service_properties(client, parameters, delete_retention=None, days_retai
         parameters.delete_retention_policy.days = days_retained
 
     if any([static_website, index_document, error_document_404_path]):
+        if getattr(parameters, 'static_website', None) is None:
+            raise CLIError('Static websites are only supported for StorageV2 (general-purpose v2) accounts.')
         kwargs['static_website'] = parameters.static_website
     if static_website is not None:
         parameters.static_website.enabled = static_website
@@ -29,7 +32,6 @@ def set_service_properties(client, parameters, delete_retention=None, days_retai
     # checks
     policy = parameters.delete_retention_policy
     if policy.enabled and not policy.days:
-        from knack.util import CLIError
         raise CLIError("must specify days-retained")
 
     client.set_blob_service_properties(**kwargs)

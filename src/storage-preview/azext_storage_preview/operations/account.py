@@ -21,7 +21,7 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
     scf = storage_client_factory(cmd.cli_ctx)
     params = StorageAccountCreateParameters(sku=Sku(name=sku), kind=Kind(kind), location=location, tags=tags)
     if custom_domain:
-        params.custom_domain = CustomDomain(name=custom_domain, use_sub_domain=None)
+        params.custom_domain = CustomDomain(name=custom_domain, use_sub_domain_name=None)
     if encryption_services:
         params.encryption = Encryption(services=encryption_services)
     if access_tier:
@@ -103,7 +103,7 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     if custom_domain is not None:
         domain = CustomDomain(name=custom_domain)
         if use_subdomain is not None:
-            domain.name = use_subdomain == 'true'
+            domain.use_sub_domain_name = use_subdomain == 'true'
 
     encryption = instance.encryption
     if encryption_services:

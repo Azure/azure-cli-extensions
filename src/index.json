@@ -48,8 +48,8 @@
         ],
         "aks-preview": [
             {
-                "downloadUrl": "https://azurecliaks.blob.core.windows.net/azure-cli-extension/aks_preview-0.1.0-py2.py3-none-any.whl",
-                "filename": "aks_preview-0.1.0-py2.py3-none-any.whl",
+                "downloadUrl": "https://azurecliaks.blob.core.windows.net/azure-cli-extension/aks_preview-0.2.1-py2.py3-none-any.whl",
+                "filename": "aks_preview-0.2.1-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.49",
@@ -88,9 +88,9 @@
                     "metadata_version": "2.0",
                     "name": "aks-preview",
                     "summary": "Provides a preview for upcoming AKS features",
-                    "version": "0.1.0"
+                    "version": "0.2.1"
                 },
-                "sha256Digest": "0f8f6128dc2f8bf56d5e0bae622efdede1cb891e10d43eb9dcaeacb58d40709a"
+                "sha256Digest": "be0c92c9cfe9f5b7c7dff7648ba9f3b83b5909af8d1483b4da33cbeb6b7071b3"
             }
         ],
         "alias": [
@@ -298,6 +298,49 @@
                 "sha256Digest": "1faecf9d3b5955829e00b228e174fa6bf1ba327f0d64c2edfc9d096d2926e8dc"
             }
         ],
+        "azure-devops": [
+            {
+                "downloadUrl": "https://github.com/Microsoft/azure-devops-cli-extension/releases/download/0.2.0/azure_devops-0.2.0-py2.py3-none-any.whl",
+                "filename": "azure_devops-0.2.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.49",
+                    "azext.isPreview": true,
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "VSTS_Social@microsoft.com",
+                                    "name": "Microsoft",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Microsoft/azure-devops-cli-extension"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "azure-devops",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "python-dateutil (==2.7.3)",
+                                "vsts (==0.1.20)"
+                            ]
+                        }
+                    ],
+                    "summary": "Tools for managing Azure DevOps.",
+                    "version": "0.2.0"
+                },
+                "sha256Digest": "b044299d0e0b0719da0c1fcf06d9c54574fc9660a9405a904941f6f13f1e8dcb"
+            }
+        ],
         "azure-firewall": [
             {
                 "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/azure_firewall-0.1.1-py2.py3-none-any.whl",
@@ -347,39 +390,7 @@
         ],
         "botservice": [
             {
-                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.4.1-py2.py3-none-any.whl",
-                "filename": "botservice-0.4.1-py2.py3-none-any.whl",
-                "metadata": {
-                    "azext.isPreview": true,
-                    "azext.minCliCoreVersion": "2.0.45",
-                    "extensions": {
-                        "python.details": {
-                            "contacts": [
-                                {
-                                    "email": "swagatm@microsoft.com",
-                                    "name": "Swagat Mishra",
-                                    "role": "author"
-                                }
-                            ],
-                            "document_names": {
-                                "description": "DESCRIPTION.rst"
-                            },
-                            "project_urls": {
-                                "Home": "https://github.com/Azure/azure-cli-extensions"
-                            }
-                        }
-                    },
-                    "generator": "bdist_wheel (0.30.0)",
-                    "license": "MIT",
-                    "metadata_version": "2.0",
-                    "name": "botservice",
-                    "summary": "Bug fixes for issues in the native botservice cli command module.",
-                    "version": "0.4.1"
-                },
-                "sha256Digest": "8c84c0c2806c2fc0bfb182b2819151c15a33bb6fa46ae208063cbfde1cf98fe3"
-            },
-            {
-                "downloadUrl": "https://icscratch.blob.core.windows.net/bot-packages/botservice-0.4.3-py2.py3-none-any.whl",
+                "downloadUrl": "https://github.com/Microsoft/botbuilder-tools/releases/download/az-cli-extension/botservice-0.4.3-py2.py3-none-any.whl",
                 "filename": "botservice-0.4.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
@@ -1088,9 +1099,71 @@
                     "name": "mesh",
                     "summary": "Support for Microsoft Azure Service Fabric Mesh - Public Preview",
                     "version": "0.10.2",
-                    "run_requires": [{"requires": ["sfmergeutility"]}]
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "sfmergeutility"
+                            ]
+                        }
+                    ]
                 },
                 "sha256Digest": "98ef61baf5d8bdd03e18e6187a9f10e22d86f60cb7438333c984cbf7a4a5a9cf"
+            }
+        ],
+        "db-up": [
+            {
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/db_up-0.1.5-py2.py3-none-any.whl",
+                "filename": "db_up-0.1.5-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.46",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/db-up"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.29.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "db-up",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "mysql-connector-python (==8.0.13)",
+                                "psycopg2-binary (==2.7.7)"
+                            ]
+                        }
+                    ],
+                    "summary": "Additional commands to simplify Azure Database workflows.",
+                    "version": "0.1.5"
+                },
+                "sha256Digest": "4c2ad37f7c8912fa7caf8123ba475c07b839ce48cbeec01cdea061afa51bc194"
             }
         ],
         "rdbms-vnet": [
@@ -1179,10 +1252,10 @@
         ],
         "sap-hana": [
             {
-                "downloadUrl": "https://github.com/Azure/azure-hanaonazure-cli-extension/releases/download/0.1.6/sap_hana-0.1.6-py2.py3-none-any.whl",
-                "filename": "sap_hana-0.1.6-py2.py3-none-any.whl",
+                "downloadUrl": "https://github.com/Azure/azure-hanaonazure-cli-extension/releases/download/0.3.3/sap_hana-0.3.3-py2.py3-none-any.whl",
+                "filename": "sap_hana-0.3.3-py2.py3-none-any.whl",
                 "metadata": {
-                    "azext.minCliCoreVersion": "2.0.43",
+                    "azext.minCliCoreVersion": "2.0.46",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -1218,9 +1291,9 @@
                     "metadata_version": "2.0",
                     "name": "sap-hana",
                     "summary": "Additional commands for working with SAP HanaOnAzure instances.",
-                    "version": "0.1.6"
+                    "version": "0.3.3"
                 },
-                "sha256Digest": "e92b95557727b1f3ee44e978c28b92cccfe32a9d27e20f318924c50c32bee0b8"
+                "sha256Digest": "12f0f12d9d1f525b2f0cf34b05bfedb5eef87f5b554e80cf3689265726245f25"
             }
         ],
         "signalr": [
@@ -1319,11 +1392,11 @@
         ],
         "storage-preview": [
             {
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.2.0-py2.py3-none-any.whl",
-                "filename": "storage_preview-0.2.0-py2.py3-none-any.whl",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/storage_preview-0.2.2-py2.py3-none-any.whl",
+                "filename": "storage_preview-0.2.2-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
-                    "azext.minCliCoreVersion": "2.0.43",
+                    "azext.minCliCoreVersion": "2.0.52",
                     "classifiers": [
                         "Development Status :: 4 - Beta",
                         "Intended Audience :: Developers",
@@ -1359,9 +1432,9 @@
                     "metadata_version": "2.0",
                     "name": "storage-preview",
                     "summary": "Provides a preview for upcoming storage features.",
-                    "version": "0.2.0"
+                    "version": "0.2.2"
                 },
-                "sha256Digest": "6f3c004e868fc24e48a06a1924bfe762bce108258fe7fee9dcc10f7d9e7740db"
+                "sha256Digest": "896f42df7ddd07a023b00f58ac0efdd7b4c5d5e7c5a1ed27c25bd1fd3a4a0fac"
             }
         ],
         "subscription": [
