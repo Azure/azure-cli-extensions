@@ -11,6 +11,11 @@ from azure.cli.core.commands import LongRunningOperation, _is_poller
 CONFIG_DIR = os.path.expanduser(os.path.join('~', '.azext_db_up'))
 ENV_VAR_PREFIX = 'AZEXT'
 MYSQL_CONFIG_SECTION = 'mysql_up'
+POSTGRES_CONFIG_SECTION = 'postgres_up'
+CONFIG_MAP = {
+    'mysql': MYSQL_CONFIG_SECTION,
+    'postgres': POSTGRES_CONFIG_SECTION
+}
 DB_CONFIG = CLIConfig(config_dir=CONFIG_DIR, config_env_var_prefix=ENV_VAR_PREFIX)
 
 
@@ -20,14 +25,27 @@ def create_random_resource_name(prefix='azure', length=15):
     return prefix + ''.join(digits)
 
 
-def get_config_value(option, fallback='_fallback_none'):
+def get_config_value(db_type, option, fallback='_fallback_none'):
+    config_section = CONFIG_MAP[db_type]
     if fallback == '_fallback_none':
-        return DB_CONFIG.get(MYSQL_CONFIG_SECTION, option)
-    return DB_CONFIG.get(MYSQL_CONFIG_SECTION, option, fallback=fallback)
+        return DB_CONFIG.get(config_section, option)
+    return DB_CONFIG.get(config_section, option, fallback=fallback)
 
 
-def set_config_value(option, value):
-    DB_CONFIG.set_value(MYSQL_CONFIG_SECTION, option, value)
+def set_config_value(db_type, option, value):
+    config_section = CONFIG_MAP[db_type]
+    DB_CONFIG.set_value(config_section, option, value)
+
+
+def remove_config_value(db_type, option):
+    config_section = CONFIG_MAP[db_type]
+    DB_CONFIG.config_parser.remove_option(config_section, option)
+
+
+def remove_section(db_type):
+    config_section = CONFIG_MAP[db_type]
+    DB_CONFIG.config_parser.remove_section(config_section)
+    DB_CONFIG.set(DB_CONFIG.config_parser)
 
 
 def update_kwargs(kwargs, key, value):
