@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.3"
+VERSION = "0.1.5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -25,7 +25,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'mysql-connector-python==8.0.13'
+    'mysql-connector-python==8.0.13',
+    'psycopg2-binary==2.7.7'
 ]
 
 setup(

@@ -24,3 +24,33 @@ az mysql up \
     -u adminUsername \
     -p adminPassword
 ```
+
+Clean up the cache and delete the server. Use the `--delete-group` parameter to also delete the resource group saved in the cache.
+```
+az mysql down \
+    --delete-group
+```
+
+#### PostgreSQL
+Ensures an Azure Database for PostgreSQL server instance is up and running and configured for immediate use with a single command.
+
+This command can be run without any parameters. This will create the resource group, PostgreSQL server instance and a sample database using generated resource names. It will also configure firewall rules to allow IP addresses from Azure as well as your local dev box to access PostgreSQL. Information generated from this command is saved, so that when used in the future, the existing resources will be detected.
+```
+az postgres up
+```
+
+Avoid generated resource names if existing resources are detected or certain parameters are provided.
+```
+az postgres up \
+    -g groupName \
+    -s serverName \
+    -d databaseName \
+    -u adminUsername \
+    -p adminPassword
+```
+
+Clean up the cache and delete the server. Use the `--delete-group` parameter to also delete the resource group saved in the cache.
+```
+az postgres down \
+    --delete-group
+```

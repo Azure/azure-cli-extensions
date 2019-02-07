@@ -15,3 +15,33 @@ helps['mysql up'] = """
         - name: To override default names, provide parameters indicating desired values/existing resources.
           text: az mysql up -g MyResourceGroup -s MyServer -d MyDatabase -u MyUsername -p MyPassword
 """
+
+helps['postgres up'] = """
+    type: command
+    short-summary: Set up an Azure Database for PostgreSQL server and configurations.
+    examples:
+        - name: Ensure that a Azure Database for PostgreSQL server is up and running and configured for immediate use.
+          text: az postgres up
+        - name: To override default names, provide parameters indicating desired values/existing resources.
+          text: az postgres up -g MyResourceGroup -s MyServer -d MyDatabase -u MyUsername -p MyPassword
+"""
+
+helps['mysql down'] = """
+    type: command
+    short-summary: Delete the MySQL server and its cached information.
+    examples:
+        - name: Delete the server and the cached data, aside from the resource group.
+          text: az mysql down
+        - name: Delete the resource group and the full cache.
+          text: az mysql down --delete-group
+"""
+
+helps['postgres down'] = """
+    type: command
+    short-summary: Delete the PostgreSQL server and its cached information.
+    examples:
+        - name: Delete the server and the cached data, aside from the resource group.
+          text: az postgres down
+        - name: Delete the resource group and the full cache.
+          text: az postgres down --delete-group
+"""
