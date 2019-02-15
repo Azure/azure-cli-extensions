@@ -11,7 +11,6 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
-from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -23,7 +22,7 @@ class ServiceOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
     """
 
     models = models
@@ -33,22 +32,91 @@ class ServiceOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-07-01-preview"
+        self.api_version = "2018-09-01-preview"
 
         self.config = config
 
-    def list_by_application_name(
-            self, resource_group_name, application_name, custom_headers=None, raw=False, **operation_config):
-        """Gets services of a given application.
+    def get(
+            self, resource_group_name, application_resource_name, service_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the service resource with the given name.
 
-        Gets the information about all services of a given service of an
-        application. The information includes the runtime properties of the
-        service instance.
+        Gets the information about the service resource with the given name.
+        The information include the description and other properties of the
+        service.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param application_name: The identity of the application.
-        :type application_name: str
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
+        :param service_resource_name: The identity of the service.
+        :type service_resource_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: ServiceResourceDescription or ClientRawResponse if raw=true
+        :rtype:
+         ~azure.mgmt.servicefabricmesh.models.ServiceResourceDescription or
+         ~msrest.pipeline.ClientRawResponse
+        :raises:
+         :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
+        """
+        # Construct URL
+        url = self.get.metadata['url']
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True),
+            'serviceResourceName': self._serialize.url("service_resource_name", service_resource_name, 'str', skip_quote=True)
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        if self.config.generate_client_request_id:
+            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+        if custom_headers:
+            header_parameters.update(custom_headers)
+        if self.config.accept_language is not None:
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+        # Construct and send request
+        request = self._client.get(url, query_parameters)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+
+        if response.status_code not in [200]:
+            raise models.ErrorModelException(self._deserialize, response)
+
+        deserialized = None
+
+        if response.status_code == 200:
+            deserialized = self._deserialize('ServiceResourceDescription', response)
+
+        if raw:
+            client_raw_response = ClientRawResponse(deserialized, response)
+            return client_raw_response
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services/{serviceResourceName}'}
+
+    def list(
+            self, resource_group_name, application_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Lists all the service resources.
+
+        Gets the information about all services of an application resource. The
+        information include the description and other properties of the
+        Service.
+
+        :param resource_group_name: Azure resource group name
+        :type resource_group_name: str
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -57,17 +125,18 @@ class ServiceOperations(object):
         :return: An iterator like instance of ServiceResourceDescription
         :rtype:
          ~azure.mgmt.servicefabricmesh.models.ServiceResourceDescriptionPaged[~azure.mgmt.servicefabricmesh.models.ServiceResourceDescription]
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+        :raises:
+         :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
         def internal_paging(next_link=None, raw=False):
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_application_name.metadata['url']
+                url = self.list.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'applicationName': self._serialize.url("application_name", application_name, 'str', skip_quote=True)
+                    'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 
@@ -95,9 +164,7 @@ class ServiceOperations(object):
                 request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                exp = CloudError(response)
-                exp.request_id = response.headers.get('x-ms-request-id')
-                raise exp
+                raise models.ErrorModelException(self._deserialize, response)
 
             return response
 
@@ -110,72 +177,4 @@ class ServiceOperations(object):
             return client_raw_response
 
         return deserialized
-    list_by_application_name.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationName}/services'}
-
-    def get(
-            self, resource_group_name, application_name, service_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the properties of the service.
-
-        The operation returns the properties of the service.
-
-        :param resource_group_name: Azure resource group name
-        :type resource_group_name: str
-        :param application_name: The identity of the application.
-        :type application_name: str
-        :param service_name: The identity of the service.
-        :type service_name: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: ServiceResourceDescription or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.servicefabricmesh.models.ServiceResourceDescription or
-         ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
-        """
-        # Construct URL
-        url = self.get.metadata['url']
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'applicationName': self._serialize.url("application_name", application_name, 'str', skip_quote=True),
-            'serviceName': self._serialize.url("service_name", service_name, 'str', skip_quote=True)
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-        # Construct and send request
-        request = self._client.get(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
-
-        if response.status_code not in [200]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
-
-        deserialized = None
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('ServiceResourceDescription', response)
-
-        if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
-
-        return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationName}/services/{serviceName}'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services'}

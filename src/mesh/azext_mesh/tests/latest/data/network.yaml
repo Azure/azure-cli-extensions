@@ -1,0 +1,12 @@
+network:
+  schemaVersion: 1.0.0
+  name: helloWorldNetwork
+  properties:
+    addressPrefix: 10.0.0.4/22
+    ingressConfig:
+      layer4:
+        - name: helloWorldIngress
+          publicPort: 80
+          applicationName: helloWorldApp
+          serviceName: helloWorldService
+          endpointName: helloWorldListener

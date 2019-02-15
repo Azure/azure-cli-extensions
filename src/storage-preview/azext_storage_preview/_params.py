@@ -59,7 +59,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_match')
         c.argument('if_none_match')
 
-    for item in ['delete', 'show', 'update', 'show-connection-string', 'keys', 'network-rule']:
+    for item in ['delete', 'show', 'update', 'show-connection-string', 'keys', 'network-rule', 'failover']:
         with self.argument_context('storage account {}'.format(item)) as c:
             c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
             c.argument('resource_group_name', required=False, validator=process_resource_group)
@@ -112,6 +112,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Bypass traffic for space-separated uses.')
             c.argument('default_action', arg_type=get_enum_type(t_default_action),
                        help='Default action to apply when no rule matches.')
+
+    with self.argument_context('storage account show') as c:
+        c.argument('expand', arg_type=get_enum_type(
+            self.get_models('StorageAccountExpand', resource_type=CUSTOM_MGMT_STORAGE)))
 
     with self.argument_context('storage account show-connection-string') as c:
         c.argument('protocol', help='The default endpoint protocol.', arg_type=get_enum_type(['http', 'https']))
