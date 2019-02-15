@@ -425,10 +425,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                            'Are you an Owner on this subscription?')
 
     network_profile = None
-    if any([network_plugin, 
-            pod_cidr, 
-            service_cidr, 
-            dns_service_ip, 
+    if any([network_plugin,
+            pod_cidr,
+            service_cidr,
+            dns_service_ip,
             docker_bridge_address,
             network_policy]):
         network_profile = ContainerServiceNetworkProfile(
