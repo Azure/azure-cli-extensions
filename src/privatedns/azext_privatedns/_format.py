@@ -19,7 +19,12 @@ def transform_privatedns_zone_table_output(result):
             ('ZoneName', item['name']),
             ('ResourceGroup', item['resourceGroup']),
             ('RecordSets', item['numberOfRecordSets']),
-            ('MaxRecordSets', item['maxNumberOfRecordSets'])
+            ('MaxRecordSets', item['maxNumberOfRecordSets']),
+            ('VirtualNetworkLinks', item['numberOfVirtualNetworkLinks']),
+            ('MaxVirtualNetworkLinks', item['maxNumberOfVirtualNetworkLinks']),
+            ('VirtualNetworkLinksWithRegistration', item['numberOfVirtualNetworkLinksWithRegistration']),
+            ('MaxVirtualNetworkLinksWithRegistration', item['maxNumberOfVirtualNetworkLinksWithRegistration']),
+            ('ProvisioningState', item['provisioningState'])
         ])
         final_result.append(new_item)
 
@@ -39,7 +44,8 @@ def transform_privatedns_link_table_output(result):
             ('ResourceGroup', item['resourceGroup']),
             ('RegistrationEnabled', item['registrationEnabled']),
             ('VirtualNetwork', item['virtualNetwork']['id']),
-            ('LinkState', item['virtualNetworkLinkState'])
+            ('LinkState', item['virtualNetworkLinkState']),
+            ('ProvisioningState', item['provisioningState'])
         ])
         final_result.append(new_item)
 

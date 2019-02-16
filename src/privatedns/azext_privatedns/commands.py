@@ -35,9 +35,6 @@ def load_command_table(self, _):
         g.generic_update_command('update', setter_name='update', custom_func_name='update_privatedns_zone', supports_no_wait=True)
         g.wait_command('wait')
 
-    with self.command_group('network private-dns link', network_privatedns_virtual_network_link_sdk) as g:
-        g.command('list', 'list', table_transformer=transform_privatedns_link_table_output)
-
     with self.command_group('network private-dns link vnet', network_privatedns_virtual_network_link_sdk) as g:
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
         g.show_command('show', 'get', table_transformer=transform_privatedns_link_table_output, exception_handler=empty_on_404)

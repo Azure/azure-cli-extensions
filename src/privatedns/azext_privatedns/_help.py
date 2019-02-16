@@ -90,15 +90,6 @@ helps['network private-dns link'] = """
     short-summary: Manage Private DNS links.
 """
 
-helps['network private-dns link list'] = """
-    type: command
-    short-summary: List all links to the specified Private DNS zone.
-    examples:
-        - name: List all links to the specified Private DNS zone in a resource group.
-          text: >
-            az network private-dns link list -g MyResourceGroup -z www.mysite.com
-"""
-
 # endregion
 
 # region PrivateDns vnet link
