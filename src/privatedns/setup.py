@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -35,6 +35,7 @@ setup(
     author_email='dijyotir@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
+    package_data={'azext_privatedns': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
