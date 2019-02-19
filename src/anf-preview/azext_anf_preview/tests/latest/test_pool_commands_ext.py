@@ -5,18 +5,19 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
-POOL_DEFAULT="--service-level 'Premium' --size 4398046511104"
+POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
 
 # No tidy up of tests required. The resource group is automatically removed
+
 
 class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer()
     def test_ext_create_delete_pool(self):
-        account_name =  self.create_random_name(prefix='cli-acc-', length=24)
-        pool_name =  self.create_random_name(prefix='cli-pool-', length=24)
+        account_name = self.create_random_name(prefix='cli-acc-', length=24)
+        pool_name = self.create_random_name(prefix='cli-pool-', length=24)
         tags = "Tag1=Value1 Tag2=Value2"
 
-        account = self.cmd("az anf account create --resource-group {rg} --account-name '%s' -l 'westus2'" % account_name).get_output_in_json()
+        self.cmd("az anf account create --resource-group {rg} --account-name '%s' -l 'westus2'" % account_name).get_output_in_json()
         pool = self.cmd("az anf pool create --resource-group {rg} --account-name %s --pool-name %s -l 'westus2' %s --tags '%s'" % (account_name, pool_name, POOL_DEFAULT, tags)).get_output_in_json()
         assert pool['name'] == account_name + '/' + pool_name
         assert pool['tags']['Tag1'] == 'Value1'
@@ -68,18 +69,16 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_ext_update_pool(self):
-        account_name =  self.create_random_name(prefix='cli-acc-', length=24)
-        pool_name =  self.create_random_name(prefix='cli-pool-', length=24)
+        account_name = self.create_random_name(prefix='cli-acc-', length=24)
+        pool_name = self.create_random_name(prefix='cli-pool-', length=24)
         tag = "Tag1=Value1"
 
-        account = self.cmd("az anf account create -g {rg} -a %s -l 'westus2'" % account_name).get_output_in_json()
+        self.cmd("az anf account create -g {rg} -a %s -l 'westus2'" % account_name).get_output_in_json()
 
         pool = self.cmd("az anf pool create -g {rg} -a %s -p %s -l 'westus2' %s" % (account_name, pool_name, POOL_DEFAULT)).get_output_in_json()
 
         assert pool['name'] == account_name + '/' + pool_name
         pool = self.cmd("az anf pool update -g {rg} -a %s -p %s --tags %s --service-level 'Standard'" % (account_name, pool_name, tag)).get_output_in_json()
-        assert pool['name'] ==  account_name + '/' + pool_name
+        assert pool['name'] == account_name + '/' + pool_name
         assert pool['serviceLevel'] == "Standard"
         assert pool['tags']['Tag1'] == 'Value1'
-
-

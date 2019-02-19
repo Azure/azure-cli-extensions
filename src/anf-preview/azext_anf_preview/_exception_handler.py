@@ -5,6 +5,7 @@
 
 from knack.util import CLIError
 
+
 def netapp_exception_handler(ex):
     from azure.mgmt.netapp.models import ErrorException
     if isinstance(ex, ErrorException):
