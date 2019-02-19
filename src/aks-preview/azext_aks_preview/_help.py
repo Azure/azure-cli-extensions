@@ -104,6 +104,13 @@ helps['aks create'] = """
           type: string
           short-summary: The Kubernetes network plugin to use.
           long-summary: Specify "azure" for advanced networking configurations. Defaults to "kubenet".
+        - name: --network-policy
+          type: string
+          short-summary: (PREVIEW) The Kubernetes network policy to use.
+          long-summary: |
+              Using together with "azure" network plugin.
+              Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
+              Defaults to "" (network policy disabled).
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -132,6 +139,9 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+        - name: --enable-vmss
+          type: bool
+          short-summary: (PREVIEW) Enable VMSS agent type.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -184,6 +194,9 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --api-server-authorized-ip-ranges
+          type: str
+          short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -191,4 +204,6 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster auto-scaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
+      - name: Enable authorized IP ranges for apiserver.
+        text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
 """
