@@ -171,7 +171,7 @@ def process_deployment_create_namespace(namespace):
     _validate_deployment_name(namespace)
 
 
-def load_command_table(self, _):
+def load_command_table(self, _): # pylint: disable=too-many-statements
     cmd_util = CliCommandType(
         operations_tmpl='azext_mesh.custom#{}',
         exception_handler=resource_exception_handler
