@@ -7,6 +7,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 # No tidy up of tests required. The resource group is automatically removed
 
+
 class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer()
     def test_ext_create_delete_account(self):
@@ -62,12 +63,10 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_ext_update_account_ext(self):
-        account_name =  self.create_random_name(prefix='cli', length=24)
+        account_name = self.create_random_name(prefix='cli', length=24)
         tag = "Tag1=Value1"
 
         account = self.cmd("az anf account create -g {rg} -a %s -l 'westus2'" % account_name).get_output_in_json()
         account = self.cmd("az anf account update -g {rg} -a %s --tags %s" % (account_name, tag)).get_output_in_json()
         assert account['name'] == account_name
         assert account['tags']['Tag1'] == 'Value1'
-
-

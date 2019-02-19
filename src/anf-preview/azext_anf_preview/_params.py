@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long
 
+
 def load_arguments(self, _):
     with self.argument_context('anf') as c:
         c.argument('resource_group', options_list=['--resource-group', '-g'], required=True, help='The name of the resource group')

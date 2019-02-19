@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from ._help import helps # pylint: disable=unused-import
+from ._help import helps  # pylint: disable=unused-import
 
 
 class NetAppExtensionCommandsLoader(AzCommandsLoader):
