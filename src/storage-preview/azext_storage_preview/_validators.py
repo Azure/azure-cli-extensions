@@ -132,7 +132,7 @@ def validate_client_parameters(cmd, namespace):
         n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
 
 
-def validate_azcopy_source_url(cmd, namespace):
+def validate_azcopy_blob_source_url(cmd, namespace):
     client = blob_data_service_factory(cmd.cli_ctx, {
         'account_name': namespace.account_name})
     blob_name = namespace.source_blob
@@ -144,7 +144,14 @@ def validate_azcopy_source_url(cmd, namespace):
     del namespace.source_blob
 
 
-def validate_azcopy_destination_url(cmd, namespace):
+def validate_azcopy_container_source_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    url = client.make_blob_url(namespace.source, '')
+    namespace.source = url[:-1]
+
+
+def validate_azcopy_blob_destination_url(cmd, namespace):
     client = blob_data_service_factory(cmd.cli_ctx, {
         'account_name': namespace.account_name})
     blob_name = namespace.destination_blob
@@ -154,6 +161,13 @@ def validate_azcopy_destination_url(cmd, namespace):
     namespace.destination = url
     del namespace.destination_container
     del namespace.destination_blob
+
+
+def validate_azcopy_container_destination_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    url = client.make_blob_url(namespace.destination, '')
+    namespace.destination = url[:-1]
 
 
 def get_content_setting_validator(settings_class, update, guess_from_file=None):

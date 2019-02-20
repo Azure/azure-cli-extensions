@@ -15,7 +15,7 @@ def storage_blob_upload(cmd, client, source, destination):
 
 def storage_blob_upload_batch(cmd, client, source, destination):
     azcopy = _azcopy_blob_client(cmd, client)
-    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), ['--recursive'])
+    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=['--recursive'])
 
 
 def storage_blob_download(cmd, client, source, destination):
@@ -23,7 +23,14 @@ def storage_blob_download(cmd, client, source, destination):
     azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination)
 
 
+def storage_blob_download_batch(cmd, client, source, destination):
+    azcopy = _azcopy_blob_client(cmd, client)
+    azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination, flags=['--recursive'])
+
+
 def storage_run_command(cmd, command_args):
+    if command_args.startswith('azcopy'):
+        command_args = command_args[len('azcopy'):]
     azcopy = _azcopy_login_client(cmd)
     azcopy.run_command([command_args])
 
