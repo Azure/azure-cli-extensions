@@ -74,7 +74,7 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
-    
+
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
