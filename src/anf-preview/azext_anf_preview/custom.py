@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 
 from knack.log import get_logger
-from azure.mgmt.netapp.models import NetAppAccountPatch, CapacityPool, Volume, VolumePatch, Snapshot
+from azext_anf_preview.vendored_sdks.models import NetAppAccountPatch, CapacityPool, Volume, VolumePatch, Snapshot
 
 logger = get_logger(__name__)
 
