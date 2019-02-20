@@ -11,7 +11,7 @@ POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
 
 
 class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_create_delete_pool(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
         pool_name = self.create_random_name(prefix='cli-pool-', length=24)
@@ -40,7 +40,7 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         pool_list = self.cmd("anf pool list -g {rg} -a %s" % account_name).get_output_in_json()
         assert len(pool_list) == 0
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_list_pools(self):
         account_name = self.create_random_name(prefix='cli', length=24)
         pools = [self.create_random_name(prefix='cli', length=24), self.create_random_name(prefix='cli', length=24)]
@@ -57,7 +57,7 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         pool_list = self.cmd("anf pool list -g {rg} -a '%s'" % account_name).get_output_in_json()
         assert len(pool_list) == 0
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_get_pool_by_name(self):
         account_name = self.create_random_name(prefix='cli', length=24)
         pool_name = self.create_random_name(prefix='cli', length=24)
@@ -66,8 +66,10 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
 
         pool = self.cmd("az anf pool show -g {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
         assert pool['name'] == account_name + '/' + pool_name
+        pool_from_id = self.cmd("az anf pool show -g {rg} --ids %s" % pool['id']).get_output_in_json()
+        assert pool_from_id['name'] == account_name + '/' + pool_name
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_update_pool(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
         pool_name = self.create_random_name(prefix='cli-pool-', length=24)

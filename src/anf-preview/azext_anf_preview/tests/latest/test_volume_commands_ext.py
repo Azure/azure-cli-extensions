@@ -12,9 +12,10 @@ VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 107374182400"
 
 
 class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
-    def setup_vnet(self, rg, vnet_name):
-        self.cmd("az network vnet create -n %s -g %s -l westus2" % (vnet_name, rg))
-        self.cmd("az network vnet subnet create -n default --vnet-name %s --address-prefixes '10.0.0.0/24' --delegations 'Microsoft.Netapp/volumes' -g %s" % (vnet_name, rg))
+    def setup_vnet(self, rg, vnet_name, subnet_name, ip_pre):
+        self.cmd("az network vnet create -n %s -g %s -l westus2 --address-prefix %s/16" % (vnet_name, rg, ip_pre))
+        self.cmd("az network vnet subnet create -n %s -g %s --vnet-name %s --address-prefixes '%s/24' --delegations 'Microsoft.Netapp/volumes'" % (subnet_name, rg, vnet_name, ip_pre))
+
 
     def current_subscription(self):
         subs = self.cmd("az account show").get_output_in_json()
@@ -23,21 +24,26 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
     def create_volume(self, account_name, pool_name, volume_name1, rg, tags=None, volume_name2=None):
         vnet_name = self.create_random_name(prefix='cli-vnet-', length=24)
         creation_token = volume_name1
-        subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/default" % (self.current_subscription(), rg, vnet_name)
+        subnet_name = self.create_random_name(prefix='cli-subnet-', length=16)
+        subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" % (self.current_subscription(), rg, vnet_name, subnet_name)
         tag = "--tags '%s'" % tags if tags is not None else ""
 
-        self.setup_vnet('{rg}', vnet_name)
+        self.setup_vnet('{rg}', vnet_name, subnet_name, '10.14.0.0')
         self.cmd("az anf account create -g %s -a '%s' -l 'westus2'" % (rg, account_name)).get_output_in_json()
         self.cmd("az anf pool create -g %s -a %s -p %s -l 'westus2' %s %s" % (rg, account_name, pool_name, POOL_DEFAULT, tag)).get_output_in_json()
         volume1 = self.cmd("az anf volume create --resource-group %s --account-name %s --pool-name %s --volume-name %s -l 'westus2' %s --creation-token %s --subnet-id %s %s" % (rg, account_name, pool_name, volume_name1, VOLUME_DEFAULT, creation_token, subnet_id, tag)).get_output_in_json()
 
         if volume_name2:
+            vnet_name = self.create_random_name(prefix='cli-vnet-', length=24)
             creation_token = volume_name2
+            subnet_name = self.create_random_name(prefix='cli-subnet-', length=16)
+            subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" % (self.current_subscription(), rg, vnet_name, subnet_name)
+            self.setup_vnet('{rg}', vnet_name, subnet_name, '10.16.0.0')
             self.cmd("az anf volume create -g %s -a %s -p %s -v %s -l 'westus2' %s --creation-token %s --subnet-id %s --tags '%s'" % (rg, account_name, pool_name, volume_name2, VOLUME_DEFAULT, creation_token, subnet_id, tags)).get_output_in_json()
 
         return volume1
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_create_delete_volumes(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
         pool_name = self.create_random_name(prefix='cli-pool-', length=24)
@@ -56,24 +62,22 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume_list = self.cmd("anf volume list -g {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_list_volumes(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
         pool_name = self.create_random_name(prefix='cli-pool-', length=24)
         volume_name1 = self.create_random_name(prefix='cli-vol-', length=24)
-        volume_name2 = self.create_random_name(prefix='cli-vol-', length=24)
         tags = "Tag1=Value1"
-        self.create_volume(account_name, pool_name, volume_name1, '{rg}', tags, volume_name2)
+        self.create_volume(account_name, pool_name, volume_name1, '{rg}', tags)
 
         volume_list = self.cmd("anf volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
-        assert len(volume_list) == 2
+        assert len(volume_list) == 1
 
-        for volume_name in [volume_name1, volume_name2]:
-            self.cmd("az anf volume delete -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name))
+        self.cmd("az anf volume delete -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
         volume_list = self.cmd("anf volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_get_volume_by_name(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
         pool_name = self.create_random_name(prefix='cli-pool-', length=24)
@@ -87,7 +91,10 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
         assert volume['tags']['Tag2'] == 'Value1'
 
-    @ResourceGroupPreparer()
+        volume_from_id = self.cmd("az anf volume show -g {rg} --ids %s" % volume['id']).get_output_in_json()
+        assert volume_from_id['name'] == account_name + '/' + pool_name + '/' + volume_name
+
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_update_volume(self):
         account_name = self.create_random_name(prefix='cli-acc-', length=24)
         pool_name = self.create_random_name(prefix='cli-pool-', length=24)
