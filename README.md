@@ -37,7 +37,7 @@ Add your extension to the index to make it available in these CLI commands:
 
 ### How to generate sha256digest for an index.json entry?
 
-The `azdev extension update-index` command will calculate the SHA256 digest for you and add your entry to the index.json file. For more information visit https://github.com/Azure/azure-cli-dev-tools.
+If you use `azdev extension update-index` the command will calculate the SHA256 digest for you. For more information visit https://github.com/Azure/azure-cli-dev-tools.
 
 As a fallback:
 
@@ -55,7 +55,7 @@ Note: Hash should be in lowercase in index.json otherwise CI will fail.
 
 ### How to fill in the metadata for an index.json entry?
 
-The `azdev extension update-index` command can be used to simplify the process of updating the index file. Run `azdev extension update-index <URL>` where URL is the fully-qualified URL to your published extension WHL. This will gather the appropriate metadata and add an entry to your extension's metadata entries. For more information visit https://github.com/Azure/azure-cli-dev-tools.
+The `azdev extension update-index` command can be used to simplify the process of updating the index file. Run `azdev extension update-index <URL>` where URL is the fully-qualified URL to your published extension WHL. This will gather the appropriate metadata and add an entry for your extension to the index. For more information visit https://github.com/Azure/azure-cli-dev-tools.
 
 As a fallback:
 
