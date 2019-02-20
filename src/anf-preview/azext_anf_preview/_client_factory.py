@@ -8,7 +8,7 @@
 
 def cf_netapp(cli_ctx, *kwargs):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.mgmt.netapp import AzureNetAppFilesManagementClient
+    from azext_anf_preview.vendored_sdks import AzureNetAppFilesManagementClient
     return get_mgmt_service_client(cli_ctx, AzureNetAppFilesManagementClient)
 
 
