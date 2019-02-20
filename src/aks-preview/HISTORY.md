@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.2
++++++
+* Add support of Network Policy when creating new AKS clusters
+
 0.2.1
 +++++
 * add support of apiserver authorized IP ranges
