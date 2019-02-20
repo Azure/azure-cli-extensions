@@ -47,7 +47,7 @@ def load_arguments(self, _):
     with self.argument_context('anf snapshot') as c:
         c.argument('account_name', options_list=['--account-name', '-a'], id_part='name')
         c.argument('pool_name', id_part='child_name_1', options_list=['--pool-name', '-p'], required=True, help='The name of the ANF pool')
-        c.argument('volume_name', id_part='child_name_2', options_list=['--volume-name','-v'], required=True, help='The name of the ANF volume')
+        c.argument('volume_name', id_part='child_name_2', options_list=['--volume-name', '-v'], required=True, help='The name of the ANF volume')
         c.argument('snapshot_name', id_part='child_name_3', options_list=['--snapshot-name', '-n', '-s'], required=True, help='The name of the ANF snapshot')
 
     with self.argument_context('anf snapshot list') as c:
