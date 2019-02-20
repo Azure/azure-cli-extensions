@@ -22,7 +22,7 @@ class ApplicationOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
     """
 
     models = models
@@ -32,27 +32,24 @@ class ApplicationOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-07-01-preview"
+        self.api_version = "2018-09-01-preview"
 
         self.config = config
 
     def create(
-            self, resource_group_name, application_name, application_resource_description, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, application_resource_name, application_resource_description, custom_headers=None, raw=False, **operation_config):
         """Creates or updates an application resource.
 
-        Creates an application resource with the specified name and
-        description. If an application with the same name already exists, then
-        its description is updated to the one indicated in this request.
-        Use network resources to provide public connectivity to the services of
-        an application.
-        .
+        Creates an application resource with the specified name, description
+        and properties. If an application resource with the same name exists,
+        then it is updated with the specified description and properties.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param application_name: The identity of the application.
-        :type application_name: str
-        :param application_resource_description: Description for creating an
-         application resource.
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
+        :param application_resource_description: Description for creating a
+         Application resource.
         :type application_resource_description:
          ~azure.mgmt.servicefabricmesh.models.ApplicationResourceDescription
         :param dict custom_headers: headers that will be added to the request
@@ -73,7 +70,7 @@ class ApplicationOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'applicationName': self._serialize.url("application_name", application_name, 'str', skip_quote=True)
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -99,7 +96,7 @@ class ApplicationOperations(object):
         response = self._client.send(
             request, header_parameters, body_content, stream=False, **operation_config)
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 202]:
             raise models.ErrorModelException(self._deserialize, response)
 
         deserialized = None
@@ -114,20 +111,20 @@ class ApplicationOperations(object):
             return client_raw_response
 
         return deserialized
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationName}'}
+    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}'}
 
     def get(
-            self, resource_group_name, application_name, custom_headers=None, raw=False, **operation_config):
-        """Gets the application resource.
+            self, resource_group_name, application_resource_name, custom_headers=None, raw=False, **operation_config):
+        """Gets the application resource with the given name.
 
-        Gets the information about the application resource with a given name.
-        The information includes the information about the application's
-        services and other runtime properties.
+        Gets the information about the application resource with the given
+        name. The information include the description and other properties of
+        the application.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param application_name: The identity of the application.
-        :type application_name: str
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -146,7 +143,7 @@ class ApplicationOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'applicationName': self._serialize.url("application_name", application_name, 'str', skip_quote=True)
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -181,18 +178,18 @@ class ApplicationOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}'}
 
     def delete(
-            self, resource_group_name, application_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, application_resource_name, custom_headers=None, raw=False, **operation_config):
         """Deletes the application resource.
 
         Deletes the application resource identified by the name.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param application_name: The identity of the application.
-        :type application_name: str
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -208,7 +205,7 @@ class ApplicationOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'applicationName': self._serialize.url("application_name", application_name, 'str', skip_quote=True)
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True)
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -230,21 +227,21 @@ class ApplicationOperations(object):
         request = self._client.delete(url, query_parameters)
         response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             raise models.ErrorModelException(self._deserialize, response)
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
         """Gets all the application resources in a given resource group.
 
         Gets the information about all application resources in a given
-        resource group. The information includes the information about the
-        application's services and other runtime properties.
+        resource group. The information include the description and other
+        properties of the Application.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
@@ -314,8 +311,8 @@ class ApplicationOperations(object):
         """Gets all the application resources in a given subscription.
 
         Gets the information about all application resources in a given
-        subscription. The information includes the information about the
-        application's services and other runtime properties.
+        resource group. The information include the description and other
+        properties of the application.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

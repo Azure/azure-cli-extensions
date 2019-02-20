@@ -13,13 +13,16 @@ from msrest.service_client import ServiceClient
 from msrest import Serializer, Deserializer
 from msrestazure import AzureConfiguration
 from .version import VERSION
+from .operations.operations import Operations
+from .operations.secret_operations import SecretOperations
+from .operations.secret_value_operations import SecretValueOperations
+from .operations.volume_operations import VolumeOperations
+from .operations.network_operations import NetworkOperations
+from .operations.gateway_operations import GatewayOperations
 from .operations.application_operations import ApplicationOperations
 from .operations.service_operations import ServiceOperations
-from .operations.replica_operations import ReplicaOperations
+from .operations.service_replica_operations import ServiceReplicaOperations
 from .operations.code_package_operations import CodePackageOperations
-from .operations.operations import Operations
-from .operations.network_operations import NetworkOperations
-from .operations.volume_operations import VolumeOperations
 from . import models
 
 
@@ -61,20 +64,26 @@ class ServiceFabricMeshManagementClient(object):
     :ivar config: Configuration for client.
     :vartype config: ServiceFabricMeshManagementClientConfiguration
 
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.servicefabricmesh.operations.Operations
+    :ivar secret: Secret operations
+    :vartype secret: azure.mgmt.servicefabricmesh.operations.SecretOperations
+    :ivar secret_value: SecretValue operations
+    :vartype secret_value: azure.mgmt.servicefabricmesh.operations.SecretValueOperations
+    :ivar volume: Volume operations
+    :vartype volume: azure.mgmt.servicefabricmesh.operations.VolumeOperations
+    :ivar network: Network operations
+    :vartype network: azure.mgmt.servicefabricmesh.operations.NetworkOperations
+    :ivar gateway: Gateway operations
+    :vartype gateway: azure.mgmt.servicefabricmesh.operations.GatewayOperations
     :ivar application: Application operations
     :vartype application: azure.mgmt.servicefabricmesh.operations.ApplicationOperations
     :ivar service: Service operations
     :vartype service: azure.mgmt.servicefabricmesh.operations.ServiceOperations
-    :ivar replica: Replica operations
-    :vartype replica: azure.mgmt.servicefabricmesh.operations.ReplicaOperations
+    :ivar service_replica: ServiceReplica operations
+    :vartype service_replica: azure.mgmt.servicefabricmesh.operations.ServiceReplicaOperations
     :ivar code_package: CodePackage operations
     :vartype code_package: azure.mgmt.servicefabricmesh.operations.CodePackageOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.servicefabricmesh.operations.Operations
-    :ivar network: Network operations
-    :vartype network: azure.mgmt.servicefabricmesh.operations.NetworkOperations
-    :ivar volume: Volume operations
-    :vartype volume: azure.mgmt.servicefabricmesh.operations.VolumeOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -91,21 +100,27 @@ class ServiceFabricMeshManagementClient(object):
         self._client = ServiceClient(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-07-01-preview'
+        self.api_version = '2018-09-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
+        self.operations = Operations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.secret = SecretOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.secret_value = SecretValueOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.volume = VolumeOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.network = NetworkOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.gateway = GatewayOperations(
+            self._client, self.config, self._serialize, self._deserialize)
         self.application = ApplicationOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.service = ServiceOperations(
             self._client, self.config, self._serialize, self._deserialize)
-        self.replica = ReplicaOperations(
+        self.service_replica = ServiceReplicaOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.code_package = CodePackageOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.operations = Operations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network = NetworkOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.volume = VolumeOperations(
             self._client, self.config, self._serialize, self._deserialize)

@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-locals
 def imagecopy(source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, source_type='image', cleanup='false',
-              parallel_degree=-1, tags=None, target_name=None, target_subscription=None):
+              parallel_degree=-1, tags=None, target_name=None, target_subscription=None, timeout=3600):
 
     # get the os disk id from source vm/image
     logger.warn("Getting os disk id of the source vm/image")
@@ -78,11 +78,15 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
-    logger.warn("Getting sas url for the source snapshot")
+    logger.warn("Getting sas url for the source snapshot with timeout seconds: %d", timeout)
+    if timeout < 3600:
+        logger.warn("Timeout should be greater than 3600")
+        raise CLIError('Inavlid Timeout')
+
     cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
                                    '--name', source_os_disk_snapshot_name,
                                    '--resource-group', source_resource_group_name,
-                                   '--duration-in-seconds', '3600'])
+                                   '--duration-in-seconds', str(timeout)])
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
 
@@ -126,7 +130,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             tasks.append((location, transient_resource_group_name, source_type,
                           source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                           source_os_type, target_resource_group_name, azure_pool_frequency,
-                          tags, target_name, target_subscription))
+                          tags, target_name, target_subscription, timeout))
 
         logger.warn("Starting async process for all locations")
 

@@ -9,20 +9,26 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+from .operations import Operations
+from .secret_operations import SecretOperations
+from .secret_value_operations import SecretValueOperations
+from .volume_operations import VolumeOperations
+from .network_operations import NetworkOperations
+from .gateway_operations import GatewayOperations
 from .application_operations import ApplicationOperations
 from .service_operations import ServiceOperations
-from .replica_operations import ReplicaOperations
+from .service_replica_operations import ServiceReplicaOperations
 from .code_package_operations import CodePackageOperations
-from .operations import Operations
-from .network_operations import NetworkOperations
-from .volume_operations import VolumeOperations
 
 __all__ = [
+    'Operations',
+    'SecretOperations',
+    'SecretValueOperations',
+    'VolumeOperations',
+    'NetworkOperations',
+    'GatewayOperations',
     'ApplicationOperations',
     'ServiceOperations',
-    'ReplicaOperations',
+    'ServiceReplicaOperations',
     'CodePackageOperations',
-    'Operations',
-    'NetworkOperations',
-    'VolumeOperations',
 ]
