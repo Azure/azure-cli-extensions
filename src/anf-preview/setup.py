@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,12 +24,9 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'azure-mgmt-netapp==0.1.0',
-    'azure-cli-core'
-]
+DEPENDENCIES = []
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
@@ -45,5 +42,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/anf-preview',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
+    package_data={'azext_anf_preview': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
