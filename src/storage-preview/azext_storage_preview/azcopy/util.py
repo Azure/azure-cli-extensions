@@ -44,6 +44,10 @@ class AzCopy(object):
         flags = flags or []
         self.run_command(['copy', source, destination] + flags)
 
+    def sync(self, source, destination, flags=None):
+        flags = flags or []
+        self.run_command(['sync', source, destination] + flags)
+
 
 class AzCopyCredentials(object):
     def __init__(self, sas_token=None, token_info=None):

@@ -51,3 +51,8 @@ helps['storage account management-policy update'] = """
     type: command
     short-summary: Updates the data policy rules associated with the specified storage account.
 """
+
+helps['storage azcopy run-command'] = """
+    type: command
+    short-summary: Updates the data policy rules associated with the specified storage account.
+"""

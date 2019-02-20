@@ -9,7 +9,8 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
 
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
-                          validate_azcopy_source_url, validate_azcopy_destination_url)
+                          validate_azcopy_blob_source_url, validate_azcopy_blob_destination_url,
+                          validate_azcopy_container_source_url, validate_azcopy_container_destination_url)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -165,12 +166,30 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage azcopy blob upload') as c:
         c.extra('destination_container', options_list=['--container', '-c'], required=True)
-        c.extra('destination_blob', options_list=['--name', '-n'], validator=validate_azcopy_destination_url)
+        c.extra('destination_blob', options_list=['--name', '-n'], validator=validate_azcopy_blob_destination_url)
         c.argument('source', options_list=['--file', '-f'])
         c.ignore('destination')
 
+    with self.argument_context('storage azcopy blob upload-batch') as c:
+        c.argument('destination', options_list=['--container', '-c', '--destination', '-d'],
+                   validator=validate_azcopy_container_destination_url)
+        c.argument('source', options_list=['--source', '-s'])
+
     with self.argument_context('storage azcopy blob download') as c:
         c.extra('source_container', options_list=['--container', '-c'], required=True)
-        c.extra('source_blob', options_list=['--name', '-n'], validator=validate_azcopy_source_url)
+        c.extra('source_blob', options_list=['--name', '-n'], validator=validate_azcopy_blob_source_url, required=True)
         c.ignore('source')
         c.argument('destination', options_list=['--file', '-f'])
+
+    with self.argument_context('storage azcopy blob download-batch') as c:
+        c.argument('destination', options_list=['--destination', '-d'])
+        c.argument('source', options_list=['--container', '-c', '--source', '-s'],
+                   validator=validate_azcopy_container_source_url)
+
+    with self.argument_context('storage azcopy blob sync') as c:
+        c.argument('destination', options_list=['--destination', '-d'],
+                   validator=validate_azcopy_container_destination_url)
+        c.argument('source', options_list=['--source', '-s'])
+
+    with self.argument_context('storage azcopy run-command') as c:
+        c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
