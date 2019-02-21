@@ -187,7 +187,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    validator=validate_azcopy_container_source_url)
 
     with self.argument_context('storage azcopy blob sync') as c:
-        pass
+        c.argument('destination', options_list=['--destination', '-d'],
+                   validator=validate_azcopy_container_destination_url)
+        c.argument('source', options_list=['--source', '-s'])
 
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')

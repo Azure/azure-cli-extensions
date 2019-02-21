@@ -28,6 +28,11 @@ def storage_blob_download_batch(cmd, client, source, destination):
     azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination, flags=['--recursive'])
 
 
+def storage_blob_sync(cmd, client, source, destination):
+    azcopy = _azcopy_blob_client(cmd, client)
+    azcopy.sync(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=['--recursive', '--force'])
+
+
 def storage_run_command(cmd, command_args):
     if command_args.startswith('azcopy'):
         command_args = command_args[len('azcopy'):]
