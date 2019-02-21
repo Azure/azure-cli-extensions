@@ -1,5 +1,5 @@
 # Azure CLI DB Up Extension #
-This extension enables single commands to create Azure Database server instances with databases. It currently supports Azure Database for MySQL. 
+This extension enables single commands to create Azure Database server instances with databases. It currently supports Azure Database for MySQL and PostgreSQL.
 
 ### How to use ###
 Install this extension using the below CLI command
