@@ -48,8 +48,8 @@
         ],
         "aks-preview": [
             {
-                "downloadUrl": "https://azurecliaks.blob.core.windows.net/azure-cli-extension/aks_preview-0.2.0-py2.py3-none-any.whl",
-                "filename": "aks_preview-0.2.0-py2.py3-none-any.whl",
+                "downloadUrl": "https://azurecliaks.blob.core.windows.net/azure-cli-extension/aks_preview-0.2.2-py2.py3-none-any.whl",
+                "filename": "aks_preview-0.2.2-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.49",
@@ -88,9 +88,9 @@
                     "metadata_version": "2.0",
                     "name": "aks-preview",
                     "summary": "Provides a preview for upcoming AKS features",
-                    "version": "0.2.0"
+                    "version": "0.2.2"
                 },
-                "sha256Digest": "91e12a312131f7b6e5bbacedb3a0e4f96653bdc0b2dd8f839a1701e21da62881"
+                "sha256Digest": "416599852131cee4fb59b0b96aebca0f4febb95397106c96a5ac1b165d64d5da"
             }
         ],
         "alias": [
@@ -203,10 +203,10 @@
         ],
         "azure-batch-cli-extensions": [
             {
-                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.5.1/azure_batch_cli_extensions-2.5.1-py2.py3-none-any.whl",
-                "filename": "azure_batch_cli_extensions-2.5.1-py2.py3-none-any.whl",
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-2.5.2/azure_batch_cli_extensions-2.5.2-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-2.5.2-py2.py3-none-any.whl",
                 "metadata": {
-                    "azext.maxCliCoreVersion": "2.1.0",
+                    "azext.maxCliCoreVersion": "2.0.58",
                     "azext.minCliCoreVersion": "2.0.24",
                     "extensions": {
                         "python.details": {
@@ -239,9 +239,50 @@
                         }
                     ],
                     "summary": "Additional commands for working with Azure Batch service",
-                    "version": "2.5.1"
+                    "version": "2.5.2"
                 },
-                "sha256Digest": "d44fd28509f6d47b4c0fcc7866f199281bb4eb24856da0a2144bebe7b606f093"
+                "sha256Digest": "58dc9f5830bf0f3e75e5d4c65bc41b4f7cce47743678685d61fb3d7c64e2384c"
+            },
+            {
+                "downloadUrl": "https://github.com/Azure/azure-batch-cli-extensions/releases/download/azure-batch-cli-extensions-3.0.1/azure_batch_cli_extensions-3.0.1-py2.py3-none-any.whl",
+                "filename": "azure_batch_cli_extensions-3.0.1-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.maxCliCoreVersion": "2.1.0",
+                    "azext.minCliCoreVersion": "2.0.59",
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-batch-cli-extensions"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "azure-batch-cli-extensions",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "azure-batch-extensions (<5.1,>=5.0.0)",
+                                "pycparser (==2.18)"
+                            ]
+                        }
+                    ],
+                    "summary": "Additional commands for working with Azure Batch service",
+                    "version": "3.0.1"
+                },
+                "sha256Digest": "83a303949f607f49d3a65dfa9a4cd1fbeb39e8d4202f203b719b14c77f21a5de"
             }
         ],
         "azure-cli-iot-ext": [
@@ -304,7 +345,7 @@
                 "filename": "azure_devops-0.2.0-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.49",
-                     "azext.isPreview": true,
+                    "azext.isPreview": true,
                     "extensions": {
                         "python.details": {
                             "contacts": [
@@ -330,8 +371,8 @@
                     "run_requires": [
                         {
                             "requires": [
-                                    "python-dateutil (==2.7.3)",
-                                    "vsts (==0.1.20)"
+                                "python-dateutil (==2.7.3)",
+                                "vsts (==0.1.20)"
                             ]
                         }
                     ],
@@ -1099,15 +1140,21 @@
                     "name": "mesh",
                     "summary": "Support for Microsoft Azure Service Fabric Mesh - Public Preview",
                     "version": "0.10.2",
-                    "run_requires": [{"requires": ["sfmergeutility"]}]
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "sfmergeutility"
+                            ]
+                        }
+                    ]
                 },
                 "sha256Digest": "98ef61baf5d8bdd03e18e6187a9f10e22d86f60cb7438333c984cbf7a4a5a9cf"
             }
         ],
         "db-up": [
             {
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/db_up-0.1.2-py2.py3-none-any.whl",
-                "filename": "db_up-0.1.2-py2.py3-none-any.whl",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/db_up-0.1.5-py2.py3-none-any.whl",
+                "filename": "db_up-0.1.5-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.46",
@@ -1146,11 +1193,65 @@
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "db-up",
-                    "run_requires": [{"requires": ["mysql-connector-python (==8.0.13)"]}],
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "mysql-connector-python (==8.0.13)",
+                                "psycopg2-binary (==2.7.7)"
+                            ]
+                        }
+                    ],
                     "summary": "Additional commands to simplify Azure Database workflows.",
-                    "version": "0.1.2"
+                    "version": "0.1.5"
                 },
-                "sha256Digest": "9cab7aa61344369160e15b07f83b8a70d65f12c84d41cf732f512b685599b160"
+                "sha256Digest": "4c2ad37f7c8912fa7caf8123ba475c07b839ce48cbeec01cdea061afa51bc194"
+            }
+        ],
+        "privatedns": [
+            {
+                "downloadUrl": "https://privatednscliextension.blob.core.windows.net/privatednscliextension/privatedns-0.1.0-py2.py3-none-any.whl",
+                "filename": "privatedns-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.58",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "dijyotir@microsoft.com",
+                                    "name": "Dibya Jyoti Roy",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "privatedns",
+                    "summary": "Commands to manage Private DNS Zones",
+                    "version": "0.1.0"
+                },
+                "sha256Digest": "7de87f9e5ddc30d317328b5f44dbbbb5632f55c56e2bb88d739166777abe0cb5"
             }
         ],
         "rdbms-vnet": [
@@ -1239,8 +1340,8 @@
         ],
         "sap-hana": [
             {
-                "downloadUrl": "https://github.com/Azure/azure-hanaonazure-cli-extension/releases/download/0.3.0/sap_hana-0.3.0-py2.py3-none-any.whl",
-                "filename": "sap_hana-0.3.0-py2.py3-none-any.whl",
+                "downloadUrl": "https://github.com/Azure/azure-hanaonazure-cli-extension/releases/download/0.3.3/sap_hana-0.3.3-py2.py3-none-any.whl",
+                "filename": "sap_hana-0.3.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.0.46",
                     "classifiers": [
@@ -1278,9 +1379,9 @@
                     "metadata_version": "2.0",
                     "name": "sap-hana",
                     "summary": "Additional commands for working with SAP HanaOnAzure instances.",
-                    "version": "0.3.0"
+                    "version": "0.3.3"
                 },
-                "sha256Digest": "b888a0a7b84e7249afdc7114dab2c33b0550070b9cc193917c8e95ae3f6c4b32"
+                "sha256Digest": "12f0f12d9d1f525b2f0cf34b05bfedb5eef87f5b554e80cf3689265726245f25"
             }
         ],
         "signalr": [

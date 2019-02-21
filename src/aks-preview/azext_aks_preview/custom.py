@@ -12,6 +12,7 @@ import os.path
 import re
 import time
 import uuid
+from ipaddress import ip_network
 import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from knack.log import get_logger
@@ -351,6 +352,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
                network_plugin=None,
+               network_policy=None,
                pod_cidr=None,
                service_cidr=None,
                dns_service_ip=None,
@@ -423,13 +425,19 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                            'Are you an Owner on this subscription?')
 
     network_profile = None
-    if any([network_plugin, pod_cidr, service_cidr, dns_service_ip, docker_bridge_address]):
+    if any([network_plugin,
+            pod_cidr,
+            service_cidr,
+            dns_service_ip,
+            docker_bridge_address,
+            network_policy]):
         network_profile = ContainerServiceNetworkProfile(
             network_plugin=network_plugin,
             pod_cidr=pod_cidr,
             service_cidr=service_cidr,
             dns_service_ip=dns_service_ip,
-            docker_bridge_cidr=docker_bridge_address
+            docker_bridge_cidr=docker_bridge_address,
+            network_policy=network_policy
         )
 
     addon_profiles = _handle_addons_args(
@@ -486,12 +494,14 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
 def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler=False,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
-               min_count=None, max_count=None, no_wait=False):
+               min_count=None, max_count=None, no_wait=False,
+               api_server_authorized_ip_ranges=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    if update_flags != 1:
+    if update_flags != 1 and api_server_authorized_ip_ranges is None:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
-                       '"--update-cluster-autoscaler".')
+                       '"--update-cluster-autoscaler" or '
+                       '"--api-server-authorized-ip-ranges"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.managed_clusters.get(resource_group_name, name)
@@ -532,6 +542,16 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.agent_pool_profiles[0].enable_auto_scaling = False
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
+
+    if api_server_authorized_ip_ranges is not None:
+        instance.api_server_authorized_ip_ranges = []
+        if api_server_authorized_ip_ranges != "":
+            for ip in api_server_authorized_ip_ranges.split(','):
+                try:
+                    ip_net = ip_network(ip)
+                    instance.api_server_authorized_ip_ranges.append(ip_net.with_prefixlen)
+                except ValueError:
+                    raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
     return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
 
