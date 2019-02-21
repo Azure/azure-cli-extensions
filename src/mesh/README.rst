@@ -61,5 +61,7 @@ Commands to create an application
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ::
-Patch 0.10.3:
-- Locking version of dependency 'sfmergeutility' to 0.1.5.
+
+Patch 0.10.4:
+- Locking version of dependency 'sfmergeutility' to 0.1.6.
+- Add 'az mesh generate armtemplate' cmd.
