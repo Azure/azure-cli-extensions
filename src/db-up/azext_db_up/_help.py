@@ -45,3 +45,13 @@ helps['postgres down'] = """
         - name: Delete the resource group and the full cache.
           text: az postgres down --delete-group
 """
+
+helps['mysql show-connection-string'] = """
+    type: command
+    short-summary: Show the connection strings for a MySQL server database.
+"""
+
+helps['postgres show-connection-string'] = """
+    type: command
+    short-summary: Show the connection strings for a PostgreSQL server database.
+"""

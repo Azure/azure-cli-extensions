@@ -26,9 +26,11 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                          table_transformer=table_transform_connection_string)
         g.custom_command('down', 'server_down', validator=db_down_namespace_processor('mysql'), supports_no_wait=True,
                          confirmation=True)
+        g.custom_command('show-connection-string', 'create_mysql_connection_string')
 
     with self.command_group('postgres', postgres_servers_sdk, client_factory=cf_postgres_servers) as g:
         g.custom_command('up', 'postgres_up', validator=db_up_namespace_processor('postgres'),
                          table_transformer=table_transform_connection_string)
         g.custom_command('down', 'server_down', validator=db_down_namespace_processor('postgres'),
                          supports_no_wait=True, confirmation=True)
+        g.custom_command('show-connection-string', 'create_postgresql_connection_string')
