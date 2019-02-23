@@ -34,6 +34,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='The name of a database to initialize.')
             c.argument('tags', tags_type)
 
+        with self.argument_context('{} show-connection-string'.format(scope)) as c:
+            c.argument('database', help='The database to connect to.')
+            c.argument('host', help='The host name or IP address of the MySQL server.')
+            c.argument('password', help='The login password of the user.')
+            c.argument('user', help='The login username.')
+
         with self.argument_context('{} down'.format(scope)) as c:
             c.ignore('server_name')
             c.ignore('resource_group_name')
