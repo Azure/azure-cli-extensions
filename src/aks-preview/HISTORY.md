@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.3
++++++
+* `az aks create/scale --nodepool-name` configures nodepool name, truncated to 12 characters, default - nodepool1
+* Don't require --nodepool-name in "az aks scale" if there's only one nodepool
+
 0.2.2
 +++++
 * Add support of Network Policy when creating new AKS clusters
