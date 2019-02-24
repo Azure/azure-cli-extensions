@@ -3,7 +3,8 @@ set -ex
 
 # Install CLI & Dev Tools
 echo "Installing azure-cli-dev-tools and azure-cli..."
-pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
+git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+python ../azure-cli/scripts/dev_setup.py
 pip install -e "git+https://github.com/Azure/azure-cli@dev#egg=azure-cli-dev-tools&subdirectory=tools" -q
 echo "Installed."
 az --version
