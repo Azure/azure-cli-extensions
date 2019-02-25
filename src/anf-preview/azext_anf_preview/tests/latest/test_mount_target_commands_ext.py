@@ -40,5 +40,5 @@ class AzureNetAppFilesExtMountTargetServiceScenarioTest(ScenarioTest):
         volume_name = self.create_random_name(prefix='cli-vol-', length=24)
         self.create_volume(account_name, pool_name, volume_name, '{rg}')
 
-        volume_list = self.cmd("anf mount-target list -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        volume_list = self.cmd("anf mount-target list --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
         assert len(volume_list) == 1

@@ -46,9 +46,9 @@ def update_account(cmd, instance, tag=None):
     return params.tags
 
 
-def create_pool(cmd, client, account_name, pool_name, resource_group, location, size, service_level, tag=None):
+def create_pool(cmd, client, account_name, pool_name, resource_group_name, location, size, service_level, tag=None):
     body = CapacityPool(service_level=service_level, size=int(size), location=location, tags=generate_tags(tag))
-    return client.create_or_update(body, resource_group, account_name, pool_name)
+    return client.create_or_update(body, resource_group_name, account_name, pool_name)
 
 
 def update_pool(cmd, instance, location=None, size=None, service_level=None, tag=None):

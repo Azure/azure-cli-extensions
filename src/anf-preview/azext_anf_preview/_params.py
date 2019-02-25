@@ -8,9 +8,6 @@
 
 def load_arguments(self, _):
     with self.argument_context('anf') as c:
-        c.argument('resource_group', options_list=['--resource-group', '-g'], required=True, help='The name of the resource group')
-
-    with self.argument_context('anf') as c:
         c.argument('account_name', options_list=['--account-name', '-a'], required=True, help='The name of the ANF account')
 
     with self.argument_context('anf account') as c:

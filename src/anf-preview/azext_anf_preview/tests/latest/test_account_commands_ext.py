@@ -31,11 +31,11 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         # and again with short forms and also unquoted
         account = self.cmd("az anf account create -g {rg} -a %s -l westus2 --tags '%s'" % (account_name, tags)).get_output_in_json()
         assert account['name'] == account_name
-        account_list = self.cmd("anf account list -g {rg}").get_output_in_json()
+        account_list = self.cmd("anf account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) > 0
 
-        self.cmd("az anf account delete -g {rg} -a %s" % account_name)
-        account_list = self.cmd("anf account list -g {rg}").get_output_in_json()
+        self.cmd("az anf account delete --resource-group {rg} -a %s" % account_name)
+        account_list = self.cmd("anf account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -45,22 +45,22 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         for account_name in accounts:
             self.cmd("az anf account create -g {rg} -a %s -l 'westus2' --tags 'Tag1=Value1'" % account_name).get_output_in_json()
 
-        account_list = self.cmd("anf account list -g {rg}").get_output_in_json()
+        account_list = self.cmd("anf account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) == 2
 
         for account_name in accounts:
-            self.cmd("az anf account delete -g {rg} -a %s" % account_name)
+            self.cmd("az anf account delete --resource-group {rg} -a %s" % account_name)
 
-        account_list = self.cmd("anf account list -g {rg}").get_output_in_json()
+        account_list = self.cmd("anf account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
     def test_ext_get_account_by_name_ext(self):
         account_name = self.create_random_name(prefix='cli', length=24)
         account = self.cmd("az anf account create -g {rg} -a %s -l 'westus2'" % account_name).get_output_in_json()
-        account = self.cmd("az anf account show -g {rg} -a %s" % account_name).get_output_in_json()
+        account = self.cmd("az anf account show --resource-group {rg} -a %s" % account_name).get_output_in_json()
         assert account['name'] == account_name
-        account_from_id = self.cmd("az anf account show -g {rg} --ids %s" % account['id']).get_output_in_json()
+        account_from_id = self.cmd("az anf account show --resource-group {rg} --ids %s" % account['id']).get_output_in_json()
         assert account_from_id['name'] == account_name
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -69,6 +69,6 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         tag = "Tag1=Value1"
 
         account = self.cmd("az anf account create -g {rg} -a %s -l 'westus2'" % account_name).get_output_in_json()
-        account = self.cmd("az anf account update -g {rg} -a %s --tags %s" % (account_name, tag)).get_output_in_json()
+        account = self.cmd("az anf account update --resource-group {rg} -a %s --tags %s" % (account_name, tag)).get_output_in_json()
         assert account['name'] == account_name
         assert account['tags']['Tag1'] == 'Value1'

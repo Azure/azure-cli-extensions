@@ -36,8 +36,8 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         assert pool['tags']['Tag1'] == 'Value1'
         assert pool['tags']['Tag2'] == 'Value2'
 
-        self.cmd("az anf pool delete -g {rg} -a %s -p %s" % (account_name, pool_name))
-        pool_list = self.cmd("anf pool list -g {rg} -a %s" % account_name).get_output_in_json()
+        self.cmd("az anf pool delete --resource-group {rg} -a %s -p %s" % (account_name, pool_name))
+        pool_list = self.cmd("anf pool list --resource-group {rg} -a %s" % account_name).get_output_in_json()
         assert len(pool_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -49,12 +49,12 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         for pool_name in pools:
             self.cmd("az anf pool create -g {rg} -a '%s' -p '%s' -l 'westus2' %s --tags 'Tag1=Value1'" % (account_name, pool_name, POOL_DEFAULT)).get_output_in_json()
 
-        pool_list = self.cmd("anf pool list -g {rg} -a '%s'" % account_name).get_output_in_json()
+        pool_list = self.cmd("anf pool list --resource-group {rg} -a '%s'" % account_name).get_output_in_json()
         assert len(pool_list) == 2
 
         for pool_name in pools:
-            self.cmd("az anf pool delete -g {rg} -a %s -p %s" % (account_name, pool_name))
-        pool_list = self.cmd("anf pool list -g {rg} -a '%s'" % account_name).get_output_in_json()
+            self.cmd("az anf pool delete --resource-group {rg} -a %s -p %s" % (account_name, pool_name))
+        pool_list = self.cmd("anf pool list --resource-group {rg} -a '%s'" % account_name).get_output_in_json()
         assert len(pool_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -64,9 +64,9 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         self.cmd("az anf account create -g {rg} -a '%s' -l 'westus2'" % account_name).get_output_in_json()
         self.cmd("az anf pool create -g {rg} -a %s -p %s -l 'westus2' %s" % (account_name, pool_name, POOL_DEFAULT)).get_output_in_json()
 
-        pool = self.cmd("az anf pool show -g {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
+        pool = self.cmd("az anf pool show --resource-group {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
         assert pool['name'] == account_name + '/' + pool_name
-        pool_from_id = self.cmd("az anf pool show -g {rg} --ids %s" % pool['id']).get_output_in_json()
+        pool_from_id = self.cmd("az anf pool show --resource-group {rg} --ids %s" % pool['id']).get_output_in_json()
         assert pool_from_id['name'] == account_name + '/' + pool_name
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -80,7 +80,7 @@ class AzureNetAppFilesExtPoolServiceScenarioTest(ScenarioTest):
         pool = self.cmd("az anf pool create -g {rg} -a %s -p %s -l 'westus2' %s" % (account_name, pool_name, POOL_DEFAULT)).get_output_in_json()
 
         assert pool['name'] == account_name + '/' + pool_name
-        pool = self.cmd("az anf pool update -g {rg} -a %s -p %s --tags %s --service-level 'Standard'" % (account_name, pool_name, tag)).get_output_in_json()
+        pool = self.cmd("az anf pool update --resource-group {rg} -a %s -p %s --tags %s --service-level 'Standard'" % (account_name, pool_name, tag)).get_output_in_json()
         assert pool['name'] == account_name + '/' + pool_name
         assert pool['serviceLevel'] == "Standard"
         assert pool['tags']['Tag1'] == 'Value1'

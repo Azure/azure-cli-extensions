@@ -27,7 +27,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" % (self.current_subscription(), rg, vnet_name, subnet_name)
         tag = "--tags '%s'" % tags if tags is not None else ""
 
-        self.setup_vnet('{rg}', vnet_name, subnet_name, '10.14.0.0')
+        self.setup_vnet('{rg}', vnet_name, subnet_name, '10.12.0.0')
         self.cmd("az anf account create -g %s -a '%s' -l 'westus2'" % (rg, account_name)).get_output_in_json()
         self.cmd("az anf pool create -g %s -a %s -p %s -l 'westus2' %s %s" % (rg, account_name, pool_name, POOL_DEFAULT, tag)).get_output_in_json()
         volume1 = self.cmd("az anf volume create --resource-group %s --account-name %s --pool-name %s --volume-name %s -l 'westus2' %s --creation-token %s --subnet-id %s %s" % (rg, account_name, pool_name, volume_name1, VOLUME_DEFAULT, creation_token, subnet_id, tag)).get_output_in_json()
@@ -58,7 +58,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         assert len(volume_list) == 1
 
         self.cmd("az anf volume delete --resource-group {rg} --account-name %s --pool-name %s --volume-name %s" % (account_name, pool_name, volume_name))
-        volume_list = self.cmd("anf volume list -g {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
+        volume_list = self.cmd("anf volume list --resource-group {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -69,11 +69,11 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         tags = "Tag1=Value1"
         self.create_volume(account_name, pool_name, volume_name1, '{rg}', tags)
 
-        volume_list = self.cmd("anf volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
+        volume_list = self.cmd("anf volume list --resource-group {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 1
 
-        self.cmd("az anf volume delete -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
-        volume_list = self.cmd("anf volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
+        self.cmd("az anf volume delete --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
+        volume_list = self.cmd("anf volume list --resource-group {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -86,11 +86,11 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume = self.create_volume(account_name, pool_name, volume_name, '{rg}', tags)
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
 
-        volume = self.cmd("az anf volume show -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        volume = self.cmd("az anf volume show --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
         assert volume['tags']['Tag2'] == 'Value1'
 
-        volume_from_id = self.cmd("az anf volume show -g {rg} --ids %s" % volume['id']).get_output_in_json()
+        volume_from_id = self.cmd("az anf volume show --resource-group {rg} --ids %s" % volume['id']).get_output_in_json()
         assert volume_from_id['name'] == account_name + '/' + pool_name + '/' + volume_name
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -103,7 +103,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume = self.create_volume(account_name, pool_name, volume_name, '{rg}')
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
 
-        volume = self.cmd("az anf volume update -g {rg} -a %s -p %s -v %s --tags %s --service-level 'Standard'" % (account_name, pool_name, volume_name, tags)).get_output_in_json()
+        volume = self.cmd("az anf volume update --resource-group {rg} -a %s -p %s -v %s --tags %s --service-level 'Standard'" % (account_name, pool_name, volume_name, tags)).get_output_in_json()
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
         assert volume['serviceLevel'] == "Standard"
         assert volume['tags']['Tag1'] == 'Value2'
