@@ -27,7 +27,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" % (self.current_subscription(), rg, vnet_name, subnet_name)
         tag = "--tags '%s'" % tags if tags is not None else ""
 
-        self.setup_vnet('{rg}', vnet_name, subnet_name, '10.12.0.0')
+        self.setup_vnet(rg, vnet_name, subnet_name, '10.12.0.0')
         self.cmd("az anf account create -g %s -a '%s' -l 'westus2'" % (rg, account_name)).get_output_in_json()
         self.cmd("az anf pool create -g %s -a %s -p %s -l 'westus2' %s %s" % (rg, account_name, pool_name, POOL_DEFAULT, tag)).get_output_in_json()
         volume1 = self.cmd("az anf volume create --resource-group %s --account-name %s --pool-name %s --volume-name %s -l 'westus2' %s --creation-token %s --subnet-id %s %s" % (rg, account_name, pool_name, volume_name1, VOLUME_DEFAULT, creation_token, subnet_id, tag)).get_output_in_json()
@@ -37,7 +37,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
             creation_token = volume_name2
             subnet_name = self.create_random_name(prefix='cli-subnet-', length=16)
             subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" % (self.current_subscription(), rg, vnet_name, subnet_name)
-            self.setup_vnet('{rg}', vnet_name, subnet_name, '10.16.0.0')
+            self.setup_vnet(rg, vnet_name, subnet_name, '10.16.0.0')
             self.cmd("az anf volume create -g %s -a %s -p %s -v %s -l 'westus2' %s --creation-token %s --subnet-id %s --tags '%s'" % (rg, account_name, pool_name, volume_name2, VOLUME_DEFAULT, creation_token, subnet_id, tags)).get_output_in_json()
 
         return volume1

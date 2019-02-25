@@ -27,7 +27,7 @@ class AzureNetAppFilesExtSnapshotServiceScenarioTest(ScenarioTest):
         subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/%s" % (self.current_subscription(), rg, vnet_name, subnet_name)
         tag = "--tags '%s'" % tags if tags is not None else ""
 
-        self.setup_vnet('{rg}', vnet_name, subnet_name)
+        self.setup_vnet(rg, vnet_name, subnet_name)
         self.cmd("anf account create -g %s -a '%s' -l 'westus2'" % (rg, account_name)).get_output_in_json()
         self.cmd("anf pool create -g %s -a %s -p %s -l 'westus2' %s %s" % (rg, account_name, pool_name, POOL_DEFAULT, tag)).get_output_in_json()
         volume1 = self.cmd("anf volume create --resource-group %s --account-name %s --pool-name %s --volume-name %s -l 'westus2' %s --creation-token %s --subnet-id %s %s" % (rg, account_name, pool_name, volume_name1, VOLUME_DEFAULT, creation_token, subnet_id, tag)).get_output_in_json()
