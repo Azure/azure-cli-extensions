@@ -171,7 +171,7 @@ def process_deployment_create_namespace(namespace):
     _validate_deployment_name(namespace)
 
 
-def load_command_table(self, _):
+def load_command_table(self, _):  # pylint: disable=too-many-statements
     cmd_util = CliCommandType(
         operations_tmpl='azext_mesh.custom#{}',
         exception_handler=resource_exception_handler
@@ -221,6 +221,9 @@ def load_command_table(self, _):
 
     with self.command_group('mesh deployment', resource_deployment_sdk) as g:
         g.custom_command('create', 'deploy_arm_template', supports_no_wait=True, validator=process_deployment_create_namespace)
+
+    with self.command_group('mesh generate', resource_deployment_sdk) as g:
+        g.custom_command('armtemplate', 'generate_arm_template')
 
     with self.command_group('mesh app', cmd_util) as g:
         g.custom_command('list', 'list_application', client_factory=cf_mesh_application, table_transformer=transform_application_list, exception_handler=resource_exception_handler)

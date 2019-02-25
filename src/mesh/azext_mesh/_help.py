@@ -42,6 +42,21 @@ helps['mesh deployment create'] = """
       short-summary: json string or json arm parameter file to supplement parameters of the deployment template
 """
 
+helps['mesh generate'] = """
+    type: group
+    short-summary: Generate Service Fabric Mesh deployment template.
+"""
+
+helps['mesh generate armtemplate'] = """
+    type: command
+    short-summary: Generate a Service Fabric Mesh ARM deployment template from input yaml.
+    examples:
+        - name: Generate a template file for deployment.
+          text: az mesh generate armtemplate --input-yaml-files ./app.yaml,./network.yaml
+        - name: Generate a template file for deployment with parameters.
+          text: az mesh generate armtemplate --input-yaml-files ./app.yaml,./network.yaml --parameters ../params.yaml
+"""
+
 helps['mesh app'] = """
     type: group
     short-summary: Manage Service Fabric Mesh applications.

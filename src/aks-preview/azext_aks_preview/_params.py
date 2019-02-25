@@ -16,7 +16,8 @@ from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list)
 from ._validators import (
     validate_create_parameters, validate_k8s_version, validate_linux_host_name,
-    validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges)
+    validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
+    validate_nodepool_name)
 
 
 def load_arguments(self, _):
@@ -38,6 +39,8 @@ def load_arguments(self, _):
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
         c.argument('generate_ssh_keys', action='store_true', validator=validate_create_parameters)
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
+        c.argument('nodepool_name', type=str, default='nodepool1',
+                   help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
         c.argument('aad_client_app_id')
@@ -71,6 +74,10 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
+
+    with self.argument_context('aks scale') as c:
+        c.argument('nodepool_name', type=str,
+                   help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
