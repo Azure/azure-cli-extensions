@@ -13,7 +13,7 @@ VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 107374182400"
 
 class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
     def setup_vnet(self, rg, vnet_name, subnet_name, ip_pre):
-        self.cmd("az network vnet create -n %s -g %s -l westus2 --address-prefix %s/16" % (vnet_name, rg, ip_pre))
+        self.cmd("az network vnet create -n %s --resource-group %s -l westus2 --address-prefix %s/16" % (vnet_name, rg, ip_pre))
         self.cmd("az network vnet subnet create -n %s -g %s --vnet-name %s --address-prefixes '%s/24' --delegations 'Microsoft.Netapp/volumes'" % (subnet_name, rg, vnet_name, ip_pre))
 
     def current_subscription(self):
