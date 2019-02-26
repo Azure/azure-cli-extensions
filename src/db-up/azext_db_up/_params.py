@@ -14,8 +14,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         with self.argument_context('{} up'.format(scope)) as c:
             c.argument('sku_name', options_list=['--sku-name'], default='GP_Gen5_4',
                        help='The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.')
-            c.argument('backup_retention', type=int,
-                       help='The number of days a backup is retained.')
+            c.argument('backup_retention', type=int, help='The number of days a backup is retained.')
             c.argument('geo_redundant_backup', arg_type=get_enum_type(GeoRedundantBackup),
                        default=GeoRedundantBackup.disabled.value, help='Enable Geo-redundant or not for server backup.')
             c.argument('storage_mb', options_list=['--storage-size'], type=int,
@@ -35,10 +34,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('tags', tags_type)
 
         with self.argument_context('{} show-connection-string'.format(scope)) as c:
-            c.argument('database', help='The database to connect to.')
-            c.argument('host', help='The host name or IP address of the MySQL server.')
-            c.argument('password', help='The login password of the user.')
-            c.argument('user', help='The login username.')
+            c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the server.')
+            c.argument('database_name', options_list=['--database-name', '-d'], help='The name of a database.')
+            c.argument('administrator_login', options_list=['--admin-user', '-u'],
+                       help='The login username of the administrator.')
+            c.argument('administrator_login_password', options_list=['--admin-password', '-p'],
+                       help='The login password of the administrator.')
 
         with self.argument_context('{} down'.format(scope)) as c:
             c.ignore('server_name')

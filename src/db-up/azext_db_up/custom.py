@@ -70,7 +70,7 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
         _run_mysql_commands(host, user, administrator_login_password, database_name)
 
     return {
-        'connectionStrings': create_mysql_connection_string(
+        'connectionStrings': _create_mysql_connection_string(
             host, user, administrator_login_password, database_name),
         'host': host,
         'username': user,
@@ -128,7 +128,7 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
         _run_postgresql_commands(host, user, administrator_login_password, database_name)
 
     return {
-        'connectionStrings': create_postgresql_connection_string(
+        'connectionStrings': _create_postgresql_connection_string(
             host, user, administrator_login_password, database_name),
         'host': host,
         'username': user,
@@ -149,7 +149,23 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
     return client.delete(resource_group_name, server_name)
 
 
-def create_mysql_connection_string(host, user, password, database):
+def create_mysql_connection_string(
+        server_name='{server}', database_name='{database}', administrator_login='{login}',
+        administrator_login_password='{password}'):
+    user = '{}@{}'.format(administrator_login, server_name)
+    host = '{}.mysql.database.azure.com'.format(server_name)
+    return _create_mysql_connection_string(host, user, administrator_login_password, database_name)
+
+
+def create_postgresql_connection_string(
+        server_name='{server}', database_name='{database}', administrator_login='{login}',
+        administrator_login_password='{password}'):
+    user = '{}@{}'.format(administrator_login, server_name)
+    host = '{}.postgres.database.azure.com'.format(server_name)
+    return _create_postgresql_connection_string(host, user, administrator_login_password, database_name)
+
+
+def _create_mysql_connection_string(host, user, password, database):
     result = {
         'mysql_cmd': "mysql {database} --host {host} --user {user} --password={password}",
         'ado.net': "Server={host}; Port=3306; Database={database}; Uid={user}; Pwd={password};",
@@ -170,7 +186,7 @@ def create_mysql_connection_string(host, user, password, database):
     connection_kwargs = {
         'host': host,
         'user': user,
-        'password': password if password is not None else '{your_password}',
+        'password': password if password is not None else '{password}',
         'database': database
     }
 
@@ -179,7 +195,7 @@ def create_mysql_connection_string(host, user, password, database):
     return result
 
 
-def create_postgresql_connection_string(host, user, password, database):
+def _create_postgresql_connection_string(host, user, password, database):
     result = {
         'psql_cmd': "psql --host={host} --port=5432 --username={user} --dbname={database}",
         'ado.net': "Server={host};Database={database};Port=5432;User Id={user};Password={password};",
@@ -199,7 +215,7 @@ def create_postgresql_connection_string(host, user, password, database):
     connection_kwargs = {
         'host': host,
         'user': user,
-        'password': password if password is not None else '{your_password}',
+        'password': password if password is not None else '{password}',
         'database': database
     }
 
