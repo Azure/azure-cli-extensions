@@ -25,7 +25,7 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
 
     def test_metrics_show(self):
         self.cmd(' az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metrics requests/duration --aggregation count sum', checks=[
-            self.check('value."requests/duration".count', 0)
+            self.check('value."requests/duration".count', 0),
             self.check('value."requests/duration".sum', 0)
         ])
         result = self.cmd('az monitor app-insights metrics show --app /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test -m availabilityResults/count').get_output_in_json()
