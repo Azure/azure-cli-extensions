@@ -5,9 +5,14 @@
 
 # pylint: disable=len-as-condition
 from knack.util import CLIError
+from msrestazure.tools import is_valid_resource_id
 
 
 def validate_applications(namespace):
     if namespace.resource_group_name:
-        if isinstance(namespace.application, list) and len(namespace.application) != 1:
-            raise CLIError("Resource group only allowed with a single application name.")
+        if isinstance(namespace.application, list):
+            if len(namespace.application) == 1:
+                if is_valid_resource_id(namespace.application[0]):
+                    raise CLIError("For a single resource, specify either a fully-qualified resource or an application name and resource group.")
+            else:
+                raise CLIError("Resource group only allowed with a single application name.")
