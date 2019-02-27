@@ -13,6 +13,6 @@ def validate_applications(namespace):
         if isinstance(namespace.application, list):
             if len(namespace.application) == 1:
                 if is_valid_resource_id(namespace.application[0]):
-                    raise CLIError("For a single resource, specify either a fully-qualified resource or an application name and resource group.")
+                    raise CLIError("Specify either a full resource id or an application name and resource group.")
             else:
                 raise CLIError("Resource group only allowed with a single application name.")
