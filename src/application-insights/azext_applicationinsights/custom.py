@@ -18,13 +18,11 @@ def execute_query(cmd, client, application, analytics_query, timespan=None, reso
     return client.query.execute(targets[0], QueryBody(query=analytics_query, timespan=timespan, applications=targets[1:]))
 
 
-def get_event(cmd, client, application, event_type, event, timespan=None, resource_group_name=None):
-    return client.events.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, event, timespan=timespan)
-
-
-def get_events_by_type(cmd, client, application, event_type, timespan=None, resource_group_name=None):
+def get_events(cmd, client, application, event_type, event=None, timespan=None, resource_group_name=None):
+    if event:
+        return client.events.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, event, timespan=timespan)
     return client.events.get_by_type(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, timespan=timespan)
-
+    
 
 def get_metric(cmd, client, application, metric, timespan=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None, resource_group_name=None):
     return client.metrics.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), metric, timespan=timespan, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)

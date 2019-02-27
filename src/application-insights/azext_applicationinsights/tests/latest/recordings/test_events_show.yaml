@@ -2,31 +2,52 @@ interactions:
 - request:
     body: null
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      Connection: [keep-alive]
-      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
     method: GET
-    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults/1f492e8f-de80-11e8-8fec-e18ec74f57af
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults/e96e03fc-3a40-11e9-bcc3-b9eb4867ff75
   response:
-    body: {string: '{"@odata.context":"https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults/$metadata#availabilityResults","value":[{"id":"1f492e8f-de80-11e8-8fec-e18ec74f57af","count":1,"type":"availabilityResult","timestamp":"2018-11-02T09:17:22.327Z","customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"google-ace-test","SyntheticMonitorId":"default_google-ace-test_us-va-ash-azr","WebtestLocationId":"us-va-ash-azr"},"customMeasurements":null,"operation":{"name":"","id":"ae5a90c5d01d4f91a8d958a99065937d","parentId":"ae5a90c5d01d4f91a8d958a99065937d","syntheticSource":""},"session":{"id":""},"user":{"id":"","accountId":"","authenticatedId":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"iKey":"1145833f-6099-4855-9cb1-557cea26389e","appName":"ace-test","appId":"578f0e27-12e9-4631-bc02-50b965da2633","sdkVersion":""},"availabilityResult":{"name":"google","success":"1","duration":104,"performanceBucket":"","message":"Passed","location":"East
-        US","id":"ae5a90c5d01d4f91a8d958a99065937d","size":null},"application":{"version":""},"client":{"model":"","os":"","type":"PC","browser":"","ip":"0.0.0.0","city":"Boydton","stateOrProvince":"Virginia","countryOrRegion":"United
-        States"}}]}'}
+    body:
+      string: '{"@odata.context":"https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/events/availabilityResults/$metadata#availabilityResults","value":[{"id":"e96e03fc-3a40-11e9-bcc3-b9eb4867ff75","count":1,"type":"availabilityResult","timestamp":"2019-02-27T03:36:31.043Z","availabilityResult":{"id":"ccd9c46ea64b47a0829125a1c7bcc205","name":"australiaeast
+        loganalytics","location":"North Central US","success":"1","message":"Passed","size":null,"duration":861,"performanceBucket":""},"customDimensions":{"FullTestResultAvailable":"false","WebtestArmResourceName":"australiaeast
+        loganalytics-ace-test","SyntheticMonitorId":"default_australiaeast loganalytics-ace-test_us-il-ch1-azr","WebtestLocationId":"us-il-ch1-azr","SourceId":"sid://578f0e27-12e9-4631-bc02-50b965da2633.visualstudio.com/applications/ace-test/features/australiaeast
+        loganalytics-ace-test/locations/us-il-ch1-azr"},"customMeasurements":null,"operation":{"name":"","id":"ccd9c46ea64b47a0829125a1c7bcc205","parentId":"ccd9c46ea64b47a0829125a1c7bcc205","syntheticSource":""},"session":{"id":""},"user":{"id":"","authenticatedId":"","accountId":""},"application":{"version":""},"client":{"type":"PC","model":"","os":"","ip":"0.0.0.0","city":"Chicago","stateOrProvince":"Illinois","countryOrRegion":"United
+        States","browser":""},"cloud":{"roleName":"","roleInstance":""},"ai":{"appId":"578f0e27-12e9-4631-bc02-50b965da2633","appName":"ace-test","iKey":"1145833f-6099-4855-9cb1-557cea26389e","sdkVersion":""}}]}'
     headers:
-      access-control-allow-origin: ['*']
-      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
-      age: ['1558']
-      connection: [keep-alive]
-      content-length: ['1256']
-      content-type: [application/json; charset=utf-8; ieee754compatible=false; odata.metadata=none;
-          odata.streaming=false]
-      date: ['Wed, 07 Nov 2018 08:06:56 GMT']
-      odata-version: [4.0;]
-      server: [nginx]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      via: [1.1 draft-ai-blue.726b2e1f-e1ef-11e8-97d0-70b3d5800005]
-      x-content-type-options: [nosniff]
-    status: {code: 200, message: OK}
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      connection:
+      - keep-alive
+      content-length:
+      - '1489'
+      content-type:
+      - application/json; charset=utf-8; ieee754compatible=false; odata.metadata=none;
+        odata.streaming=false
+      date:
+      - Wed, 27 Feb 2019 03:43:10 GMT
+      odata-version:
+      - 4.0;
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept, Accept-Encoding
+      via:
+      - 1.1 draft-ai-green.aa1028ac-39aa-11e9-af62-70b3d5800005
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
 version: 1

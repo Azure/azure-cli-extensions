@@ -42,14 +42,12 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         ])
 
     def test_events_show(self):
-        self.cmd('az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event 1f492e8f-de80-11e8-8fec-e18ec74f57af', checks=[
+        self.cmd('az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event e96e03fc-3a40-11e9-bcc3-b9eb4867ff75', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
-            self.check('value[0].availabilityResult.duration', 104),
-            self.check('value[0].client.city', 'Boydton')
+            self.check('value[0].availabilityResult.duration', 861),
+            self.check('value[0].client.city', 'Chicago')
         ])
-
-    def test_events_list(self):
-        self.cmd('az monitor app-insights events list --timespan PT5M --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
+        self.cmd('az monitor app-insights events show --timespan PT5M --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
         ])
         result = self.cmd('az monitor app-insights events list --timespan PT5M --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()

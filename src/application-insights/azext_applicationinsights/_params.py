@@ -20,10 +20,6 @@ def load_arguments(self, _):
         c.argument('top', help='The number of segments to return.  This value is only valid when segment is specified.')
         c.argument('filter_arg', options_list=['--filter'], help=' An expression used to filter the results.  This value should be a valid OData filter expression where the keys of each clause should be applicable dimensions for the metric you are retrieving.')
 
-    with self.argument_context('monitor app-insights events list') as c:
-        c.argument('event_type', options_list=['--type'], help='The type of events to retrieve. Valid types include: availabilityResults, customEvents, dependencies, exceptions, pageViews, requests, and traces.')
-        c.argument('timespan', options_list=['--timespan', '-t'], help='The timespan over which to retrieve metric values. This is an ISO8601 time period value. If timespan is omitted, a default time range of `PT12H` ("last 12 hours") is used. The actual timespan that is queried may be adjusted by the server based. In all cases, the actual time span used for the query is included in the response.')
-
     with self.argument_context('monitor app-insights events show') as c:
         c.argument('event_type', options_list=['--type'], help='The type of events to retrieve.')
         c.argument('event', options_list=['--event'], help='GUID of the event to retrieve. This could be obtained by first listing and filtering events, then selecting an event of interest.')

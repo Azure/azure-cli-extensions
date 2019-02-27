@@ -51,17 +51,11 @@ helps['monitor app-insights metrics get-metadata'] = """
 
 helps['monitor app-insights events show'] = """
     type: command
-    short-summary: View a single event from an application, specified by type and ID.
+    short-summary: List events by type or view a single event from an application, specified by type and ID.
     examples:
       - name: Get an availability result by ID.
         text: |
           az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event b2cf08df-bf42-4278-8d2c-5b55f85901fe
-"""
-
-helps['monitor app-insights events list'] = """
-    type: command
-    short-summary: View a list of events from an application, filtered by type.
-    examples:
       - name: List availability results from the last 24 hours.
         text: |
           az monitor app-insights events list --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults -t PT24H
