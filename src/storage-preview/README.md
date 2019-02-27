@@ -57,7 +57,8 @@ az storage account update \
 ```
 
 #### Premium Blobs/Files:
-Create premium blob/file storage accounts. More info:[premium blobs](https://azure.microsoft.com/en-us/blog/introducing-azure-premium-blob-storage-limited-public-preview/) [premium files](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction)\
+Create premium blob/file storage accounts.\
+More info:[premium blobs](https://azure.microsoft.com/en-us/blog/introducing-azure-premium-blob-storage-limited-public-preview/) [premium files](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction)\
 *Examples:*
 ```
 az storage account create \
@@ -71,4 +72,16 @@ az storage account create \
     --resource-group groupName \
     --sku Premium_LRS \
     --kind FileStorage
+```
+
+#### Customer-Controlled Failover:
+Failover GRS/RA-GRS storage accounts from the primary cluster to the secondary cluster: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance)\
+*Examples:*
+```
+az storage account show \
+    --name accountName \
+    --expand geoReplicationStats
+
+az storage account failover \
+    --name accountName
 ```

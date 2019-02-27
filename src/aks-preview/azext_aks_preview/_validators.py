@@ -7,6 +7,7 @@ import os
 import os.path
 import re
 from math import ceil
+from ipaddress import ip_network
 
 from knack.log import get_logger
 
@@ -100,3 +101,23 @@ def validate_nodes_count(namespace):
     if namespace.max_count is not None:
         if namespace.max_count < 1 or namespace.max_count > 100:
             raise CLIError('--max-count must be in the range [1,100]')
+
+
+def validate_ip_ranges(namespace):
+    if namespace.api_server_authorized_ip_ranges is not None:
+        if namespace.api_server_authorized_ip_ranges == '':
+            return
+        for ip in namespace.api_server_authorized_ip_ranges.split(','):
+            try:
+                ip_network(ip)
+            except ValueError:
+                raise CLIError("--api-server-authorized-ip-ranges should be list of IPv4 addresses or CIDRs")
+
+
+def validate_nodepool_name(namespace):
+    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    if namespace.nodepool_name != "":
+        if len(namespace.nodepool_name) > 12:
+            raise CLIError('--nodepool-name can contain atmost 12 characters')
+        if not namespace.nodepool_name.isalnum():
+            raise CLIError('--nodepool-name should only contain alphanumeric characters')

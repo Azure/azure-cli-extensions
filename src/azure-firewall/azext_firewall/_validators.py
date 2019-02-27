@@ -17,7 +17,7 @@ def validate_application_rule_protocols(namespace):
         item_comps = item.split('=')
         if len(item_comps) != 2:
             raise usage_error
-        protocol_list.append({'type': item_comps[0].lower().capitalize(), 'port': item_comps[1]})
+        protocol_list.append({'protocol_type': item_comps[0].lower().capitalize(), 'port': item_comps[1]})
     namespace.protocols = protocol_list
 
 

@@ -27,8 +27,6 @@ class ProxyResource(Resource):
     :ivar type: The type of the resource. Ex-
      Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The geo-location where the resource lives
-    :type location: str
     """
 
     _validation = {
@@ -37,5 +35,5 @@ class ProxyResource(Resource):
         'type': {'readonly': True},
     }
 
-    def __init__(self, location=None):
-        super(ProxyResource, self).__init__(location=location)
+    def __init__(self):
+        super(ProxyResource, self).__init__()

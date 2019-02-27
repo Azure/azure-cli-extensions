@@ -60,7 +60,7 @@ class StorageManagementClient(MultiApiClientMixin, SDKClient):
     By default, uses latest API version available on public Azure.
     For production, you should stick a particular api-version and/or profile.
     The profile sets a mapping between the operation group and an API version.
-    The api-version parameter sets the default API version if the operation 
+    The api-version parameter sets the default API version if the operation
     group is not described in the profile.
 
     :ivar config: Configuration for client.
@@ -80,7 +80,7 @@ class StorageManagementClient(MultiApiClientMixin, SDKClient):
     :type profile: azure.profiles.KnownProfiles
     """
 
-    DEFAULT_API_VERSION='2018-02-01'
+    DEFAULT_API_VERSION='2018-07-01'
     _PROFILE_TAG = "azure.mgmt.storage.StorageManagementClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -158,6 +158,19 @@ class StorageManagementClient(MultiApiClientMixin, SDKClient):
             from .v2018_03_01_preview.operations import BlobContainersOperations as OperationClass
         elif api_version == '2018-07-01':
             from .v2018_07_01.operations import BlobContainersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def blob_services(self):
+        """Instance depends on the API version:
+
+           * 2018-07-01: :class:`BlobServicesOperations<azure.mgmt.storage.v2018_07_01.operations.BlobServicesOperations>`
+        """
+        api_version = self._get_api_version('blob_services')
+        if api_version == '2018-07-01':
+            from .v2018_07_01.operations import BlobServicesOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))

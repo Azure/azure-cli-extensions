@@ -17,7 +17,8 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 # pylint: disable=too-many-locals
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
-                        target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription):
+                        target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
+                        timeout):
 
     random_string = get_random_string(STORAGE_ACCOUNT_NAME_LENGTH - len(location))
 
@@ -47,7 +48,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     logger.debug("storage account key: %s", target_storage_account_key)
 
     expiry_format = "%Y-%m-%dT%H:%MZ"
-    expiry = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=timeout)
+    logger.debug("create target storage sas using timeout seconds: %d", timeout)
 
     cli_cmd = prepare_cli_command(['storage', 'account', 'generate-sas',
                                    '--account-name', target_storage_account_name,
@@ -166,6 +168,9 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
 
     if copy_status != 'success':
         logger.error("The copy operation didn't succeed. Last status: %s", copy_status)
+        logger.error("Command run: %s", cli_cmd)
+        logger.error("Command output: %s", json_output)
+
         raise CLIError('Blob copy failed')
 
 

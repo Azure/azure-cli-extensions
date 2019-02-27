@@ -22,7 +22,7 @@ class CodePackageOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-07-01-preview`. Constant value: "2018-07-01-preview".
+    :ivar api_version: The version of the API. This parameter is required and its value must be `2018-09-01-preview`. Constant value: "2018-09-01-preview".
     """
 
     models = models
@@ -32,26 +32,26 @@ class CodePackageOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-07-01-preview"
+        self.api_version = "2018-09-01-preview"
 
         self.config = config
 
-    def get_container_log(
-            self, resource_group_name, application_name, service_name, replica_name, code_package_name, tail=None, custom_headers=None, raw=False, **operation_config):
-        """Gets the logs for the container.
+    def get_container_logs(
+            self, resource_group_name, application_resource_name, service_resource_name, replica_name, code_package_name, tail=None, custom_headers=None, raw=False, **operation_config):
+        """Gets the logs from the container.
 
-        Get the logs for the container of a given code package of an
-        application.
+        Gets the logs for the container of the specified code package of the
+        service replica.
 
         :param resource_group_name: Azure resource group name
         :type resource_group_name: str
-        :param application_name: The identity of the application.
-        :type application_name: str
-        :param service_name: The identity of the service.
-        :type service_name: str
-        :param replica_name: The identity of the service replica.
+        :param application_resource_name: The identity of the application.
+        :type application_resource_name: str
+        :param service_resource_name: The identity of the service.
+        :type service_resource_name: str
+        :param replica_name: Service Fabric replica name.
         :type replica_name: str
-        :param code_package_name: The name of the code package.
+        :param code_package_name: The name of code package of the service.
         :type code_package_name: str
         :param tail: Number of lines to show from the end of the logs. Default
          is 100.
@@ -68,14 +68,14 @@ class CodePackageOperations(object):
          :class:`ErrorModelException<azure.mgmt.servicefabricmesh.models.ErrorModelException>`
         """
         # Construct URL
-        url = self.get_container_log.metadata['url']
+        url = self.get_container_logs.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'applicationName': self._serialize.url("application_name", application_name, 'str', skip_quote=True),
-            'serviceName': self._serialize.url("service_name", service_name, 'str', skip_quote=True),
+            'applicationResourceName': self._serialize.url("application_resource_name", application_resource_name, 'str', skip_quote=True),
+            'serviceResourceName': self._serialize.url("service_resource_name", service_resource_name, 'str', skip_quote=True),
             'replicaName': self._serialize.url("replica_name", replica_name, 'str', skip_quote=True),
-            'codePackageName': self._serialize.url("code_package_name", code_package_name, 'str', skip_quote=True)
+            'codePackageName': self._serialize.url("code_package_name", code_package_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -112,4 +112,4 @@ class CodePackageOperations(object):
             return client_raw_response
 
         return deserialized
-    get_container_log.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationName}/services/{serviceName}/replicas/{replicaName}/codePackages/{codePackageName}/logs'}
+    get_container_logs.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ServiceFabricMesh/applications/{applicationResourceName}/services/{serviceResourceName}/replicas/{replicaName}/codePackages/{codePackageName}/logs'}
