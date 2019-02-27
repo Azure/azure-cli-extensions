@@ -1,0 +1,83 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [postgres up]
+      Connection: [keep-alive]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.4.34
+          resourcemanagementclient/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.59]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/group5506772999?api-version=2018-05-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group5506772999","name":"group5506772999","location":"westus2","properties":{"provisioningState":"Succeeded"}}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['184']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 27 Feb 2019 01:28:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [postgres up]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.4.34
+          azure-mgmt-rdbms/2017-12-01 Azure-SDK-For-Python AZURECLI/2.0.59]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group5506772999/providers/Microsoft.DBforPostgreSQL/servers/server052801777?api-version=2017-12-01
+  response:
+    body: {string: '{"sku":{"name":"GP_Gen5_4","tier":"GeneralPurpose","family":"Gen5","capacity":4},"properties":{"administratorLogin":"rowdyLion5","storageProfile":{"storageMB":5120,"backupRetentionDays":7,"geoRedundantBackup":"Disabled","storageAutoGrow":"Disabled"},"version":"10","sslEnforcement":"Disabled","userVisibleState":"Ready","fullyQualifiedDomainName":"server052801777.postgres.database.azure.com","earliestRestoreDate":"2019-02-26T18:07:17.423+00:00","replicationRole":"None","masterServerId":"","replicaCapacity":5},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group5506772999/providers/Microsoft.DBforPostgreSQL/servers/server052801777","name":"server052801777","type":"Microsoft.DBforPostgreSQL/servers"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['752']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 27 Feb 2019 01:28:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [postgres up]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.4.34
+          azure-mgmt-rdbms/2017-12-01 Azure-SDK-For-Python AZURECLI/2.0.59]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group5506772999/providers/Microsoft.DBforPostgreSQL/servers/server052801777/databases/sampledb?api-version=2017-12-01
+  response:
+    body: {string: '{"properties":{"charset":"UTF8","collation":"English_United States.1252"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group5506772999/providers/Microsoft.DBforPostgreSQL/servers/server052801777/databases/sampledb","name":"sampledb","type":"Microsoft.DBforPostgreSQL/servers/databases"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['314']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 27 Feb 2019 01:28:30 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+version: 1
