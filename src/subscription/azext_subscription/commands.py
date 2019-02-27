@@ -19,4 +19,4 @@ def load_command_table(self, _):
     )
 
     with self.command_group('account', subscription_util, client_factory=subscription_factory) as g:
-        g.custom_command('create', 'cli_subscription_create')
+        g.command('create', 'cli_subscription_create')
