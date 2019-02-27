@@ -24,7 +24,7 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         assert isinstance(query_guid['tables'][0]['rows'][0][1], (int, float, complex))
 
     def test_metrics_show(self):
-        self.cmd(' az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metrics requests/duration --aggregation count sum', checks=[
+        self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metrics requests/duration --aggregation count sum', checks=[
             self.check('value."requests/duration".count', 0),
             self.check('value."requests/duration".sum', 0)
         ])
