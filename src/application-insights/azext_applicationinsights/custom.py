@@ -22,7 +22,7 @@ def get_events(cmd, client, application, event_type, event=None, timespan=None, 
     if event:
         return client.events.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, event, timespan=timespan)
     return client.events.get_by_type(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), event_type, timespan=timespan)
-    
+
 
 def get_metric(cmd, client, application, metric, timespan=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None, resource_group_name=None):
     return client.metrics.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), metric, timespan=timespan, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
