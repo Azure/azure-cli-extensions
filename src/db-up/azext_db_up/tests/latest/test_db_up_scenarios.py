@@ -24,7 +24,7 @@ class DbUpTests(ScenarioTest):
             self.cmd('mysql up', checks=[JMESPathCheck('password', '*****')])
             self.cmd('mysql up -p {}'.format(password), checks=[JMESPathCheck('password', password)])
 
-            # check that db and server exist        
+            # check that db and server exist
             self.cmd('mysql db show -n {} -g {} -s {}'.format(database, group, server))
 
             # remove all resources used by up
@@ -40,7 +40,6 @@ class DbUpTests(ScenarioTest):
                 password, user, database, server)).get_output_in_json()
             self.assertEqual(output, output_mirror)
 
-
     def test_postgres_flow(self):
         group = self.create_random_name(prefix='group', length=24)
         server = self.create_random_name(prefix='server', length=24)
@@ -55,7 +54,7 @@ class DbUpTests(ScenarioTest):
             self.cmd('postgres up', checks=[JMESPathCheck('password', '*****')])
             self.cmd('postgres up -p {}'.format(password), checks=[JMESPathCheck('password', password)])
 
-            # check that db and server exist        
+            # check that db and server exist
             self.cmd('postgres db show -n {} -g {} -s {}'.format(database, group, server))
 
             # remove all resources used by up
