@@ -47,9 +47,9 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
             self.check('value[0].availabilityResult.duration', 861),
             self.check('value[0].client.city', 'Chicago')
         ])
-        self.cmd('az monitor app-insights events show --timespan PT5M --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
+        self.cmd('az monitor app-insights events show --start-time 2018-02-28 10:30:00 -08:00 --end-time 2018-02-28 10:35:00 -08:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
         ])
-        result = self.cmd('az monitor app-insights events show --timespan PT5M --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()
+        result = self.cmd('az monitor app-insights events show --start-time 2018-02-28 10:30:00 -08:00 --end-time 2018-02-28 10:35:00 -08:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()
         assert isinstance(result["value"][0]["client"]["city"], ("".__class__, u"".__class__))
         assert isinstance(result["value"][0]["availabilityResult"]["duration"], (int, float, complex))

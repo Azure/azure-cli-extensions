@@ -10,6 +10,15 @@ from knack.help_files import helps
 helps['monitor app-insights'] = """
     type: group
     short-summary: Commands for querying data in Application Insights applications.
+    parameters:
+      - name: --offset
+        short-summary: >
+          Time offset of the query range, in ##d##h format.
+        long-summary: >
+          Can be used with either --start-time or --end-time. If used with --start-time, then
+          the end time will be calculated by adding the offset. If used with --end-time (default), then
+          the start time will be calculated by subtracting the offset. If --start-time and --end-time are
+          provided, then --offset will be ignored.
 """
 
 helps['monitor app-insights metrics'] = """
@@ -34,6 +43,10 @@ helps['monitor app-insights query'] = """
 helps['monitor app-insights metrics show'] = """
     type: command
     short-summary: View the value of a single metric.
+    parameters:
+      - name: --interval
+        short-summary: >
+          The interval over which to aggregate metrics, in ##h##m format.
     examples:
       - name: View the count of availabilityResults events.
         text: |

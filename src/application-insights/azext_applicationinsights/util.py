@@ -5,7 +5,9 @@
 
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_applicationinsights._client_factory import cf_components
-
+from six.moves.urllib.parse import quote_plus
+from datetime import datetime
+import dateutil.parser
 
 def get_id_from_azure_resource(cli_ctx, app, resource_group=None):
     if is_valid_resource_id(app):
@@ -27,3 +29,17 @@ def get_query_targets(cli_ctx, apps, resource_group):
         if resource_group:
             return [get_id_from_azure_resource(cli_ctx, apps, resource_group)]
         return apps
+
+def get_timespan(cli_ctx, start_time=None, end_time=None, offset=None):
+    if not start_time and not end_time:
+        # if neither value provided, end_time is now
+        end_time = datetime.utcnow().isoformat()
+    if not start_time:
+        # if no start_time, apply offset backwards from end_time
+        start_time = (dateutil.parser.parse(end_time) - offset).isoformat()
+    elif not end_time:
+        # if no end_time, apply offset fowards from start_time
+        end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
+    timespan = '{}/{}'.format(start_time, end_time)
+    print(timespan)
+    return quote_plus(timespan)
