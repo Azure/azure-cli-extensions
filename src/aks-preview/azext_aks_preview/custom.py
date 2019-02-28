@@ -335,6 +335,12 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+def _trim_nodepoolname(nodepool_name):
+    if not nodepool_name:
+        return "nodepool1"
+    return nodepool_name[:12]
+
+
 # pylint: disable=too-many-statements
 def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
                dns_name_prefix=None,
@@ -344,6 +350,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                node_vm_size="Standard_DS2_v2",
                node_osdisk_size=0,
                node_count=3,
+               nodepool_name="nodepool1",
                service_principal=None, client_secret=None,
                no_ssh_key=False,
                disable_rbac=None,
@@ -352,6 +359,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
                network_plugin=None,
+               network_policy=None,
                pod_cidr=None,
                service_cidr=None,
                dns_service_ip=None,
@@ -386,7 +394,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         location = rg_location
 
     agent_pool_profile = ManagedClusterAgentPoolProfile(
-        name='nodepool1',  # Must be 12 chars or less before ACS RP adds to it
+        name=_trim_nodepoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
@@ -424,13 +432,19 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                            'Are you an Owner on this subscription?')
 
     network_profile = None
-    if any([network_plugin, pod_cidr, service_cidr, dns_service_ip, docker_bridge_address]):
+    if any([network_plugin,
+            pod_cidr,
+            service_cidr,
+            dns_service_ip,
+            docker_bridge_address,
+            network_policy]):
         network_profile = ContainerServiceNetworkProfile(
             network_plugin=network_plugin,
             pod_cidr=pod_cidr,
             service_cidr=service_cidr,
             dns_service_ip=dns_service_ip,
-            docker_bridge_cidr=docker_bridge_address
+            docker_bridge_cidr=docker_bridge_address,
+            network_policy=network_policy
         )
 
     addon_profiles = _handle_addons_args(
@@ -585,16 +599,17 @@ ADDONS = {
 }
 
 
-def aks_scale(cmd, client, resource_group_name, name, node_count, no_wait=False):
+def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.managed_clusters.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
-    instance.agent_pool_profiles[0].count = int(node_count)  # pylint: disable=no-member
-
-    # null out the SP and AAD profile because otherwise validation complains
-    instance.service_principal_profile = None
-    instance.aad_profile = None
-
-    return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
+            agent_profile.count = int(node_count)  # pylint: disable=no-member
+            # null out the SP and AAD profile because otherwise validation complains
+            instance.service_principal_profile = None
+            instance.aad_profile = None
+            return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
+    raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
 def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument

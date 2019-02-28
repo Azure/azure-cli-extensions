@@ -112,3 +112,12 @@ def validate_ip_ranges(namespace):
                 ip_network(ip)
             except ValueError:
                 raise CLIError("--api-server-authorized-ip-ranges should be list of IPv4 addresses or CIDRs")
+
+
+def validate_nodepool_name(namespace):
+    """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
+    if namespace.nodepool_name != "":
+        if len(namespace.nodepool_name) > 12:
+            raise CLIError('--nodepool-name can contain atmost 12 characters')
+        if not namespace.nodepool_name.isalnum():
+            raise CLIError('--nodepool-name should only contain alphanumeric characters')

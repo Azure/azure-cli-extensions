@@ -1,5 +1,5 @@
 # Azure CLI DB Up Extension #
-This extension enables single commands to create Azure Database server instances with databases. It currently supports Azure Database for MySQL. 
+This extension enables single commands to create Azure Database server instances with databases. It currently supports Azure Database for MySQL and PostgreSQL.
 
 ### How to use ###
 Install this extension using the below CLI command
@@ -31,6 +31,15 @@ az mysql down \
     --delete-group
 ```
 
+Show the connection strings for a database without any server calls.
+```
+az mysql show-connection-string \
+    -s serverName \
+    -d databaseName \
+    -u adminUsername \
+    -p adminPassword
+```
+
 #### PostgreSQL
 Ensures an Azure Database for PostgreSQL server instance is up and running and configured for immediate use with a single command.
 
@@ -53,4 +62,13 @@ Clean up the cache and delete the server. Use the `--delete-group` parameter to 
 ```
 az postgres down \
     --delete-group
+```
+
+Show the connection strings for a database without any server calls.
+```
+az postgres show-connection-string \
+    -s serverName \
+    -d databaseName \
+    -u adminUsername \
+    -p adminPassword
 ```

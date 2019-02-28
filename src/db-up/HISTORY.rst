@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.1.6 (2019-2-26)
++++++++++++++++++
+* `az mysql/postgres show-connection-string` commands to show connection strings without server calls.
+
 0.1.5 (2019-2-1)
 ++++++++++++++++
 * Added Spring JDBC connection string to output.

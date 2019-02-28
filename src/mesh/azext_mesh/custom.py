@@ -217,6 +217,29 @@ def _get_missing_parameters(parameters, template, prompt_fn):
     return parameters
 
 
+def _invoke_mergeutil(input_yaml_files=None, parameters=None):
+    # call merge utility
+    file_path_list = []
+    prefix = "merged-"
+    output_file_path = os.path.join(os.getcwd(), prefix + 'arm_rp.json')
+    if os.path.isdir(input_yaml_files):
+        for root, _, files in os.walk(input_yaml_files):
+            for filename in files:
+                if filename.endswith(".yaml"):
+                    file_path_list.append(os.path.join(root, filename))
+    else:
+        file_path_list = input_yaml_files.split(',')
+    if os.path.exists(output_file_path):
+        os.remove(output_file_path)
+    SFMergeUtility.sf_merge_utility(file_path_list, "SF_SBZ_RP_JSON", parameters=parameters, output_dir=None, prefix=prefix)
+    return output_file_path
+
+
+def _generate_arm_template_core(input_yaml_files=None, parameters=None):
+    output_file_path = _invoke_mergeutil(input_yaml_files, parameters)
+    logger.warning("Generated ARM template file at {0}.".format(output_file_path))
+
+
 def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
                               template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                               parameters=None, mode=None, validate_only=False,
@@ -233,20 +256,7 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
         template = get_file_json(template_file, preserve_order=True)
         template_obj = template
     else:
-        # call merge utility
-        file_path_list = []
-        prefix = "merged-"
-        output_file_path = os.path.join(os.getcwd(), prefix + 'arm_rp.json')
-        if os.path.isdir(input_yaml_files):
-            for root, _, files in os.walk(input_yaml_files):
-                for filename in files:
-                    if filename.endswith(".yaml"):
-                        file_path_list.append(os.path.join(root, filename))
-        else:
-            file_path_list = input_yaml_files.split(',')
-        if os.path.exists(output_file_path):
-            os.remove(output_file_path)
-        SFMergeUtility.sf_merge_utility(file_path_list, "SF_SBZ_RP_JSON", parameters=parameters, output_dir=None, prefix=prefix)
+        output_file_path = _invoke_mergeutil(input_yaml_files, parameters)
         parameters = None
         template = get_file_json(output_file_path, preserve_order=True)
         template_obj = template
@@ -281,6 +291,10 @@ def deploy_arm_template(cmd, resource_group_name,
                         parameters=None, mode=None, no_wait=False):
     return _deploy_arm_template_core(cmd.cli_ctx, resource_group_name, template_file, template_uri,
                                      input_yaml_files, deployment_name, parameters, mode, no_wait=no_wait)
+
+
+def generate_arm_template(cmd, input_yaml_files=None, parameters=None):
+    return _generate_arm_template_core(input_yaml_files, parameters)
 
 
 def list_networks(client, resource_group_name=None):

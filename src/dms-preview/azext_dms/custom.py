@@ -7,6 +7,7 @@ import os
 import re
 from enum import Enum
 from knack.prompting import prompt, prompt_pass
+from knack.util import CLIError
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from azure.cli.command_modules.dms._client_factory import dms_cf_projects
 from azure.cli.command_modules.dms.custom import (create_or_update_project as core_create_or_update_project,
@@ -54,8 +55,9 @@ def create_or_update_project(
         # because of this we need to raise the error here.
         try:
             # TODO: Remove this check after validations are added to core
-            if scenario_handled_in_extension:
-                raise ValueError
+            if source_platform != "sql" or target_platform != "sqldb":
+                raise CLIError("The provided source-platform, target-platform combination is not appropriate. \n\
+Please refer to the help file 'az dms project create -h' for the supported scenarios.")
 
             core_res = core_create_or_update_project(
                 client,
@@ -67,8 +69,9 @@ def create_or_update_project(
                 target_platform,
                 tags)
         except:
-            raise ValueError("The provided source-platform, target-platform combination is not appropriate. \n\
-                Please refer to the help file 'az dms project create -h' for the supported scenarios.")
+            # TODO: We currently don't have any CLI core code to perform any validations
+            # because of this we need to raise the error here.
+            raise
         else:
             return core_res
 
@@ -117,8 +120,18 @@ def create_task(
         # If not an extension scenario, run CLI core method
         try:
             # TODO: Remove this check after validations are added to core
-            if scenario_handled_in_extension:
-                raise ValueError
+            if source_platform != "sql" or target_platform != "sqldb":
+                raise CLIError("The combination of the provided task-type and the project's \
+source-platform and target-platform is not appropriate. \n\
+Please refer to the help file 'az dms project task create -h' \
+for the supported scenarios.")
+
+            # TODO: Calling this validates our inputes. Remove this check after this function is added to core
+            transform_json_inputs(source_connection_json,
+                                  source_platform,
+                                  target_connection_json,
+                                  target_platform,
+                                  database_options_json)
 
             core_res = core_create_task(client,
                                         resource_group_name,
@@ -134,14 +147,11 @@ def create_task(
         except:
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
-            raise ValueError("The combination of the provided task-type and the project's \
-                              source-platform and target-platform is not appropriate. \n\
-                              Please refer to the help file 'az dms project task create -h' \
-                              for the supported scenarios.")
+            raise
         else:
             return core_res
 
-    # Run extension scenario
+    # Get json inputs
     source_connection_info, target_connection_info, database_options_json = \
         transform_json_inputs(source_connection_json,
                               source_platform,
@@ -221,7 +231,7 @@ def restart_task(
         command_input = MongoDbCommandInput(object_name=object_name)
         command_properties_model = MongoDbRestartCommand
     else:
-        raise ValueError("The supplied project's source and target do not support restarting the migration.")
+        raise CLIError("The supplied project's source and target do not support restarting the migration.")
 
     run_command(client,
                 command_input,
@@ -259,9 +269,9 @@ def stop_task(
             command_input = MongoDbCommandInput(object_name=object_name)
             command_properties_model = MongoDbCancelCommand
         else:
-            raise ValueError("The supplied project's source and target does not support \
-                              cancelling at the object level. \n\
-                              To cancel this task do not supply the object-name parameter.")
+            raise CLIError("The supplied project's source and target does not support \
+cancelling at the object level. \n\
+To cancel this task do not supply the object-name parameter.")
 
         run_command(client,
                     command_input,
@@ -300,24 +310,30 @@ def transform_json_inputs(
         target_platform,
         database_options_json):
     # Source connection info
-    source_connection_json = get_file_or_parse_json(source_connection_json)
+    source_connection_json = get_file_or_parse_json(source_connection_json, "source-connection-json")
     source_connection_info = create_connection(source_connection_json, "Source Database ", source_platform)
 
     # Target connection info
-    target_connection_json = get_file_or_parse_json(target_connection_json)
+    target_connection_json = get_file_or_parse_json(target_connection_json, "target-connection-json")
     target_connection_info = create_connection(target_connection_json, "Target Database ", target_platform)
 
     # Database options
-    database_options_json = get_file_or_parse_json(database_options_json)
+    database_options_json = get_file_or_parse_json(database_options_json, "database-options-json")
 
     return (source_connection_info, target_connection_info, database_options_json)
 
 
-def get_file_or_parse_json(value):
+def get_file_or_parse_json(value, value_type):
     if os.path.exists(value):
         return get_file_json(value)
 
-    return shell_safe_json_parse(value)
+    # Test if provided value is a valid json
+    try:
+        json_parse = shell_safe_json_parse(value)
+    except:
+        raise CLIError("The supplied input for '" + value_type + "' is not a valid file path or a valid json object.")
+    else:
+        return json_parse
 
 
 def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
@@ -375,7 +391,7 @@ def get_task_migration_properties(
         TaskProperties = MigrateMongoDbTaskProperties
         GetInput = get_mongo_to_mongo_input
     else:
-        raise ValueError("The supplied source, target, and task type is not supported for migration.")
+        raise CLIError("The supplied source, target, and task type is not supported for migration.")
 
     return get_task_properties(GetInput,
                                TaskProperties,
@@ -396,7 +412,7 @@ def get_task_validation_properties(
         input_func = get_mongo_to_mongo_input
         task_properties_type = ValidateMongoDbTaskProperties
     else:
-        raise ValueError("The supplied source, target, and task type is not supported for validation.")
+        raise CLIError("The supplied source, target, and task type is not supported for validation.")
 
     return get_task_properties(input_func,
                                task_properties_type,
@@ -438,11 +454,10 @@ def run_command(client,
 
 
 def get_scenario_type(source_platform, target_platform, task_type=""):
-    if source_platform == "sql":
-        if target_platform == "sqldb":
-            scenario_type = ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline
-        elif target_platform == "sqlmi":
-            scenario_type = ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline
+    if source_platform == "sql" and target_platform == "sqldb":
+        scenario_type = ScenarioType.sql_sqldb_online if "online" in task_type else ScenarioType.sql_sqldb_offline
+    elif source_platform == "sql" and target_platform == "sqlmi":
+        scenario_type = ScenarioType.sql_sqlmi_online if "online" in task_type else ScenarioType.sql_sqlmi_offline
     elif source_platform == "mysql" and target_platform == "azuredbformysql":
         scenario_type = ScenarioType.mysql_azuremysql_online if "online" in task_type else \
             ScenarioType.mysql_azuremysql_offline
