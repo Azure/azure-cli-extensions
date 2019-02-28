@@ -72,8 +72,8 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume_list = self.cmd("anf volume list --resource-group {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 1
 
-        self.cmd("az anf volume delete --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
-        volume_list = self.cmd("anf volume list --resource-group {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
+        self.cmd("az anf volume delete -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
+        volume_list = self.cmd("anf volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')
@@ -90,7 +90,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
         assert volume['tags']['Tag2'] == 'Value1'
 
-        volume_from_id = self.cmd("az anf volume show --resource-group {rg} --ids %s" % volume['id']).get_output_in_json()
+        volume_from_id = self.cmd("az anf volume show --ids %s" % volume['id']).get_output_in_json()
         assert volume_from_id['name'] == account_name + '/' + pool_name + '/' + volume_name
 
     @ResourceGroupPreparer(name_prefix='cli_tests_rg')

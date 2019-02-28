@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from azure.cli.core.commands.parameters import resource_group_name_type
 
 
 def load_arguments(self, _):
@@ -56,3 +57,7 @@ def load_arguments(self, _):
 
     with self.argument_context('anf') as c:
         c.argument('tag', options_list=['--tags'], required=False, help='A list of space separated tags to apply to the account')
+
+    # incompatible naming of resource_group in the swagger - including this to provide its associated feature set until it is updated
+    with self.argument_context('anf') as c:
+        c.argument('resource_group', arg_type=resource_group_name_type)

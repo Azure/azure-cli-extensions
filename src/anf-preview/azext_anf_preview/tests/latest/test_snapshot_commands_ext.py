@@ -60,7 +60,7 @@ class AzureNetAppFilesExtSnapshotServiceScenarioTest(ScenarioTest):
         self.cmd("az anf snapshot create -g {rg} -a %s -p %s -v %s -s %s -l 'westus2' --file-system-id %s" % (account_name, pool_name, volume_name, snapshot_name1, volume['fileSystemId'])).get_output_in_json()
         self.cmd("az anf snapshot create -g {rg} -a %s -p %s -v %s -s %s -l 'westus2' --file-system-id %s" % (account_name, pool_name, volume_name, snapshot_name2, volume['fileSystemId'])).get_output_in_json()
 
-        snapshot_list = self.cmd("az anf snapshot list --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        snapshot_list = self.cmd("az anf snapshot list -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
         assert len(snapshot_list) == 2
 
     @ResourceGroupPreparer()
@@ -72,8 +72,8 @@ class AzureNetAppFilesExtSnapshotServiceScenarioTest(ScenarioTest):
         volume = self.create_volume(account_name, pool_name, volume_name, '{rg}')
         snapshot = self.cmd("az anf snapshot create -g {rg} -a %s -p %s -v %s -s %s -l 'westus2' --file-system-id %s" % (account_name, pool_name, volume_name, snapshot_name, volume['fileSystemId'])).get_output_in_json()
 
-        snapshot = self.cmd("az anf snapshot show --resource-group {rg} -a %s -p %s -v %s -s %s" % (account_name, pool_name, volume_name, snapshot_name)).get_output_in_json()
+        snapshot = self.cmd("az anf snapshot show -g {rg} -a %s -p %s -v %s -s %s" % (account_name, pool_name, volume_name, snapshot_name)).get_output_in_json()
         assert snapshot['name'] == account_name + '/' + pool_name + '/' + volume_name + '/' + snapshot_name
 
-        snapshot_from_id = self.cmd("az anf snapshot show --resource-group {rg} --ids %s" % snapshot['id']).get_output_in_json()
+        snapshot_from_id = self.cmd("az anf snapshot show --ids %s" % snapshot['id']).get_output_in_json()
         assert snapshot_from_id['name'] == account_name + '/' + pool_name + '/' + volume_name + '/' + snapshot_name
