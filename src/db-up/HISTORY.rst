@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.1.7 (2019-2-28)
++++++++++++++++++
+* `az mysql/postgres show-connection-string`: change format to output like `up` commands.
+
 0.1.6 (2019-2-26)
 +++++++++++++++++
 * `az mysql/postgres show-connection-string` commands to show connection strings without server calls.
