@@ -60,7 +60,7 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
     _create_database(db_context, cmd, resource_group_name, server_name, database_name)
 
     # check ip address(es) of the user and configure firewall rules
-    mysql_errors = (mysql_connector.errors.DatabaseError)
+    mysql_errors = (mysql_connector.errors.DatabaseError, mysql_connector.errors.InterfaceError)
     host, user = _configure_firewall_rules(
         db_context, mysql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name)
@@ -127,13 +127,11 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
     if administrator_login_password is not None:
         _run_postgresql_commands(host, user, administrator_login_password, database_name)
 
-    return {
-        'connectionStrings': _create_postgresql_connection_string(
-            host, user, administrator_login_password, database_name),
-        'host': host,
-        'username': user,
-        'password': administrator_login_password if administrator_login_password is not None else '*****'
-    }
+    return _form_response(
+        _create_postgresql_connection_string(host, user, administrator_login_password, database_name),
+        host, user,
+        administrator_login_password if administrator_login_password is not None else '*****'
+    )
 
 
 def server_down(cmd, client, resource_group_name=None, server_name=None, delete_group=None):
@@ -154,7 +152,10 @@ def create_mysql_connection_string(
         administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
     host = '{}.mysql.database.azure.com'.format(server_name)
-    return _create_mysql_connection_string(host, user, administrator_login_password, database_name)
+    return _form_response(
+        _create_mysql_connection_string(host, user, administrator_login_password, database_name),
+        host, user, administrator_login_password
+    )
 
 
 def create_postgresql_connection_string(
@@ -162,7 +163,19 @@ def create_postgresql_connection_string(
         administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
     host = '{}.postgres.database.azure.com'.format(server_name)
-    return _create_postgresql_connection_string(host, user, administrator_login_password, database_name)
+    return _form_response(
+        _create_postgresql_connection_string(host, user, administrator_login_password, database_name),
+        host, user, administrator_login_password
+    )
+
+
+def _form_response(connection_strings, host, username, password):
+    return {
+        'connectionStrings': connection_strings,
+        'host': host,
+        'username': username,
+        'password': password
+    }
 
 
 def _create_mysql_connection_string(host, user, password, database):
