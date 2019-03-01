@@ -24,7 +24,7 @@ class SpatialAnchorsAccountScenarioTest(ScenarioTest):
 
         def assert_spatial_anchors_account_keys_work(changed, unchanged):
 
-            cmd = '{} key list {} {}'.format(initial, g_arg, n_arg)
+            cmd = '{} key show {} {}'.format(initial, g_arg, n_arg)
             oldKeys = self.cmd(cmd).get_output_in_json()
 
             cmd = '{} key renew {} {} -k {}'.format(initial, g_arg, n_arg, changed)

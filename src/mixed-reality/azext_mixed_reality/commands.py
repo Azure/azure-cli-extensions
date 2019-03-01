@@ -32,5 +32,5 @@ def load_command_table(self, _):
     group_name = 'spatial-anchors-account key'
 
     with self.command_group(group_name, command_type, client_factory=client_factory) as g:
-        g.command('list', 'get_keys')
+        g.show_command('show', 'get_keys')
         g.custom_command('renew', 'renew_key')

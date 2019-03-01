@@ -32,7 +32,7 @@ def load_arguments(self, _):
     with self.argument_context('spatial-anchors-account list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
 
-    for item in ['create', 'show', 'delete', 'key list', 'key renew']:
+    for item in ['create', 'show', 'delete', 'key show', 'key renew']:
         with self.argument_context('spatial-anchors-account {}'.format(item)) as c:
             c.argument('resource_group_name', arg_type=resource_group_name_type, required=True)
             c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type, required=True)

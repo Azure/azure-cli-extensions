@@ -35,7 +35,7 @@ helps['spatial-anchors-account key'] = """
     short-summary: Manage developer keys of a Spatial Anchors Account.'
 """
 
-helps['spatial-anchors-account keys list'] = """
+helps['spatial-anchors-account keys show'] = """
     type: command
     short-summary: Get both of the two developer keys of a Spatial Anchors Account.
 """
