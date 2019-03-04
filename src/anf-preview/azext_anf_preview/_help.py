@@ -102,7 +102,7 @@ helps['anf pool create'] = """
         - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name -p -n
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
         - name: --size
@@ -127,7 +127,7 @@ helps['anf pool update'] = """
         - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name -p -n
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
         - name: --size
@@ -152,7 +152,7 @@ helps['anf pool delete'] = """
         - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name -p -n
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -165,7 +165,7 @@ helps['anf pool list'] = """
     type: command
     short-summary: L:ist the ANF pools for the specified account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
     examples:
@@ -181,7 +181,7 @@ helps['anf pool show'] = """
         - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name -p -n
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -285,7 +285,7 @@ helps['anf volume list'] = """
         - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name -p
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -403,7 +403,7 @@ helps['anf snapshot list'] = """
         - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name -v
+        - name: --volume-name -n -v
           type: string
           short-summary: The name of the ANF volume
     examples:
