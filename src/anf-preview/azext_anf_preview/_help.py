@@ -25,7 +25,7 @@ helps['anf account create'] = """
     type: command
     short-summary: Create a new Azure NetApp Files (ANF) account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a -n
           type: string
           short-summary: The name of the ANF account
         - name: --tags
@@ -41,7 +41,7 @@ helps['anf account update'] = """
     type: command
     short-summary: Set/modify the tags for a specified ANF account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a -n
           type: string
           short-summary: The name of the ANF account
         - name: --tags
@@ -57,7 +57,7 @@ helps['anf account delete'] = """
     type: command
     short-summary: Delete the specified ANF account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a -n
           type: string
           short-summary: The name of the ANF account
     examples:
@@ -79,7 +79,7 @@ helps['anf account show'] = """
     type: command
     short-summary: Get the specified ANF account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a -n
           type: string
           short-summary: The name of the ANF account
     examples:
@@ -99,10 +99,10 @@ helps['anf pool create'] = """
     type: command
     short-summary: Create a new Azure NetApp Files (ANF) pool.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
         - name: --size
@@ -124,10 +124,10 @@ helps['anf pool update'] = """
     type: command
     short-summary: Update the tags of the specified ANF pool.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
         - name: --size
@@ -149,10 +149,10 @@ helps['anf pool delete'] = """
     type: command
     short-summary: Delete the specified ANF pool.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -165,23 +165,23 @@ helps['anf pool list'] = """
     type: command
     short-summary: L:ist the ANF pools for the specified account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a -n
           type: string
           short-summary: The name of the ANF account
     examples:
         - name: List the pools for the ANF account
           text: >
-            az anf pool list -g group -account-name name
+            az anf pool list -g group --account-name name
 """
 
 helps['anf pool show'] = """
     type: command
     short-summary: Get the specified ANF pool.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -201,13 +201,13 @@ helps['anf volume create'] = """
     type: command
     short-summary: Create a new Azure NetApp Files (ANF) volume.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -n -v
           type: string
           short-summary: The name of the ANF volume
         - name: --service-level
@@ -235,13 +235,13 @@ helps['anf volume update'] = """
     type: command
     short-summary: Update the specified ANF volume with the values provided. Unspecified values will remain unchanged.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -n -v
           type: string
           short-summary: The name of the ANF volume
         - name: --service-level
@@ -263,13 +263,13 @@ helps['anf volume delete'] = """
     type: command
     short-summary: Delete the specified ANF volume.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -n -v
           type: string
           short-summary: The name of the ANF volume
     examples:
@@ -282,10 +282,10 @@ helps['anf volume list'] = """
     type: command
     short-summary: List the ANF Pools for the specified account.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -n -p
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -298,19 +298,19 @@ helps['anf volume show'] = """
     type: command
     short-summary: Get the specified ANF volume.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -n -v
           type: string
           short-summary: The name of the ANF pool
     examples:
         - name: Returns the properties of the given ANF volume
           text: >
-            az anf volume show -g group --account-name aname --pool-name pname --volume_name vname
+            az anf volume show -g group --account-name aname --pool-name pname --volume-name vname
 """
 
 # mounttargets
@@ -324,13 +324,13 @@ helps['anf mount-target list'] = """
     type: command
     short-summary: List the mount targets of an ANF volume.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -v
           type: string
           short-summary: The name of the ANF pool
     examples:
@@ -350,16 +350,16 @@ helps['anf snapshot create'] = """
     type: command
     short-summary: Create a new Azure NetApp Files (ANF) snapshot.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -v
           type: string
           short-summary: The name of the ANF volume
-        - name: --snapshot-name
+        - name: --snapshot-name -n -s
           type: string
           short-summary: The name of the ANF snapshot
         - name: --file-system-id
@@ -375,57 +375,57 @@ helps['anf snapshot delete'] = """
     type: command
     short-summary: Delete the specified ANF snapshot.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -v
           type: string
           short-summary: The name of the ANF volume
-        - name: --snapshot-name
+        - name: --snapshot-name -n -s
           type: string
           short-summary: The name of the ANF snapshot
     examples:
         - name: Delete an ANF snapshot
           text: >
-            az anf volume delete -g group --account-name aname --pool-name pname --volume-name vname --snapshot-name sname
+            az anf snapshot delete -g group --account-name aname --pool-name pname --volume-name vname --snapshot-name sname
 """
 
 helps['anf snapshot list'] = """
     type: command
     short-summary: List the snapshots of an ANF volume.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -n -v
           type: string
           short-summary: The name of the ANF volume
     examples:
         - name: list the snapshots of an ANF volume
           text: >
-            az anf account list -g group --account-name aname --pool-name pname --volume-name vname
+            az anf snapshot list -g group --account-name aname --pool-name pname --volume-name vname
 """
 
 helps['anf snapshot show'] = """
     type: command
     short-summary: Get the specified ANF snapshot.
     parameters:
-        - name: --account-name
+        - name: --account-name -a
           type: string
           short-summary: The name of the ANF account
-        - name: --pool-name
+        - name: --pool-name -p
           type: string
           short-summary: The name of the ANF pool
-        - name: --volume-name
+        - name: --volume-name -v
           type: string
           short-summary: The name of the ANF volume
-        - name: --snapshot-name
+        - name: --snapshot-name -n -s
           type: string
           short-summary: The name of the ANF snapshot
     examples:
