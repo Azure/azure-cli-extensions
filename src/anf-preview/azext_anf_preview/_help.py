@@ -165,7 +165,7 @@ helps['anf pool list'] = """
     type: command
     short-summary: L:ist the ANF pools for the specified account.
     parameters:
-        - name: --account-name -a
+        - name: --account-name -a -n
           type: string
           short-summary: The name of the ANF account
     examples:
