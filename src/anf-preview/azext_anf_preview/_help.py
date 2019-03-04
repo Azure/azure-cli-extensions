@@ -171,7 +171,7 @@ helps['anf pool list'] = """
     examples:
         - name: List the pools for the ANF account
           text: >
-            az anf pool list -g group -account-name name
+            az anf pool list -g group --account-name name
 """
 
 helps['anf pool show'] = """
@@ -310,7 +310,7 @@ helps['anf volume show'] = """
     examples:
         - name: Returns the properties of the given ANF volume
           text: >
-            az anf volume show -g group --account-name aname --pool-name pname --volume_name vname
+            az anf volume show -g group --account-name aname --pool-name pname --volume-name vname
 """
 
 # mounttargets
@@ -390,7 +390,7 @@ helps['anf snapshot delete'] = """
     examples:
         - name: Delete an ANF snapshot
           text: >
-            az anf volume delete -g group --account-name aname --pool-name pname --volume-name vname --snapshot-name sname
+            az anf snapshot delete -g group --account-name aname --pool-name pname --volume-name vname --snapshot-name sname
 """
 
 helps['anf snapshot list'] = """
@@ -409,7 +409,7 @@ helps['anf snapshot list'] = """
     examples:
         - name: list the snapshots of an ANF volume
           text: >
-            az anf account list -g group --account-name aname --pool-name pname --volume-name vname
+            az anf snapshot list -g group --account-name aname --pool-name pname --volume-name vname
 """
 
 helps['anf snapshot show'] = """
