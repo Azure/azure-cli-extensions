@@ -39,7 +39,7 @@ helps['mesh deployment create'] = """
         complete(previous resources will be deleted)
     - name: --parameters
       type: string
-      short-summary: json string or json arm parameter file to supplement parameters of the deployment template
+      short-summary: parameters in yaml file as key-value pairs or as json object or as json arm parameter file to supplement parameters of the deployment template
 """
 
 helps['mesh generate'] = """
@@ -53,8 +53,17 @@ helps['mesh generate armtemplate'] = """
     examples:
         - name: Generate a template file for deployment.
           text: az mesh generate armtemplate --input-yaml-files ./app.yaml,./network.yaml
-        - name: Generate a template file for deployment with parameters.
+        - name: Generate a template file for deployment with a yaml parameters file, which consists of key/value pairs.
           text: az mesh generate armtemplate --input-yaml-files ./app.yaml,./network.yaml --parameters ../params.yaml
+        - name: Generate a template file for deployment with parameters in arm json format.
+          text: az mesh generate armtemplate --input-yaml-files ./app.yaml,./network.yaml --parameters "params.json"
+        - name: Generate a template file for deployment with parameters passed directly as a json object.
+          text: >
+                az mesh generate armtemplate --input-yaml-files ./app.yaml,./network.yaml --parameters "{ 'location' : {'value' : 'eastus'}, 'myparam' : {'value' : 'myvalue'} }"
+    parameters:
+    - name: --parameters
+      type: string
+      short-summary: parameters in yaml file as key-value pairs or as json object or as json arm parameter file to supplement parameters of the deployment template
 """
 
 helps['mesh app'] = """
