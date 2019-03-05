@@ -17,7 +17,7 @@ def load_arguments(self, _):
     with self.argument_context('monitor app-insights metrics show') as c:
         c.argument('metric', options_list=['--metrics', '-m'], help='The metric to retrieve. May be either a standard AI metric or an application-specific custom metric.')
         c.argument('aggregation', nargs='*', help='The aggregation to use when computing the metric values. To retrieve more than one aggregation at a time, separate them with a comma. If no aggregation is specified, then the default aggregation for the metric is used.')
-        c.argument('interval', type=get_period_type())
+        c.argument('interval', arg_group='Time', type=get_period_type())
         c.argument('orderby', help='The aggregation function and direction to sort the segments by.  This value is only valid when segment is specified.')
         c.argument('segment', help='The name of the dimension to segment the metric values by. This dimension must be applicable to the metric you are retrieving. To segment by more than one dimension at a time, separate them with a comma (,). In this case, the metric data will be segmented in the order the dimensions are listed in the parameter.')
         c.argument('top', help='The number of segments to return.  This value is only valid when segment is specified.')
