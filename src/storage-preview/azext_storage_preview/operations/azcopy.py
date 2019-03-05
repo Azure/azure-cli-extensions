@@ -4,33 +4,39 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import print_function
-from knack.util import CLIError
+# from knack.util import CLIError
 from ..azcopy.util import AzCopy, blob_client_auth_for_azcopy, login_auth_for_azcopy
 
 
-def storage_blob_upload(cmd, client, source, destination):
+def storage_blob_copy(cmd, client, source, destination, recursive=None):
     azcopy = _azcopy_blob_client(cmd, client)
-    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token))
+    flags = []
+    if recursive is not None:
+        flags.append('--recursive')
+    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=flags)
 
 
-def storage_blob_upload_batch(cmd, client, source, destination):
+# def storage_blob_upload_batch(cmd, client, source, destination):
+#     azcopy = _azcopy_blob_client(cmd, client)
+#     azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=['--recursive'])
+
+
+# def storage_blob_download_batch(cmd, client, source, destination):
+#     azcopy = _azcopy_blob_client(cmd, client)
+#     azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination, flags=['--recursive'])
+
+
+def storage_blob_remove(cmd, client, target, recursive=None):
     azcopy = _azcopy_blob_client(cmd, client)
-    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=['--recursive'])
-
-
-def storage_blob_download(cmd, client, source, destination):
-    azcopy = _azcopy_blob_client(cmd, client)
-    azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination)
-
-
-def storage_blob_download_batch(cmd, client, source, destination):
-    azcopy = _azcopy_blob_client(cmd, client)
-    azcopy.copy(_add_url_sas(source, azcopy.creds.sas_token), destination, flags=['--recursive'])
+    flags = []
+    if recursive is not None:
+        flags.append('--recursive')
+    azcopy.remove(_add_url_sas(target, azcopy.creds.sas_token), flags=flags)
 
 
 def storage_blob_sync(cmd, client, source, destination):
     azcopy = _azcopy_blob_client(cmd, client)
-    azcopy.sync(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=['--recursive', '--force'])
+    azcopy.sync(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=['--delete-destination true'])
 
 
 def storage_run_command(cmd, command_args):
