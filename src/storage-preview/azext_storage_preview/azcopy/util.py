@@ -12,11 +12,14 @@ import subprocess
 import datetime
 from azure.cli.core._profile import Profile, _CLIENT_ID
 from six.moves.urllib.parse import urlparse
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 STORAGE_RESOURCE_ENDPOINT = "https://storage.azure.com"
 SERVICES = {'blob', 'file'}
-AZCOPY_VERSION = '10.0.7'
+AZCOPY_VERSION = '10.0.8'
 
 class AzCopy(object):
     system_executable_path = {
@@ -34,15 +37,19 @@ class AzCopy(object):
     def run_command(self, args):
         args = [self.executable] + args
         args = ' '.join(args)
+        logger.warning("Azcopy command: %s", args)
         env_kwargs = {}
         if self.creds and self.creds.token_info:
             env_kwargs = {'AZCOPY_OAUTH_TOKEN_INFO': json.dumps(self.creds.token_info)}
-        # print(args, env_kwargs)
         subprocess.call(args, env=dict(os.environ, **env_kwargs))
 
     def copy(self, source, destination, flags=None):
         flags = flags or []
         self.run_command(['copy', source, destination] + flags)
+
+    def remove(self, target, flags=None):
+        flags = flags or []
+        self.run_command(['remove', target] + flags)
 
     def sync(self, source, destination, flags=None):
         flags = flags or []
