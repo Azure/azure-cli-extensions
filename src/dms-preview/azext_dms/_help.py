@@ -74,7 +74,11 @@ helps['dms project task create'] = """
         - name: --validate-only
           type: bool
           short-summary: >
-            (For MongoDB to Cosmos DB only) Whether to run validation only and NOT run migration. This is useful for verifying connections, shard keys, RU settings, etc.
+            (For MongoDB to Cosmos DB only) Whether to run validation only and NOT run migration. It is mandatory to run a 'validate only' task before attempting an actual migration. Once the validation is complete, pass the name of this 'validate only' task to a new task's 'validated task name' argument.
+        - name: --validated-task-name
+          type: string
+          short-summary: >
+            (For MongoDB to Cosmos DB only) When running a migration it is neceaary to pass in the name of a previously run 'validate only' task.
     examples:
         - name: Create and start a SQL Task which performs no validation checks.
           text: >
@@ -149,7 +153,7 @@ helps['dms project task create'] = """
                                     "fields": [
                                         {
                                             "name": "field_name",
-                                            // accepts "Forward", "Reverse", or "Hashed"
+                                            // accepts "Forward", "Reverse", or "Hashed" but CosmosDB only accepts a single-field, hashed shard key
                                             "order": "Forward"
                                         },
                                         ...n
