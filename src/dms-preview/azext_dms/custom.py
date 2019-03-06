@@ -504,8 +504,8 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
 
 
 def mongo_validation_succeeded(migration_progress):
-    for k, db in migration_progress.databases.items():
-        if db.state == "Failed" or any(c.state == "Failed" for k, c in db.collections.items()):
+    for dummy_key1, db in migration_progress.databases.items():
+        if db.state == "Failed" or any(c.state == "Failed" for dummy_key2, c in db.collections.items()):
             return False
 
     return True
