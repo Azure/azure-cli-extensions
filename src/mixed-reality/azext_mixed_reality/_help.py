@@ -43,7 +43,7 @@ helps['spatial-anchors-account delete'] = """
     short-summary: Delete a Spatial Anchors Account.
     examples:
         - name: Delete of a Spatial Anchors Account.
-          text: az spatial-anchors-account show -g example -n example
+          text: az spatial-anchors-account delete -g example -n example
 """
 
 helps['spatial-anchors-account key'] = """
@@ -64,7 +64,7 @@ helps['spatial-anchors-account key renew'] = """
     short-summary: Renew one of the keys of a Spatial Anchors Account.
     examples:
         - name: Renew primary key of a Spatial Anchors Account.
-          text: az spatial-anchors-account key show -g example -n example -k primary
+          text: az spatial-anchors-account key renew -g example -n example -k primary
         - name: Renew secondary key of a Spatial Anchors Account.
-          text: az spatial-anchors-account key show -g example -n example -k secondary
+          text: az spatial-anchors-account key renew -g example -n example -k secondary
 """

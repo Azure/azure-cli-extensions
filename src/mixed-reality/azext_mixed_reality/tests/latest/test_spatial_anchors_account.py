@@ -38,7 +38,7 @@ class SpatialAnchorsAccountScenarioTest(ScenarioTest):
 
     def _assert_spatial_anchors_account_not_exist(self):
         for item in self.cmd('{initial} list -g {rg}').get_output_in_json():
-            self.assertNotEqual({name}, item['name'])
+            self.assertNotEqual(self.kwargs['name'], item['name'])
 
     def _assert_spatial_anchors_account_as_expected(self, cmd):
         self.cmd(cmd, checks=[

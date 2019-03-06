@@ -22,6 +22,7 @@ def create_spatial_anchors_account(
         raw,
         **operation_config)
 
+
 def list_spatial_anchors_accounts(
         client,
         resource_group_name=None,
@@ -31,6 +32,7 @@ def list_spatial_anchors_accounts(
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name, custom_headers, raw, **operation_config)
     return client.list_by_subscription(custom_headers, raw, **operation_config)
+
 
 def renew_key(
         client,
