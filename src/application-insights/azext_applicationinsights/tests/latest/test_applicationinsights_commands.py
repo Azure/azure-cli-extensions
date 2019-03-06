@@ -17,7 +17,7 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         ])
         query_guid = self.cmd('az monitor app-insights query --app 578f0e27-12e9-4631-bc02-50b965da2633 --analytics-query "requests | getschema"').get_output_in_json()
         query_name_rg = self.cmd('az monitor app-insights query --apps ace-test -g ace-test --analytics-query "requests | getschema"').get_output_in_json()
-        query_azure_id = self.cmd('az monitor app-insights query --analytics-query "requests | getschema" --ids /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test').get_output_in_json()
+        query_azure_id = self.cmd('az monitor app-insights query --analytics-query "requests | getschema" --ids /subscriptions/b98981de-4152-480f-a515-59b099299283/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test').get_output_in_json()
         assert query_guid == query_name_rg
         assert query_name_rg == query_azure_id
         assert len(query_guid['tables'][0]['rows']) == 37
@@ -28,7 +28,7 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
             self.check('value."requests/duration".count', 0),
             self.check('value."requests/duration".sum', 0)
         ])
-        result = self.cmd('az monitor app-insights metrics show --app /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test -m availabilityResults/count').get_output_in_json()
+        result = self.cmd('az monitor app-insights metrics show --app /subscriptions/b98981de-4152-480f-a515-59b099299283/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test -m availabilityResults/count').get_output_in_json()
         azure_result = self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metric availabilityResults/count').get_output_in_json()
         assert isinstance(result["value"]["availabilityResults/count"]['sum'], (int, float, complex))
         assert result["value"]["availabilityResults/count"]['sum'] == azure_result["value"]["availabilityResults/count"]['sum']
@@ -42,14 +42,14 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         ])
 
     def test_events_show(self):
-        self.cmd('az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event e96e03fc-3a40-11e9-bcc3-b9eb4867ff75', checks=[
+        self.cmd('az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event 792aeac4-3f9a-11e9-bbeb-376e4a601afa --start-time 2019-03-05 15:00:00 --end-time 2019-03-05 15:05:00', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
-            self.check('value[0].availabilityResult.duration', 861),
-            self.check('value[0].client.city', 'Chicago')
+            self.check('value[0].availabilityResult.duration', 591),
+            self.check('value[0].client.city', 'San Antonio')
         ])
-        self.cmd('az monitor app-insights events show --start-time 2018-02-28 10:30:00 -08:00 --end-time 2018-02-28 10:35:00 -08:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
+        self.cmd('az monitor app-insights events show --start-time 2019-03-05 15:00:00 --end-time 2019-03-05 15:05:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
         ])
-        result = self.cmd('az monitor app-insights events show --start-time 2018-02-28 10:30:00 -08:00 --end-time 2018-02-28 10:35:00 -08:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()
+        result = self.cmd('az monitor app-insights events show --start-time 2019-03-05 15:00:00 --end-time 2019-03-05 15:05:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()
         assert isinstance(result["value"][0]["client"]["city"], ("".__class__, u"".__class__))
         assert isinstance(result["value"][0]["availabilityResult"]["duration"], (int, float, complex))

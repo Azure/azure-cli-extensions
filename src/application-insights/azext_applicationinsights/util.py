@@ -41,5 +41,4 @@ def get_timespan(cli_ctx, start_time=None, end_time=None, offset=None):
         # if no end_time, apply offset fowards from start_time
         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
     timespan = '{}/{}'.format(start_time, end_time)
-    print(timespan)
-    return quote_plus(timespan)
+    return timespan
