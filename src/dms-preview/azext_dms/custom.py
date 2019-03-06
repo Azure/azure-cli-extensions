@@ -162,9 +162,9 @@ for the supported scenarios.")
     # Mongo migrations require users to validate their migrations first
     # Once the migration settings have been attempted, if all database and collection objects aren't in a 'Failed' state continue creating the task
     if get_scenario_type(source_platform, target_platform, task_type) in RequireValidationScenarios:
-        if validate_only == False and validated_task_name is None:
+        if validate_only is False and validated_task_name is None:
             raise CLIError("When not validating a MongoDB task, you must supply a previously run 'validate_only' task name.")
-        elif validate_only == False and validated_task_name is not None:
+        elif validate_only is False and validated_task_name is not None:
             # Though getting the task's properties is pretty quick, we want to let the user know something is happening
             logger.warning("Reviewing validation...")
             v_result = client.get(group_name=resource_group_name,
@@ -175,7 +175,6 @@ for the supported scenarios.")
             if not mongo_validation_succeeded(v_result.properties.output[0]):
                 raise CLIError("Not all collections passed during the validation task. Fix your settings, validate those settings, and try again. \n\
 To view the errors use 'az dms project task show' with the '--expand output' argument on your previous validate-only task.")
-
 
     # Get json inputs
     source_connection_info, target_connection_info, database_options_json = \
