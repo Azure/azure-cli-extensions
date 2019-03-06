@@ -4,9 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._validators import validate_applications
 from azure.cli.core.commands.parameters import get_datetime_type
 from azure.cli.command_modules.monitor.actions import get_period_type
+from ._validators import validate_applications
 
 def load_arguments(self, _):
     with self.argument_context('monitor app-insights') as c:

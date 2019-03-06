@@ -26,7 +26,7 @@ def get_events(cmd, client, application, event_type, event=None, start_time=None
 
 
 def get_metric(cmd, client, application, metric, start_time=None, end_time=None, offset='1h', interval=None, aggregation=None, segment=None, top=None, orderby=None, filter_arg=None, resource_group_name=None):
-    return client.metrics.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), metric, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), interval=None,aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
+    return client.metrics.get(get_id_from_azure_resource(cmd.cli_ctx, application, resource_group=resource_group_name), metric, timespan=get_timespan(cmd.cli_ctx, start_time, end_time, offset), interval=interval, aggregation=aggregation, segment=segment, top=top, orderby=orderby, filter_arg=filter_arg)
 
 
 def get_metrics_metadata(cmd, client, application, resource_group_name=None):
