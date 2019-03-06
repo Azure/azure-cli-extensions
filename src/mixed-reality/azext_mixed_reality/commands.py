@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands import CliCommandType
-from ._client_factory import spatial_anchors_account_factory
+from azext_mixed_reality._client_factory import spatial_anchors_account_factory
 
 
 def load_command_table(self, _):
@@ -17,14 +17,13 @@ def load_command_table(self, _):
 
     command_type = CliCommandType(
         operations_tmpl=operations_tmpl,
-        client_factory=client_factory,
-        client_arg_name='self'
+        client_factory=client_factory
     )
 
     group_name = 'spatial-anchors-account'
 
     with self.command_group(group_name, command_type, client_factory=client_factory) as g:
-        g.command('create', 'create')
+        g.custom_command('create', 'create_spatial_anchors_account')
         g.show_command('show', 'get')
         g.custom_command('list', 'list_spatial_anchors_accounts')
         g.command('delete', 'delete')

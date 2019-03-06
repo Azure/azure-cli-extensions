@@ -13,22 +13,37 @@ helps['spatial-anchors-account'] = """
 helps['spatial-anchors-account list'] = """
     type: command
     short-summary: List Spatial Anchors Accounts.
-    long-summary: If Resource Group is specified, then list Spatial Anchors Accounts in it. Othewise, list Spatial Anchors Accounts in current Subscription.
+    examples:
+        - name: List all Spatial Anchors Accounts in Resource Group 'example'.
+          text: az spatial-anchors-account list -g example
+        - name: List all Spatial Anchors Accounts in current Subscription.
+          text: az spatial-anchors-account list
 """
 
 helps['spatial-anchors-account create'] = """
     type: command
     short-summary: Create a Spatial Anchors Account.
+    examples:
+        - name: Create a Spatial Anchors Account.
+          text: az spatial-anchors-account create -g example -n example -l eastus2
+        - name: Create a Spatial Anchors Account without Location specified.
+          text: az spatial-anchors-account create -g example -n example
 """
 
 helps['spatial-anchors-account show'] = """
     type: command
-    short-summary: Get a Spatial Anchors Account.
+    short-summary: Show a Spatial Anchors Account.
+    examples:
+        - name: Show properties of a Spatial Anchors Account.
+          text: az spatial-anchors-account show -g example -n example
 """
 
 helps['spatial-anchors-account delete'] = """
     type: command
     short-summary: Delete a Spatial Anchors Account.
+    examples:
+        - name: Delete of a Spatial Anchors Account.
+          text: az spatial-anchors-account show -g example -n example
 """
 
 helps['spatial-anchors-account key'] = """
@@ -38,12 +53,18 @@ helps['spatial-anchors-account key'] = """
 
 helps['spatial-anchors-account key show'] = """
     type: command
-    short-summary: Get Spatial Anchors Accounts Keys.
-    long-summary: Get both the primary and the secondary developer keys of a Spatial Anchors Account.
+    short-summary: Show keys of a Spatial Anchors Account.
+    examples:
+        - name: Show primary key and secondary key of a Spatial Anchors Account.
+          text: az spatial-anchors-account key show -g example -n example
 """
 
 helps['spatial-anchors-account key renew'] = """
     type: command
-    short-summary: Renew a Spatial Anchors Accounts Key.
-    long-summary: Regenerate either the primary or the secondary developer keys of a Spatial Anchors Account.
+    short-summary: Renew one of the keys of a Spatial Anchors Account.
+    examples:
+        - name: Renew primary key of a Spatial Anchors Account.
+          text: az spatial-anchors-account key show -g example -n example -k primary
+        - name: Renew secondary key of a Spatial Anchors Account.
+          text: az spatial-anchors-account key show -g example -n example -k secondary
 """

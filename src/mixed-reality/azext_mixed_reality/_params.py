@@ -31,7 +31,7 @@ spatial_anchors_account_key_type = CLIArgumentType(
 def load_arguments(self, _):
     with self.argument_context('spatial-anchors-account') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type, required=True)
+        c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type)
 
     location_type = get_location_type(self.cli_ctx)
     location_validator = get_default_location_from_resource_group
@@ -41,4 +41,4 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spatial-anchors-account key renew') as c:
-        c.argument('key', arg_type=spatial_anchors_account_key_type, required=True)
+        c.argument('key', arg_type=spatial_anchors_account_key_type)
