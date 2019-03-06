@@ -52,6 +52,21 @@ helps['storage account management-policy update'] = """
     short-summary: Updates the data policy rules associated with the specified storage account.
 """
 
+helps['storage azcopy'] = """
+    type: group
+    short-summary: Manage storage operations utilizing AzCopy.
+"""
+
+helps['storage azcopy blob'] = """
+    type: group
+    short-summary: Manage object storage for unstructured data (blobs) using AzCopy.
+"""
+
+helps['storage azcopy blob upload'] = """
+    type: command
+    short-summary: Upload a file(s) to a storage blob container.
+"""
+
 helps['storage azcopy run-command'] = """
     type: command
     short-summary: Updates the data policy rules associated with the specified storage account.

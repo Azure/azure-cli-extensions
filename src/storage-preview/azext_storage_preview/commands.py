@@ -101,8 +101,8 @@ The secondary cluster will become the primary cluster after failover. Please und
 
     with self.command_group('storage azcopy blob', command_type=block_blob_sdk,
                             custom_command_type=get_custom_sdk('azcopy', blob_data_service_factory)) as g:
-        g.storage_custom_command_oauth('upload', 'storage_blob_copy')
-        g.storage_custom_command_oauth('download', 'storage_blob_copy')
+        g.storage_custom_command_oauth('upload', 'storage_blob_upload')
+        g.storage_custom_command_oauth('download', 'storage_blob_download')
         g.storage_custom_command_oauth('delete', 'storage_blob_remove')
 
         # g.storage_custom_command_oauth('sync', 'storage_blob_sync')

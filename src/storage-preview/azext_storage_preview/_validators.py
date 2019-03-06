@@ -173,6 +173,7 @@ def validate_azcopy_download_source_url(cmd, namespace):
     namespace.source = url
     del namespace.source_container
     del namespace.source_path
+    print(namespace)
 
 
 def validate_azcopy_target_url(cmd, namespace):

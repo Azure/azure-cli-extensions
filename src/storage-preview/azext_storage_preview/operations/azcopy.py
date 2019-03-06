@@ -8,12 +8,21 @@ from __future__ import print_function
 from ..azcopy.util import AzCopy, blob_client_auth_for_azcopy, login_auth_for_azcopy
 
 
-def storage_blob_copy(cmd, client, source, destination, recursive=None):
-    azcopy = _azcopy_blob_client(cmd, client)
+def storage_blob_copy(azcopy, source, destination, recursive=None):
     flags = []
     if recursive is not None:
         flags.append('--recursive')
-    azcopy.copy(source, _add_url_sas(destination, azcopy.creds.sas_token), flags=flags)
+    azcopy.copy(source, destination, flags=flags)
+
+
+def storage_blob_upload(cmd, client, source, destination, recursive=None):
+    azcopy = _azcopy_blob_client(cmd, client)
+    storage_blob_copy(azcopy, source, _add_url_sas(destination, azcopy.creds.sas_token), recursive=recursive)
+
+
+def storage_blob_download(cmd, client, source, destination, recursive=None):
+    azcopy = _azcopy_blob_client(cmd, client)
+    storage_blob_copy(azcopy, _add_url_sas(source, azcopy.creds.sas_token), destination, recursive=recursive)
 
 
 # def storage_blob_upload_batch(cmd, client, source, destination):
