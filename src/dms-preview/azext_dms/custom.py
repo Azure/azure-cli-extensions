@@ -6,6 +6,7 @@
 import os
 import re
 from enum import Enum
+from knack.log import get_logger
 from knack.prompting import prompt, prompt_pass
 from knack.util import CLIError
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
@@ -30,7 +31,6 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                        get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
                                        get_mongo_to_mongo_input)
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -160,10 +160,12 @@ for the supported scenarios.")
         ScenarioType.mongo_mongo_online]
 
     # Mongo migrations require users to validate their migrations first
-    # Once the migration settings have been attempted, if all database and collection objects aren't in a 'Failed' state continue creating the task
+    # Once the migration settings have been attempted, if all database and collection objects aren't in a 'Failed'
+    # state continue creating the task
     if get_scenario_type(source_platform, target_platform, task_type) in RequireValidationScenarios:
         if validate_only is False and validated_task_name is None:
-            raise CLIError("When not validating a MongoDB task, you must supply a previously run 'validate_only' task name.")
+            raise CLIError(
+                "When not validating a MongoDB task, you must supply a previously run 'validate_only' task name.")
         elif validate_only is False and validated_task_name is not None:
             # Though getting the task's properties is pretty quick, we want to let the user know something is happening
             logger.warning("Reviewing validation...")
@@ -173,8 +175,10 @@ for the supported scenarios.")
                                   task_name=validated_task_name,
                                   expand="output")
             if not mongo_validation_succeeded(v_result.properties.output[0]):
-                raise CLIError("Not all collections passed during the validation task. Fix your settings, validate those settings, and try again. \n\
-To view the errors use 'az dms project task show' with the '--expand output' argument on your previous validate-only task.")
+                raise CLIError("Not all collections passed during the validation task. Fix your settings, \
+validate those settings, and try again. \n\
+To view the errors use 'az dms project task show' with the '--expand output' argument on your previous \
+validate-only task.")
 
     # Get json inputs
     source_connection_info, target_connection_info, database_options_json = \
@@ -500,7 +504,7 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
 
 
 def mongo_validation_succeeded(migration_progress):
-    for key, db in migration_progress.databases.items():
+    for k, db in migration_progress.databases.items():
         if db.state == "Failed" or any(c.state == "Failed" for k, c in db.collections.items()):
             return False
 
