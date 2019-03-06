@@ -24,12 +24,12 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         assert isinstance(query_guid['tables'][0]['rows'][0][1], (int, float, complex))
 
     def test_metrics_show(self):
-        self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metrics requests/duration --aggregation count sum --start-time 2019-03-06 00:31 --end-time 2019-03-06 01:31', checks=[
+        self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metrics requests/duration --aggregation count sum --start-time 2019-03-06 00:31 +00:00 --end-time 2019-03-06 01:31 +00:00', checks=[
             self.check('value."requests/duration".count', 0),
             self.check('value."requests/duration".sum', 0)
         ])
-        result = self.cmd('az monitor app-insights metrics show --app /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test -m availabilityResults/count --start-time 2019-03-06 00:31 --end-time 2019-03-06 01:31').get_output_in_json()
-        azure_result = self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metric availabilityResults/count --start-time 2019-03-06 00:31 --end-time 2019-03-06 01:31').get_output_in_json()
+        result = self.cmd('az monitor app-insights metrics show --app /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test -m availabilityResults/count --start-time 2019-03-06 00:31 +00:00 --end-time 2019-03-06 01:31 +00:00').get_output_in_json()
+        azure_result = self.cmd('az monitor app-insights metrics show --app 578f0e27-12e9-4631-bc02-50b965da2633 --metric availabilityResults/count --start-time 2019-03-06 00:31 +00:00 --end-time 2019-03-06 01:31 +00:00').get_output_in_json()
         assert isinstance(result["value"]["availabilityResults/count"]['sum'], (int, float, complex))
         assert result["value"]["availabilityResults/count"]['sum'] == azure_result["value"]["availabilityResults/count"]['sum']
 
@@ -42,14 +42,14 @@ class ApplicationInsightsDataClientTests(ScenarioTest):
         ])
 
     def test_events_show(self):
-        self.cmd('az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event 792aeac4-3f9a-11e9-bbeb-376e4a601afa --start-time 2019-03-05 15:00:00 --end-time 2019-03-05 15:05:00', checks=[
+        self.cmd('az monitor app-insights events show --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults --event 792aeac4-3f9a-11e9-bbeb-376e4a601afa --start-time 2019-03-05 23:00:00 +00:00 --end-time 2019-03-05 23:05:00 +00:00', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
             self.check('value[0].availabilityResult.duration', 591),
             self.check('value[0].client.city', 'San Antonio')
         ])
-        self.cmd('az monitor app-insights events show --start-time 2019-03-05 15:00:00 --end-time 2019-03-05 15:05:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
+        self.cmd('az monitor app-insights events show --start-time 2019-03-05 23:00:00 +00:00 --end-time 2019-03-05 23:05:00 +00:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults', checks=[
             self.check('value[0].ai.appId', '578f0e27-12e9-4631-bc02-50b965da2633'),
         ])
-        result = self.cmd('az monitor app-insights events show --start-time 2019-03-05 15:00:00 --end-time 2019-03-05 15:05:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()
+        result = self.cmd('az monitor app-insights events show --start-time 2019-03-05 23:00:00 +00:00 --end-time 2019-03-05 23:05:00 +00:00 --app 578f0e27-12e9-4631-bc02-50b965da2633 --type availabilityResults').get_output_in_json()
         assert isinstance(result["value"][0]["client"]["city"], ("".__class__, u"".__class__))
         assert isinstance(result["value"][0]["availabilityResult"]["duration"], (int, float, complex))

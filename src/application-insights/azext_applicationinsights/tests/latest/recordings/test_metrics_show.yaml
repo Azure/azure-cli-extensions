@@ -11,15 +11,17 @@ interactions:
       User-Agent:
       - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
     method: GET
-    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/requests%2Fduration?timespan=2019-03-06T00%3A31%3A00-08%3A00%2F2019-03-06T01%3A31%3A00-08%3A00&aggregation=count%2Csum
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/requests%2Fduration?timespan=2019-03-06T00%3A31%3A00%2B00%3A00%2F2019-03-06T01%3A31%3A00%2B00%3A00&aggregation=count%2Csum
   response:
     body:
-      string: '{"value":{"start":"2019-03-06T08:31:00.000Z","end":"2019-03-06T09:31:00.000Z","requests/duration":{"count":0,"sum":0}}}'
+      string: '{"value":{"start":"2019-03-06T00:31:00.000Z","end":"2019-03-06T01:31:00.000Z","requests/duration":{"count":0,"sum":0}}}'
     headers:
       access-control-allow-origin:
       - '*'
       access-control-expose-headers:
       - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      age:
+      - '65'
       connection:
       - keep-alive
       content-length:
@@ -27,15 +29,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 Mar 2019 01:40:14 GMT
+      - Wed, 06 Mar 2019 03:23:11 GMT
       server:
       - nginx
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
-      - Accept, Accept-Encoding
+      - Accept-Encoding
       via:
-      - 1.1 draft-ai-blue.38883cce-3f8a-11e9-b38c-a6502c5c8c88
+      - 1.1 draft-ai-blue.e8e4d077-3f94-11e9-8b04-70b3d5800006
       x-content-type-options:
       - nosniff
     status:
@@ -72,7 +74,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 Mar 2019 01:40:15 GMT
+      - Wed, 06 Mar 2019 03:23:11 GMT
       expires:
       - '-1'
       pragma:
@@ -106,31 +108,33 @@ interactions:
       User-Agent:
       - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
     method: GET
-    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/availabilityResults%2Fcount?timespan=2019-03-06T00%3A31%3A00-08%3A00%2F2019-03-06T01%3A31%3A00-08%3A00
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/availabilityResults%2Fcount?timespan=2019-03-06T00%3A31%3A00%2B00%3A00%2F2019-03-06T01%3A31%3A00%2B00%3A00
   response:
     body:
-      string: '{"value":{"start":"2019-03-06T08:31:00.000Z","end":"2019-03-06T09:31:00.000Z","availabilityResults/count":{"sum":0}}}'
+      string: '{"value":{"start":"2019-03-06T00:31:00.000Z","end":"2019-03-06T01:31:00.000Z","availabilityResults/count":{"sum":456}}}'
     headers:
       access-control-allow-origin:
       - '*'
       access-control-expose-headers:
       - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      age:
+      - '64'
       connection:
       - keep-alive
       content-length:
-      - '117'
+      - '119'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 Mar 2019 01:40:16 GMT
+      - Wed, 06 Mar 2019 03:23:12 GMT
       server:
       - nginx
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       vary:
-      - Accept, Accept-Encoding
+      - Accept-Encoding
       via:
-      - 1.1 draft-ai-blue.c6637ca4-3f21-11e9-9736-a6502c5c8c88
+      - 1.1 draft-ai-blue.19b5acd3-3f79-11e9-8b04-70b3d5800006
       x-content-type-options:
       - nosniff
     status:
@@ -148,25 +152,25 @@ interactions:
       User-Agent:
       - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
     method: GET
-    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/availabilityResults%2Fcount?timespan=2019-03-06T00%3A31%3A00-08%3A00%2F2019-03-06T01%3A31%3A00-08%3A00
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/availabilityResults%2Fcount?timespan=2019-03-06T00%3A31%3A00%2B00%3A00%2F2019-03-06T01%3A31%3A00%2B00%3A00
   response:
     body:
-      string: '{"value":{"start":"2019-03-06T08:31:00.000Z","end":"2019-03-06T09:31:00.000Z","availabilityResults/count":{"sum":0}}}'
+      string: '{"value":{"start":"2019-03-06T00:31:00.000Z","end":"2019-03-06T01:31:00.000Z","availabilityResults/count":{"sum":456}}}'
     headers:
       access-control-allow-origin:
       - '*'
       access-control-expose-headers:
       - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
       age:
-      - '0'
+      - '65'
       connection:
       - keep-alive
       content-length:
-      - '117'
+      - '119'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 06 Mar 2019 01:40:17 GMT
+      - Wed, 06 Mar 2019 03:23:12 GMT
       server:
       - nginx
       strict-transport-security:
@@ -174,7 +178,7 @@ interactions:
       vary:
       - Accept-Encoding
       via:
-      - 1.1 draft-ai-blue.c00f7311-3f8c-11e9-b38c-a6502c5c8c88
+      - 1.1 draft-ai-blue.1027db87-3fa2-11e9-8b04-70b3d5800006
       x-content-type-options:
       - nosniff
     status:
