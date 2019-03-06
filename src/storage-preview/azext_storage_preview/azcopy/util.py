@@ -6,11 +6,10 @@
 
 import os
 import json
-import jwt
 import platform
 import subprocess
 import datetime
-from azure.cli.core._profile import Profile, _CLIENT_ID
+from azure.cli.core._profile import Profile
 from six.moves.urllib.parse import urlparse
 from knack.log import get_logger
 
@@ -20,6 +19,7 @@ logger = get_logger(__name__)
 STORAGE_RESOURCE_ENDPOINT = "https://storage.azure.com"
 SERVICES = {'blob', 'file'}
 AZCOPY_VERSION = '10.0.8'
+
 
 class AzCopy(object):
     system_executable_path = {
@@ -56,7 +56,7 @@ class AzCopy(object):
         self.run_command(['sync', source, destination] + flags)
 
 
-class AzCopyCredentials(object):
+class AzCopyCredentials(object):  # pylint: disable=too-few-public-methods
     def __init__(self, sas_token=None, token_info=None):
         self.sas_token = sas_token
         self.token_info = token_info
@@ -100,6 +100,8 @@ def storage_client_auth_for_azcopy(cmd, client, service):
 
 
 def _unserialize_non_msi_token_payload(token_info):
+    import jwt
+
     parsed_authority = urlparse(token_info['_authority'])
     decode = jwt.decode(token_info['accessToken'], verify=False, algorithms=['RS256'])
     return {

@@ -52,7 +52,35 @@ helps['storage account management-policy update'] = """
     short-summary: Updates the data policy rules associated with the specified storage account.
 """
 
+helps['storage azcopy'] = """
+    type: group
+    short-summary: |
+        [EXPERIMENTAL] Manage storage operations utilizing AzCopy.
+    long-summary: |
+        Open issues here: https://github.com/Azure/azure-storage-azcopy
+"""
+
+helps['storage azcopy blob'] = """
+    type: group
+    short-summary: Manage object storage for unstructured data (blobs) using AzCopy.
+"""
+
+helps['storage azcopy blob upload'] = """
+    type: command
+    short-summary: Upload blobs to a storage blob container using AzCopy.
+"""
+
+helps['storage azcopy blob download'] = """
+    type: command
+    short-summary: Download blobs from a storage blob container using AzCopy.
+"""
+
+helps['storage azcopy blob delete'] = """
+    type: command
+    short-summary: Delete blobs from a storage blob container using AzCopy.
+"""
+
 helps['storage azcopy run-command'] = """
     type: command
-    short-summary: Updates the data policy rules associated with the specified storage account.
+    short-summary: Run a command directly using the AzCopy CLI. Please use SAS tokens for authentication.
 """

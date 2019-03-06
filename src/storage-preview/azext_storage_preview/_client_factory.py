@@ -48,8 +48,7 @@ def get_data_service_client(cli_ctx, service_type, account_name, account_key, co
                                               'common._error#_ERROR_STORAGE_MISSING_INFO')
         if _ERROR_STORAGE_MISSING_INFO in str(exc):
             raise ValueError(exc)
-        else:
-            raise CLIError('Unable to obtain data client. Check your connection parameters.')
+        raise CLIError('Unable to obtain data client. Check your connection parameters.')
     # TODO: enable Fiddler
     client.request_callback = _get_add_headers_callback(cli_ctx)
     return client

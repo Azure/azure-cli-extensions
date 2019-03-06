@@ -173,6 +173,7 @@ def validate_azcopy_download_source_url(cmd, namespace):
     namespace.source = url
     del namespace.source_container
     del namespace.source_path
+    print(namespace)
 
 
 def validate_azcopy_target_url(cmd, namespace):
@@ -302,7 +303,6 @@ def get_file_path_validator(default_file_param=None):
     Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
-        import os
         if not hasattr(namespace, 'path'):
             return
 
@@ -338,7 +338,7 @@ def validate_subnet(cmd, namespace):
 
     if (subnet_is_id and not vnet) or (not subnet and not vnet):
         return
-    elif subnet and not subnet_is_id and vnet:
+    if subnet and not subnet_is_id and vnet:
         namespace.subnet = resource_id(
             subscription=get_subscription_id(cmd.cli_ctx),
             resource_group=namespace.resource_group_name,
@@ -380,7 +380,7 @@ def ipv4_range_type(string):
     import re
     ip_format = r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
     if not re.match("^{}$".format(ip_format), string):
-        if not re.match("^{}-{}$".format(ip_format, ip_format), string):
+        if not re.match("^{ip_format}-{ip_format}$".format(ip_format=ip_format), string):
             raise ValueError
     return string
 

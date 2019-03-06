@@ -5,9 +5,6 @@
 
 from __future__ import print_function
 from knack.util import CLIError
-import subprocess
-import os
-from ..azcopy.util import AzCopy, blob_client_auth_for_azcopy
 
 
 def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,

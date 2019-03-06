@@ -187,7 +187,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('recursive', options_list=['--recursive', '-r'], action='store_true')
         c.ignore('target')
 
-
     # with self.argument_context('storage azcopy blob sync') as c:
     #     c.argument('destination', options_list=['--destination', '-d'],
     #                validator=validate_azcopy_container_destination_url)
