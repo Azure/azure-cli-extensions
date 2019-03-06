@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.7"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,22 +24,24 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'mysql-connector-python==8.0.13',
-    'psycopg2-binary==2.7.7'
-]
+DEPENDENCIES = []
+
+with open('README.md', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
 
 setup(
-    name='db-up',
+    name='anf-preview',
     version=VERSION,
-    description='Additional commands to simplify Azure Database workflows.',
-    long_description='An Azure CLI Extension to provide additional DB commands.',
+    description='Provides a preview for upcoming Azure NetApp Files (ANF) features.',
+    long_description='An Azure CLI Extension for Azure NetApp Files (ANF) preview features.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/db-up',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/anf-preview',
     classifiers=CLASSIFIERS,
-    package_data={'azext_db_up': ['azext_metadata.json', 'random_name/*']},
     packages=find_packages(exclude=["tests"]),
+    package_data={'azext_anf_preview': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
