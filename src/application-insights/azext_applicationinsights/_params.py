@@ -14,7 +14,8 @@ def load_arguments(self, _):
         c.argument('application', options_list=['--app', '-a'], id_part='name', help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
         c.argument('start_time', arg_type=get_datetime_type(help='Start-time of time range for which to retrieve data.'))
         c.argument('end_time', arg_type=get_datetime_type(help='End of time range for current operation. Defaults to the current time.'))
-        c.argument('offset', type=get_period_type(as_timedelta=True))
+        c.argument('offset', help='Filter results based on UTC hour offset.', type=get_period_type(as_timedelta=True))
+
     with self.argument_context('monitor app-insights metrics show') as c:
         c.argument('metric', options_list=['--metrics', '-m'], help='The metric to retrieve. May be either a standard AI metric or an application-specific custom metric.')
         c.argument('aggregation', nargs='*', help='The aggregation to use when computing the metric values. To retrieve more than one aggregation at a time, separate them with a comma. If no aggregation is specified, then the default aggregation for the metric is used.')
