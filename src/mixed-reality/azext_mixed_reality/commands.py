@@ -9,8 +9,6 @@ from ._client_factory import spatial_anchors_account_factory
 
 def load_command_table(self, _):
 
-    group_name = 'spatial-anchors-account'
-
     operations_tmpl = 'azext_mixed_reality.vendored_sdks.' \
         + 'mixedreality.operations.spatial_anchors_accounts_operations' \
         + '#SpatialAnchorsAccountsOperations.{}'
@@ -22,6 +20,8 @@ def load_command_table(self, _):
         client_factory=client_factory,
         client_arg_name='self'
     )
+
+    group_name = 'spatial-anchors-account'
 
     with self.command_group(group_name, command_type, client_factory=client_factory) as g:
         g.command('create', 'create')

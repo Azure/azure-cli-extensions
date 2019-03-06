@@ -9,67 +9,61 @@ from knack.util import CLIError
 
 class SpatialAnchorsAccountScenarioTest(ScenarioTest):
 
-    Location = 'eastus2'
-
-    @ResourceGroupPreparer(location=Location)
-    def test_spatial_anchors_account_scenario(self, resource_group):
-
-        initial = 'az spatial-anchors-account'
-
-        def assert_spatial_anchors_account_as_expected(cmd):
-
-            result = self.cmd(cmd).get_output_in_json()
-            self.assertTrue(name, result['name'])
-            self.assertTrue(self.Location, result['location'])
-
-        def assert_spatial_anchors_account_keys_work(changed, unchanged):
-
-            cmd = '{} key show {} {}'.format(initial, g_arg, n_arg)
-            oldKeys = self.cmd(cmd).get_output_in_json()
-
-            cmd = '{} key renew {} {} -k {}'.format(initial, g_arg, n_arg, changed)
-            newKeys = self.cmd(cmd).get_output_in_json()
-
-            key = unchanged + 'Key'
-            self.assertEqual(oldKeys[key], newKeys[key])
-
-            key = changed + 'Key'
-            self.assertNotEqual(oldKeys[key], newKeys[key])
-
-        def assert_spatial_anchors_account_not_exist():
-
-            cmd = '{} list {}'.format(initial, g_arg)
-            result = self.cmd(cmd).get_output_in_json()
-            for item in result:
-                self.assertNotEqual(name, result['name'])
+    @ResourceGroupPreparer(location='eastus2', parameter_name_for_location='location')
+    def test_spatial_anchors_account_scenario(self, resource_group, location):
 
         name = self.create_random_name(prefix='cli', length=24)
 
-        g_arg = '-g {}'.format(resource_group)
-        n_arg = '-n {}'.format(name)
-
-        deletion = '{} delete {} {}'.format(initial, g_arg, n_arg)
+        self.kwargs.update({
+            'initial': 'az spatial-anchors-account',
+            'name': name,
+            'location': location,
+        })
 
         try:
             # Create
-            assert_spatial_anchors_account_not_exist()
-            cmd = '{} create {} {} -l {}'.format(initial, g_arg, n_arg, self.Location)
-            assert_spatial_anchors_account_as_expected(cmd)
+            self.__assert_spatial_anchors_account_not_exist()
+
+            self.__assert_spatial_anchors_account_as_expected('{initial} create -g {rg} -n {name} -l {location}')
 
             # Read
-            cmd = '{} show {} {}'.format(initial, g_arg, n_arg)
-            assert_spatial_anchors_account_as_expected(cmd)
+            self.__assert_spatial_anchors_account_as_expected('{initial} show -g {rg} -n {name}')
 
             # Primary Key
-            assert_spatial_anchors_account_keys_work('primary', 'secondary')
+            self.__assert_spatial_anchors_account_keys_work('primary', 'secondary')
 
             # Secondary Key
-            assert_spatial_anchors_account_keys_work('secondary', 'primary')
+            self.__assert_spatial_anchors_account_keys_work('secondary', 'primary')
 
             # Delete
-            self.cmd(deletion)
-            assert_spatial_anchors_account_not_exist()
+            self.__delete_spatial_anchors_account()
+            self.__assert_spatial_anchors_account_not_exist()
 
         finally:
             # Delete is idempotent
-            self.cmd(deletion)
+            self.__delete_spatial_anchors_account()
+
+    def __assert_spatial_anchors_account_not_exist(self):
+        for item in self.cmd('{initial} list -g {rg}').get_output_in_json():
+            self.assertNotEqual(self.name, item['name'])
+
+    def __assert_spatial_anchors_account_as_expected(self, cmd):
+        self.cmd(cmd, checks=[
+            self.check('name', '{name}'),
+            self.check('location', '{location}'),
+        ])
+
+    def __assert_spatial_anchors_account_keys_work(self, changed, unchanged):
+        old = self.cmd('{initial} key show -g {rg} -n {name}').get_output_in_json()
+
+        self.kwargs['key'] = changed
+        new = self.cmd('{initial} key renew -g {rg} -n {name} -k {key}').get_output_in_json()
+
+        key = unchanged + 'Key'
+        self.assertEqual(old[key], new[key])
+
+        key = changed + 'Key'
+        self.assertNotEqual(old[key], new[key])
+
+    def __delete_spatial_anchors_account(self):
+        self.cmd('{initial} delete -g {rg} -n {name}')

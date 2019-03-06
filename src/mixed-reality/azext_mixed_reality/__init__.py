@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+import azext_mixed_reality._help  # pylint: disable=unused-import
 
 
 class MixedRealityCommandsLoader(AzCommandsLoader):

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.arguments import CLIArgumentType
-
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_resource_name_completion_list,
@@ -29,16 +29,15 @@ spatial_anchors_account_key_type = CLIArgumentType(
 
 
 def load_arguments(self, _):
-    with self.argument_context('spatial-anchors-account list') as c:
+    with self.argument_context('spatial-anchors-account') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type, required=True)
 
-    for item in ['create', 'show', 'delete', 'key show', 'key renew']:
-        with self.argument_context('spatial-anchors-account {}'.format(item)) as c:
-            c.argument('resource_group_name', arg_type=resource_group_name_type, required=True)
-            c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type, required=True)
+    location_type = get_location_type(self.cli_ctx)
+    location_validator = get_default_location_from_resource_group
 
     with self.argument_context('spatial-anchors-account create') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=True)
+        c.argument('location', arg_type=location_type, validator=location_validator)
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spatial-anchors-account key renew') as c:

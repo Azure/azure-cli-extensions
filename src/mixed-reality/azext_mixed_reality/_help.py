@@ -12,17 +12,18 @@ helps['spatial-anchors-account'] = """
 
 helps['spatial-anchors-account list'] = """
     type: command
-    short-summary: If Resource Group is specified, then list Spatial Anchors Accounts in it. Othewise, list Spatial Anchors Accounts in current Subscription.
+    short-summary: List Spatial Anchors Accounts.
+    long-summary: If Resource Group is specified, then list Spatial Anchors Accounts in it. Othewise, list Spatial Anchors Accounts in current Subscription.
 """
 
 helps['spatial-anchors-account create'] = """
     type: command
-    short-summary: Creating a Spatial Anchors Account.
+    short-summary: Create a Spatial Anchors Account.
 """
 
 helps['spatial-anchors-account show'] = """
     type: command
-    short-summary: Retrieve a Spatial Anchors Account.
+    short-summary: Get a Spatial Anchors Account.
 """
 
 helps['spatial-anchors-account delete'] = """
@@ -32,15 +33,17 @@ helps['spatial-anchors-account delete'] = """
 
 helps['spatial-anchors-account key'] = """
     type: group
-    short-summary: Manage developer keys of a Spatial Anchors Account.'
+    short-summary: Manage developer keys of a Spatial Anchors Account.
 """
 
-helps['spatial-anchors-account keys show'] = """
+helps['spatial-anchors-account key show'] = """
     type: command
-    short-summary: Get both of the two developer keys of a Spatial Anchors Account.
+    short-summary: Get Spatial Anchors Accounts Keys.
+    long-summary: Get both the primary and the secondary developer keys of a Spatial Anchors Account.
 """
 
 helps['spatial-anchors-account key renew'] = """
     type: command
-    short-summary: Regenerate a developer keys of a Spatial Anchors Account.
+    short-summary: Renew a Spatial Anchors Accounts Key.
+    long-summary: Regenerate either the primary or the secondary developer keys of a Spatial Anchors Account.
 """
