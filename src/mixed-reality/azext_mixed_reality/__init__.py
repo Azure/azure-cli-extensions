@@ -12,8 +12,10 @@ class MixedRealityCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(operations_tmpl='azext_mixed_reality.custom#{}')
-        super(MixedRealityCommandsLoader, self).\
-            __init__(cli_ctx=cli_ctx, custom_command_type=custom_command_type)
+        super(MixedRealityCommandsLoader, self).__init__(
+            cli_ctx=cli_ctx,
+            custom_command_type=custom_command_type
+        )
 
     def load_command_table(self, args):
         from .commands import load_command_table
