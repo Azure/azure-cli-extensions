@@ -12,16 +12,7 @@ from azext_mixed_reality._client_factory import spatial_anchors_account_factory
 def load_command_table(self, _):
 
     command_type = CliCommandType(
-        operations_tmpl='{}#{}.{{}}'.format(
-            '.'.join([
-                'azext_mixed_reality',
-                'vendored_sdks',
-                'mixedreality',
-                'operations',
-                'spatial_anchors_accounts_operations'
-            ]),
-            'SpatialAnchorsAccountsOperations'
-        )
+        operations_tmpl='azext_mixed_reality.vendored_sdks.mixedreality.operations.spatial_anchors_accounts_operations#SpatialAnchorsAccountsOperations.{}'
     )
 
     with self.command_group('spatial-anchors-account', command_type, client_factory=spatial_anchors_account_factory) as g:
