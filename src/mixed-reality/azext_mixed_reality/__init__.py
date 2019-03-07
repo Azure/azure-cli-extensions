@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
 
 from azure.cli.core import AzCommandsLoader
 import azext_mixed_reality._help  # pylint: disable=unused-import
@@ -14,7 +13,7 @@ class MixedRealityCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(operations_tmpl='azext_mixed_reality.custom#{}')
-        super(MixedRealityCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=custom_command_type)
+        super(MixedRealityCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=custom_command_type)  # pylint: disable=line-too-long
 
     def load_command_table(self, args):
         from .commands import load_command_table

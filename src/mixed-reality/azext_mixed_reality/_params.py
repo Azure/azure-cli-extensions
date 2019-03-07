@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
@@ -36,7 +35,7 @@ def load_arguments(self, _):
         c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type)
 
     with self.argument_context('spatial-anchors-account create') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)  # pylint: disable=line-too-long
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('spatial-anchors-account key renew') as c:
