@@ -1,0 +1,172 @@
+interactions:
+- request:
+    body: '{"query": "availabilityResults | distinct name | order by name asc", "applications":
+      ["f4963800-c77d-40a3-8b0b-448678904c33"]}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['126']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: POST
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/query
+  response:
+    body: {string: '{"tables":[{"name":"PrimaryResult","columns":[{"name":"name","type":"string"}],"rows":[["AIMON-Backup-available"],["AIMON-WCUS-Backup-Failover"],["AIMON-WCUS-Failover"],["AIMON-available"],["google"],["microsoft"]]}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      connection: [keep-alive]
+      content-length: ['217']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 07 Nov 2018 08:07:05 GMT']
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-blue.798fa31b-e1ef-11e8-97d0-70b3d5800005]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"query": "requests | getschema", "applications": []}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['53']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: POST
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/query
+  response:
+    body: {string: '{"tables":[{"name":"getschema","columns":[{"name":"ColumnName","type":"string"},{"name":"ColumnOrdinal","type":"int"},{"name":"DataType","type":"string"},{"name":"ColumnType","type":"string"}],"rows":[["timestamp",0,"System.DateTime","datetime"],["id",1,"System.String","string"],["source",2,"System.String","string"],["name",3,"System.String","string"],["url",4,"System.String","string"],["success",5,"System.String","string"],["resultCode",6,"System.String","string"],["duration",7,"System.Double","real"],["performanceBucket",8,"System.String","string"],["itemType",9,"System.String","string"],["customDimensions",10,"System.Object","dynamic"],["customMeasurements",11,"System.Object","dynamic"],["operation_Name",12,"System.String","string"],["operation_Id",13,"System.String","string"],["operation_ParentId",14,"System.String","string"],["operation_SyntheticSource",15,"System.String","string"],["session_Id",16,"System.String","string"],["user_Id",17,"System.String","string"],["user_AuthenticatedId",18,"System.String","string"],["user_AccountId",19,"System.String","string"],["application_Version",20,"System.String","string"],["client_Type",21,"System.String","string"],["client_Model",22,"System.String","string"],["client_OS",23,"System.String","string"],["client_IP",24,"System.String","string"],["client_City",25,"System.String","string"],["client_StateOrProvince",26,"System.String","string"],["client_CountryOrRegion",27,"System.String","string"],["client_Browser",28,"System.String","string"],["cloud_RoleName",29,"System.String","string"],["cloud_RoleInstance",30,"System.String","string"],["appId",31,"System.String","string"],["appName",32,"System.String","string"],["iKey",33,"System.String","string"],["sdkVersion",34,"System.String","string"],["itemId",35,"System.String","string"],["itemCount",36,"System.Int32","int"]]}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      connection: [keep-alive]
+      content-length: ['1845']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 07 Nov 2018 08:07:06 GMT']
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-blue.726c3e95-e1ef-11e8-97d0-70b3d5800005]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 msrest_azure/0.4.34
+          azure-mgmt-applicationinsights/0.1.1 Azure-SDK-For-Python]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test?api-version=2015-05-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test","name":"ace-test","type":"microsoft.insights/components","location":"westus2","tags":{},"kind":"Node.JS","etag":"\"08005c73-0000-0000-0000-59f3fe650000\"","properties":{"Ver":"v2","ApplicationId":"ace-test","AppId":"578f0e27-12e9-4631-bc02-50b965da2633","Application_Type":"Node.JS","Flow_Type":"Redfield","Request_Source":"IbizaAIExtension","InstrumentationKey":"1145833f-6099-4855-9cb1-557cea26389e","Name":"ace-test","CreationDate":"2017-10-28T03:49:57.2801146+00:00","PackageId":null,"TenantId":"056f3d78-504f-4b60-b19a-276b6f1687db","HockeyAppId":"","HockeyAppToken":null,"provisioningState":"Succeeded","SamplingPercentage":null,"CustomMetricsOptedInType":null}}'}
+    headers:
+      access-control-expose-headers: [Request-Context]
+      cache-control: [no-cache]
+      content-length: ['801']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 07 Nov 2018 08:07:06 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      request-context: ['appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"query": "requests | getschema", "applications": []}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['53']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: POST
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/query
+  response:
+    body: {string: '{"tables":[{"name":"getschema","columns":[{"name":"ColumnName","type":"string"},{"name":"ColumnOrdinal","type":"int"},{"name":"DataType","type":"string"},{"name":"ColumnType","type":"string"}],"rows":[["timestamp",0,"System.DateTime","datetime"],["id",1,"System.String","string"],["source",2,"System.String","string"],["name",3,"System.String","string"],["url",4,"System.String","string"],["success",5,"System.String","string"],["resultCode",6,"System.String","string"],["duration",7,"System.Double","real"],["performanceBucket",8,"System.String","string"],["itemType",9,"System.String","string"],["customDimensions",10,"System.Object","dynamic"],["customMeasurements",11,"System.Object","dynamic"],["operation_Name",12,"System.String","string"],["operation_Id",13,"System.String","string"],["operation_ParentId",14,"System.String","string"],["operation_SyntheticSource",15,"System.String","string"],["session_Id",16,"System.String","string"],["user_Id",17,"System.String","string"],["user_AuthenticatedId",18,"System.String","string"],["user_AccountId",19,"System.String","string"],["application_Version",20,"System.String","string"],["client_Type",21,"System.String","string"],["client_Model",22,"System.String","string"],["client_OS",23,"System.String","string"],["client_IP",24,"System.String","string"],["client_City",25,"System.String","string"],["client_StateOrProvince",26,"System.String","string"],["client_CountryOrRegion",27,"System.String","string"],["client_Browser",28,"System.String","string"],["cloud_RoleName",29,"System.String","string"],["cloud_RoleInstance",30,"System.String","string"],["appId",31,"System.String","string"],["appName",32,"System.String","string"],["iKey",33,"System.String","string"],["sdkVersion",34,"System.String","string"],["itemId",35,"System.String","string"],["itemCount",36,"System.Int32","int"]]}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      age: ['1']
+      connection: [keep-alive]
+      content-length: ['1845']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 07 Nov 2018 08:07:07 GMT']
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-blue.726bc962-e1ef-11e8-97d0-70b3d5800005]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 msrest_azure/0.4.34
+          azure-mgmt-applicationinsights/0.1.1 Azure-SDK-For-Python]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test?api-version=2015-05-01
+  response:
+    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test","name":"ace-test","type":"microsoft.insights/components","location":"westus2","tags":{},"kind":"Node.JS","etag":"\"08005c73-0000-0000-0000-59f3fe650000\"","properties":{"Ver":"v2","ApplicationId":"ace-test","AppId":"578f0e27-12e9-4631-bc02-50b965da2633","Application_Type":"Node.JS","Flow_Type":"Redfield","Request_Source":"IbizaAIExtension","InstrumentationKey":"1145833f-6099-4855-9cb1-557cea26389e","Name":"ace-test","CreationDate":"2017-10-28T03:49:57.2801146+00:00","PackageId":null,"TenantId":"056f3d78-504f-4b60-b19a-276b6f1687db","HockeyAppId":"","HockeyAppToken":null,"provisioningState":"Succeeded","SamplingPercentage":null,"CustomMetricsOptedInType":null}}'}
+    headers:
+      access-control-expose-headers: [Request-Context]
+      cache-control: [no-cache]
+      content-length: ['801']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 07 Nov 2018 08:07:07 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      request-context: ['appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525']
+      server: [Microsoft-IIS/10.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-powered-by: [ASP.NET]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"query": "requests | getschema", "applications": []}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['53']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.7.0 (Windows-10-10.0.17134-SP0) msrest/0.6.1 azure-applicationinsights/0.1.0]
+    method: POST
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/query
+  response:
+    body: {string: '{"tables":[{"name":"getschema","columns":[{"name":"ColumnName","type":"string"},{"name":"ColumnOrdinal","type":"int"},{"name":"DataType","type":"string"},{"name":"ColumnType","type":"string"}],"rows":[["timestamp",0,"System.DateTime","datetime"],["id",1,"System.String","string"],["source",2,"System.String","string"],["name",3,"System.String","string"],["url",4,"System.String","string"],["success",5,"System.String","string"],["resultCode",6,"System.String","string"],["duration",7,"System.Double","real"],["performanceBucket",8,"System.String","string"],["itemType",9,"System.String","string"],["customDimensions",10,"System.Object","dynamic"],["customMeasurements",11,"System.Object","dynamic"],["operation_Name",12,"System.String","string"],["operation_Id",13,"System.String","string"],["operation_ParentId",14,"System.String","string"],["operation_SyntheticSource",15,"System.String","string"],["session_Id",16,"System.String","string"],["user_Id",17,"System.String","string"],["user_AuthenticatedId",18,"System.String","string"],["user_AccountId",19,"System.String","string"],["application_Version",20,"System.String","string"],["client_Type",21,"System.String","string"],["client_Model",22,"System.String","string"],["client_OS",23,"System.String","string"],["client_IP",24,"System.String","string"],["client_City",25,"System.String","string"],["client_StateOrProvince",26,"System.String","string"],["client_CountryOrRegion",27,"System.String","string"],["client_Browser",28,"System.String","string"],["cloud_RoleName",29,"System.String","string"],["cloud_RoleInstance",30,"System.String","string"],["appId",31,"System.String","string"],["appName",32,"System.String","string"],["iKey",33,"System.String","string"],["sdkVersion",34,"System.String","string"],["itemId",35,"System.String","string"],["itemCount",36,"System.Int32","int"]]}]}'}
+    headers:
+      access-control-allow-origin: ['*']
+      access-control-expose-headers: ['Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location']
+      age: ['2']
+      connection: [keep-alive]
+      content-length: ['1845']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 07 Nov 2018 08:07:08 GMT']
+      server: [nginx]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      via: [1.1 draft-ai-blue.20cb2f1a-e1ef-11e8-97d0-70b3d5800005]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+version: 1

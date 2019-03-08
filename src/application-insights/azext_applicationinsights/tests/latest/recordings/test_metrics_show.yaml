@@ -1,0 +1,187 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/requests%2Fduration?timespan=2019-03-06T00%3A31%3A00%2B00%3A00%2F2019-03-06T01%3A31%3A00%2B00%3A00&aggregation=count%2Csum
+  response:
+    body:
+      string: '{"value":{"start":"2019-03-06T00:31:00.000Z","end":"2019-03-06T01:31:00.000Z","requests/duration":{"count":0,"sum":0}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      age:
+      - '65'
+      connection:
+      - keep-alive
+      content-length:
+      - '119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 06 Mar 2019 03:23:11 GMT
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      via:
+      - 1.1 draft-ai-blue.e8e4d077-3f94-11e9-8b04-70b3d5800006
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 msrest_azure/0.4.34
+        azure-mgmt-applicationinsights/0.1.1 Azure-SDK-For-Python
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test?api-version=2015-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ace-test/providers/microsoft.insights/components/ace-test","name":"ace-test","type":"microsoft.insights/components","location":"westus2","tags":{},"kind":"Node.JS","etag":"\"08005c73-0000-0000-0000-59f3fe650000\"","properties":{"Ver":"v2","ApplicationId":"ace-test","AppId":"578f0e27-12e9-4631-bc02-50b965da2633","Application_Type":"Node.JS","Flow_Type":"Redfield","Request_Source":"IbizaAIExtension","InstrumentationKey":"1145833f-6099-4855-9cb1-557cea26389e","Name":"ace-test","CreationDate":"2017-10-28T03:49:57.2801146+00:00","PackageId":null,"TenantId":"056f3d78-504f-4b60-b19a-276b6f1687db","HockeyAppId":"","HockeyAppToken":null,"provisioningState":"Succeeded","SamplingPercentage":null,"CustomMetricsOptedInType":null,"Retention":null}}'
+    headers:
+      access-control-expose-headers:
+      - Request-Context
+      cache-control:
+      - no-cache
+      content-length:
+      - '818'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 06 Mar 2019 03:23:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:920e14b1-13f3-461a-a4bb-b4fe6f1a4525
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/availabilityResults%2Fcount?timespan=2019-03-06T00%3A31%3A00%2B00%3A00%2F2019-03-06T01%3A31%3A00%2B00%3A00
+  response:
+    body:
+      string: '{"value":{"start":"2019-03-06T00:31:00.000Z","end":"2019-03-06T01:31:00.000Z","availabilityResults/count":{"sum":456}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      age:
+      - '64'
+      connection:
+      - keep-alive
+      content-length:
+      - '119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 06 Mar 2019 03:23:12 GMT
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      via:
+      - 1.1 draft-ai-blue.19b5acd3-3f79-11e9-8b04-70b3d5800006
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.2 (Windows-10-10.0.17763-SP0) msrest/0.6.4 azure-applicationinsights/0.1.0
+    method: GET
+    uri: https://api.applicationinsights.io/v1/apps/578f0e27-12e9-4631-bc02-50b965da2633/metrics/availabilityResults%2Fcount?timespan=2019-03-06T00%3A31%3A00%2B00%3A00%2F2019-03-06T01%3A31%3A00%2B00%3A00
+  response:
+    body:
+      string: '{"value":{"start":"2019-03-06T00:31:00.000Z","end":"2019-03-06T01:31:00.000Z","availabilityResults/count":{"sum":456}}}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Retry-After,Age,WWW-Authenticate,x-resource-identities,x-ms-status-location
+      age:
+      - '65'
+      connection:
+      - keep-alive
+      content-length:
+      - '119'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 06 Mar 2019 03:23:12 GMT
+      server:
+      - nginx
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      via:
+      - 1.1 draft-ai-blue.1027db87-3fa2-11e9-8b04-70b3d5800006
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
