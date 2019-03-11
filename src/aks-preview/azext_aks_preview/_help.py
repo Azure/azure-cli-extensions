@@ -135,6 +135,9 @@ helps['aks create'] = """
         - name: --enable-vmss
           type: bool
           short-summary: (PREVIEW) Enable VMSS agent type.
+        - name: --agent-zones
+          type: string array
+          short-summary: (PREVIEW) Availability zones where agent nodes will be placed.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey

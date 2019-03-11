@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.0
++++++
+* new feature `--agent-zones`
+
 0.2.0
 +++++
 * Breaking Change: Set default agentType to VMAS
