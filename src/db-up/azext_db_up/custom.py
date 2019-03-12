@@ -12,6 +12,7 @@ from knack.util import CLIError
 import mysql.connector as mysql_connector
 import psycopg2
 from azext_db_up.vendored_sdks.azure_mgmt_rdbms import mysql, postgresql
+from azext_db_up.vendored_sdks.azure_mgmt_sql import sql
 from azext_db_up._client_factory import (
     cf_mysql_firewall_rules, cf_mysql_config, cf_mysql_db,
     cf_postgres_firewall_rules, cf_postgres_config, cf_postgres_db,
@@ -19,6 +20,10 @@ from azext_db_up._client_factory import (
 from azext_db_up.util import update_kwargs, resolve_poller
 
 logger = get_logger(__name__)
+
+
+def sql_up(cmd, client):
+    pass
 
 
 def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=None, backup_retention=None,
