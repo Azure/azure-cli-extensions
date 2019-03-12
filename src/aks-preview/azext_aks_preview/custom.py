@@ -941,7 +941,6 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
         if min_count is not None or max_count is not None:
             raise CLIError('min-count and max-count are required for --enable-cluster-autoscaler, please use the flag')
 
-
 def _create_client_secret():
     # Add a special character to satsify AAD SP secret requirements
     special_chars = '!#$%&*-+_.:;<>=?@][^}{|~)('
@@ -949,17 +948,15 @@ def _create_client_secret():
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret
     
-def _trim_agentpoolname(agentpool_name):
-    if not agentpool_name:
-        return "agnetpool1"
-    return agentpool_name[:12]
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     return instance
 
+
 def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
     return client.list(resource_group_name, cluster_name)
+
 
 def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
                       node_vm_size="Standard_DS2_v2",
@@ -975,10 +972,8 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
 
-        print(agentpool_profile.name)
-
     agent_pool = AgentPool(
-        name=_trim_agentpoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
+        name=nodepool_name,
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
@@ -993,7 +988,6 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
 
-
 def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
                          nodepool_name,
                          no_wait=False):
@@ -1003,8 +997,6 @@ def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
         if agentpool_profile.name.lower() == nodepool_name.lower():
             agentpool_exists = True
             break
-
-        print(agentpool_profile.name)
 
     if not agentpool_exists:
         raise CLIError("Node pool {} doesnt exist, "
