@@ -39,9 +39,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClus
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClusterAddonProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClusterAgentPoolProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import AgentPoolType
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import OSType
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -964,7 +962,7 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
                       node_count=3,
                       vnet_subnet_id=None,
                       max_pods=0,
-                      os_type=OSType.linux,
+                      os_type="Linux",
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -979,7 +977,7 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         os_type=os_type,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
-        type=AgentPoolType.virtual_machine_scale_sets,
+        type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None
     )
 
