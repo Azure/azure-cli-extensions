@@ -13,10 +13,10 @@ import re
 import time
 import uuid
 from ipaddress import ip_network
-import dateutil.parser  # pylint: disable=import-error
-from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from knack.log import get_logger
 from knack.util import CLIError
+import dateutil.parser  # pylint: disable=import-error
+from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 
 from azure.cli.core.api import get_config_dir
@@ -29,15 +29,19 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2018_08_01_preview.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import AgentPoolType
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_02_01.models import OSType
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -944,3 +948,66 @@ def _create_client_secret():
     special_char = special_chars[ord(os.urandom(1)) % len(special_chars)]
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret
+    
+def _trim_agentpoolname(agentpool_name):
+    if not agentpool_name:
+        return "agnetpool1"
+    return agentpool_name[:12]
+
+def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    return instance
+
+def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
+    return client.list(resource_group_name, cluster_name)
+
+def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
+                      node_vm_size="Standard_DS2_v2",
+                      node_osdisk_size=0,
+                      node_count=3,
+                      vnet_subnet_id=None,
+                      max_pods=0,
+                      os_type=OSType.linux,
+                      no_wait=False):
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name == nodepool_name:
+            raise CLIError("Node pool {} already exists, please try a different name, "
+                           "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
+
+        print(agentpool_profile.name)
+
+    agent_pool = AgentPool(
+        name=_trim_agentpoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
+        count=int(node_count),
+        vm_size=node_vm_size,
+        os_type=os_type,
+        storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
+        vnet_subnet_id=vnet_subnet_id,
+        type=AgentPoolType.virtual_machine_scale_sets,
+        max_pods=int(max_pods) if max_pods else None
+    )
+
+    if node_osdisk_size:
+        agent_pool.os_disk_size_gb = int(node_osdisk_size)
+
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
+
+
+def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
+                         nodepool_name,
+                         no_wait=False):
+    agentpool_exists = False
+    instances = client.list(resource_group_name, cluster_name)
+    for agentpool_profile in instances:
+        if agentpool_profile.name.lower() == nodepool_name.lower():
+            agentpool_exists = True
+            break
+
+        print(agentpool_profile.name)
+
+    if not agentpool_exists:
+        raise CLIError("Node pool {} doesnt exist, "
+                       "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
+
+    return sdk_no_wait(no_wait, client.delete, resource_group_name, cluster_name, nodepool_name)

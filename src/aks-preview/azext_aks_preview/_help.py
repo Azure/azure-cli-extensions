@@ -207,3 +207,52 @@ helps['aks update'] = """
       - name: Enable authorized IP ranges for apiserver.
         text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
 """
+
+helps['aks nodepool'] = """
+    type: group
+    short-summary: Commands to manage node pools in Kubernetes kubernetes cluster.
+"""
+helps['aks nodepool show'] = """
+    type: command
+    short-summary: Show the details for a node pool in the managed Kubernetes cluster.
+"""
+
+helps['aks nodepool list'] = """
+    type: command
+    short-summary: List node pools in the managed Kubernetes cluster.
+"""
+
+helps['aks nodepool add'] = """
+    type: command
+    short-summary: Add a node pool to the managed Kubernetes cluster.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Node pool name.
+        - name: --node-vm-size -s
+          type: string
+          short-summary: Size of Virtual Machines to create as Kubernetes nodes.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the Kubernetes agent pool. After creating a cluster, you can change the
+                         size of its node pool with `az aks scale`.
+        - name: --node-osdisk-size
+          type: int
+          short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+        - name: --max-pods -m
+          type: int
+          short-summary: The maximum number of pods deployable to a node.
+          long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+        - name: --vnet-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+"""
+
+helps['aks nodepool delete'] = """
+    type: command
+    short-summary: Delete the agent pool in the managed Kubernetes cluster.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Node pool name.
+"""
