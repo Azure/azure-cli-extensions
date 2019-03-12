@@ -491,7 +491,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
-            return sdk_no_wait(no_wait, client.managed_clusters.create_or_update,
+            return sdk_no_wait(no_wait, client.create_or_update,
                                resource_group_name=resource_group_name, resource_name=name, parameters=mc)
         except CloudError as ex:
             retry_exception = ex
@@ -515,7 +515,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--api-server-authorized-ip-ranges"')
 
     # TODO: change this approach when we support multiple agent pools.
-    instance = client.managed_clusters.get(resource_group_name, name)
+    instance = client.get(resource_group_name, name)
     node_count = instance.agent_pool_profiles[0].count
 
     if min_count is None or max_count is None:
@@ -564,11 +564,11 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
-    return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
 def aks_show(cmd, client, resource_group_name, name):
-    mc = client.managed_clusters.get(resource_group_name, name)
+    mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
 
@@ -604,7 +604,7 @@ ADDONS = {
 
 
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
-    instance = client.managed_clusters.get(resource_group_name, name)
+    instance = client.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
     for agent_profile in instance.agent_pool_profiles:
         if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
@@ -612,7 +612,7 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
             # null out the SP and AAD profile because otherwise validation complains
             instance.service_principal_profile = None
             instance.aad_profile = None
-            return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
+            return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
@@ -634,7 +634,7 @@ def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_w
     instance.service_principal_profile = None
     instance.aad_profile = None
 
-    return sdk_no_wait(no_wait, client.managed_clusters.create_or_update, resource_group_name, name, instance)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
