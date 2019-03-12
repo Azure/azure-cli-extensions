@@ -89,6 +89,7 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
 
+
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == 'Windows':

@@ -5,9 +5,11 @@
 
 from collections import OrderedDict
 
+
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]
+
 
 def _aks_agentpool_table_format(result):
     # pylint: disable=import-error
@@ -23,6 +25,7 @@ def _aks_agentpool_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict))
+
 
 def aks_list_table_format(results):
     """"Format a list of managed clusters as summary results for display with "-o table"."""

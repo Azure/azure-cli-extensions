@@ -28,6 +28,7 @@ def get_container_service_client(cli_ctx, **_):
 def cf_managed_clusters(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).managed_clusters
 
+
 def cf_agent_pools(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).agent_pools
 
