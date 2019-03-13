@@ -8,6 +8,7 @@ from azure.cli.core.commands import CliCommandType
 from ._client_factory import cf_managed_clusters
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
+from ._format import aks_list_table_format
 from ._format import aks_agentpool_show_table_format
 
 
@@ -31,6 +32,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'aks_update', supports_no_wait=True)
         g.custom_command('scale', 'aks_scale', supports_no_wait=True)
         g.custom_show_command('show', 'aks_show', table_transformer=aks_show_table_format)
+        g.custom_show_command('list', 'aks_list', table_transformer=aks_list_table_format)
         g.custom_command('upgrade', 'aks_upgrade', supports_no_wait=True,
                          confirmation='Kubernetes may be unavailable during cluster upgrades.\n' +
                          'Are you sure you want to perform this operation?')
@@ -41,4 +43,5 @@ def load_command_table(self, _):
         g.custom_command('list', 'aks_agentpool_list')
         g.custom_show_command('show', 'aks_agentpool_show', table_transformer=aks_agentpool_show_table_format)
         g.custom_command('add', 'aks_agentpool_add', supports_no_wait=True)
+        g.custom_command('scale', 'aks_agentpool_scale', supports_no_wait=True)
         g.custom_command('delete', 'aks_agentpool_delete', supports_no_wait=True)

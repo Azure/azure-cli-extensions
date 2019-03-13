@@ -248,6 +248,18 @@ helps['aks nodepool add'] = """
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
 """
 
+helps['aks nodepool scale'] = """
+    type: command
+    short-summary: Scale the node pool in a managed Kubernetes cluster.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Node pool name.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the Kubernetes node pool.
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.

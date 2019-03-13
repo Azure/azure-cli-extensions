@@ -569,6 +569,12 @@ def aks_show(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
+def aks_list(cmd, client, resource_group_name=None):
+    if resource_group_name:
+        managed_clusters = client.list_by_resource_group(resource_group_name)
+    else:
+        managed_clusters = client.list()
+    return _remove_nulls(list(managed_clusters))
 
 def _remove_nulls(managed_clusters):
     """
@@ -585,10 +591,11 @@ def _remove_nulls(managed_clusters):
         for attr in attrs:
             if getattr(managed_cluster, attr, None) is None:
                 delattr(managed_cluster, attr)
-        for ap_profile in managed_cluster.agent_pool_profiles:
-            for attr in ap_attrs:
-                if getattr(ap_profile, attr, None) is None:
-                    delattr(ap_profile, attr)
+        if managed_cluster.agent_pool_profiles is not None:
+            for ap_profile in managed_cluster.agent_pool_profiles:
+                for attr in ap_attrs:
+                    if getattr(ap_profile, attr, None) is None:
+                        delattr(ap_profile, attr)
         for attr in sp_attrs:
             if getattr(managed_cluster.service_principal_profile, attr, None) is None:
                 delattr(managed_cluster.service_principal_profile, attr)
@@ -985,6 +992,16 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         agent_pool.os_disk_size_gb = int(node_osdisk_size)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
+
+
+def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
+                        nodepool_name="",
+                        node_count=3,
+                        no_wait=True):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    instance.count = int(node_count)  # pylint: disable=no-member
+    print(instance)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
 def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
