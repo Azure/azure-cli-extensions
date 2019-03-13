@@ -1002,7 +1002,6 @@ def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
                         no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     instance.count = int(node_count)  # pylint: disable=no-member
-    print(instance)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
