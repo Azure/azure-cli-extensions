@@ -569,12 +569,14 @@ def aks_show(cmd, client, resource_group_name, name):
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
+
 def aks_list(cmd, client, resource_group_name=None):
     if resource_group_name:
         managed_clusters = client.list_by_resource_group(resource_group_name)
     else:
         managed_clusters = client.list()
     return _remove_nulls(list(managed_clusters))
+
 
 def _remove_nulls(managed_clusters):
     """
@@ -995,12 +997,22 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
 
 
 def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
-                        nodepool_name="",
+                        nodepool_name,
                         node_count=3,
-                        no_wait=True):
+                        no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     instance.count = int(node_count)  # pylint: disable=no-member
     print(instance)
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+
+
+def aks_agentpool_upgrade(cmd, client, resource_group_name, cluster_name,
+                          kubernetes_version,
+                          nodepool_name,
+                          no_wait=False):
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    instance.orchestratorVersion = kubernetes_version
+
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 

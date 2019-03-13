@@ -85,7 +85,7 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str)
 
-    for scope in ['aks nodepool add', 'aks nodepool show', 'aks nodepool delete', 'aks nodepool scale']:
+    for scope in ['aks nodepool add', 'aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
 

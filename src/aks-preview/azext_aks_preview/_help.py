@@ -260,6 +260,18 @@ helps['aks nodepool scale'] = """
           short-summary: Number of nodes in the Kubernetes node pool.
 """
 
+helps['aks nodepool upgrade'] = """
+    type: command
+    short-summary: Upgrade the node pool in a managed Kubernetes cluster.
+    parameters:
+        - name: --nodepool-name
+          type: string
+          short-summary: Node pool name.
+        - name: --kubernetes-version
+          type: string
+          short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+"""
+
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
