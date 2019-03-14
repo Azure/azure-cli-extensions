@@ -274,28 +274,26 @@ def configure_fd_frontend_endpoint_https_disable(cmd, resource_group_name, front
                                                                          item_name)
 
 
-def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name,
-                                         protocol=None, 
-                                         certificate_type=None):
+def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
     config = CustomHttpsConfiguration(
         certificate_source="FrontDoor",
-        protocol_type=protocol if protocol else "ServerNameIndication",
+        protocol_type="ServerNameIndication",
         vault=None,
         secret_name=None,
         secret_version=None,
-        certificate_type=certificate_type if certificate_type else "Shared"
+        certificate_type="Shared"
     )
     cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name,
                                                                     item_name, config)
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name, item_name,
-                                         vault_id, secret_name, secret_version, protocol=None):
+                                         vault_id, secret_name, secret_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
     config = CustomHttpsConfiguration(
         certificate_source="AzureKeyVault",
-        protocol_type=protocol if protocol else "ServerNameIndication",
+        protocol_type="ServerNameIndication",
         vault=SubResource(id=vault_id),
         secret_name=secret_name,
         secret_version=secret_version,

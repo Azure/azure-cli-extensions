@@ -125,7 +125,7 @@ helps['network front-door frontend-endpoint enable-https-frontdoor'] = """
 
 helps['network front-door frontend-endpoint enable-https-keyvault'] = """
     type: command
-    short-summary: Enable HTTPS protocol for a custom domain using own certificate in Azure Key Vault.
+    short-summary: Enable HTTPS protocol for a custom domain using your own certificate in Azure Key Vault. You need to setup the right permissions for Front Door to access your Key vault. Learn more at https://aka.ms/FrontDoorCustomDomain.
 """
 
 helps['network front-door frontend-endpoint disable-https'] = """
