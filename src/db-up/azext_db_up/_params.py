@@ -25,7 +25,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     for scope in ('mysql', 'postgres'):
         with self.argument_context('{} up'.format(scope)) as c:
-            c.argument('sku_name', options_list=['--sku-name'], default='GP_Gen5_4',
+            c.argument('sku_name', options_list=['--sku-name'], default='GP_Gen5_2',
                        help='The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.')
             c.argument('backup_retention', type=int, help='The number of days a backup is retained.')
             c.argument('geo_redundant_backup', arg_type=get_enum_type(GeoRedundantBackup),

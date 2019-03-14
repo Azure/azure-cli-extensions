@@ -166,7 +166,7 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
     _create_sql_database(db_context, cmd, resource_group_name, server_name, database_name, location)
 
     # check ip address(es) of the user and configure firewall rules
-    sql_errors = (pyodbc.ProgrammingError)
+    sql_errors = (pyodbc.ProgrammingError, pyodbc.InterfaceError)
     host, user = _configure_sql_firewall_rules(
         db_context, sql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name)
@@ -213,6 +213,17 @@ def create_postgresql_connection_string(
     host = '{}.postgres.database.azure.com'.format(server_name)
     return _form_response(
         _create_postgresql_connection_string(host, user, administrator_login_password, database_name),
+        host, user, administrator_login_password
+    )
+
+
+def create_sql_connection_string(
+        server_name='{server}', database_name='{database}', administrator_login='{login}',
+        administrator_login_password='{password}'):
+    user = '{}@{}'.format(administrator_login, server_name)
+    host = '{}.database.windows.net'.format(server_name)
+    return _form_response(
+        _create_sql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
     )
 
@@ -285,14 +296,40 @@ def _create_postgresql_connection_string(host, user, password, database):
     return result
 
 
+def _create_sql_connection_string(host, user, password, database):
+    result = {
+        'ado.net': "Server={host},1433;Initial Catalog={database};User ID={user};Password={password};",
+        'jdbc': "jdbc:sqlserver://{host}:1433;database={database};user={user};password={password};",
+        'odbc': "Driver={{ODBC Driver 13 for SQL Server}};Server={host},1433;Database={database};Uid={user};"
+                "Pwd={password};",
+        'php': '$conn = new PDO("sqlsrv:server = {host},1433; Database = {database}", "{admin_login}", "{password}");',
+        'python': "pyodbc.connect('DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={host};DATABASE={database};"
+                  "UID={admin_login};PWD={password}')"
+    }
+
+    admin_login, _ = user.split('@')
+    connection_kwargs = {
+        'host': host,
+        'user': user,
+        'password': password if password is not None else '{password}',
+        'database': database,
+        'admin_login': admin_login
+    }
+
+    for k, v in result.items():
+        result[k] = v.format(**connection_kwargs)
+    return result
+
+
 def _run_mysql_commands(host, user, password, database):
     # Connect to mysql and get cursor to run sql commands
     connection = mysql_connector.connect(user=user, host=host, password=password, database=database)
     logger.warning('Successfully Connected to MySQL.')
     cursor = connection.cursor()
     try:
-        cursor.execute("CREATE USER 'root' IDENTIFIED BY '{}'".format(database))
-        logger.warning("Ran Database Query: `CREATE USER 'root' IDENTIFIED BY '%s'`", database)
+        db_password = _create_db_password(database)
+        cursor.execute("CREATE USER 'root' IDENTIFIED BY '{}'".format(db_password))
+        logger.warning("Ran Database Query: `CREATE USER 'root' IDENTIFIED BY '%s'`", db_password)
     except mysql_connector.errors.DatabaseError:
         pass
     cursor.execute("GRANT ALL PRIVILEGES ON {}.* TO 'root'".format(database))
@@ -306,8 +343,9 @@ def _run_postgresql_commands(host, user, password, database):
     logger.warning('Successfully Connected to PostgreSQL.')
     cursor = connection.cursor()
     try:
-        cursor.execute("CREATE USER root WITH ENCRYPTED PASSWORD '{}'".format(database))
-        logger.warning("Ran Database Query: `CREATE USER root WITH ENCRYPTED PASSWORD '%s'`", database)
+        db_password = _create_db_password(database)
+        cursor.execute("CREATE USER root WITH ENCRYPTED PASSWORD '{}'".format(db_password))
+        logger.warning("Ran Database Query: `CREATE USER root WITH ENCRYPTED PASSWORD '%s'`", db_password)
     except psycopg2.ProgrammingError:
         pass
     cursor.execute("GRANT ALL PRIVILEGES ON DATABASE {} TO root".format(database))
@@ -324,14 +362,15 @@ def _run_sql_commands(host, user, password, database):
     logger.warning('Successfully Connected to PostgreSQL.')
     cursor = connection.cursor()
     # TODO
-    raise Exception
     try:
-        cursor.execute("CREATE USER root WITH ENCRYPTED PASSWORD '{}'".format(database))
-        logger.warning("Ran Database Query: `CREATE USER root WITH ENCRYPTED PASSWORD '%s'`", database)
-    except psycopg2.ProgrammingError:
+        db_password = _create_db_password(database)
+        cursor.execute("CREATE USER root WITH PASSWORD = '{}'".format(db_password))
+        logger.warning("Ran Database Query: `CREATE USER root WITH PASSWORD = '%s'`", db_password)
+    except pyodbc.ProgrammingError:
         pass
-    cursor.execute("GRANT ALL PRIVILEGES ON DATABASE {} TO root".format(database))
-    logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON DATABASE %s TO root`", database)
+    cursor.execute("Use {};".format(database))
+    cursor.execute("GRANT ALL to root")
+    logger.warning("Ran Database Query: `GRANT ALL TO root`")
 
 
 def _configure_firewall_rules(
@@ -569,6 +608,10 @@ def _update_sql_server(db_context, cmd, client, server_result, resource_group_na
         return resolve_poller(client.update(
             resource_group_name, server_name, params), cmd.cli_ctx, '{} Server Update'.format(logging_name))
     return server_result
+
+
+def _create_db_password(database_name):
+    return '{}{}{}'.format(database_name[0].upper(), database_name[1:], '1')
 
 
 # pylint: disable=too-many-instance-attributes,too-few-public-methods
