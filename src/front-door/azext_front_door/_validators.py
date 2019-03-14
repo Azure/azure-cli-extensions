@@ -76,6 +76,17 @@ def validate_frontend_endpoints(cmd, namespace):
 def validate_backend_pool(cmd, namespace):
     get_name_or_id_validator('backend_pool', 'backendPools')(cmd, namespace)
 
+def validate_protocol(cmd, namespace):
+    if namespace.protocol not in {'ServerNameIndication', 'IPBased', None}:
+        from knack.util import CLIError
+        usage_error = CLIError('usage error: --protocol. Allowed vaules: ServerNameIndication, IPBased.')
+        raise usage_error
+
+def validate_certificate_type(cmd, namespace):
+    if  namespace.certificate_type not in {'Shared', 'Dedicated', None}:
+        from knack.util import CLIError
+        usage_error = CLIError('usage error: --protocol. Allowed vaules: Shared, Dedicated.')
+        raise usage_error
 
 # pylint: disable=protected-access
 class MatchConditionAction(argparse._AppendAction):

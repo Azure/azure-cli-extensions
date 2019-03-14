@@ -269,26 +269,41 @@ def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enab
         c.update_param('webApplicationFirewallPolicyLink', SubResource(id=waf_policy) if waf_policy else None, False)
     return instance
 
-
-def configure_fd_frontend_endpoint_https(cmd, resource_group_name, front_door_name, item_name,
-                                         disable=None, protocol="ServerNameIndication", secret_name=None, secret_version=None,
-                                         certificate_type="Shared", certificate_source=None, vault=None):
-    if disable:
-        return cf_fd_frontend_endpoints(cmd.cli_ctx, None)._disable_https_initial(resource_group_name, front_door_name,
+def configure_fd_frontend_endpoint_https_disable(cmd, resource_group_name, front_door_name, item_name):
+    return cf_fd_frontend_endpoints(cmd.cli_ctx, None)._disable_https_initial(resource_group_name, front_door_name,
                                                                          item_name)
-    # if not being disabled, then must be enabled
+
+
+def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name,
+                                         protocol=None, 
+                                         certificate_type=None):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
     config = CustomHttpsConfiguration(
-        certificate_source=certificate_source,
-        protocol_type=protocol,
-        vault=SubResource(id=vault) if vault else None,
+        certificate_source="FrontDoor",
+        protocol_type=protocol if protocol else "ServerNameIndication",
+        vault=None,
+        secret_name=None,
+        secret_version=None,
+        certificate_type=certificate_type if certificate_type else "Shared"
+    )
+    cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name,
+                                                                    item_name, config)
+    return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
+
+def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name, item_name,
+                                         vault_id, secret_name, secret_version, protocol=None):
+    from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
+    config = CustomHttpsConfiguration(
+        certificate_source="AzureKeyVault",
+        protocol_type=protocol if protocol else "ServerNameIndication",
+        vault=SubResource(id=vault_id),
         secret_name=secret_name,
         secret_version=secret_version,
-        certificate_type=certificate_type
+        certificate_type=None
     )
-    return cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name,
+    cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name,
                                                                     item_name, config)
-
+    return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 def create_fd_backend_pools(cmd, resource_group_name, front_door_name, item_name,
                             load_balancing_settings, probe_settings,

@@ -13,7 +13,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
     validate_waf_policy, validate_load_balancing_settings, validate_probe_settings,
-    validate_frontend_endpoints, validate_backend_pool, MatchConditionAction)
+    validate_frontend_endpoints, validate_backend_pool, MatchConditionAction, validate_protocol, validate_certificate_type)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -48,6 +48,13 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door', arg_group='Frontend Endpoint') as c:
         c.argument('frontend_host_name', help='Domain name of the frontend endpoint.')
+
+    with self.argument_context('network front-door', arg_group='HTTPS') as c:
+        c.argument('certificate_type', help='Defines the type of the certificate used for secure connections to a frontendEndpoint. Allowed values: Shared, Dedicated', validator=validate_certificate_type)
+        c.argument('protocol', help='Defines the TLS extension protocol that is used for secure delivery. Allowed vaules: ServerNameIndication, IPBased', validator=validate_protocol)
+        c.argument('secret_name', help='The name of the Key Vault secret representing the full certificate PFX')
+        c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX')
+        c.argument('vault_id', help='The resource id of the Key Vault containing the SSL certificate')
 
     with self.argument_context('network front-door', arg_group='Backend') as c:
         c.argument('backend_address', help='FQDN of the backend endpoint.')

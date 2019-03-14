@@ -118,6 +118,22 @@ helps['network front-door frontend-endpoint delete'] = """
     short-summary: Delete a Front Door frontend endpoint.
 """
 
+helps['network front-door frontend-endpoint enable-https-frontdoor'] = """
+    type: command
+    short-summary: Enable HTTPS protocol for a custom domain using Front Door managed certificate.
+"""
+
+helps['network front-door frontend-endpoint enable-https-keyvault'] = """
+    type: command
+    short-summary: Enable HTTPS protocol for a custom domain using own certificate in Azure Key Vault.
+"""
+
+helps['network front-door frontend-endpoint disable-https'] = """
+    type: command
+    short-summary: Disable HTTPS protocol for a custom domain.
+"""
+
+
 # endregion
 
 # region FrontDoor LoadBalancingSettings

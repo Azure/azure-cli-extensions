@@ -99,8 +99,11 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_fd_frontend_endpoints')
         g.custom_command('show', 'get_fd_frontend_endpoints')
-        g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoints')
-        g.custom_command('configure-https', 'configure_fd_frontend_endpoint_https')
+    #   g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoints')
+        g.custom_command('enable-https-frontdoor', 'configure_fd_frontend_endpoint_https_frontdoor')
+        g.custom_command('enable-https-keyvault', 'configure_fd_frontend_endpoint_https_keyvault')
+        g.custom_command('disable-https', 'configure_fd_frontend_endpoint_https_disable')
+
 
     # with self.command_group('network front-door probe', frontdoor_sdk) as g:
     #     g.custom_command('create', 'create_fd_probe')
