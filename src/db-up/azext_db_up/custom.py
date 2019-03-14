@@ -166,7 +166,7 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
     _create_sql_database(db_context, cmd, resource_group_name, server_name, database_name, location)
 
     # check ip address(es) of the user and configure firewall rules
-    sql_errors = (pyodbc.ProgrammingError, pyodbc.InterfaceError)
+    sql_errors = (pyodbc.ProgrammingError, pyodbc.InterfaceError, pyodbc.OperationalError)
     host, user = _configure_sql_firewall_rules(
         db_context, sql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name)
@@ -176,7 +176,7 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
         _run_sql_commands(host, user, administrator_login_password, database_name)
 
     return _form_response(
-        _create_postgresql_connection_string(host, user, administrator_login_password, database_name),
+        _create_sql_connection_string(host, user, administrator_login_password, database_name),
         host, user,
         administrator_login_password if administrator_login_password is not None else '*****'
     )
