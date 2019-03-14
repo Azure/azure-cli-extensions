@@ -6,8 +6,8 @@
 
 def frontdoor_client_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_front_door.vendored_sdks import FrontdorManagementClient
-    return get_mgmt_service_client(cli_ctx, FrontdorManagementClient, aux_subscriptions=aux_subscriptions)
+    from azext_front_door.vendored_sdks import FrontDoorManagementClient
+    return get_mgmt_service_client(cli_ctx, FrontDoorManagementClient, aux_subscriptions=aux_subscriptions)
 
 
 def cf_frontdoor(cli_ctx, _):
