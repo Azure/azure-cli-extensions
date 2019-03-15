@@ -90,3 +90,13 @@ az aks create \
     -n MyManagedCluster \
     --enable-VMSS \
 ```
+
+#### Enable VMSS for new cluster with availability zone feature
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-VMSS \
+    --agent-zones 1 2 3
+```
