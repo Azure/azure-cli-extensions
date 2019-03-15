@@ -104,7 +104,6 @@ def load_command_table(self, _):
         g.custom_command('enable-https-keyvault', 'configure_fd_frontend_endpoint_https_keyvault')
         g.custom_command('disable-https', 'configure_fd_frontend_endpoint_https_disable')
 
-
     # with self.command_group('network front-door probe', frontdoor_sdk) as g:
     #     g.custom_command('create', 'create_fd_probe')
     #     g.command('delete', 'delete')

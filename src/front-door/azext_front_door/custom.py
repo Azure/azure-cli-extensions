@@ -234,6 +234,7 @@ def list_front_doors(cmd, resource_group_name=None):
         return client.list_by_resource_group(resource_group_name)
     return client.list()
 
+
 def list_fd_frontend_endpoints(cmd, resource_group_name, resource_name):
     client = cf_fd_frontend_endpoints(cmd.cli_ctx, None)
     return client.list_by_front_door(resource_group_name, resource_name)
@@ -269,6 +270,7 @@ def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enab
         c.update_param('webApplicationFirewallPolicyLink', SubResource(id=waf_policy) if waf_policy else None, False)
     return instance
 
+
 def configure_fd_frontend_endpoint_https_disable(cmd, resource_group_name, front_door_name, item_name):
     return cf_fd_frontend_endpoints(cmd.cli_ctx, None).disable_https(resource_group_name, front_door_name,
                                                                      item_name)
@@ -288,6 +290,7 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
                                                              item_name, config)
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
+
 def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name, item_name,
                                                   vault_id, secret_name, secret_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
@@ -302,6 +305,7 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
     cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
                                                              item_name, config)
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
+
 
 def create_fd_backend_pools(cmd, resource_group_name, front_door_name, item_name,
                             load_balancing_settings, probe_settings,
