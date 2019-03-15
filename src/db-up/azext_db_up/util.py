@@ -12,9 +12,11 @@ CONFIG_DIR = os.path.expanduser(os.path.join('~', '.azext_db_up'))
 ENV_VAR_PREFIX = 'AZEXT'
 MYSQL_CONFIG_SECTION = 'mysql_up'
 POSTGRES_CONFIG_SECTION = 'postgres_up'
+SQL_CONFIG_SECTION = 'sql_up'
 CONFIG_MAP = {
     'mysql': MYSQL_CONFIG_SECTION,
-    'postgres': POSTGRES_CONFIG_SECTION
+    'postgres': POSTGRES_CONFIG_SECTION,
+    'sql': SQL_CONFIG_SECTION
 }
 DB_CONFIG = CLIConfig(config_dir=CONFIG_DIR, config_env_var_prefix=ENV_VAR_PREFIX)
 

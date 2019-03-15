@@ -26,6 +26,16 @@ helps['postgres up'] = """
           text: az postgres up -g MyResourceGroup -s MyServer -d MyDatabase -u MyUsername -p MyPassword
 """
 
+helps['sql up'] = """
+    type: command
+    short-summary: Set up an Azure Database for SQL server and configurations.
+    examples:
+        - name: Ensure that a Azure Database for SQL server is up and running and configured for immediate use.
+          text: az sql up
+        - name: To override default names, provide parameters indicating desired values/existing resources.
+          text: az sql up -g MyResourceGroup -s MyServer -d MyDatabase -u MyUsername -p MyPassword
+"""
+
 helps['mysql down'] = """
     type: command
     short-summary: Delete the MySQL server and its cached information.
@@ -46,6 +56,16 @@ helps['postgres down'] = """
           text: az postgres down --delete-group
 """
 
+helps['sql down'] = """
+    type: command
+    short-summary: Delete the SQL server and its cached information.
+    examples:
+        - name: Delete the server and the cached data, aside from the resource group.
+          text: az sql down
+        - name: Delete the resource group and the full cache.
+          text: az sql down --delete-group
+"""
+
 helps['mysql show-connection-string'] = """
     type: command
     short-summary: Show the connection strings for a MySQL server database.
@@ -54,4 +74,9 @@ helps['mysql show-connection-string'] = """
 helps['postgres show-connection-string'] = """
     type: command
     short-summary: Show the connection strings for a PostgreSQL server database.
+"""
+
+helps['sql show-connection-string'] = """
+    type: command
+    short-summary: Show the connection strings for a SQL server database.
 """
