@@ -270,7 +270,8 @@ def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enab
     return instance
 
 def configure_fd_frontend_endpoint_https_disable(cmd, resource_group_name, front_door_name, item_name):
-    return cf_fd_frontend_endpoints(cmd.cli_ctx, None)._disable_https_initial(resource_group_name, front_door_name, item_name)
+    return cf_fd_frontend_endpoints(cmd.cli_ctx, None).disable_https(resource_group_name, front_door_name,
+                                                                     item_name)
 
 
 def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name):
@@ -283,7 +284,8 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
         secret_version=None,
         certificate_type="Dedicated"
     )
-    cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name, item_name, config)
+    cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
+                                                             item_name, config)
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name, item_name,
@@ -297,7 +299,8 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
         secret_version=secret_version,
         certificate_type=None
     )
-    cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name, item_name, config)
+    cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
+                                                             item_name, config)
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 def create_fd_backend_pools(cmd, resource_group_name, front_door_name, item_name,
