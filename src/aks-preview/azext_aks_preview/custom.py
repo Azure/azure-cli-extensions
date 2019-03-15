@@ -615,6 +615,16 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
 
 def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument
     instance = client.managed_clusters.get(resource_group_name, name)
+
+    if instance.kubernetes_version == kubernetes_version:
+        if instance.provisioning_state == "Succeeded":
+            logger.warning("The cluster is already on version %s and is not in a failed state. No operations "
+                           "will occur when upgrading to the same version if the cluster is not in a failed state.",
+                           instance.kubernetes_version)
+        elif instance.provisioning_state == "Failed":
+            logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
+                           "attempt resolution of failed cluster state.", instance.kubernetes_version)
+
     instance.kubernetes_version = kubernetes_version
 
     # null out the SP and AAD profile because otherwise validation complains
@@ -884,7 +894,7 @@ def _ensure_aks_service_principal(cli_ctx,
         else:
             # Nothing to load, make one.
             if not client_secret:
-                client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8')
+                client_secret = _create_client_secret()
             salt = binascii.b2a_hex(os.urandom(3)).decode('utf-8')
             url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, dns_name_prefix, location)
 
@@ -927,3 +937,11 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
     else:
         if min_count is not None or max_count is not None:
             raise CLIError('min-count and max-count are required for --enable-cluster-autoscaler, please use the flag')
+
+
+def _create_client_secret():
+    # Add a special character to satsify AAD SP secret requirements
+    special_chars = '!#$%&*-+_.:;<>=?@][^}{|~)('
+    special_char = special_chars[ord(os.urandom(1)) % len(special_chars)]
+    client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
+    return client_secret
