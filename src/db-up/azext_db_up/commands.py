@@ -4,7 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands import CliCommandType
-from azext_db_up._client_factory import cf_mysql_servers, cf_postgres_servers, cf_sql_servers
+from azext_db_up._client_factory import cf_mysql_servers, cf_postgres_servers
+# , cf_sql_servers
 from azext_db_up._validators import db_up_namespace_processor, db_down_namespace_processor
 from azext_db_up._transformers import table_transform_connection_string
 
