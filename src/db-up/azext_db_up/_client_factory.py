@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from os import getenv
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 
@@ -16,7 +17,6 @@ CLIENT_SECRET = 'AZURE_CLIENT_SECRET'
 
 
 def get_mysql_management_client(cli_ctx, **_):
-    from os import getenv
     from azext_db_up.vendored_sdks.azure_mgmt_rdbms.mysql import MySQLManagementClient
 
     # Allow overriding resource manager URI using environment variable
@@ -45,7 +45,6 @@ def get_mysql_management_client(cli_ctx, **_):
 
 
 def get_postgresql_management_client(cli_ctx, **_):
-    from os import getenv
     from azext_db_up.vendored_sdks.azure_mgmt_rdbms.postgresql import PostgreSQLManagementClient
 
     # Allow overriding resource manager URI using environment variable
@@ -73,6 +72,13 @@ def get_postgresql_management_client(cli_ctx, **_):
         return get_mgmt_service_client(cli_ctx, PostgreSQLManagementClient)
 
 
+def get_sql_management_client(cli_ctx):
+    from azext_db_up.vendored_sdks.azure_mgmt_sql.sql import SqlManagementClient
+
+    # Normal production scenario.
+    return get_mgmt_service_client(cli_ctx, SqlManagementClient)
+
+
 def cf_mysql_servers(cli_ctx, _):
     return get_mysql_management_client(cli_ctx).servers
 
@@ -81,12 +87,20 @@ def cf_postgres_servers(cli_ctx, _):
     return get_postgresql_management_client(cli_ctx).servers
 
 
+def cf_sql_servers(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).servers
+
+
 def cf_mysql_firewall_rules(cli_ctx, _):
     return get_mysql_management_client(cli_ctx).firewall_rules
 
 
 def cf_postgres_firewall_rules(cli_ctx, _):
     return get_postgresql_management_client(cli_ctx).firewall_rules
+
+
+def cf_sql_firewall_rules(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).firewall_rules
 
 
 def cf_mysql_config(cli_ctx, _):
@@ -103,6 +117,10 @@ def cf_mysql_db(cli_ctx, _):
 
 def cf_postgres_db(cli_ctx, _):
     return get_postgresql_management_client(cli_ctx).databases
+
+
+def cf_sql_db(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).databases
 
 
 def resource_client_factory(cli_ctx, **_):
