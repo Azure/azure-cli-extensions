@@ -282,7 +282,7 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
         vault=None,
         secret_name=None,
         secret_version=None,
-        certificate_type="Shared"
+        certificate_type="Dedicated"
     )
     cf_fd_frontend_endpoints(cmd.cli_ctx, None)._enable_https_initial(resource_group_name, front_door_name,
                                                                     item_name, config)
