@@ -11,13 +11,13 @@ from knack.log import get_logger
 from knack.util import CLIError
 import mysql.connector as mysql_connector
 import psycopg2
-import pyodbc
+# import pyodbc
 from azext_db_up.vendored_sdks.azure_mgmt_rdbms import mysql, postgresql
-from azext_db_up.vendored_sdks.azure_mgmt_sql import sql
+# from azext_db_up.vendored_sdks.azure_mgmt_sql import sql
 from azext_db_up._client_factory import (
     cf_mysql_firewall_rules, cf_mysql_config, cf_mysql_db,
     cf_postgres_firewall_rules, cf_postgres_config, cf_postgres_db,
-    cf_sql_firewall_rules, cf_sql_db,
+    # cf_sql_firewall_rules, cf_sql_db,
     resource_client_factory)
 from azext_db_up.util import update_kwargs, resolve_poller
 
@@ -137,49 +137,49 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
     )
 
 
-def sql_up(cmd, client, resource_group_name=None, server_name=None, location=None, administrator_login=None,
-           administrator_login_password=None, version=None, database_name=None, tags=None):
-    db_context = DbContext(
-        azure_sdk=sql, cf_firewall=cf_sql_firewall_rules, cf_db=cf_sql_db,
-        logging_name='SQL', connector=pyodbc, command_group='sql', server_client=client)
+# def sql_up(cmd, client, resource_group_name=None, server_name=None, location=None, administrator_login=None,
+#            administrator_login_password=None, version=None, database_name=None, tags=None):
+#     db_context = DbContext(
+#         azure_sdk=sql, cf_firewall=cf_sql_firewall_rules, cf_db=cf_sql_db,
+#         logging_name='SQL', connector=pyodbc, command_group='sql', server_client=client)
 
-    try:
-        server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing PostgreSQL Server \'%s\' in group \'%s\'',
-                       server_name, resource_group_name)
-        # update server if needed
-        server_result = _update_sql_server(
-            db_context, cmd, client, server_result, resource_group_name, server_name, administrator_login_password,
-            version, tags)
-    except CloudError:
-        # Create sql server
-        if administrator_login_password is None:
-            administrator_login_password = str(uuid.uuid4())
-        server_result = _create_sql_server(
-            db_context, cmd, resource_group_name, server_name, location, administrator_login,
-            administrator_login_password, version, tags)
+#     try:
+#         server_result = client.get(resource_group_name, server_name)
+#         logger.warning('Found existing PostgreSQL Server \'%s\' in group \'%s\'',
+#                        server_name, resource_group_name)
+#         # update server if needed
+#         server_result = _update_sql_server(
+#             db_context, cmd, client, server_result, resource_group_name, server_name, administrator_login_password,
+#             version, tags)
+#     except CloudError:
+#         # Create sql server
+#         if administrator_login_password is None:
+#             administrator_login_password = str(uuid.uuid4())
+#         server_result = _create_sql_server(
+#             db_context, cmd, resource_group_name, server_name, location, administrator_login,
+#             administrator_login_password, version, tags)
 
-        # Create firewall rule to allow for Azure IPs
-        _create_azure_firewall_rule(db_context, cmd, resource_group_name, server_name)
+#         # Create firewall rule to allow for Azure IPs
+#         _create_azure_firewall_rule(db_context, cmd, resource_group_name, server_name)
 
-    # Create sql database if it does not exist
-    _create_sql_database(db_context, cmd, resource_group_name, server_name, database_name, location)
+#     # Create sql database if it does not exist
+#     _create_sql_database(db_context, cmd, resource_group_name, server_name, database_name, location)
 
-    # check ip address(es) of the user and configure firewall rules
-    sql_errors = (pyodbc.ProgrammingError, pyodbc.InterfaceError, pyodbc.OperationalError)
-    host, user = _configure_sql_firewall_rules(
-        db_context, sql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
-        administrator_login_password, database_name)
+#     # check ip address(es) of the user and configure firewall rules
+#     sql_errors = (pyodbc.ProgrammingError, pyodbc.InterfaceError, pyodbc.OperationalError)
+#     host, user = _configure_sql_firewall_rules(
+#         db_context, sql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
+#         administrator_login_password, database_name)
 
-    # connect to sql server and run some commands
-    if administrator_login_password is not None:
-        _run_sql_commands(host, user, administrator_login_password, database_name)
+#     # connect to sql server and run some commands
+#     if administrator_login_password is not None:
+#         _run_sql_commands(host, user, administrator_login_password, database_name)
 
-    return _form_response(
-        _create_sql_connection_string(host, user, administrator_login_password, database_name),
-        host, user,
-        administrator_login_password if administrator_login_password is not None else '*****'
-    )
+#     return _form_response(
+#         _create_sql_connection_string(host, user, administrator_login_password, database_name),
+#         host, user,
+#         administrator_login_password if administrator_login_password is not None else '*****'
+#     )
 
 
 def server_down(cmd, client, resource_group_name=None, server_name=None, delete_group=None):
@@ -352,25 +352,25 @@ def _run_postgresql_commands(host, user, password, database):
     logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON DATABASE %s TO root`", database)
 
 
-def _run_sql_commands(host, user, password, database):
-    # Connect to sql and get cursor to run sql commands
-    administrator_login, _ = user.split('@')
-    kwargs = {'user': administrator_login, 'server': host, 'database': database, 'password': password}
-    connection_string = ('DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};'
-                         'DATABASE={database};UID={user};PWD={password}').format(**kwargs)
-    connection = pyodbc.connect(connection_string)
-    logger.warning('Successfully Connected to PostgreSQL.')
-    cursor = connection.cursor()
-    # TODO
-    try:
-        db_password = _create_db_password(database)
-        cursor.execute("CREATE USER root WITH PASSWORD = '{}'".format(db_password))
-        logger.warning("Ran Database Query: `CREATE USER root WITH PASSWORD = '%s'`", db_password)
-    except pyodbc.ProgrammingError:
-        pass
-    cursor.execute("Use {};".format(database))
-    cursor.execute("GRANT ALL to root")
-    logger.warning("Ran Database Query: `GRANT ALL TO root`")
+# def _run_sql_commands(host, user, password, database):
+#     # Connect to sql and get cursor to run sql commands
+#     administrator_login, _ = user.split('@')
+#     kwargs = {'user': administrator_login, 'server': host, 'database': database, 'password': password}
+#     connection_string = ('DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};'
+#                          'DATABASE={database};UID={user};PWD={password}').format(**kwargs)
+#     connection = pyodbc.connect(connection_string)
+#     logger.warning('Successfully Connected to PostgreSQL.')
+#     cursor = connection.cursor()
+#     # TODO
+#     try:
+#         db_password = _create_db_password(database)
+#         cursor.execute("CREATE USER root WITH PASSWORD = '{}'".format(db_password))
+#         logger.warning("Ran Database Query: `CREATE USER root WITH PASSWORD = '%s'`", db_password)
+#     except pyodbc.ProgrammingError:
+#         pass
+#     cursor.execute("Use {};".format(database))
+#     cursor.execute("GRANT ALL to root")
+#     logger.warning("Ran Database Query: `GRANT ALL TO root`")
 
 
 def _configure_firewall_rules(
