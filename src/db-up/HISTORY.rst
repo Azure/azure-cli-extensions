@@ -3,6 +3,11 @@
  Release History
 ===============
 
+0.1.8 (2019-3-15)
++++++++++++++++++
+* `az mysql/postgres up`: deafult sku to `GP_Gen5_2`.
+* `az postgres up`: remove idle transaction session timout config.
+
 0.1.7 (2019-2-28)
 +++++++++++++++++
 * `az mysql/postgres show-connection-string`: change format to output like `up` commands.
