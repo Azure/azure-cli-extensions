@@ -3,9 +3,13 @@
  Release History
 ===============
 
+0.1.9 (2019-3-18)
++++++++++++++++++
+* `az postgres up`: add azure-access after firewall configurations due to service bug.
+
 0.1.8 (2019-3-15)
 +++++++++++++++++
-* `az mysql/postgres up`: deafult sku to `GP_Gen5_2`.
+* `az mysql/postgres up`: default sku to `GP_Gen5_2`.
 * `az postgres up`: remove idle transaction session timout config.
 
 0.1.7 (2019-2-28)
