@@ -966,6 +966,8 @@ def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
 
 
 def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
+                      kubernetes_version=None,
+                      node_zones=None,
                       node_vm_size="Standard_DS2_v2",
                       node_osdisk_size=0,
                       node_count=3,
@@ -986,8 +988,10 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         os_type=os_type,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
-        type="VirtualMachineScaleSets",
-        max_pods=int(max_pods) if max_pods else None
+        agent_pool_type="VirtualMachineScaleSets",
+        max_pods=int(max_pods) if max_pods else None,
+        orchestrator_version=kubernetes_version,
+        availability_zones=node_zones
     )
 
     if node_osdisk_size:

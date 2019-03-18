@@ -236,6 +236,11 @@ helps['aks nodepool add'] = """
           type: int
           short-summary: Number of nodes in the Kubernetes agent pool. After creating a cluster, you can change the
                          size of its node pool with `az aks scale`.
+        - name: --kubernetes-version -k
+          type: string
+          short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".
+          populator-commands:
+          - "`az aks get-versions`"
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
@@ -243,6 +248,9 @@ helps['aks nodepool add'] = """
           type: int
           short-summary: The maximum number of pods deployable to a node.
           long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+        - name: --node-zones
+          type: string array
+          short-summary: (PREVIEW) Availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
