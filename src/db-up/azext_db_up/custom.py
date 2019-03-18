@@ -114,9 +114,6 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
         #         resource_group_name, server_name, 'idle_in_transaction_session_timeout', '28800000'),
         #     cmd.cli_ctx, 'PostgreSQL Configuration Update')
 
-        # Create firewall rule to allow for Azure IPs
-        _create_azure_firewall_rule(db_context, cmd, resource_group_name, server_name)
-
     # Create postgresql database if it does not exist
     _create_database(db_context, cmd, resource_group_name, server_name, database_name)
 
@@ -125,6 +122,11 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
     host, user = _configure_firewall_rules(
         db_context, postgres_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
         administrator_login_password, database_name)
+
+    # Create firewall rule to allow for Azure IPs
+    # - Moved here to run every time after other firewall rules are configured because
+    #   bug on server disables this whenever other firewall rules are added.
+    _create_azure_firewall_rule(db_context, cmd, resource_group_name, server_name)
 
     # connect to postgresql and run some commands
     if administrator_login_password is not None:
