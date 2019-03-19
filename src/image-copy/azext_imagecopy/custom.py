@@ -47,14 +47,16 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             if source_os_disk_id is None:
                 raise TypeError
             source_os_disk_type = "BLOB"
-            logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+            logger.debug("found %s: %s", source_os_disk_type,
+                         source_os_disk_id)
         except TypeError:
             try:  # images created by e.g. image-copy extension
                 source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['snapshot']['id']
                 if source_os_disk_id is None:
                     raise TypeError
                 source_os_disk_type = "SNAPSHOT"
-                logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+                logger.debug("found %s: %s", source_os_disk_type,
+                             source_os_disk_id)
             except TypeError:
                 pass
 
@@ -79,7 +81,8 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
-    logger.warn("Getting sas url for the source snapshot with timeout seconds: %d", timeout)
+    logger.warn(
+        "Getting sas url for the source snapshot with timeout seconds: %d", timeout)
     if timeout < 3600:
         logger.warn("Timeout should be greater than 3600")
         raise CLIError('Inavlid Timeout')

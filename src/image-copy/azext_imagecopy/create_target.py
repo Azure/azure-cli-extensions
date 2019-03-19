@@ -20,7 +20,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
                         export_as_snapshot, timeout):
 
-    random_string = get_random_string(STORAGE_ACCOUNT_NAME_LENGTH - len(location))
+    random_string = get_random_string(
+        STORAGE_ACCOUNT_NAME_LENGTH - len(location))
 
     # create the target storage account. storage account name must be lowercase.
     logger.warn(
@@ -49,7 +50,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     expiry_format = "%Y-%m-%dT%H:%MZ"
     expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=timeout)
-    logger.debug("create target storage sas using timeout seconds: %d", timeout)
+    logger.debug(
+        "create target storage sas using timeout seconds: %d", timeout)
 
     cli_cmd = prepare_cli_command(['storage', 'account', 'generate-sas',
                                    '--account-name', target_storage_account_name,
@@ -113,7 +115,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                    '--name', target_snapshot_name,
                                    '--location', location,
                                    '--source', target_blob_path],
-                                   subscription=target_subscription)
+                                  subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
@@ -132,14 +134,14 @@ def create_target_image(location, transient_resource_group_name, source_type, so
             target_image_name = target_name
 
         cli_cmd = prepare_cli_command(['image', 'create',
-                                    '--resource-group', target_resource_group_name,
-                                    '--name', target_image_name,
-                                    '--location', location,
-                                    '--source', target_blob_path,
-                                    '--os-type', source_os_type,
-                                    '--source', target_snapshot_id],
-                                    tags=tags,
-                                    subscription=target_subscription)
+                                       '--resource-group', target_resource_group_name,
+                                       '--name', target_image_name,
+                                       '--location', location,
+                                       '--source', target_blob_path,
+                                       '--os-type', source_os_type,
+                                       '--source', target_snapshot_id],
+                                      tags=tags,
+                                      subscription=target_subscription)
 
         run_cli_command(cli_cmd)
 
@@ -175,7 +177,8 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
             return
 
     if copy_status != 'success':
-        logger.error("The copy operation didn't succeed. Last status: %s", copy_status)
+        logger.error(
+            "The copy operation didn't succeed. Last status: %s", copy_status)
         logger.error("Command run: %s", cli_cmd)
         logger.error("Command output: %s", json_output)
 
