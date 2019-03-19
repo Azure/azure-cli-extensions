@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 STORAGE_ACCOUNT_NAME_LENGTH = 24
 
-
+# pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
