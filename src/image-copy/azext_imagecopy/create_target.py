@@ -18,7 +18,7 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
-                        timeout):
+                        export_as_snapshot, timeout):
 
     random_string = get_random_string(STORAGE_ACCOUNT_NAME_LENGTH - len(location))
 
@@ -103,37 +103,45 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     target_blob_path = target_blob_endpoint + \
         target_container_name + '/' + blob_name
     target_snapshot_name = source_os_disk_snapshot_name + '-' + location
+    if export_as_snapshot:
+        snapshot_resource_group_name = target_resource_group_name
+    else:
+        snapshot_resource_group_name = transient_resource_group_name
+
     cli_cmd = prepare_cli_command(['snapshot', 'create',
-                                   '--resource-group', transient_resource_group_name,
+                                   '--resource-group', snapshot_resource_group_name,
                                    '--name', target_snapshot_name,
                                    '--location', location,
                                    '--source', target_blob_path],
-                                  subscription=target_subscription)
+                                   subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_snapshot_id = json_output['id']
 
-    # Create the final image
-    logger.warn("%s - Creating final image", location)
-    if target_name is None:
-        target_image_name = source_object_name
-        if source_type != 'image':
-            target_image_name += '-image'
-        target_image_name += '-' + location
+    # Optionally create the final image
+    if export_as_snapshot:
+        logger.warn("%s - Skipping image creation", location)
     else:
-        target_image_name = target_name
+        logger.warn("%s - Creating final image", location)
+        if target_name is None:
+            target_image_name = source_object_name
+            if source_type != 'image':
+                target_image_name += '-image'
+            target_image_name += '-' + location
+        else:
+            target_image_name = target_name
 
-    cli_cmd = prepare_cli_command(['image', 'create',
-                                   '--resource-group', target_resource_group_name,
-                                   '--name', target_image_name,
-                                   '--location', location,
-                                   '--source', target_blob_path,
-                                   '--os-type', source_os_type,
-                                   '--source', target_snapshot_id],
-                                  tags=tags,
-                                  subscription=target_subscription)
+        cli_cmd = prepare_cli_command(['image', 'create',
+                                    '--resource-group', target_resource_group_name,
+                                    '--name', target_image_name,
+                                    '--location', location,
+                                    '--source', target_blob_path,
+                                    '--os-type', source_os_type,
+                                    '--source', target_snapshot_id],
+                                    tags=tags,
+                                    subscription=target_subscription)
 
-    run_cli_command(cli_cmd)
+        run_cli_command(cli_cmd)
 
 
 def wait_for_blob_copy_operation(blob_name, target_container_name, target_storage_account_name,

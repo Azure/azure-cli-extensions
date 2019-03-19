@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 def imagecopy(source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, temporary_resource_group_name, source_type='image',
               cleanup='false', parallel_degree=-1, tags=None, target_name=None,
-              target_subscription=None, timeout=3600):
+              target_subscription=None, export_as_snapshot='false', timeout=3600):
 
     # get the os disk id from source vm/image
     logger.warn("Getting os disk id of the source vm/image")
@@ -131,7 +131,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             tasks.append((location, transient_resource_group_name, source_type,
                           source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                           source_os_type, target_resource_group_name, azure_pool_frequency,
-                          tags, target_name, target_subscription, timeout))
+                          tags, target_name, target_subscription, export_as_snapshot, timeout))
 
         logger.warn("Starting async process for all locations")
 
