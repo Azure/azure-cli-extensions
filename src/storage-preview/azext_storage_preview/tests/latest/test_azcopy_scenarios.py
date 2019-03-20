@@ -20,7 +20,7 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
         # upload one blob
         blob = 'blob'
         self.cmd('storage azcopy blob upload -s "{}" -c {} -d {} --account-name {}'.format(
-            os.path.join(test_dir, 'readme') , container, blob, storage_account))
+            os.path.join(test_dir, 'readme'), container, blob, storage_account))
         self.cmd('storage blob list -c {} --account-name {}'.format(
             container, storage_account), checks=JMESPathCheck('length(@)', 1))
         self.cmd('storage azcopy blob delete -c {} --account-name {} -t {}'.format(
