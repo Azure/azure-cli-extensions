@@ -13,16 +13,9 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
     @StorageTestFilesPreparer()
-    # def test_azcopy_flow(self, resource_group, storage_account_info, test_dir):
-    #     storage_account, _ = storage_account_info
-    #     container = self.create_container(storage_account_info)
-    def test_azcopy_flow(self, test_dir):
-        storage_account = 'wilxstorage'
-        container = 'wilxcontainer'
-
-        # remove this
-        self.cmd('storage azcopy blob delete -c {} --account-name {} --recursive'.format(
-            container, storage_account))
+    def test_azcopy_flow(self, resource_group, storage_account_info, test_dir):
+        storage_account, _ = storage_account_info
+        container = self.create_container(storage_account_info)
 
         # upload one blob
         blob = 'blob'
@@ -40,6 +33,9 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
             os.path.join(test_dir, '*'), container, storage_account))
         self.cmd('storage blob list -c {} --account-name {}'.format(
             container, storage_account), checks=JMESPathCheck('length(@)', 41))
+
+        # There are issues with delete: https://github.com/Azure/azure-storage-azcopy/issues/258
+        # that cause the below to fail
         # self.cmd('storage azcopy blob delete -c {} --account-name {} -t {}'.format(
         #     container, storage_account, '*'))
         # self.cmd('storage blob list -c {} --account-name {}'.format(
@@ -48,6 +44,7 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
         #     container, storage_account, 'butter/*'))
         # self.cmd('storage blob list -c {} --account-name {}'.format(
         #     container, storage_account), checks=JMESPathCheck('length(@)', 30))
+
         self.cmd('storage azcopy blob delete -c {} --account-name {} --recursive'.format(
             container, storage_account))
         self.cmd('storage blob list -c {} --account-name {}'.format(
@@ -70,7 +67,12 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
         self.assertEqual(len(os.listdir(download_path)), 1)
         self.cmd('storage azcopy blob download -s * -c {} --account-name {} -d "{}" --recursive'.format(
             container, storage_account, download_path))
-        self.assertEqual(len(os.listdir(download_path)), 41)
+        # 1 file(readme), 3 directories(apple, butter, duff)
+        self.assertEqual(len(os.listdir(download_path)), 4)
+        # 10 files in apple
+        self.assertEqual(len(os.listdir(os.path.join(download_path, 'apple'))), 10)
+        # 10 files, 1 directory(charlie) in butter
+        self.assertEqual(len(os.listdir(os.path.join(download_path, 'butter'))), 11)
 
         self.cmd('storage azcopy blob delete -c {} --account-name {} --recursive'.format(
             container, storage_account))
