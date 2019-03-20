@@ -98,5 +98,5 @@ az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
     --enable-VMSS \
-    --agent-zones 1 2 3
+    --node-zones 1 2 3
 ```
