@@ -4,7 +4,7 @@ Release History
 ===============
 0.3.0
 +++++
-* Add support of feature `--agent-zones`
+* Add support of feature `--node-zones`
 
 0.2.3
 +++++
