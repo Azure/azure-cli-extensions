@@ -210,7 +210,6 @@ class AgentPoolsOperations(object):
 
         # Construct body
         body_content = self._serialize.body(parameters, 'AgentPool')
-        body_content["name"] = agent_pool_name
 
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
