@@ -13,16 +13,16 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
     @StorageTestFilesPreparer()
-    def test_azcopy_flow(self, resource_group, storage_account_info, test_dir):
-        storage_account, _ = storage_account_info
-        container = self.create_container(storage_account_info)
-    # def test_azcopy_flow(self, test_dir):
-    #     storage_account = 'wilxstorage'
-    #     container = 'wilxcontainer'
+    # def test_azcopy_flow(self, resource_group, storage_account_info, test_dir):
+    #     storage_account, _ = storage_account_info
+    #     container = self.create_container(storage_account_info)
+    def test_azcopy_flow(self, test_dir):
+        storage_account = 'wilxstorage'
+        container = 'wilxcontainer'
 
-        # # remove this
-        # self.cmd('storage azcopy blob delete -c {} --account-name {} --recursive'.format(
-        #     container, storage_account))
+        # remove this
+        self.cmd('storage azcopy blob delete -c {} --account-name {} --recursive'.format(
+            container, storage_account))
 
         # upload one blob
         blob = 'blob'

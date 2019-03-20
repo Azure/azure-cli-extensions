@@ -9,8 +9,8 @@ import json
 import platform
 import subprocess
 import datetime
-from azure.cli.core._profile import Profile
 from six.moves.urllib.parse import urlparse
+from azure.cli.core._profile import Profile
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -100,7 +100,7 @@ def storage_client_auth_for_azcopy(cmd, client, service):
 
 
 def _unserialize_non_msi_token_payload(token_info):
-    import jwt
+    import jwt  # pylint: disable=import-error
 
     parsed_authority = urlparse(token_info['_authority'])
     decode = jwt.decode(token_info['accessToken'], verify=False, algorithms=['RS256'])
