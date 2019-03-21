@@ -8,7 +8,6 @@ from azure.cli.core.commands import CliCommandType
 from ._client_factory import cf_managed_clusters
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
-from ._format import aks_list_table_format
 from ._format import aks_agentpool_show_table_format
 
 
