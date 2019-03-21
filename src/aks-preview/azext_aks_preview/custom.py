@@ -585,11 +585,10 @@ def _remove_nulls(managed_clusters):
         for attr in attrs:
             if getattr(managed_cluster, attr, None) is None:
                 delattr(managed_cluster, attr)
-        if managed_cluster.agent_pool_profiles is not None:
-            for ap_profile in managed_cluster.agent_pool_profiles:
-                for attr in ap_attrs:
-                    if getattr(ap_profile, attr, None) is None:
-                        delattr(ap_profile, attr)
+        for ap_profile in managed_cluster.agent_pool_profiles:
+            for attr in ap_attrs:
+                if getattr(ap_profile, attr, None) is None:
+                    delattr(ap_profile, attr)
         for attr in sp_attrs:
             if getattr(managed_cluster.service_principal_profile, attr, None) is None:
                 delattr(managed_cluster.service_principal_profile, attr)
@@ -939,6 +938,7 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
     else:
         if min_count is not None or max_count is not None:
             raise CLIError('min-count and max-count are required for --enable-cluster-autoscaler, please use the flag')
+
 
 def _create_client_secret():
     # Add a special character to satsify AAD SP secret requirements
