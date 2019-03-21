@@ -48,8 +48,7 @@ def get_data_service_client(cli_ctx, service_type, account_name, account_key, co
                                               'common._error#_ERROR_STORAGE_MISSING_INFO')
         if _ERROR_STORAGE_MISSING_INFO in str(exc):
             raise ValueError(exc)
-        else:
-            raise CLIError('Unable to obtain data client. Check your connection parameters.')
+        raise CLIError('Unable to obtain data client. Check your connection parameters.')
     # TODO: enable Fiddler
     client.request_callback = _get_add_headers_callback(cli_ctx)
     return client
@@ -96,6 +95,15 @@ def blob_data_service_factory(cli_ctx, kwargs):
                                         sas_token=kwargs.pop('sas_token', None),
                                         socket_timeout=kwargs.pop('socket_timeout', None),
                                         token_credential=kwargs.pop('token_credential', None))
+
+
+def cloud_storage_account_service_factory(cli_ctx, kwargs):
+    t_cloud_storage_account = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#CloudStorageAccount')
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    sas_token = kwargs.pop('sas_token', None)
+    kwargs.pop('connection_string', None)
+    return t_cloud_storage_account(account_name, account_key, sas_token)
 
 
 def cf_sa(cli_ctx, _):

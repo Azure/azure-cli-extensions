@@ -66,7 +66,7 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('enable_vmss', action='store_true')
-        c.argument('node_zones', zones_type, options_list='--node-zones', help='Space-separated list of availability zones where agent nodes will be placed.')
+        c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')

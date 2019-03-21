@@ -4,11 +4,13 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=protected-access
+import os
+
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
 
-from ._client_factory import get_storage_data_service_client
+from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
 from .profiles import CUSTOM_MGMT_STORAGE
@@ -130,6 +132,62 @@ def validate_client_parameters(cmd, namespace):
         n.account_key = _query_account_key(cmd.cli_ctx, n.account_name)
 
 
+def validate_azcopy_blob_source_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    blob_name = namespace.source_blob
+    if not blob_name:
+        blob_name = os.path.basename(namespace.destination)
+    url = client.make_blob_url(namespace.source_container, blob_name)
+    namespace.source = url
+    del namespace.source_container
+    del namespace.source_blob
+
+
+def validate_azcopy_container_source_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    url = client.make_blob_url(namespace.source, '')
+    namespace.source = url[:-1]
+
+
+def validate_azcopy_upload_destination_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    destination_path = namespace.destination_path
+    if not destination_path:
+        destination_path = ''
+    url = client.make_blob_url(namespace.destination_container, destination_path)
+    namespace.destination = url
+    del namespace.destination_container
+    del namespace.destination_path
+
+
+def validate_azcopy_download_source_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    source_path = namespace.source_path
+    if not source_path:
+        source_path = ''
+    url = client.make_blob_url(namespace.source_container, source_path)
+    namespace.source = url
+    del namespace.source_container
+    del namespace.source_path
+    print(namespace)
+
+
+def validate_azcopy_target_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    target_path = namespace.target_path
+    if not target_path:
+        target_path = ''
+    url = client.make_blob_url(namespace.target_container, target_path)
+    namespace.target = url
+    del namespace.target_container
+    del namespace.target_path
+
+
 def get_content_setting_validator(settings_class, update, guess_from_file=None):
     def _class_name(class_type):
         return class_type.__module__ + "." + class_type.__class__.__name__
@@ -245,7 +303,6 @@ def get_file_path_validator(default_file_param=None):
     Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
-        import os
         if not hasattr(namespace, 'path'):
             return
 
@@ -281,7 +338,7 @@ def validate_subnet(cmd, namespace):
 
     if (subnet_is_id and not vnet) or (not subnet and not vnet):
         return
-    elif subnet and not subnet_is_id and vnet:
+    if subnet and not subnet_is_id and vnet:
         namespace.subnet = resource_id(
             subscription=get_subscription_id(cmd.cli_ctx),
             resource_group=namespace.resource_group_name,
@@ -323,6 +380,32 @@ def ipv4_range_type(string):
     import re
     ip_format = r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
     if not re.match("^{}$".format(ip_format), string):
-        if not re.match("^{}-{}$".format(ip_format, ip_format), string):
+        if not re.match("^{ip_format}-{ip_format}$".format(ip_format=ip_format), string):
             raise ValueError
     return string
+
+
+def resource_type_type(loader):
+    """ Returns a function which validates that resource types string contains only a combination of service,
+    container, and object. Their shorthand representations are s, c, and o. """
+
+    def impl(string):
+        t_resources = loader.get_models('common.models#ResourceTypes')
+        if set(string) - set("sco"):
+            raise ValueError
+        return t_resources(_str=''.join(set(string)))
+
+    return impl
+
+
+def services_type(loader):
+    """ Returns a function which validates that services string contains only a combination of blob, queue, table,
+    and file. Their shorthand representations are b, q, t, and f. """
+
+    def impl(string):
+        t_services = loader.get_models('common.models#Services')
+        if set(string) - set("bqtf"):
+            raise ValueError
+        return t_services(_str=''.join(set(string)))
+
+    return impl
