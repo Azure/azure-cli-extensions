@@ -271,9 +271,30 @@ def update_fd_frontend_endpoints(instance, host_name=None, session_affinity_enab
     return instance
 
 
-def configure_fd_frontend_endpoint_https_disable(cmd, resource_group_name, front_door_name, item_name):
+def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front_door_name, item_name):
     return cf_fd_frontend_endpoints(cmd.cli_ctx, None).disable_https(resource_group_name, front_door_name,
                                                                      item_name)
+
+
+def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
+                                                secret_name=None, secret_version=None,
+                                                certificate_source=None, vault_id=None):
+    keyvault_usage = 'usage error: --type AzureKeyVault --vault-id ID --secret-name NAME --secret-version VERSION'
+    if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
+        from knack.util import CLIError
+        raise CLIError(keyvault_usage)
+    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name, secret_version]):
+        from knack.util import CLIError
+        raise CLIError(keyvault_usage)
+
+    # if not being disabled, then must be enabled
+    if certificate_source == 'FrontDoor':
+        return configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name,
+                                                              front_door_name, item_name)
+    if certificate_source == 'AzureKeyVault':
+        return configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name,
+                                                             item_name, vault_id, secret_name,
+                                                             secret_version)
 
 
 def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name):
@@ -391,7 +412,6 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
         from knack.util import CLIError
         raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
-    return
 
 
 def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, path, interval,
