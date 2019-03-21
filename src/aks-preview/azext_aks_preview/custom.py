@@ -946,7 +946,7 @@ def _create_client_secret():
     special_char = special_chars[ord(os.urandom(1)) % len(special_chars)]
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret
-    
+
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
