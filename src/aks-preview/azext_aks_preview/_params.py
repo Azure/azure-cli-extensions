@@ -83,6 +83,13 @@ def load_arguments(self, _):
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
 
+    with self.argument_context('aks nodepool') as c:
+        c.argument('cluster_name', type=str)
+
+    for scope in ['aks nodepool add', 'aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
+        with self.argument_context(scope) as c:
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
