@@ -295,6 +295,7 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
         return configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name,
                                                              item_name, vault_id, secret_name,
                                                              secret_version)
+    return None
 
 
 def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name):
