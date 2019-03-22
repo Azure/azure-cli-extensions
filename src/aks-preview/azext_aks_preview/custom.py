@@ -375,6 +375,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                aad_server_app_secret=None,
                aad_tenant_id=None,
                tags=None,
+               node_zones=None,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                no_wait=False):
     if not no_ssh_key:
