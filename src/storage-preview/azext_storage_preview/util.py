@@ -23,7 +23,8 @@ def collect_blobs(blob_service, container, pattern=None):
     results = []
     for blob in blob_service.list_blobs(container):
         try:
-            blob_name = blob.name.encode('utf-8') if isinstance(blob.name, unicode) else blob.name
+            blob_name = blob.name.encode(
+                'utf-8') if isinstance(blob.name, unicode) else blob.name
         except NameError:
             blob_name = blob.name
 
@@ -71,7 +72,8 @@ def filter_none(iterable):
 def glob_files_locally(folder_path, pattern):
     """glob files in local folder based on the given pattern"""
 
-    pattern = os.path.join(folder_path, pattern.lstrip('/')) if pattern else None
+    pattern = os.path.join(
+        folder_path, pattern.lstrip('/')) if pattern else None
 
     len_folder_path = len(folder_path) + 1
     for root, _, files in os.walk(folder_path):
@@ -100,7 +102,8 @@ def glob_files_remotely(cmd, client, share_name, pattern):
 def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('blob.sharedaccesssignature#BlobSharedAccessSignature')
+        t_sas = cmd.get_models(
+            'blob.sharedaccesssignature#BlobSharedAccessSignature')
     else:
         t_sas = cmd.get_models('shareaccesssignature#SharedAccessSignature')
 
@@ -113,7 +116,8 @@ def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob)
 def create_short_lived_file_sas(cmd, account_name, account_key, share, directory_name, file_name):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature')
+        t_sas = cmd.get_models(
+            'file.sharedaccesssignature#FileSharedAccessSignature')
     else:
         t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
 
@@ -129,7 +133,8 @@ def create_short_lived_file_sas(cmd, account_name, account_key, share, directory
 def create_short_lived_container_sas(cmd, account_name, account_key, container):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('blob.sharedaccesssignature#BlobSharedAccessSignature')
+        t_sas = cmd.get_models(
+            'blob.sharedaccesssignature#BlobSharedAccessSignature')
     else:
         t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
     t_blob_permissions = cmd.get_models('blob.models#BlobPermissions')
@@ -142,7 +147,8 @@ def create_short_lived_container_sas(cmd, account_name, account_key, container):
 def create_short_lived_share_sas(cmd, account_name, account_key, share):
     from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('file.sharedaccesssignature#FileSharedAccessSignature')
+        t_sas = cmd.get_models(
+            'file.sharedaccesssignature#FileSharedAccessSignature')
     else:
         t_sas = cmd.get_models('sharedaccesssignature#SharedAccessSignature')
 
@@ -193,10 +199,14 @@ def get_storage_client(cli_ctx, service_type, namespace):
 
     az_config = cli_ctx.config
 
-    name = getattr(namespace, 'account_name', az_config.get('storage', 'account', None))
-    key = getattr(namespace, 'account_key', az_config.get('storage', 'key', None))
-    connection_string = getattr(namespace, 'connection_string', az_config.get('storage', 'connection_string', None))
-    sas_token = getattr(namespace, 'sas_token', az_config.get('storage', 'sas_token', None))
+    name = getattr(namespace, 'account_name',
+                   az_config.get('storage', 'account', None))
+    key = getattr(namespace, 'account_key',
+                  az_config.get('storage', 'key', None))
+    connection_string = getattr(namespace, 'connection_string', az_config.get(
+        'storage', 'connection_string', None))
+    sas_token = getattr(namespace, 'sas_token',
+                        az_config.get('storage', 'sas_token', None))
 
     return get_storage_data_service_client(cli_ctx, service_type, name, key, connection_string, sas_token)
 
