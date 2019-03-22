@@ -96,7 +96,6 @@ def load_command_table(self, _):
 
     with self.command_group('network front-door frontend-endpoint', frontdoor_sdk) as g:
         g.custom_command('create', 'create_fd_frontend_endpoints')
-        g.command('delete', 'delete')
         g.custom_command('list', 'list_fd_frontend_endpoints')
         g.custom_command('show', 'get_fd_frontend_endpoints')
     #   g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoints')
