@@ -85,3 +85,50 @@ az storage account show \
 az storage account failover \
     --name accountName
 ```
+
+#### AzCopy Integration:
+[EXPERIMENTAL] Azure CLI is releasing new versions of the blob upload/download/delete commands that rely on the AzCopy tool. Users should see higher performance metrics: [more info](https://github.com/Azure/azure-storage-azcopy)\
+*Examples:*
+###### Delete a single blob and a virtual directory:
+```
+az storage azcopy blob delete \
+    -c containerName \
+    --account-name accountName \
+    -t targetBlob
+
+az storage azcopy blob delete \
+    -c containerName \
+    --account-name accountName \
+    -t virtual_directory/path \
+    --recursive
+```
+###### Upload a single blob and a directory:
+```
+az storage azcopy blob upload \
+    -c containerName \
+    --account-name accountName \
+    -s "file/path" \
+    -d blobName
+
+az storage azcopy blob upload \
+    -c containerName \
+    --account-name accountName \
+    -s directory/path \
+    -d upload/path
+    --recursive
+```
+###### Download a single blob and a directory:
+```
+az storage azcopy blob download \
+    -c containerName \
+    --account-name accountName \
+    -s blobName \
+    -d file/path
+
+az storage azcopy blob download \
+    -c containerName \
+    --account-name accountName \
+    -s virtual_directory/path \
+    -d download/path \
+    --recursive
+```
