@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.7.0"
+VERSION = "0.8.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -35,7 +35,7 @@ setup(
     author_email='arpavlic@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/dms-preview',
     classifiers=CLASSIFIERS,
-    packages = find_packages(exclude=["test"]),
+    packages=find_packages(exclude=["test"]),
     package_data={'azext_dms': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
