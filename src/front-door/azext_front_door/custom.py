@@ -458,8 +458,8 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
                       disabled=False, mode=None, location=None, tags=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSets, PolicySettings, CustomRules)
-    policy = WebApplicationFirewallPolicy(
+        WebApplicationFirewallPolicy1, ManagedRuleSets, PolicySettings, CustomRules)
+    policy = WebApplicationFirewallPolicy1(
         location=location,
         tags=tags,
         policy_settings=PolicySettings(

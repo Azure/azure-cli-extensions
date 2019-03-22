@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.0
++++++
+* Add support of feature `--node-zones`
+
 0.2.3
 +++++
 * `az aks create/scale --nodepool-name` configures nodepool name, truncated to 12 characters, default - nodepool1
