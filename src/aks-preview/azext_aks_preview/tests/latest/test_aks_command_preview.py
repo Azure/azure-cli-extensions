@@ -22,6 +22,7 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     @RoleBasedServicePrincipalPreparer()
+    @AllowLargeResponse
     def test_aks_create_default_service_preview(self, resource_group, resource_group_location, sp_name, sp_password):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
@@ -76,6 +77,7 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     @RoleBasedServicePrincipalPreparer()
+    @AllowLargeResponse
     def test_aks_create_default_service_enable_autoscaler(self, resource_group, resource_group_location, sp_name, sp_password):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -90,7 +92,8 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
                      '--node-count=2 --service-principal={service_principal} ' \
                      '--client-secret={client_secret} --enable-cluster-autoscaler ' \
                      '--min-count=1 --max-count=3 ' \
-                     '--no-ssh-key'
+                     '--no-ssh-key' \
+                     '--enable-vmss'
         self.cmd(create_cmd, checks=[
             self.check('agentPoolProfiles[0].minCount', '1'),
             self.check('agentPoolProfiles[0].maxCount', '3'),

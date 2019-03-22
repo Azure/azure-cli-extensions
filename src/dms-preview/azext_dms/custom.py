@@ -6,6 +6,7 @@
 import os
 import re
 from enum import Enum
+from knack.log import get_logger
 from knack.prompting import prompt, prompt_pass
 from knack.util import CLIError
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
@@ -30,6 +31,8 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                        get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
                                        get_mongo_to_mongo_input)
+
+logger = get_logger(__name__)
 
 
 # region Project
@@ -103,7 +106,8 @@ def create_task(
         enable_schema_validation=False,
         enable_data_integrity_validation=False,
         enable_query_analysis_validation=False,
-        validate_only=False):
+        validate_only=False,
+        validated_task_name=None):
 
     # Get source and target platform abd set inputs to lowercase
     source_platform, target_platform = get_project_platforms(cmd,
@@ -126,7 +130,7 @@ source-platform and target-platform is not appropriate. \n\
 Please refer to the help file 'az dms project task create -h' \
 for the supported scenarios.")
 
-            # TODO: Calling this validates our inputes. Remove this check after this function is added to core
+            # TODO: Calling this validates our inputs. Remove this check after this function is added to core
             transform_json_inputs(source_connection_json,
                                   source_platform,
                                   target_connection_json,
@@ -150,6 +154,31 @@ for the supported scenarios.")
             raise
         else:
             return core_res
+
+    RequireValidationScenarios = [
+        ScenarioType.mongo_mongo_offline,
+        ScenarioType.mongo_mongo_online]
+
+    # Mongo migrations require users to validate their migrations first
+    # Once the migration settings have been attempted, if all database and collection objects aren't in a 'Failed'
+    # state continue creating the task
+    if get_scenario_type(source_platform, target_platform, task_type) in RequireValidationScenarios:
+        if validate_only is False and validated_task_name is None:
+            raise CLIError(
+                "When not validating a MongoDB task, you must supply a previously run 'validate_only' task name.")
+        elif validate_only is False and validated_task_name is not None:
+            # Though getting the task's properties is pretty quick, we want to let the user know something is happening
+            logger.warning("Reviewing validation...")
+            v_result = client.get(group_name=resource_group_name,
+                                  service_name=service_name,
+                                  project_name=project_name,
+                                  task_name=validated_task_name,
+                                  expand="output")
+            if not mongo_validation_succeeded(v_result.properties.output[0]):
+                raise CLIError("Not all collections passed during the validation task. Fix your settings, \
+validate those settings, and try again. \n\
+To view the errors use 'az dms project task show' with the '--expand output' argument on your previous \
+validate-only task.")
 
     # Get json inputs
     source_connection_info, target_connection_info, database_options_json = \
@@ -299,7 +328,8 @@ def extension_handles_scenario(
         ScenarioType.sql_sqldb_online,
         ScenarioType.mysql_azuremysql_online,
         ScenarioType.postgres_azurepostgres_online,
-        ScenarioType.mongo_mongo_offline]
+        ScenarioType.mongo_mongo_offline,
+        ScenarioType.mongo_mongo_online]
     return get_scenario_type(source_platform, target_platform, task_type) in ExtensionScenarioTypes
 
 
@@ -471,6 +501,14 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
         scenario_type = ScenarioType.unknown
 
     return scenario_type
+
+
+def mongo_validation_succeeded(migration_progress):
+    for dummy_key1, db in migration_progress.databases.items():
+        if db.state == "Failed" or any(c.state == "Failed" for dummy_key2, c in db.collections.items()):
+            return False
+
+    return True
 
 
 class ScenarioType(Enum):
