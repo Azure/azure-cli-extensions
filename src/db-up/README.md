@@ -72,3 +72,36 @@ az postgres show-connection-string \
     -u adminUsername \
     -p adminPassword
 ```
+
+#### SQL
+Ensures an Azure Database for SQL server instance is up and running with a single command.
+
+This command can be run without any parameters. This will create the resource group, SQL server instance and a sample database using generated resource names. It will also configure a firewall rule to allow IP addresses from Azure. **Do not that this command will NOT configure firewall rules for your ip address like the other `az __ up` commands.** Information generated from this command is saved, so that when used in the future, the existing resources will be detected.
+```
+az sql up
+```
+
+Avoid generated resource names if existing resources are detected or certain parameters are provided.
+```
+az sql up \
+    -g groupName \
+    -s serverName \
+    -d databaseName \
+    -u adminUsername \
+    -p adminPassword
+```
+
+Clean up the cache and delete the server. Use the `--delete-group` parameter to also delete the resource group saved in the cache.
+```
+az sql down \
+    --delete-group
+```
+
+Show the connection strings for a database without any server calls.
+```
+az sql show-connection-string \
+    -s serverName \
+    -d databaseName \
+    -u adminUsername \
+    -p adminPassword
+```

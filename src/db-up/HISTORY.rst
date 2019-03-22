@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.1.10 (2019-3-22)
++++++++++++++++++
+* `az sql up/down/show-connection-string`.
+
 0.1.9 (2019-3-18)
 +++++++++++++++++
 * `az postgres up`: add azure-access after firewall configurations due to service bug.
