@@ -144,7 +144,7 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
     db_context = DbContext(
         azure_sdk=sql, cf_firewall=cf_sql_firewall_rules, cf_db=cf_sql_db,
         logging_name='SQL', command_group='sql', server_client=client)
-    # connector=pyodbc, 
+    # connector=pyodbc,
 
     try:
         server_result = client.get(resource_group_name, server_name)
