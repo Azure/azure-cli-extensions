@@ -165,26 +165,37 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         ' in other words, when a browser requests a page that does not exist.')
 
     with self.argument_context('storage azcopy blob upload') as c:
-        c.extra('destination_container', options_list=['--container', '-c'], required=True)
+        c.extra('destination_container', options_list=['--container', '-c'], required=True,
+                help='The upload destination container.')
         c.extra('destination_path', options_list=['--destination', '-d'],
-                validator=validate_azcopy_upload_destination_url)
-        c.argument('source', options_list=['--source', '-s'])
-        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true')
+                validator=validate_azcopy_upload_destination_url,
+                help='The upload destination path.')
+        c.argument('source', options_list=['--source', '-s'],
+                   help='The source file path to upload from.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively upload blobs.')
         c.ignore('destination')
 
     with self.argument_context('storage azcopy blob download') as c:
-        c.extra('source_container', options_list=['--container', '-c'], required=True)
+        c.extra('source_container', options_list=['--container', '-c'], required=True,
+                help='The download source container.')
         c.extra('source_path', options_list=['--source', '-s'],
-                validator=validate_azcopy_download_source_url)
-        c.argument('destination', options_list=['--destination', '-d'])
-        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true')
+                validator=validate_azcopy_download_source_url,
+                help='The download source path.')
+        c.argument('destination', options_list=['--destination', '-d'],
+                   help='The destination file path to download to.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively download blobs.')
         c.ignore('source')
 
     with self.argument_context('storage azcopy blob delete') as c:
-        c.extra('target_container', options_list=['--container', '-c'], required=True)
+        c.extra('target_container', options_list=['--container', '-c'], required=True,
+                help='The delete target container.')
         c.extra('target_path', options_list=['--target', '-t'],
-                validator=validate_azcopy_target_url)
-        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true')
+                validator=validate_azcopy_target_url,
+                help='The delete target path.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively delete blobs.')
         c.ignore('target')
 
     # with self.argument_context('storage azcopy blob sync') as c:
