@@ -29,10 +29,14 @@ helps['monitor app-insights component'] = """
 helps['monitor app-insights component create'] = """
     type: command
     short-summary: Create a new Application Insights resource.
+    parameters:
+      - name: --application-type
+        type: string
+        short-summary: Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .
     examples:
       - name: Create a component with kind web and location.
         text: |
-          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg
+          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg --application-type web
 """
 
 helps['monitor app-insights component update'] = """
@@ -50,7 +54,7 @@ helps['monitor app-insights component update-tags'] = """
     examples:
       - name: Update the tag 'name' to equal 'value'.
         text: |
-          az monitor app-insights component update --app demoApp --location westus2 --tags name=value -g demoRg
+          az monitor app-insights component update-tags --app demoApp --location westus2 --tags name=value -g demoRg
 """
 
 helps['monitor app-insights component show'] = """
@@ -95,7 +99,7 @@ helps['monitor app-insights api-key show'] = """
           az monitor app-insights api-key show --app demoApp -g demoRg --api-key demo-key
       - name: Fetch API Keys.
         text: |
-          az monitor app-insights api-key list --app demoApp -g demoRg
+          az monitor app-insights api-key show --app demoApp -g demoRg
 """
 
 helps['monitor app-insights api-key delete'] = """
