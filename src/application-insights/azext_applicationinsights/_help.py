@@ -32,7 +32,7 @@ helps['monitor app-insights component create'] = """
     parameters:
       - name: --application-type
         type: string
-        short-summary: Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .
+        short-summary: Type of application being monitored. Possible values include 'web', 'other'. Default value: 'web' .
     examples:
       - name: Create a component with kind web and location.
         text: |
