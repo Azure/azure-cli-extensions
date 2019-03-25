@@ -21,6 +21,112 @@ helps['monitor app-insights'] = """
           provided, then --offset will be ignored.
 """
 
+helps['monitor app-insights component'] = """
+    type: group
+    short-summary: Manage an Application Insights component or its subcomponents.
+"""
+
+helps['monitor app-insights component create'] = """
+    type: command
+    short-summary: Create a new Application Insights resource.
+    examples:
+      - name: Create a component with kind web and location.
+        text: |
+          az monitor app-insights component create --app demoApp --location westus2 --kind web -g demoRg
+"""
+
+helps['monitor app-insights component update'] = """
+    type: command
+    short-summary: Update tags on an existing Application Insights resource. The primary value which can be updated is kind, which customizes the UI experience.
+    examples:
+      - name: Update a component with kind web.
+        text: |
+          az monitor app-insights component update --app demoApp --location westus2 --kind web -g demoRg
+"""
+
+helps['monitor app-insights component show'] = """
+    type: command
+    short-summary: Get an Application Insights resource.
+    examples:
+      - name: Get a component by name.
+        text: |
+          az monitor app-insights component show --app demoApp -g demoRg
+      - name: List components in a resource group.
+        text: |
+          az monitor app-insights component show -g demoRg
+      - name: List components in the currently selected subscription.
+        text: |
+          az monitor app-insights component show
+"""
+
+helps['monitor app-insights component delete'] = """
+    type: command
+    short-summary: Create a new Application Insights resource.
+    examples:
+      - name: Create a component with kind web and location.
+        text: |
+          az monitor app-insights component delete --app demoApp -g demoRg
+"""
+
+helps['monitor app-insights api-key'] = """
+    type: group
+    short-summary: Operations on API keys associated with an Application Insights component.
+"""
+
+helps['monitor app-insights api-key list'] = """
+    type: command
+    short-summary: List API keys associated with an Application Insights resource.
+    examples:
+      - name: Fetch API Keys.
+        text: |
+          az monitor app-insights component api-key list --app demoApp -g demoRg
+"""
+
+helps['monitor app-insights api-key show'] = """
+    type: command
+    short-summary: Get a specific API key associated with an Application Insights resource.
+    parameters:
+      - name: --api-key
+        type: string
+        short-summary: GUID of the API key to fetch. Can be found using `api-keys list`.
+    examples:
+      - name: Fetch API Key.
+        text: |
+          az monitor app-insights component api-key show --app demoApp -g demoRg --api-key f7231867-6c63-4354-8d80-27776f237ea0
+"""
+
+helps['monitor app-insights api-key delete'] = """
+    type: command
+    short-summary: Delete an API key from an Application Insights resource.
+    parameters:
+      - name: --api-key
+        type: string
+        short-summary: GUID of the API key to delete. Can be found using `api-keys list`.
+    examples:
+      - name: Delete API Key.
+        text: |
+          az monitor app-insights component api-key delete --app demoApp -g demoRg --api-key f7231867-6c63-4354-8d80-27776f237ea0
+"""
+
+helps['monitor app-insights api-key create'] = """
+    type: command
+    short-summary: Create a new API key for use with an Application Insights resource.
+    parameters:
+      - name: --api-key-name
+        type: string
+        short-summary: Name for the API key to create.
+      - name: --read-properties
+        type: list
+        short-summary: A space seperated list of names of read Roles for this API key to inherit. Possible values include ReadTelemetry and AuthenticateSDKControlChannel.
+      - name: --write-properties
+        type: list
+        short-summary: A space seperated list of names of write Roles for this API key to inherit. Possible values include WriteAnnotations.
+    examples:
+      - name: Create a component with kind web and location.
+        text: |
+          az monitor app-insights component api-key create --api-key-name cli-demo --read-properties ReadTelemetry -g demoRg
+"""
+
 helps['monitor app-insights metrics'] = """
     type: group
     short-summary: Retrieve metrics from an application.
@@ -34,6 +140,15 @@ helps['monitor app-insights events'] = """
 helps['monitor app-insights query'] = """
     type: command
     short-summary: Execute a query over data in your application.
+    parameters:
+      - name: --offset
+        short-summary: >
+          Time offset of the query range, in ##d##h format.
+        long-summary: >
+          Can be used with either --start-time or --end-time. If used with --start-time, then
+          the end time will be calculated by adding the offset. If used with --end-time (default), then
+          the start time will be calculated by subtracting the offset. If --start-time and --end-time are
+          provided, then --offset will be ignored.
     examples:
       - name: Execute a simple query over past 3.5 days.
         text: |
@@ -47,6 +162,14 @@ helps['monitor app-insights metrics show'] = """
       - name: --interval
         short-summary: >
           The interval over which to aggregate metrics, in ##h##m format.
+      - name: --offset
+        short-summary: >
+          Time offset of the query range, in ##d##h format.
+        long-summary: >
+          Can be used with either --start-time or --end-time. If used with --start-time, then
+          the end time will be calculated by adding the offset. If used with --end-time (default), then
+          the start time will be calculated by subtracting the offset. If --start-time and --end-time are
+          provided, then --offset will be ignored.
     examples:
       - name: View the count of availabilityResults events.
         text: |
@@ -65,6 +188,15 @@ helps['monitor app-insights metrics get-metadata'] = """
 helps['monitor app-insights events show'] = """
     type: command
     short-summary: List events by type or view a single event from an application, specified by type and ID.
+    parameters:
+      - name: --offset
+        short-summary: >
+          Time offset of the query range, in ##d##h format.
+        long-summary: >
+          Can be used with either --start-time or --end-time. If used with --start-time, then
+          the end time will be calculated by adding the offset. If used with --end-time (default), then
+          the start time will be calculated by subtracting the offset. If --start-time and --end-time are
+          provided, then --offset will be ignored.
     examples:
       - name: Get an availability result by ID.
         text: |
