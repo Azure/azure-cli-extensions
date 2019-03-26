@@ -45,7 +45,7 @@ helps['monitor app-insights component update'] = """
     examples:
       - name: Update a component with kind web.
         text: |
-          az monitor app-insights component update --app demoApp --location westus2 --kind web -g demoRg
+          az monitor app-insights component update --app demoApp --kind web -g demoRg
 """
 
 helps['monitor app-insights component update-tags'] = """
@@ -54,7 +54,7 @@ helps['monitor app-insights component update-tags'] = """
     examples:
       - name: Update the tag 'name' to equal 'value'.
         text: |
-          az monitor app-insights component update-tags --app demoApp --location westus2 --tags name=value -g demoRg
+          az monitor app-insights component update-tags --app demoApp --tags name=value -g demoRg
 """
 
 helps['monitor app-insights component show'] = """
