@@ -28,7 +28,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
 
     with self.argument_context('monitor app-insights api-key create') as c:
-        c.argument('api_key_name', help='The name of the API key to create.')
+        c.argument('api_key', help='The name of the API key to create.')
         c.argument('read_properties', nargs='+', options_list=['--read-properties'])
         c.argument('write_properties', nargs='+')
 
