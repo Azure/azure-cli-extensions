@@ -45,6 +45,10 @@ helps['monitor app-insights component create'] = """
 helps['monitor app-insights component update'] = """
     type: command
     short-summary: Update properties on an existing Application Insights resource. The primary value which can be updated is kind, which customizes the UI experience.
+    parameters:
+      - name: --kind
+        type: string
+        short-summary: The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of web, ios, other, store, java, phone.
     examples:
       - name: Update a component with kind web.
         text: |
