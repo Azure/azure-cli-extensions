@@ -131,7 +131,7 @@ helps['monitor app-insights api-key create'] = """
     examples:
       - name: Create a component with kind web and location.
         text: |
-          az monitor app-insights api-key create --api-key-name cli-demo --read-properties ReadTelemetry -g demoRg
+          az monitor app-insights api-key create --api-key cli-demo --read-properties ReadTelemetry -g demoRg --app testApp
 """
 
 helps['monitor app-insights metrics'] = """
