@@ -33,6 +33,9 @@ helps['monitor app-insights component create'] = """
       - name: --application-type
         type: string
         short-summary: Type of application being monitored. Possible values include 'web', 'other'. Default value is'web' .
+      - name: --kind
+        type: string
+        short-summary: The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.
     examples:
       - name: Create a component with kind web and location.
         text: |
@@ -119,7 +122,7 @@ helps['monitor app-insights api-key create'] = """
     type: command
     short-summary: Create a new API key for use with an Application Insights resource.
     parameters:
-      - name: --api-key-name
+      - name: --api-key
         type: string
         short-summary: Name for the API key to create.
       - name: --read-properties

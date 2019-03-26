@@ -16,13 +16,13 @@ def load_arguments(self, _):
     with self.argument_context('monitor app-insights component create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('application-type', options_list=['application-type', '--type', '-t'], help="Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .")
-        c.argument('kind', options_list=['-k'], help='The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
+        c.argument('kind', options_list=['-k'])
         c.argument('tags', tags_type)
 
     with self.argument_context('monitor app-insights component update') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('application-type', options_list=['application-type', '--type', '-t'], help="Type of application being monitored. Possible values include: 'web', 'other'. Default value: 'web' .")
-        c.argument('kind', options_list=['--kind', '-k'], help='The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
+        c.argument('kind', options_list=['--kind', '-k'])
 
     with self.argument_context('monitor app-insights component update-tags') as c:
         c.argument('tags', tags_type)
