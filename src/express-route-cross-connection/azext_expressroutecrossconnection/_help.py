@@ -128,5 +128,4 @@ helps['network cross-connection peering update'] = """
                 --circuit-name MyCircuit --peering-type MicrosoftPeering --ip-version ipv6 \\
                 --primary-peer-subnet 2002:db00::/126 --secondary-peer-subnet 2003:db00::/126 \\
                 --advertised-public-prefixes 2002:db00::/126
-          min_profile: latest
 """
