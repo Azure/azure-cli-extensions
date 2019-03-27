@@ -142,6 +142,9 @@ helps['aks create'] = """
         - name: --enable-vmss
           type: bool
           short-summary: (PREVIEW) Enable VMSS agent type.
+        - name: --enable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Enable pod security policy.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -197,6 +200,12 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: str
           short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
+        - name: --enable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Enable pod security policy.
+        - name: --disable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Disable pod security policy.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -206,6 +215,10 @@ helps['aks update'] = """
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Enable authorized IP ranges for apiserver.
         text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
+      - name: Enable pod security policy.
+        text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
+      - name: Disable pod security policy.
+        text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks nodepool'] = """

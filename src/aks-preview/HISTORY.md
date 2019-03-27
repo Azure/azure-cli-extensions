@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.1
++++++
+* Add support of pod security policy.
+
 0.3.0
 +++++
 * Add support of feature `--node-zones`
