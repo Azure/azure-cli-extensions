@@ -20,7 +20,7 @@ from ._validators import (
 def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
-        Mode, FrontDoorProtocol, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform)
+        Mode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform)
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
     waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
@@ -48,6 +48,12 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door', arg_group='Frontend Endpoint') as c:
         c.argument('frontend_host_name', help='Domain name of the frontend endpoint.')
+
+    with self.argument_context('network front-door', arg_group='HTTPS') as c:
+        c.argument('certificate_source', arg_type=get_enum_type(FrontDoorCertificateSource), help='Certificate source to enable HTTPS. Allowed values: FrontDoor, AzureKeyVault. For Azure Key Vault, right permissions need to be set for Front Door to to access the Key vault. Learn more at https://aka.ms/FrontDoorCustomDomain.')
+        c.argument('secret_name', help='The name of the Key Vault secret representing the full certificate PFX')
+        c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX')
+        c.argument('vault_id', help='The resource id of the Key Vault containing the SSL certificate')
 
     with self.argument_context('network front-door', arg_group='Backend') as c:
         c.argument('backend_address', help='FQDN of the backend endpoint.')

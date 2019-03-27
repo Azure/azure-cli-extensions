@@ -10,7 +10,7 @@ import platform
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    file_type, get_resource_name_completion_list, name_type, tags_type)
+    file_type, get_resource_name_completion_list, name_type, tags_type, zones_type)
 
 from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list)
@@ -66,6 +66,7 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('enable_vmss', action='store_true')
+        c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -81,6 +82,13 @@ def load_arguments(self, _):
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
+
+    with self.argument_context('aks nodepool') as c:
+        c.argument('cluster_name', type=str)
+
+    for scope in ['aks nodepool add', 'aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
+        with self.argument_context(scope) as c:
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
 
 
 def _get_default_install_location(exe_name):

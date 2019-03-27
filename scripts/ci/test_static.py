@@ -39,7 +39,7 @@ def _get_sdk_module_list(root_dir):
 # check if the current file is a python sdk file
 def _is_sdk_file(file_path):
     # don't bother opening non-python files. e.g pyc files.
-    if not file_path.endswith("py") or file_path.endswith("py3"):
+    if not file_path.endswith(".py"):
         return False
     with open(file_path) as f:
         for line in f:

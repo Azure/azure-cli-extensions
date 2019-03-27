@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.2.3 (2019-3-21)
++++++++++++++++++
+* Release initial azcopy commands: `az storage azcopy blob delete/upload/download`
+
 0.2.2 (2019-1-18)
 +++++++++++++++++
 * set minCliCoreVersion metadata to v2.0.52
