@@ -30,6 +30,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterWindowsProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceNetworkProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterServicePrincipalProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshConfiguration
@@ -348,6 +349,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                dns_name_prefix=None,
                location=None,
                admin_username="azureuser",
+               windows_admin_username=None,
+               windows_admin_password=None,
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
                node_osdisk_size=0,
@@ -421,6 +424,15 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             public_keys=[ContainerServiceSshPublicKey(key_data=ssh_key_value)])
         linux_profile = ContainerServiceLinuxProfile(admin_username=admin_username, ssh=ssh_config)
 
+    windows_profile = None
+    if (windows_admin_username is None) != (windows_admin_password is None):
+        raise CLIError("Please make sure both windows admin username and password are specified.")
+
+    if windows_admin_username:
+        windows_profile = ManagedClusterWindowsProfile(
+            admin_username=windows_admin_username,
+            admin_password=windows_admin_password)
+
     principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
                                                   service_principal=service_principal, client_secret=client_secret,
                                                   subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
@@ -482,6 +494,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         enable_rbac=False if disable_rbac else True,
         agent_pool_profiles=[agent_pool_profile],
         linux_profile=linux_profile,
+        windows_profile=windows_profile,
         service_principal_profile=service_principal_profile,
         network_profile=network_profile,
         addon_profiles=addon_profiles,
@@ -960,7 +973,7 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
 
 def _create_client_secret():
     # Add a special character to satsify AAD SP secret requirements
-    special_chars = '!#$%&*-+_.:;<>=?@][^}{|~)('
+    special_chars = '!#$%&*-+_.:;<>=?@][^}{|~'
     special_char = special_chars[ord(os.urandom(1)) % len(special_chars)]
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret

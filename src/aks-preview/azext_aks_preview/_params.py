@@ -36,6 +36,8 @@ def load_arguments(self, _):
         c.argument('name', validator=validate_linux_host_name)
         c.argument('kubernetes_version', completer=get_k8s_versions_completion_list)
         c.argument('admin_username', options_list=['--admin-username', '-u'], default='azureuser')
+        c.argument('windows_admin_username', options_list=['--windows-admin-username'])
+        c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
         c.argument('generate_ssh_keys', action='store_true', validator=validate_create_parameters)
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
@@ -90,11 +92,6 @@ def load_arguments(self, _):
         c.argument('cluster_name', type=str, help='The cluster name.')
 
     for scope in ['aks nodepool add']:
-        with self.argument_context(scope) as c:
-            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
-            c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
-
-    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
             c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
