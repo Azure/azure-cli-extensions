@@ -402,6 +402,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         vm_size=node_vm_size,
         os_type="Linux",
         vnet_subnet_id=vnet_subnet_id,
+        availability_zones=node_zones,
         max_pods=int(max_pods) if max_pods else None
     )
 
@@ -616,7 +617,7 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
 
 
 def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument
-    instance = client.managed_clusters.get(resource_group_name, name)
+    instance = client.get(resource_group_name, name)
 
     if instance.kubernetes_version == kubernetes_version:
         if instance.provisioning_state == "Succeeded":
