@@ -84,16 +84,19 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
 
     with self.argument_context('aks nodepool') as c:
-        c.argument('cluster_name', type=str)
+        c.argument('cluster_name', type=str, help='The cluster name.')
 
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
-            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
             c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+            c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
+            c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
+            c.argument('os_type', type=str)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
         with self.argument_context(scope) as c:
-            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
 
 def _get_default_install_location(exe_name):
