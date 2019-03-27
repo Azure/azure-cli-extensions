@@ -513,12 +513,12 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
         (enable_pod_security_policy is False and disable_pod_security_policy is False):
-        raise CLIError('Please specify "--enable-cluster-autoscaler" or '
-                       '"--disable-cluster-autoscaler" or '
-                       '"--update-cluster-autoscaler" or '
-                       '"--enable-pod-security-policy" or '
-                       '"--disable-pod-security-policy" or '
-                       '"--api-server-authorized-ip-ranges"')
+            raise CLIError('Please specify "--enable-cluster-autoscaler" or '
+                        '"--disable-cluster-autoscaler" or '
+                        '"--update-cluster-autoscaler" or '
+                        '"--enable-pod-security-policy" or '
+                        '"--disable-pod-security-policy" or '
+                        '"--api-server-authorized-ip-ranges"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)

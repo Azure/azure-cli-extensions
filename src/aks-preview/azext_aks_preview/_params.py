@@ -79,7 +79,6 @@ def load_arguments(self, _):
         c.argument('enable_pod_security_policy', action='store_true', options_list=['--enable-pod-security-policy'])
         c.argument('disable_pod_security_policy', action='store_true', options_list=['--disable-pod-security-policy'])
 
-
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
