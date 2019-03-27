@@ -512,7 +512,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_pod_security_policy=False):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
-    (enable_pod_security_policy is False and disable_pod_security_policy is False):
+       (enable_pod_security_policy is False and disable_pod_security_policy is False):
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
