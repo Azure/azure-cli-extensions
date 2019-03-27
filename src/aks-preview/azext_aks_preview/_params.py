@@ -86,7 +86,12 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str)
 
-    for scope in ['aks nodepool add', 'aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
+    for scope in ['aks nodepool add']:
+        with self.argument_context(scope) as c:
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
+            c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+
+    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
 

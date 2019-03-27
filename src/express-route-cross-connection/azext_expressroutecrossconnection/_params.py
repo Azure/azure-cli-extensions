@@ -20,9 +20,11 @@ def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
     cross_connection_name_type = CLIArgumentType(options_list=('--cross-connection-name',), metavar='NAME', help='ExpressRoute cross-connection name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/expressRouteCrossConnections'))
     routing_registry_values = ['ARIN', 'APNIC', 'AFRINIC', 'LACNIC', 'RIPENCC', 'RADB', 'ALTDB', 'LEVEL3']
+    device_path_values = ['primary', 'secondary']
 
     with self.argument_context('network cross-connection') as c:
-        c.argument('cross_connection_name', cross_connection_name_type, options_list=('--name', '-n'))
+        c.argument('cross_connection_name', cross_connection_name_type, options_list=['--name', '-n'])
+        c.argument('device_path', options_list='--path', arg_type=get_enum_type(device_path_values))
 
     with self.argument_context('network cross-connection update') as c:
         c.argument('notes', help='Service provider notes.')
@@ -35,8 +37,8 @@ def load_arguments(self, _):
         c.argument('cross_connection_name', cross_connection_name_type)
         c.argument('peering_name', name_arg_type, id_part='child_name_1')
         c.argument('peering_type', validator=validate_peering_type, arg_type=get_enum_type(ExpressRoutePeeringType), help='BGP peering type for the circuit.')
-        c.argument('primary_peer_address_prefix', options_list=['--primary-peer-subnet'], help='/30 subnet used to configure IP addresses for primary interface.')
-        c.argument('secondary_peer_address_prefix', options_list=['--secondary-peer-subnet'], help='/30 subnet used to configure IP addresses for secondary interface.')
+        c.argument('primary_peer_address_prefix', options_list='--primary-peer-subnet', help='/30 subnet used to configure IP addresses for primary interface.')
+        c.argument('secondary_peer_address_prefix', options_list='--secondary-peer-subnet', help='/30 subnet used to configure IP addresses for secondary interface.')
         c.argument('advertised_public_prefixes', arg_group='Microsoft Peering', nargs='+', help='Space-separated list of prefixes to be advertised through the BGP peering.')
         c.argument('customer_asn', arg_group='Microsoft Peering', help='Autonomous system number of the customer.')
         c.argument('routing_registry_name', arg_group='Microsoft Peering', arg_type=get_enum_type(routing_registry_values), help='Internet Routing Registry / Regional Internet Registry')
