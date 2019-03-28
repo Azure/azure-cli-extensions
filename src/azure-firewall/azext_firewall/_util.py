@@ -4,8 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import sys
-from knack.util import CLIError
+
 from azure.cli.core.util import sdk_no_wait
+
+from knack.util import CLIError
 
 from ._client_factory import network_client_factory
 
@@ -14,8 +16,7 @@ def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
         raise CLIError("Property '{}' does not exist".format(name))
-    else:
-        return result
+    return result
 
 
 def _set_param(item, prop, value):
@@ -48,8 +49,7 @@ def get_network_resource_property_entry(resource, prop):
         if not result:
             raise CLIError("Item '{}' does not exist on {} '{}'".format(
                 item_name, resource, resource_name))
-        else:
-            return result
+        return result
 
     func_name = 'get_network_resource_property_entry_{}_{}'.format(resource, prop)
     setattr(sys.modules[__name__], func_name, get_func)
