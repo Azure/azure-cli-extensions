@@ -226,9 +226,6 @@ helps['aks nodepool add'] = """
     type: command
     short-summary: Add a node pool to the managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
         - name: --node-vm-size -s
           type: string
           short-summary: Size of Virtual Machines to create as Kubernetes nodes.
@@ -254,15 +251,15 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --os-type
+          type: string
+          short-summary: The OS Type. Linux or Windows.
 """
 
 helps['aks nodepool scale'] = """
     type: command
     short-summary: Scale the node pool in a managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
@@ -272,10 +269,7 @@ helps['aks nodepool upgrade'] = """
     type: command
     short-summary: Upgrade the node pool in a managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
-        - name: --kubernetes-version
+        - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
 """
@@ -283,8 +277,4 @@ helps['aks nodepool upgrade'] = """
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
-    parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
 """
