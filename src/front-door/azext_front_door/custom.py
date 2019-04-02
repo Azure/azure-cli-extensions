@@ -468,7 +468,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                             backend_pool=None, accepted_protocols=None, patterns_to_match=None,
                             custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
                             dynamic_compression=None, query_parameter_strip_directive=None,
-                            redirect_type=None, redirect_protocol=None, custom_host=None, custom_path=None,
+                            redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
                             custom_fragment=None, custom_query_string=None):
     from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
                                                        ForwardingConfiguration, RedirectConfiguration)
@@ -483,19 +483,14 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                       '[--custom-host CUSTOM_HOST] [--custom-path CUSTOM_PATH] '
                       '[--custom-fragment CUSTOM_FRAGMENT] [--custom-query-string CUSTOM_QUERY_STRING]')
 
-    if route_type == 'Forward' and any([redirect_type, redirect_protocol, custom_host, custom_path,
-                                        custom_fragment, custom_query_string]):
+    # pylint: disable=line-too-long
+    if (route_type == 'Forward' and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None)):
         from knack.util import CLIError
         raise CLIError(forwarding_usage)
     if route_type == 'Redirect' and any([custom_forwarding_path, forwarding_protocol, backend_pool,
                                          query_parameter_strip_directive, dynamic_compression]):
         from knack.util import CLIError
         raise CLIError(redirect_usage)
-
-    if redirect_type is None:
-        redirect_type = 'Moved'
-    if redirect_protocol is None:
-        redirect_protocol = 'MatchRequest'
 
     if route_type == 'Forward':
         rule = RoutingRule(

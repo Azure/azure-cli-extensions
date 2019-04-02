@@ -28,7 +28,7 @@ def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
         Mode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform,
-        FrontDoorRedirectType, FrontDoorRedirectProtocol, EnforceCertificateNameCheckEnabledState
+        FrontDoorRedirectType, FrontDoorRedirectProtocol
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
@@ -59,13 +59,13 @@ def load_arguments(self, _):
         c.argument('frontend_host_name', help='Domain name of the frontend endpoint.')
 
     with self.argument_context('network front-door', arg_group='HTTPS') as c:
-        c.argument('certificate_source', arg_type=get_enum_type(FrontDoorCertificateSource), help='Certificate source to enable HTTPS. Allowed values: FrontDoor, AzureKeyVault. For Azure Key Vault, right permissions need to be set for Front Door to access the Key vault. Learn more at https://aka.ms/FrontDoorCustomDomain.')
+        c.argument('certificate_source', arg_type=get_enum_type(FrontDoorCertificateSource), help='Certificate source to enable HTTPS.')
         c.argument('secret_name', help='The name of the Key Vault secret representing the full certificate PFX')
         c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX')
         c.argument('vault_id', help='The resource id of the Key Vault containing the SSL certificate')
 
     with self.argument_context('network front-door', arg_group='BackendPools Settings') as c:
-        c.argument('enforce_certificate_name_check', arg_type=get_enum_type(EnforceCertificateNameCheckEnabledState), help='Whether to enforce certificate name check on HTTPS requests to all backend pools. No effect on non-HTTPS requests.')
+        c.argument('enforce_certificate_name_check', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Whether to disable certificate name check on HTTPS requests to all backend pools. No effect on non-HTTPS requests.')
 
     with self.argument_context('network front-door', arg_group='Backend') as c:
         c.argument('backend_address', help='FQDN of the backend endpoint.')
@@ -127,8 +127,8 @@ def load_arguments(self, _):
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
         c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
         c.argument('query_parameter_strip_directive', arg_type=get_enum_type(FrontDoorQuery), help='Treatment of URL query terms when forming the cache key.')
-        c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic. Default: Moved.')
-        c.argument('redirect_protocol', arg_type=get_enum_type(FrontDoorRedirectProtocol), help='The protocol of the destination to where the traffic is redirected.  Default: MatchRequest.')
+        c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic.')
+        c.argument('redirect_protocol', arg_type=get_enum_type(FrontDoorRedirectProtocol), help='The protocol of the destination to where the traffic is redirected.')
         c.argument('custom_host', help='Host to redirect. Leave empty to use use the incoming host as the destination host.')
         c.argument('custom_path', help='The full path to redirect. Path cannot be empty and must start with /. Leave empty to use the incoming path as destination path.')
         c.argument('custom_fragment', help='Fragment to add to the redirect URL. Fragment is the part of the URL that comes after #. Do not include the #.')
