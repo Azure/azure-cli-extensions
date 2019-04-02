@@ -6,7 +6,7 @@
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, JMESPathCheck, NoneCheck,
                                api_version_constraint)
 from azure.cli.core.profiles import ResourceType
-from ...profiles import CUSTOM_FIREWALL
+from azext_firewall.profiles import CUSTOM_FIREWALL
 
 
 class AzureFirewallScenario(ScenarioTest):
@@ -20,4 +20,7 @@ class AzureFirewallScenario(ScenarioTest):
             'rule1': 'rule1',
             'rule2': 'rule2'
         })
-        pass
+        self.cmd('network firewall create -g {rg} -n {af}')
+        self.cmd('network firewall show -g {rg} -n {af}')
+        self.cmd('network firewall list -g {rg}')
+        self.cmd('network firewall delete -g {rg} -n {af}')
