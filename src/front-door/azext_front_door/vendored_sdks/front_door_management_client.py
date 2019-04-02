@@ -146,7 +146,7 @@ class FrontDoorManagementClient(SDKClient):
         """
         check_front_door_name_availability_input = models.CheckNameAvailabilityInput(name=name, type=type)
 
-        api_version = "2018-08-01"
+        api_version = "2019-04-01"
 
         # Construct URL
         url = self.check_front_door_name_availability.metadata['url']
@@ -211,7 +211,7 @@ class FrontDoorManagementClient(SDKClient):
         """
         check_front_door_name_availability_input = models.CheckNameAvailabilityInput(name=name, type=type)
 
-        api_version = "2018-08-01"
+        api_version = "2019-04-01"
 
         # Construct URL
         url = self.check_front_door_name_availability_with_subscription.metadata['url']

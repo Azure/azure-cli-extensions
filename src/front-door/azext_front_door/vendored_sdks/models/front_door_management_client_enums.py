@@ -61,6 +61,12 @@ class FrontDoorCertificateType(str, Enum):
     dedicated = "Dedicated"
 
 
+class EnforceCertificateNameCheckEnabledState(str, Enum):
+
+    enabled = "Enabled"
+    disabled = "Disabled"
+
+
 class FrontDoorEnabledState(str, Enum):
 
     enabled = "Enabled"
@@ -71,6 +77,12 @@ class FrontDoorProtocol(str, Enum):
 
     http = "Http"
     https = "Https"
+
+
+class RoutingRuleEnabledState(str, Enum):
+
+    enabled = "Enabled"
+    disabled = "Disabled"
 
 
 class FrontDoorForwardingProtocol(str, Enum):
@@ -87,6 +99,27 @@ class FrontDoorQuery(str, Enum):
 
 
 class DynamicCompressionEnabled(str, Enum):
+
+    enabled = "Enabled"
+    disabled = "Disabled"
+
+
+class FrontDoorRedirectType(str, Enum):
+
+    moved = "Moved"
+    found = "Found"
+    temporary_redirect = "TemporaryRedirect"
+    permanent_redirect = "PermanentRedirect"
+
+
+class FrontDoorRedirectProtocol(str, Enum):
+
+    http_only = "HttpOnly"
+    https_only = "HttpsOnly"
+    match_request = "MatchRequest"
+
+
+class BackendEnabledState(str, Enum):
 
     enabled = "Enabled"
     disabled = "Disabled"
@@ -159,8 +192,6 @@ class Operator(str, Enum):
     greater_than_or_equal = "GreaterThanOrEqual"
     begins_with = "BeginsWith"
     ends_with = "EndsWith"
-
-
 class Action(str, Enum):
 
     allow = "Allow"
@@ -176,6 +207,8 @@ class Transform(str, Enum):
     url_decode = "UrlDecode"
     url_encode = "UrlEncode"
     remove_nulls = "RemoveNulls"
+
+
     html_entity_decode = "HtmlEntityDecode"
 
 
@@ -187,8 +220,6 @@ class WebApplicationFirewallPolicy(str, Enum):
     disabling = "Disabling"
     disabled = "Disabled"
     deleting = "Deleting"
-
-
 class RuleGroupOverride(str, Enum):
 
     sql_injection = "SqlInjection"

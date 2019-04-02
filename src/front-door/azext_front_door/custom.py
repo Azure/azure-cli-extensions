@@ -134,10 +134,11 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
                       friendly_name=None, tags=None, disabled=None, no_wait=False,
                       backend_host_header=None, frontend_host_name=None,
                       probe_path='/', probe_protocol='Https', probe_interval=30,
-                      accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest'):
+                      accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest',
+                      enforce_certificate_name_check='Enabled'):
     from azext_front_door.vendored_sdks.models import (
         FrontDoor, FrontendEndpoint, BackendPool, Backend, HealthProbeSettingsModel, LoadBalancingSettingsModel,
-        RoutingRule)
+        RoutingRule, ForwardingConfiguration, BackendPoolsSettings)
 
     # set the default names (consider making user-settable)
     backend_pool_name = 'DefaultBackendPool'
@@ -211,20 +212,24 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
                 frontend_endpoints=[{'id': frontend_endpoint_id}],
                 accepted_protocols=accepted_protocols or ['Http'],
                 patterns_to_match=patterns_to_match or ['/*'],
-                forwarding_protocol=forwarding_protocol,
-                backend_pool={'id': backend_pool_id},
+                route_configuration=ForwardingConfiguration(forwarding_protocol=forwarding_protocol,
+                                                            backend_pool={'id': backend_pool_id}),
                 enabled_state='Enabled',
                 resource_state='Enabled'
             )
-        ]
+        ],
+        backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check)
     )
     return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
                        resource_group_name, front_door_name, front_door)
 
 
-def update_front_door(instance, tags=None):
+def update_front_door(instance, tags=None, enforce_certificate_name_check=None):
+    from azext_front_door.vendored_sdks.models import (BackendPoolsSettings)
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
+        c.update_param('backend_pools_settings',
+                       BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check), True)
     return instance
 
 
@@ -279,7 +284,8 @@ def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
                                                 certificate_source=None, vault_id=None):
-    keyvault_usage = 'usage error: --type AzureKeyVault --vault-id ID --secret-name NAME --secret-version VERSION'
+    keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
+                      '--secret-name NAME --secret-version VERSION')
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
         from knack.util import CLIError
         raise CLIError(keyvault_usage)
@@ -458,25 +464,67 @@ def update_fd_load_balancing_settings(instance, sample_size=None, successful_sam
     return instance
 
 
-def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, backend_pool,
-                            accepted_protocols=None, patterns_to_match=None, custom_forwarding_path=None,
-                            forwarding_protocol=None, disabled=None,
-                            dynamic_compression=None, query_parameter_strip_directive=None):
-    from azext_front_door.vendored_sdks.models import CacheConfiguration, RoutingRule, SubResource
-    rule = RoutingRule(
-        name=item_name,
-        enabled_state='Disabled' if disabled else 'Enabled',
-        frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
-        accepted_protocols=accepted_protocols or ['Http'],
-        patterns_to_match=patterns_to_match or ['/*'],
-        custom_forwarding_path=custom_forwarding_path,
-        forwarding_protocol=forwarding_protocol,
-        backend_pool=SubResource(id=backend_pool) if backend_pool else None,
-        cache_configuration=CacheConfiguration(
-            query_parameter_strip_directive=query_parameter_strip_directive,
-            dynamic_compression=dynamic_compression
+def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
+                            backend_pool=None, accepted_protocols=None, patterns_to_match=None,
+                            custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
+                            dynamic_compression=None, query_parameter_strip_directive=None,
+                            redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
+                            custom_fragment=None, custom_query_string=None):
+    from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
+                                                       ForwardingConfiguration, RedirectConfiguration)
+
+    forwarding_usage = ('usage error: [--backend-pool BACKEND_POOL] '
+                        '[--custom-forwarding-path CUSTOM_FORWARDING_PATH] '
+                        '[--forwarding-protocol FORWARDING_PROTOCOL] '
+                        '[--query-parameter-strip-directive {StripNone,StripAll}] '
+                        '[--dynamic-compression [{Enabled,Disabled}]]')
+    redirect_usage = ('usage error: [--redirect-type {Moved,Found,TemporaryRedirect,PermanentRedirect}]'
+                      '[--redirect-protocol {HttpOnly,HttpsOnly,MatchRequest}] '
+                      '[--custom-host CUSTOM_HOST] [--custom-path CUSTOM_PATH] '
+                      '[--custom-fragment CUSTOM_FRAGMENT] [--custom-query-string CUSTOM_QUERY_STRING]')
+
+    # pylint: disable=line-too-long
+    if (route_type == 'Forward' and any([custom_host, custom_path, custom_fragment, custom_query_string]) and getattr(redirect_type, 'is_default', None) and getattr(redirect_protocol, 'is_default', None)):
+        from knack.util import CLIError
+        raise CLIError(forwarding_usage)
+    if route_type == 'Redirect' and any([custom_forwarding_path, forwarding_protocol, backend_pool,
+                                         query_parameter_strip_directive, dynamic_compression]):
+        from knack.util import CLIError
+        raise CLIError(redirect_usage)
+
+    if route_type == 'Forward':
+        rule = RoutingRule(
+            name=item_name,
+            enabled_state='Disabled' if disabled else 'Enabled',
+            frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
+            accepted_protocols=accepted_protocols or ['Http'],
+            patterns_to_match=patterns_to_match or ['/*'],
+            route_configuration=ForwardingConfiguration(
+                custom_forwarding_path=custom_forwarding_path,
+                forwarding_protocol=forwarding_protocol,
+                backend_pool=SubResource(id=backend_pool) if backend_pool else None,
+                cache_configuration=CacheConfiguration(
+                    query_parameter_strip_directive=query_parameter_strip_directive,
+                    dynamic_compression=dynamic_compression
+                )
+            )
         )
-    )
+    elif route_type == 'Redirect':
+        rule = RoutingRule(
+            name=item_name,
+            enabled_state='Disabled' if disabled else 'Enabled',
+            frontend_endpoints=[SubResource(id=x) for x in frontend_endpoints] if frontend_endpoints else None,
+            accepted_protocols=accepted_protocols or ['Http'],
+            patterns_to_match=patterns_to_match or ['/*'],
+            route_configuration=RedirectConfiguration(
+                redirect_type=redirect_type,
+                redirect_protocol=redirect_protocol,
+                custom_host=custom_host,
+                custom_path=custom_path,
+                custom_fragment=custom_fragment,
+                custom_query_string=custom_query_string
+            )
+        )
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name')
 
 
