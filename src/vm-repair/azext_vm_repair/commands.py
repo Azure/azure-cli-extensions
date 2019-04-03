@@ -13,8 +13,7 @@ def load_command_table(self, _):
     with self.command_group('hello') as g:
             g.custom_command('world', 'helloworld')
 
+    # TODO add list, show, wait? 
     with self.command_group('vm repair') as g:
-        g.show_command('show', 'get')
-        g.command('swap-disk', 'swap_disk')
-        g.command('restore-swap', 'restore_swap')
-        g.wait_command('wait')
+        g.custom_command('swap-disk', 'swap_disk')
+        g.custom_command('restore-swap', 'restore_swap')
