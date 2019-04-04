@@ -10,5 +10,5 @@ from knack.help_files import helps   # pylint: disable=import-error
 
 helps['ads'] = """
      type: group
-     short-summary: (PREVIEW) Manage Azure Dev Spaces.
+     short-summary: Manage Azure Dev Spaces.
 """
