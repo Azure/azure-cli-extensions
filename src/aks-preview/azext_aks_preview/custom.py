@@ -379,6 +379,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                tags=None,
                node_zones=None,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
+               enable_pod_security_policy=False,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -484,7 +485,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         service_principal_profile=service_principal_profile,
         network_profile=network_profile,
         addon_profiles=addon_profiles,
-        aad_profile=aad_profile)
+        aad_profile=aad_profile,
+        enable_pod_security_policy=bool(enable_pod_security_policy))
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
@@ -506,12 +508,17 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False,
-               api_server_authorized_ip_ranges=None):
+               api_server_authorized_ip_ranges=None,
+               enable_pod_security_policy=False,
+               disable_pod_security_policy=False):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    if update_flags != 1 and api_server_authorized_ip_ranges is None:
+    if update_flags != 1 and api_server_authorized_ip_ranges is None and \
+       (enable_pod_security_policy is False and disable_pod_security_policy is False):
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
+                       '"--enable-pod-security-policy" or '
+                       '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges"')
 
     # TODO: change this approach when we support multiple agent pools.
@@ -553,6 +560,15 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.agent_pool_profiles[0].enable_auto_scaling = False
         instance.agent_pool_profiles[0].min_count = None
         instance.agent_pool_profiles[0].max_count = None
+
+    if enable_pod_security_policy and disable_pod_security_policy:
+        raise CLIError('Cannot specify --enable-pod-security-policy and --disable-pod-security-policy '
+                       'at the same time.')
+
+    if enable_pod_security_policy:
+        instance.enable_pod_security_policy = True
+    if disable_pod_security_policy:
+        instance.enable_pod_security_policy = False
 
     if api_server_authorized_ip_ranges is not None:
         instance.api_server_authorized_ip_ranges = []
