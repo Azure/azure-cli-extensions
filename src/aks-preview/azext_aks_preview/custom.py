@@ -346,6 +346,7 @@ def _trim_nodepoolname(nodepool_name):
 
 
 # pylint: disable=too-many-statements
+# pylint: disable=too-many-branches
 def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
                dns_name_prefix=None,
                location=None,
@@ -1067,34 +1068,3 @@ def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
     return sdk_no_wait(no_wait, client.delete, resource_group_name, cluster_name, nodepool_name)
-
-
-def aks_list(cmd, client, resource_group_name=None):
-    if resource_group_name:
-        managed_clusters = client.list_by_resource_group(resource_group_name)
-    else:
-        managed_clusters = client.list()
-    return _remove_nulls(list(managed_clusters))
-
-def _remove_nulls(managed_clusters):
-    """
-    Remove some often-empty fields from a list of ManagedClusters, so the JSON representation
-    doesn't contain distracting null fields.
-    This works around a quirk of the SDK for python behavior. These fields are not sent
-    by the server, but get recreated by the CLI's own "to_dict" serialization.
-    """
-    attrs = ['tags']
-    ap_attrs = ['os_disk_size_gb', 'vnet_subnet_id']
-    sp_attrs = ['secret']
-    for managed_cluster in managed_clusters:
-        for attr in attrs:
-            if getattr(managed_cluster, attr, None) is None:
-                delattr(managed_cluster, attr)
-        for ap_profile in managed_cluster.agent_pool_profiles:
-            for attr in ap_attrs:
-                if getattr(ap_profile, attr, None) is None:
-                    delattr(ap_profile, attr)
-        for attr in sp_attrs:
-            if getattr(managed_cluster.service_principal_profile, attr, None) is None:
-                delattr(managed_cluster.service_principal_profile, attr)
-    return managed_clusters
