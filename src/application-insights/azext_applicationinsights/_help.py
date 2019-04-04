@@ -52,7 +52,7 @@ helps['monitor app-insights component update'] = """
     examples:
       - name: Update a component with kind web.
         text: |
-          az monitor app-insights component update --app demoApp --kind web -g demoRg
+          az monitor app-insights component update --app demoApp -k web -g demoRg
 """
 
 helps['monitor app-insights component update-tags'] = """
