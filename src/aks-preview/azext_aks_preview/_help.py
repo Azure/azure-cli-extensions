@@ -59,6 +59,12 @@ helps['aks create'] = """
         - name: --admin-username -u
           type: string
           short-summary: User account to create on node VMs for SSH access.
+        - name: --windows-admin-username
+          type: string
+          short-summary: User account to create on windows node VMs.
+        - name: --windows-admin-password
+          type: string
+          short-summary: User account password to use on windows node VMs.
         - name: --aad-client-app-id
           type: string
           short-summary: (PREVIEW) The ID of an Azure Active Directory client application of type "Native". This
