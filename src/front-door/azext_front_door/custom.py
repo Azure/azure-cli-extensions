@@ -550,12 +550,12 @@ def update_fd_routing_rules(instance, frontend_endpoints=None, accepted_protocol
 
 # region WafPolicy
 def create_waf_policy(cmd, resource_group_name, policy_name,
-                      disabled=False, mode=None, location=None, tags=None):
+                      disabled=False, mode=None, tags=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
         WebApplicationFirewallPolicy1, ManagedRuleSets, PolicySettings, CustomRules)
     policy = WebApplicationFirewallPolicy1(
-        location=location,
+        location='global',
         tags=tags,
         policy_settings=PolicySettings(
             enabled_state='Enabled' if not disabled else 'Disabled',
