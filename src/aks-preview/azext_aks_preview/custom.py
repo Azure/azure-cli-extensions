@@ -15,6 +15,7 @@ import uuid
 from ipaddress import ip_network
 from knack.log import get_logger
 from knack.util import CLIError
+from knack.prompting import prompt_pass, NoTTYException
 import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
@@ -425,10 +426,14 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         linux_profile = ContainerServiceLinuxProfile(admin_username=admin_username, ssh=ssh_config)
 
     windows_profile = None
-    if (windows_admin_username is None) != (windows_admin_password is None):
-        raise CLIError("Please make sure both windows admin username and password are specified.")
 
     if windows_admin_username:
+        if windows_admin_password is None:
+            try:
+                windows_admin_password = prompt_pass(msg='windows-admin-password: ', confirm=True)
+            except NoTTYException:
+                raise CLIError('Please specify both username and password in non-interactive mode.')
+
         windows_profile = ManagedClusterWindowsProfile(
             admin_username=windows_admin_username,
             admin_password=windows_admin_password)
@@ -1028,7 +1033,12 @@ def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
                         node_count=3,
                         no_wait=False):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
-    instance.count = int(node_count)  # pylint: disable=no-member
+    new_node_count = int(node_count)
+    if new_node_count == 0:
+        raise CLIError("Can't scale down to 0 node.")
+    if new_node_count == instance.count:
+        raise CLIError("The new node count is the same as the current node count.")
+    instance.count = new_node_count  # pylint: disable=no-member
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
@@ -1057,3 +1067,34 @@ def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
     return sdk_no_wait(no_wait, client.delete, resource_group_name, cluster_name, nodepool_name)
+
+
+def aks_list(cmd, client, resource_group_name=None):
+    if resource_group_name:
+        managed_clusters = client.list_by_resource_group(resource_group_name)
+    else:
+        managed_clusters = client.list()
+    return _remove_nulls(list(managed_clusters))
+
+def _remove_nulls(managed_clusters):
+    """
+    Remove some often-empty fields from a list of ManagedClusters, so the JSON representation
+    doesn't contain distracting null fields.
+    This works around a quirk of the SDK for python behavior. These fields are not sent
+    by the server, but get recreated by the CLI's own "to_dict" serialization.
+    """
+    attrs = ['tags']
+    ap_attrs = ['os_disk_size_gb', 'vnet_subnet_id']
+    sp_attrs = ['secret']
+    for managed_cluster in managed_clusters:
+        for attr in attrs:
+            if getattr(managed_cluster, attr, None) is None:
+                delattr(managed_cluster, attr)
+        for ap_profile in managed_cluster.agent_pool_profiles:
+            for attr in ap_attrs:
+                if getattr(ap_profile, attr, None) is None:
+                    delattr(ap_profile, attr)
+        for attr in sp_attrs:
+            if getattr(managed_cluster.service_principal_profile, attr, None) is None:
+                delattr(managed_cluster.service_principal_profile, attr)
+    return managed_clusters
