@@ -59,6 +59,12 @@ helps['aks create'] = """
         - name: --admin-username -u
           type: string
           short-summary: User account to create on node VMs for SSH access.
+        - name: --windows-admin-username
+          type: string
+          short-summary: User account to create on windows node VMs.
+        - name: --windows-admin-password
+          type: string
+          short-summary: User account password to use on windows node VMs.
         - name: --aad-client-app-id
           type: string
           short-summary: (PREVIEW) The ID of an Azure Active Directory client application of type "Native". This
@@ -142,6 +148,9 @@ helps['aks create'] = """
         - name: --enable-vmss
           type: bool
           short-summary: (PREVIEW) Enable VMSS agent type.
+        - name: --enable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Enable pod security policy.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -197,6 +206,12 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: str
           short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
+        - name: --enable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Enable pod security policy.
+        - name: --disable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Disable pod security policy.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -206,6 +221,10 @@ helps['aks update'] = """
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Enable authorized IP ranges for apiserver.
         text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
+      - name: Enable pod security policy.
+        text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
+      - name: Disable pod security policy.
+        text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks nodepool'] = """
@@ -226,9 +245,6 @@ helps['aks nodepool add'] = """
     type: command
     short-summary: Add a node pool to the managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
         - name: --node-vm-size -s
           type: string
           short-summary: Size of Virtual Machines to create as Kubernetes nodes.
@@ -254,15 +270,15 @@ helps['aks nodepool add'] = """
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --os-type
+          type: string
+          short-summary: The OS Type. Linux or Windows.
 """
 
 helps['aks nodepool scale'] = """
     type: command
     short-summary: Scale the node pool in a managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
@@ -272,10 +288,7 @@ helps['aks nodepool upgrade'] = """
     type: command
     short-summary: Upgrade the node pool in a managed Kubernetes cluster.
     parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
-        - name: --kubernetes-version
+        - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
 """
@@ -283,8 +296,4 @@ helps['aks nodepool upgrade'] = """
 helps['aks nodepool delete'] = """
     type: command
     short-summary: Delete the agent pool in the managed Kubernetes cluster.
-    parameters:
-        - name: --nodepool-name
-          type: string
-          short-summary: Node pool name.
 """

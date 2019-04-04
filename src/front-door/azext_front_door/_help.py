@@ -120,15 +120,17 @@ helps['network front-door frontend-endpoint delete'] = """
 
 helps['network front-door frontend-endpoint enable-https'] = """
     type: command
-    short-summary: Enable HTTPS protocol for a custom domain using Front Door managed certificate or using your own certificate in Azure Key Vault.
+    short-summary: Enable HTTPS protocol for a custom domain.
+    long-summary: >
+        HTTPS protocol for a custom domain can be enabled using Front Door managed certificate
+        or using your own certificate in Azure Key Vault. For Azure Key Vault, right permissions
+        need to be set for Front Door to access the Key vault. Learn more at https://aka.ms/FrontDoorCustomDomain.
 """
 
 helps['network front-door frontend-endpoint disable-https'] = """
     type: command
     short-summary: Disable HTTPS protocol for a custom domain.
 """
-
-
 # endregion
 
 # region FrontDoor LoadBalancingSettings
@@ -193,6 +195,19 @@ helps['network front-door routing-rule'] = """
 helps['network front-door routing-rule create'] = """
     type: command
     short-summary: Create a Front Door routing rule.
+    long-summary: >
+        Create a Front Door routing rule to either forward
+        the requests to a backend or redirect the users to a different URL.
+
+
+        Example 1: az network front-door routing-rule create -f frontdoor1 -g rg1 --frontend-endpoints
+        DefaultFrontendEndpoint --route-type Forward --backend-pool DefaultBackendPool
+        -n forwardRoutingrule1 --patterns /forward1
+
+
+        Example 2: az network front-door routing-rule create -f frontdoor1 -g rg1 --frontend-endpoints
+        DefaultFrontendEndpoint --route-type Redirect --custom-host redirecthost.com
+        -n redirectRouteRule1 --patterns /redirect1 --custom-query-string querystring
 """
 
 helps['network front-door routing-rule list'] = """

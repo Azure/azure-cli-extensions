@@ -6,11 +6,11 @@
 # pylint: disable=line-too-long
 import argparse
 
-from knack.arguments import CLIArgumentType
-
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, tags_type, get_enum_type, get_location_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+
+from knack.arguments import CLIArgumentType
 
 from ._completers import get_af_subresource_completion_list
 from ._validators import (

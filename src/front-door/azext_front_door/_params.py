@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from enum import Enum
+
 from knack.arguments import CLIArgumentType
 
 from azure.cli.core.commands.parameters import (
@@ -16,11 +18,18 @@ from ._validators import (
     validate_frontend_endpoints, validate_backend_pool, MatchConditionAction)
 
 
+class RouteType(str, Enum):
+    forward = "Forward"
+    redirect = "Redirect"
+
+
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
-        Mode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform)
+        Mode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform,
+        FrontDoorRedirectType, FrontDoorRedirectProtocol
+    )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
     waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
@@ -50,10 +59,13 @@ def load_arguments(self, _):
         c.argument('frontend_host_name', help='Domain name of the frontend endpoint.')
 
     with self.argument_context('network front-door', arg_group='HTTPS') as c:
-        c.argument('certificate_source', arg_type=get_enum_type(FrontDoorCertificateSource), help='Certificate source to enable HTTPS. Allowed values: FrontDoor, AzureKeyVault. For Azure Key Vault, right permissions need to be set for Front Door to to access the Key vault. Learn more at https://aka.ms/FrontDoorCustomDomain.')
+        c.argument('certificate_source', arg_type=get_enum_type(FrontDoorCertificateSource), help='Certificate source to enable HTTPS.')
         c.argument('secret_name', help='The name of the Key Vault secret representing the full certificate PFX')
         c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX')
         c.argument('vault_id', help='The resource id of the Key Vault containing the SSL certificate')
+
+    with self.argument_context('network front-door', arg_group='BackendPools Settings') as c:
+        c.argument('enforce_certificate_name_check', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Whether to disable certificate name check on HTTPS requests to all backend pools. No effect on non-HTTPS requests.')
 
     with self.argument_context('network front-door', arg_group='Backend') as c:
         c.argument('backend_address', help='FQDN of the backend endpoint.')
@@ -68,6 +80,7 @@ def load_arguments(self, _):
         c.argument('accepted_protocols', nargs='+', help='Space-separated list of protocols to accept. Default: Http')
         c.argument('patterns_to_match', options_list='--patterns', nargs='+', help='Space-separated list of patterns to match. Default: \'/*\'.')
         c.argument('forwarding_protocol', help='Protocol to use for forwarding traffic.')
+        c.argument('route_type', arg_type=get_enum_type(RouteType), help='Route type to define how Front Door should handle requests for this route i.e. forward them to a backend or redirect the users to a different URL.')
 
     with self.argument_context('network front-door purge-endpoint') as c:
         c.argument('content_paths', nargs='+')
@@ -114,6 +127,12 @@ def load_arguments(self, _):
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
         c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
         c.argument('query_parameter_strip_directive', arg_type=get_enum_type(FrontDoorQuery), help='Treatment of URL query terms when forming the cache key.')
+        c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic.')
+        c.argument('redirect_protocol', arg_type=get_enum_type(FrontDoorRedirectProtocol), help='The protocol of the destination to where the traffic is redirected.')
+        c.argument('custom_host', help='Host to redirect. Leave empty to use use the incoming host as the destination host.')
+        c.argument('custom_path', help='The full path to redirect. Path cannot be empty and must start with /. Leave empty to use the incoming path as destination path.')
+        c.argument('custom_fragment', help='Fragment to add to the redirect URL. Fragment is the part of the URL that comes after #. Do not include the #.')
+        c.argument('custom_query_string', help='The set of query strings to be placed in the redirect URL. Setting this value would replace any existing query string; leave empty to preserve the incoming query string. Query string must be in <key>=<value> format. The first ? and & will be added automatically so do not include them in the front, but do separate multiple query strings with &.')
     # endregion
 
     # region WafPolicy

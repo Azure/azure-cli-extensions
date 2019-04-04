@@ -36,6 +36,8 @@ def load_arguments(self, _):
         c.argument('name', validator=validate_linux_host_name)
         c.argument('kubernetes_version', completer=get_k8s_versions_completion_list)
         c.argument('admin_username', options_list=['--admin-username', '-u'], default='azureuser')
+        c.argument('windows_admin_username', options_list=['--windows-admin-username'])
+        c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
         c.argument('generate_ssh_keys', action='store_true', validator=validate_create_parameters)
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
@@ -67,6 +69,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('enable_vmss', action='store_true')
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+        c.argument('enable_pod_security_policy', action='store_true')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -75,6 +78,8 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
+        c.argument('enable_pod_security_policy', action='store_true')
+        c.argument('disable_pod_security_policy', action='store_true')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -84,11 +89,19 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
 
     with self.argument_context('aks nodepool') as c:
-        c.argument('cluster_name', type=str)
+        c.argument('cluster_name', type=str, help='The cluster name.')
 
-    for scope in ['aks nodepool add', 'aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
+    for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
-            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name)
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+            c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+            c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
+            c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
+            c.argument('os_type', type=str)
+
+    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
+        with self.argument_context(scope) as c:
+            c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
 
 def _get_default_install_location(exe_name):
