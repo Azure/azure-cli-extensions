@@ -65,9 +65,9 @@ def get_linked_properties(cli_ctx, app, resource_group, read_properties=None, wr
         propLen = len(read_properties)
         linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties[i]]) for i in range(propLen)]
     else:
-        propLen = len(read_properties)
         linked_read_properties = ['{}/{}'.format(tmpl, roles[read_properties])]
     if isinstance(write_properties, list):
+        propLen = len(write_properties)
         linked_write_properties = ['{}/{}'.format(tmpl, roles[write_properties[i]]) for i in range(propLen)]
     else:
         linked_write_properties = ['{}/{}'.format(tmpl, roles[write_properties])]
