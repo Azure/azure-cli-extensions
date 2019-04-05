@@ -7,7 +7,7 @@
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
-    """Test class for ApplicationInsights mgmt cli."""    
+    """Test class for ApplicationInsights mgmt cli."""
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_component(self, resource_group, location):
         self.kwargs.update({
@@ -43,7 +43,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         apps = self.cmd('az monitor app-insights component show -g {resource_group}').get_output_in_json()
         assert len(apps) == 2
-        
+    
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
 

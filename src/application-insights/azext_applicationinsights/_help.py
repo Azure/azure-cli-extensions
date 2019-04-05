@@ -128,7 +128,7 @@ helps['monitor app-insights api-key create'] = """
     parameters:
       - name: --api-key
         type: string
-        short-summary: Name for the API key to create.
+        short-summary: Name of the API key to create.
       - name: --read-properties
         type: list
         short-summary: A space seperated list of names of read Roles for this API key to inherit. Possible values include ReadTelemetry and AuthenticateSDKControlChannel.
