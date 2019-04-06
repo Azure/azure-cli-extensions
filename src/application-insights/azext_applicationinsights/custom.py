@@ -69,12 +69,12 @@ def delete_component(client, application, resource_group_name):
     return client.delete(resource_group_name, application)
 
 
-def create_api_key(cmd, client, application, resource_group_name, api_key, read_properties=['ReadTelemetry', 'AuthenticateSDKControlChannel'], write_properties=['WriteAnnotations']):
+def create_api_key(cmd, client, application, resource_group_name, api_key, read_properties=None, write_properties=[]):
     from .vendored_sdks.mgmt_applicationinsights.models import APIKeyRequest
     if read_properties is None:
-        read_properties = []
+        read_properties = ['ReadTelemetry', 'AuthenticateSDKControlChannel']
     if write_properties is None:
-        write_properties = []
+        write_properties = ['WriteAnnotations']
     linked_read_properties, linked_write_properties = get_linked_properties(cmd.cli_ctx, application, resource_group_name, read_properties, write_properties)
     api_key_request = APIKeyRequest(api_key, linked_read_properties, linked_write_properties)
     return client.create(resource_group_name, application, api_key_request)
@@ -92,6 +92,6 @@ def show_api_key(client, application, resource_group_name, api_key=None):
 
 def delete_api_key(client, application, resource_group_name, api_key):
     existing_key = list(filter(lambda result: result.name == api_key, client.list(resource_group_name, application)))
-    if len(existing_key) > 0:
+    if not existing_key:
         return client.delete(resource_group_name, application, existing_key[0].id.split('/')[-1])
     raise CLIError('--api-key provided but key not found for deletion.')
