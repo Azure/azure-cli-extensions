@@ -69,7 +69,7 @@ def delete_component(client, application, resource_group_name):
     return client.delete(resource_group_name, application)
 
 
-def create_api_key(cmd, client, application, resource_group_name, api_key, read_properties=None, write_properties=[]):
+def create_api_key(cmd, client, application, resource_group_name, api_key, read_properties=None, write_properties=None):
     from .vendored_sdks.mgmt_applicationinsights.models import APIKeyRequest
     if read_properties is None:
         read_properties = ['ReadTelemetry', 'AuthenticateSDKControlChannel']
