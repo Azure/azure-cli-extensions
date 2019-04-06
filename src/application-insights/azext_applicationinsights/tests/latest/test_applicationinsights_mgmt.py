@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
+
 class ApplicationInsightsManagementClientTests(ScenarioTest):
     """Test class for ApplicationInsights mgmt cli."""
     @ResourceGroupPreparer(parameter_name_for_location='location')
@@ -43,11 +44,11 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         apps = self.cmd('az monitor app-insights component show -g {resource_group}').get_output_in_json()
         assert len(apps) == 2
-    
+
         self.cmd('az monitor app-insights component delete --app {name_a} -g {resource_group}', checks=[self.is_empty()])
         return
 
-    """Test class for ApplicationInsights mgmt cli."""    
+    """Test class for ApplicationInsights mgmt cli."""
     @ResourceGroupPreparer(parameter_name_for_location='location')
     def test_api_key(self, resource_group, location):
         self.kwargs.update({
@@ -67,7 +68,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
         api_key = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group} --api-key {apiKey}').get_output_in_json()
-        assert len(api_key['linkedReadProperties']) >= 2 # Some are not user configurable but will be added automatically
+        assert len(api_key['linkedReadProperties']) >= 2  # Some are not user configurable but will be added automatically
         assert len(api_key['linkedWriteProperties']) == 1
 
         api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyB}').get_output_in_json()
