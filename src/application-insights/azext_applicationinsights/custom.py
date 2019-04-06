@@ -93,6 +93,6 @@ def show_api_key(client, application, resource_group_name, api_key=None):
 
 def delete_api_key(client, application, resource_group_name, api_key):
     existing_key = list(filter(lambda result: result.name == api_key, client.list(resource_group_name, application)))
-    if not existing_key:
+    if existing_key != []:
         return client.delete(resource_group_name, application, existing_key[0].id.split('/')[-1])
     raise CLIError('--api-key provided but key not found for deletion.')
