@@ -90,6 +90,7 @@ def show_api_key(client, application, resource_group_name, api_key=None):
         return result
     return None
 
+
 def delete_api_key(client, application, resource_group_name, api_key):
     existing_key = list(filter(lambda result: result.name == api_key, client.list(resource_group_name, application)))
     if not existing_key:
