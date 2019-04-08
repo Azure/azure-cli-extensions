@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from msrest.exceptions import ValidationError
+from msrest.exceptions import ValidationError  # pylint: disable=import-error
 
 def netapp_exception_handler(ex):
     from azext_netappfiles_preview.vendored_sdks.models import ErrorException
