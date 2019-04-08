@@ -21,5 +21,7 @@ def load_arguments(self, _):
     with self.argument_context('vm repair') as c:
         c.argument('vm_name', existing_vm_name)
 
-   # with self.argument_context('vm repair swap-disk') as c:
-       # c.argument('resource_group')
+    with self.argument_context('vm repair swap-disk') as c:
+        c.argument('rescue_vm_name', help='Optional name for rescue vm.')
+        c.argument('rescue_username', help='Admin username for rescue VM.')
+        c.argument('rescue_password', help='Admin password for the rescue VM.')
