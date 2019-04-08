@@ -450,7 +450,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
-        if not _add_role_assignment(cmd.cli_ctx, 'Network Contributor', service_principal, scope=scope):
+        if not _add_role_assignment(
+                cmd.cli_ctx,
+                'Network Contributor',
+                service_principal_profile.client_id,
+                scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
 
@@ -461,6 +465,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             dns_service_ip,
             docker_bridge_address,
             network_policy]):
+        if not network_plugin:
+            raise CLIError('Please explicitly specify the network plugin type')
+        if pod_cidr and network_plugin == "azure":
+            raise CLIError('Please use kubenet as the network plugin type when pod_cidr is specified')
         network_profile = ContainerServiceNetworkProfile(
             network_plugin=network_plugin,
             pod_cidr=pod_cidr,
