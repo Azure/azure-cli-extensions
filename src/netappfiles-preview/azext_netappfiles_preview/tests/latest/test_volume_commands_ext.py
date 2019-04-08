@@ -55,7 +55,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         assert volume['tags']['Tag2'] == 'Value2'
         # default export policy still present
         assert volume['exportPolicy']['rules'][0]['allowedClients'] == '0.0.0.0/0'
-        assert volume['exportPolicy']['rules'][0]['cifs'] == False
+        assert not volume['exportPolicy']['rules'][0]['cifs']
         assert volume['exportPolicy']['rules'][0]['ruleIndex'] == 1
 
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} --account-name %s --pool-name %s" % (account_name, pool_name)).get_output_in_json()
@@ -113,5 +113,5 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         assert volume['tags']['Tag1'] == 'Value2'
         # default export policy still present
         assert volume['exportPolicy']['rules'][0]['allowedClients'] == '0.0.0.0/0'
-        assert volume['exportPolicy']['rules'][0]['cifs'] == False
+        assert not volume['exportPolicy']['rules'][0]['cifs']
         assert volume['exportPolicy']['rules'][0]['ruleIndex'] == 1
