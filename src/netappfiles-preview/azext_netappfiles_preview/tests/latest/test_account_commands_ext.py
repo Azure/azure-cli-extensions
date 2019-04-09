@@ -17,7 +17,6 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
 
         # create and check
         # account = self.cmd("az netappfiles account create --resource-group {rg} --account-name '%s' -l 'westus2' --tags '%s' --active-directories %s" % (account_name, tags, active_directories)).get_output_in_json()
-
         account = self.cmd("az netappfiles account create --resource-group {rg} --account-name '%s' -l 'westus2' --tags '%s'" % (account_name, tags)).get_output_in_json()
         assert account['name'] == account_name
         assert account['tags']['Tag1'] == 'Value1'
@@ -39,7 +38,6 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
         assert account['name'] == account_name
         # note: key case must match
         assert account['activeDirectories'] is None
-        
         account_list = self.cmd("netappfiles account list --resource-group {rg}").get_output_in_json()
         assert len(account_list) > 0
 
