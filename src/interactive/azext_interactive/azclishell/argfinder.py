@@ -29,7 +29,7 @@ class ArgsFinder(CompletionFinder):  # pylint: disable=too-few-public-methods
 
         try:
             active_parsers[0].parse_known_args(comp_words, namespace=parsed_args)
-        except BaseException:
+        except BaseException:  # pylint: disable=broad-except
             pass
 
         self.completing = False
