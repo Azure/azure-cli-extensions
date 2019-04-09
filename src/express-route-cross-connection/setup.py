@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -30,7 +30,7 @@ setup(
     name='express-route-cross-connection',
     version=VERSION,
     description='Manage customer ExpressRoute circuits using an ExpressRoute cross-connection.',
-    long_description='These commands give ISPs limited ability to manage the ExpressRoute circuits of ' \
+    long_description='These commands give ISPs limited ability to manage the ExpressRoute circuits of '
                      'their customers through an ExpressRoute cross-connection resource.',
     license='MIT',
     author='Microsoft Corporation',

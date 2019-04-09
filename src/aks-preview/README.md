@@ -90,3 +90,40 @@ az aks create \
     -n MyManagedCluster \
     --enable-VMSS \
 ```
+
+#### Enable VMSS for new cluster with availability zone feature
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-VMSS \
+    --node-zones 1 2 3
+```
+
+#### Enable pod security policy for new cluster
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-pod-security-policy \
+```
+
+#### Enable pod security policy for existing cluster
+*Examples:*
+```
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-pod-security-policy \
+```
+
+#### Disable pod security policy for existing cluster
+*Examples:*
+```
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --disable-pod-security-policy \
+```

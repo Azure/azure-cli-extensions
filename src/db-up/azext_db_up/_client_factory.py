@@ -39,9 +39,8 @@ def get_mysql_management_client(cli_ctx, **_):
             subscription_id=getenv(SUB_ID_OVERRIDE),
             base_url=rm_uri_override,
             credentials=credentials)
-    else:
-        # Normal production scenario.
-        return get_mgmt_service_client(cli_ctx, MySQLManagementClient)
+    # Normal production scenario.
+    return get_mgmt_service_client(cli_ctx, MySQLManagementClient)
 
 
 def get_postgresql_management_client(cli_ctx, **_):
@@ -67,9 +66,8 @@ def get_postgresql_management_client(cli_ctx, **_):
             subscription_id=getenv(SUB_ID_OVERRIDE),
             base_url=rm_uri_override,
             credentials=credentials)
-    else:
-        # Normal production scenario.
-        return get_mgmt_service_client(cli_ctx, PostgreSQLManagementClient)
+    # Normal production scenario.
+    return get_mgmt_service_client(cli_ctx, PostgreSQLManagementClient)
 
 
 def get_sql_management_client(cli_ctx):

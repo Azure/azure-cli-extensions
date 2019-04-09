@@ -94,13 +94,13 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_fd_backends')
         g.custom_command('remove', 'remove_fd_backend')
 
-    # with self.command_group('network front-door frontend-endpoint', frontdoor_sdk) as g:
-    #     g.custom_command('create', 'create_fd_frontend_endpoint')
-    #     g.command('delete', 'delete')
-    #     g.command('list', 'list_by_front_door')
-    #     g.show_command('show', 'get')
-    #     g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoint')
-    #     g.custom_command('configure-https', 'configure_fd_frontend_endpoint_https')
+    with self.command_group('network front-door frontend-endpoint', frontdoor_sdk) as g:
+        g.custom_command('create', 'create_fd_frontend_endpoints')
+        g.custom_command('list', 'list_fd_frontend_endpoints')
+        g.custom_command('show', 'get_fd_frontend_endpoints')
+    #   g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoints')
+        g.custom_command('disable-https', 'configure_fd_frontend_endpoint_disable_https')
+        g.custom_command('enable-https', 'configure_fd_frontend_endpoint_enable_https')
 
     # with self.command_group('network front-door probe', frontdoor_sdk) as g:
     #     g.custom_command('create', 'create_fd_probe')
