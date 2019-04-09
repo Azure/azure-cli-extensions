@@ -49,7 +49,7 @@ odata_query_type = CLIArgumentType(
     options_list=['--odata-query']
 )
 
-def load_arguments(self, _): # pylint: disable=too-many-statements
+def load_arguments(self, _):   # pylint: disable=too-many-statements
     with self.argument_context('eventgrid') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
