@@ -21,7 +21,7 @@ class AzureNetAppFilesExtMountTargetServiceScenarioTest(ScenarioTest):
         return subs['id']
 
     def create_volume(self, account_name, pool_name, volume_name1, rg, tags=None):
-        vnet_name = self.create_random_name(prefix='cli-vnet-', length=24)
+        vnet_name = "cli-vnet-lefr-01"
         creation_token = volume_name1
         subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/default" % (self.current_subscription(), rg, vnet_name)
         tag = "--tags '%s'" % tags if tags is not None else ""
