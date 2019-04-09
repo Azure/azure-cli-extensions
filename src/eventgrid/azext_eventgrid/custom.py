@@ -193,9 +193,11 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         advanced_filter=None):
 
     if included_event_types is not None and len(included_event_types) == 1 and included_event_types[0].lower() == 'all':
-        logger.warning('The usage of \"All\" for --included-event-types is not allowed starting from Azure Event Grid API Version 2019-02-01-preview.'
-                       ' However, the call here is still permitted by replacing \"All\" with None in order to return all the event types (for the custom topics and domains case)'
-                       ' or default event types (for other topic types case). In any future calls, please consider leaving --included-event-types unspecified or use None instead.')
+        logger.warning('The usage of \"All\" for --included-event-types is not allowed starting from Azure Event Grid'
+                       ' API Version 2019-02-01-preview. However, the call here is still permitted by replacing'
+                       ' \"All\" with None in order to return all the event types (for the custom topics and'
+                       ' domains case) or default event types (for other topic types case). In any future calls,'
+                       ' please consider leaving --included-event-types unspecified or use None instead.')
         included_event_types = None
 
     scope = _get_scope_for_event_subscription(
@@ -357,7 +359,8 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
             DEFAULT_TOP)
 
     if location is None:
-        # Since resource-id was not specified, location must be specified: e.g. "westus2" or "global". If not error OUT.
+        # Since resource-id was not specified, location must be specified: e.g. "westus2" or "global". If not error
+        # OUT.
         raise CLIError('usage error: --source-resource-id ID | --location LOCATION'
                        ' [--resource-group RG] [--topic-type-name TOPIC_TYPE_NAME]')
 
@@ -381,12 +384,25 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
                            'as westus. Global can be used only for global topic types: '
                            'Microsoft.Resources.Subscriptions and Microsoft.Resources.ResourceGroups.')
         if resource_group_name:
-            return client.list_global_by_resource_group_for_topic_type(resource_group_name, topic_type_name, odata_query_type, DEFAULT_TOP)
+            return client.list_global_by_resource_group_for_topic_type(
+                resource_group_name,
+                topic_type_name,
+                odata_query_type,
+                DEFAULT_TOP)
         return client.list_global_by_subscription_for_topic_type(topic_type_name, odata_query_type, DEFAULT_TOP)
 
     if resource_group_name:
-        return client.list_regional_by_resource_group_for_topic_type(resource_group_name, location, topic_type_name, odata_query_type, DEFAULT_TOP)
-    return client.list_regional_by_subscription_for_topic_type(location, topic_type_name, odata_query_type, DEFAULT_TOP)
+        return client.list_regional_by_resource_group_for_topic_type(
+            resource_group_name,
+            location,
+            topic_type_name,
+            odata_query_type,
+            DEFAULT_TOP)
+    return client.list_regional_by_subscription_for_topic_type(
+        location,
+        topic_type_name,
+        odata_query_type,
+        DEFAULT_TOP)
 
 
 def _get_scope(
@@ -727,7 +743,10 @@ def _list_event_subscriptions_by_resource_id(client, resource_id, oDataQuery, to
                 provided_subscription_id=subscription_id)
 
             if len(id_parts) == 2:
-                return client.list_global_by_subscription_for_topic_type("Microsoft.Resources.Subscriptions", oDataQuery, top)
+                return client.list_global_by_subscription_for_topic_type(
+                    "Microsoft.Resources.Subscriptions",
+                    oDataQuery,
+                    top)
 
             if len(id_parts) == 4 and id_parts[2].lower() == "resourcegroups":
                 resource_group_name = id_parts[3]
