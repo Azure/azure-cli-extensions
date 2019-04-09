@@ -17,7 +17,6 @@ from azext_eventgrid.mgmt.eventgrid.models import (
     WebHookEventSubscriptionDestination,
     Topic,
     Domain,
-    DomainTopic,
     JsonInputSchemaMapping,
     JsonField,
     JsonFieldWithDefault,
