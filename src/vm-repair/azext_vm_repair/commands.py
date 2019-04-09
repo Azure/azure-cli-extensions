@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 
+from ._validators import validate_swap_disk
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
@@ -15,5 +16,5 @@ def load_command_table(self, _):
 
     # TODO add list, show, wait? 
     with self.command_group('vm repair') as g:
-        g.custom_command('swap-disk', 'swap_disk')
+        g.custom_command('swap-disk', 'swap_disk', validator=validate_swap_disk)
         g.custom_command('restore-swap', 'restore_swap')
