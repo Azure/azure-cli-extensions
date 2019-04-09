@@ -311,6 +311,6 @@ def get_descriptions(config, exam_lex, lexer):
                 get_param(lexer),
             ])
         return get_descript(exam_lex)
-    elif config.BOOLEAN_STATES[config.config.get('Layout', 'param_description')]:
+    if config.BOOLEAN_STATES[config.config.get('Layout', 'param_description')]:
         return get_param(lexer)
     return get_empty()
