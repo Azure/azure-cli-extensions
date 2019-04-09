@@ -102,7 +102,7 @@ def load_arguments(self, _):
         c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
 
     with self.argument_context('eventgrid domain topic create') as c:
-        c.argument('domain_name', help='Name of the domain.', id_part='domains',completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('domain_name', help='Name of the domain.', id_part='domains', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
         c.argument('domain_topic_name', arg_type=name_type, help='Name of the domain topic.', id_part='topics', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topics'))
 
     with self.argument_context('eventgrid domain topic delete') as c:
