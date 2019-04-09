@@ -48,15 +48,17 @@ def load_command_table(self, _):
 
     with self.command_group('eventgrid domain topic', domain_topics_mgmt_util, client_factory=domain_topics_factory) as g:
         g.command('show', 'get')
-        g.command('list', 'list_by_domain')
+        g.custom_command('list', 'cli_domain_topic_list')
+        g.custom_command('delete', 'cli_domain_topic_delete')
+        g.custom_command('create', 'cli_domain_topic_create_or_update')
 
     with self.command_group('eventgrid domain', domains_mgmt_util, client_factory=domains_factory) as g:
         g.command('show', 'get')
         g.command('key list', 'list_shared_access_keys')
         g.command('key regenerate', 'regenerate_key')
-        g.command('delete', 'delete')
         g.custom_command('list', 'cli_domain_list')
         g.custom_command('create', 'cli_domain_create_or_update')
+        g.command('delete', 'delete')
         g.generic_update_command('update',
                                  getter_name='get',
                                  setter_name='update',

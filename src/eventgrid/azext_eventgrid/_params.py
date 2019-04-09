@@ -20,7 +20,7 @@ from azure.cli.core.commands.parameters import (
 from .advanced_filter import EventSubscriptionAddFilter
 
 included_event_types_type = CLIArgumentType(
-    help="A space-separated list of event types. Example: Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted. To subscribe to all event types, the string \"All\" should be specified.",
+    help="A space-separated list of event types. Example: Microsoft.Storage.BlobCreated Microsoft.Storage.BlobDeleted. To subscribe to all default event types, do not specify any value for this argument.",
     nargs='+'
 )
 
@@ -44,6 +44,10 @@ input_mapping_default_values_type = CLIArgumentType(
     arg_type=tags_type
 )
 
+odata_query_type = CLIArgumentType(
+    help="The query used to filter the results using OData syntax.",
+    options_list=['--odata-query']
+)
 
 def load_arguments(self, _):
     with self.argument_context('eventgrid') as c:
@@ -52,7 +56,7 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
         c.argument('included_event_types', arg_type=included_event_types_type)
         c.argument('labels', arg_type=labels_type)
-        c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection'], default='webhook'))
+        c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue'], default='webhook'))
         c.argument('source_resource_id', help="Fully qualified identifier of the source Azure resource.")
         c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True), help="Fully qualified identifier of the Azure resource.")
         c.argument('endpoint', help="Endpoint where EventGrid should deliver events matching this event subscription. For webhook endpoint type, this should be the corresponding webhook URL. For other endpoint types, this should be the Azure resource identifier of the endpoint.")
@@ -64,25 +68,58 @@ def load_arguments(self, _):
         c.argument('input_mapping_fields', arg_type=input_mapping_fields_type)
         c.argument('input_mapping_default_values', arg_type=input_mapping_default_values_type)
         c.argument('input_schema', arg_type=input_schema_type)
+        c.argument('odata_query', arg_type=odata_query_type)
 
     with self.argument_context('eventgrid topic') as c:
-        c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+        c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+
+    with self.argument_context('eventgrid topic list') as c:
+        c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+        c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid topic key list') as c:
-        c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+        c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
 
-    with self.argument_context('eventgrid domain') as c:
-        c.argument('domain_name', arg_type=name_type, help='Name of the domain', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+    with self.argument_context('eventgrid domain create') as c:
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+
+    with self.argument_context('eventgrid domain delete') as c:
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+
+    with self.argument_context('eventgrid domain update') as c:
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+
+    with self.argument_context('eventgrid domain show') as c:
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+
+    with self.argument_context('eventgrid domain list') as c:
+        c.argument('odata_query_type', arg_type=odata_query_type, id_part=None)
+
+    with self.argument_context('eventgrid domain key regenerate') as c:
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
 
     with self.argument_context('eventgrid domain key list') as c:
-        c.argument('domain_name', arg_type=name_type, help='Name of the domain', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+
+    with self.argument_context('eventgrid domain topic create') as c:
+        c.argument('domain_name', help='Name of the domain.', id_part='domains',completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('domain_topic_name', arg_type=name_type, help='Name of the domain topic.', id_part='topics', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topics'))
+
+    with self.argument_context('eventgrid domain topic delete') as c:
+        c.argument('domain_name', help='Name of the domain.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('domain_topic_name', arg_type=name_type, help='Name of the domain topic.', id_part='child_name_1', options_list=['--name', '-n'], completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topics'))
+
+    with self.argument_context('eventgrid domain topic show') as c:
+        c.argument('domain_name', help='Name of the domain.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('domain_topic_name', arg_type=name_type, help='Name of the domain topic.', id_part='child_name_1', options_list=['--name', '-n'], completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topics'))
 
     with self.argument_context('eventgrid domain topic list') as c:
-        c.argument('domain_name', arg_type=name_type, help='Name of the domain', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('domain_name', arg_type=name_type, help='Name of the domain.', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/domains'))
+        c.argument('odata_query_type', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid event-subscription') as c:
-        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of Event Grid topic', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
-        c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription')
+        c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of Event Grid topic.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+        c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription.')
         c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventv01schema']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
         c.argument('event_ttl', help="Event time to live (in minutes). Must be a number between 1 and 1440.")
@@ -98,6 +135,9 @@ def load_arguments(self, _):
 
     with self.argument_context('eventgrid event-subscription update') as c:
         c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
+
+    with self.argument_context('eventgrid event-subscription list') as c:
+        c.argument('odata_query_type', arg_type=odata_query_type, id_part=None)
 
     with self.argument_context('eventgrid event-subscription show') as c:
         c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)
