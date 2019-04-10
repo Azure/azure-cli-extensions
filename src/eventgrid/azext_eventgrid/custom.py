@@ -64,12 +64,12 @@ DEFAULT_TOP = 100
 def cli_topic_list(
         client,
         resource_group_name=None,
-        odata_query_type=None):
+        odata_query=None):
 
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name, odata_query_type, DEFAULT_TOP)
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
 
-    return client.list_by_subscription(odata_query_type, DEFAULT_TOP)
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
 
 
 def cli_topic_create_or_update(
@@ -102,12 +102,12 @@ def cli_topic_create_or_update(
 def cli_domain_list(
         client,
         resource_group_name=None,
-        odata_query_type=None):
+        odata_query=None):
 
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name, odata_query_type, DEFAULT_TOP)
+        return client.list_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
 
-    return client.list_by_subscription(odata_query_type, DEFAULT_TOP)
+    return client.list_by_subscription(odata_query, DEFAULT_TOP)
 
 
 def cli_domain_create_or_update(
@@ -165,8 +165,8 @@ def cli_domain_topic_list(
         client,
         resource_group_name,
         domain_name,
-        odata_query_type=None):
-    return client.list_by_domain(resource_group_name, domain_name, odata_query_type, DEFAULT_TOP)
+        odata_query=None):
+    return client.list_by_domain(resource_group_name, domain_name, odata_query, DEFAULT_TOP)
 
 
 def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
@@ -322,7 +322,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         resource_group_name=None,
         location=None,
         topic_type_name=None,
-        odata_query_type=None):
+        odata_query=None):
     if source_resource_id is not None:
         # If Source Resource ID is specified, we need to list event subscriptions for that particular resource.
         # Since a full resource ID is specified, it should override all other defaults such as default location and RG
@@ -331,7 +331,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
             raise CLIError('usage error: Since --source-resource-id is specified, none of the other parameters must '
                            'be specified.')
 
-        return _list_event_subscriptions_by_resource_id(client, source_resource_id, odata_query_type, DEFAULT_TOP)
+        return _list_event_subscriptions_by_resource_id(client, source_resource_id, odata_query, DEFAULT_TOP)
 
     if resource_id is not None:
         # DEPRECATED
@@ -342,7 +342,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
             raise CLIError('usage error: Since --resource-id is specified, none of the other parameters must '
                            'be specified.')
 
-        return _list_event_subscriptions_by_resource_id(client, resource_id, odata_query_type, DEFAULT_TOP)
+        return _list_event_subscriptions_by_resource_id(client, resource_id, odata_query, DEFAULT_TOP)
 
     if topic_name:
         # DEPRECATED
@@ -354,7 +354,7 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
             EVENTGRID_NAMESPACE,
             EVENTGRID_TOPICS,
             topic_name,
-            odata_query_type,
+            odata_query,
             DEFAULT_TOP)
 
     if location is None:
@@ -367,12 +367,12 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
         # No topic-type is specified: return event subscriptions across all topic types for this location.
         if location.lower() == GLOBAL.lower():
             if resource_group_name:
-                return client.list_global_by_resource_group(resource_group_name, odata_query_type, DEFAULT_TOP)
-            return client.list_global_by_subscription(odata_query_type, DEFAULT_TOP)
+                return client.list_global_by_resource_group(resource_group_name, odata_query, DEFAULT_TOP)
+            return client.list_global_by_subscription(odata_query, DEFAULT_TOP)
 
         if resource_group_name:
-            return client.list_regional_by_resource_group(resource_group_name, location, odata_query_type, DEFAULT_TOP)
-        return client.list_regional_by_subscription(location, odata_query_type, DEFAULT_TOP)
+            return client.list_regional_by_resource_group(resource_group_name, location, odata_query, DEFAULT_TOP)
+        return client.list_regional_by_subscription(location, odata_query, DEFAULT_TOP)
 
     # Topic type name is specified
     if location.lower() == GLOBAL.lower():
@@ -386,21 +386,21 @@ def cli_event_subscription_list(   # pylint: disable=too-many-return-statements
             return client.list_global_by_resource_group_for_topic_type(
                 resource_group_name,
                 topic_type_name,
-                odata_query_type,
+                odata_query,
                 DEFAULT_TOP)
-        return client.list_global_by_subscription_for_topic_type(topic_type_name, odata_query_type, DEFAULT_TOP)
+        return client.list_global_by_subscription_for_topic_type(topic_type_name, odata_query, DEFAULT_TOP)
 
     if resource_group_name:
         return client.list_regional_by_resource_group_for_topic_type(
             resource_group_name,
             location,
             topic_type_name,
-            odata_query_type,
+            odata_query,
             DEFAULT_TOP)
     return client.list_regional_by_subscription_for_topic_type(
         location,
         topic_type_name,
-        odata_query_type,
+        odata_query,
         DEFAULT_TOP)
 
 

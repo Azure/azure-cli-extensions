@@ -187,11 +187,11 @@ class EventGridTests(ScenarioTest):
         # Now that an event subscription to a domain topic has been created, it would have internally resulted in creation of
         # the corresponding auto-managed domain topic. Hence, we should now be able to list the set of domain topics under the domain.
         # In the future, we can expand this to support CRUD operations for domain topics (i.e. manual management of domain topics) directly.
-        self.cmd('az eventgrid domain topic list --resource-group {rg} --name {domain_name}', checks=[
+        self.cmd('az eventgrid domain topic list --resource-group {rg} --domain-name {domain_name}', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/domains/topics')
         ])
 
-        self.cmd('az eventgrid domain topic list --resource-group {rg} --name {domain_name} --odata-query "name ne \'{domain_topic_name2}\'"', checks=[
+        self.cmd('az eventgrid domain topic list --resource-group {rg} --domain-name {domain_name} --odata-query "name ne \'{domain_topic_name2}\'"', checks=[
             self.check('[0].type', 'Microsoft.EventGrid/domains/topics')
         ])
 
