@@ -61,6 +61,7 @@ domain_topic_name_type = CLIArgumentType(
     options_list=['--domain-topic-name'],
     completer=get_resource_name_completion_list('Microsoft.EventGrid/domains/topic'))
 
+
 def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
