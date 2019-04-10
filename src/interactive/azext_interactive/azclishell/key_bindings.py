@@ -105,5 +105,4 @@ class InteractiveKeyBindings(object):
             if conversion[response]:
                 return 'yes'
             return 'no'
-        else:
-            raise ValueError('Invalid response: input should equate to true or false')
+        raise ValueError('Invalid response: input should equate to true or false')
