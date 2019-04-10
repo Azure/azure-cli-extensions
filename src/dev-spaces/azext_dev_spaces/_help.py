@@ -4,11 +4,3 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.help_files import helps   # pylint: disable=import-error
-
-
-# ADS command help
-
-helps['ads'] = """
-     type: group
-     short-summary: Manage Azure Dev Spaces.
-"""
