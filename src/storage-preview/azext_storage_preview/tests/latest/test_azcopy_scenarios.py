@@ -42,7 +42,7 @@ class StorageAzcopyTests(StorageScenarioMixin, LiveScenarioTest):
         self.cmd('storage azcopy blob delete -c {} --account-name {} -t {}'.format(
             container, storage_account, 'butter'))
         self.cmd('storage blob list -c {} --account-name {}'.format(
-             container, storage_account), checks=JMESPathCheck('length(@)', 30))
+            container, storage_account), checks=JMESPathCheck('length(@)', 30))
 
         self.cmd('storage azcopy blob delete -c {} --account-name {} --recursive'.format(
             container, storage_account))
