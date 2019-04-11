@@ -20,7 +20,7 @@ def get_window_dim():
 
     if version >= (3, 3):
         return _size_36()
-    elif platform.system() == 'Windows':
+    if platform.system() == 'Windows':
         return _size_windows()
     return _size_27()
 
