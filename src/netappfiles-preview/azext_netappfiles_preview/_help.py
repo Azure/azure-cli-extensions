@@ -53,10 +53,10 @@ helps['netappfiles account set'] = """
     examples:
         - name: Update the tags and active directory of an ANF account
           text: >
-            az netappfiles account update -g group --account-name name --tags 'key[=value] key[=value]' --active-directories '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]'
+            az netappfiles account update -g group --account-name name --tags 'key[=value] key[=value]' --active-directories '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]' -l westus2
         - name: Remove the active directory from the ANF account
           text: >
-            az netappfiles account set -g group --account-name name --active-directories '[]'
+            az netappfiles account set -g group --account-name name --active-directories '[]' -l westus2
 """
 
 helps['netappfiles account update'] = """
@@ -256,7 +256,7 @@ helps['netappfiles volume create'] = """
     examples:
         - name: Create an ANF volume
           text: >
-            az netappfiles volume create -g group --account-name aname --pool-name pname --volume-name vname -l location --service-level "Premium" --usage-threshold 107374182400 --creation-token "unique-token" --subnet-id "/subscriptions/mysubsid/resourceGroups/myrg/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/default" --exxport-policy '[{"allowed_clients":"0.0.0.0/0", "rule_index": "1", "unix_read_only": "true", "unix_read_write": "false", "cifs": "false", "nfsv3": "true", "nfsv3": "true", "nfsv4": "false"}]'
+            az netappfiles volume create -g group --account-name aname --pool-name pname --volume-name vname -l location --service-level "Premium" --usage-threshold 107374182400 --creation-token "unique-token" --subnet-id "/subscriptions/mysubsid/resourceGroups/myrg/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/default" --export-policy '[{"allowed_clients":"0.0.0.0/0", "rule_index": "1", "unix_read_only": "true", "unix_read_write": "false", "cifs": "false", "nfsv3": "true", "nfsv3": "true", "nfsv4": "false"}]'
 """
 
 helps['netappfiles volume update'] = """
@@ -287,7 +287,7 @@ helps['netappfiles volume update'] = """
     examples:
         - name: Create an ANF volume
           text: >
-            az netappfiles volume update -g group --account-name aname --pool-name pname --volume-name vname --service-level level --usage-threshold 107374182400 --tags 'key[=value] key[=value]' --exxport-policy '[{"allowed_clients":"1.2.3.0/24", "rule_index": "1", "unix_read_only": "true", "unix_read_write": "false", "cifs": "false", "nfsv3": "true", "nfsv3": "true", "nfsv4": "false"}, {"allowed_clients":"1.2.4.0/24", "rule_index": "2", "unix_read_only": "true", "unix_read_write": "false", "cifs": "false", "nfsv3": "true", "nfsv3": "true", "nfsv4": "false"}]'
+            az netappfiles volume update -g group --account-name aname --pool-name pname --volume-name vname --service-level level --usage-threshold 107374182400 --tags 'key[=value] key[=value]' --export-policy '[{"allowed_clients":"1.2.3.0/24", "rule_index": "1", "unix_read_only": "true", "unix_read_write": "false", "cifs": "false", "nfsv3": "true", "nfsv3": "true", "nfsv4": "false"}, {"allowed_clients":"1.2.4.0/24", "rule_index": "2", "unix_read_only": "true", "unix_read_write": "false", "cifs": "false", "nfsv3": "true", "nfsv3": "true", "nfsv4": "false"}]'
 """
 
 helps['netappfiles volume delete'] = """
