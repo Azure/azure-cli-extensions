@@ -152,14 +152,14 @@ helps['eventgrid domain topic list'] = """
     short-summary: List available topics in a domain.
     examples:
         - name: List all topics in a domain.
-          text: az eventgrid domain topic list -g rg1 -n domain1
+          text: az eventgrid domain topic list -g rg1 --domain-name domain1
     """
 helps['eventgrid domain topic show'] = """
     type: command
     short-summary: Get the details of a domain topic.
     examples:
         - name: Show the details of a domain topic.
-          text: az eventgrid domain topic show -g rg1 -n domain1 --topic-name topic1
+          text: az eventgrid domain topic show -g rg1 --domain-name domain1 --name topic1
     """
 helps['eventgrid event-subscription'] = """
     type: group
@@ -418,7 +418,7 @@ helps['eventgrid event-subscription list'] = """
             az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1
         - name: List all event subscriptions for an Event Grid domain topic.
           text: |
-            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1/topics/topic1"
+            az eventgrid event-subscription list --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/domains/d1/topics/topic1
         - name: List all Storage event subscriptions (under the currently selected Azure subscription) in westus2.
           text: |
             az eventgrid event-subscription list --topic-type Microsoft.Storage.StorageAccounts --location westus2

@@ -88,6 +88,9 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid topic') as c:
         c.argument('topic_name', arg_type=name_type, help='Name of the topic.', id_part='name', completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
 
+    with self.argument_context('eventgrid topic key') as c:
+        c.argument('topic_name', arg_type=name_type, help='Name of the topic', id_part=None, completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
+
     with self.argument_context('eventgrid topic list') as c:
         c.argument('odata_query', arg_type=odata_query_type, id_part=None)
 
