@@ -14,7 +14,7 @@ VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 107374182400"
 class AzureNetAppFilesExtMountTargetServiceScenarioTest(ScenarioTest):
     def setup_vnet(self, rg, vnet_name):
         self.cmd("az network vnet create -n %s --resource-group %s -l westus2" % (vnet_name, rg))
-        self.cmd("az network vnet subnet create -n default --vnet-name %s --address-prefixes '10.0.0.0/24' --delegations 'Microsoft.Netapp/volumes' -g %s" % (vnet_name, rg))
+        self.cmd("az network vnet subnet create -n subnet01 --vnet-name %s --address-prefixes '10.0.0.0/24' --delegations 'Microsoft.Netapp/volumes' -g %s" % (vnet_name, rg))
 
     def current_subscription(self):
         subs = self.cmd("az account show").get_output_in_json()
@@ -23,7 +23,7 @@ class AzureNetAppFilesExtMountTargetServiceScenarioTest(ScenarioTest):
     def create_volume(self, account_name, pool_name, volume_name1, rg, tags=None):
         vnet_name = "cli-vnet-lefr-01"
         creation_token = volume_name1
-        subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/default" % (self.current_subscription(), rg, vnet_name)
+        subnet_id = "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets/subnet01" % (self.current_subscription(), rg, vnet_name)
         tag = "--tags '%s'" % tags if tags is not None else ""
 
         self.setup_vnet(rg, vnet_name)
@@ -35,9 +35,9 @@ class AzureNetAppFilesExtMountTargetServiceScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer()
     def test_ext_list_mount_targets(self):
-        account_name = self.create_random_name(prefix='cli-acc-', length=24)
-        pool_name = self.create_random_name(prefix='cli-pool-', length=24)
-        volume_name = self.create_random_name(prefix='cli-vol-', length=24)
+        account_name = "cli-acc-lefr-01"
+        pool_name = "cli-pool-lefr-01"
+        volume_name = "cli-volume-lefr-01"
         self.create_volume(account_name, pool_name, volume_name, '{rg}')
 
         volume_list = self.cmd("netappfiles mount-target list --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
