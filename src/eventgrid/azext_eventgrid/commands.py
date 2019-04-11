@@ -11,25 +11,25 @@ from ._client_factory import (topics_factory, domains_factory, domain_topics_fac
 
 def load_command_table(self, _):
     topics_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.mgmt.eventgrid.operations.topics_operations#TopicsOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.topics_operations#TopicsOperations.{}',
         client_factory=topics_factory,
         client_arg_name='self'
     )
 
     domains_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.mgmt.eventgrid.operations.domains_operations#DomainsOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.domains_operations#DomainsOperations.{}',
         client_factory=domains_factory,
         client_arg_name='self'
     )
 
     domain_topics_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.mgmt.eventgrid.operations.domain_topics_operations#DomainTopicsOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.domain_topics_operations#DomainTopicsOperations.{}',
         client_factory=domain_topics_factory,
         client_arg_name='self'
     )
 
     topic_type_mgmt_util = CliCommandType(
-        operations_tmpl='azext_eventgrid.vendored_sdks.mgmt.eventgrid.operations.topic_types_operations#TopicTypesOperations.{}',
+        operations_tmpl='azext_eventgrid.vendored_sdks.eventgrid.operations.topic_types_operations#TopicTypesOperations.{}',
         client_factory=topic_types_factory,
         client_arg_name='self'
     )
