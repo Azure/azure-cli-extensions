@@ -53,7 +53,7 @@ helps['netappfiles account set'] = """
     examples:
         - name: Update the tags and active directory of an ANF account
           text: >
-            az netappfiles account update -g group --account-name name --tags 'key[=value] key[=value]' --active-directories '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]' -l westus2
+            az netappfiles account set -g group --account-name name --tags 'key[=value] key[=value]' --active-directories '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]' -l westus2
         - name: Remove the active directory from the ANF account
           text: >
             az netappfiles account set -g group --account-name name --active-directories '[]' -l westus2
@@ -75,7 +75,7 @@ helps['netappfiles account update'] = """
     examples:
         - name: Update the tags and active directory of an ANF account
           text: >
-            az netappfiles account update -g group --account-name name --tags 'key[=value] key[=value]' --active-directories '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]'
+            az netappfiles account update -g group --account-name name --tags 'key[=value] key[=value]' --active-directories '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]' -l westus2
 """
 
 helps['netappfiles account delete'] = """
