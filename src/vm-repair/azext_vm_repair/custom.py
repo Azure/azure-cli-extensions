@@ -5,9 +5,10 @@
 
 from knack.log import get_logger
 
-from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os, get_vm_details
 
 import subprocess
+from uuid import uuid4
 
 logger = get_logger(__name__)
 
@@ -28,7 +29,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         os_image_name = "Win2016Datacenter"
 
     # TODO, validate restrictions on disk naming
-    copied_os_disk_name = vm_name + "_Copied_Disk"    
+    copied_os_disk_name = vm_name + "-DiskCopy_" + str(uuid4())
 
     # Maybe separate the createVM and attach to create the disk and VM concurrently
     
@@ -36,7 +37,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     copy_disk_command = 'az disk create -g {g} -n {n} --source {s}' \
                         .format(g=resource_group_name, n=copied_os_disk_name, s=target_disk_name)
     # Create new rescue VM with copied disk command
-    create_rescue_vm_command = 'az vm create -g {g} -n {n} --image {image} --attach-data-disks {disk_name} --admin-password {password}' \
+    create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag owner={n} --image {image} --attach-data-disks {disk_name} --admin-password {password}' \
                                .format(g=resource_group_name, n=rescue_vm_name, image=os_image_name, disk_name=copied_os_disk_name, password=rescue_password)    
     # Add username field only for Windows
     if not is_linux:
@@ -59,19 +60,23 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
 def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, fixed_disk_name):
 
+    # Get ids of rescue resources to delete first
+    get_resources_command = "az resource list --tag owner={rescue_name} --query [].id -o tsv" \
+                            .format(rescue_name=rescue_vm_name)
+    ids = _call_az_command(get_resources_command, True).replace('\n', ' ')
+
     # Detach fixed disk command
     deatch_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
                           .format(g=resource_group_name, rescue=rescue_vm_name, disk=fixed_disk_name)
     # Update OS disk with fixed disk command
     attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
                            .format(g=resource_group_name, n=vm_name, disk=fixed_disk_name)
-    # TODO: this only deletes the VM and not all its associated resources. Figure our a way to remove all resources. using tags maybe.
-    # Delete rescue VM command
-    delete_vm_command = 'az vm delete -g {g} -n {n} --yes' \
-                       .format(g=resource_group_name, n=rescue_vm_name)
+    # Delete rescue VM resources command
+    delete_resources_command = 'az resource delete --ids {ids}' \
+                               .format(ids=ids)
 
     # Maybe run attach and delete concurrently
-    return_code = _az_serial_caller([deatch_disk_command, attach_fixed_command, delete_vm_command])
+    return_code = _az_serial_caller([deatch_disk_command, attach_fixed_command, delete_resources_command])
 
     if return_code == 0:
         pass
@@ -91,7 +96,7 @@ def _uses_managed_disk(vm):
         return True
 
 # returns the return code of the subprocess.Popen
-def _call_az_command(command_string):
+def _call_az_command(command_string, return_stdout = False):
 
     logger.warning(command_string)
 
@@ -108,7 +113,10 @@ def _call_az_command(command_string):
     else:
         logger.warning('\'' + command_string + '\' command succeeded.')
 
-    return p1.returncode
+    if return_stdout:
+        return stdout
+    else:
+        return p1.returncode
 
 def _az_serial_caller(command_list):
 
