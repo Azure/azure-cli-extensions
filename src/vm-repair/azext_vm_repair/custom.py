@@ -16,28 +16,21 @@ def helloworld():
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None, rescue_vm_name=None):
 
-    # fetch VM and Get OS Disk
+    # Fetch VM info
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
+    target_disk_name = target_vm.storage_profile.os_disk.name
+    is_managed = _uses_managed_disk(target_vm)
 
     if is_linux:
         os_image_name = "UbuntuLTS"
     else:
         os_image_name = "Win2016Datacenter"
 
-    # Ask for username and password data if None
-    # Do it here or through validator?
+    # TODO, validate restrictions on disk naming
+    copied_os_disk_name = vm_name + "_Copied_Disk"    
 
-    # Set default rescue vm name TODO: move to validator
-    if rescue_vm_name is None:
-        rescue_vm_name = vm_name[:8] + '-Rescue'
-    copied_os_disk_name = vm_name + "_Copied_Disk"
-
-    
-    target_disk_name = target_vm.storage_profile.os_disk.name
-    
-    # Figure out managed vs unmanged
-    # _uses_managed_disk(target_vm)
+    # Maybe separate the createVM and attach to create the disk and VM concurrently
     
     # Copy OS disk command
     copy_disk_command = 'az disk create -g {g} -n {n} --source {s}' \
@@ -45,6 +38,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     # Create new rescue VM with copied disk command
     create_rescue_vm_command = 'az vm create -g {g} -n {n} --image {image} --attach-data-disks {disk_name} --admin-password {password}' \
                                .format(g=resource_group_name, n=rescue_vm_name, image=os_image_name, disk_name=copied_os_disk_name, password=rescue_password)    
+    # Add username field only for Windows
     if not is_linux:
         create_rescue_vm_command += ' --admin-username {username}'.format(username=rescue_username)
     # Validate create vm create command to validate parameters before runnning copy disk command
@@ -54,15 +48,40 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     return_code = _az_serial_caller([validate_create_vm_command, copy_disk_command, create_rescue_vm_command])
 
     if return_code == 0:
-        logger.warning("Rescue VM succesfully created with name: {n}".format(n=rescue_vm_name))
+        pass
+        #logger.warning()
     else:
-        # Clean up resources here (copied disk and created rescue vm)
-        logger.error("Some error happened")
-  
-    return None
+        # TODO: Clean up resources here (copied disk and created rescue vm)
+        logger.error("Repair swap-disk failed.")
+        return None
 
-def restore_swap():
-    print('restore swap')
+    return 'Rescue VM: \'{n}\' succesfully created with disk: \'{d}\' attached as a data disk'.format(n=rescue_vm_name, d=copied_os_disk_name)
+
+def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, fixed_disk_name):
+
+    # Detach fixed disk command
+    deatch_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
+                          .format(g=resource_group_name, rescue=rescue_vm_name, disk=fixed_disk_name)
+    # Update OS disk with fixed disk command
+    attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
+                           .format(g=resource_group_name, n=vm_name, disk=fixed_disk_name)
+    # TODO: this only deletes the VM and not all its associated resources. Figure our a way to remove all resources. using tags maybe.
+    # Delete rescue VM command
+    delete_vm_command = 'az vm delete -g {g} -n {n} --yes' \
+                       .format(g=resource_group_name, n=rescue_vm_name)
+
+    # Maybe run attach and delete concurrently
+    return_code = _az_serial_caller([deatch_disk_command, attach_fixed_command, delete_vm_command])
+
+    if return_code == 0:
+        pass
+        #logger.warning()
+    else:
+        # TODO: Clean up resources here (copied disk and created rescue vm)
+        logger.error("Repair restore-swap failed.")
+        return None
+
+    return "{disk} successfully attached to {n} as OS disk.".format(disk=fixed_disk_name, n=vm_name)
 
 # check if this is reliable
 def _uses_managed_disk(vm):
@@ -81,10 +100,12 @@ def _call_az_command(command_string):
     # Wait for process to terminate and fetch stdout and stderror
     stdout, stderr = p1.communicate()
 
+    print("stdout: " + stdout)
+    print("stderr: " + stderr)
+
     if p1.returncode != 0:
-        logger.warning(stderr)
+        logger.error(stderr)
     else:
-        # logger.warning(stdout)
         logger.warning('\'' + command_string + '\' command succeeded.')
 
     return p1.returncode

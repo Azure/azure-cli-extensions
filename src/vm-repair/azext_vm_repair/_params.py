@@ -25,3 +25,7 @@ def load_arguments(self, _):
         c.argument('rescue_vm_name', help='Optional name for rescue vm.')
         c.argument('rescue_username', help='Admin username for rescue VM.')
         c.argument('rescue_password', help='Admin password for the rescue VM.')
+
+    with self.argument_context('vm repair restore-swap') as c:
+        c.argument('rescue_vm_name', help='Name of rescue VM where the fixed OS disk is attached.')
+        c.argument('fixed_disk_name', help='Name of fixed disk.')

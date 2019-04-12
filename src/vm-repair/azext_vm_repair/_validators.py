@@ -15,23 +15,26 @@ def validate_swap_disk(cmd, namespace):
     target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(target_vm)
 
-    # Prompt for empty auth params
-    if is_linux and namespace.rescue_username != None:
+    # Handle empty params
+    if is_linux and namespace.rescue_username:
         logger.warning("Chaging adminUsername property is not allowed for Linux VMs. Ignoring the given rescue_username parameter.")
-    if not is_linux and namespace.rescue_username == None:
+    if not is_linux and not namespace.rescue_username:
         _prompt_rescue_username(namespace)
-
-    if namespace.rescue_password == None:
+    if not namespace.rescue_password:
         _prompt_rescue_password(namespace)
+    if not namespace.rescue_vm_name:
+        namespace.rescue_vm_name = namespace.vm_name[:8] + '-Rescue'
 
     # Validate params, password validated through vm create call
     _validate_username(namespace.rescue_username, is_linux)
     _validate_rescue_vm_name(namespace.rescue_vm_name, is_linux)
 
 def _validate_username(username, is_linux):
+    # TODO find username rules for Windows OS system
     pass
 
 def _validate_rescue_vm_name(rescue_vm_name, is_linux):
+    # TODO find vm name restrictions for azure linux, windows vm
     pass
 
 def _prompt_rescue_username(namespace):
