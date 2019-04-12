@@ -198,10 +198,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively delete blobs.')
         c.ignore('target')
 
-    # with self.argument_context('storage azcopy blob sync') as c:
-    #     c.argument('destination', options_list=['--destination', '-d'],
-    #                validator=validate_azcopy_container_destination_url)
-    #     c.argument('source', options_list=['--source', '-s'])
+    with self.argument_context('storage azcopy blob sync') as c:
+        c.extra('destination_container', options_list=['--container', '-c'], required=True,
+                help='The sync destination container.')
+        c.extra('destination_path', options_list=['--destination', '-d'],
+                validator=validate_azcopy_upload_destination_url,
+                help='The sync destination path.')
+        c.argument('source', options_list=['--source', '-s'],
+                   help='The source file path to sync from.')
+        c.ignore('destination')
 
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
