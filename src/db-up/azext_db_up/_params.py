@@ -23,7 +23,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='The name of a database to initialize.')
             c.argument('tags', tags_type)
 
-        if scope != 'sql':  #  SQL alreaady has a core command for displaying connection strings
+        if scope != 'sql':  # SQL alreaady has a core command for displaying connection strings
             with self.argument_context('{} show-connection-string'.format(scope)) as c:
                 c.argument('server_name', options_list=['--server-name', '-s'], help='Name of the server.')
                 c.argument('database_name', options_list=['--database-name', '-d'], help='The name of a database.')
