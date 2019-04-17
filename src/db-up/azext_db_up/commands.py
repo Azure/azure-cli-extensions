@@ -47,4 +47,3 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                          table_transformer=table_transform_connection_string)
         g.custom_command('down', 'server_down', validator=db_down_namespace_processor('sql'),
                          supports_no_wait=True, confirmation=True)
-        g.custom_command('show-connection-string', 'create_sql_connection_string')
