@@ -96,7 +96,7 @@ def _install_dev_spaces_cli(force_install):
         # Dev Spaces Install Path (WinX)
         azds_cli = os.path.join(os.environ["ProgramW6432"],
                                 "Microsoft SDKs", "Azure",
-                                "Azure Dev Spaces CLI (Preview)", "azds.exe")
+                                "Azure Dev Spaces CLI", "azds.exe")
         setup_file = os.path.join(_create_tmp_dir(), 'azds-winx-setup.exe')
         setup_url = "https://aka.ms/get-azds-windows-az"
         setup_args = [setup_file]
@@ -119,7 +119,7 @@ def _install_dev_spaces_cli(force_install):
 
     if should_install_azds:
         # Install AZDS
-        logger.warning('Installing Dev Spaces (Preview) commands...')
+        logger.warning('Installing Dev Spaces commands...')
         if system == 'Windows':
             logger.warning('A separate window will open to guide you through the installation process.')
 

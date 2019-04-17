@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.1.6"
+VERSION = "1.0.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -26,7 +26,7 @@ CLASSIFIERS = [
 DEPENDENCIES = []
 
 setup(
-    name='dev-spaces-preview',
+    name='dev-spaces',
     version=VERSION,
     description='Dev Spaces provides a rapid, iterative Kubernetes development experience for teams.',
     long_description='Iteratively develop and debug containers in a Azure Kubernetes Service cluster using Dev Spaces. \
@@ -38,7 +38,7 @@ setup(
     author_email='azds-azcli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
-    package_data={'azext_dev_spaces_preview': ['azext_metadata.json']},
+    package_data={'azext_dev_spaces': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
     install_requires=DEPENDENCIES
 )
