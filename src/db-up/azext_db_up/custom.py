@@ -194,7 +194,7 @@ def _ensure_pymssql():
     # we make sure "pymssql" get setup here, because on OSX, pymssql requires homebrew "FreeTDS",
     # which pip is not able to handle.
     try:
-        import pymssql  # pylint: disable=unused-import
+        import pymssql  # pylint: disable=unused-import,unused-variable
     except ImportError:
         import subprocess
         logger.warning("Installing dependencies required to configure Azure SQL server...")
