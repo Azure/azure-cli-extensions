@@ -1005,7 +1005,7 @@ def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
 def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
                       kubernetes_version=None,
                       node_zones=None,
-                      node_vm_size="Standard_DS2_v2",
+                      node_vm_size=None,
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
@@ -1017,6 +1017,12 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         if agentpool_profile.name == nodepool_name:
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
+
+    if node_vm_size is None:
+        if os_type == "Windows":
+            node_vm_size = "Standard_D2s_v3"
+        else:
+            node_vm_size = "Standard_DS2_v2"
 
     agent_pool = AgentPool(
         name=nodepool_name,

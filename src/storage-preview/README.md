@@ -132,3 +132,17 @@ az storage azcopy blob download \
     -d download/path \
     --recursive
 ```
+###### Sync a single blob and a directory:
+```
+az storage azcopy blob sync \
+    -c containerName \
+    --account-name accountName \
+    -s "file/path" \
+    -d blobName
+
+az storage azcopy blob sync \
+    -c containerName \
+    --account-name accountName \
+    -s directory/path \
+    -d sync/path
+```
