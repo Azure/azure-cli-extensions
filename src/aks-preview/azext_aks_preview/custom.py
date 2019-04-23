@@ -642,7 +642,9 @@ def _remove_nulls(managed_clusters):
 
 ADDONS = {
     'http_application_routing': 'httpApplicationRouting',
-    'monitoring': 'omsagent'
+    'monitoring': 'omsagent',
+    'virtual-node': 'aciConnector',
+    'azure-policy': 'azurepolicy'
 }
 
 
