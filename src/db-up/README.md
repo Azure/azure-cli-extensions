@@ -76,7 +76,7 @@ az postgres show-connection-string \
 #### SQL
 Ensures an Azure Database for SQL server instance is up and running and configured for immediate use with a single command.
 
-This command can be run without any parameters. This will create the resource group, SQL server instance and a sample database using generated resource names. It will also configure firewall rules to allow IP addresses from Azure as well as your local dev box to access PostgreSQL. Information generated from this command is saved, so that when used in the future, the existing resources will be detected.
+This command can be run without any parameters. This will create the resource group, SQL server instance and a sample database using generated resource names. It will also configure firewall rules to allow IP addresses from Azure as well as your local dev box to access SQL. Information generated from this command is saved, so that when used in the future, the existing resources will be detected.
 ```
 az sql up
 ```
