@@ -28,4 +28,5 @@ def load_arguments(self, _):
 
     with self.argument_context('vm repair restore-swap') as c:
         c.argument('rescue_vm_name', help='Name of rescue VM where the fixed OS disk is attached.')
-        c.argument('fixed_disk_name', help='Name of fixed disk.')
+        c.argument('disk_name', help='Name of fixed managed disk. Default to first data disk in the rescue vm.')
+        c.argument('disk_uri', help= 'Uri of the fixed unmanaged disk. Default to first data disk in the rescue vm.')

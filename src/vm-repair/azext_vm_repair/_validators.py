@@ -4,8 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.log import get_logger
+from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from .custom import _uses_managed_disk
+
+from re import search
 
 logger = get_logger(__name__)
 
@@ -15,27 +19,45 @@ def validate_swap_disk(cmd, namespace):
     target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(target_vm)
 
+    # Validate params that aren't checked by 'vm create' command
+    if namespace.rescue_vm_name:
+        _validate_rescue_vm_name(namespace.rescue_vm_name, is_linux)
+
     # Handle empty params
     if is_linux and namespace.rescue_username:
-        logger.warning("Chaging adminUsername property is not allowed for Linux VMs. Ignoring the given rescue_username parameter.")
+        logger.warning("Chaging adminUsername property is not allowed for Linux VMs. Ignoring the given rescue-username parameter.")
     if not is_linux and not namespace.rescue_username:
         _prompt_rescue_username(namespace)
     if not namespace.rescue_password:
         _prompt_rescue_password(namespace)
-    if not namespace.rescue_vm_name:
-        namespace.rescue_vm_name = namespace.vm_name[:8] + '-Rescue'
 
-    # Validate params, password validated through vm create call
-    _validate_username(namespace.rescue_username, is_linux)
-    _validate_rescue_vm_name(namespace.rescue_vm_name, is_linux)
 
-def _validate_username(username, is_linux):
-    # TODO find username rules for Windows OS system
-    pass
+
+def validate_restore_swap(cmd, namespace):
+    
+    # Check if data disk exists on rescue VM
+    rescue_vm = get_vm(cmd, namespace.resource_group_name, namespace.rescue_vm_name)
+    is_managed = _uses_managed_disk(rescue_vm)
+    data_disks = rescue_vm.storage_profile.data_disks
+    if data_disks == None or len(data_disks) < 1:
+        raise CLIError('No data disks found on rescue VM: {}'.format(namespace.rescue_vm_name))
+
+    # Populate data disk name and uri
+    if not namespace.disk_name:
+        namespace.disk_name = data_disks[0].name
+        logger.warning('Disk-name not given. Defaulting to the first data disk attached to the rescue VM: {}'.format(data_disks[0].name))
+    if not namespace.disk_uri and not is_managed:
+        namespace.disk_uri = data_disks[0].vhd.uri
+        logger.warning('Disk-uri not given. Defaulting to the first data disk attached to the rescue VM: {}'.format(data_disks[0].vhd.uri))
 
 def _validate_rescue_vm_name(rescue_vm_name, is_linux):
-    # TODO find vm name restrictions for azure linux, windows vm
-    pass
+
+    if not is_linux:
+        win_pattern = r'[\'~!@#$%^&*()=+_[\]{}\\|;:.",<>?]'
+
+        if len(rescue_vm_name) > 15 or search(win_pattern, rescue_vm_name):
+            raise CLIError('Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ' \
+                           '`~!@#$%^&*()=+_[]{}\\|; :.\'",<>/?')
 
 def _prompt_rescue_username(namespace):
 
