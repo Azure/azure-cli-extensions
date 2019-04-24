@@ -275,7 +275,7 @@ helps['network waf-policy custom-rule create'] = """
           short-summary: Match condition for the rule.
           long-summary: |
 
-            Usage:   --match-condition VARIABLE OPERATOR [VALUE [VALUE ...]]
+            Usage:   --match-condition [!] VARIABLE OPERATOR [VALUE [VALUE ...]]
 
               Variable allowed values: {variables}
 

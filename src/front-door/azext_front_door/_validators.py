@@ -89,14 +89,21 @@ class MatchConditionAction(argparse._AppendAction):
             values = values.split(' ')
 
         try:
+            negate = False
+            argstart = 0
+            if values[0] == "!":
+                negate = True
+                argstart = 1
+
             return MatchCondition1(
-                match_variable=values[0],
-                operator=values[1],
-                match_value=values[2:]
+                match_variable=values[argstart],
+                operator=values[argstart+1],
+                match_value=values[argstart+2:],
+                negate_condition=negate
             )
         except IndexError:
             from knack.util import CLIError
-            raise CLIError('usage error: --match-condition VARIABLE OPERATOR [VALUE [VALUE ...]]')
+            raise CLIError('usage error: --match-condition [!] VARIABLE OPERATOR [VALUE [VALUE ...]]')
 
     def __call__(self, parser, namespace, values, option_string=None):
         match_condition = self.parse_match_condition(values)
