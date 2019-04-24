@@ -287,7 +287,7 @@ class StorageManagementClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2018-03-01-preview':
             from .v2018_03_01_preview.operations import StorageAccountsOperations as OperationClass
         elif api_version == '2018-07-01':
-            from .v2018_11_01.operations import StorageAccountsOperations as OperationClass
+            from .v2018_07_01.operations import StorageAccountsOperations as OperationClass
         elif api_version == '2018-11-01':
             from .v2018_11_01.operations import StorageAccountsOperations as OperationClass
         else:

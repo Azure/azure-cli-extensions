@@ -62,24 +62,24 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.custom_command('remove', 'remove_network_rule')
 
     management_policy_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.management_policies_operations'
-                        '#ManagementPoliciesOperations.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.'
+                        'management_policies_operations#ManagementPoliciesOperations.{}',
         client_factory=cf_mgmt_policy,
         resource_type=CUSTOM_MGMT_STORAGE
     )
 
-    management_policy_type = CliCommandType(
+    management_policy_custom_type = CliCommandType(
         operations_tmpl='azext_storage_preview.operations.account#{}',
         client_factory=cf_mgmt_policy)
 
     with self.command_group('storage account management-policy', management_policy_sdk,
                             resource_type=CUSTOM_MGMT_STORAGE, min_api='2018-11-01',
-                            custom_command_type=management_policy_type) as g:
+                            custom_command_type=management_policy_custom_type) as g:
         g.show_command('show', 'get')
         g.custom_command('create', 'create_management_policies')
         g.generic_update_command('update', getter_name='get',
                                  setter_name='update_management_policies',
-                                 setter_type=storage_account_custom_type)
+                                 setter_type=management_policy_custom_type)
         g.command('delete', 'delete')
 
     base_blob_sdk = CliCommandType(
