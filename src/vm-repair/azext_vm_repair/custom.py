@@ -112,13 +112,13 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             _call_az_command(create_rescue_vm_command)
 
             logger.info('Checking if disk copy is done:')
-            copy_result = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
+            copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
                                  .format(c=storage_account.container, name=copied_os_disk_name, con_string=connection_string)
-            print(copy_result)
+            copy_result = _call_az_command(copy_check_command).strip('\n')
             if copy_result != 'success':
                 # TODO, what then if unsucessful. Call again or exit?
+                # Let it run for now and see how the disk state it.
                 logger.warning('Disk copy UNSUCCESSFUL.')
-            print(copy_result)
 
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to rescue VM as data disk:')
