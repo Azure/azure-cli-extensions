@@ -25,10 +25,16 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         # Check rescue VM
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         assert len(vms) == 2
-
+        rescue_vm = (vm for x in vms if x.name == result.rescueVmName)
         # Check attached data disk
-        for vm in vms:
-            if vm.name == 'vm1':
-                continue
+        assert rescue_vm.storageProfile.dataDisks[0].name == result.copiedDiskName
+        
+        # Call Restore
+        result2 = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-vm-name {rescue}'.format(rescue=result.rescueVmName))
 
-            assert 
+        # Check rescue VM deleted
+        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        assert len(vms) == 1
+        targetVm = vms[0]
+        # Check swapped OS disk
+        assert targetVm.storageProfile.osDisk.name == result.copiedDiskName

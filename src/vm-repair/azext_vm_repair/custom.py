@@ -14,9 +14,6 @@ from uuid import uuid4
 
 logger = get_logger(__name__)
 
-def helloworld():
-    print('Hello World.')
-
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None, rescue_vm_name=None):
    
     # Fetch VM info
@@ -25,20 +22,26 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     target_disk_name = target_vm.storage_profile.os_disk.name
     is_managed = _uses_managed_disk(target_vm)
 
+    #print(target_vm.storage_profile.image_reference)
+    #return
     if is_linux:
         os_image_name = "UbuntuLTS"
     else:
-        os_image_name = "Win2019Datacenter"
+        # temp fix to mitigate Windows disk signature collision error
+        if target_vm.storage_profile.image_reference \
+           and '2016.127.20190214' == target_vm.storage_profile.image_reference.version:
+            os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190115"
+        else:
+            os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190214"
 
     # TODO, validate restrictions on disk naming
     guid = str(uuid4()).replace('-', '')
     copied_os_disk_name = vm_name + '-DiskCopy-' + guid
+    copied_disk_uri = None
     if not rescue_vm_name:
         rescue_vm_name = ('rescue-' + guid)[:15]
 
     resource_tag = "owner={rescue_name}".format(rescue_name=rescue_vm_name)
-    #TODO, Maybe separate the createVM and attach to create the disk and VM concurrently
-    #TODO, stop and start VM according to documentation recommendation
 
     # Set up base create vm command
     create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag owner={n} --image {image} --admin-password {password}' \
@@ -49,11 +52,6 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
     # Main command calling block
     try:
-        # Stop Target VM
-        #logger.info('Stopping target VM:')
-        #stop_vm_command = 'az vm stop -g {g} -n {n}' \
-        #                   .format(g=resource_group_name, n=vm_name)
-        #_call_az_command(stop_vm_command)
 
         # MANAGED DISK
         if is_managed:
@@ -61,18 +59,20 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             # Copy OS disk command
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s}' \
                                 .format(g=resource_group_name, n=copied_os_disk_name, s=target_disk_name)
-            # Create new rescue VM with copied disk command
-            create_rescue_vm_command = create_rescue_vm_command + ' --attach-data-disks {disk_name}'.format(disk_name=copied_os_disk_name)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_rescue_vm_command + ' --validate'
+            attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {disk}' \
+                                  .format(g=resource_group_name, rescue=rescue_vm_name, disk=copied_os_disk_name)
 
             logger.info('Validating VM template before continuing:')
             _call_az_command(validate_create_vm_command)
             logger.info('Copying OS disk of target VM:')
             _call_az_command(copy_disk_command)
-            logger.info('Creating rescue vm with the copy OS disk attached to it:')
+            logger.info('Creating rescue vm:')
             _call_az_command(create_rescue_vm_command)
-        
+            logger.info('Attaching copied disk to rescue vm:')
+            _call_az_command(attach_disk_command)
+            
         # UNMANAGED DISK
         else:
             logger.info('OS disk is unmanaged. Executing unmanaged disk swap:\n')
@@ -118,23 +118,11 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
                 logger.warning('Disk copy UNSUCCESSFUL.')
             print(_call_az_command(copy_result))
 
-            # Stop Rescue VM
-            #logger.info('Stopping Rescue VM:')
-            #stop_vm_command = 'az vm stop -g {g} -n {n}' \
-            #                   .format(g=resource_group_name, n=rescue_vm_name)
-            #_call_az_command(stop_vm_command)
-
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to rescue VM as data disk:')
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
                                   .format(g=resource_group_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
             _call_az_command(attach_disk_command)
-
-            # Start Rescue VM
-            #logger.info('Starting Rescue VM:')
-            #start_vm_command = 'az vm start -g {g} -n {n}' \
-            #                   .format(g=resource_group_name, n=rescue_vm_name)
-            #_call_az_command(start_vm_command)
         
     # Some error happened. Stop command and clean-up resources.
     except Exception as exception:
@@ -144,7 +132,17 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
         return None
 
-    return 'Rescue VM: \'{n}\' succesfully created with disk: \'{d}\' attached as a data disk'.format(n=rescue_vm_name, d=copied_os_disk_name)
+    # Construct return dict
+    return_dict = {}
+    return_dict['message'] = 'Rescue VM: \'{n}\' succesfully created with disk: \'{d}\' attached as a data disk' \
+                               .format(n=rescue_vm_name, d=copied_os_disk_name)
+    return_dict['rescueVmName'] = rescue_vm_name
+    return_dict['copiedDiskName'] = copied_os_disk_name
+    return_dict['copiedDiskUri'] = copied_disk_uri
+    return_dict['resouceGroup'] = resource_group_name
+    return_dict['resourceTag'] = resource_tag
+
+    return return_dict
 
 def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, disk_name=None, disk_uri=None):
 
@@ -153,11 +151,6 @@ def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, disk_name=No
     rescue_vm = get_vm(cmd, resource_group_name, rescue_vm_name)
     
     resource_tag = "owner={rescue_name}".format(rescue_name=rescue_vm_name)
-
-    #logger.info('Stopping rescue VM:')
-    #stop_vm_command = 'az vm stop -g {g} -n {n}' \
-    #                    .format(g=resource_group_name, n=rescue_vm_name)
-    #_call_az_command(stop_vm_command)
 
     try:
         if is_managed:
@@ -196,9 +189,14 @@ def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, disk_name=No
 
         return None
 
-    return '{disk} successfully attached to {n} as an OS disk.'.format(disk=disk_name, n=vm_name)
+    # Construct return dict
+    return_dict = {}
+    return_dict['message'] = '{disk} successfully attached to {n} as an OS disk.' \
+                             .format(disk=disk_name, n=vm_name)
 
-# check if this is reliable
+    return return_dict
+
+# TODO, check if this is reliable
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False
