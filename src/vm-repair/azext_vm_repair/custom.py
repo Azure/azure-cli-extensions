@@ -3,19 +3,20 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import subprocess
+from uuid import uuid4
+
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from azure.cli.core.commands import LongRunningOperation
 
-import subprocess
-from uuid import uuid4
+# pylint: disable=line-too-long
 
 logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None, rescue_vm_name=None):
-   
     # Fetch VM info
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
@@ -29,7 +30,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     else:
         # temp fix to mitigate Windows disk signature collision error
         if target_vm.storage_profile.image_reference \
-           and '2016.127.20190214' == target_vm.storage_profile.image_reference.version:
+           and target_vm.storage_profile.image_reference.version == '2016.127.20190214':
             os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190115"
         else:
             os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190214"
@@ -72,7 +73,6 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             _call_az_command(create_rescue_vm_command)
             logger.info('Attaching copied disk to rescue vm:')
             _call_az_command(attach_disk_command)
-            
         # UNMANAGED DISK
         else:
             logger.info('OS disk is unmanaged. Executing unmanaged disk swap:\n')
@@ -84,7 +84,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             validate_create_vm_command = create_rescue_vm_command + ' --validate'
             logger.info('Validating VM template before continuing:')
             _call_az_command(validate_create_vm_command)
-        
+
             # get storage account connection string
             get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
                                             .format(g=resource_group_name, n=storage_account.account_name)
@@ -97,7 +97,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             logger.info('Creating snapshot of OS disk:')
             snapshot_timestamp = _call_az_command(make_snapshot_command).strip('\n')
             snapshot_uri = os_disk_uri + '?snapshot={timestamp}'.format(timestamp=snapshot_timestamp)
-        
+
             # Copy Snapshot into unmanaged Disk
             copy_snapshot_command = 'az storage blob copy start -c {c} -b {name} --source-uri {source} --connection-string "{con_string}"' \
                                     .format(c=storage_account.container, name=copied_os_disk_name, source=snapshot_uri, con_string=connection_string)
@@ -112,11 +112,13 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             _call_az_command(create_rescue_vm_command)
 
             logger.info('Checking if disk copy is done:')
-            copy_result = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status' \
+            copy_result = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
                                  .format(c=storage_account.container, name=copied_os_disk_name, con_string=connection_string)
+            print(copy_result)
             if copy_result != 'success':
+                # TODO, what then if unsucessful. Call again or exit?
                 logger.warning('Disk copy UNSUCCESSFUL.')
-            print(_call_az_command(copy_result))
+            print(copy_result)
 
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to rescue VM as data disk:')
@@ -148,8 +150,6 @@ def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, disk_name=No
 
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
-    rescue_vm = get_vm(cmd, resource_group_name, rescue_vm_name)
-    
     resource_tag = "owner={rescue_name}".format(rescue_name=rescue_vm_name)
 
     try:
@@ -178,7 +178,6 @@ def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, disk_name=No
             _call_az_command(deatch_unamanged_command)
             logger.info('Attaching the fixed disk to target VM as an OS disk:')
             _call_az_command(attach_unmanaged_command)
-       
         # Clean 
         _clean_up_resources(resource_tag)
 
@@ -204,25 +203,23 @@ def _uses_managed_disk(vm):
         return True
 
 # returns the stdout, raises exception if command fails
-def _call_az_command(command_string, run_async = False):
-
+def _call_az_command(command_string, run_async=False):
     logger.info("Calling: " + command_string)
 
-    p1 = subprocess.Popen(command_string, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(command_string, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
-        stdout, stderr = p1.communicate()
+        stdout, stderr = process.communicate()
 
-        if p1.returncode != 0:
+        if process.returncode != 0:
             logger.error(stderr)
             raise Exception("{command} failed with return code: {return_code}, and stderr: {err}" \
-                            .format(command=command_string, return_code=p1.returncode, err=stderr))
+                            .format(command=command_string, return_code=process.returncode, err=stderr))
         else:
             logger.info('Command succeeded.\n')
 
         return stdout
-    
     return None
 
 def _clean_up_resources(tag):

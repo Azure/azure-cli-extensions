@@ -3,16 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from re import search
+
 from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from .custom import _uses_managed_disk
 
-from re import search
+# pylint: disable=line-too-long
 
 logger = get_logger(__name__)
-
 
 def validate_swap_disk(cmd, namespace):
 
@@ -31,15 +32,13 @@ def validate_swap_disk(cmd, namespace):
     if not namespace.rescue_password:
         _prompt_rescue_password(namespace)
 
-
-
 def validate_restore_swap(cmd, namespace):
-    
+
     # Check if data disk exists on rescue VM
     rescue_vm = get_vm(cmd, namespace.resource_group_name, namespace.rescue_vm_name)
     is_managed = _uses_managed_disk(rescue_vm)
     data_disks = rescue_vm.storage_profile.data_disks
-    if data_disks == None or len(data_disks) < 1:
+    if data_disks is None or len(data_disks) < 1:
         raise CLIError('No data disks found on rescue VM: {}'.format(namespace.rescue_vm_name))
 
     # Populate data disk name and uri
@@ -73,4 +72,3 @@ def _prompt_rescue_password(namespace):
         namespace.rescue_password = prompt_pass('Rescue VM Admin Password: ', confirm=True)
     except NoTTYException:
         raise CLIError('Please specify password in non-interactive mode.')
-
