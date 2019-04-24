@@ -75,8 +75,3 @@ helps['postgres show-connection-string'] = """
     type: command
     short-summary: Show the connection strings for a PostgreSQL server database.
 """
-
-helps['sql show-connection-string'] = """
-    type: command
-    short-summary: Show the connection strings for a SQL server database.
-"""

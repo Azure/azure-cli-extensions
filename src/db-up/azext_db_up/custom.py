@@ -4,14 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=import-error,too-many-locals
+import os
 import re
+import sys
 import uuid
 from msrestazure.azure_exceptions import CloudError
 from knack.log import get_logger
 from knack.util import CLIError
 import mysql.connector as mysql_connector
 import psycopg2
-# import pyodbc
 from azext_db_up.vendored_sdks.azure_mgmt_rdbms import mysql, postgresql
 from azext_db_up.vendored_sdks.azure_mgmt_sql import sql
 from azext_db_up._client_factory import (
@@ -141,10 +142,11 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
 
 def sql_up(cmd, client, resource_group_name=None, server_name=None, location=None, administrator_login=None,
            administrator_login_password=None, version=None, database_name=None, tags=None):
+    _ensure_pymssql()
+    import pymssql
     db_context = DbContext(
         azure_sdk=sql, cf_firewall=cf_sql_firewall_rules, cf_db=cf_sql_db,
-        logging_name='SQL', command_group='sql', server_client=client)
-    # connector=pyodbc,
+        logging_name='SQL', command_group='sql', server_client=client, connector=pymssql)
 
     try:
         server_result = client.get(resource_group_name, server_name)
@@ -169,23 +171,49 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
     _create_sql_database(db_context, cmd, resource_group_name, server_name, database_name, location)
 
     # check ip address(es) of the user and configure firewall rules
-    # sql_errors = (pyodbc.ProgrammingError, pyodbc.InterfaceError, pyodbc.OperationalError)
-    # host, user = _configure_sql_firewall_rules(
-    #     db_context, sql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
-    #     administrator_login_password, database_name)
+    sql_errors = (pymssql.InterfaceError, pymssql.OperationalError)
+    host, user = _configure_firewall_rules(
+        db_context, sql_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
+        administrator_login_password, database_name, {'tds_version': '7.0'})
 
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_result.fully_qualified_domain_name
 
     # connect to sql server and run some commands
-    # if administrator_login_password is not None:
-    #     _run_sql_commands(host, user, administrator_login_password, database_name)
+    if administrator_login_password is not None:
+        _run_sql_commands(host, user, administrator_login_password, database_name)
 
     return _form_response(
         _create_sql_connection_string(host, user, administrator_login_password, database_name),
         host, user,
         administrator_login_password if administrator_login_password is not None else '*****'
     )
+
+
+def _ensure_pymssql():
+    # we make sure "pymssql" get setup here, because on OSX, pymssql requires homebrew "FreeTDS",
+    # which pip is not able to handle.
+    try:
+        import pymssql  # pylint: disable=unused-import,unused-variable
+    except ImportError:
+        import subprocess
+        logger.warning("Installing dependencies required to configure Azure SQL server...")
+        if sys.platform == 'darwin':
+            try:
+                subprocess.check_output(['brew', 'list', 'freetds'], stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError:
+                logger.warning('  Installing "freetds" through brew...')
+                subprocess.check_output(['brew', 'install', 'freetds'])
+        from azure.cli.core.extension import EXTENSIONS_DIR
+        db_up_ext_path = os.path.join(EXTENSIONS_DIR, 'db-up')
+        python_path = os.environ.get('PYTHONPATH', '')
+        os.environ['PYTHONPATH'] = python_path + ':' + db_up_ext_path if python_path else db_up_ext_path
+        cmd = [sys.executable, '-m', 'pip', 'install', '--target', db_up_ext_path,
+               'pymssql==2.1.4', '-vv', '--disable-pip-version-check', '--no-cache-dir']
+        logger.warning('  Installing "pymssql" pip packages')
+        with HomebrewPipPatch():
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        import pymssql  # reload
 
 
 def server_down(cmd, client, resource_group_name=None, server_name=None, delete_group=None):
@@ -304,13 +332,21 @@ def _create_postgresql_connection_string(host, user, password, database):
 
 def _create_sql_connection_string(host, user, password, database):
     result = {
+        # https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-nodejs
         'ado.net': "Server={host},1433;Initial Catalog={database};User ID={user};Password={password};",
         'jdbc': "jdbc:sqlserver://{host}:1433;database={database};user={user};password={password};",
         'odbc': "Driver={{ODBC Driver 13 for SQL Server}};Server={host},1433;Database={database};Uid={user};"
                 "Pwd={password};",
-        'php': '$conn = new PDO("sqlsrv:server = {host},1433; Database = {database}", "{admin_login}", "{password}");',
+        'php': "$conn = new PDO('sqlsrv:server={host} ; Database = {database}', '{user}', '{password}');",
         'python': "pyodbc.connect('DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={host};DATABASE={database};"
-                  "UID={admin_login};PWD={password}')"
+                  "UID={admin_login};PWD={password}')",
+        "node.js": "var conn = new require('tedious').Connection("
+                   "{{authentication: {{ options: {{ userName: '{user}', password: '{password}' }}, type: 'default'}}, "
+                   "server: '{host}', options:{{ database: '{database}', encrypt: true }}}});",
+        'jdbc Spring': "spring.datasource.url=jdbc:sqlserver://{host}:1433/sampledb spring.datasource.username={user}  "
+                       "spring.datasource.password={password}",
+        "ruby": "client = TinyTds::Client.new(username: {user}, password: {password}, host: {host}, port: 1433, "
+                "database: {database}, azure: true)",
     }
 
     admin_login, _ = user.split('@')
@@ -358,30 +394,27 @@ def _run_postgresql_commands(host, user, password, database):
     logger.warning("Ran Database Query: `GRANT ALL PRIVILEGES ON DATABASE %s TO root`", database)
 
 
-# def _run_sql_commands(host, user, password, database):
-#     # Connect to sql and get cursor to run sql commands
-#     administrator_login, _ = user.split('@')
-#     kwargs = {'user': administrator_login, 'server': host, 'database': database, 'password': password}
-#     connection_string = ('DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};'
-#                          'DATABASE={database};UID={user};PWD={password}').format(**kwargs)
-#     connection = pyodbc.connect(connection_string)
-#     logger.warning('Successfully Connected to PostgreSQL.')
-#     cursor = connection.cursor()
-#     # TODO
-#     try:
-#         db_password = _create_db_password(database)
-#         cursor.execute("CREATE USER root WITH PASSWORD = '{}'".format(db_password))
-#         logger.warning("Ran Database Query: `CREATE USER root WITH PASSWORD = '%s'`", db_password)
-#     except pyodbc.ProgrammingError:
-#         pass
-#     cursor.execute("Use {};".format(database))
-#     cursor.execute("GRANT ALL to root")
-#     logger.warning("Ran Database Query: `GRANT ALL TO root`")
+def _run_sql_commands(host, user, password, database):
+    # Connect to sql and get cursor to run sql commands
+    _ensure_pymssql()
+    import pymssql
+    with pymssql.connect(host, user, password, database, tds_version='7.0') as connection:
+        logger.warning('Successfully Connected to PostgreSQL.')
+        with connection.cursor() as cursor:
+            try:
+                db_password = _create_db_password(database)
+                cursor.execute("CREATE USER root WITH PASSWORD = '{}'".format(db_password))
+                logger.warning("Ran Database Query: `CREATE USER root WITH PASSWORD = '%s'`", db_password)
+            except pymssql.ProgrammingError:
+                pass
+            cursor.execute("Use {};".format(database))
+            cursor.execute("GRANT ALL to root")
+            logger.warning("Ran Database Query: `GRANT ALL TO root`")
 
 
 def _configure_firewall_rules(
         db_context, connector_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
-        administrator_login_password, database_name):
+        administrator_login_password, database_name, extra_connector_args=None):
     # unpack from context
     connector, cf_firewall, command_group, logging_name = (
         db_context.connector, db_context.cf_firewall, db_context.command_group, db_context.logging_name)
@@ -392,6 +425,7 @@ def _configure_firewall_rules(
     kwargs = {'user': user, 'host': host, 'database': database_name}
     if administrator_login_password is not None:
         kwargs['password'] = administrator_login_password
+    kwargs.update(extra_connector_args or {})
     addresses = set()
     logger.warning('Checking your ip address...')
     for _ in range(20):
@@ -429,62 +463,6 @@ def _configure_firewall_rules(
                    command_group, resource_group_name, server_name)
 
     return host, user
-
-
-# def _configure_sql_firewall_rules(
-#         db_context, connector_errors, cmd, server_result, resource_group_name, server_name, administrator_login,
-#         administrator_login_password, database_name):
-#     # unpack from context
-#     connector, cf_firewall, command_group, logging_name = (
-#         db_context.connector, db_context.cf_firewall, db_context.command_group, db_context.logging_name)
-
-#     # Check for user's ip address(es)
-#     user = '{}@{}'.format(administrator_login, server_name)
-#     host = server_result.fully_qualified_domain_name
-#     kwargs = {'user': administrator_login, 'server': host, 'database': database_name}
-#     if administrator_login_password is not None:
-#         kwargs['password'] = administrator_login_password
-#     else:
-#         kwargs['password'] = '*****'
-#     addresses = set()
-#     logger.warning('Checking your ip address...')
-#     for _ in range(20):
-#         try:
-#             connection_string = ('DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};'
-#                                  'DATABASE={database};UID={user};PWD={password}').format(**kwargs)
-#             connection = connector.connect(connection_string)
-#             connection.close()
-#         except connector_errors as ex:
-#             pattern = re.compile(r'.*[\'"](?P<ipAddress>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)[\'"]')
-#             try:
-#                 addresses.add(pattern.match(str(ex)).groupdict().get('ipAddress'))
-#             except AttributeError:
-#                 pass
-
-#     # Create firewall rules for devbox if needed
-#     firewall_client = cf_firewall(cmd.cli_ctx, None)
-
-#     if addresses and len(addresses) == 1:
-#         ip_address = addresses.pop()
-#         logger.warning('Configuring server firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
-#         resolve_poller(
-#             firewall_client.create_or_update(resource_group_name, server_name, 'devbox', ip_address, ip_address),
-#             cmd.cli_ctx, '{} Firewall Rule Create/Update'.format(logging_name))
-#     elif addresses:
-#         logger.warning('Detected dynamic IP address, configuring firewall rules for IP addresses encountered...')
-#         logger.warning('IP Addresses: %s', ', '.join(list(addresses)))
-#         firewall_results = []
-#         for i, ip_address in enumerate(addresses):
-#             firewall_results.append(firewall_client.create_or_update(
-#                 resource_group_name, server_name, 'devbox' + str(i), ip_address, ip_address))
-#         for result in firewall_results:
-#             resolve_poller(result, cmd.cli_ctx, '{} Firewall Rule Create/Update'.format(logging_name))
-#     logger.warning('If %s server declines your IP address, please create a new firewall rule using:', logging_name)
-#     logger.warning('    `az %s server firewall-rule create -g %s -s %s -n {rule_name} '
-#                    '--start-ip-address {ip_address} --end-ip-address {ip_address}`',
-#                    command_group, resource_group_name, server_name)
-
-#     return host, user
 
 
 def _create_database(db_context, cmd, resource_group_name, server_name, database_name):
@@ -632,3 +610,42 @@ class DbContext:
         self.connector = connector
         self.command_group = command_group
         self.server_client = server_client
+
+
+def is_homebrew():
+    HOMEBREW_CELLAR_PATH = '/usr/local/Cellar/azure-cli/'
+    return any((p.startswith(HOMEBREW_CELLAR_PATH) for p in sys.path))
+
+
+# port from azure.cli.core.extension
+# A workaround for https://github.com/Azure/azure-cli/issues/4428
+class HomebrewPipPatch(object):  # pylint: disable=too-few-public-methods
+
+    CFG_FILE = os.path.expanduser(os.path.join('~', '.pydistutils.cfg'))
+
+    def __init__(self):
+        self.our_cfg_file = False
+
+    def __enter__(self):
+        if not is_homebrew():
+            return
+        if os.path.isfile(HomebrewPipPatch.CFG_FILE):
+            logger.debug("Homebrew patch: The file %s already exists and we will not overwrite it. "
+                         "If extension installation fails, temporarily rename this file and try again.",
+                         HomebrewPipPatch.CFG_FILE)
+            logger.warning("Unable to apply Homebrew patch for extension installation. "
+                           "Attempting to continue anyway...")
+            self.our_cfg_file = False
+        else:
+            logger.debug("Homebrew patch: Temporarily creating %s to support extension installation on Homebrew.",
+                         HomebrewPipPatch.CFG_FILE)
+            with open(HomebrewPipPatch.CFG_FILE, "w") as f:
+                f.write("[install]\nprefix=")
+            self.our_cfg_file = True
+
+    def __exit__(self, exc_type, exc_value, tb):
+        if not is_homebrew():
+            return
+        if self.our_cfg_file and os.path.isfile(HomebrewPipPatch.CFG_FILE):
+            logger.debug("Homebrew patch: Deleting the temporarily created %s", HomebrewPipPatch.CFG_FILE)
+            os.remove(HomebrewPipPatch.CFG_FILE)
