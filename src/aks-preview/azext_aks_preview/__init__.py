@@ -31,8 +31,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        # super(ContainerServiceCommandsLoader, self).load_arguments(command)
-        super().load_arguments(command)
+        super(ContainerServiceCommandsLoader, self).load_arguments(command)
         from ._params import load_arguments
         load_arguments(self, command)
 

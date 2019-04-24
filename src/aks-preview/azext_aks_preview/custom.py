@@ -451,7 +451,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
-        if not _add_role_assignment(cmd.cli_ctx, 'Network Contributor', service_principal, scope=scope):
+        if not _add_role_assignment(
+                cmd.cli_ctx,
+                'Network Contributor',
+                service_principal_profile.client_id,
+                scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
 
@@ -462,6 +466,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             dns_service_ip,
             docker_bridge_address,
             network_policy]):
+        if not network_plugin:
+            raise CLIError('Please explicitly specify the network plugin type')
+        if pod_cidr and network_plugin == "azure":
+            raise CLIError('Please use kubenet as the network plugin type when pod_cidr is specified')
         network_profile = ContainerServiceNetworkProfile(
             network_plugin=network_plugin,
             pod_cidr=pod_cidr,
@@ -1001,7 +1009,7 @@ def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
 def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
                       kubernetes_version=None,
                       node_zones=None,
-                      node_vm_size="Standard_DS2_v2",
+                      node_vm_size=None,
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
@@ -1013,6 +1021,12 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         if agentpool_profile.name == nodepool_name:
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
+
+    if node_vm_size is None:
+        if os_type == "Windows":
+            node_vm_size = "Standard_D2s_v3"
+        else:
+            node_vm_size = "Standard_DS2_v2"
 
     agent_pool = AgentPool(
         name=nodepool_name,
