@@ -1084,3 +1084,112 @@ def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
     return sdk_no_wait(no_wait, client.delete, resource_group_name, cluster_name, nodepool_name)
+
+
+def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
+    instance = client.get(resource_group_name, name)
+    subscription_id = _get_subscription_id(cmd.cli_ctx)
+
+    instance = _update_addons(
+        cmd,
+        instance,
+        subscription_id,
+        resource_group_name,
+        addons,
+        enable=False,
+        no_wait=no_wait
+    )
+
+    # send the managed cluster representation to update the addon profiles
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
+                      subnet_name=None, no_wait=False):
+    instance = client.get(resource_group_name, name)
+    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    service_principal_client_id = instance.service_principal_profile.client_id
+    instance = _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable=True,
+                              workspace_resource_id=workspace_resource_id, subnet_name=subnet_name, no_wait=no_wait)
+
+    if 'omsagent' in instance.addon_profiles:
+        _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
+        cloud_name = cmd.cli_ctx.cloud.name
+        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
+        if cloud_name.lower() == 'azurecloud':
+            from msrestazure.tools import resource_id
+            cluster_resource_id = resource_id(
+                subscription=subscription_id,
+                resource_group=resource_group_name,
+                namespace='Microsoft.ContainerService', type='managedClusters',
+                name=name
+            )
+            if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
+                                        service_principal_client_id, scope=cluster_resource_id):
+                logger.warning('Could not create a role assignment for Monitoring addon. '
+                               'Are you an Owner on this subscription?')
+
+    # send the managed cluster representation to update the addon profiles
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable, workspace_resource_id=None,
+                   subnet_name=None, no_wait=False):
+    # parse the comma-separated addons argument
+    addon_args = addons.split(',')
+
+    addon_profiles = instance.addon_profiles or {}
+
+    os_type = 'Linux'
+
+    # for each addons argument
+    for addon_arg in addon_args:
+        addon = ADDONS[addon_arg]
+        if addon == 'aciConnector':
+            # only linux is supported for now, in the future this will be a user flag
+            addon += os_type
+        # addon name is case insensitive
+        addon = next((x for x in addon_profiles.keys() if x.lower() == addon.lower()), addon)
+        if enable:
+            # add new addons or update existing ones and enable them
+            addon_profile = addon_profiles.get(addon, ManagedClusterAddonProfile(enabled=False))
+            # special config handling for certain addons
+            if addon == 'omsagent':
+                if addon_profile.enabled:
+                    raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
+                                   'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
+                                   'before enabling it again.')
+                if not workspace_resource_id:
+                    workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
+                        cmd,
+                        subscription_id,
+                        resource_group_name)
+                workspace_resource_id = workspace_resource_id.strip()
+                if not workspace_resource_id.startswith('/'):
+                    workspace_resource_id = '/' + workspace_resource_id
+                if workspace_resource_id.endswith('/'):
+                    workspace_resource_id = workspace_resource_id.rstrip('/')
+                addon_profile.config = {'logAnalyticsWorkspaceResourceID': workspace_resource_id}
+            elif addon.lower() == ('aciConnector' + os_type).lower():
+                if addon_profile.enabled:
+                    raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
+                                   'To change virtual-node configuration, run '
+                                   '"az aks disable-addons -a virtual-node -g {resource_group_name}" '
+                                   'before enabling it again.')
+                if not subnet_name:
+                    raise CLIError('The aci-connector addon requires setting a subnet name.')
+                addon_profile.config = {'SubnetName': subnet_name}
+            addon_profiles[addon] = addon_profile
+        else:
+            if addon not in addon_profiles:
+                raise CLIError("The addon {} is not installed.".format(addon))
+            addon_profiles[addon].config = None
+        addon_profiles[addon].enabled = enable
+
+    instance.addon_profiles = addon_profiles
+
+    # null out the SP and AAD profile because otherwise validation complains
+    instance.service_principal_profile = None
+    instance.aad_profile = None
+
+    return instance
