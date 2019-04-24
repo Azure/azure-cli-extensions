@@ -170,6 +170,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         self.kwargs = {'rg': resource_group, 'sa': storage_account, 'policy': policy_file}
         self.cmd('storage account create -g {rg} -n {sa} --kind StorageV2')
         self.cmd('storage account management-policy create --account-name {sa} -g {rg} --policy @"{policy}"')
+        self.cmd('storage account management-policy create --account-name {sa} -g {rg} --policy @"{policy}"')
         self.cmd('storage account management-policy update --account-name {sa} -g {rg}'
                  ' --set "policy.rules[0].name=newname"')
         self.cmd('storage account management-policy show --account-name {sa} -g {rg}',

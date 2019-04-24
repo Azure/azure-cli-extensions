@@ -1,143 +1,244 @@
 interactions:
 - request:
     body: '{"location": "southcentralus", "tags": {"product": "azurecli", "cause":
-      "automation", "date": "2018-10-03T23:55:52Z"}}'
+      "automation", "date": "2019-04-24T20:52:48Z"}}'
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [group create]
-      Connection: [keep-alive]
-      Content-Length: ['118']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
-          msrest_azure/0.4.34 resourcemanagementclient/2.0.0 Azure-SDK-For-Python
-          AZURECLI/2.0.47]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --location --name --tag
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.17763-SP0) msrest/0.6.6 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.62
+      accept-language:
+      - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
   response:
-    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"southcentralus","tags":{"product":"azurecli","cause":"automation","date":"2018-10-03T23:55:52Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"southcentralus","tags":{"product":"azurecli","cause":"automation","date":"2019-04-24T20:52:48Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
-      cache-control: [no-cache]
-      content-length: ['392']
-      content-type: [application/json; charset=utf-8]
-      date: ['Wed, 03 Oct 2018 23:55:53 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
-    status: {code: 201, message: Created}
+      cache-control:
+      - no-cache
+      content-length:
+      - '392'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Apr 2019 20:52:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [storage account create]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
-          msrest_azure/0.4.34 resourcemanagementclient/2.0.0 Azure-SDK-For-Python
-          AZURECLI/2.0.47]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.17763-SP0) msrest/0.6.6 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.62
+      accept-language:
+      - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
   response:
-    body: {string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"southcentralus","tags":{"product":"azurecli","cause":"automation","date":"2018-10-03T23:55:52Z"},"properties":{"provisioningState":"Succeeded"}}'}
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"southcentralus","tags":{"product":"azurecli","cause":"automation","date":"2019-04-24T20:52:48Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
-      cache-control: [no-cache]
-      content-length: ['392']
-      content-type: [application/json; charset=utf-8]
-      date: ['Wed, 03 Oct 2018 23:55:53 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-    status: {code: 200, message: OK}
+      cache-control:
+      - no-cache
+      content-length:
+      - '392'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 Apr 2019 20:52:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
 - request:
     body: '{"sku": {"name": "Standard_RAGRS"}, "kind": "Storage", "location": "southcentralus"}'
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [storage account create]
-      Connection: [keep-alive]
-      Content-Length: ['84']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
-          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.47]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '84'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.17763-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-storage/3.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.62
+      accept-language:
+      - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000002?api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000002?api-version=2018-11-01
   response:
-    body: {string: ''}
+    body:
+      string: ''
     headers:
-      cache-control: [no-cache]
-      content-length: ['0']
-      content-type: [text/plain; charset=utf-8]
-      date: ['Wed, 03 Oct 2018 23:55:54 GMT']
-      expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/southcentralus/asyncoperations/ea7b34e7-e1ce-4c22-827a-4b4b5f1588f8?monitor=true&api-version=2018-07-01']
-      pragma: [no-cache]
-      server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
-          Microsoft-HTTPAPI/2.0']
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1197']
-    status: {code: 202, message: Accepted}
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Wed, 24 Apr 2019 20:52:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/southcentralus/asyncoperations/cb405451-a404-400f-b51a-9469bfe4a4f8?monitor=true&api-version=2018-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
 - request:
     body: null
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [storage account create]
-      Connection: [keep-alive]
-      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
-          msrest_azure/0.4.34 azure-mgmt-storage/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.47]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.17763-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-storage/3.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.62
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/southcentralus/asyncoperations/ea7b34e7-e1ce-4c22-827a-4b4b5f1588f8?monitor=true&api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/southcentralus/asyncoperations/cb405451-a404-400f-b51a-9469bfe4a4f8?monitor=true&api-version=2018-11-01
   response:
-    body: {string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000002","name":"cli000002","type":"Microsoft.Storage/storageAccounts","location":"southcentralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"trustedDirectories":["72f988bf-86f1-41af-91ab-2d7cd011db47"],"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2018-10-03T23:55:55.2963279Z"},"blob":{"enabled":true,"lastEnabledTime":"2018-10-03T23:55:55.2963279Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2018-10-03T23:55:55.2338280Z","primaryEndpoints":{"blob":"https://cli000002.blob.core.windows.net/","queue":"https://cli000002.queue.core.windows.net/","table":"https://cli000002.table.core.windows.net/","file":"https://cli000002.file.core.windows.net/"},"primaryLocation":"southcentralus","statusOfPrimary":"available","secondaryLocation":"northcentralus","statusOfSecondary":"available","secondaryEndpoints":{"blob":"https://cli000002-secondary.blob.core.windows.net/","queue":"https://cli000002-secondary.queue.core.windows.net/","table":"https://cli000002-secondary.table.core.windows.net/"}}}'}
+    body:
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000002","name":"cli000002","type":"Microsoft.Storage/storageAccounts","location":"southcentralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-04-24T20:52:52.6164158Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-04-24T20:52:52.6164158Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-04-24T20:52:52.5226642Z","primaryEndpoints":{"blob":"https://cli000002.blob.core.windows.net/","queue":"https://cli000002.queue.core.windows.net/","table":"https://cli000002.table.core.windows.net/","file":"https://cli000002.file.core.windows.net/"},"primaryLocation":"southcentralus","statusOfPrimary":"available","secondaryLocation":"northcentralus","statusOfSecondary":"available","secondaryEndpoints":{"blob":"https://cli000002-secondary.blob.core.windows.net/","queue":"https://cli000002-secondary.queue.core.windows.net/","table":"https://cli000002-secondary.table.core.windows.net/"}}}'
     headers:
-      cache-control: [no-cache]
-      content-length: ['1570']
-      content-type: [application/json]
-      date: ['Wed, 03 Oct 2018 23:56:12 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: ['Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0
-          Microsoft-HTTPAPI/2.0']
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-    status: {code: 200, message: OK}
+      cache-control:
+      - no-cache
+      content-length:
+      - '1508'
+      content-type:
+      - application/json
+      date:
+      - Wed, 24 Apr 2019 20:53:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
 - request:
     body: null
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [group delete]
-      Connection: [keep-alive]
-      Content-Length: ['0']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.5 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.4
-          msrest_azure/0.4.34 resourcemanagementclient/2.0.0 Azure-SDK-For-Python
-          AZURECLI/2.0.47]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --yes --no-wait
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.17763-SP0) msrest/0.6.6 msrest_azure/0.6.0 resourcemanagementclient/2.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.62
+      accept-language:
+      - en-US
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
   response:
-    body: {string: ''}
+    body:
+      string: ''
     headers:
-      cache-control: [no-cache]
-      content-length: ['0']
-      date: ['Wed, 03 Oct 2018 23:56:14 GMT']
-      expires: ['-1']
-      location: ['https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkc1UFpYNk5KTU9QS0NWT0FESVVCNVhIWEs0WVdGSEpMSkVPSnxDQ0E2NjlEMjlGNjQ0OUJBLVNPVVRIQ0VOVFJBTFVTIiwiam9iTG9jYXRpb24iOiJzb3V0aGNlbnRyYWx1cyJ9?api-version=2018-05-01']
-      pragma: [no-cache]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-deletes: ['14998']
-    status: {code: 202, message: Accepted}
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 24 Apr 2019 20:53:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdRR0E1Nk1LN041SVlBUEg3R0I3VDVXSkdUNTVJSDRBN0k3Unw3RDkxMEMzRkNDQjNFMDBDLVNPVVRIQ0VOVFJBTFVTIiwiam9iTG9jYXRpb24iOiJzb3V0aGNlbnRyYWx1cyJ9?api-version=2018-05-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
 version: 1

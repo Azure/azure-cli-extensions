@@ -202,10 +202,10 @@ def create_management_policies(client, resource_group_name, account_name, policy
             policy = get_file_json(policy)
         else:
             policy = shell_safe_json_parse(policy)
-    return client.create_or_update_management_policies(resource_group_name, account_name, policy=policy)
+    return client.create_or_update(resource_group_name, account_name, policy=policy)
 
 
 def update_management_policies(client, resource_group_name, account_name, parameters=None):
     if parameters:
         parameters = parameters.policy
-    return client.create_or_update_management_policies(resource_group_name, account_name, policy=parameters)
+    return client.create_or_update(resource_group_name, account_name, policy=parameters)

@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_data_gen_update,
+from ._client_factory import (cf_sa, cf_sa_preview, cf_mgmt_policy, cf_blob_data_gen_update,
                               blob_data_service_factory)
 from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
 
@@ -61,26 +61,26 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
 
-    storage_account_sdk_preview = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations.'
-                        'storage_accounts_operations#StorageAccountsOperations.{}',
-        client_factory=cf_sa_preview,
-        resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
+    management_policy_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations.management_policies_operations'
+                        '#ManagementPoliciesOperations.{}',
+        client_factory=cf_mgmt_policy,
+        resource_type=CUSTOM_MGMT_STORAGE
     )
 
-    storage_account_custom_preview_type = CliCommandType(
+    management_policy_type = CliCommandType(
         operations_tmpl='azext_storage_preview.operations.account#{}',
-        client_factory=cf_sa_preview)
+        client_factory=cf_mgmt_policy)
 
-    with self.command_group('storage account management-policy', storage_account_sdk_preview,
-                            resource_type=CUSTOM_MGMT_PREVIEW_STORAGE,
-                            custom_command_type=storage_account_custom_preview_type) as g:
-        g.show_command('show', 'get_management_policies')
+    with self.command_group('storage account management-policy', management_policy_sdk,
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2018-11-01',
+                            custom_command_type=management_policy_type) as g:
+        g.show_command('show', 'get')
         g.custom_command('create', 'create_management_policies')
-        g.generic_update_command('update', getter_name='get_management_policies',
+        g.generic_update_command('update', getter_name='get',
                                  setter_name='update_management_policies',
                                  setter_type=storage_account_custom_type)
-        g.command('delete', 'delete_management_policies')
+        g.command('delete', 'delete')
 
     base_blob_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.baseblobservice#BaseBlobService.{}',
