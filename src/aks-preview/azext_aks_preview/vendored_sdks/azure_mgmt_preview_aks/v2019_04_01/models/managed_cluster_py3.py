@@ -89,7 +89,6 @@ class ManagedCluster(Resource):
         'provisioning_state': {'readonly': True},
         'max_agent_pools': {'readonly': True},
         'fqdn': {'readonly': True},
-        'node_resource_group': {'readonly': True},
     }
 
     _attribute_map = {
@@ -116,7 +115,7 @@ class ManagedCluster(Resource):
         'api_server_authorized_ip_ranges': {'key': 'properties.apiServerAuthorizedIPRanges', 'type': '[str]'},
     }
 
-    def __init__(self, *, location: str, tags=None, kubernetes_version: str=None, dns_prefix: str=None, agent_pool_profiles=None, linux_profile=None, windows_profile=None, service_principal_profile=None, addon_profiles=None, enable_rbac: bool=None, enable_pod_security_policy: bool=None, network_profile=None, aad_profile=None, api_server_authorized_ip_ranges=None, **kwargs) -> None:
+    def __init__(self, *, location: str, tags=None, kubernetes_version: str=None, dns_prefix: str=None, node_resource_group: str=None, agent_pool_profiles=None, linux_profile=None, windows_profile=None, service_principal_profile=None, addon_profiles=None, enable_rbac: bool=None, enable_pod_security_policy: bool=None, network_profile=None, aad_profile=None, api_server_authorized_ip_ranges=None, **kwargs) -> None:
         super(ManagedCluster, self).__init__(location=location, tags=tags, **kwargs)
         self.provisioning_state = None
         self.max_agent_pools = None
@@ -128,7 +127,7 @@ class ManagedCluster(Resource):
         self.windows_profile = windows_profile
         self.service_principal_profile = service_principal_profile
         self.addon_profiles = addon_profiles
-        self.node_resource_group = None
+        self.node_resource_group = node_resource_group
         self.enable_rbac = enable_rbac
         self.enable_pod_security_policy = enable_pod_security_policy
         self.network_profile = network_profile
