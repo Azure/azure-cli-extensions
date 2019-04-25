@@ -89,7 +89,6 @@ class ManagedCluster(Resource):
         'provisioning_state': {'readonly': True},
         'max_agent_pools': {'readonly': True},
         'fqdn': {'readonly': True},
-        'node_resource_group': {'readonly': True},
     }
 
     _attribute_map = {
@@ -128,7 +127,7 @@ class ManagedCluster(Resource):
         self.windows_profile = kwargs.get('windows_profile', None)
         self.service_principal_profile = kwargs.get('service_principal_profile', None)
         self.addon_profiles = kwargs.get('addon_profiles', None)
-        self.node_resource_group = None
+        self.node_resource_group = kwargs.get('node_resource_group', None)
         self.enable_rbac = kwargs.get('enable_rbac', None)
         self.enable_pod_security_policy = kwargs.get('enable_pod_security_policy', None)
         self.network_profile = kwargs.get('network_profile', None)

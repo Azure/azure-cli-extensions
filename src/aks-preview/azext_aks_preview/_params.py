@@ -70,6 +70,7 @@ def load_arguments(self, _):
         c.argument('enable_vmss', action='store_true')
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
+        c.argument('node_resource_group')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')

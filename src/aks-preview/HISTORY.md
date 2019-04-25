@@ -6,6 +6,10 @@ Release History
 +++++
 * Add support for Azure policy add-on.
 
+0.3.2
++++++
+* Add support of customizing node resource group
+
 0.3.1
 +++++
 * Add support of pod security policy.
