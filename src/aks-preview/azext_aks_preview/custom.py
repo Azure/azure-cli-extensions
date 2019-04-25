@@ -385,6 +385,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                node_zones=None,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
+               node_resource_group=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -514,6 +515,9 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         addon_profiles=addon_profiles,
         aad_profile=aad_profile,
         enable_pod_security_policy=bool(enable_pod_security_policy))
+
+    if node_resource_group:
+        mc.node_resource_group = node_resource_group
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30

@@ -151,6 +151,9 @@ helps['aks create'] = """
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
+        - name: --node-resource-group
+          type: string
+          short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
