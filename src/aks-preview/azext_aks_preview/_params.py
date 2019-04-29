@@ -104,6 +104,13 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
+    with self.argument_context('aks disable-addons') as c:
+        c.argument('addons', options_list=['--addons', '-a'])
+
+    with self.argument_context('aks enable-addons') as c:
+        c.argument('addons', options_list=['--addons', '-a'])
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
+
 
 def _get_default_install_location(exe_name):
     system = platform.system()
