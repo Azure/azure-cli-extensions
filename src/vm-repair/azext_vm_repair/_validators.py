@@ -4,12 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 from re import search
-
+import json
 from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
-from .custom import _uses_managed_disk
+from .custom import _uses_managed_disk, _call_az_command
 
 # pylint: disable=line-too-long
 
@@ -20,10 +20,6 @@ def validate_swap_disk(cmd, namespace):
     target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(target_vm)
 
-    # Validate params that aren't checked by 'vm create' command
-    if namespace.rescue_vm_name:
-        _validate_rescue_vm_name(namespace.rescue_vm_name, is_linux)
-
     # Handle empty params
     if is_linux and namespace.rescue_username:
         logger.warning("Chaging adminUsername property is not allowed for Linux VMs. Ignoring the given rescue-username parameter.")
@@ -33,6 +29,15 @@ def validate_swap_disk(cmd, namespace):
         _prompt_rescue_password(namespace)
 
 def validate_restore_swap(cmd, namespace):
+    # Find Rescue VM 
+    find_rescue_command = 'az resource list --tag rescue_source={rg}/{vm_name} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
+                          .format(rg=namespace.resource_group_name, vm_name=namespace.vm_name)
+    rescue_list = json.loads(_call_az_command(find_rescue_command))
+
+    if len(rescue_list) == 0:
+        raise CLIError('Rescue VM not found for {vm_name}. Please check if the rescue resources were not removed.'.format(vm_name=namespace.vm_name))
+
+
 
     # Check if data disk exists on rescue VM
     rescue_vm = get_vm(cmd, namespace.resource_group_name, namespace.rescue_vm_name)
@@ -48,15 +53,6 @@ def validate_restore_swap(cmd, namespace):
     if not namespace.disk_uri and not is_managed:
         namespace.disk_uri = data_disks[0].vhd.uri
         logger.warning('Disk-uri not given. Defaulting to the first data disk attached to the rescue VM: {}'.format(data_disks[0].vhd.uri))
-
-def _validate_rescue_vm_name(rescue_vm_name, is_linux):
-
-    if not is_linux:
-        win_pattern = r'[\'~!@#$%^&*()=+_[\]{}\\|;:.",<>?]'
-
-        if len(rescue_vm_name) > 15 or search(win_pattern, rescue_vm_name):
-            raise CLIError('Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ' \
-                           '`~!@#$%^&*()=+_[]{}\\|; :.\'",<>/?')
 
 def _prompt_rescue_username(namespace):
 

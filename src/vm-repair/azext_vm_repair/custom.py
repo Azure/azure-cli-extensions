@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import subprocess
+import json
+from datetime import datetime
 from uuid import uuid4
 
 from knack.log import get_logger
@@ -16,15 +18,13 @@ from azure.cli.core.commands import LongRunningOperation
 
 logger = get_logger(__name__)
 
-def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None, rescue_vm_name=None):
+def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
     # Fetch VM info
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
     is_managed = _uses_managed_disk(target_vm)
 
-    #print(target_vm.storage_profile.image_reference)
-    #return
     if is_linux:
         os_image_name = "UbuntuLTS"
     else:
@@ -35,40 +35,52 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         else:
             os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190214"
 
-    # TODO, validate restrictions on disk naming
-    guid = str(uuid4()).replace('-', '')
-    copied_os_disk_name = vm_name + '-DiskCopy-' + guid
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    copied_os_disk_name = vm_name + '-DiskCopy-' + timestamp
     copied_disk_uri = None
-    if not rescue_vm_name:
-        rescue_vm_name = ('rescue-' + guid)[:15]
+    rescue_vm_name = 'rescue-vm'
+    rescue_rg_name = 'rescue-' + timestamp
 
-    resource_tag = "owner={rescue_name}".format(rescue_name=rescue_vm_name)
+    resource_tag = "rescue_source={rg}/{vm_name}".format(rg=resource_group_name, vm_name=vm_name)
 
     # Set up base create vm command
-    create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag owner={n} --image {image} --admin-password {password}' \
-                               .format(g=resource_group_name, n=rescue_vm_name, image=os_image_name, password=rescue_password)    
+    create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
+                               .format(g=rescue_rg_name, n=rescue_vm_name, tag=resource_tag, image=os_image_name, password=rescue_password)    
     # Add username field only for Windows
     if not is_linux:
         create_rescue_vm_command += ' --admin-username {username}'.format(username=rescue_username)
 
     # Main command calling block
     try:
+        # fetch VM size of rescue VM
+        sku = _fetch_compatible_sku(target_vm)
+        if not sku:
+            raise Exception('Failed to find compatible VM size for target VM OS disk within given region and subscription.')
+        create_rescue_vm_command += ' --size {sku}'.format(sku=sku)
+
+        # Create New Resource Group
+        create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
+                                        .format(loc=target_vm.location, group_name=rescue_rg_name)
+        logger.info('Creating resource group for rescue VM and its resources:')
+        _call_az_command(create_resource_group_command)
 
         # MANAGED DISK
         if is_managed:
             logger.info('OS disk is managed. Executing managed disk swap:\n')
             # Copy OS disk command
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s}' \
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copied_os_disk_name, s=target_disk_name)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_rescue_vm_command + ' --validate'
-            attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {disk}' \
-                                  .format(g=resource_group_name, rescue=rescue_vm_name, disk=copied_os_disk_name)
 
             logger.info('Validating VM template before continuing:')
             _call_az_command(validate_create_vm_command)
             logger.info('Copying OS disk of target VM:')
-            _call_az_command(copy_disk_command)
+            copy_disk_id = _call_az_command(copy_disk_command)
+
+            attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {id}' \
+                                  .format(g=rescue_rg_name, rescue=rescue_vm_name, id=copy_disk_id)
+
             logger.info('Creating rescue vm:')
             _call_az_command(create_rescue_vm_command)
             logger.info('Attaching copied disk to rescue vm:')
@@ -123,7 +135,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to rescue VM as data disk:')
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
-                                  .format(g=resource_group_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
+                                  .format(g=rescue_rg_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
             _call_az_command(attach_disk_command)
         
     # Some error happened. Stop command and clean-up resources.
@@ -141,16 +153,16 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     return_dict['rescueVmName'] = rescue_vm_name
     return_dict['copiedDiskName'] = copied_os_disk_name
     return_dict['copiedDiskUri'] = copied_disk_uri
-    return_dict['resouceGroup'] = resource_group_name
+    return_dict['rescueResouceGroup'] = rescue_rg_name
     return_dict['resourceTag'] = resource_tag
 
     return return_dict
 
-def restore_swap(cmd, vm_name, resource_group_name, rescue_vm_name, disk_name=None, disk_uri=None):
+def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, disk_uri=None, rescue_vm_name=None, rescue_resource_group=None):
 
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
-    resource_tag = "owner={rescue_name}".format(rescue_name=rescue_vm_name)
+    resource_tag = _get_rescue_resource_tag(vm_name, resource_group_name)
 
     try:
         if is_managed:
@@ -213,9 +225,8 @@ def _call_az_command(command_string, run_async=False):
         stdout, stderr = process.communicate()
 
         if process.returncode != 0:
-            logger.error(stderr)
-            raise Exception("{command} failed with return code: {return_code}, and stderr: {err}" \
-                            .format(command=command_string, return_code=process.returncode, err=stderr))
+            #logger.error(stderr)
+            raise Exception(stderr)
         else:
             logger.info('Command succeeded.\n')
 
@@ -225,17 +236,58 @@ def _call_az_command(command_string, run_async=False):
 def _clean_up_resources(tag):
     try:
         # Get ids of rescue resources to delete first
-        get_resources_command = "az resource list --tag {tags} --query [].id -o tsv" \
+        get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
                                 .format(tags=tag)
         logger.info('Fetching created resources for clean-up:')
         ids = _call_az_command(get_resources_command).replace('\n', ' ')
         # Delete rescue VM resources command
-        delete_resources_command = 'az resource delete --ids {ids}' \
-                                    .format(ids=ids)
-        logger.info('Cleaning up resources:')
-        _call_az_command(delete_resources_command)
+        if ids:
+            delete_resources_command = 'az resource delete --ids {ids}' \
+                                       .format(ids=ids)
+            logger.info('Cleaning up resources:')
+            _call_az_command(delete_resources_command)
+        else:
+            logger.info('No resources created. Skipping clean up.')
     except Exception as exception:
         logger.error(exception)
         logger.error("Clean up failed.")
 
     return None
+
+def _fetch_compatible_sku(target_vm):
+
+    location = target_vm.location
+    target_vm_sku = target_vm.hardware_profile.vm_size
+
+    # First get the target_vm sku, if its available go with it
+    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=target_vm_sku, loc=location)
+
+    logger.info('Checking if target VM size is available:')
+    sku_check = _call_az_command(check_sku_command).strip('\n')
+
+    if sku_check:
+        logger.info('Target VM size: \'{sku}\' is available. Using it to create rescue VM.\n'.format(sku=target_vm_sku))
+        return target_vm_sku
+    else:
+        logger.info('Target VM size: \'{sku}\' is NOT available.\n'.format(sku=target_vm_sku))
+
+    # List available standard SKUs
+    # TODO, premium IO only when needed
+    list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
+                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'4\')] && ' \
+                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'16\')] && ' \
+                       'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name"'\
+                       ' -o tsv' \
+                       .format(loc=location)
+
+    logger.info('Fetching available VM sizes for rescue VM:')
+    sku_list = _call_az_command(list_sku_command).split('\n')
+    
+    if len(sku_list) < 0:
+        return None
+    else:
+        return sku_list[0]
+
+def _get_rescue_resource_tag(target_vm_name, resource_group_name):
+    return 'rescue_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)

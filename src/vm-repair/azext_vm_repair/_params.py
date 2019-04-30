@@ -22,11 +22,11 @@ def load_arguments(self, _):
         c.argument('vm_name', existing_vm_name)
 
     with self.argument_context('vm repair swap-disk') as c:
-        c.argument('rescue_vm_name', help='Optional name for rescue vm.')
         c.argument('rescue_username', help='Optional Admin username for rescue VM. Prompt will pop up if not given.')
         c.argument('rescue_password', help='Optional Admin password for the rescue VM. Prompt will pop up if not given.')
 
     with self.argument_context('vm repair restore-swap') as c:
-        c.argument('rescue_vm_name', help='Name of rescue VM where the fixed OS disk is attached.')
-        c.argument('disk_name', help='Optional Name of fixed managed disk. Default to first data disk in the rescue vm.')
-        c.argument('disk_uri', help= 'Optional Uri of the fixed unmanaged disk. Default to first data disk in the rescue vm.')
+        c.argument('rescue_vm_name', help='Optional. Use this parameter to specify the rescue vm name.')
+        c.argument('rescue_resource_group', help='Optional. Use this parameter to specify the rescue vm resource group.')
+        c.argument('disk_name', help='Optional. Name of fixed managed disk. Defaults to the first data disk in the rescue vm.')
+        c.argument('disk_uri', help= 'Optional. Uri of the fixed unmanaged disk. Defaults to the first data disk in the rescue vm.')
