@@ -9,7 +9,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
-from .custom import _uses_managed_disk, _call_az_command
+from .custom import _uses_managed_disk, _call_az_command, _get_rescue_resource_tag
 
 # pylint: disable=line-too-long
 
@@ -29,18 +29,41 @@ def validate_swap_disk(cmd, namespace):
         _prompt_rescue_password(namespace)
 
 def validate_restore_swap(cmd, namespace):
-    # Find Rescue VM 
-    find_rescue_command = 'az resource list --tag rescue_source={rg}/{vm_name} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
-                          .format(rg=namespace.resource_group_name, vm_name=namespace.vm_name)
-    rescue_list = json.loads(_call_az_command(find_rescue_command))
+    
+    # Only one of the rescue param given
+    if bool(namespace.rescue_vm_name) ^ bool(namespace.rescue_resource_group):
+        raise CLIError('Please specify both rescue-resource-group and rescue-vm-name, or none.')
+    
+    # No rescue param given, find rescue vm using tags
+    if not namespace.rescue_vm_name and not namespace.rescue_resource_group:
+        # Find Rescue VM
+        tag = _get_rescue_resource_tag(namespace.vm_name, namespace.resource_group_name)
+        find_rescue_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
+                              .format(tag=tag)
+        logger.info('Searching for rescue-vm within subscription:')
+        output = _call_az_command(find_rescue_command)
+        rescue_list = json.loads(output)
 
-    if len(rescue_list) == 0:
-        raise CLIError('Rescue VM not found for {vm_name}. Please check if the rescue resources were not removed.'.format(vm_name=namespace.vm_name))
+        # No rescue VM found
+        if len(rescue_list) == 0:
+            raise CLIError('Rescue VM not found for {vm_name}. Please check if the rescue resources were not removed.'.format(vm_name=namespace.vm_name))
 
+        # More than one rescue VM found
+        if len(rescue_list) > 1:
+            given_rescue_found = False
+            message = 'More than one rescue VM found:\n'
+            for vm in rescue_list:
+                message += vm['id'] + '\n'
+            message += '\nPlease specify the rescue-resource-group and rescue-vm-name to restore the disk-swap with.'
+            raise CLIError(message)
 
+        # One Rescue VM Found
+        namespace.rescue_vm_name = rescue_list[0]['name']
+        namespace.rescue_resource_group = rescue_list[0]['resourceGroup']
+        logger.info('Found rescue vm: \'{vmname}\' in resource group: \'{rg}\''.format(vmname=namespace.rescue_vm_name, rg=namespace.rescue_resource_group))
 
     # Check if data disk exists on rescue VM
-    rescue_vm = get_vm(cmd, namespace.resource_group_name, namespace.rescue_vm_name)
+    rescue_vm = get_vm(cmd, namespace.rescue_resource_group, namespace.rescue_vm_name)
     is_managed = _uses_managed_disk(rescue_vm)
     data_disks = rescue_vm.storage_profile.data_disks
     if data_disks is None or len(data_disks) < 1:

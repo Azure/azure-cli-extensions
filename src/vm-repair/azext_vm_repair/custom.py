@@ -19,7 +19,7 @@ from azure.cli.core.commands import LongRunningOperation
 logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
-    # Fetch VM info
+    
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
@@ -38,8 +38,8 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     copied_os_disk_name = vm_name + '-DiskCopy-' + timestamp
     copied_disk_uri = None
-    rescue_vm_name = 'rescue-vm'
-    rescue_rg_name = 'rescue-' + timestamp
+    rescue_vm_name = ('rescue-' + vm_name)[:15]
+    rescue_rg_name = 'rescue-' + vm_name + '-' + timestamp
 
     resource_tag = "rescue_source={rg}/{vm_name}".format(rg=resource_group_name, vm_name=vm_name)
 
@@ -142,7 +142,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     except Exception as exception:
         logger.error(exception)
         logger.error("Repair swap-disk failed, cleaning up resouces.")
-        _clean_up_resources(resource_tag)
+        _clean_up_resources(rescue_rg_name)
 
         return None
 
@@ -162,13 +162,12 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, disk_uri=Non
 
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
-    resource_tag = _get_rescue_resource_tag(vm_name, resource_group_name)
 
     try:
         if is_managed:
             # Detach fixed disk command
             deatch_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
-                                  .format(g=resource_group_name, rescue=rescue_vm_name, disk=disk_name)
+                                  .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
             # Update OS disk with fixed disk
             attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
                                    .format(g=resource_group_name, n=vm_name, disk=disk_name)
@@ -181,7 +180,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, disk_uri=Non
         else:
 
             deatch_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {rescue} --name {disk}' \
-                                  .format(g=resource_group_name, rescue=rescue_vm_name, disk=disk_name)
+                                  .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
             # Update OS disk with disk
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
@@ -191,12 +190,11 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, disk_uri=Non
             logger.info('Attaching the fixed disk to target VM as an OS disk:')
             _call_az_command(attach_unmanaged_command)
         # Clean 
-        _clean_up_resources(resource_tag)
+        _clean_up_resources(rescue_resource_group)
 
     except Exception as exception:
         logger.error(exception)
-        logger.error("Repair swap-disk failed, cleaning up resouces.")
-        _clean_up_resources(resource_tag)
+        logger.error("Repair swap-disk failed.")
 
         return None
 
@@ -233,7 +231,17 @@ def _call_az_command(command_string, run_async=False):
         return stdout
     return None
 
-def _clean_up_resources(tag):
+# TODO, add checks for safe delete
+def _clean_up_resources(resource_group_name):
+    try:
+        delete_resource_group_command = 'az group delete --name {name} --yes'.format(name=resource_group_name)
+        logger.info('Cleaning up resources by deleting rescue resource group: {name}'.format(name=resource_group_name))
+        _call_az_command(delete_resource_group_command)
+    except Exception as exception:
+        logger.error(exception)
+        logger.error("Clean up failed.")
+
+def _clean_up_resources_with_tag(tag):
     try:
         # Get ids of rescue resources to delete first
         get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
@@ -247,7 +255,7 @@ def _clean_up_resources(tag):
             logger.info('Cleaning up resources:')
             _call_az_command(delete_resources_command)
         else:
-            logger.info('No resources created. Skipping clean up.')
+            logger.info('No resources found with tag: {tags}. Skipping clean up.'.format(tags=tag))
     except Exception as exception:
         logger.error(exception)
         logger.error("Clean up failed.")

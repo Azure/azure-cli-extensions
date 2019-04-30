@@ -19,19 +19,22 @@ helps['vm repair swap-disk'] = """
         - name: Disk Swap a VM
           text: >
             az vm repair swap-disk -g MyResourceGroup -n myVM --verbose
-        - name: Disk Swap a VM and set the rescue VM name
+        - name: Disk Swap a VM and set the rescue VM auths
           text: >
-            az vm repair swap-disk -g MyResourceGroup -n myVM --rescue-vm-name myRescueVM --verbose
+            az vm repair swap-disk -g MyResourceGroup -n myVM --rescue-username username --rescue-password password!234 --verbose
 """
 
 helps['vm repair restore-swap'] = """
     type: command
     short-summary: Restore the disk swap by attaching the disk from the rescue VM onto the OS disk of the target VM. All rescue resources will be removed. Recommended to use with the --verbose flag.
     examples:
-        - name: Restore a Disk Swap
+        - name: Restore a Disk Swap, command will auto-search for rescue-vm
           text: >
-            az vm repair restore-swap -g MyResourceGroup -n MyVM --rescue-name RescueVM -- verbose
-        - name: Restore a Disk Swap and specify the fixed disk to attach on the target VM
+            az vm repair restore-swap -g MyResourceGroup -n MyVM --verbose
+        - name: Restore a Disk Swap, specify the rescue-vm
           text: >
-            az vm repair restore-swap -g MyResourceGroup -n MyVM --rescue-name RescueVM --disk-name MyFixedDisk --verbose
+            az vm repair restore-swap -g MyResourceGroup -n MyVM --rescue-vm-name RescueVM --rescue-resource-group RescueGroup --verbose
+        - name: Restore a Disk Swap, specify the rescue-vm and disk to restore
+          text: >
+            az vm repair restore-swap -g MyResourceGroup -n MyVM --rescue-vm-name RescueVM --rescue-resource-group RescueGroup --disk-name MyDiskCopy --verbose
 """
