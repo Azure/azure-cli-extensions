@@ -9,7 +9,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
-from .custom import _uses_managed_disk, _call_az_command, _get_rescue_resource_tag
+from repair_utils import _uses_managed_disk, _call_az_command, _get_rescue_resource_tag
 
 # pylint: disable=line-too-long
 
