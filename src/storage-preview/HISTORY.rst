@@ -3,6 +3,14 @@
  Release History
 ===============
 
+0.2.5 (2019-5-1)
++++++++++++++++++
+* Release management policy
+
+0.2.4 (2019-4-11)
++++++++++++++++++
+* Release azcopy commands: `az storage azcopy blob sync`
+
 0.2.3 (2019-3-21)
 +++++++++++++++++
 * Release initial azcopy commands: `az storage azcopy blob delete/upload/download`
