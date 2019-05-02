@@ -128,9 +128,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
                                  .format(c=storage_account.container, name=copied_os_disk_name, con_string=connection_string)
             copy_result = _call_az_command(copy_check_command).strip('\n')
             if copy_result != 'success':
-                # TODO, what then if unsucessful. Call again or exit?
-                # Let it run for now and see how the disk state it.
-                logger.warning('Disk copy UNSUCCESSFUL.')
+                raise Exception('Unmanaged disk copy failed!')
 
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to rescue VM as data disk:')
@@ -170,7 +168,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
     try:
         if is_managed:
             # Detach repaired data disk command
-            deatch_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
+            detach_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
                                   .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
             # Update OS disk with repaired data disk
             attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
@@ -178,7 +176,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
 
             # Maybe run attach and delete concurrently
             logger.info('Detaching repaired data disk from rescue VM:')
-            _call_az_command(deatch_disk_command)
+            _call_az_command(detach_disk_command)
             logger.info('Attaching repaired data disk to faulty VM as an OS disk:')
             _call_az_command(attach_fixed_command)
         else:
@@ -188,14 +186,14 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             # The params went through validator so no need for existence checks
             disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
 
-            deatch_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {rescue} --name {disk}' \
+            detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {rescue} --name {disk}' \
                                   .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
             # Update OS disk with disk
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
                                    .format(g=resource_group_name, n=vm_name, uri=disk_uri, disk=disk_name)
             logger.info('Detaching repaired data disk from rescue VM:')
-            _call_az_command(deatch_unamanged_command)
+            _call_az_command(detach_unamanged_command)
             logger.info('Attaching repaired data disk to faulty VM as an OS disk:')
             _call_az_command(attach_unmanaged_command)
         # Clean 

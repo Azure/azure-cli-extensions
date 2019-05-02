@@ -14,5 +14,5 @@ az vm repair swap-disk -g MyResourceGroup -n myVM --verbose
 ```
 Restore swap command
 ```
-az vm repair restore-swap -g MyResourceGroup -n myVM --rescue-vm-name rescueVM --verbose
+az vm repair restore-swap -g MyResourceGroup -n myVM --verbose
 ```
