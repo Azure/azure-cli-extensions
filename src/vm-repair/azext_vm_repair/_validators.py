@@ -47,7 +47,7 @@ def validate_restore_swap(cmd, namespace):
 
         # No rescue VM found
         if len(rescue_list) == 0:
-            raise CLIError('Rescue VM not found for {vm_name}. Please check if the rescue resources were not removed.'.format(vm_name=namespace.vm_name))
+            raise CLIError('Rescue VM not found for {vm_name}. Please check if the rescue resources were removed.'.format(vm_name=namespace.vm_name))
 
         # More than one rescue VM found
         if len(rescue_list) > 1:

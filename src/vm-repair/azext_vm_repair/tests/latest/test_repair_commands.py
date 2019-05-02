@@ -7,7 +7,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
 class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(location='westus2')
     def test_swap_disk(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -23,18 +23,19 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-username azureadmin --rescue-password !Passw0rd2018')
 
         # Check rescue VM
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
-        assert len(vms) == 2
-        rescue_vm = (vm for x in vms if x.name == result.rescueVmName)
+        rescue_vms = self.cmd('vm list -g {}'.format(result['rescueResouceGroup'])).get_output_in_json()
+        assert len(rescue_vms) == 1
+        rescue_vm = (x for x in rescue_vms if x.name == result.rescueVmName)
         # Check attached data disk
         assert rescue_vm.storageProfile.dataDisks[0].name == result.copiedDiskName
         
         # Call Restore
-        result2 = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-vm-name {rescue}'.format(rescue=result.rescueVmName))
+        result2 = self.cmd('vm repair swap-disk -g {rg} -n {vm}')
 
-        # Check rescue VM deleted
-        vms = self.cmd('vm list -g {rg}').get_output_in_json()
-        assert len(vms) == 1
-        targetVm = vms[0]
         # Check swapped OS disk
+        targetVm = vms[0]
         assert targetVm.storageProfile.osDisk.name == result.copiedDiskName
+        # Check rescue VM deleted
+        exists = self.cmd('group exists --name {}'.format(result['rescueResouceGroup'])).get_output_in_json()
+        assert exists.strip('\n') == 'false'
+        

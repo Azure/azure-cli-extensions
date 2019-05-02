@@ -50,7 +50,7 @@ def _clean_up_resources_with_tag(tag):
         # Get ids of rescue resources to delete first
         get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
                                 .format(tags=tag)
-        logger.info('Fetching created resources for clean-up:')
+        logger.info('Fetching created rescue resources for clean-up:')
         ids = _call_az_command(get_resources_command).replace('\n', ' ')
         # Delete rescue VM resources command
         if ids:
@@ -78,10 +78,10 @@ def _fetch_compatible_sku(target_vm):
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
-        logger.info('Target VM size: \'{sku}\' is available. Using it to create rescue VM.\n'.format(sku=target_vm_sku))
+        logger.info('Faulty VM size: \'{sku}\' is available. Using it to create rescue VM.\n'.format(sku=target_vm_sku))
         return target_vm_sku
     else:
-        logger.info('Target VM size: \'{sku}\' is NOT available.\n'.format(sku=target_vm_sku))
+        logger.info('Faulty VM size: \'{sku}\' is NOT available.\n'.format(sku=target_vm_sku))
 
     # List available standard SKUs
     # TODO, premium IO only when needed

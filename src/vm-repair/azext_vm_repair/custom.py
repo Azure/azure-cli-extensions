@@ -55,7 +55,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         # fetch VM size of rescue VM
         sku = _fetch_compatible_sku(target_vm)
         if not sku:
-            raise Exception('Failed to find compatible VM size for target VM OS disk within given region and subscription.')
+            raise Exception('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
         create_rescue_vm_command += ' --size {sku}'.format(sku=sku)
 
         # Create New Resource Group
@@ -75,7 +75,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
             logger.info('Validating VM template before continuing:')
             _call_az_command(validate_create_vm_command)
-            logger.info('Copying OS disk of target VM:')
+            logger.info('Copying OS disk of faulty VM:')
             copy_disk_id = _call_az_command(copy_disk_command)
 
             attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {id}' \
@@ -169,17 +169,17 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
 
     try:
         if is_managed:
-            # Detach fixed disk command
+            # Detach repaired data disk command
             deatch_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
                                   .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
-            # Update OS disk with fixed disk
+            # Update OS disk with repaired data disk
             attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
                                    .format(g=resource_group_name, n=vm_name, disk=disk_name)
 
             # Maybe run attach and delete concurrently
-            logger.info('Detaching fixed disk from rescue VM:')
+            logger.info('Detaching repaired data disk from rescue VM:')
             _call_az_command(deatch_disk_command)
-            logger.info('Attaching the fixed disk to target VM as an OS disk:')
+            logger.info('Attaching repaired data disk to faulty VM as an OS disk:')
             _call_az_command(attach_fixed_command)
         else:
             # Get disk uri from disk name
@@ -194,9 +194,9 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
                                    .format(g=resource_group_name, n=vm_name, uri=disk_uri, disk=disk_name)
-            logger.info('Detaching fixed disk from rescue VM:')
+            logger.info('Detaching repaired data disk from rescue VM:')
             _call_az_command(deatch_unamanged_command)
-            logger.info('Attaching the fixed disk to target VM as an OS disk:')
+            logger.info('Attaching repaired data disk to faulty VM as an OS disk:')
             _call_az_command(attach_unmanaged_command)
         # Clean 
         _clean_up_resources(rescue_resource_group)
