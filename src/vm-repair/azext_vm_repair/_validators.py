@@ -9,6 +9,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from azure.cli.command_modules.vm._vm_utils import check_existence
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from .repair_utils import _uses_managed_disk, _call_az_command, _get_rescue_resource_tag
@@ -18,6 +19,8 @@ from .repair_utils import _uses_managed_disk, _call_az_command, _get_rescue_reso
 logger = get_logger(__name__)
 
 def validate_swap_disk(cmd, namespace):
+
+    # TODO check for RDFE and existence of VM in a cleaner way
 
     target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(target_vm)
@@ -70,13 +73,13 @@ def validate_restore_swap(cmd, namespace):
     if data_disks is None or len(data_disks) < 1:
         raise CLIError('No data disks found on rescue VM: {}'.format(rescue_vm_id['name']))
 
-    # Populate data disk name and uri
+    # Populate disk name
     if not namespace.disk_name:
         namespace.disk_name = data_disks[0].name
         logger.warning('Disk-name not given. Defaulting to the first data disk attached to the rescue VM: {}'.format(data_disks[0].name))
-    if not namespace.disk_uri and not is_managed:
-        namespace.disk_uri = data_disks[0].vhd.uri
-        logger.warning('Disk-uri not given. Defaulting to the first data disk attached to the rescue VM: {}'.format(data_disks[0].vhd.uri))
+    else: # check disk name
+        if len([disk for disk in data_disks if disk.name == namespace.disk_name]) == 0:
+            raise CLIError('No data disks found on the rescue VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=rescue_vm_id['name'], disk=namespace.disk_name))
 
 def _prompt_rescue_username(namespace):
 
