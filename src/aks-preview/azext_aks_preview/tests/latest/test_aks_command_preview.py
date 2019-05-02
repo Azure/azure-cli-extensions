@@ -103,6 +103,12 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
 
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    def test_aks_get_versions(self):
+        # show k8s versions
+        self.cmd('aks get-versions -l {location}', checks=[
+            self.exists('orchestrators[*].orchestratorVersion')
+        ])
     
     @classmethod
     def generate_ssh_keys(cls):

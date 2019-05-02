@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.1
++++++
+* Add `az aks get-versions -l location` to allow users to see all managed cluster versions.
+
 0.4.0
 +++++
 * Add support for Azure policy add-on.
