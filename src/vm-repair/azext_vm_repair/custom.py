@@ -10,8 +10,9 @@ from knack.log import get_logger
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from azure.cli.core.commands import LongRunningOperation
+from msrestazure.tools import parse_resource_id
 
-from repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _get_rescue_resource_tag
+from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _get_rescue_resource_tag
 
 # pylint: disable=line-too-long
 
@@ -157,10 +158,14 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
     return return_dict
 
-def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, disk_uri=None, rescue_vm_name=None, rescue_resource_group=None):
+def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, disk_uri=None, rescue_vm_id=None):
 
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
+
+    rescue_vm_id = parse_resource_id(rescue_vm_id)
+    rescue_vm_name = rescue_vm_id['name']
+    rescue_resource_group = rescue_vm_id['resource_group']
 
     try:
         if is_managed:
