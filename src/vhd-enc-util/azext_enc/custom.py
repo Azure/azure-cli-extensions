@@ -365,3 +365,13 @@ def _get_storage_prerequisites(cmd, storage_account, container):
     except AzureMissingResourceHttpError:
         raise CLIError('"{}" doesn\'t exist in the storage account of "{}"'.format(container, storage_account))
     return data_client
+
+
+def kek_rotation(cmd, resource_group_name, vm_name):
+    # Dig out the storage blob
+
+    # read the meta data
+
+    # line 138 Get the dek and wrap again and write out the whole  thing again
+    # ? do we need to delete the old kek???
+    pass 

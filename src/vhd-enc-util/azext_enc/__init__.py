@@ -21,6 +21,7 @@ class ENCCommandsLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('vm encryption') as g:
             g.custom_command('encrypt-vhd', 'client_side_encrypt')
+            g.custom_command('kek-rotation', 'kek_rotation')
         return self.command_table
 
     def load_arguments(self, _):
@@ -36,5 +37,8 @@ class ENCCommandsLoader(AzCommandsLoader):
             c.argument('no_progress', action='store_true', help="disable progress reporting")
             c.argument('max_connections', help="Maximum number of parallel connections to use to upload encrypted VHD")
             c.argument('staging_dir', help="staging folder to contain the temporary encrypted VHD before upload to the storage account. Default to the temp folder")
+
+        with self.argument_context('vm encryption kek-rotation') as c:
+            c.argument('vm_name', options_list=['--name', '-n'], metavar='NAME', id_part='name', help='virtual machine name')
 
 COMMAND_LOADER_CLS = ENCCommandsLoader
