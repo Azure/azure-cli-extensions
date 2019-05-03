@@ -28,17 +28,16 @@ from prompt_toolkit.interface import Application, CommandLineInterface
 from prompt_toolkit.shortcuts import create_eventloop
 # pylint: enable=import-error
 
-from knack.log import get_logger
-from knack.util import CLIError
-
 from azure.cli.core.commands.client_factory import ENV_ADDITIONAL_USER_AGENT
-from azure.cli.core._config import DEFAULTS_SECTION
 from azure.cli.core._profile import _SUBSCRIPTION_NAME, Profile
 from azure.cli.core._session import ACCOUNT, CONFIG, SESSION
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.util import handle_exception
 
-from . import __version__
+from knack.log import get_logger
+from knack.util import CLIError
+
+from . import VERSION
 from .az_completer import AzCompleter
 from .az_lexer import get_az_lexer, ExampleLexer, ToolbarLexer
 from .configuration import Configuration, SELECT_SYMBOL
@@ -101,7 +100,7 @@ class AzInteractiveShell(object):
             self.completer = AzCompleter(self, None)
             self.lexer = None
         self.history = history or FileHistory(os.path.join(self.config.get_config_dir(), self.config.get_history()))
-        os.environ[ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + __version__
+        os.environ[ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + VERSION
 
         # OH WHAT FUN TO FIGURE OUT WHAT THESE ARE!
         self._cli = None
@@ -324,10 +323,11 @@ class AzInteractiveShell(object):
 
     def _update_default_info(self):
         try:
-            options = self.cli_ctx.config.config_parser.options(DEFAULTS_SECTION)
+            defaults_section = self.cli_ctx.config.defaults_section_name
+            options = self.cli_ctx.config.config_parser.options(defaults_section)
             self.config_default = ""
             for opt in options:
-                self.config_default += opt + ": " + self.cli_ctx.config.get(DEFAULTS_SECTION, opt) + "  "
+                self.config_default += opt + ": " + self.cli_ctx.config.get(defaults_section, opt) + "  "
         except configparser.NoSectionError:
             self.config_default = ""
 
@@ -477,7 +477,7 @@ class AzInteractiveShell(object):
         if not cmd_stripped and cmd:
             # add scope if there are only spaces
             cmd = self.default_command + " " + cmd
-        elif cmd_stripped == "quit" or cmd_stripped == "exit":
+        elif cmd_stripped in ("quit", "exit"):
             break_flag = True
         elif cmd_stripped == "clear-history":
             continue_flag = True
