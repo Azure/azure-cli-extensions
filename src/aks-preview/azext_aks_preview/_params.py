@@ -36,6 +36,8 @@ def load_arguments(self, _):
         c.argument('name', validator=validate_linux_host_name)
         c.argument('kubernetes_version', completer=get_k8s_versions_completion_list)
         c.argument('admin_username', options_list=['--admin-username', '-u'], default='azureuser')
+        c.argument('windows_admin_username', options_list=['--windows-admin-username'])
+        c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
         c.argument('generate_ssh_keys', action='store_true', validator=validate_create_parameters)
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
@@ -68,6 +70,7 @@ def load_arguments(self, _):
         c.argument('enable_vmss', action='store_true')
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
+        c.argument('node_resource_group')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -100,6 +103,13 @@ def load_arguments(self, _):
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+
+    with self.argument_context('aks disable-addons') as c:
+        c.argument('addons', options_list=['--addons', '-a'])
+
+    with self.argument_context('aks enable-addons') as c:
+        c.argument('addons', options_list=['--addons', '-a'])
+        c.argument('subnet_name', options_list=['--subnet-name', '-s'])
 
 
 def _get_default_install_location(exe_name):

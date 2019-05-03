@@ -30,6 +30,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
         g.custom_command('scale', 'aks_scale', supports_no_wait=True)
+        g.custom_command('disable-addons', 'aks_disable_addons', supports_no_wait=True)
+        g.custom_command('enable-addons', 'aks_enable_addons', supports_no_wait=True)
         g.custom_show_command('show', 'aks_show', table_transformer=aks_show_table_format)
         g.custom_command('upgrade', 'aks_upgrade', supports_no_wait=True,
                          confirmation='Kubernetes may be unavailable during cluster upgrades.\n' +

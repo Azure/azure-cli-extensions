@@ -6,7 +6,7 @@
 import argparse
 from knack.util import CLIError
 
-from azext_eventgrid.mgmt.eventgrid.models import (
+from azext_eventgrid.vendored_sdks.eventgrid.models import (
     NumberGreaterThanAdvancedFilter,
     NumberGreaterThanOrEqualsAdvancedFilter,
     NumberInAdvancedFilter,
