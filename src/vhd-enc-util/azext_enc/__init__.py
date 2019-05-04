@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import ResourceType
 
 import azext_enc._help  # pylint: disable=unused-import
 
@@ -21,7 +20,7 @@ class ENCCommandsLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('vm encryption') as g:
             g.custom_command('encrypt-vhd', 'client_side_encrypt')
-            g.custom_command('kek-rotation', 'kek_rotation')
+            g.custom_command('rotate-kek', 'rotate_kek')
         return self.command_table
 
     def load_arguments(self, _):
@@ -30,7 +29,7 @@ class ENCCommandsLoader(AzCommandsLoader):
             c.argument('key_encryption_keyvault', options_list=['--key-encryption-keyvault', '--kv'], help='key vault resource id')
             c.argument('key_encryption_key', options_list=['--key-encryption-key', '--kek'], help='key vault key name or id')
             c.argument('vhd_file', options_list=['--vhd-file', '-f'], help='VHD file to encrypt')
-            c.argument('blob_name', options_list=['--blob-name', '-b'], help='the name of the storage blob which the encrypted VHD get uploaded to. Default to the VHD file name ')
+            c.argument('blob_name', options_list=['--blob-name', '-b'], help='the name of the storage blob which the encrypted VHD get uploaded to. Default to the VHD file name')
             c.argument('container', options_list=['--container', '-c'], help='the storage container of the VHD blob')
             c.argument('storage_account', help='the storage account of the VHD blob')
             c.argument('vhd_file_enc', help="File name of encrypted VHD. This is required if you don't want to upload to storage")
@@ -38,7 +37,12 @@ class ENCCommandsLoader(AzCommandsLoader):
             c.argument('max_connections', help="Maximum number of parallel connections to use to upload encrypted VHD")
             c.argument('staging_dir', help="staging folder to contain the temporary encrypted VHD before upload to the storage account. Default to the temp folder")
 
-        with self.argument_context('vm encryption kek-rotation') as c:
-            c.argument('vm_name', options_list=['--name', '-n'], metavar='NAME', id_part='name', help='virtual machine name')
+        with self.argument_context('vm encryption rotate-kek') as c:
+            c.argument('key_encryption_keyvault', options_list=['--key-encryption-keyvault', '--kv'], help='key vault resource id')
+            c.argument('key_encryption_key', options_list=['--key-encryption-key', '--kek'], help='key vault key name or id')
+            c.argument('blob_name', options_list=['--blob-name', '-b'], help='the name of the VHD blob')
+            c.argument('container', options_list=['--container', '-c'], help='the storage container of the VHD blob')
+            c.argument('storage_account', help='the storage account of the VHD blob')
+
 
 COMMAND_LOADER_CLS = ENCCommandsLoader

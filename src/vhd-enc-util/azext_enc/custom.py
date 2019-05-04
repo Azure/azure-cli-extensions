@@ -39,7 +39,6 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
                         key_encryption_key=None, key_encryption_keyvault=None, no_progress=None, max_connections=10,
                         staging_dir=None):
     # TODO: storage account should support sas as well
-
     # arguments checks
     if not key_encryption_key or not key_encryption_keyvault:
         raise CLIError('useage error: --key-encryption-key KEY_NAME or KEY_ID --key-encryption-keyvault KEY_VAULT_RESOURCE_ID')
@@ -48,7 +47,7 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
         raise CLIError('usage error: please specify either "--storage-acount" or "--vhd-file-enc", but not both')
 
     if not os.path.isfile(vhd_file):
-        raise CLIError('"{}" to encrypt doesn\'t exist')
+        raise CLIError('"{}" to encrypt doesn\'t exist'.format(vhd_file))
 
     if storage_account:
         data_client = _get_storage_prerequisites(cmd, storage_account, container)
@@ -79,7 +78,7 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
         blob_name = '{0}.encrypted.vhd'.format(os.path.splitext(os.path.basename(vhd_file))[0])
 
     metadata_key = 'DiskEncryptionSettings'
-    key, metedata_vaule = _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault)
+    key, metedata_vaule = _encryption_key_gen(cmd, key_encryption_key, key_encryption_keyvault)
 
     result_file = _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, not no_progress, working_dir)
     if storage_account:
@@ -101,26 +100,15 @@ def client_side_encrypt(cmd, vhd_file, vhd_file_enc=None, storage_account=None, 
                        ' run the following command:\n    %s', cmd)
 
 
-def _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
+def _encryption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
     key = os.urandom(64)
     if not key_encryption_keyvault:
         return key, None, None
-    if not is_valid_resource_id(key_encryption_keyvault) or not key_encryption_key:
-        raise CLIError('Please supply a full resource id of the keyvault and a keyvault key name or id')
-    vault_name = parse_resource_id(key_encryption_keyvault)['name']
+
     kv_client = _create_keyvault_data_plane_client(cmd.cli_ctx)
-    vault_base_url = 'https://{}{}'.format(vault_name, cmd.cli_ctx.cloud.suffixes.keyvault_dns)
+    kek_name, kek_version, vault_base_url, key_encryption_key = _normalize_kek(
+        cmd, kv_client, key_encryption_key, key_encryption_keyvault)
 
-    key_encryption_key = key_encryption_key.lower()
-    parts = key_encryption_key.lstrip('https://').rstrip('/').split('/')
-    if len(parts) in [1, 3]:  # we can take a key name or a key id w/o version, and resolve to the latest version
-        key_result = kv_client.get_key(vault_base_url, key_encryption_key if len(parts) == 1 else parts[-1], '')
-        key_encryption_key = key_result.key.kid  # pylint: disable=no-member
-        parts = key_encryption_key.lstrip('https://').split('/')
-    elif len(parts) != 4:
-        raise CLIError('usage error: --key-encryption-key KEY-NAME|KEYID')
-
-    kek_name, kek_version = parts[-2], parts[-1]
     logger.warning('Wrapping data encryption key with key encryption key:\n    vault_base_url: %s\n    key encrypton key: %s\n    key version: %s',
                    vault_base_url, kek_name, kek_version)
     wraped = kv_client.wrap_key(vault_base_url, kek_name, kek_version, 'RSA-OAEP', key)
@@ -150,6 +138,64 @@ def _encyrption_key_gen(cmd, key_encryption_key, key_encryption_keyvault):
     return key, metadate_value
 
 
+def rotate_kek(cmd, storage_account, container, blob_name, key_encryption_key, key_encryption_keyvault):
+    storage_client = _get_storage_prerequisites(cmd, storage_account, container)
+    kv_client = _create_keyvault_data_plane_client(cmd.cli_ctx)
+    kek_name, kek_version, vault_base_url, key_encryption_key = _normalize_kek(
+        cmd, kv_client, key_encryption_key, key_encryption_keyvault)
+
+    logger.warning('Checking existing encryption setting')
+    metadata = storage_client.get_blob_metadata(container, blob_name)
+    if metadata.get('encryptionSettings', None):
+        raise CLIError('No encryption related metadata is found in the metadat "{}". Was the disk ever encrypted?'.format(metadata))
+
+    enc_settings = json.loads(metadata['DiskEncryptionSettings'])
+    entry = next((x for x in enc_settings['encryptionSettings'] if 'keyEncryptionKey' in x), {})
+    existing_key_encryption_key = entry.get('keyEncryptionKey') and entry['keyEncryptionKey'].get('keyUrl')
+    if existing_key_encryption_key == key_encryption_key:
+        logger.warning('Same key encryption key has already been applied')
+        return
+    dek_id = entry.get('DiskEncryptionKey') and entry['DiskEncryptionKey'].get('secretUrl')
+    if dek_id is None:
+        raise CLIError('The original encryption key id is missing from the metadata "{}"'.format(metadata))
+
+    parts = dek_id.lstrip('https://').rstrip('/').split('/')
+    key = kv_client.get_secret(vault_base_url, parts[-2], parts[-1])
+    temp = base64.b64decode(key.value.encode('UTF-8'))
+    parts = existing_key_encryption_key.lstrip('https://').rstrip('/').split('/')
+    data_encryption_key = kv_client.unwrap_key(vault_base_url, parts[-2], parts[-1], 'RSA-OAEP', temp).result
+    logger.warning('Wrapping data encryption key with key encryption key:\n    vault_base_url: %s\n    key encrypton key: %s\n    key version: %s',
+                   vault_base_url, kek_name, kek_version)
+    wrapped = kv_client.wrap_key(vault_base_url, kek_name, kek_version, 'RSA-OAEP', data_encryption_key)
+    secret_name = str(uuid.uuid4()).replace('-', '')
+    logger.warning('Uploading wrapped key as secret:\n    secret name: %s', secret_name)
+    secret_result = kv_client.set_secret(vault_base_url, secret_name, (base64.b64encode(wrapped.result)).decode("UTF-8"))
+    entry['DiskEncryptionKey']['secretUrl'] = secret_result.id
+    entry['keyEncryptionKey']['keyUrl'] = key_encryption_key
+
+    logger.warning("updating VHD encryption settings with new key encryption key %s", key_encryption_key)
+    storage_client.set_blob_metadata(container, blob_name, {'DiskEncryptionSettings': json.dumps(enc_settings)})
+
+
+def _normalize_kek(cmd, kv_client, key_encryption_key, key_encryption_keyvault):
+    if not is_valid_resource_id(key_encryption_keyvault) or not key_encryption_key:
+        raise CLIError('Please supply a full resource id of the keyvault and a keyvault key name or id')
+    vault_name = parse_resource_id(key_encryption_keyvault)['name']
+    vault_base_url = 'https://{}{}'.format(vault_name, cmd.cli_ctx.cloud.suffixes.keyvault_dns)
+
+    key_encryption_key = key_encryption_key.lower()
+    parts = key_encryption_key.lstrip('https://').rstrip('/').split('/')
+    if len(parts) in [1, 3]:  # we can take a key name or a key id w/o version, and resolve to the latest version
+        key_result = kv_client.get_key(vault_base_url, key_encryption_key if len(parts) == 1 else parts[-1], '')
+        key_encryption_key = key_result.key.kid  # pylint: disable=no-member
+        parts = key_encryption_key.lstrip('https://').split('/')
+    elif len(parts) != 4:
+        raise CLIError('usage error: --key-encryption-key KEY-NAME|KEYID')
+
+    kek_name, kek_version = parts[-2], parts[-1]
+    return kek_name, kek_version, vault_base_url, key_encryption_key
+
+
 def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress, working_dir):
     vhd_size = os.path.getsize(vhd_file)
 
@@ -163,15 +209,15 @@ def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress, working_dir):
 
     cookie = footer[0:8].decode()
     if cookie != 'conectix':
-        raise ValueError('right footer is not found for invalid cookie "{}"'.format(cookie))
+        raise ValueError('right footer is not found due to invalid cookie "{}"'.format(cookie))
     buffer = footer[60:64]
     disk_type = struct.unpack("i", buffer)[0]
     if disk_type != 0x02000000:
         raise CLIError('VHD footer has an invalid disk type of "{}". Expect: "{}"'.format(disk_type, 0x02000000))
 
     sector_count = (vhd_size - 512) // 512
-
-    proc_count = min(multiprocessing.cpu_count(), 8)
+    # TODO, figure out freeze_support issue on Window
+    proc_count = min(multiprocessing.cpu_count(), 8) if platform.system() != 'Windows' else 1
     proc_sector_load = sector_count // proc_count
 
     if proc_count != 1:
@@ -365,13 +411,3 @@ def _get_storage_prerequisites(cmd, storage_account, container):
     except AzureMissingResourceHttpError:
         raise CLIError('"{}" doesn\'t exist in the storage account of "{}"'.format(container, storage_account))
     return data_client
-
-
-def kek_rotation(cmd, resource_group_name, vm_name):
-    # Dig out the storage blob
-
-    # read the meta data
-
-    # line 138 Get the dek and wrap again and write out the whole  thing again
-    # ? do we need to delete the old kek???
-    pass 
