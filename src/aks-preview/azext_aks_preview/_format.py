@@ -65,7 +65,6 @@ def aks_upgrades_table_format(result):
             for item in j["upgrades"]:
                 if item["isPreview"]:
                     preview.append(item["kubernetesVersion"])
-                
     # This expression assumes there is one node pool, and that the master and nodes upgrade in lockstep.
     parsed = compile_jmes("""{
         name: name,
@@ -104,8 +103,7 @@ def version_to_tuple(v):
     """Quick-and-dirty sort function to handle simple semantic versions like 1.7.12 or 1.8.7."""
     if v.endswith('(preview)'):
         return tuple(map(int, (v[:-9].split('.'))))
-    else:
-        return tuple(map(int, (v.split('.'))))
+    return tuple(map(int, (v.split('.'))))
 
 
 def _custom_functions(previewVersion):
@@ -121,7 +119,7 @@ def _custom_functions(previewVersion):
                 return sorted(s, key=version_to_tuple)
             except (TypeError, ValueError):  # if it wasn't sortable, return the input so the pipeline continues
                 return s
-        
+
         @functions.signature({'types':['array']})
         def _func_set_preview_array(self, s): # pylint: disable=no-self-use
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
