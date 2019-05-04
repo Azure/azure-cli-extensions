@@ -327,3 +327,12 @@ examples:
     text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
     crafted: true
 """
+
+helps['aks get-versions'] = """
+type: command
+short-summary: Get the versions available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the versions available for creating a managed Kubernetes cluster
+    text: az aks get-versions --location westus2
+    crafted: true
+"""
