@@ -216,8 +216,8 @@ def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress, working_dir):
         raise CLIError('VHD footer has an invalid disk type of "{}". Expect: "{}"'.format(disk_type, 0x02000000))
 
     sector_count = (vhd_size - 512) // 512
-    # TODO, figure out freeze_support issue on Window
-    proc_count = min(multiprocessing.cpu_count(), 8) if platform.system() != 'Windows' else 1
+
+    proc_count = min(multiprocessing.cpu_count(), 8)
     proc_sector_load = sector_count // proc_count
 
     if proc_count != 1:
@@ -239,15 +239,18 @@ def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress, working_dir):
             task_infos = [[vhd_file, vhd_fragment_files[t], t * proc_sector_load, proc_sector_load, key] for t in range(proc_count)]
             task_infos[-1][3] += (sector_count % proc_count)
 
-            sub_processes = [multiprocessing.Process(target=_encrypt_vhd_fragment, args=(arg, None)) for arg in task_infos[1:]]
-            for p in sub_processes:
-                p.start()
-            _encrypt_vhd_fragment(task_infos[0], _init_progress_callback(cmd, 'Encrypting') if show_progress else None)
-            for p in sub_processes:
-                p.join()
+            if platform.system() == 'Windows':
+                # TODO: figure out https://stackoverflow.com/questions/24374288/where-to-put-freeze-support-in-a-python-script
+                with multiprocessing.Pool(processes=proc_count) as pool:
+                    pool.map(_encrypt_vhd_fragment, task_infos)
+            else:
+                sub_processes = [multiprocessing.Process(target=_encrypt_vhd_fragment, args=(arg, None)) for arg in task_infos[1:]]
+                for p in sub_processes:
+                    p.start()
+                _encrypt_vhd_fragment(task_infos[0], _init_progress_callback(cmd, 'Encrypting') if show_progress else None)
+                for p in sub_processes:
+                    p.join()
 
-            # with multiprocessing.Pool(processes=proc_count) as pool:
-            #    pool.map(_encrypt_vhd_fragment, task_infos)
             progress = _init_progress_callback(cmd, 'Finalizing encrypted vhd file') if show_progress else None
             with open(vhd_file_enc, 'ab') as f_enc:
                 for i, t in enumerate(vhd_fragment_files[1:]):
