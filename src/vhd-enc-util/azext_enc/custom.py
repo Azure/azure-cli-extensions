@@ -226,8 +226,9 @@ def _encrypt_vhd(cmd, vhd_file, vhd_file_enc, key, show_progress, working_dir):
             logger.info('no enough temporary disk space for concurrent encryption')
             proc_count = 1
 
+    logger.warning('Start encryption, this will take a while')
     if proc_count != 1:
-        logger.warning('Created staging folder "%s" for %s concurrent encryption tasks', working_dir, proc_count)
+        logger.warning('    Created staging folder "%s" for %s concurrent encryption tasks', working_dir, proc_count)
         vhd_fragment_files = []
         try:
             for t in range(proc_count - 1):
