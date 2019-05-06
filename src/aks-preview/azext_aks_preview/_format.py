@@ -121,11 +121,11 @@ def _custom_functions(previewVersion):
                 return s
 
         @functions.signature({'types':['array']})
-        def _func_set_preview_array(self, s): # pylint: disable=no-self-use
+        def _func_set_preview_array(self, s):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
                 res = []
-                for version in s:
+                for version in s: 
                     preview = False
                     for i in previewVersion:
                         if version == i:
@@ -139,7 +139,7 @@ def _custom_functions(previewVersion):
                 return s
 
         @functions.signature({'types':['string']})
-        def _func_set_preview(self, s): # pylint: disable=no-self-use
+        def _func_set_preview(self, s):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
                 for i in previewVersion:
