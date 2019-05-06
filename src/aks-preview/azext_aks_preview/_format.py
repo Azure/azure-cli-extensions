@@ -125,7 +125,7 @@ def _custom_functions(previewVersion):
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
                 res = []
-                for version in s: 
+                for version in s:
                     preview = False
                     for i in previewVersion:
                         if version == i:
