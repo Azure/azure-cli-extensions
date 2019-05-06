@@ -29,7 +29,8 @@ class ManagedClusterPoolUpgradeProfile(Model):
      ~azure.mgmt.containerservice.v2019_04_01.models.OSType
     :param upgrades: List of orchestrator types and versions available for
      upgrade.
-    :type upgrades: list[str]
+    :type upgrades:
+     list[~azure.mgmt.containerservice.v2019_04_01.models.ManagedClusterPoolUpgradeProfileUpgradesItem]
     """
 
     _validation = {
@@ -41,7 +42,7 @@ class ManagedClusterPoolUpgradeProfile(Model):
         'kubernetes_version': {'key': 'kubernetesVersion', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'os_type': {'key': 'osType', 'type': 'str'},
-        'upgrades': {'key': 'upgrades', 'type': '[str]'},
+        'upgrades': {'key': 'upgrades', 'type': '[ManagedClusterPoolUpgradeProfileUpgradesItem]'},
     }
 
     def __init__(self, **kwargs):

@@ -61,9 +61,9 @@ class ManagedCluster(Resource):
     :param addon_profiles: Profile of managed cluster add-on.
     :type addon_profiles: dict[str,
      ~azure.mgmt.containerservice.v2019_04_01.models.ManagedClusterAddonProfile]
-    :ivar node_resource_group: Name of the resource group containing agent
+    :param node_resource_group: Name of the resource group containing agent
      pool nodes.
-    :vartype node_resource_group: str
+    :type node_resource_group: str
     :param enable_rbac: Whether to enable Kubernetes Role-Based Access
      Control.
     :type enable_rbac: bool
@@ -79,6 +79,9 @@ class ManagedCluster(Resource):
     :param api_server_authorized_ip_ranges: (PREVIEW) Authorized IP Ranges to
      kubernetes API server.
     :type api_server_authorized_ip_ranges: list[str]
+    :param identity: The identity of the managed cluster, if configured.
+    :type identity:
+     ~azure.mgmt.containerservice.v2019_04_01.models.ManagedClusterIdentity
     """
 
     _validation = {
@@ -113,9 +116,10 @@ class ManagedCluster(Resource):
         'network_profile': {'key': 'properties.networkProfile', 'type': 'ContainerServiceNetworkProfile'},
         'aad_profile': {'key': 'properties.aadProfile', 'type': 'ManagedClusterAADProfile'},
         'api_server_authorized_ip_ranges': {'key': 'properties.apiServerAuthorizedIPRanges', 'type': '[str]'},
+        'identity': {'key': 'identity', 'type': 'ManagedClusterIdentity'},
     }
 
-    def __init__(self, *, location: str, tags=None, kubernetes_version: str=None, dns_prefix: str=None, node_resource_group: str=None, agent_pool_profiles=None, linux_profile=None, windows_profile=None, service_principal_profile=None, addon_profiles=None, enable_rbac: bool=None, enable_pod_security_policy: bool=None, network_profile=None, aad_profile=None, api_server_authorized_ip_ranges=None, **kwargs) -> None:
+    def __init__(self, *, location: str, tags=None, kubernetes_version: str=None, dns_prefix: str=None, agent_pool_profiles=None, linux_profile=None, windows_profile=None, service_principal_profile=None, addon_profiles=None, node_resource_group: str=None, enable_rbac: bool=None, enable_pod_security_policy: bool=None, network_profile=None, aad_profile=None, api_server_authorized_ip_ranges=None, identity=None, **kwargs) -> None:
         super(ManagedCluster, self).__init__(location=location, tags=tags, **kwargs)
         self.provisioning_state = None
         self.max_agent_pools = None
@@ -133,3 +137,4 @@ class ManagedCluster(Resource):
         self.network_profile = network_profile
         self.aad_profile = aad_profile
         self.api_server_authorized_ip_ranges = api_server_authorized_ip_ranges
+        self.identity = identity
