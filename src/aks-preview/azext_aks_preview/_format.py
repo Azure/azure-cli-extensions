@@ -106,7 +106,7 @@ def version_to_tuple(v):
     return tuple(map(int, (v.split('.'))))
 
 
-def _custom_functions(previewVersion):
+def _custom_functions(preview_versions):
     # pylint: disable=import-error
     from jmespath import functions
 
@@ -127,7 +127,7 @@ def _custom_functions(previewVersion):
                 res = []
                 for version in s:
                     preview = False
-                    for i in previewVersion:
+                    for i in preview_versions:
                         if version == i:
                             res.append(version + "(preview)")
                             preview = True
@@ -142,7 +142,7 @@ def _custom_functions(previewVersion):
         def _func_set_preview(self, s):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
-                for i in previewVersion:
+                for i in preview_versions:
                     if s == i:
                         return s + "(preview)"
                 return s
