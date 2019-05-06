@@ -22,7 +22,7 @@ def cf_container_services(cli_ctx, *_):
 
 
 def get_container_service_client(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS)
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW)
 
 
 def cf_managed_clusters(cli_ctx, *_):
