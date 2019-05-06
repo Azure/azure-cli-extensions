@@ -33,6 +33,7 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm}')
 
         # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
         # Check rescue VM deleted

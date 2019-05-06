@@ -57,7 +57,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         if not sku:
             raise Exception('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
         create_rescue_vm_command += ' --size {sku}'.format(sku=sku)
-
+        
         # Create New Resource Group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                         .format(loc=target_vm.location, group_name=rescue_rg_name)
@@ -73,17 +73,17 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_rescue_vm_command + ' --validate'
 
-            logger.info('Validating VM template before continuing:')
-            _call_az_command(validate_create_vm_command)
-            logger.info('Copying OS disk of faulty VM:')
+            logger.info('Validating VM template before continuing...')
+            _call_az_command(validate_create_vm_command, secure_params=[rescue_password])
+            logger.info('Copying OS disk of faulty VM...')
             copy_disk_id = _call_az_command(copy_disk_command)
 
             attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {id}' \
                                   .format(g=rescue_rg_name, rescue=rescue_vm_name, id=copy_disk_id)
 
-            logger.info('Creating rescue vm:')
-            _call_az_command(create_rescue_vm_command)
-            logger.info('Attaching copied disk to rescue vm:')
+            logger.info('Creating rescue vm...')
+            _call_az_command(create_rescue_vm_command, secure_params=[rescue_password])
+            logger.info('Attaching copied disk to rescue vm...')
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
         else:
@@ -94,44 +94,44 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
             # Validate create vm create command to validate parameters before runnning copy disk commands
             validate_create_vm_command = create_rescue_vm_command + ' --validate'
-            logger.info('Validating VM template before continuing:')
-            _call_az_command(validate_create_vm_command)
+            logger.info('Validating VM template before continuing...')
+            _call_az_command(validate_create_vm_command, secure_params=[rescue_password])
 
             # get storage account connection string
             get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
                                             .format(g=resource_group_name, n=storage_account.account_name)
-            logger.info('Fetching storage account connection string:')
+            logger.info('Fetching storage account connection string...')
             connection_string = _call_az_command(get_connection_string_command).strip('\n')
 
             # Create Snapshot of Unmanaged Disk
             make_snapshot_command = 'az storage blob snapshot -c {c} -n {n} --connection-string "{con_string}" --query snapshot -o tsv' \
                                     .format(c=storage_account.container, n=storage_account.blob, con_string=connection_string)
-            logger.info('Creating snapshot of OS disk:')
-            snapshot_timestamp = _call_az_command(make_snapshot_command).strip('\n')
+            logger.info('Creating snapshot of OS disk...')
+            snapshot_timestamp = _call_az_command(make_snapshot_command, secure_params=[connection_string]).strip('\n')
             snapshot_uri = os_disk_uri + '?snapshot={timestamp}'.format(timestamp=snapshot_timestamp)
 
             # Copy Snapshot into unmanaged Disk
             copy_snapshot_command = 'az storage blob copy start -c {c} -b {name} --source-uri {source} --connection-string "{con_string}"' \
                                     .format(c=storage_account.container, name=copied_os_disk_name, source=snapshot_uri, con_string=connection_string)
-            logger.info('Creating a copy disk from the snapshot:')
-            _call_az_command(copy_snapshot_command)
+            logger.info('Creating a copy disk from the snapshot...')
+            _call_az_command(copy_snapshot_command, secure_params=[connection_string])
              # Generate the copied disk uri
             copied_disk_uri = os_disk_uri.rstrip(storage_account.blob) + copied_os_disk_name
 
             # Create new rescue VM with copied ummanaged disk command
             create_rescue_vm_command = create_rescue_vm_command + ' --use-unmanaged-disk'
-            logger.info('Creating rescue vm while disk copy is in progress:')
-            _call_az_command(create_rescue_vm_command)
+            logger.info('Creating rescue vm while disk copy is in progress...')
+            _call_az_command(create_rescue_vm_command, secure_params=[rescue_password])
 
-            logger.info('Checking if disk copy is done:')
+            logger.info('Checking if disk copy is done...')
             copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
                                  .format(c=storage_account.container, name=copied_os_disk_name, con_string=connection_string)
-            copy_result = _call_az_command(copy_check_command).strip('\n')
+            copy_result = _call_az_command(copy_check_command, secure_params=[connection_string]).strip('\n')
             if copy_result != 'success':
                 raise Exception('Unmanaged disk copy failed!')
 
             # Attach copied unmanaged disk to new vm
-            logger.info('Attaching copied disk to rescue VM as data disk:')
+            logger.info('Attaching copied disk to rescue VM as data disk...')
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
                                   .format(g=rescue_rg_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
             _call_az_command(attach_disk_command)
@@ -175,9 +175,9 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
                                    .format(g=resource_group_name, n=vm_name, disk=disk_name)
 
             # Maybe run attach and delete concurrently
-            logger.info('Detaching repaired data disk from rescue VM:')
+            logger.info('Detaching repaired data disk from rescue VM...')
             _call_az_command(detach_disk_command)
-            logger.info('Attaching repaired data disk to faulty VM as an OS disk:')
+            logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_fixed_command)
         else:
             # Get disk uri from disk name
@@ -192,9 +192,9 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
                                    .format(g=resource_group_name, n=vm_name, uri=disk_uri, disk=disk_name)
-            logger.info('Detaching repaired data disk from rescue VM:')
+            logger.info('Detaching repaired data disk from rescue VM...')
             _call_az_command(detach_unamanged_command)
-            logger.info('Attaching repaired data disk to faulty VM as an OS disk:')
+            logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_unmanaged_command)
         # Clean 
         _clean_up_resources(rescue_resource_group)

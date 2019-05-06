@@ -29,7 +29,7 @@ DEPENDENCIES = []
 setup(
     name='vm-repair',
     version=VERSION,
-    description='Provides VM repair commands.',
+    description='Auto repair commands to fix faulty VMs.',
     long_description='VM repair commands will enable Azure users to self-repair faulty VMs.',
     license='MIT',
     author='Microsoft Corporation',

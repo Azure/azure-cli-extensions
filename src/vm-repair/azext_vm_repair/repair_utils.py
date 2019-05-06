@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 import subprocess
+import shlex
+import os
 
 from knack.log import get_logger
 
@@ -16,11 +18,23 @@ def _uses_managed_disk(vm):
     else:
         return True
 
-# returns the stdout, raises exception if command fails
-def _call_az_command(command_string, run_async=False):
-    logger.info("Calling: " + command_string)
+def _call_az_command(command_string, run_async=False, secure_params=[]):
+    """
+    Uses subprocess to run a command string. To hide sensitive parameters from logs, add the
+    parameter in secure_params. If run_async is True then function returns the stdout,
+    raises exception if command fails.
+    """
 
-    process = subprocess.Popen(command_string, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    tokenized_command = shlex.split(command_string)
+    # If run on windows, add 'cmd /c'
+    if os.name == 'nt':
+        tokenized_command = ['cmd', '/c'] + tokenized_command
+
+    # Simple fix to hide passwords from logs
+    for param in secure_params:
+        command_string = command_string.replace(param, '********')
+    logger.debug("Calling: " + command_string)
+    process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
@@ -39,7 +53,7 @@ def _call_az_command(command_string, run_async=False):
 def _clean_up_resources(resource_group_name):
     try:
         delete_resource_group_command = 'az group delete --name {name} --yes'.format(name=resource_group_name)
-        logger.info('Cleaning up resources by deleting rescue resource group: {name}'.format(name=resource_group_name))
+        logger.info('Cleaning up resources by deleting rescue resource group: \'{name}\'...'.format(name=resource_group_name))
         _call_az_command(delete_resource_group_command)
     except Exception as exception:
         logger.error(exception)
@@ -50,13 +64,13 @@ def _clean_up_resources_with_tag(tag):
         # Get ids of rescue resources to delete first
         get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
                                 .format(tags=tag)
-        logger.info('Fetching created rescue resources for clean-up:')
+        logger.info('Fetching created rescue resources for clean-up...')
         ids = _call_az_command(get_resources_command).replace('\n', ' ')
         # Delete rescue VM resources command
         if ids:
             delete_resources_command = 'az resource delete --ids {ids}' \
                                        .format(ids=ids)
-            logger.info('Cleaning up resources:')
+            logger.info('Cleaning up resources...')
             _call_az_command(delete_resources_command)
         else:
             logger.info('No resources found with tag: {tags}. Skipping clean up.'.format(tags=tag))
@@ -74,7 +88,7 @@ def _fetch_compatible_sku(target_vm):
     # First get the target_vm sku, if its available go with it
     check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=target_vm_sku, loc=location)
 
-    logger.info('Checking if target VM size is available:')
+    logger.info('Checking if target VM size is available...')
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
