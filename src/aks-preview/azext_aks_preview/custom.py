@@ -1201,3 +1201,4 @@ def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, 
 
 def aks_get_versions(cmd, client, location):
     return client.list_orchestrators(location, resource_type='managedClusters')
+    
