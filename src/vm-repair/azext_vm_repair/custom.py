@@ -9,17 +9,16 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
-from azure.cli.core.commands import LongRunningOperation
 from msrestazure.tools import parse_resource_id
 
-from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _get_rescue_resource_tag
+from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, broad-except, too-many-locals, too-many-statements, trailing-whitespace
 
 logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
-    
+
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
@@ -57,7 +56,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         if not sku:
             raise Exception('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
         create_rescue_vm_command += ' --size {sku}'.format(sku=sku)
-        
+
         # Create New Resource Group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                         .format(loc=target_vm.location, group_name=rescue_rg_name)
@@ -135,7 +134,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
                                   .format(g=rescue_rg_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
             _call_az_command(attach_disk_command)
-        
+
     # Some error happened. Stop command and clean-up resources.
     except Exception as exception:
         logger.error(exception)
@@ -191,7 +190,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             # Update OS disk with disk
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
-                                   .format(g=resource_group_name, n=vm_name, uri=disk_uri, disk=disk_name)
+                                   .format(g=resource_group_name, n=vm_name, uri=disk_uri)
             logger.info('Detaching repaired data disk from rescue VM...')
             _call_az_command(detach_unamanged_command)
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')

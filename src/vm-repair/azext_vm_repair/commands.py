@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
-
 from ._validators import validate_swap_disk, validate_restore_swap
 
 # pylint: disable=too-many-locals, too-many-statements

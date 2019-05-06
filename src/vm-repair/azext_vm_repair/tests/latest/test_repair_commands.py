@@ -38,5 +38,5 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
         # Check rescue VM deleted
         exists = self.cmd('group exists --name {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert exists.strip('\n') == 'false'
+        assert exists == False
         

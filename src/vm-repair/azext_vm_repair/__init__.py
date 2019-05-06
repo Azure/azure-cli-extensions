@@ -2,10 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
- 
-from azure.cli.core import AzCommandsLoader
 
-import azext_vm_repair._help
+from azure.cli.core import AzCommandsLoader
 
 class VmRepairCommandsLoader(AzCommandsLoader):
 
@@ -13,8 +11,7 @@ class VmRepairCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         custom_type = CliCommandType(operations_tmpl='azext_vm_repair.custom#{}')
         super(VmRepairCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                       custom_command_type=custom_type)
-
+                                                     custom_command_type=custom_type)
     def load_command_table(self, args):
         from .commands import load_command_table
         load_command_table(self, args)

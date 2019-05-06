@@ -9,16 +9,17 @@ import os
 
 from knack.log import get_logger
 
+# pylint: disable=line-too-long, broad-except
+
 logger = get_logger(__name__)
 
 # TODO, check if this is reliable
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False
-    else:
-        return True
+    return True
 
-def _call_az_command(command_string, run_async=False, secure_params=[]):
+def _call_az_command(command_string, run_async=False, secure_params=None):
     """
     Uses subprocess to run a command string. To hide sensitive parameters from logs, add the
     parameter in secure_params. If run_async is True then function returns the stdout,
@@ -31,9 +32,10 @@ def _call_az_command(command_string, run_async=False, secure_params=[]):
         tokenized_command = ['cmd', '/c'] + tokenized_command
 
     # Simple fix to hide passwords from logs
-    for param in secure_params:
-        command_string = command_string.replace(param, '********')
-    logger.debug("Calling: " + command_string)
+    if secure_params:
+        for param in secure_params:
+            command_string = command_string.replace(param, '********')
+    logger.debug("Calling: %s", command_string)
     process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     # Wait for process to terminate and fetch stdout and stderror
@@ -43,8 +45,8 @@ def _call_az_command(command_string, run_async=False, secure_params=[]):
         if process.returncode != 0:
             #logger.error(stderr)
             raise Exception(stderr)
-        else:
-            logger.info('Command succeeded.\n')
+
+        logger.info('Success.\n')
 
         return stdout
     return None
@@ -53,7 +55,7 @@ def _call_az_command(command_string, run_async=False, secure_params=[]):
 def _clean_up_resources(resource_group_name):
     try:
         delete_resource_group_command = 'az group delete --name {name} --yes'.format(name=resource_group_name)
-        logger.info('Cleaning up resources by deleting rescue resource group: \'{name}\'...'.format(name=resource_group_name))
+        logger.info('Cleaning up resources by deleting rescue resource group: \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
     except Exception as exception:
         logger.error(exception)
@@ -73,12 +75,10 @@ def _clean_up_resources_with_tag(tag):
             logger.info('Cleaning up resources...')
             _call_az_command(delete_resources_command)
         else:
-            logger.info('No resources found with tag: {tags}. Skipping clean up.'.format(tags=tag))
+            logger.info('No resources found with tag: %s. Skipping clean up.', tag)
     except Exception as exception:
         logger.error(exception)
         logger.error("Clean up failed.")
-
-    return None
 
 def _fetch_compatible_sku(target_vm):
 
@@ -92,10 +92,10 @@ def _fetch_compatible_sku(target_vm):
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
-        logger.info('Faulty VM size: \'{sku}\' is available. Using it to create rescue VM.\n'.format(sku=target_vm_sku))
+        logger.info('Faulty VM size: \'%s\' is available. Using it to create rescue VM.\n', target_vm_sku)
         return target_vm_sku
-    else:
-        logger.info('Faulty VM size: \'{sku}\' is NOT available.\n'.format(sku=target_vm_sku))
+
+    logger.info('Faulty VM size: \'%s\' is NOT available.\n', target_vm_sku)
 
     # List available standard SKUs
     # TODO, premium IO only when needed
@@ -109,12 +109,11 @@ def _fetch_compatible_sku(target_vm):
 
     logger.info('Fetching available VM sizes for rescue VM:')
     sku_list = _call_az_command(list_sku_command).split('\n')
-    
-    if len(sku_list) < 0:
-        return None
-    else:
+
+    if sku_list:
         return sku_list[0]
+
+    return None
 
 def _get_rescue_resource_tag(target_vm_name, resource_group_name):
     return 'rescue_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)
-

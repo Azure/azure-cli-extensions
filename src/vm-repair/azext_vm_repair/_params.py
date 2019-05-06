@@ -5,8 +5,9 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.command_modules.vm._actions import _resource_not_exists
 from azure.cli.core.commands.parameters import get_resource_name_completion_list
+
+# pylint: disable=line-too-long
 
 def load_arguments(self, _):
 
@@ -16,7 +17,6 @@ def load_arguments(self, _):
                                        configured_default='vm',
                                        help="The name of the Virtual Machine. You can configure the default using `az configure --defaults vm=<name>`",
                                        completer=get_resource_name_completion_list('Microsoft.Compute/virtualMachines'), id_part='name')
-    existing_disk_name = CLIArgumentType(overrides=name_arg_type, help='The name of the managed disk', completer=get_resource_name_completion_list('Microsoft.Compute/disks'), id_part='name')
 
     with self.argument_context('vm repair') as c:
         c.argument('vm_name', existing_vm_name)
