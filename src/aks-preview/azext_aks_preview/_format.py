@@ -120,7 +120,7 @@ def _custom_functions(previewVersion):
             except (TypeError, ValueError):  # if it wasn't sortable, return the input so the pipeline continues
                 return s
 
-        @functions.signature({'types':['array']})
+        @functions.signature({'types': ['array']})
         def _func_set_preview_array(self, s):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
@@ -138,7 +138,7 @@ def _custom_functions(previewVersion):
             except(TypeError, ValueError):
                 return s
 
-        @functions.signature({'types':['string']})
+        @functions.signature({'types': ['string']})
         def _func_set_preview(self, s):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
