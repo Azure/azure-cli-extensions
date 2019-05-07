@@ -13,7 +13,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-# TODO, check if this is reliable
+# TODO, double check if this is reliable
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False
@@ -31,7 +31,7 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     if os.name == 'nt':
         tokenized_command = ['cmd', '/c'] + tokenized_command
 
-    # Simple fix to hide passwords from logs
+    # Hide sensitive data such as passwords from logs
     if secure_params:
         for param in secure_params:
             command_string = command_string.replace(param, '********')
@@ -54,10 +54,14 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 # TODO, add checks for safe delete
 def _clean_up_resources(resource_group_name):
     try:
-        delete_resource_group_command = 'az group delete --name {name} --yes'.format(name=resource_group_name)
+        delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
         logger.info('Cleaning up resources by deleting rescue resource group: \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
     except Exception as exception:
+        # Exception doesn't give enough attributes so string matching
+        if 'could not be found' in str(exception):
+            logger.info('Resource group not created yet. Skipping clean up.')
+            return
         logger.error(exception)
         logger.error("Clean up failed.")
 

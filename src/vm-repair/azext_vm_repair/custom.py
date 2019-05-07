@@ -13,12 +13,12 @@ from msrestazure.tools import parse_resource_id
 
 from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku
 
-# pylint: disable=line-too-long, broad-except, too-many-locals, too-many-statements, trailing-whitespace
+# pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace, broad-except
 
 logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
-
+    
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
@@ -136,17 +136,21 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             _call_az_command(attach_disk_command)
 
     # Some error happened. Stop command and clean-up resources.
+    except KeyboardInterrupt:
+        logger.error("Command interrupted by user input. Cleaning up resources.")
+        _clean_up_resources(rescue_rg_name)
+        return None
     except Exception as exception:
         logger.error(exception)
-        logger.error("Repair swap-disk failed, cleaning up resouces.")
+        logger.error("Repair swap-disk failed. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name)
-
         return None
 
     # Construct return dict
     return_dict = {}
-    return_dict['message'] = 'Rescue VM: \'{n}\' succesfully created with disk: \'{d}\' attached as a data disk' \
-                               .format(n=rescue_vm_name, d=copied_os_disk_name)
+    return_dict['message'] = 'Rescue VM \'{n}\' succesfully created in resource group \'{rescue_rg}\' with disk \'{d}\' attached as a data disk. ' \
+                             'Copied disk created within the orignal resource group \'{rg}\'.' \
+                             .format(n=rescue_vm_name, rescue_rg=rescue_rg_name, d=copied_os_disk_name, rg=resource_group_name)
     return_dict['rescueVmName'] = rescue_vm_name
     return_dict['copiedDiskName'] = copied_os_disk_name
     return_dict['copiedDiskUri'] = copied_disk_uri

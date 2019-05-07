@@ -8,6 +8,8 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
+from azure.cli.command_modules.resource._client_factory import _resource_client_factory
+from msrestazure.azure_exceptions import CloudError 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from .repair_utils import _call_az_command, _get_rescue_resource_tag
@@ -17,10 +19,20 @@ from .repair_utils import _call_az_command, _get_rescue_resource_tag
 logger = get_logger(__name__)
 
 def validate_swap_disk(cmd, namespace):
-
+    
+    resource_not_found_error = 'ResourceNotFound'
     # TODO check for RDFE and existence of VM in a cleaner way
-
-    target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    target_vm = None
+    try:
+        target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    except CloudError as cloudError:
+        logger.debug(cloudError)
+        if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, namespace.resource_group_name, namespace.vm_name):
+            # Given VM is classic VM (RDFE)
+            raise CLIError('The given VM \'{}\' is a classic VM. VM Repair commands do not support classic VMs.'.format(namespace.vm_name))
+        # Unknown Error
+        raise CLIError(cloudError.message)
+    
     is_linux = _is_linux_os(target_vm)
 
     # Handle empty params
@@ -91,3 +103,19 @@ def _prompt_rescue_password(namespace):
         namespace.rescue_password = prompt_pass('Rescue VM Admin Password: ', confirm=True)
     except NoTTYException:
         raise CLIError('Please specify password in non-interactive mode.')
+
+def _classic_vm_exists(cmd, resource_group_name, vm_name):
+    api_version = '2017-04-01'
+    classic_vm_provider = 'Microsoft.ClassicCompute'
+    vm_resource_type = 'virtualMachines'
+
+    resource_client = _resource_client_factory(cmd.cli_ctx).resources
+    vm = None
+    try:
+        vm = resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
+    except CloudError as cloudError:
+        # Resource does not exist or the API failed
+        logger.debug(cloudError)
+        return False
+    print('sd')
+    return True
