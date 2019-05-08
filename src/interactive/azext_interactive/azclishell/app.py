@@ -324,8 +324,13 @@ class AzInteractiveShell(object):
     def _update_default_info(self):
         try:
             defaults_section = self.cli_ctx.config.defaults_section_name
-            options = self.cli_ctx.config.config_parser.options(defaults_section)
             self.config_default = ""
+            if hasattr(self.cli_ctx.config, 'config_parser'):
+                options = self.cli_ctx.config.config_parser.options(defaults_section)
+            elif hasattr(self.cli_ctx.config, 'options'):
+                options = self.cli_ctx.config.options(defaults_section)
+            else:
+                return
             for opt in options:
                 self.config_default += opt + ": " + self.cli_ctx.config.get(defaults_section, opt) + "  "
         except configparser.NoSectionError:
