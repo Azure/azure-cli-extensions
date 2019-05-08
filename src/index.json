@@ -537,6 +537,74 @@
                 "sha256Digest": "a8038054e873e64584ca5bba95215695b01a08054175ff0ff8388ec346c389b5"
             }
         ],
+        "azure-cli-ml": [
+            {
+                "downloadUrl": "https://azuremlsdktestpypi.blob.core.windows.net/wheels/sdk-release/Candidate/604C89A437BA41BD942B4F46D9A3591D/azure_cli_ml-1.0.33.7-py2.py3-none-any.whl",
+                "filename": "azure_cli_ml-1.0.33.7-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.28",
+                    "classifiers": [
+                        "Development Status :: 3 - Alpha",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3.5"
+                    ],
+                    "description_content_type": "text/x-rst",
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst",
+                                "license": "LICENSE.txt"
+                            },
+                            "project_urls": {
+                                "Home": "https://docs.microsoft.com/en-us/azure/machine-learning/service/"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "Proprietary https://aka.ms/azureml-preview-sdk-license ",
+                    "metadata_version": "2.0",
+                    "name": "azure-cli-ml",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "adal (>=0.4.7)",
+                                "azureml-cli-common (==1.0.33.*)",
+                                "docker (>=2.5.1)",
+                                "kubernetes (>=3.0.0)",
+                                "msrest (>=0.4.16)",
+                                "pyyaml (>=3.12.0)",
+                                "requests (>=2.18.1)",
+                                "scp (>=0.10.2)",
+                                "tabulate (>=0.7.7)"
+                            ]
+                        }
+                    ],
+                    "summary": "Microsoft Azure Command-Line Tools AzureML Command Module",
+                    "test_requires": [
+                        {
+                            "requires": [
+                                "azure-keyvault",
+                                "mock",
+                                "nose",
+                                "unittest-xml-reporting"
+                            ]
+                        }
+                    ],
+                    "version": "1.0.33.7"
+                },
+                "sha256Digest": "31a24c8c88a6780696e69fe287e6377f97fd8e29f3bc60379040e1e601d1a0ed"
+            }
+        ],
         "azure-devops": [
             {
                 "downloadUrl": "https://github.com/Azure/azure-devops-cli-extension/releases/download/20190506.1/azure_devops-0.8.0-py2.py3-none-any.whl",
@@ -639,74 +707,6 @@
                     "version": "0.1.2"
                 },
                 "sha256Digest": "c6669dacba6a8d3c263e132237b58e39bc3749c44f174a10673f44e266205e1c"
-            }
-        ],
-        "azure-cli-ml": [
-            {
-                "downloadUrl": "https://azuremlsdktestpypi.blob.core.windows.net/wheels/sdk-release/Candidate/604C89A437BA41BD942B4F46D9A3591D/azure_cli_ml-1.0.33.7-py2.py3-none-any.whl",
-                "filename": "azure_cli_ml-1.0.33.7-py2.py3-none-any.whl",
-                "metadata": {
-                    "azext.minCliCoreVersion": "2.0.28",
-                    "classifiers": [
-                        "Development Status :: 3 - Alpha",
-                        "Intended Audience :: Developers",
-                        "Intended Audience :: System Administrators",
-                        "Programming Language :: Python :: 2.7",
-                        "Programming Language :: Python :: 3.5"
-                    ],
-                    "description_content_type": "text/x-rst",
-                    "extensions": {
-                        "python.details": {
-                            "contacts": [
-                                {
-                                    "email": "azpycli@microsoft.com",
-                                    "name": "Microsoft Corporation",
-                                    "role": "author"
-                                }
-                            ],
-                            "document_names": {
-                                "description": "DESCRIPTION.rst",
-                                "license": "LICENSE.txt"
-                            },
-                            "project_urls": {
-                                "Home": "https://docs.microsoft.com/en-us/azure/machine-learning/service/"
-                            }
-                        }
-                    },
-                    "extras": [],
-                    "generator": "bdist_wheel (0.30.0)",
-                    "license": "Proprietary https://aka.ms/azureml-preview-sdk-license ",
-                    "metadata_version": "2.0",
-                    "name": "azure-cli-ml",
-                    "run_requires": [
-                        {
-                            "requires": [
-                                "adal (>=0.4.7)",
-                                "azureml-cli-common (==1.0.33.*)",
-                                "docker (>=2.5.1)",
-                                "kubernetes (>=3.0.0)",
-                                "msrest (>=0.4.16)",
-                                "pyyaml (>=3.12.0)",
-                                "requests (>=2.18.1)",
-                                "scp (>=0.10.2)",
-                                "tabulate (>=0.7.7)"
-                            ]
-                        }
-                    ],
-                    "summary": "Microsoft Azure Command-Line Tools AzureML Command Module",
-                    "test_requires": [
-                        {
-                            "requires": [
-                                "azure-keyvault",
-                                "mock",
-                                "nose",
-                                "unittest-xml-reporting"
-                            ]
-                        }
-                    ],
-                    "version": "1.0.33.7"
-                },
-                "sha256Digest": "31a24c8c88a6780696e69fe287e6377f97fd8e29f3bc60379040e1e601d1a0ed"
             }
         ],
         "db-up": [
@@ -1327,23 +1327,11 @@
                 "sha256Digest": "22b940493972b77c62606b0ae3c834283209d8619bb740e69dd115530a328e3b"
             },
             {
-                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/interactive-0.4.2-py2.py3-none-any.whl",
-                "filename": "interactive-0.4.2-py2.py3-none-any.whl",
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/interactive-0.4.3-py2.py3-none-any.whl",
+                "filename": "interactive-0.4.3-py2.py3-none-any.whl",
                 "metadata": {
                     "azext.isPreview": true,
                     "azext.minCliCoreVersion": "2.0.62",
-                    "classifiers": [
-                        "Development Status :: 4 - Beta",
-                        "Intended Audience :: Developers",
-                        "Intended Audience :: System Administrators",
-                        "Programming Language :: Python",
-                        "Programming Language :: Python :: 2",
-                        "Programming Language :: Python :: 2.7",
-                        "Programming Language :: Python :: 3",
-                        "Programming Language :: Python :: 3.4",
-                        "Programming Language :: Python :: 3.5",
-                        "Programming Language :: Python :: 3.6"
-                    ],
                     "extensions": {
                         "python.details": {
                             "contacts": [
@@ -1374,9 +1362,9 @@
                         }
                     ],
                     "summary": "Microsoft Azure Command-Line Interactive Shell",
-                    "version": "0.4.2"
+                    "version": "0.4.3"
                 },
-                "sha256Digest": "556ce59da6989c1454393deffb6f00887dfd9debaccc2ea9dbb393057e34540b"
+                "sha256Digest": "ba78a45ec9753a42e1e805dc9cf3b309df264c6201dfd1dabcc6c00b22599fe8"
             }
         ],
         "keyvault-preview": [
