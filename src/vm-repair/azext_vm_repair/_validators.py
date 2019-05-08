@@ -12,7 +12,7 @@ from azure.cli.command_modules.resource._client_factory import _resource_client_
 from msrestazure.azure_exceptions import CloudError 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
-from .repair_utils import _call_az_command, _get_rescue_resource_tag
+from .repair_utils import _call_az_command, _get_rescue_resource_tag, _uses_encrypted_disk
 
 # pylint: disable=line-too-long
 
@@ -33,6 +33,10 @@ def validate_swap_disk(cmd, namespace):
         # Unknown Error
         raise CLIError(cloudError.message)
     
+    # Check encrypted disk
+    if _uses_encrypted_disk(target_vm):
+        # TODO, validate this with encrypted VMs
+        logger.warning('The faulty VM OS disk is encrypted!')
     is_linux = _is_linux_os(target_vm)
 
     # Handle empty params

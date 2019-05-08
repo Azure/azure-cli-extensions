@@ -8,6 +8,7 @@ import shlex
 import os
 
 from knack.log import get_logger
+from knack.prompting import prompt_y_n, NoTTYException
 
 # pylint: disable=line-too-long, broad-except
 
@@ -52,20 +53,34 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     return None
 
 # TODO, add checks for safe delete
-def _clean_up_resources(resource_group_name):
+def _clean_up_resources(resource_group_name, confirm):
+    
     try:
+        if confirm:
+            message = 'The clean-up will remove the resource group \'{rg}\' and all rescue resources within:\n\n{r}' \
+                        .format(rg=resource_group_name, r='\n'.join(_list_resource_ids_in_rg(resource_group_name)))
+            logger.warning(message)
+            if not prompt_y_n('Continue with clean-up and delete resources?'):
+                logger.warning('Skipping clean-up')
+                return
+        
         delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
         logger.info('Cleaning up resources by deleting rescue resource group: \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
+    # Exception only thrown from confirm block
+    except NoTTYException:
+        logger.warning('Cannot confirm clean-up resouce in non-interactive mode.')
+        logger.warning('Skipping clean-up')
+        return
     except Exception as exception:
         # Exception doesn't give enough attributes so string matching
         if 'could not be found' in str(exception):
-            logger.info('Resource group not created yet. Skipping clean up.')
+            logger.info('Resource group not found. Skipping clean up.')
             return
         logger.error(exception)
         logger.error("Clean up failed.")
 
-def _clean_up_resources_with_tag(tag):
+def _clean_up_resources_with_tag(tag, confirm):
     try:
         # Get ids of rescue resources to delete first
         get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
@@ -112,7 +127,7 @@ def _fetch_compatible_sku(target_vm):
                        .format(loc=location)
 
     logger.info('Fetching available VM sizes for rescue VM:')
-    sku_list = _call_az_command(list_sku_command).split('\n')
+    sku_list = _call_az_command(list_sku_command).strip('\n').split('\n')
 
     if sku_list:
         return sku_list[0]
@@ -121,3 +136,14 @@ def _fetch_compatible_sku(target_vm):
 
 def _get_rescue_resource_tag(target_vm_name, resource_group_name):
     return 'rescue_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)
+
+def _list_resource_ids_in_rg(resource_group_name):
+    get_resources_command = 'az resource list --resource-group {rg} --query [].id -o tsv' \
+                            .format(rg=resource_group_name)
+    logger.info('Fetching resources in resource group...')
+    ids = _call_az_command(get_resources_command).strip('\n').split('\n')
+    return ids
+
+def _uses_encrypted_disk(vm):
+    return vm.storage_profile.os_disk.encryption_settings
+       

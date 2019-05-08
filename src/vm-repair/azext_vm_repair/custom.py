@@ -11,14 +11,14 @@ from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
 
-from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku
+from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _list_resource_ids_in_rg
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace, broad-except
 
 logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
-    
+
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
@@ -49,6 +49,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     if not is_linux:
         create_rescue_vm_command += ' --admin-username {username}'.format(username=rescue_username)
 
+    copy_disk_id = None
     # Main command calling block
     try:
         # fetch VM size of rescue VM
@@ -116,6 +117,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             _call_az_command(copy_snapshot_command, secure_params=[connection_string])
              # Generate the copied disk uri
             copied_disk_uri = os_disk_uri.rstrip(storage_account.blob) + copied_os_disk_name
+            copy_disk_id = copied_disk_uri
 
             # Create new rescue VM with copied ummanaged disk command
             create_rescue_vm_command = create_rescue_vm_command + ' --use-unmanaged-disk'
@@ -138,15 +140,17 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     # Some error happened. Stop command and clean-up resources.
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input. Cleaning up resources.")
-        _clean_up_resources(rescue_rg_name)
+        _clean_up_resources(rescue_rg_name, confirm=False)
         return None
     except Exception as exception:
         logger.error(exception)
         logger.error("Repair swap-disk failed. Cleaning up created resources.")
-        _clean_up_resources(rescue_rg_name)
+        _clean_up_resources(rescue_rg_name, confirm=False)
         return None
 
     # Construct return dict
+    created_resources = _list_resource_ids_in_rg(rescue_rg_name)
+    created_resources.append(copy_disk_id)
     return_dict = {}
     return_dict['message'] = 'Rescue VM \'{n}\' succesfully created in resource group \'{rescue_rg}\' with disk \'{d}\' attached as a data disk. ' \
                              'Copied disk created within the orignal resource group \'{rg}\'.' \
@@ -156,11 +160,12 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     return_dict['copiedDiskUri'] = copied_disk_uri
     return_dict['rescueResouceGroup'] = rescue_rg_name
     return_dict['resourceTag'] = resource_tag
+    return_dict['createdResources'] = created_resources
 
     return return_dict
 
-def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id=None):
-
+def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id=None, delete=False):
+    
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
 
@@ -200,7 +205,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_unmanaged_command)
         # Clean 
-        _clean_up_resources(rescue_resource_group)
+        _clean_up_resources(rescue_resource_group, confirm=not delete)
 
     except Exception as exception:
         logger.error(exception)
