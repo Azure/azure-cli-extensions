@@ -21,7 +21,6 @@ logger = get_logger(__name__)
 def validate_swap_disk(cmd, namespace):
     
     resource_not_found_error = 'ResourceNotFound'
-    # TODO check for RDFE and existence of VM in a cleaner way
     target_vm = None
     try:
         target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)

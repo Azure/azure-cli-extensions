@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+import azext_vm_repair._help  # pylint: disable=unused-import
 
 class VmRepairCommandsLoader(AzCommandsLoader):
 

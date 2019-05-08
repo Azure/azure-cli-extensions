@@ -15,7 +15,6 @@ from .exceptions import AzCommandError
 
 logger = get_logger(__name__)
 
-# TODO, double check if this is reliable
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False
@@ -39,12 +38,11 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         for param in secure_params:
             command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
-    process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
     # Wait for process to terminate and fetch stdout and stderror
     if not run_async:
         stdout, stderr = process.communicate()
-
         if process.returncode != 0:
             #logger.error(stderr)
             raise AzCommandError(stderr)
@@ -54,7 +52,6 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         return stdout
     return None
 
-# TODO, add checks for safe delete
 def _clean_up_resources(resource_group_name, confirm):
     
     try:
@@ -82,7 +79,7 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error(azCommandError)
         logger.error("Clean up failed.")
 
-def _clean_up_resources_with_tag(tag, confirm):
+def _clean_up_resources_with_tag(tag):
     try:
         # Get ids of rescue resources to delete first
         get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \

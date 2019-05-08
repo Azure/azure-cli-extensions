@@ -11,7 +11,7 @@ from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
 
-from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _list_resource_ids_in_rg
+from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _list_resource_ids_in_rg, _get_rescue_resource_tag
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace
@@ -19,7 +19,6 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
-
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
@@ -44,8 +43,8 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     copied_disk_uri = None
     rescue_vm_name = ('rescue-' + vm_name)[:15]
     rescue_rg_name = 'rescue-' + vm_name + '-' + timestamp
-
-    resource_tag = "rescue_source={rg}/{vm_name}".format(rg=resource_group_name, vm_name=vm_name)
+    copy_disk_id = None
+    resource_tag = _get_rescue_resource_tag(resource_group_name, vm_name)
 
     # Set up base create vm command
     create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
@@ -56,7 +55,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     
     # Overall success flag 
     command_succeeded = False
-    copy_disk_id = None
+
     # Main command calling block
     try:
         # fetch VM size of rescue VM
@@ -94,7 +93,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
         else:
-            logger.info('OS disk is unmanaged. Executing unmanaged disk swap:\n')
+            logger.info('OS disk is unmanaged. Executing unmanaged disk swap...\n')
             os_disk_uri = target_vm.storage_profile.os_disk.vhd.uri
             copied_os_disk_name = copied_os_disk_name + '.vhd'
             # TODO, validate with Tosin about using this
@@ -155,11 +154,11 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         logger.error("Repair swap-disk failed. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
     except SkuNotAvailableError as skuNotAvailableError:
-        logger.error(azCommandError)
+        logger.error(skuNotAvailableError)
         logger.error("Please check if the current subscription can create more VM resources. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
-        logger.error(azCommandError)
+        logger.error(unmanagedDiskCopyError)
         logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
     finally:
