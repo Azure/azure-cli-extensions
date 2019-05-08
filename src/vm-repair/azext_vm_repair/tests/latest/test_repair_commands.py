@@ -36,9 +36,6 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
-        # Check rescue VM deleted
-        exists = self.cmd('group exists --name {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert exists == False
 
 class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
 
@@ -71,9 +68,6 @@ class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
-        # Check rescue VM deleted
-        exists = self.cmd('group exists --name {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert exists == False
 
 class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
 
@@ -106,10 +100,6 @@ class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
-        # Check rescue VM deleted
-        exists = self.cmd('group exists --name {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert exists == False  
-
         
 class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
 
@@ -142,6 +132,3 @@ class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
-        # Check rescue VM deleted
-        exists = self.cmd('group exists --name {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert exists == False

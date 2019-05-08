@@ -12,8 +12,9 @@ from azure.cli.command_modules.storage.storage_url_helpers import StorageResourc
 from msrestazure.tools import parse_resource_id
 
 from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _list_resource_ids_in_rg
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError
 
-# pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace, broad-except
+# pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace
 
 logger = get_logger(__name__)
 
@@ -55,18 +56,18 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         # fetch VM size of rescue VM
         sku = _fetch_compatible_sku(target_vm)
         if not sku:
-            raise Exception('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
+            raise SkuNotAvailableError('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
         create_rescue_vm_command += ' --size {sku}'.format(sku=sku)
 
         # Create New Resource Group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                         .format(loc=target_vm.location, group_name=rescue_rg_name)
-        logger.info('Creating resource group for rescue VM and its resources:')
+        logger.info('Creating resource group for rescue VM and its resources...')
         _call_az_command(create_resource_group_command)
 
         # MANAGED DISK
         if is_managed:
-            logger.info('OS disk is managed. Executing managed disk swap:\n')
+            logger.info('OS disk is managed. Executing managed disk swap.\n')
             # Copy OS disk command
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copied_os_disk_name, s=target_disk_name)
@@ -129,7 +130,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
                                  .format(c=storage_account.container, name=copied_os_disk_name, con_string=connection_string)
             copy_result = _call_az_command(copy_check_command, secure_params=[connection_string]).strip('\n')
             if copy_result != 'success':
-                raise Exception('Unmanaged disk copy failed!')
+                raise UnmanagedDiskCopyError('Unmanaged disk copy failed!')
 
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to rescue VM as data disk...')
@@ -142,9 +143,19 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
         logger.error("Command interrupted by user input. Cleaning up resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
         return None
-    except Exception as exception:
-        logger.error(exception)
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
         logger.error("Repair swap-disk failed. Cleaning up created resources.")
+        _clean_up_resources(rescue_rg_name, confirm=False)
+        return None
+    except SkuNotAvailableError as skuNotAvailableError:
+        logger.error(azCommandError)
+        logger.error("Please check if the current subscription can create more VM resources. Cleaning up created resources.")
+        _clean_up_resources(rescue_rg_name, confirm=False)
+        return None
+    except UnmanagedDiskCopyError as unmanagedDiskCopyError:
+        logger.error(azCommandError)
+        logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
         return None
 
@@ -207,8 +218,8 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
         # Clean 
         _clean_up_resources(rescue_resource_group, confirm=not delete)
 
-    except Exception as exception:
-        logger.error(exception)
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
         logger.error("Repair swap-disk failed.")
 
         return None

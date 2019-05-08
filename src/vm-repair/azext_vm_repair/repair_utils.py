@@ -10,7 +10,8 @@ import os
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-# pylint: disable=line-too-long, broad-except
+from .exceptions import AzCommandError
+# pylint: disable=line-too-long
 
 logger = get_logger(__name__)
 
@@ -29,7 +30,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 
     tokenized_command = shlex.split(command_string)
     # If run on windows, add 'cmd /c'
-    if os.name == 'nt':
+    windows_os_name = 'nt'
+    if os.name == windows_os_name:
         tokenized_command = ['cmd', '/c'] + tokenized_command
 
     # Hide sensitive data such as passwords from logs
@@ -45,7 +47,7 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 
         if process.returncode != 0:
             #logger.error(stderr)
-            raise Exception(stderr)
+            raise AzCommandError(stderr)
 
         logger.info('Success.\n')
 
@@ -72,12 +74,12 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.warning('Cannot confirm clean-up resouce in non-interactive mode.')
         logger.warning('Skipping clean-up')
         return
-    except Exception as exception:
-        # Exception doesn't give enough attributes so string matching
-        if 'could not be found' in str(exception):
+    except AzCommandError as azCommandError:
+        resource_not_found_error_string = 'could not be found'
+        if resource_not_found_error_string in str(azCommandError):
             logger.info('Resource group not found. Skipping clean up.')
             return
-        logger.error(exception)
+        logger.error(azCommandError)
         logger.error("Clean up failed.")
 
 def _clean_up_resources_with_tag(tag, confirm):
@@ -95,8 +97,8 @@ def _clean_up_resources_with_tag(tag, confirm):
             _call_az_command(delete_resources_command)
         else:
             logger.info('No resources found with tag: %s. Skipping clean up.', tag)
-    except Exception as exception:
-        logger.error(exception)
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
         logger.error("Clean up failed.")
 
 def _fetch_compatible_sku(target_vm):
