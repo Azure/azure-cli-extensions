@@ -20,6 +20,10 @@ logger = get_logger(__name__)
 
 def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
 
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
+
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
@@ -49,7 +53,9 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     # Add username field only for Windows
     if not is_linux:
         create_rescue_vm_command += ' --admin-username {username}'.format(username=rescue_username)
-
+    
+    # Overall success flag 
+    command_succeeded = False
     copy_disk_id = None
     # Main command calling block
     try:
@@ -138,25 +144,29 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
                                   .format(g=rescue_rg_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
             _call_az_command(attach_disk_command)
 
+        command_succeeded = True
+
     # Some error happened. Stop command and clean-up resources.
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input. Cleaning up resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
-        return None
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
         logger.error("Repair swap-disk failed. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
-        return None
     except SkuNotAvailableError as skuNotAvailableError:
         logger.error(azCommandError)
         logger.error("Please check if the current subscription can create more VM resources. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
-        return None
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         logger.error(azCommandError)
         logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
         _clean_up_resources(rescue_rg_name, confirm=False)
+    finally:
+        # end long running op for process
+        cmd.cli_ctx.get_progress_controller().end()
+
+    if not command_succeeded:
         return None
 
     # Construct return dict
@@ -176,13 +186,20 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     return return_dict
 
 def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id=None, delete=False):
-    
+
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
+
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
 
     rescue_vm_id = parse_resource_id(rescue_vm_id)
     rescue_vm_name = rescue_vm_id['name']
     rescue_resource_group = rescue_vm_id['resource_group']
+
+    # Overall success flag 
+    command_succeeded = False
 
     try:
         if is_managed:
@@ -217,11 +234,15 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             _call_az_command(attach_unmanaged_command)
         # Clean 
         _clean_up_resources(rescue_resource_group, confirm=not delete)
-
+        command_succeeded = True
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
         logger.error("Repair swap-disk failed.")
+    finally:
+        # end long running op for process
+        cmd.cli_ctx.get_progress_controller().end()
 
+    if not command_succeeded:
         return None
 
     # Construct return dict
