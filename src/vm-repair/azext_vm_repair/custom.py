@@ -12,16 +12,16 @@ from azure.cli.command_modules.storage.storage_url_helpers import StorageResourc
 from msrestazure.tools import parse_resource_id
 
 from .repair_utils import (
-    _uses_managed_disk, 
-    _call_az_command, 
-    _clean_up_resources, 
-    _fetch_compatible_sku, 
-    _list_resource_ids_in_rg, 
+    _uses_managed_disk,
+    _call_az_command,
+    _clean_up_resources,
+    _fetch_compatible_sku,
+    _list_resource_ids_in_rg,
     _get_rescue_resource_tag
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError
 
-# pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace
+# pylint: disable=line-too-long, too-many-locals, too-many-statements
 
 logger = get_logger(__name__)
 
@@ -55,12 +55,12 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
     # Set up base create vm command
     create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                               .format(g=rescue_rg_name, n=rescue_vm_name, tag=resource_tag, image=os_image_name, password=rescue_password)    
+                               .format(g=rescue_rg_name, n=rescue_vm_name, tag=resource_tag, image=os_image_name, password=rescue_password)
     # Add username field only for Windows
     if not is_linux:
         create_rescue_vm_command += ' --admin-username {username}'.format(username=rescue_username)
-    
-    # Overall success flag 
+
+    # Overall success flag
     command_succeeded = False
 
     # Main command calling block
@@ -204,7 +204,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
     rescue_vm_name = rescue_vm_id['name']
     rescue_resource_group = rescue_vm_id['resource_group']
 
-    # Overall success flag 
+    # Overall success flag
     command_succeeded = False
 
     try:
@@ -238,7 +238,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             _call_az_command(detach_unamanged_command)
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_unmanaged_command)
-        # Clean 
+        # Clean
         _clean_up_resources(rescue_resource_group, confirm=not yes)
         command_succeeded = True
     except AzCommandError as azCommandError:

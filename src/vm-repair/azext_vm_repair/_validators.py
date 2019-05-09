@@ -40,7 +40,7 @@ def validate_swap_disk(cmd, namespace):
 def validate_restore_swap(cmd, namespace):
 
     # Check if VM exists and is not classic VM
-    target_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
     # No rescue param given, find rescue vm using tags
     if not namespace.rescue_vm_id:
@@ -107,9 +107,8 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
     vm_resource_type = 'virtualMachines'
 
     resource_client = _resource_client_factory(cmd.cli_ctx).resources
-    vm = None
     try:
-        vm = resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
+        resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
     except CloudError as cloudError:
         # Resource does not exist or the API failed
         logger.debug(cloudError)
