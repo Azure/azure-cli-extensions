@@ -120,5 +120,4 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         # Resource does not exist or the API failed
         logger.debug(cloudError)
         return False
-    print('sd')
     return True

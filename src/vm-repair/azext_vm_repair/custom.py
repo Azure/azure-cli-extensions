@@ -184,7 +184,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
 
     return return_dict
 
-def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id=None, delete=False):
+def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id=None, yes=False):
 
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
@@ -232,7 +232,7 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_unmanaged_command)
         # Clean 
-        _clean_up_resources(rescue_resource_group, confirm=not delete)
+        _clean_up_resources(rescue_resource_group, confirm=not yes)
         command_succeeded = True
     except AzCommandError as azCommandError:
         logger.error(azCommandError)

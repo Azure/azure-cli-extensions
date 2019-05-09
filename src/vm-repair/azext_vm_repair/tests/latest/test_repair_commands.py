@@ -30,7 +30,7 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --delete')
+        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
@@ -62,7 +62,7 @@ class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
         assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --delete')
+        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
@@ -94,7 +94,7 @@ class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
         assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --delete')
+        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
@@ -126,7 +126,7 @@ class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
         assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --delete')
+        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
