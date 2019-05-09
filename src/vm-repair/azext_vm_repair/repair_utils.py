@@ -53,7 +53,7 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     return None
 
 def _clean_up_resources(resource_group_name, confirm):
-    
+
     try:
         if confirm:
             message = 'The clean-up will remove the resource group \'{rg}\' and all rescue resources within:\n\n{r}' \
@@ -62,7 +62,7 @@ def _clean_up_resources(resource_group_name, confirm):
             if not prompt_y_n('Continue with clean-up and delete resources?'):
                 logger.warning('Skipping clean-up')
                 return
-        
+
         delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
         logger.info('Cleaning up resources by deleting rescue resource group: \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
@@ -133,7 +133,7 @@ def _fetch_compatible_sku(target_vm):
 
     return None
 
-def _get_rescue_resource_tag(target_vm_name, resource_group_name):
+def _get_rescue_resource_tag(resource_group_name, target_vm_name):
     return 'rescue_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)
 
 def _list_resource_ids_in_rg(resource_group_name):

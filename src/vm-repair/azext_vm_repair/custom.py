@@ -11,7 +11,14 @@ from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
 
-from .repair_utils import _uses_managed_disk, _call_az_command, _clean_up_resources, _fetch_compatible_sku, _list_resource_ids_in_rg, _get_rescue_resource_tag
+from .repair_utils import (
+    _uses_managed_disk, 
+    _call_az_command, 
+    _clean_up_resources, 
+    _fetch_compatible_sku, 
+    _list_resource_ids_in_rg, 
+    _get_rescue_resource_tag
+)
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, trailing-whitespace
@@ -82,7 +89,7 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             logger.info('Validating VM template before continuing...')
             _call_az_command(validate_create_vm_command, secure_params=[rescue_password])
             logger.info('Copying OS disk of faulty VM...')
-            copy_disk_id = _call_az_command(copy_disk_command)
+            copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
             attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {id}' \
                                   .format(g=rescue_rg_name, rescue=rescue_vm_name, id=copy_disk_id)
