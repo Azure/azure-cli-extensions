@@ -9,7 +9,7 @@ from knack.util import CLIError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
-from msrestazure.azure_exceptions import CloudError 
+from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from .repair_utils import _call_az_command, _get_rescue_resource_tag, _uses_encrypted_disk
@@ -19,19 +19,10 @@ from .repair_utils import _call_az_command, _get_rescue_resource_tag, _uses_encr
 logger = get_logger(__name__)
 
 def validate_swap_disk(cmd, namespace):
-    
-    resource_not_found_error = 'ResourceNotFound'
-    target_vm = None
-    try:
-        target_vm = get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    except CloudError as cloudError:
-        logger.debug(cloudError)
-        if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, namespace.resource_group_name, namespace.vm_name):
-            # Given VM is classic VM (RDFE)
-            raise CLIError('The given VM \'{}\' is a classic VM. VM Repair commands do not support classic VMs.'.format(namespace.vm_name))
-        # Unknown Error
-        raise CLIError(cloudError.message)
-    
+
+    # Check if VM exists and is not classic VM
+    target_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+
     # Check encrypted disk
     if _uses_encrypted_disk(target_vm):
         # TODO, validate this with encrypted VMs
@@ -48,10 +39,13 @@ def validate_swap_disk(cmd, namespace):
 
 def validate_restore_swap(cmd, namespace):
 
+    # Check if VM exists and is not classic VM
+    target_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+
     # No rescue param given, find rescue vm using tags
     if not namespace.rescue_vm_id:
         # Find Rescue VM
-        tag = _get_rescue_resource_tag(namespace.vm_name, namespace.resource_group_name)
+        tag = _get_rescue_resource_tag(namespace.resource_group_name, namespace.vm_name)
         find_rescue_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
                               .format(tag=tag)
         logger.info('Searching for rescue-vm within subscription:')
@@ -121,3 +115,20 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         logger.debug(cloudError)
         return False
     return True
+
+def _validate_and_get_vm(cmd, resource_group_name, vm_name):
+
+    # Check if target VM exists
+    resource_not_found_error = 'ResourceNotFound'
+    target_vm = None
+    try:
+        target_vm = get_vm(cmd, resource_group_name, vm_name)
+    except CloudError as cloudError:
+        logger.debug(cloudError)
+        if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
+            # Given VM is classic VM (RDFE)
+            raise CLIError('The given VM \'{}\' is a classic VM. VM Repair commands do not support classic VMs.'.format(vm_name))
+        # Unknown Error
+        raise CLIError(cloudError.message)
+
+    return target_vm
