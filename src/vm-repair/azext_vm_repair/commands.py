@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._validators import validate_swap_disk, validate_restore_swap
+from ._validators import validate_create, validate_restore
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
     with self.command_group('vm repair') as g:
-        g.custom_command('swap-disk', 'swap_disk', validator=validate_swap_disk)
-        g.custom_command('restore-swap', 'restore_swap', validator=validate_restore_swap)
+        g.custom_command('create', 'create', validator=validate_create)
+        g.custom_command('restore', 'restore', validator=validate_restore)

@@ -18,7 +18,7 @@ from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encr
 
 logger = get_logger(__name__)
 
-def validate_swap_disk(cmd, namespace):
+def validate_create(cmd, namespace):
 
     # Check if VM exists and is not classic VM
     target_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
@@ -37,7 +37,7 @@ def validate_swap_disk(cmd, namespace):
     if not namespace.repair_password:
         _prompt_repair_password(namespace)
 
-def validate_restore_swap(cmd, namespace):
+def validate_restore(cmd, namespace):
 
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)

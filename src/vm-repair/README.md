@@ -8,11 +8,11 @@ az extension add --name vm-repair
 ```
 
 ### Sample Commands ###
-Swap disk command
+Repair create command
 ```
-az vm repair swap-disk -g MyResourceGroup -n myVM --verbose
+az vm repair create -g MyResourceGroup -n myVM --verbose
 ```
-Restore swap command
+Restore command
 ```
-az vm repair restore-swap -g MyResourceGroup -n myVM --verbose
+az vm repair restore -g MyResourceGroup -n myVM --verbose
 ```

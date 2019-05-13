@@ -25,7 +25,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 
 logger = get_logger(__name__)
 
-def swap_disk(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None):
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
@@ -190,7 +190,7 @@ def swap_disk(cmd, vm_name, resource_group_name, repair_password=None, repair_us
 
     return return_dict
 
-def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
+def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
 
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()

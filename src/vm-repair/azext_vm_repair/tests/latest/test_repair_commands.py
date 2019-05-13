@@ -5,10 +5,10 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
-class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
+class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_swap_disk(self, resource_group):
+    def test_create_restore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -19,8 +19,8 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
-        # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
@@ -30,17 +30,17 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
+        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
 
-class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
+class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_swap_disk(self, resource_group):
+    def test_create_restore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -51,8 +51,8 @@ class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
-        # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
@@ -62,17 +62,17 @@ class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
+        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
 
-class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
+class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_swap_disk(self, resource_group):
+    def test_create_restore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -83,8 +83,8 @@ class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
-        # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
@@ -94,17 +94,17 @@ class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
+        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         targetVm = vms[0]
         assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
         
-class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
+class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_swap_disk(self, resource_group):
+    def test_create_restore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -115,8 +115,8 @@ class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
-        # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
@@ -126,7 +126,7 @@ class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
-        result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
+        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
