@@ -56,7 +56,7 @@ def _clean_up_resources(resource_group_name, confirm):
 
     try:
         if confirm:
-            message = 'The clean-up will remove the resource group \'{rg}\' and all rescue resources within:\n\n{r}' \
+            message = 'The clean-up will remove the resource group \'{rg}\' and all repair resources within:\n\n{r}' \
                         .format(rg=resource_group_name, r='\n'.join(_list_resource_ids_in_rg(resource_group_name)))
             logger.warning(message)
             if not prompt_y_n('Continue with clean-up and delete resources?'):
@@ -64,7 +64,7 @@ def _clean_up_resources(resource_group_name, confirm):
                 return
 
         delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
-        logger.info('Cleaning up resources by deleting rescue resource group: \'%s\'...', resource_group_name)
+        logger.info('Cleaning up resources by deleting repair resource group: \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
     # Exception only thrown from confirm block
     except NoTTYException:
@@ -81,12 +81,12 @@ def _clean_up_resources(resource_group_name, confirm):
 
 def _clean_up_resources_with_tag(tag):
     try:
-        # Get ids of rescue resources to delete first
+        # Get ids of repair resources to delete first
         get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
                                 .format(tags=tag)
-        logger.info('Fetching created rescue resources for clean-up...')
+        logger.info('Fetching created repair resources for clean-up...')
         ids = _call_az_command(get_resources_command).replace('\n', ' ')
-        # Delete rescue VM resources command
+        # Delete repair VM resources command
         if ids:
             delete_resources_command = 'az resource delete --ids {ids}' \
                                        .format(ids=ids)
@@ -110,7 +110,7 @@ def _fetch_compatible_sku(target_vm):
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
-        logger.info('Faulty VM size: \'%s\' is available. Using it to create rescue VM.\n', target_vm_sku)
+        logger.info('Faulty VM size: \'%s\' is available. Using it to create repair VM.\n', target_vm_sku)
         return target_vm_sku
 
     logger.info('Faulty VM size: \'%s\' is NOT available.\n', target_vm_sku)
@@ -125,7 +125,7 @@ def _fetch_compatible_sku(target_vm):
                        ' -o tsv' \
                        .format(loc=location)
 
-    logger.info('Fetching available VM sizes for rescue VM:')
+    logger.info('Fetching available VM sizes for repair VM:')
     sku_list = _call_az_command(list_sku_command).strip('\n').split('\n')
 
     if sku_list:
@@ -133,8 +133,8 @@ def _fetch_compatible_sku(target_vm):
 
     return None
 
-def _get_rescue_resource_tag(resource_group_name, target_vm_name):
-    return 'rescue_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)
+def _get_repair_resource_tag(resource_group_name, target_vm_name):
+    return 'repair_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)
 
 def _list_resource_ids_in_rg(resource_group_name):
     get_resources_command = 'az resource list --resource-group {rg} --query [].id -o tsv' \

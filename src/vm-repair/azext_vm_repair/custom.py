@@ -17,7 +17,7 @@ from .repair_utils import (
     _clean_up_resources,
     _fetch_compatible_sku,
     _list_resource_ids_in_rg,
-    _get_rescue_resource_tag
+    _get_repair_resource_tag
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError
 
@@ -25,7 +25,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 
 logger = get_logger(__name__)
 
-def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_username=None):
+def swap_disk(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None):
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
@@ -48,33 +48,35 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     copied_os_disk_name = vm_name + '-DiskCopy-' + timestamp
     copied_disk_uri = None
-    rescue_vm_name = ('rescue-' + vm_name)[:15]
-    rescue_rg_name = 'rescue-' + vm_name + '-' + timestamp
+    repair_vm_name = ('repair-' + vm_name)[:15]
+    repair_rg_name = 'repair-' + vm_name + '-' + timestamp
     copy_disk_id = None
-    resource_tag = _get_rescue_resource_tag(resource_group_name, vm_name)
+    resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
 
     # Set up base create vm command
-    create_rescue_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                               .format(g=rescue_rg_name, n=rescue_vm_name, tag=resource_tag, image=os_image_name, password=rescue_password)
+    create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
+                               .format(g=repair_rg_name, n=repair_vm_name, tag=resource_tag, image=os_image_name, password=repair_password)
     # Add username field only for Windows
     if not is_linux:
-        create_rescue_vm_command += ' --admin-username {username}'.format(username=rescue_username)
+        create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
 
     # Overall success flag
     command_succeeded = False
+    # List of created resouces
+    created_resources = []
 
     # Main command calling block
     try:
-        # fetch VM size of rescue VM
+        # fetch VM size of repair VM
         sku = _fetch_compatible_sku(target_vm)
         if not sku:
             raise SkuNotAvailableError('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
-        create_rescue_vm_command += ' --size {sku}'.format(sku=sku)
+        create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
         # Create New Resource Group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                                        .format(loc=target_vm.location, group_name=rescue_rg_name)
-        logger.info('Creating resource group for rescue VM and its resources...')
+                                        .format(loc=target_vm.location, group_name=repair_rg_name)
+        logger.info('Creating resource group for repair VM and its resources...')
         _call_az_command(create_resource_group_command)
 
         # MANAGED DISK
@@ -84,19 +86,19 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copied_os_disk_name, s=target_disk_name)
             # Validate create vm create command to validate parameters before runnning copy disk command
-            validate_create_vm_command = create_rescue_vm_command + ' --validate'
+            validate_create_vm_command = create_repair_vm_command + ' --validate'
 
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[rescue_password])
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password])
             logger.info('Copying OS disk of faulty VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
-            attach_disk_command = 'az vm disk attach -g {g} --vm-name {rescue} --name {id}' \
-                                  .format(g=rescue_rg_name, rescue=rescue_vm_name, id=copy_disk_id)
+            attach_disk_command = 'az vm disk attach -g {g} --vm-name {repair} --name {id}' \
+                                  .format(g=repair_rg_name, repair=repair_vm_name, id=copy_disk_id)
 
-            logger.info('Creating rescue vm...')
-            _call_az_command(create_rescue_vm_command, secure_params=[rescue_password])
-            logger.info('Attaching copied disk to rescue vm...')
+            logger.info('Creating repair vm...')
+            _call_az_command(create_repair_vm_command, secure_params=[repair_password])
+            logger.info('Attaching copied disk to repair vm...')
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
         else:
@@ -106,9 +108,9 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             # TODO, validate with Tosin about using this
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
             # Validate create vm create command to validate parameters before runnning copy disk commands
-            validate_create_vm_command = create_rescue_vm_command + ' --validate'
+            validate_create_vm_command = create_repair_vm_command + ' --validate'
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[rescue_password])
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password])
 
             # get storage account connection string
             get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
@@ -132,10 +134,10 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
             copied_disk_uri = os_disk_uri.rstrip(storage_account.blob) + copied_os_disk_name
             copy_disk_id = copied_disk_uri
 
-            # Create new rescue VM with copied ummanaged disk command
-            create_rescue_vm_command = create_rescue_vm_command + ' --use-unmanaged-disk'
-            logger.info('Creating rescue vm while disk copy is in progress...')
-            _call_az_command(create_rescue_vm_command, secure_params=[rescue_password])
+            # Create new repair VM with copied ummanaged disk command
+            create_repair_vm_command = create_repair_vm_command + ' --use-unmanaged-disk'
+            logger.info('Creating repair vm while disk copy is in progress...')
+            _call_az_command(create_repair_vm_command, secure_params=[repair_password])
 
             logger.info('Checking if disk copy is done...')
             copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
@@ -145,53 +147,50 @@ def swap_disk(cmd, vm_name, resource_group_name, rescue_password=None, rescue_us
                 raise UnmanagedDiskCopyError('Unmanaged disk copy failed!')
 
             # Attach copied unmanaged disk to new vm
-            logger.info('Attaching copied disk to rescue VM as data disk...')
+            logger.info('Attaching copied disk to repair VM as data disk...')
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
-                                  .format(g=rescue_rg_name, disk_name=copied_os_disk_name, vm_name=rescue_vm_name, uri=copied_disk_uri)
+                                  .format(g=repair_rg_name, disk_name=copied_os_disk_name, vm_name=repair_vm_name, uri=copied_disk_uri)
             _call_az_command(attach_disk_command)
 
         command_succeeded = True
+        created_resources = _list_resource_ids_in_rg(repair_rg_name)
 
     # Some error happened. Stop command and clean-up resources.
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input. Cleaning up resources.")
-        _clean_up_resources(rescue_rg_name, confirm=False)
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
         logger.error("Repair swap-disk failed. Cleaning up created resources.")
-        _clean_up_resources(rescue_rg_name, confirm=False)
     except SkuNotAvailableError as skuNotAvailableError:
         logger.error(skuNotAvailableError)
         logger.error("Please check if the current subscription can create more VM resources. Cleaning up created resources.")
-        _clean_up_resources(rescue_rg_name, confirm=False)
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         logger.error(unmanagedDiskCopyError)
         logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
-        _clean_up_resources(rescue_rg_name, confirm=False)
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
+        _clean_up_resources(repair_rg_name, confirm=False)
         return None
 
     # Construct return dict
-    created_resources = _list_resource_ids_in_rg(rescue_rg_name)
     created_resources.append(copy_disk_id)
     return_dict = {}
-    return_dict['message'] = 'Rescue VM \'{n}\' succesfully created in resource group \'{rescue_rg}\' with disk \'{d}\' attached as a data disk. ' \
+    return_dict['message'] = 'repair VM \'{n}\' succesfully created in resource group \'{repair_rg}\' with disk \'{d}\' attached as a data disk. ' \
                              'Copied disk created within the orignal resource group \'{rg}\'.' \
-                             .format(n=rescue_vm_name, rescue_rg=rescue_rg_name, d=copied_os_disk_name, rg=resource_group_name)
-    return_dict['rescueVmName'] = rescue_vm_name
+                             .format(n=repair_vm_name, repair_rg=repair_rg_name, d=copied_os_disk_name, rg=resource_group_name)
+    return_dict['repairVmName'] = repair_vm_name
     return_dict['copiedDiskName'] = copied_os_disk_name
     return_dict['copiedDiskUri'] = copied_disk_uri
-    return_dict['rescueResouceGroup'] = rescue_rg_name
+    return_dict['repairResouceGroup'] = repair_rg_name
     return_dict['resourceTag'] = resource_tag
     return_dict['createdResources'] = created_resources
 
     return return_dict
 
-def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id=None, yes=False):
+def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
 
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
@@ -200,9 +199,9 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)
 
-    rescue_vm_id = parse_resource_id(rescue_vm_id)
-    rescue_vm_name = rescue_vm_id['name']
-    rescue_resource_group = rescue_vm_id['resource_group']
+    repair_vm_id = parse_resource_id(repair_vm_id)
+    repair_vm_name = repair_vm_id['name']
+    repair_resource_group = repair_vm_id['resource_group']
 
     # Overall success flag
     command_succeeded = False
@@ -210,36 +209,36 @@ def restore_swap(cmd, vm_name, resource_group_name, disk_name=None, rescue_vm_id
     try:
         if is_managed:
             # Detach repaired data disk command
-            detach_disk_command = 'az vm disk detach -g {g} --vm-name {rescue} --name {disk}' \
-                                  .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
+            detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
+                                  .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
             # Update OS disk with repaired data disk
             attach_fixed_command = 'az vm update -g {g} -n {n} --os-disk {disk}' \
                                    .format(g=resource_group_name, n=vm_name, disk=disk_name)
 
             # Maybe run attach and delete concurrently
-            logger.info('Detaching repaired data disk from rescue VM...')
+            logger.info('Detaching repaired data disk from repair VM...')
             _call_az_command(detach_disk_command)
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_fixed_command)
         else:
             # Get disk uri from disk name
-            rescue_vm = get_vm(cmd, rescue_vm_id['resource_group'], rescue_vm_id['name'])
-            data_disks = rescue_vm.storage_profile.data_disks
+            repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
+            data_disks = repair_vm.storage_profile.data_disks
             # The params went through validator so no need for existence checks
             disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
 
-            detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {rescue} --name {disk}' \
-                                  .format(g=rescue_resource_group, rescue=rescue_vm_name, disk=disk_name)
+            detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
+                                  .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
             # Update OS disk with disk
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
                                    .format(g=resource_group_name, n=vm_name, uri=disk_uri)
-            logger.info('Detaching repaired data disk from rescue VM...')
+            logger.info('Detaching repaired data disk from repair VM...')
             _call_az_command(detach_unamanged_command)
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_unmanaged_command)
         # Clean
-        _clean_up_resources(rescue_resource_group, confirm=not yes)
+        _clean_up_resources(repair_resource_group, confirm=not yes)
         command_succeeded = True
     except AzCommandError as azCommandError:
         logger.error(azCommandError)

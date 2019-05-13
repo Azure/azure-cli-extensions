@@ -20,14 +20,14 @@ class WindowsManagedDiskSwapRestoreTest(ScenarioTest):
         assert len(vms) == 1
 
         # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-username azureadmin --rescue-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
-        # Check rescue VM
-        rescue_vms = self.cmd('vm list -g {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert len(rescue_vms) == 1
-        rescue_vm = rescue_vms[0]
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
         # Check attached data disk
-        assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
         result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
@@ -52,14 +52,14 @@ class WindowsUnmanagedDiskSwapRestoreTest(ScenarioTest):
         assert len(vms) == 1
 
         # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-username azureadmin --rescue-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
-        # Check rescue VM
-        rescue_vms = self.cmd('vm list -g {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert len(rescue_vms) == 1
-        rescue_vm = rescue_vms[0]
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
         # Check attached data disk
-        assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
         result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
@@ -84,14 +84,14 @@ class LinuxManagedDiskSwapRestoreTest(ScenarioTest):
         assert len(vms) == 1
 
         # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
 
-        # Check rescue VM
-        rescue_vms = self.cmd('vm list -g {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert len(rescue_vms) == 1
-        rescue_vm = rescue_vms[0]
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
         # Check attached data disk
-        assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
         result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')
@@ -116,14 +116,14 @@ class LinuxUnmanagedDiskSwapRestoreTest(ScenarioTest):
         assert len(vms) == 1
 
         # Test swap-disk
-        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --rescue-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair swap-disk -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
 
-        # Check rescue VM
-        rescue_vms = self.cmd('vm list -g {}'.format(result['rescueResouceGroup'])).get_output_in_json()
-        assert len(rescue_vms) == 1
-        rescue_vm = rescue_vms[0]
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
         # Check attached data disk
-        assert rescue_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
         
         # Call Restore
         result2 = self.cmd('vm repair restore-swap -g {rg} -n {vm} --yes')

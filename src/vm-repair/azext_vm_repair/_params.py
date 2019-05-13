@@ -22,10 +22,10 @@ def load_arguments(self, _):
         c.argument('vm_name', existing_vm_name)
 
     with self.argument_context('vm repair swap-disk') as c:
-        c.argument('rescue_username', help='Admin username for rescue VM.')
-        c.argument('rescue_password', help='Admin password for the rescue VM.')
+        c.argument('repair_username', help='Admin username for repair VM.')
+        c.argument('repair_password', help='Admin password for the repair VM.')
 
     with self.argument_context('vm repair restore-swap') as c:
-        c.argument('rescue_vm_id', help='Rescue VM resource id.')
-        c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the rescue vm.')
-        c.argument('yes', help='Deletes the rescue resources without confirmation.')
+        c.argument('repair_vm_id', help='Repair VM resource id.')
+        c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair vm.')
+        c.argument('yes', help='Deletes the repair resources without confirmation.')

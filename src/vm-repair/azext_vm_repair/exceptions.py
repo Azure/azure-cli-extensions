@@ -8,7 +8,7 @@ class AzCommandError(Exception):
     pass
 
 class SkuNotAvailableError(Exception):
-    """Raised when unable to find compatible SKU for rescue VM"""
+    """Raised when unable to find compatible SKU for repair VM"""
     pass
 
 class UnmanagedDiskCopyError(Exception):
