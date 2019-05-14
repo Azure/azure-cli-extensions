@@ -66,7 +66,7 @@ def validate_restore(cmd, namespace):
 
         # One repair VM found
         namespace.repair_vm_id = repair_list[0]['id']
-        logger.info('Found repair vm: %s', namespace.repair_vm_id)
+        logger.warning('Repair-vm-id not given, restoring from only matching repair VM: %s', namespace.repair_vm_id)
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')

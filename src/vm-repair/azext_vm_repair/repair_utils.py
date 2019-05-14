@@ -47,7 +47,7 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
             #logger.error(stderr)
             raise AzCommandError(stderr)
 
-        logger.info('Success.\n')
+        logger.debug('Success.\n')
 
         return stdout
     return None

@@ -178,7 +178,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     # Construct return dict
     created_resources.append(copy_disk_id)
     return_dict = {}
-    return_dict['message'] = 'repair VM \'{n}\' succesfully created in resource group \'{repair_rg}\' with disk \'{d}\' attached as a data disk. ' \
+    return_dict['message'] = 'Repair VM \'{n}\' succesfully created in resource group \'{repair_rg}\' with disk \'{d}\' attached as a data disk. ' \
                              'Copied disk created within the orignal resource group \'{rg}\'.' \
                              .format(n=repair_vm_name, repair_rg=repair_rg_name, d=copied_os_disk_name, rg=resource_group_name)
     return_dict['repairVmName'] = repair_vm_name
@@ -205,9 +205,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Overall success flag
     command_succeeded = False
-
+    original_disk = None
     try:
         if is_managed:
+            original_disk = target_vm.storage_profile.os_disk.name
             # Detach repaired data disk command
             detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
                                   .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
@@ -221,6 +222,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
             logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
             _call_az_command(attach_fixed_command)
         else:
+            original_disk = target_vm.storage_profile.os_disk.vhd.uri
             # Get disk uri from disk name
             repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
             data_disks = repair_vm.storage_profile.data_disks
@@ -240,9 +242,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         # Clean
         _clean_up_resources(repair_resource_group, confirm=not yes)
         command_succeeded = True
+    except KeyboardInterrupt:
+        logger.error("Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
-        logger.error("Repair swap-disk failed.")
+        logger.error("Repair swap-disk failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
@@ -252,7 +256,8 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Construct return dict
     return_dict = {}
-    return_dict['message'] = '{disk} successfully attached to {n} as an OS disk.' \
-                             .format(disk=disk_name, n=vm_name)
+    return_dict['message'] = '\'{disk}\' successfully attached to {n} as an OS disk. Original disk \'{orig_disk}\' remains within the same resource group ' \
+                             '\'{rg}\'. Delete this manually to avoid unwanted costs.' \
+                             .format(disk=disk_name, n=vm_name, orig_disk=original_disk, rg=resource_group_name)
 
     return return_dict
