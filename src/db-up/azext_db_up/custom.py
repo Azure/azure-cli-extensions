@@ -150,7 +150,7 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
 
     try:
         server_result = client.get(resource_group_name, server_name)
-        logger.warning('Found existing PostgreSQL Server \'%s\' in group \'%s\'',
+        logger.warning('Found existing SQL Server \'%s\' in group \'%s\'',
                        server_name, resource_group_name)
         # update server if needed
         server_result = _update_sql_server(
