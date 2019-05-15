@@ -3,8 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from datetime import datetime
-
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
@@ -25,11 +23,8 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 
 logger = get_logger(__name__)
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
-
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+    
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(target_vm)
     target_disk_name = target_vm.storage_profile.os_disk.name
@@ -45,17 +40,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         else:
             os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190214"
 
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    copied_os_disk_name = vm_name + '-DiskCopy-' + timestamp
-    copied_disk_uri = None
-    repair_vm_name = ('repair-' + vm_name)[:15]
-    repair_rg_name = 'repair-' + vm_name + '-' + timestamp
     copy_disk_id = None
     resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
 
     # Set up base create vm command
     create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                               .format(g=repair_rg_name, n=repair_vm_name, tag=resource_tag, image=os_image_name, password=repair_password)
+                               .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_name, password=repair_password)
     # Add username field only for Windows
     if not is_linux:
         create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
@@ -75,7 +65,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # Create New Resource Group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                                        .format(loc=target_vm.location, group_name=repair_rg_name)
+                                        .format(loc=target_vm.location, group_name=repair_group_name)
         logger.info('Creating resource group for repair VM and its resources...')
         _call_az_command(create_resource_group_command)
 
@@ -84,7 +74,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('OS disk is managed. Executing managed disk swap.\n')
             # Copy OS disk command
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copied_os_disk_name, s=target_disk_name)
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
@@ -94,7 +84,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
             attach_disk_command = 'az vm disk attach -g {g} --vm-name {repair} --name {id}' \
-                                  .format(g=repair_rg_name, repair=repair_vm_name, id=copy_disk_id)
+                                  .format(g=repair_group_name, repair=repair_vm_name, id=copy_disk_id)
 
             logger.info('Creating repair vm...')
             _call_az_command(create_repair_vm_command, secure_params=[repair_password])
@@ -104,7 +94,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         else:
             logger.info('OS disk is unmanaged. Executing unmanaged disk swap...\n')
             os_disk_uri = target_vm.storage_profile.os_disk.vhd.uri
-            copied_os_disk_name = copied_os_disk_name + '.vhd'
+            copy_disk_name = copy_disk_name + '.vhd'
             # TODO, validate with Tosin about using this
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
             # Validate create vm create command to validate parameters before runnning copy disk commands
@@ -127,12 +117,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Copy Snapshot into unmanaged Disk
             copy_snapshot_command = 'az storage blob copy start -c {c} -b {name} --source-uri {source} --connection-string "{con_string}"' \
-                                    .format(c=storage_account.container, name=copied_os_disk_name, source=snapshot_uri, con_string=connection_string)
+                                    .format(c=storage_account.container, name=copy_disk_name, source=snapshot_uri, con_string=connection_string)
             logger.info('Creating a copy disk from the snapshot...')
             _call_az_command(copy_snapshot_command, secure_params=[connection_string])
              # Generate the copied disk uri
-            copied_disk_uri = os_disk_uri.rstrip(storage_account.blob) + copied_os_disk_name
-            copy_disk_id = copied_disk_uri
+            copy_disk_id = os_disk_uri.rstrip(storage_account.blob) + copy_disk_name
 
             # Create new repair VM with copied ummanaged disk command
             create_repair_vm_command = create_repair_vm_command + ' --use-unmanaged-disk'
@@ -141,7 +130,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             logger.info('Checking if disk copy is done...')
             copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
-                                 .format(c=storage_account.container, name=copied_os_disk_name, con_string=connection_string)
+                                 .format(c=storage_account.container, name=copy_disk_name, con_string=connection_string)
             copy_result = _call_az_command(copy_check_command, secure_params=[connection_string]).strip('\n')
             if copy_result != 'success':
                 raise UnmanagedDiskCopyError('Unmanaged disk copy failed!')
@@ -149,11 +138,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to repair VM as data disk...')
             attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
-                                  .format(g=repair_rg_name, disk_name=copied_os_disk_name, vm_name=repair_vm_name, uri=copied_disk_uri)
+                                  .format(g=repair_group_name, disk_name=copy_disk_name, vm_name=repair_vm_name, uri=copy_disk_id)
             _call_az_command(attach_disk_command)
 
         command_succeeded = True
-        created_resources = _list_resource_ids_in_rg(repair_rg_name)
+        created_resources = _list_resource_ids_in_rg(repair_group_name)
 
     # Some error happened. Stop command and clean-up resources.
     except KeyboardInterrupt:
@@ -172,7 +161,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
-        _clean_up_resources(repair_rg_name, confirm=False)
+        _clean_up_resources(repair_group_name, confirm=False)
         return None
 
     # Construct return dict
@@ -180,21 +169,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return_dict = {}
     return_dict['message'] = 'Repair VM \'{n}\' succesfully created in resource group \'{repair_rg}\' with disk \'{d}\' attached as a data disk. ' \
                              'Copied disk created within the orignal resource group \'{rg}\'.' \
-                             .format(n=repair_vm_name, repair_rg=repair_rg_name, d=copied_os_disk_name, rg=resource_group_name)
+                             .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name)
     return_dict['repairVmName'] = repair_vm_name
-    return_dict['copiedDiskName'] = copied_os_disk_name
-    return_dict['copiedDiskUri'] = copied_disk_uri
-    return_dict['repairResouceGroup'] = repair_rg_name
+    return_dict['copiedDiskName'] = copy_disk_name
+    return_dict['copiedDiskUri'] = copy_disk_id
+    return_dict['repairResouceGroup'] = repair_group_name
     return_dict['resourceTag'] = resource_tag
     return_dict['createdResources'] = created_resources
 
     return return_dict
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
-
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
 
     target_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(target_vm)

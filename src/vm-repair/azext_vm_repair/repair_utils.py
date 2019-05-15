@@ -23,8 +23,8 @@ def _uses_managed_disk(vm):
 def _call_az_command(command_string, run_async=False, secure_params=None):
     """
     Uses subprocess to run a command string. To hide sensitive parameters from logs, add the
-    parameter in secure_params. If run_async is False then function returns the stdout,
-    raises exception if command fails.
+    parameter in secure_params. If run_async is False then function returns the stdout.
+    Raises AzCommandError if command fails.
     """
 
     tokenized_command = shlex.split(command_string)

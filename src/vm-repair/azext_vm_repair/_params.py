@@ -24,6 +24,9 @@ def load_arguments(self, _):
     with self.argument_context('vm repair create') as c:
         c.argument('repair_username', help='Admin username for repair VM.')
         c.argument('repair_password', help='Admin password for the repair VM.')
+        c.argument('repair_vm_name', help='Name of repair vm.')
+        c.argument('copy_disk_name', help='Name of OS disk copy.')
+        c.argument('repair_group_name', help='Repair resource group name.')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')

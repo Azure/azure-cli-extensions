@@ -3,7 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from datetime import datetime
 import json
+from re import match, search
 from knack.log import get_logger
 from knack.util import CLIError
 
@@ -12,6 +14,7 @@ from azure.cli.command_modules.resource._client_factory import _resource_client_
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
+from .exceptions import AzCommandError
 from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encrypted_disk
 
 # pylint: disable=line-too-long
@@ -20,16 +23,40 @@ logger = get_logger(__name__)
 
 def validate_create(cmd, namespace):
 
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Check if VM exists and is not classic VM
     target_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(target_vm)
+
+    # Check repair vm name
+    if namespace.repair_vm_name:
+        _validate_vm_name(namespace.repair_vm_name, is_linux)
+    else:
+        namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:15]
+
+    # Check copy disk name
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    if namespace.copy_disk_name:
+        _validate_disk_name(namespace.copy_disk_name)
+    else:
+        namespace.copy_disk_name = namespace.vm_name + '-DiskCopy-' + timestamp
+
+    # Check copy resouce group name
+    if namespace.repair_group_name:
+        if namespace.repair_group_name == namespace.resource_group_name:
+            raise CLIError('The repair resource group name cannot be the same as the faulty VM resource group.')
+        _validate_resource_group_name(namespace.repair_group_name)
+    else:
+        namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
     # Check encrypted disk
     if _uses_encrypted_disk(target_vm):
         # TODO, validate this with encrypted VMs
         logger.warning('The faulty VM OS disk is encrypted!')
-    is_linux = _is_linux_os(target_vm)
 
-    # Handle empty params
+    # Validate Auth Params
     if is_linux and namespace.repair_username:
         logger.warning("Chaging adminUsername property is not allowed for Linux VMs. Ignoring the given repair-username parameter.")
     if not is_linux and not namespace.repair_username:
@@ -39,6 +66,10 @@ def validate_create(cmd, namespace):
 
 def validate_restore(cmd, namespace):
 
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
+
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
@@ -46,10 +77,14 @@ def validate_restore(cmd, namespace):
     if not namespace.repair_vm_id:
         # Find repair VM
         tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
-                              .format(tag=tag)
-        logger.info('Searching for repair-vm within subscription:')
-        output = _call_az_command(find_repair_command)
+        try:
+            find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
+                                  .format(tag=tag)
+            logger.info('Searching for repair-vm within subscription:')
+            output = _call_az_command(find_repair_command)
+        except AzCommandError as azCommandError:
+            logger.error(azCommandError)
+            raise CLIError('Unexpected error occured while locating repair VM.')
         repair_list = json.loads(output)
 
         # No repair VM found
@@ -131,3 +166,41 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
         raise CLIError(cloudError.message)
 
     return target_vm
+
+def _validate_vm_name(vm_name, is_linux):
+    if not is_linux:
+        win_pattern = r'[\'~!@#$%^&*()=+_[\]{}\\|;:.",<>?]'
+        num_pattern = r'[0-9]+$'
+
+        if len(vm_name) > 15 or search(win_pattern, vm_name) or match(num_pattern, vm_name):
+            raise CLIError('Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ' \
+                            '`~!@#$%^&*()=+_[]{}\\|; :.\'",<>/?')
+
+def _validate_disk_name(disk_name):
+    disk_pattern = r'([a-zA-Z0-9][a-zA-Z0-9_.\-]+[a-zA-Z0-9_])$'
+    if not match(disk_pattern, disk_name):
+        raise CLIError('Disk name must begin with a letter or number, end with a letter, number or underscore, and may contain only letters, numbers, underscores, periods, or hyphens.')
+    if len(disk_name) > 80:
+        raise CLIError('Disk name only allow up to 80 characters.')
+
+def _validate_resource_group_name(rg_name):
+    rg_pattern = r'[0-9a-zA-Z._\-()]+$'
+    # if match is null or ends in period, then raise error
+    if not match(rg_pattern, rg_name) or rg_name[-1] == '.':
+        raise CLIError('Resource group name only allow alphanumeric characters, periods, underscores, hyphens and parenthesis and cannot end in a period.')
+
+    if len(rg_name) > 90:
+        raise CLIError('Resource group name only allow up to 90 characters.')
+
+    # Check for existing dup name
+    try:
+        list_rg_command = 'az group list --query "[].name"'
+        logger.info('Checking for existing resource groups with identical name within subscription...')
+        output = _call_az_command(list_rg_command)
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        raise CLIError('Unexpected error occured while fetching existing resource groups.')
+    rg_list = json.loads(output)
+
+    if rg_name in [rg.lower() for rg in rg_list]:
+        raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))
