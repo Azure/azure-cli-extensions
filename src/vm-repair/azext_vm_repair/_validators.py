@@ -46,7 +46,7 @@ def validate_create(cmd, namespace):
     # Check copy resouce group name
     if namespace.repair_group_name:
         if namespace.repair_group_name == namespace.resource_group_name:
-            raise CLIError('The repair resource group name cannot be the same as the faulty VM resource group.')
+            raise CLIError('The repair resource group name cannot be the same as the source VM resource group.')
         _validate_resource_group_name(namespace.repair_group_name)
     else:
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
@@ -54,11 +54,11 @@ def validate_create(cmd, namespace):
     # Check encrypted disk
     if _uses_encrypted_disk(target_vm):
         # TODO, validate this with encrypted VMs
-        logger.warning('The faulty VM OS disk is encrypted!')
+        logger.warning('The source VM\'s OS disk is encrypted.')
 
     # Validate Auth Params
     if is_linux and namespace.repair_username:
-        logger.warning("Chaging adminUsername property is not allowed for Linux VMs. Ignoring the given repair-username parameter.")
+        logger.warning("Chaging admin username property is not allowed for Linux VMs. Ignoring the given repair-username parameter.")
     if not is_linux and not namespace.repair_username:
         _prompt_repair_username(namespace)
     if not namespace.repair_password:

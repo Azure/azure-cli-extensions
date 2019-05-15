@@ -110,10 +110,10 @@ def _fetch_compatible_sku(target_vm):
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
-        logger.info('Faulty VM size: \'%s\' is available. Using it to create repair VM.\n', target_vm_sku)
+        logger.info('Source VM size: \'%s\' is available. Using it to create repair VM.\n', target_vm_sku)
         return target_vm_sku
 
-    logger.info('Faulty VM size: \'%s\' is NOT available.\n', target_vm_sku)
+    logger.info('Source VM size: \'%s\' is NOT available.\n', target_vm_sku)
 
     # List available standard SKUs
     # TODO, premium IO only when needed

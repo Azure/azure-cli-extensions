@@ -1,5 +1,5 @@
 # Azure CLI VM Repair Extension #
-This is a extension for repairing faulty VMs.
+This is a extension for repairing VMs.
 
 ### How to use ###
 Install this extension using the below CLI command

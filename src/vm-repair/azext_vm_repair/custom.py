@@ -60,7 +60,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # fetch VM size of repair VM
         sku = _fetch_compatible_sku(target_vm)
         if not sku:
-            raise SkuNotAvailableError('Failed to find compatible VM size for faulty VM OS disk within given region and subscription.')
+            raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
         # Create New Resource Group
@@ -80,7 +80,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             logger.info('Validating VM template before continuing...')
             _call_az_command(validate_create_vm_command, secure_params=[repair_password])
-            logger.info('Copying OS disk of faulty VM...')
+            logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
             attach_disk_command = 'az vm disk attach -g {g} --vm-name {repair} --name {id}' \
@@ -204,7 +204,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
             # Maybe run attach and delete concurrently
             logger.info('Detaching repaired data disk from repair VM...')
             _call_az_command(detach_disk_command)
-            logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
+            logger.info('Attaching repaired data disk to source VM as an OS disk...')
             _call_az_command(attach_fixed_command)
         else:
             original_disk = target_vm.storage_profile.os_disk.vhd.uri
@@ -222,7 +222,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                                    .format(g=resource_group_name, n=vm_name, uri=disk_uri)
             logger.info('Detaching repaired data disk from repair VM...')
             _call_az_command(detach_unamanged_command)
-            logger.info('Attaching repaired data disk to faulty VM as an OS disk...')
+            logger.info('Attaching repaired data disk to source VM as an OS disk...')
             _call_az_command(attach_unmanaged_command)
         # Clean
         _clean_up_resources(repair_resource_group, confirm=not yes)
