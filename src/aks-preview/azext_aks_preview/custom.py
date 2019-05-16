@@ -848,7 +848,7 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     if 'kube-dashboard' in addons:
         addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('kube-dashboard')
-   # TODO: can we help the user find a workspace resource ID?
+    # TODO: can we help the user find a workspace resource ID?
     if 'monitoring' in addons:
         if not workspace_resource_id:
             # use default workspace if exists else create default workspace
@@ -1298,7 +1298,7 @@ def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, 
     addon_args = addons.split(',')
 
     addon_profiles = instance.addon_profiles or {}
-    if 'kube-dashboard' in addon_args and not 'kubeDashboard' in addon_profiles:
+    if 'kube-dashboard' in addon_args and 'kubeDashboard' not in addon_profiles:
         addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
 
     os_type = 'Linux'
