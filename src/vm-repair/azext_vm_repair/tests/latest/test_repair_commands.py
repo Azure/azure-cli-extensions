@@ -14,7 +14,7 @@ class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2019Datacenter --admin-password !Passw0rd2018')
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1

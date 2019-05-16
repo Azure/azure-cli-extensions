@@ -25,7 +25,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 logger = get_logger(__name__)
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
-    
+
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(source_vm)
     target_disk_name = source_vm.storage_profile.os_disk.name
@@ -35,7 +35,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         os_image_urn = "UbuntuLTS"
     else:
         os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
-        
+    
     copy_disk_id = None
     resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
 
@@ -165,9 +165,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     # Construct return dict
     created_resources.append(copy_disk_id)
     return_dict = {}
-    return_dict['message'] = 'Repair VM \'{n}\' succesfully created in resource group \'{repair_rg}\' with disk \'{d}\' attached as a data disk. ' \
-                             'Copied disk created within the orignal resource group \'{rg}\'.' \
-                             .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name)
+    return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+                             'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
+                             '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
+                             'Note that the copied disk is created within the orignal resource group \'{rg}\'.' \
+                             .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
     return_dict['repairVmName'] = repair_vm_name
     return_dict['copiedDiskName'] = copy_disk_name
     return_dict['copiedDiskUri'] = copy_disk_id
@@ -239,8 +241,8 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Construct return dict
     return_dict = {}
-    return_dict['message'] = '\'{disk}\' successfully attached to {n} as an OS disk. Original disk \'{orig_disk}\' remains within the same resource group ' \
-                             '\'{rg}\'. Delete this manually to avoid unwanted costs.' \
+    return_dict['message'] = '\'{disk}\' successfully attached to {n} as an OS disk. Original disk \'{orig_disk}\' remains within the source resource group ' \
+                             '\'{rg}\'. Delete the disk manually to avoid unwanted costs.' \
                              .format(disk=disk_name, n=vm_name, orig_disk=original_disk, rg=resource_group_name)
 
     return return_dict
