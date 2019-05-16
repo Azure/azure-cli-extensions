@@ -5,6 +5,7 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
+
 class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -28,14 +29,15 @@ class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
         repair_vm = repair_vms[0]
         # Check attached data disk
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
-        
+
         # Call Restore
-        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
+
 
 class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
@@ -60,14 +62,15 @@ class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
         repair_vm = repair_vms[0]
         # Check attached data disk
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
-        
+
         # Call Restore
-        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
+
 
 class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
 
@@ -92,15 +95,16 @@ class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
         repair_vm = repair_vms[0]
         # Check attached data disk
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
-        
+
         # Call Restore
-        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
-        
+
+
 class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -124,9 +128,9 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
         repair_vm = repair_vms[0]
         # Check attached data disk
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copiedDiskName']
-        
+
         # Call Restore
-        result2 = self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()

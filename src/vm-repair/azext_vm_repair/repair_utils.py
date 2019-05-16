@@ -16,10 +16,12 @@ from .exceptions import AzCommandError, WindowsOsNotAvailableError
 
 logger = get_logger(__name__)
 
+
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False
     return True
+
 
 def _call_az_command(command_string, run_async=False, secure_params=None):
     """
@@ -45,7 +47,6 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     if not run_async:
         stdout, stderr = process.communicate()
         if process.returncode != 0:
-            #logger.error(stderr)
             raise AzCommandError(stderr)
 
         logger.debug('Success.\n')
@@ -53,12 +54,13 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         return stdout
     return None
 
+
 def _clean_up_resources(resource_group_name, confirm):
 
     try:
         if confirm:
             message = 'The clean-up will remove the resource group \'{rg}\' and all repair resources within:\n\n{r}' \
-                        .format(rg=resource_group_name, r='\n'.join(_list_resource_ids_in_rg(resource_group_name)))
+                      .format(rg=resource_group_name, r='\n'.join(_list_resource_ids_in_rg(resource_group_name)))
             logger.warning(message)
             if not prompt_y_n('Continue with clean-up and delete resources?'):
                 logger.warning('Skipping clean-up')
@@ -79,6 +81,7 @@ def _clean_up_resources(resource_group_name, confirm):
             return
         logger.error(azCommandError)
         logger.error("Clean up failed.")
+
 
 def _fetch_compatible_sku(source_vm):
 
@@ -114,8 +117,10 @@ def _fetch_compatible_sku(source_vm):
 
     return None
 
+
 def _get_repair_resource_tag(resource_group_name, source_vm_name):
     return 'repair_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=source_vm_name)
+
 
 def _list_resource_ids_in_rg(resource_group_name):
     get_resources_command = 'az resource list --resource-group {rg} --query [].id' \
@@ -124,8 +129,10 @@ def _list_resource_ids_in_rg(resource_group_name):
     ids = loads(_call_az_command(get_resources_command))
     return ids
 
+
 def _uses_encrypted_disk(vm):
     return vm.storage_profile.os_disk.encryption_settings
+
 
 def _fetch_compatible_windows_os_urn(source_vm):
 

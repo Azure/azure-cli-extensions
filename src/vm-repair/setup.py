@@ -29,8 +29,8 @@ DEPENDENCIES = []
 setup(
     name='vm-repair',
     version=VERSION,
-    description='Auto repair commands to fix faulty VMs.',
-    long_description='VM repair commands will enable Azure users to self-repair faulty VMs.',
+    description='Auto repair commands to fix VMs.',
+    long_description='VM repair scripts will enable Azure users to self-repair non-connectable VMs by copying the source VM’s OS disk and attaching it to a newly created repair VM.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='caiddev@microsoft.com',

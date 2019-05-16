@@ -24,6 +24,7 @@ from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyE
 
 logger = get_logger(__name__)
 
+
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
 
     # begin progress reporting for long running operation
@@ -120,7 +121,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                     .format(c=storage_account.container, name=copy_disk_name, source=snapshot_uri, con_string=connection_string)
             logger.info('Creating a copy disk from the snapshot...')
             _call_az_command(copy_snapshot_command, secure_params=[connection_string])
-             # Generate the copied disk uri
+            # Generate the copied disk uri
             copy_disk_id = os_disk_uri.rstrip(storage_account.blob) + copy_disk_name
 
             # Create new repair VM with copied ummanaged disk command
@@ -183,6 +184,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     return return_dict
 
+
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
 
     # begin progress reporting for long running operation
@@ -223,11 +225,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
             disk_uri = [disk.vhd.uri for disk in data_disks if disk.name == disk_name][0]
 
             detach_unamanged_command = 'az vm unmanaged-disk detach -g {g} --vm-name {repair} --name {disk}' \
-                                  .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
+                                       .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
             # Update OS disk with disk
             # storageProfile.osDisk.name="{disk}"
             attach_unmanaged_command = 'az vm update -g {g} -n {n} --set storageProfile.osDisk.vhd.uri="{uri}"' \
-                                   .format(g=resource_group_name, n=vm_name, uri=disk_uri)
+                                       .format(g=resource_group_name, n=vm_name, uri=disk_uri)
             logger.info('Detaching repaired data disk from repair VM...')
             _call_az_command(detach_unamanged_command)
             logger.info('Attaching repaired data disk to source VM as an OS disk...')

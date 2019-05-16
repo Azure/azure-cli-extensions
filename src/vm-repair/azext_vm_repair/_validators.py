@@ -21,6 +21,7 @@ from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encr
 
 logger = get_logger(__name__)
 
+
 def validate_create(cmd, namespace):
 
     # Check if VM exists and is not classic VM
@@ -60,6 +61,7 @@ def validate_create(cmd, namespace):
         _prompt_repair_username(namespace)
     if not namespace.repair_password:
         _prompt_repair_password(namespace)
+
 
 def validate_restore(cmd, namespace):
 
@@ -114,6 +116,7 @@ def validate_restore(cmd, namespace):
         if not [disk for disk in data_disks if disk.name == namespace.disk_name]:
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
 
+
 def _prompt_repair_username(namespace):
 
     from knack.prompting import prompt, NoTTYException
@@ -122,12 +125,14 @@ def _prompt_repair_username(namespace):
     except NoTTYException:
         raise CLIError('Please specify username in non-interactive mode.')
 
+
 def _prompt_repair_password(namespace):
     from knack.prompting import prompt_pass, NoTTYException
     try:
         namespace.repair_password = prompt_pass('Repair VM Admin Password: ', confirm=True)
     except NoTTYException:
         raise CLIError('Please specify password in non-interactive mode.')
+
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     api_version = '2017-04-01'
@@ -142,6 +147,7 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         logger.debug(cloudError)
         return False
     return True
+
 
 def _validate_and_get_vm(cmd, resource_group_name, vm_name):
 
@@ -160,6 +166,7 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
 
     return source_vm
 
+
 def _validate_vm_name(vm_name, is_linux):
     if not is_linux:
         win_pattern = r'[\'~!@#$%^&*()=+_[\]{}\\|;:.",<>?]'
@@ -167,7 +174,8 @@ def _validate_vm_name(vm_name, is_linux):
 
         if len(vm_name) > 15 or search(win_pattern, vm_name) or match(num_pattern, vm_name):
             raise CLIError('Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ' \
-                            '`~!@#$%^&*()=+_[]{}\\|; :.\'",<>/?')
+                           '`~!@#$%^&*()=+_[]{}\\|; :.\'",<>/?')
+
 
 def _validate_disk_name(disk_name):
     disk_pattern = r'([a-zA-Z0-9][a-zA-Z0-9_.\-]+[a-zA-Z0-9_])$'
@@ -175,6 +183,7 @@ def _validate_disk_name(disk_name):
         raise CLIError('Disk name must begin with a letter or number, end with a letter, number or underscore, and may contain only letters, numbers, underscores, periods, or hyphens.')
     if len(disk_name) > 80:
         raise CLIError('Disk name only allow up to 80 characters.')
+
 
 def _validate_resource_group_name(rg_name):
     rg_pattern = r'[0-9a-zA-Z._\-()]+$'
