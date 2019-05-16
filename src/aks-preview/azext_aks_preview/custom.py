@@ -25,15 +25,14 @@ from ipaddress import ip_network
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from six.moves.urllib.error import URLError  # pylint: disable=import-error
 
 import yaml
 import dateutil.parser  # pylint: disable=import-error
-import requests
-
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
-from six.moves.urllib.request import urlopen  # pylint: disable=import-error
-from six.moves.urllib.error import URLError  # pylint: disable=import-error
+import requests
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
