@@ -22,17 +22,17 @@ import time
 import uuid
 import webbrowser
 from ipaddress import ip_network
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from six.moves.urllib.error import URLError  # pylint: disable=import-error
+import requests
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
-from six.moves.urllib.request import urlopen  # pylint: disable=import-error
-from six.moves.urllib.error import URLError  # pylint: disable=import-error
 
 import yaml
 import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
-import requests
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -1407,7 +1407,7 @@ def _handle_merge(existing, addition, key, replace):
                 if replace or i == j:
                     existing[key].remove(j)
                 else:
-                    from knack.prompting import prompt_y_n, NoTTYException
+                    from knack.prompting import prompt_y_n
                     msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
                     overwrite = False
                     try:
