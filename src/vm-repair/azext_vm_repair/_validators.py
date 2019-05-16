@@ -23,9 +23,6 @@ logger = get_logger(__name__)
 
 def validate_create(cmd, namespace):
 
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -65,10 +62,6 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
 
 def validate_restore(cmd, namespace):
-
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
 
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)

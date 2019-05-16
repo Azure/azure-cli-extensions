@@ -126,9 +126,9 @@ def _list_resource_ids_in_rg(resource_group_name):
 
 def _uses_encrypted_disk(vm):
     return vm.storage_profile.os_disk.encryption_settings
-      
+
 def _fetch_compatible_windows_os_urn(source_vm):
-    
+
     fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l westus2 --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'
     logger.info('Fetching compatible Window OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))

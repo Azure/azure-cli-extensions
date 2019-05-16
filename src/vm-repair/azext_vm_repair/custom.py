@@ -26,6 +26,10 @@ logger = get_logger(__name__)
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
 
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
+
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(source_vm)
     target_disk_name = source_vm.storage_profile.os_disk.name
@@ -35,7 +39,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         os_image_urn = "UbuntuLTS"
     else:
         os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
-    
+
     copy_disk_id = None
     resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
 
@@ -152,7 +156,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         logger.error(unmanagedDiskCopyError)
         logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
-    except WindowsOsNotAvailableError as windowsOsNotAvailableError:
+    except WindowsOsNotAvailableError:
         logger.error('A compatible Windows OS image is not available at this time, please check subscription.')
     finally:
         # end long running op for process
@@ -180,6 +184,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return return_dict
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
+
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(source_vm)
@@ -241,7 +249,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Construct return dict
     return_dict = {}
-    return_dict['message'] = '\'{disk}\' successfully attached to {n} as an OS disk. Original disk \'{orig_disk}\' remains within the source resource group ' \
+    return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Original disk \'{orig_disk}\' remains within the source resource group ' \
                              '\'{rg}\'. Delete the disk manually to avoid unwanted costs.' \
                              .format(disk=disk_name, n=vm_name, orig_disk=original_disk, rg=resource_group_name)
 
