@@ -15,9 +15,10 @@ from .repair_utils import (
     _clean_up_resources,
     _fetch_compatible_sku,
     _list_resource_ids_in_rg,
-    _get_repair_resource_tag
+    _get_repair_resource_tag,
+    _fetch_compatible_windows_os_urn
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements
 
@@ -31,21 +32,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     is_managed = _uses_managed_disk(source_vm)
 
     if is_linux:
-        os_image_name = "UbuntuLTS"
+        os_image_urn = "UbuntuLTS"
     else:
-        # temp fix to mitigate Windows disk signature collision error
-        if source_vm.storage_profile.image_reference \
-           and source_vm.storage_profile.image_reference.version == '2016.127.20190214':
-            os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190115"
-        else:
-            os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190214"
-
+        os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+        
     copy_disk_id = None
     resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
 
     # Set up base create vm command
     create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                               .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_name, password=repair_password)
+                               .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
     # Add username field only for Windows
     if not is_linux:
         create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
@@ -156,6 +152,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         logger.error(unmanagedDiskCopyError)
         logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
+    except WindowsOsNotAvailableError as windowsOsNotAvailableError:
+        logger.error('A compatible Windows OS image is not available at this time, please check subscription.')
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()

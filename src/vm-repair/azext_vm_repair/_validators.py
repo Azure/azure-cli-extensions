@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from datetime import datetime
-import json
+from json import loads
 from re import match, search
 from knack.log import get_logger
 from knack.util import CLIError
@@ -85,7 +85,7 @@ def validate_restore(cmd, namespace):
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
             raise CLIError('Unexpected error occured while locating repair VM.')
-        repair_list = json.loads(output)
+        repair_list = loads(output)
 
         # No repair VM found
         if not repair_list:
@@ -200,7 +200,7 @@ def _validate_resource_group_name(rg_name):
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
         raise CLIError('Unexpected error occured while fetching existing resource groups.')
-    rg_list = json.loads(output)
+    rg_list = loads(output)
 
     if rg_name in [rg.lower() for rg in rg_list]:
         raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))

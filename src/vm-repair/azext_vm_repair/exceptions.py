@@ -14,3 +14,7 @@ class SkuNotAvailableError(Exception):
 class UnmanagedDiskCopyError(Exception):
     """Raised when error occured during unmanaged disk copy"""
     pass
+
+class WindowsOsNotAvailableError(Exception):
+    """Raised the Windows image not available from gallery."""
+    pass

@@ -6,11 +6,12 @@
 import subprocess
 import shlex
 import os
+from json import loads
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-from .exceptions import AzCommandError
+from .exceptions import AzCommandError, WindowsOsNotAvailableError
 # pylint: disable=line-too-long
 
 logger = get_logger(__name__)
@@ -79,25 +80,6 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error(azCommandError)
         logger.error("Clean up failed.")
 
-def _clean_up_resources_with_tag(tag):
-    try:
-        # Get ids of repair resources to delete first
-        get_resources_command = 'az resource list --tag {tags} --query [].id -o tsv' \
-                                .format(tags=tag)
-        logger.info('Fetching created repair resources for clean-up...')
-        ids = _call_az_command(get_resources_command).replace('\n', ' ')
-        # Delete repair VM resources command
-        if ids:
-            delete_resources_command = 'az resource delete --ids {ids}' \
-                                       .format(ids=ids)
-            logger.info('Cleaning up resources...')
-            _call_az_command(delete_resources_command)
-        else:
-            logger.info('No resources found with tag: %s. Skipping clean up.', tag)
-    except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        logger.error("Clean up failed.")
-
 def _fetch_compatible_sku(source_vm):
 
     location = source_vm.location
@@ -122,11 +104,10 @@ def _fetch_compatible_sku(source_vm):
                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'16\')] && ' \
                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
                        'capabilities[?name==\'PremiumIO\' && value==\'True\']].name"'\
-                       ' -o tsv' \
                        .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM:')
-    sku_list = _call_az_command(list_sku_command).strip('\n').split('\n')
+    sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
 
     if sku_list:
         return sku_list[0]
@@ -137,12 +118,29 @@ def _get_repair_resource_tag(resource_group_name, source_vm_name):
     return 'repair_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=source_vm_name)
 
 def _list_resource_ids_in_rg(resource_group_name):
-    get_resources_command = 'az resource list --resource-group {rg} --query [].id -o tsv' \
+    get_resources_command = 'az resource list --resource-group {rg} --query [].id' \
                             .format(rg=resource_group_name)
     logger.info('Fetching resources in resource group...')
-    ids = _call_az_command(get_resources_command).strip('\n').split('\n')
+    ids = loads(_call_az_command(get_resources_command))
     return ids
 
 def _uses_encrypted_disk(vm):
     return vm.storage_profile.os_disk.encryption_settings
-       
+      
+def _fetch_compatible_windows_os_urn(source_vm):
+    
+    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l westus2 --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'
+    logger.info('Fetching compatible Window OS images from gallery...')
+    urns = loads(_call_az_command(fetch_urn_command))
+
+    # No OS images available for Windows2016
+    if not urns:
+        raise WindowsOsNotAvailableError()
+
+    # temp fix to mitigate Windows disk signature collision error
+    if source_vm.storage_profile.image_reference and source_vm.storage_profile.image_reference.version in urns[0]:
+        if len(urns) < 2:
+            logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
+            raise WindowsOsNotAvailableError()
+        return urns[1]
+    return urns[0]
