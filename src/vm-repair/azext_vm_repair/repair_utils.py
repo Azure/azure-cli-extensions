@@ -98,22 +98,22 @@ def _clean_up_resources_with_tag(tag):
         logger.error(azCommandError)
         logger.error("Clean up failed.")
 
-def _fetch_compatible_sku(target_vm):
+def _fetch_compatible_sku(source_vm):
 
-    location = target_vm.location
-    target_vm_sku = target_vm.hardware_profile.vm_size
+    location = source_vm.location
+    source_vm_sku = source_vm.hardware_profile.vm_size
 
-    # First get the target_vm sku, if its available go with it
-    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=target_vm_sku, loc=location)
+    # First get the source_vm sku, if its available go with it
+    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
 
-    logger.info('Checking if target VM size is available...')
+    logger.info('Checking if source VM size is available...')
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
-        logger.info('Source VM size: \'%s\' is available. Using it to create repair VM.\n', target_vm_sku)
-        return target_vm_sku
+        logger.info('Source VM size: \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
+        return source_vm_sku
 
-    logger.info('Source VM size: \'%s\' is NOT available.\n', target_vm_sku)
+    logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
 
     # List available standard SKUs
     # TODO, premium IO only when needed
@@ -133,8 +133,8 @@ def _fetch_compatible_sku(target_vm):
 
     return None
 
-def _get_repair_resource_tag(resource_group_name, target_vm_name):
-    return 'repair_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=target_vm_name)
+def _get_repair_resource_tag(resource_group_name, source_vm_name):
+    return 'repair_source={rg}/{vm_name}'.format(rg=resource_group_name, vm_name=source_vm_name)
 
 def _list_resource_ids_in_rg(resource_group_name):
     get_resources_command = 'az resource list --resource-group {rg} --query [].id -o tsv' \

@@ -27,8 +27,8 @@ def validate_create(cmd, namespace):
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Check if VM exists and is not classic VM
-    target_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    is_linux = _is_linux_os(target_vm)
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)
 
     # Check repair vm name
     if namespace.repair_vm_name:
@@ -52,7 +52,7 @@ def validate_create(cmd, namespace):
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
 
     # Check encrypted disk
-    if _uses_encrypted_disk(target_vm):
+    if _uses_encrypted_disk(source_vm):
         # TODO, validate this with encrypted VMs
         logger.warning('The source VM\'s OS disk is encrypted.')
 
@@ -154,9 +154,9 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
 
     # Check if target VM exists
     resource_not_found_error = 'ResourceNotFound'
-    target_vm = None
+    source_vm = None
     try:
-        target_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm = get_vm(cmd, resource_group_name, vm_name)
     except CloudError as cloudError:
         logger.debug(cloudError)
         if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
@@ -165,7 +165,7 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
         # Unknown Error
         raise CLIError(cloudError.message)
 
-    return target_vm
+    return source_vm
 
 def _validate_vm_name(vm_name, is_linux):
     if not is_linux:

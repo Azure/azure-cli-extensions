@@ -25,17 +25,17 @@ logger = get_logger(__name__)
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
     
-    target_vm = get_vm(cmd, resource_group_name, vm_name)
-    is_linux = _is_linux_os(target_vm)
-    target_disk_name = target_vm.storage_profile.os_disk.name
-    is_managed = _uses_managed_disk(target_vm)
+    source_vm = get_vm(cmd, resource_group_name, vm_name)
+    is_linux = _is_linux_os(source_vm)
+    target_disk_name = source_vm.storage_profile.os_disk.name
+    is_managed = _uses_managed_disk(source_vm)
 
     if is_linux:
         os_image_name = "UbuntuLTS"
     else:
         # temp fix to mitigate Windows disk signature collision error
-        if target_vm.storage_profile.image_reference \
-           and target_vm.storage_profile.image_reference.version == '2016.127.20190214':
+        if source_vm.storage_profile.image_reference \
+           and source_vm.storage_profile.image_reference.version == '2016.127.20190214':
             os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190115"
         else:
             os_image_name = "MicrosoftWindowsServer:WindowsServer:2016-Datacenter:2016.127.20190214"
@@ -58,14 +58,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     # Main command calling block
     try:
         # fetch VM size of repair VM
-        sku = _fetch_compatible_sku(target_vm)
+        sku = _fetch_compatible_sku(source_vm)
         if not sku:
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
         # Create New Resource Group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                                        .format(loc=target_vm.location, group_name=repair_group_name)
+                                        .format(loc=source_vm.location, group_name=repair_group_name)
         logger.info('Creating resource group for repair VM and its resources...')
         _call_az_command(create_resource_group_command)
 
@@ -93,7 +93,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # UNMANAGED DISK
         else:
             logger.info('OS disk is unmanaged. Executing unmanaged disk swap...\n')
-            os_disk_uri = target_vm.storage_profile.os_disk.vhd.uri
+            os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
             copy_disk_name = copy_disk_name + '.vhd'
             # TODO, validate with Tosin about using this
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
@@ -181,8 +181,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
 
-    target_vm = get_vm(cmd, resource_group_name, vm_name)
-    is_managed = _uses_managed_disk(target_vm)
+    source_vm = get_vm(cmd, resource_group_name, vm_name)
+    is_managed = _uses_managed_disk(source_vm)
 
     repair_vm_id = parse_resource_id(repair_vm_id)
     repair_vm_name = repair_vm_id['name']
@@ -193,7 +193,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     original_disk = None
     try:
         if is_managed:
-            original_disk = target_vm.storage_profile.os_disk.name
+            original_disk = source_vm.storage_profile.os_disk.name
             # Detach repaired data disk command
             detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
                                   .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
@@ -207,7 +207,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
             logger.info('Attaching repaired data disk to source VM as an OS disk...')
             _call_az_command(attach_fixed_command)
         else:
-            original_disk = target_vm.storage_profile.os_disk.vhd.uri
+            original_disk = source_vm.storage_profile.os_disk.vhd.uri
             # Get disk uri from disk name
             repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
             data_disks = repair_vm.storage_profile.data_disks

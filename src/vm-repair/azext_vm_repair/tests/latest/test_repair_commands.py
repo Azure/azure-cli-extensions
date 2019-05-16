@@ -34,8 +34,8 @@ class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
-        targetVm = vms[0]
-        assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
 
 class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
@@ -66,8 +66,8 @@ class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
-        targetVm = vms[0]
-        assert targetVm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
 
 class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
 
@@ -98,8 +98,8 @@ class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
-        targetVm = vms[0]
-        assert targetVm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copiedDiskName']
         
 class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
@@ -130,5 +130,5 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
         # Check swapped OS disk
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
-        targetVm = vms[0]
-        assert targetVm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
