@@ -6,16 +6,30 @@
 from __future__ import print_function
 import binascii
 import datetime
+import errno
 import json
 import os
 import os.path
+import platform
 import re
+import ssl
+import stat
+import subprocess
+import sys
+import tempfile
+import threading
 import time
 import uuid
+import webbrowser
 from ipaddress import ip_network
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from six.moves.urllib.error import URLError  # pylint: disable=import-error
+import requests
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
+
+import yaml  # pylint: disable=import-error
 import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
@@ -24,7 +38,7 @@ from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
                                     KeyCredential,
@@ -51,6 +65,55 @@ logger = get_logger(__name__)
 
 
 # pylint:disable=too-many-lines,unused-argument
+
+
+def which(binary):
+    path_var = os.getenv('PATH')
+    if platform.system() == 'Windows':
+        binary = binary + '.exe'
+        parts = path_var.split(';')
+    else:
+        parts = path_var.split(':')
+
+    for part in parts:
+        bin_path = os.path.join(part, binary)
+        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+            return bin_path
+
+    return None
+
+
+def wait_then_open(url):
+    """
+    Waits for a bit then opens a URL.  Useful for waiting for a proxy to come up, and then open the URL.
+    """
+    for _ in range(1, 10):
+        try:
+            urlopen(url, context=_ssl_context())
+        except URLError:
+            time.sleep(1)
+        break
+    webbrowser.open_new_tab(url)
+
+
+def wait_then_open_async(url):
+    """
+    Spawns a thread that waits for a bit then opens a URL.
+    """
+    t = threading.Thread(target=wait_then_open, args=({url}))
+    t.daemon = True
+    t.start()
+
+
+def _ssl_context():
+    if sys.version_info < (3, 4) or (in_cloud_console() and platform.system() == 'Windows'):
+        try:
+            return ssl.SSLContext(ssl.PROTOCOL_TLS)  # added in python 2.7.13 and 3.6
+        except AttributeError:
+            return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+
+    return ssl.create_default_context()
+
 
 def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
     # use get_progress_controller
@@ -337,6 +400,73 @@ def subnet_role_assignment_exists(cli_ctx, scope):
         if i.scope == scope and i.role_definition_id.endswith(network_contributor_role_id):
             return True
     return False
+
+
+def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
+               listen_address='127.0.0.1', listen_port='8001'):
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
+
+    # verify the kube-dashboard addon was not disabled
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles or {}
+    addon_profile = addon_profiles.get("kubeDashboard", ManagedClusterAddonProfile(enabled=True))
+    if not addon_profile.enabled:
+        raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
+                       'To use "az aks browse" first enable the add-on\n'
+                       'by running "az aks enable-addons --addons kube-dashboard".')
+
+    proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
+    _, browse_path = tempfile.mkstemp()
+    # TODO: need to add an --admin option?
+    aks_get_credentials(cmd, client, resource_group_name, name, admin=False, path=browse_path)
+    # find the dashboard pod's name
+    try:
+        dashboard_pod = subprocess.check_output(
+            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system", "--output", "name",
+             "--selector", "k8s-app=kubernetes-dashboard"],
+            universal_newlines=True)
+    except subprocess.CalledProcessError as err:
+        raise CLIError('Could not find dashboard pod: {}'.format(err))
+    if dashboard_pod:
+        # remove any "pods/" or "pod/" prefix from the name
+        dashboard_pod = str(dashboard_pod).split('/')[-1].strip()
+    else:
+        raise CLIError("Couldn't find the Kubernetes dashboard pod.")
+    # launch kubectl port-forward locally to access the remote dashboard
+    if in_cloud_console():
+        # TODO: better error handling here.
+        response = requests.post('http://localhost:8888/openport/{0}'.format(listen_port))
+        result = json.loads(response.text)
+        term_id = os.environ.get('ACC_TERM_ID')
+        if term_id:
+            response = requests.post('http://localhost:8888/openLink/{}'.format(term_id),
+                                     json={"url": result['url']})
+        logger.warning('To view the console, please open %s in a new tab', result['url'])
+    else:
+        logger.warning('Proxy running on %s', proxy_url)
+
+    logger.warning('Press CTRL+C to close the tunnel...')
+    if not disable_browser:
+        wait_then_open_async(proxy_url)
+    try:
+        try:
+            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "--namespace", "kube-system",
+                                     "port-forward", "--address", listen_address, dashboard_pod,
+                                     "{0}:9090".format(listen_port)], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            if err.output.find(b'unknown flag: --address'):
+                if listen_address != '127.0.0.1':
+                    logger.warning('"--address" is only supported in kubectl v1.13 and later.')
+                    logger.warning('The "--listen-address" argument will be ignored.')
+                subprocess.call(["kubectl", "--kubeconfig", browse_path, "--namespace", "kube-system",
+                                 "port-forward", dashboard_pod, "{0}:9090".format(listen_port)])
+    except KeyboardInterrupt:
+        # Let command processing finish gracefully after the user presses [Ctrl+C]
+        pass
+    finally:
+        # TODO: Better error handling here.
+        requests.post('http://localhost:8888/closeport/8001')
 
 
 def _trim_nodepoolname(nodepool_name):
@@ -644,11 +774,31 @@ def _remove_nulls(managed_clusters):
     return managed_clusters
 
 
+def aks_get_credentials(cmd, client, resource_group_name, name, admin=False,
+                        path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                        overwrite_existing=False):
+    credentialResults = None
+    if admin:
+        credentialResults = client.list_cluster_admin_credentials(resource_group_name, name)
+    else:
+        credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
+
+    if not credentialResults:
+        raise CLIError("No Kubernetes credentials found.")
+    else:
+        try:
+            kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
+            _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
+        except (IndexError, ValueError):
+            raise CLIError("Fail to find kubeconfig file.")
+
+
 ADDONS = {
     'http_application_routing': 'httpApplicationRouting',
     'monitoring': 'omsagent',
     'virtual-node': 'aciConnector',
-    'azure-policy': 'azurepolicy'
+    'azure-policy': 'azurepolicy',
+    'kube-dashboard': 'kubeDashboard'
 }
 
 
@@ -694,6 +844,9 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     if 'http_application_routing' in addons:
         addon_profiles['httpApplicationRouting'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('http_application_routing')
+    if 'kube-dashboard' in addons:
+        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
+        addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
     if 'monitoring' in addons:
         if not workspace_resource_id:
@@ -1144,6 +1297,8 @@ def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, 
     addon_args = addons.split(',')
 
     addon_profiles = instance.addon_profiles or {}
+    if 'kube-dashboard' in addon_args and 'kubeDashboard' not in addon_profiles:
+        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
 
     os_type = 'Linux'
 
@@ -1202,3 +1357,119 @@ def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, 
 
 def aks_get_versions(cmd, client, location):
     return client.list_orchestrators(location, resource_type='managedClusters')
+
+
+def _print_or_merge_credentials(path, kubeconfig, overwrite_existing):
+    """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
+    stdout if the path is "-".
+    """
+    # Special case for printing to stdout
+    if path == "-":
+        print(kubeconfig)
+        return
+
+    # ensure that at least an empty ~/.kube/config exists
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except OSError as ex:
+            if ex.errno != errno.EEXIST:
+                raise
+    if not os.path.exists(path):
+        with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
+            pass
+
+    # merge the new kubeconfig into the existing one
+    fd, temp_path = tempfile.mkstemp()
+    additional_file = os.fdopen(fd, 'w+t')
+    try:
+        additional_file.write(kubeconfig)
+        additional_file.flush()
+        merge_kubernetes_configurations(path, temp_path, overwrite_existing)
+    except yaml.YAMLError as ex:
+        logger.warning('Failed to merge credentials to kube config file: %s', ex)
+    finally:
+        additional_file.close()
+        os.remove(temp_path)
+
+
+def _handle_merge(existing, addition, key, replace):
+    if not addition[key]:
+        return
+    if existing[key] is None:
+        existing[key] = addition[key]
+        return
+
+    for i in addition[key]:
+        for j in existing[key]:
+            if i['name'] == j['name']:
+                if replace or i == j:
+                    existing[key].remove(j)
+                else:
+                    from knack.prompting import prompt_y_n
+                    msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
+                    overwrite = False
+                    try:
+                        overwrite = prompt_y_n(msg.format(i['name']))
+                    except NoTTYException:
+                        pass
+                    if overwrite:
+                        existing[key].remove(j)
+                    else:
+                        msg = 'A different object named {} already exists in {} in your kubeconfig file.'
+                        raise CLIError(msg.format(i['name'], key))
+        existing[key].append(i)
+
+
+def load_kubernetes_configuration(filename):
+    try:
+        with open(filename) as stream:
+            return yaml.safe_load(stream)
+    except (IOError, OSError) as ex:
+        if getattr(ex, 'errno', 0) == errno.ENOENT:
+            raise CLIError('{} does not exist'.format(filename))
+        else:
+            raise
+    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+
+
+def merge_kubernetes_configurations(existing_file, addition_file, replace):
+    existing = load_kubernetes_configuration(existing_file)
+    addition = load_kubernetes_configuration(addition_file)
+
+    # rename the admin context so it doesn't overwrite the user context
+    for ctx in addition.get('contexts', []):
+        try:
+            if ctx['context']['user'].startswith('clusterAdmin'):
+                admin_name = ctx['name'] + '-admin'
+                addition['current-context'] = ctx['name'] = admin_name
+                break
+        except (KeyError, TypeError):
+            continue
+
+    if addition is None:
+        raise CLIError('failed to load additional configuration from {}'.format(addition_file))
+
+    if existing is None:
+        existing = addition
+    else:
+        _handle_merge(existing, addition, 'clusters', replace)
+        _handle_merge(existing, addition, 'users', replace)
+        _handle_merge(existing, addition, 'contexts', replace)
+        existing['current-context'] = addition['current-context']
+
+    # check that ~/.kube/config is only read- and writable by its owner
+    if platform.system() != 'Windows':
+        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        if not existing_file_perms.endswith('600'):
+            logger.warning('%s has permissions "%s".\nIt should be readable and writable only by its owner.',
+                           existing_file, existing_file_perms)
+
+    with open(existing_file, 'w+') as stream:
+        yaml.safe_dump(existing, stream, default_flow_style=False)
+
+    current_context = addition.get('current-context', 'UNKNOWN')
+    msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
+    print(msg)
