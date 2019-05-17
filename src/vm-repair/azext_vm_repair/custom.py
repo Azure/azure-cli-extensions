@@ -133,7 +133,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                  .format(c=storage_account.container, name=copy_disk_name, con_string=connection_string)
             copy_result = _call_az_command(copy_check_command, secure_params=[connection_string]).strip('\n')
             if copy_result != 'success':
-                raise UnmanagedDiskCopyError('Unmanaged disk copy failed!')
+                raise UnmanagedDiskCopyError('Unmanaged disk copy failed.')
 
             # Attach copied unmanaged disk to new vm
             logger.info('Attaching copied disk to repair VM as data disk...')

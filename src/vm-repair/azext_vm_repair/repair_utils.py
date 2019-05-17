@@ -69,12 +69,13 @@ def _clean_up_resources(resource_group_name, confirm):
         delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
         logger.info('Cleaning up resources by deleting repair resource group: \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
-    # Exception only thrown from confirm block
+    # NoTTYException exception only thrown from confirm block
     except NoTTYException:
         logger.warning('Cannot confirm clean-up resouce in non-interactive mode.')
         logger.warning('Skipping clean-up')
         return
     except AzCommandError as azCommandError:
+        # Only way to distinguish errors
         resource_not_found_error_string = 'could not be found'
         if resource_not_found_error_string in str(azCommandError):
             logger.info('Resource group not found. Skipping clean up.')
