@@ -19,11 +19,11 @@ from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encr
 
 # pylint: disable=line-too-long
 
+API_VERSION = '2017-04-01'
 logger = get_logger(__name__)
 
 
 def validate_create(cmd, namespace):
-
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -35,7 +35,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:15]
 
     # Check copy disk name
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:
@@ -135,13 +135,12 @@ def _prompt_repair_password(namespace):
 
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
-    api_version = '2017-04-01'
     classic_vm_provider = 'Microsoft.ClassicCompute'
     vm_resource_type = 'virtualMachines'
 
     resource_client = _resource_client_factory(cmd.cli_ctx).resources
     try:
-        resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
+        resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, API_VERSION)
     except CloudError as cloudError:
         # Resource does not exist or the API failed
         logger.debug(cloudError)
@@ -150,7 +149,6 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
 
 
 def _validate_and_get_vm(cmd, resource_group_name, vm_name):
-
     # Check if target VM exists
     resource_not_found_error = 'ResourceNotFound'
     source_vm = None
@@ -160,7 +158,7 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
         logger.debug(cloudError)
         if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
             # Given VM is classic VM (RDFE)
-            raise CLIError('The given VM \'{}\' is a classic VM. VM Repair commands do not support classic VMs.'.format(vm_name))
+            raise CLIError('The given VM \'{}\' is a classic VM. VM repair commands do not support classic VMs.'.format(vm_name))
         # Unknown Error
         raise CLIError(cloudError.message)
 
