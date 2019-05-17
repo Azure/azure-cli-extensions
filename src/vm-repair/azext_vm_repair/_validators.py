@@ -56,7 +56,7 @@ def validate_create(cmd, namespace):
 
     # Validate Auth Params
     if is_linux and namespace.repair_username:
-        logger.warning("Chaging admin username property is not allowed for Linux VMs. Ignoring the given repair-username parameter.")
+        logger.warning("Setting admin username property is not allowed for Linux VMs. Ignoring the given repair-username parameter.")
     if not is_linux and not namespace.repair_username:
         _prompt_repair_username(namespace)
     if not namespace.repair_password:
@@ -112,7 +112,7 @@ def validate_restore(cmd, namespace):
     if not namespace.disk_name:
         namespace.disk_name = data_disks[0].name
         logger.warning('Disk-name not given. Defaulting to the first data disk attached to the repair VM: %s', data_disks[0].name)
-    else: # check disk name
+    else:  # check disk name
         if not [disk for disk in data_disks if disk.name == namespace.disk_name]:
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
 

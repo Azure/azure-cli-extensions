@@ -20,9 +20,9 @@ class VmRepairCommandsLoader(AzCommandsLoader):
         load_command_table(self, args)
         return self.command_table
 
-
     def load_arguments(self, command):
         from ._params import load_arguments
         load_arguments(self, command)
+
 
 COMMAND_LOADER_CLS = VmRepairCommandsLoader

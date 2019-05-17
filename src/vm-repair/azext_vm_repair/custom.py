@@ -20,7 +20,7 @@ from .repair_utils import (
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError
 
-# pylint: disable=line-too-long, too-many-locals, too-many-statements
+# pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except
 
 logger = get_logger(__name__)
 
@@ -36,20 +36,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     target_disk_name = source_vm.storage_profile.os_disk.name
     is_managed = _uses_managed_disk(source_vm)
 
-    if is_linux:
-        os_image_urn = "UbuntuLTS"
-    else:
-        os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
-
     copy_disk_id = None
     resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
-
-    # Set up base create vm command
-    create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                               .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
-    # Add username field only for Windows
-    if not is_linux:
-        create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
 
     # Overall success flag
     command_succeeded = False
@@ -58,6 +46,18 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Main command calling block
     try:
+        # Fetch OS image urn
+        if is_linux:
+            os_image_urn = "UbuntuLTS"
+        else:
+            os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+
+         # Set up base create vm command
+        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
+                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
+        # Add username field only for Windows
+        if not is_linux:
+            create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
         # fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm)
         if not sku:
@@ -96,7 +96,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('OS disk is unmanaged. Executing unmanaged disk swap...\n')
             os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
             copy_disk_name = copy_disk_name + '.vhd'
-            # TODO, validate with Tosin about using this
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
             # Validate create vm create command to validate parameters before runnning copy disk commands
             validate_create_vm_command = create_repair_vm_command + ' --validate'
@@ -159,6 +158,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
     except WindowsOsNotAvailableError:
         logger.error('A compatible Windows OS image is not available at this time, please check subscription.')
+    except Exception as exception:
+        logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
+        logger.debug(exception)
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
@@ -242,6 +244,9 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
         logger.error("Repair swap-disk failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
+    except Exception as exception:
+        logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
+        logger.debug(exception)
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
