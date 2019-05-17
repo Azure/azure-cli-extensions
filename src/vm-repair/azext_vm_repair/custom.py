@@ -52,7 +52,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
-         # Set up base create vm command
+        # Set up base create vm command
         create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
                                    .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
         # Add username field only for Windows

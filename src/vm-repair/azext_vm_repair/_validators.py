@@ -171,8 +171,8 @@ def _validate_vm_name(vm_name, is_linux):
         num_pattern = r'[0-9]+$'
 
         if len(vm_name) > 15 or search(win_pattern, vm_name) or match(num_pattern, vm_name):
-            raise CLIError('Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: ' \
-                           '`~!@#$%^&*()=+_[]{}\\|; :.\'",<>/?')
+            raise CLIError('Windows computer name cannot be more than 15 characters long, be entirely numeric, or contain the following characters: '
+                           r'`~!@#$%^&*()=+_[]{}\|; :.\'",<>/?')
 
 
 def _validate_disk_name(disk_name):
