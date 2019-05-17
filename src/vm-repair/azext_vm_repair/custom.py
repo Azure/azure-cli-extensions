@@ -64,7 +64,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
-        # Create New Resource Group
+        # Create new resource group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                         .format(loc=source_vm.location, group_name=repair_group_name)
         logger.info('Creating resource group for repair VM and its resources...')
