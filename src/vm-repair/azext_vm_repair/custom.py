@@ -257,7 +257,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     # Construct return dict
     return_dict = {}
     return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Original disk \'{orig_disk}\' remains within the source resource group ' \
-                             '\'{rg}\'. Delete the disk manually to avoid unwanted costs.' \
+                             '\'{rg}\'. Please test your repairs and once confirmed, you may choose to delete the orignal disk manually if you no longer need it, to avoid any undesired costs.' \
                              .format(disk=disk_name, n=vm_name, orig_disk=original_disk, rg=resource_group_name)
 
     return return_dict

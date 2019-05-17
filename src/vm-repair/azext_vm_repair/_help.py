@@ -31,10 +31,7 @@ helps['vm repair restore'] = """
         - name: Restore from the repair VM, command will auto-search for repair-vm
           text: >
             az vm repair restore -g MyResourceGroup -n MyVM --verbose
-        - name: Restore from the repair VM, specify the repair-vm
+        - name: Restore from the repair VM, specify the disk to restore
           text: >
-            az vm repair restore -g MyResourceGroup -n MyVM --repair-vm-name repairVM --repair-resource-group repairGroup --verbose
-        - name: Restore from the repair VM, specify the repair-vm and disk to restore
-          text: >
-            az vm repair restore -g MyResourceGroup -n MyVM --repair-vm-name repairVM --repair-resource-group repairGroup --disk-name MyDiskCopy --verbose
+            az vm repair restore -g MyResourceGroup -n MyVM --disk-name MyDiskCopy --verbose
 """
