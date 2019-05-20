@@ -87,7 +87,7 @@ class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018 --repair-username azureadmin').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()
@@ -114,13 +114,13 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password !Passw0rd2018 --repair-username azureadmin --use-unmanaged-disk')
+        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password !Passw0rd2018 --use-unmanaged-disk')
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018 --repair-username azureadmin').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repairResouceGroup'])).get_output_in_json()

@@ -72,7 +72,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # MANAGED DISK
         if is_managed:
-            logger.info('OS disk is managed. Executing managed disk swap.\n')
+            logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
             # Copy OS disk command
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name)
@@ -93,7 +93,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
         else:
-            logger.info('OS disk is unmanaged. Executing unmanaged disk swap...\n')
+            logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')
             os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
             copy_disk_name = copy_disk_name + '.vhd'
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
@@ -105,7 +105,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # get storage account connection string
             get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
                                             .format(g=resource_group_name, n=storage_account.account_name)
-            logger.info('Fetching storage account connection string...')
+            logger.debug('Fetching storage account connection string...')
             connection_string = _call_az_command(get_connection_string_command).strip('\n')
 
             # Create Snapshot of Unmanaged Disk
@@ -125,7 +125,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
             # Create new repair VM with copied ummanaged disk command
             create_repair_vm_command = create_repair_vm_command + ' --use-unmanaged-disk'
-            logger.info('Creating repair vm while disk copy is in progress...')
+            logger.info('Creating repair VM while disk copy is in progress...')
             _call_az_command(create_repair_vm_command, secure_params=[repair_password])
 
             logger.info('Checking if disk copy is done...')
@@ -202,10 +202,10 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Overall success flag
     command_succeeded = False
-    original_disk = None
+    source_disk = None
     try:
         if is_managed:
-            original_disk = source_vm.storage_profile.os_disk.name
+            source_disk = source_vm.storage_profile.os_disk.name
             # Detach repaired data disk command
             detach_disk_command = 'az vm disk detach -g {g} --vm-name {repair} --name {disk}' \
                                   .format(g=repair_resource_group, repair=repair_vm_name, disk=disk_name)
@@ -219,7 +219,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
             logger.info('Attaching repaired data disk to source VM as an OS disk...')
             _call_az_command(attach_fixed_command)
         else:
-            original_disk = source_vm.storage_profile.os_disk.vhd.uri
+            source_disk = source_vm.storage_profile.os_disk.vhd.uri
             # Get disk uri from disk name
             repair_vm = get_vm(cmd, repair_vm_id['resource_group'], repair_vm_id['name'])
             data_disks = repair_vm.storage_profile.data_disks
@@ -256,8 +256,8 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Construct return dict
     return_dict = {}
-    return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Original disk \'{orig_disk}\' remains within the source resource group ' \
-                             '\'{rg}\'. Please test your repairs and once confirmed, you may choose to delete the orignal disk manually if you no longer need it, to avoid any undesired costs.' \
-                             .format(disk=disk_name, n=vm_name, orig_disk=original_disk, rg=resource_group_name)
+    return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
+                             'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
+                             .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
 
     return return_dict

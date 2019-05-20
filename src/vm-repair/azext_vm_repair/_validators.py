@@ -75,7 +75,7 @@ def validate_restore(cmd, namespace):
         try:
             find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
                                   .format(tag=tag)
-            logger.info('Searching for repair-vm within subscription:')
+            logger.info('Searching for repair-vm within subscription...')
             output = _call_az_command(find_repair_command)
         except AzCommandError as azCommandError:
             logger.error(azCommandError)

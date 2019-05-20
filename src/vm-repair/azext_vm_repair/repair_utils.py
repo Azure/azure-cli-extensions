@@ -67,7 +67,7 @@ def _clean_up_resources(resource_group_name, confirm):
                 return
 
         delete_resource_group_command = 'az group delete --name {name} --yes --no-wait'.format(name=resource_group_name)
-        logger.info('Cleaning up resources by deleting repair resource group: \'%s\'...', resource_group_name)
+        logger.info('Cleaning up resources by deleting repair resource group \'%s\'...', resource_group_name)
         _call_az_command(delete_resource_group_command)
     # NoTTYException exception only thrown from confirm block
     except NoTTYException:
@@ -96,7 +96,7 @@ def _fetch_compatible_sku(source_vm):
     sku_check = _call_az_command(check_sku_command).strip('\n')
 
     if sku_check:
-        logger.info('Source VM size: \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
+        logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
         return source_vm_sku
 
     logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
@@ -110,7 +110,7 @@ def _fetch_compatible_sku(source_vm):
                        'capabilities[?name==\'PremiumIO\' && value==\'True\']].name"'\
                        .format(loc=location)
 
-    logger.info('Fetching available VM sizes for repair VM:')
+    logger.info('Fetching available VM sizes for repair VM...')
     sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
 
     if sku_list:
@@ -126,7 +126,7 @@ def _get_repair_resource_tag(resource_group_name, source_vm_name):
 def _list_resource_ids_in_rg(resource_group_name):
     get_resources_command = 'az resource list --resource-group {rg} --query [].id' \
                             .format(rg=resource_group_name)
-    logger.info('Fetching resources in resource group...')
+    logger.debug('Fetching resources in resource group...')
     ids = loads(_call_az_command(get_resources_command))
     return ids
 
@@ -138,7 +138,7 @@ def _uses_encrypted_disk(vm):
 def _fetch_compatible_windows_os_urn(source_vm):
 
     fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l westus2 --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'
-    logger.info('Fetching compatible Window OS images from gallery...')
+    logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # No OS images available for Windows2016
