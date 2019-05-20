@@ -152,3 +152,21 @@ def _fetch_compatible_windows_os_urn(source_vm):
             raise WindowsOsNotAvailableError()
         return urns[1]
     return urns[0]
+
+
+def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path, resource_type):
+
+        provider = rcf.providers.get(resource_provider_namespace)
+        # If available, we will use parent resource's api-version
+
+        resource_type_str = (parent_resource_path.split('/')[0] if parent_resource_path else resource_type)
+        rt = [t for t in provider.resource_types
+              if t.resource_type.lower() == resource_type_str.lower()]
+        if not rt:
+            raise IncorrectUsageError('Resource type {} not found.'.format(resource_type_str))
+        if len(rt) == 1 and rt[0].api_versions:
+            npv = [v for v in rt[0].api_versions if 'preview' not in v.lower()]
+            return npv[0] if npv else rt[0].api_versions[0]
+        raise IncorrectUsageError(
+            'API version is required and could not be resolved for resource {}'
+            .format(resource_type))

@@ -15,11 +15,10 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from .exceptions import AzCommandError
-from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encrypted_disk
+from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encrypted_disk, _resolve_api_version
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, broad-except
 
-API_VERSION = '2017-04-01'
 logger = get_logger(__name__)
 
 
@@ -138,11 +137,17 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
     vm_resource_type = 'virtualMachines'
 
-    resource_client = _resource_client_factory(cmd.cli_ctx).resources
     try:
-        resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, API_VERSION)
+        rcf = _resource_client_factory(cmd.cli_ctx)
+        api_version = _resolve_api_version(rcf, classic_vm_provider, None, vm_resource_type)
+        resource_client = rcf.resources
+        resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
     except CloudError as cloudError:
         # Resource does not exist or the API failed
+        logger.debug(cloudError)
+        return False
+    except Exception as exception:
+        # Unknown error, so return false for default resource not found error message
         logger.debug(cloudError)
         return False
     return True
