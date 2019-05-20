@@ -148,7 +148,7 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         return False
     except Exception as exception:
         # Unknown error, so return false for default resource not found error message
-        logger.debug(cloudError)
+        logger.debug(exception)
         return False
     return True
 
