@@ -2,6 +2,24 @@
 
 Release History
 ===============
+0.4.1
++++++
+* Add `az aks get-versions -l location` to allow users to see all managed cluster versions.
+* Add `az aks get-upgrades` to get all available versions to upgrade.
+* Add '(preview)' suffix if kubernetes version is preview when using `get-versions` and `get-upgrades`
+
+0.4.0
++++++
+* Add support for Azure policy add-on.
+
+0.3.2
++++++
+* Add support of customizing node resource group
+
+0.3.1
++++++
+* Add support of pod security policy.
+
 0.3.0
 +++++
 * Add support of feature `--node-zones`

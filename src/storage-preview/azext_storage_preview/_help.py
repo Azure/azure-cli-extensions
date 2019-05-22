@@ -97,6 +97,16 @@ helps['storage azcopy blob delete'] = """
           text: az storage azcopy blob delete -c MyContainer --account-name MyStorageAccount -t "path/to/virtual_directory" --recursive
 """
 
+helps['storage azcopy blob sync'] = """
+    type: command
+    short-summary: Sync blobs recursively to a storage blob container using AzCopy.
+    examples:
+        - name: Sync a single blob to a container.
+          text: az storage azcopy blob sync -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d NewBlob
+        - name: Sync a directory to a container.
+          text: az storage azcopy blob sync -c MyContainer --account-name MyStorageAccount -s "path/to/directory"
+"""
+
 helps['storage azcopy run-command'] = """
     type: command
     short-summary: Run a command directly using the AzCopy CLI. Please use SAS tokens for authentication.

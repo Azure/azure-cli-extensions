@@ -59,6 +59,12 @@ helps['aks create'] = """
         - name: --admin-username -u
           type: string
           short-summary: User account to create on node VMs for SSH access.
+        - name: --windows-admin-username
+          type: string
+          short-summary: User account to create on windows node VMs.
+        - name: --windows-admin-password
+          type: string
+          short-summary: User account password to use on windows node VMs.
         - name: --aad-client-app-id
           type: string
           short-summary: (PREVIEW) The ID of an Azure Active Directory client application of type "Native". This
@@ -90,6 +96,8 @@ helps['aks create'] = """
             These addons are available:
                 http_application_routing - configure ingress with automatic public DNS name creation.
                 monitoring - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
+                virtual-node - enable AKS Virtual Node (PREVIEW). Requires --subnet-name to provide the name of an existing subnet for the Virtual Node to use.
+                azure-policy - enable Azure policy (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -142,6 +150,12 @@ helps['aks create'] = """
         - name: --enable-vmss
           type: bool
           short-summary: (PREVIEW) Enable VMSS agent type.
+        - name: --enable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Enable pod security policy.
+        - name: --node-resource-group
+          type: string
+          short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -197,6 +211,12 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: str
           short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
+        - name: --enable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Enable pod security policy.
+        - name: --disable-pod-security-policy
+          type: bool
+          short-summary: (PREVIEW) Disable pod security policy.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -206,4 +226,113 @@ helps['aks update'] = """
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Enable authorized IP ranges for apiserver.
         text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
+      - name: Enable pod security policy.
+        text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
+      - name: Disable pod security policy.
+        text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
+"""
+
+helps['aks nodepool'] = """
+    type: group
+    short-summary: Commands to manage node pools in Kubernetes kubernetes cluster.
+"""
+helps['aks nodepool show'] = """
+    type: command
+    short-summary: Show the details for a node pool in the managed Kubernetes cluster.
+"""
+
+helps['aks nodepool list'] = """
+    type: command
+    short-summary: List node pools in the managed Kubernetes cluster.
+"""
+
+helps['aks nodepool add'] = """
+    type: command
+    short-summary: Add a node pool to the managed Kubernetes cluster.
+    parameters:
+        - name: --node-vm-size -s
+          type: string
+          short-summary: Size of Virtual Machines to create as Kubernetes nodes.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the Kubernetes agent pool. After creating a cluster, you can change the
+                         size of its node pool with `az aks scale`.
+        - name: --kubernetes-version -k
+          type: string
+          short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".
+          populator-commands:
+          - "`az aks get-versions`"
+        - name: --node-osdisk-size
+          type: int
+          short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+        - name: --max-pods -m
+          type: int
+          short-summary: The maximum number of pods deployable to a node.
+          long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
+        - name: --node-zones
+          type: string array
+          short-summary: (PREVIEW) Availability zones where agent nodes will be placed.
+        - name: --vnet-subnet-id
+          type: string
+          short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
+        - name: --os-type
+          type: string
+          short-summary: The OS Type. Linux or Windows.
+"""
+
+helps['aks nodepool scale'] = """
+    type: command
+    short-summary: Scale the node pool in a managed Kubernetes cluster.
+    parameters:
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the Kubernetes node pool.
+"""
+
+helps['aks nodepool upgrade'] = """
+    type: command
+    short-summary: Upgrade the node pool in a managed Kubernetes cluster.
+    parameters:
+        - name: --kubernetes-version -k
+          type: string
+          short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+"""
+
+helps['aks nodepool delete'] = """
+    type: command
+    short-summary: Delete the agent pool in the managed Kubernetes cluster.
+"""
+
+helps['aks enable-addons'] = """
+type: command
+short-summary: Enable Kubernetes addons.
+long-summary: |-
+    These addons are available:
+        http_application_routing - configure ingress with automatic public DNS name creation.
+        monitoring - turn on Log Analytics monitoring. Requires "--workspace-resource-id".
+        virtual-node - enable AKS Virtual Node (PREVIEW). Requires "--subnet-name".
+        azure-policy - enable Azure policy (PREVIEW).
+parameters:
+  - name: --addons -a
+    type: string
+    short-summary: Enable the Kubernetes addons in a comma-separated list.
+  - name: --workspace-resource-id
+    type: string
+    short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
+  - name: --subnet-name -s
+    type: string
+    short-summary: The subnet name for the virtual node to use.
+examples:
+  - name: Enable Kubernetes addons. (autogenerated)
+    text: az aks enable-addons --addons virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
+    crafted: true
+"""
+
+helps['aks get-versions'] = """
+type: command
+short-summary: Get the versions available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the versions available for creating a managed Kubernetes cluster
+    text: az aks get-versions --location westus2
+    crafted: true
 """

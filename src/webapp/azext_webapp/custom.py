@@ -240,6 +240,8 @@ def _check_for_ready_tunnel(remote_debugging, tunnel_server):
 
 
 def create_tunnel(cmd, resource_group_name, name, port=None, slot=None):
+    logger.warning("remote-connection is deprecated and moving to cli-core, use `webapp create-remote-connection`")
+
     webapp = show_webapp(cmd, resource_group_name, name, slot)
     is_linux = webapp.reserved
     if not is_linux:

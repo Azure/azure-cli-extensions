@@ -68,7 +68,7 @@ def get_subnet_validator():
         # error if vnet-name is provided along with a subnet ID
         if is_id and namespace.virtual_network_name:
             raise usage_error
-        elif not is_id and not namespace.virtual_network_name:
+        if not is_id and not namespace.virtual_network_name:
             raise usage_error
 
         if not is_id:
