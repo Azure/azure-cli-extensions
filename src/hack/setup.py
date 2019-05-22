@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 VERSION = "0.2.17"
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 3 - Alpha',
     'Intended Audience :: Developers',
     'Programming Language :: Python',
     'Programming Language :: Python :: 2',
@@ -29,13 +29,13 @@ setup(
     name='hack',
     version=VERSION,
     description='Commands to quickly create web space and resources for hack projects.',
-    long_description='An Azure CLI Extension to quickly create and delete common hack project resources such as web space, databases, and Cognitive Services keys.',
+    long_description='An Azure CLI Extension to quickly create and delete common hack project resources.',
     license='MIT',
     author='Christopher Harrison',
     author_email='chrhar@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
     classifiers=CLASSIFIERS,
     package_data={'azext_hack': ['azext_metadata.json']},
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(),
     install_requires=DEPENDENCIES
 )
