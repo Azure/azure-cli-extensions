@@ -28,9 +28,10 @@ def hack_up(cmd, name):
     # Create app service plan and website
     logger.warning("Starting website creation job...")
     web_app = create_website(cmd, name, location)
-
-    while not database_poller.done():
-        pass
+    while True:
+        database_poller.result(15)
+        if database_poller.done():
+            break
     logger.warning('Done!!!')
 
     # Add app setting with connection string
