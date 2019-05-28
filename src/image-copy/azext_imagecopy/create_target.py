@@ -5,10 +5,12 @@
 
 import datetime
 import time
-from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
-from knack.util import CLIError
 
+from knack.util import CLIError
 from knack.log import get_logger
+
+from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
+
 logger = get_logger(__name__)
 
 STORAGE_ACCOUNT_NAME_LENGTH = 24

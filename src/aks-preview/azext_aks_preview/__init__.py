@@ -31,7 +31,12 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        super(ContainerServiceCommandsLoader, self).load_arguments(command)
+        from sys import version_info
+        if version_info[0] < 3:
+            super(ContainerServiceCommandsLoader, self).load_arguments(command)
+        else:
+            super().load_arguments(command)
+
         from ._params import load_arguments
         load_arguments(self, command)
 
