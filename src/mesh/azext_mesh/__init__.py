@@ -14,7 +14,6 @@ class SbzCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         custom = CliCommandType(operations_tmpl='azext_mesh.custom#{}')
         super(SbzCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                min_profile='2017-03-10-profile',
                                                 custom_command_type=custom)
 
     def load_command_table(self, args):
