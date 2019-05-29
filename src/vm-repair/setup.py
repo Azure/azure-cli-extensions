@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.1"
+VERSION = "0.1.0"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,26 +24,18 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'msrest'
-]
-
-with open('README.md', 'r', encoding='utf-8') as f:
-    README = f.read()
-with open('HISTORY.rst', 'r', encoding='utf-8') as f:
-    HISTORY = f.read()
+DEPENDENCIES = []
 
 setup(
-    name='netappfiles-preview',
+    name='vm-repair',
     version=VERSION,
-    description='Provides a preview for upcoming Azure NetApp Files (ANF) features.',
-    long_description='An Azure CLI Extension for Azure NetApp Files (ANF) preview features.',
+    description='Auto repair commands to fix VMs.',
+    long_description='VM repair scripts will enable Azure users to self-repair non-connectable VMs by copying the source VM\'s OS disk and attaching it to a newly created repair VM.',
     license='MIT',
     author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/netappfiles-preview',
+    author_email='caiddev@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
-    package_data={'azext_netappfiles_preview': ['azext_metadata.json']},
+    packages=find_packages(),
     install_requires=DEPENDENCIES
 )
