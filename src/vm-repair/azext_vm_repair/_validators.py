@@ -120,7 +120,7 @@ def _prompt_repair_username(namespace):
 
     from knack.prompting import prompt, NoTTYException
     try:
-        namespace.repair_username = prompt('Repair VM Admin username: ')
+        namespace.repair_username = prompt('Repair VM admin username: ')
     except NoTTYException:
         raise CLIError('Please specify username in non-interactive mode.')
 
@@ -128,7 +128,7 @@ def _prompt_repair_username(namespace):
 def _prompt_repair_password(namespace):
     from knack.prompting import prompt_pass, NoTTYException
     try:
-        namespace.repair_password = prompt_pass('Repair VM Admin Password: ', confirm=True)
+        namespace.repair_password = prompt_pass('Repair VM admin password: ', confirm=True)
     except NoTTYException:
         raise CLIError('Please specify password in non-interactive mode.')
 
