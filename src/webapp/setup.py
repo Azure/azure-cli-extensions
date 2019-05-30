@@ -34,7 +34,7 @@ setup(
     license='MIT',
     author='Sisira Panchagnula',
     author_email='sisirap@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/webapp',
     classifiers=CLASSIFIERS,
     package_data={'azext_webapp': ['azext_metadata.json']},
     packages=find_packages(exclude=["tests"]),
