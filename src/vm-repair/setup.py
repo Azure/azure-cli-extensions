@@ -5,10 +5,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from codecs import open as open1
+from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.4.3"
+VERSION = "0.1.0"
+
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -25,22 +26,16 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
-with open1('README.md', 'r', encoding='utf-8') as f:
-    README = f.read()
-with open1('HISTORY.md', 'r', encoding='utf-8') as f:
-    HISTORY = f.read()
-
 setup(
-    name='aks-preview',
+    name='vm-repair',
     version=VERSION,
-    description='Provides a preview for upcoming AKS features',
-    long_description=README + '\n\n' + HISTORY,
+    description='Auto repair commands to fix VMs.',
+    long_description='VM repair scripts will enable Azure users to self-repair non-connectable VMs by copying the source VM\'s OS disk and attaching it to a newly created repair VM.',
     license='MIT',
     author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aks-preview',
+    author_email='caiddev@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
-    package_data={'azext_aks_preview': ['azext_metadata.json']},
+    packages=find_packages(),
     install_requires=DEPENDENCIES
 )
