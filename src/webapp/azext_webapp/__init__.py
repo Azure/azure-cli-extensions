@@ -18,7 +18,6 @@ class WebappExtCommandLoader(AzCommandsLoader):
 
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
-            g.custom_command('up', 'create_deploy_webapp', exception_handler=ex_handler_factory())
             g.custom_command('remote-connection create', 'create_tunnel')
         return self.command_table
 
