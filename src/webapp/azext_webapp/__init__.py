@@ -3,9 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=ungrouped-imports
 from azure.cli.core import AzCommandsLoader
-from azure.cli.command_modules.appservice.commands import ex_handler_factory
 
 
 class WebappExtCommandLoader(AzCommandsLoader):
