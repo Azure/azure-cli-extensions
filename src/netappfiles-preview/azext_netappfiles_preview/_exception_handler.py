@@ -5,12 +5,11 @@
 
 from knack.util import CLIError
 from msrest.exceptions import ValidationError  # pylint: disable=import-error
+from msrestazure.azure_exceptions import CloudError
 
 
 def netapp_exception_handler(ex):
-    from azext_netappfiles_preview.vendored_sdks.models import ErrorException
-
-    if isinstance(ex, ErrorException) or (isinstance(ex) == ValidationError) or (isinstance(ex) == ValueError):
+    if isinstance(ex, (CloudError, ValidationError, ValueError)):
         message = ex
         raise CLIError(message)
     else:
