@@ -30,7 +30,9 @@ from azure.cli.command_modules.rdbms._client_factory import (
 )
 from azure.mgmt.rdbms.mysql.models import (
     ServerPropertiesForDefaultCreate,
-    StorageProfile
+    ServerForCreate,
+    StorageProfile,
+    Sku as MySqlSku
 )
 from knack.log import get_logger
 logger = get_logger(__name__)
@@ -64,19 +66,34 @@ def create_resource_group(cmd, name, location):
 
 
 def create_database(cmd, database_provider, name, location, admin, password):
+    database_settings = {}
     if database_provider.lower() == 'mysql':
         server_client = cf_mysql_servers(cmd.cli_ctx, None)
         database_client = cf_mysql_db(cmd.cli_ctx, None)
+        admin = admin[:16]
+        database_settings['engine'] = 'django.db.backends.mysql'
+        
 
         def server_creator():
-            storage_profile = StorageProfile(
-                backup_retention_days=0, geo_redundant_backup='Disabled', storage_mb=200)
-            server_properties = ServerPropertiesForDefaultCreate(
-                version='5.7', ssl_enforcement='enabled', storage_profile=storage_profile, administrator_login=admin, administrator_login_password=str(password), create_mode='ANSI')
-            return server_client.create(resource_group_name=name, server_name=name, parameters=server_properties)
-            # cmd, server_client, resource_group_name=name, server_name=name, sku_name='B_Gen5_1', administrator_login=admin, administrator_login_password=password, location=location)
-
+            sku_name='B_Gen5_1'
+            parameters = ServerForCreate(
+                sku=MySqlSku(name=sku_name),
+                location=location,
+                properties=ServerPropertiesForDefaultCreate(
+                    administrator_login=admin,
+                    administrator_login_password=password,
+                    version='5.7',
+                    ssl_enforcement='Enabled',
+                    storage_profile=StorageProfile(
+                        backup_retention_days=0,
+                        geo_redundant_backup='Disabled',
+                        storage_mb=5120
+                    )
+                )
+            )
+            return server_client.create(resource_group_name=name, server_name=name, parameters=parameters)
         def database_creator():
+            print('in mysql database creator')
             return database_client.create_or_update(
                 resource_group_name=name, server_name=name, database_name=name)
     else:
@@ -101,7 +118,9 @@ def create_database(cmd, database_provider, name, location, admin, password):
                                        sku=sku,
                                        elastic_pool_id=None)
     wrapper = DatabaseCreator(database_creator)
-    server_creator().add_done_callback(wrapper.create_database)
+    poller = server_creator()
+    poller.add_done_callback(wrapper.create_database)
+    # poller.add_done_callback(print(poller.result()))
     return wrapper
 
 
@@ -128,6 +147,7 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
 
 
 def set_website_settings(cmd, name, database_admin, database_password):
+    # TODO: Update username to avoid issues
     settings = []
     settings.append('DATABASE_NAME={}'.format(name))
     settings.append('DATABASE_HOST={}.database.windows.net'.format(name))
