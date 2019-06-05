@@ -227,47 +227,47 @@ helps['network front-door routing-rule delete'] = """
 # endregion
 
 # region WAFPolicy
-helps['network waf-policy'] = """
+helps['network front-door waf-policy'] = """
     type: group
     short-summary: Manage WebApplication Firewall (WAF) policies.
 """
 
-helps['network waf-policy create'] = """
+helps['network front-door waf-policy create'] = """
     type: command
     short-summary: Create a WAF policy.
 """
 
-helps['network waf-policy list'] = """
+helps['network front-door waf-policy list'] = """
     type: command
     short-summary: List WAF policies.
 """
 
-helps['network waf-policy show'] = """
+helps['network front-door waf-policy show'] = """
     type: command
     short-summary: Get the details of a WAF policy.
 """
 
-helps['network waf-policy update'] = """
+helps['network front-door waf-policy update'] = """
     type: command
     short-summary: Update settings of a WAF policy.
 """
 
-helps['network waf-policy delete'] = """
+helps['network front-door waf-policy delete'] = """
     type: command
     short-summary: Delete a WAF policy.
 """
 
-helps['network waf-policy set-managed-ruleset'] = """
+helps['network front-door waf-policy set-managed-ruleset'] = """
     type: command
     short-summary: Configure Azure-managed ruleset.
 """
 
-helps['network waf-policy custom-rule'] = """
+helps['network front-door waf-policy rule'] = """
     type: group
     short-summary: Manage WAF policy custom rules.
 """
 
-helps['network waf-policy custom-rule create'] = """
+helps['network front-door waf-policy rule create'] = """
     type: command
     short-summary: Create a WAF policy custom rule.
     parameters:
@@ -287,17 +287,17 @@ helps['network waf-policy custom-rule create'] = """
     operators=', '.join([x.value for x in Operator])
 )
 
-helps['network waf-policy custom-rule list'] = """
+helps['network front-door waf-policy rule list'] = """
     type: command
     short-summary: List WAF policy custom rules.
 """
 
-helps['network waf-policy custom-rule show'] = """
+helps['network front-door waf-policy rule show'] = """
     type: command
     short-summary: Get the details of a WAF policy custom rule.
 """
 
-helps['network waf-policy custom-rule delete'] = """
+helps['network front-door waf-policy rule delete'] = """
     type: command
     short-summary: Delete a WAF policy custom rule.
 """

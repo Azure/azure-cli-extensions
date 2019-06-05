@@ -125,7 +125,7 @@ def load_command_table(self, _):
     # endregion
 
     # region WafPolicy
-    with self.command_group('network waf-policy', waf_policy_sdk) as g:
+    with self.command_group('network front-door waf-policy', waf_policy_sdk) as g:
         g.custom_command('create', 'create_waf_policy')
         g.command('delete', 'delete')
         g.command('list', 'list')
@@ -133,7 +133,7 @@ def load_command_table(self, _):
         g.generic_update_command('update', custom_func_name='update_waf_policy')
         g.custom_command('set-managed-ruleset', 'set_azure_managed_rule_set')
 
-    with self.command_group('network waf-policy custom-rule', waf_policy_sdk) as g:
+    with self.command_group('network front-door waf-policy rule', waf_policy_sdk) as g:
         g.custom_command('create', 'create_wp_custom_rule')
         g.custom_command('delete', 'delete_wp_custom_rule')
         g.custom_command('list', 'list_wp_custom_rules')
