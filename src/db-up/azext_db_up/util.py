@@ -39,17 +39,6 @@ def set_config_value(db_type, option, value):
     DB_CONFIG.set_value(config_section, option, value)
 
 
-def remove_config_value(db_type, option):
-    config_section = CONFIG_MAP[db_type]
-    DB_CONFIG.config_parser.remove_option(config_section, option)
-
-
-def remove_section(db_type):
-    config_section = CONFIG_MAP[db_type]
-    DB_CONFIG.config_parser.remove_section(config_section)
-    DB_CONFIG.set(DB_CONFIG.config_parser)
-
-
 def update_kwargs(kwargs, key, value):
     if value is not None:
         kwargs[key] = value
