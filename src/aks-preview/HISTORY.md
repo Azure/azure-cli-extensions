@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.3
++++++
+* Support CLI core version up to 2.0.66.
+
 0.4.1
 +++++
 * Add `az aks get-versions -l location` to allow users to see all managed cluster versions.
