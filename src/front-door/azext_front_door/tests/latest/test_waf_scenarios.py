@@ -4,10 +4,8 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer,
                                api_version_constraint)
-from ..frontdoor_test_util import WafScenarioMixin
+from .frontdoor_test_util import WafScenarioMixin
 
-
-# TODO waf-ify
 
 class WafTests(WafScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='westus')
