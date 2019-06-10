@@ -278,6 +278,15 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --enable-cluster-autoscaler -e
+          type: bool
+          short-summary: Enable cluster autoscaler.
+        - name: --min-count
+          type: int
+          short-summary: Minimun nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --max-count
+          type: int
+          short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
 """
 
 helps['aks nodepool scale'] = """
@@ -296,6 +305,34 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+"""
+
+helps['aks nodepool update'] = """
+    type: command
+    short-summary: Update a node pool to enable/disable autoscaler or change min-count or max-count
+    parameters:
+        - name: --enable-cluster-autoscaler -e
+          type: bool
+          short-summary: Enable cluster autoscaler.
+        - name: --disable-cluster-autoscaler -d
+          type: bool
+          short-summary: Disable cluster autoscaler.
+        - name: --update-cluster-autoscaler -u
+          type: bool
+          short-summary: Update min-count or max-count for cluser auto-scaler.
+        - name: --min-count
+          type: int
+          short-summary: Minimun nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --max-count
+          type: int
+          short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+    examples:
+      - name: Enable cluster-autoscaler within node count range [1,5]
+        text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
+      - name: Disable cluster-autoscaler for an existing cluster
+        text: az aks nodepool update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
+      - name: Update min-count or max-count for cluster auto-scaler.
+        text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks nodepool delete'] = """
