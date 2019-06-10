@@ -27,7 +27,7 @@ class RouteType(str, Enum):
 def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
-        Mode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform,
+        PolicyMode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, ManagedRuleGroupOverride, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol
     )
 
@@ -141,12 +141,12 @@ def load_arguments(self, _):
         c.argument('disabled', arg_type=get_three_state_flag(), help='Create in a disabled state.')
         c.argument('enabled', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Enabled status.')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('mode', arg_type=get_enum_type(Mode), help='Firewall policy mode.')
+        c.argument('mode', arg_type=get_enum_type(PolicyMode), help='Firewall policy mode.')
         c.argument('policy_name', waf_policy_name_type, options_list=['--name', '-n'])
 
     with self.argument_context('network front-door waf-policy set-managed-ruleset') as c:
-        c.argument('action', arg_type=get_enum_type(Action), help='Action for overriden rulesets.')
-        c.argument('override', arg_type=get_enum_type(RuleGroupOverride), help='Name of the ruleset to override.')
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for overriden rulesets.')
+        #TODO BOBBY FIX c.argument('override', arg_type=get_enum_type(ManagedRuleGroupOverride), help='Name of the ruleset to override.')
         c.argument('priority', type=int, help='Rule priority.')
         c.argument('version', help='Rule set version.')
         c.argument('disable', help='Disable managed ruleset override.', action='store_true')
@@ -158,8 +158,8 @@ def load_arguments(self, _):
         c.argument('rate_limit_duration', type=int, help='Rate limit duration in minutes.')
         c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
         c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
-        c.argument('action', arg_type=get_enum_type(Action), help='Rule action.')
-        c.argument('transforms', nargs='+', arg_type=get_enum_type(Transform), help='Space-separated list of transforms to apply.')
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
+        c.argument('transforms', nargs='+', arg_type=get_enum_type(TransformType), help='Space-separated list of transforms to apply.')
         c.argument('match_conditions', nargs='+', options_list='--match-condition', action=MatchConditionAction)
 
     with self.argument_context('network front-door waf-policy rule list') as c:

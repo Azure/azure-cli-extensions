@@ -553,16 +553,16 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
                       disabled=False, mode=None, tags=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy1, ManagedRuleSets, PolicySettings, CustomRules)
-    policy = WebApplicationFirewallPolicy1(
+        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList)
+    policy = WebApplicationFirewallPolicy(
         location='global',
         tags=tags,
         policy_settings=PolicySettings(
             enabled_state='Enabled' if not disabled else 'Disabled',
             mode=mode
         ),
-        custom_rules=CustomRules(rules=[]),
-        managed_rules=ManagedRuleSets(rule_sets=[])
+        custom_rules=CustomRuleList(rules=[]),
+        managed_rules=ManagedRuleSetList(rule_sets=[])
     )
     return client.create_or_update(resource_group_name, policy_name, policy)
 

@@ -1,7 +1,7 @@
 interactions:
 - request:
     body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
-      "date": "2019-06-10T17:56:25Z"}}'
+      "date": "2019-06-10T22:26:17Z"}}'
     headers:
       Accept:
       - application/json
@@ -26,7 +26,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-06-10T17:56:25Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-06-10T22:26:17Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -35,7 +35,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Jun 2019 17:56:29 GMT
+      - Mon, 10 Jun 2019 22:26:21 GMT
       expires:
       - '-1'
       pragma:
@@ -51,7 +51,7 @@ interactions:
       message: Created
 - request:
     body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled"}, "customRules": {"rules": []}, "managedRules": {"ruleSets": []}}}'
+      "Enabled"}, "customRules": {"rules": []}, "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -62,7 +62,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '149'
+      - '135'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -73,23 +73,24 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2018-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-03-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\"\r\n    },\"customRules\":{\r\n
-        \     \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n      \"ruleSets\":[\r\n
-        \       \r\n      ]\r\n    }\r\n  }\r\n}"
+        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
+        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
+        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
+        \     \r\n    ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '674'
+      - '809'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:56:34 GMT
+      - Mon, 10 Jun 2019 22:26:26 GMT
       expires:
       - '-1'
       odata-version:
@@ -130,23 +131,24 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2018-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-03-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\"\r\n    },\"customRules\":{\r\n
-        \     \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n      \"ruleSets\":[\r\n
-        \       \r\n      ]\r\n    }\r\n  }\r\n}"
+        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
+        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
+        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
+        \     \r\n    ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '674'
+      - '809'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:56:35 GMT
+      - Mon, 10 Jun 2019 22:26:27 GMT
       expires:
       - '-1'
       odata-version:
@@ -175,7 +177,7 @@ interactions:
       {"enabledState": "Enabled", "mode": "Prevention"}, "customRules": {"rules":
       [{"name": "cli000003", "priority": 6, "ruleType": "MatchRule", "matchConditions":
       [{"matchVariable": "RequestBody", "operator": "RegEx", "matchValue": ["something"]}],
-      "action": "Block"}]}, "managedRules": {"ruleSets": []}}}'''
+      "action": "Block"}]}, "managedRules": {"managedRuleSets": []}}}'''
     headers:
       Accept:
       - application/json
@@ -186,7 +188,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '383'
+      - '390'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -197,26 +199,27 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2018-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-03-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\"\r\n    },\"customRules\":{\r\n
-        \     \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":0,\"rateLimitThreshold\":0,\"matchConditions\":[\r\n
+        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
+        \   },\"customRules\":{\r\n      \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"enabledState\":null,\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":0,\"rateLimitThreshold\":0,\"matchConditions\":[\r\n
         \           {\r\n              \"matchVariable\":\"RequestBody\",\"selector\":null,\"operator\":\"RegEx\",\"negateCondition\":false,\"matchValue\":[\r\n
-        \               \"something\"\r\n              ]\r\n            }\r\n          ],\"action\":\"Block\"\r\n
-        \       }\r\n      ]\r\n    },\"managedRules\":{\r\n      \"ruleSets\":[\r\n
-        \       \r\n      ]\r\n    }\r\n  }\r\n}"
+        \               \"something\"\r\n              ],\"transforms\":[\r\n                \r\n
+        \             ]\r\n            }\r\n          ],\"action\":\"Block\"\r\n        }\r\n
+        \     ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1066'
+      - '1271'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:56:37 GMT
+      - Mon, 10 Jun 2019 22:26:29 GMT
       expires:
       - '-1'
       odata-version:
@@ -310,7 +313,7 @@ interactions:
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c461952e-cd97-4f14-b88a-4fad36a7fe6a?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/70301f39-1406-40b0-a30b-f79cf4810465?api-version=2019-04-01
       cache-control:
       - no-cache
       content-length:
@@ -318,7 +321,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:56:42 GMT
+      - Mon, 10 Jun 2019 22:26:34 GMT
       expires:
       - '-1'
       odata-version:
@@ -357,7 +360,7 @@ interactions:
       - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.66
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c461952e-cd97-4f14-b88a-4fad36a7fe6a?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/70301f39-1406-40b0-a30b-f79cf4810465?api-version=2019-04-01
   response:
     body:
       string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \r\n  }\r\n}"
@@ -369,7 +372,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:56:53 GMT
+      - Mon, 10 Jun 2019 22:26:45 GMT
       expires:
       - '-1'
       odata-version:
@@ -410,7 +413,7 @@ interactions:
       - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.66
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/c461952e-cd97-4f14-b88a-4fad36a7fe6a?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/70301f39-1406-40b0-a30b-f79cf4810465?api-version=2019-04-01
   response:
     body:
       string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \r\n  }\r\n}"
@@ -422,7 +425,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:57:23 GMT
+      - Mon, 10 Jun 2019 22:27:15 GMT
       expires:
       - '-1'
       odata-version:
@@ -496,7 +499,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:57:24 GMT
+      - Mon, 10 Jun 2019 22:27:17 GMT
       expires:
       - '-1'
       odata-version:
@@ -572,7 +575,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:57:26 GMT
+      - Mon, 10 Jun 2019 22:27:18 GMT
       expires:
       - '-1'
       odata-version:
@@ -671,7 +674,7 @@ interactions:
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/36957fb2-927c-4980-a3e0-e30171754ff1?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b7a2ad9e-d2d6-4b29-863b-5d8048b1b0c6?api-version=2019-04-01
       cache-control:
       - no-cache
       content-length:
@@ -679,11 +682,11 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:57:28 GMT
+      - Mon, 10 Jun 2019 22:27:21 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/36957fb2-927c-4980-a3e0-e30171754ff1/frontdoorresults/cli000004?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b7a2ad9e-d2d6-4b29-863b-5d8048b1b0c6/frontdoorresults/cli000004?api-version=2019-04-01
       odata-version:
       - '4.0'
       pragma:
@@ -720,7 +723,7 @@ interactions:
       - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.0 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.66
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/36957fb2-927c-4980-a3e0-e30171754ff1?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/b7a2ad9e-d2d6-4b29-863b-5d8048b1b0c6?api-version=2019-04-01
   response:
     body:
       string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \r\n  }\r\n}"
@@ -732,7 +735,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:57:39 GMT
+      - Mon, 10 Jun 2019 22:27:31 GMT
       expires:
       - '-1'
       odata-version:
@@ -808,7 +811,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Mon, 10 Jun 2019 17:57:40 GMT
+      - Mon, 10 Jun 2019 22:27:32 GMT
       expires:
       - '-1'
       odata-version:
@@ -876,11 +879,11 @@ interactions:
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Mon, 10 Jun 2019 18:05:41 GMT
+      - Mon, 10 Jun 2019 22:35:33 GMT
       etag:
       - '"1541025663+gzip"'
       expires:
-      - Mon, 17 Jun 2019 18:05:41 GMT
+      - Mon, 17 Jun 2019 22:35:33 GMT
       last-modified:
       - Fri, 09 Aug 2013 23:54:35 GMT
       transfer-encoding:
@@ -888,7 +891,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 09Zv+XAAAAACg5/61GNmrQJ2V4bs0FZRuV1NURURHRTA2MTMAZjMwYzZjMDItZjM0Ni00ODczLWE4ZDktMjY2YzhlYmYyMzRh
+      - 0Ndv+XAAAAADEGSog0FUlQ6Uj0dKS4y8VV1NURURHRTA2MDgANjA1OGM0MWQtNWVjNS00NmIyLTk2NWMtYzU3MDQ3MGI2ZTdl
     status:
       code: 200
       message: OK
@@ -917,14 +920,14 @@ interactions:
         margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
         7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
         41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>09Zv+XAAAAACPDlx9WdjIQbmHSJPQjcBOV1NURURHRTA2MjEAZjMwYzZjMDItZjM0Ni00ODczLWE4ZDktMjY2YzhlYmYyMzRh</span></div></div></body></html>'
+        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0Ndv+XAAAAACONsfRORLIRotUPGFh1wWUV1NURURHRTA2MTAANjA1OGM0MWQtNWVjNS00NmIyLTk2NWMtYzU3MDQ3MGI2ZTdl</span></div></div></body></html>'
     headers:
       date:
-      - Mon, 10 Jun 2019 18:05:41 GMT
+      - Mon, 10 Jun 2019 22:35:33 GMT
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 09Zv+XAAAAACPDlx9WdjIQbmHSJPQjcBOV1NURURHRTA2MjEAZjMwYzZjMDItZjM0Ni00ODczLWE4ZDktMjY2YzhlYmYyMzRh
+      - 0Ndv+XAAAAACONsfRORLIRotUPGFh1wWUV1NURURHRTA2MTAANjA1OGM0MWQtNWVjNS00NmIyLTk2NWMtYzU3MDQ3MGI2ZTdl
     status:
       code: 403
       message: Forbidden
@@ -959,11 +962,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 10 Jun 2019 18:05:43 GMT
+      - Mon, 10 Jun 2019 22:35:34 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdRVVlCTVZSQjVGVjJQRDI3QlhTMjZYM1JFWEZVQUlEQjQzWHwyMEJFMTdFRDY1NzEyNTI0LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdQWVJGTU1WWERSUEg1UUw3Nk9HQTVLUDZZU1RFQlJWSlZWWnw2MjQwMjIzQTkyRDdEMjg1LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01
       pragma:
       - no-cache
       strict-transport-security:

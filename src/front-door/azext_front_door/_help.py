@@ -5,7 +5,7 @@
 
 from knack.help_files import helps
 
-from azext_front_door.vendored_sdks.models import MatchCondition, Operator
+from azext_front_door.vendored_sdks.models import MatchVariable, Operator
 
 # region FrontDoor
 helps['network front-door'] = """
@@ -283,7 +283,7 @@ helps['network front-door waf-policy rule create'] = """
 
             Multiple match conditions can be specified by using more than one `--match-condition` argument.
 """.format(
-    variables=', '.join([x.value for x in MatchCondition]),
+    variables=', '.join([x.value for x in MatchVariable]),
     operators=', '.join([x.value for x in Operator])
 )
 
