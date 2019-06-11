@@ -550,7 +550,9 @@ def update_fd_routing_rules(instance, frontend_endpoints=None, accepted_protocol
 
 # region WafPolicy
 def create_waf_policy(cmd, resource_group_name, policy_name,
-                      disabled=False, mode=None, tags=None):
+                      disabled=False, mode=None, redirecturl=None,
+                      customblockresponsecode=None,
+                      customblockresponsebody=None, tags=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
         WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList)
@@ -559,7 +561,10 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
         tags=tags,
         policy_settings=PolicySettings(
             enabled_state='Enabled' if not disabled else 'Disabled',
-            mode=mode
+            mode=mode,
+            redirect_url=redirecturl,
+            custom_block_response_status_code=customblockresponsecode,
+            custom_block_response_body=customblockresponsebody
         ),
         custom_rules=CustomRuleList(rules=[]),
         managed_rules=ManagedRuleSetList(rule_sets=[])
@@ -567,13 +572,18 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
     return client.create_or_update(resource_group_name, policy_name, policy)
 
 
-def update_waf_policy(instance, tags=None, enabled=None, mode=None):
+def update_waf_policy(instance, tags=None, mode=None, redirecturl=None,
+                      customblockresponsecode=None, customblockresponsebody=None,
+                      disabled=False):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
 
     with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', enabled, False)
+        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
         c.update_param('mode', mode, False)
+        c.update_param('redirect_url', redirecturl, None)
+        c.update_param('custom_block_response_status_code', customblockresponsecode, None)
+        c.update_param('custom_block_response_body', customblockresponsebody, None)
     return instance
 
 

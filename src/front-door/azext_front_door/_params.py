@@ -143,6 +143,9 @@ def load_arguments(self, _):
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('mode', arg_type=get_enum_type(PolicyMode), help='Firewall policy mode.')
         c.argument('policy_name', waf_policy_name_type, options_list=['--name', '-n'])
+        c.argument('redirecturl', help='URL used for redirect rule action.')
+        c.argument('customblockresponsecode', help='HTTP status to return for blocked requests.')
+        c.argument('customblockresponsebody', help='Body to return for blocked requests.')
 
     with self.argument_context('network front-door waf-policy set-managed-ruleset') as c:
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for overriden rulesets.')
