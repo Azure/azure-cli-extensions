@@ -16,8 +16,7 @@ class DevspacesExtCommandLoader(AzCommandsLoader):  # pylint:disable=too-few-pub
         dev_spaces_custom = CliCommandType(
             operations_tmpl='azext_dev_spaces.custom#{}')
         super(DevspacesExtCommandLoader, self).__init__(cli_ctx=cli_ctx,
-                                                        custom_command_type=dev_spaces_custom,
-                                                        min_profile='2017-03-10-profile')
+                                                        custom_command_type=dev_spaces_custom)
 
 
 COMMAND_LOADER_CLS = DevspacesExtCommandLoader
