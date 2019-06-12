@@ -89,6 +89,10 @@ helps['aks create'] = """
           short-summary: A specific IP address and netmask for the Docker bridge, using standard CIDR notation.
           long-summary: This address must not be in any Subnet IP ranges, or the Kubernetes service address range.
                         For example, 172.17.0.1/16.
+        - name: --load-balancer-sku
+          type: string
+          short-summary: Azure Load Balancer SKU selection for your cluster. Basic or Standard.
+          long-summary: Select between Basic or Standard Azure Load Balancer SKU for your AKS cluster.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -309,7 +313,7 @@ helps['aks nodepool upgrade'] = """
 
 helps['aks nodepool update'] = """
     type: command
-    short-summary: Update a node pool to enable/disable autoscaler or change min-count or max-count
+    short-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool

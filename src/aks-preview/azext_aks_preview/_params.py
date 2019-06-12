@@ -51,6 +51,7 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('dns_service_ip')
         c.argument('docker_bridge_address')
+        c.argument('load_balancer_sku')
         c.argument('enable_addons', options_list=['--enable-addons', '-a'])
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
