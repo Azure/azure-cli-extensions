@@ -143,16 +143,39 @@ def load_arguments(self, _):
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('mode', arg_type=get_enum_type(PolicyMode), help='Firewall policy mode.')
         c.argument('policy_name', waf_policy_name_type, options_list=['--name', '-n'])
-        c.argument('redirecturl', help='URL used for redirect rule action.')
-        c.argument('customblockresponsecode', help='HTTP status to return for blocked requests.')
-        c.argument('customblockresponsebody', help='Body to return for blocked requests.')
+        c.argument('redirect_url', help='URL used for redirect rule action.')
+        c.argument('custom_block_response_status_code', help='HTTP status to return for blocked requests.')
+        c.argument('custom_block_response_body', help='Body to return for blocked requests.')
 
-    with self.argument_context('network front-door waf-policy set-managed-ruleset') as c:
-        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for overriden rulesets.')
-        #TODO BOBBY FIX c.argument('override', arg_type=get_enum_type(ManagedRuleGroupOverride), help='Name of the ruleset to override.')
-        c.argument('priority', type=int, help='Rule priority.')
+    with self.argument_context('network front-door waf-policy managed-rules add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
+        c.argument('type', help='Name of the ruleset to apply.')
         c.argument('version', help='Rule set version.')
-        c.argument('disable', help='Disable managed ruleset override.', action='store_true')
+
+    with self.argument_context('network front-door waf-policy managed-rules list') as c:
+        c.argument('policy_name', waf_policy_name_type)
+
+    with self.argument_context('network front-door waf-policy managed-rules override add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
+        c.argument('type', help='Name of the ruleset to override.')
+        c.argument('rule_group_id', help='Name of the rule group containing the rule to override.')
+        c.argument('rule_id', help='Name of the rule to override.')
+        c.argument('disabled', help='Whether to disable the rule.')
+
+    with self.argument_context('network front-door waf-policy managed-rules override remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('type', help='Name of the ruleset with the override to remove.')
+        c.argument('rule_group_id', help='Name of the rule group containing the override to remove.')
+        c.argument('rule_id', help='Name of the rule override to remove.')
+
+    with self.argument_context('network front-door waf-policy managed-rules remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('type', help='Name of the ruleset to remove.')
+
+    with self.argument_context('network front-door waf-policy managed-rule-definition list') as c:
+        c.argument('policy_name', waf_policy_name_type)
 
     with self.argument_context('network front-door waf-policy rule') as c:
         c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
@@ -163,7 +186,7 @@ def load_arguments(self, _):
         c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
         c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
         c.argument('transforms', nargs='+', arg_type=get_enum_type(TransformType), help='Space-separated list of transforms to apply.')
-        c.argument('match_conditions', nargs='+', options_list='--match-condition', action=MatchConditionAction)
+        c.argument('match_conditions', nargs='*', options_list='--match-condition', action=MatchConditionAction)
 
     with self.argument_context('network front-door waf-policy rule list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)

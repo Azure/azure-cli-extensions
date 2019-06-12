@@ -131,7 +131,20 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_waf_policy')
-        g.custom_command('set-managed-ruleset', 'set_azure_managed_rule_set')
+
+    with self.command_group('network front-door waf-policy managed-rules', waf_policy_sdk) as g:
+        g.custom_command('add', 'add_azure_managed_rule_set')
+        g.custom_command('remove', 'remove_azure_managed_rule_set')
+        g.custom_command('override', 'override_azure_managed_rule_set')
+        g.custom_command('list', 'list_azure_managed_rule_set')
+        g.custom_command('show', 'show_wp_custom_rule')
+
+    with self.command_group('network front-door waf-policy managed-rules override', waf_policy_sdk) as g:
+        g.custom_command('add', 'add_override_azure_managed_rule_set')
+        g.custom_command('remove', 'remove_override_azure_managed_rule_set')
+
+    with self.command_group('network front-door waf-policy managed-rule-definition', waf_policy_sdk) as g:
+        g.custom_command('list', 'list_managed_rules_definitions')
 
     with self.command_group('network front-door waf-policy rule', waf_policy_sdk) as g:
         g.custom_command('create', 'create_wp_custom_rule')
