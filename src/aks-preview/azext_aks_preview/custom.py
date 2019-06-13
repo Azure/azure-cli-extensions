@@ -688,7 +688,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
     if update_flags > 0 and instance.max_agent_pools > 1:
-        raise CLIError('Please "az aks nodepool command to update per node pool auto scaler settings"')
+        raise CLIError('Please use "az aks nodepool command to update per node pool auto scaler settings"')
 
     node_count = instance.agent_pool_profiles[0].count
 
@@ -1290,7 +1290,6 @@ def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepoo
         instance.min_count = None
         instance.max_count = None
 
-    print(instance)
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
