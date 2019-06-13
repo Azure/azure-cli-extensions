@@ -72,10 +72,9 @@ def create_database(cmd, database_provider, name, location, admin, password):
         database_client = cf_mysql_db(cmd.cli_ctx, None)
         admin = admin[:16]
         database_settings['engine'] = 'django.db.backends.mysql'
-        
 
         def server_creator():
-            sku_name='B_Gen5_1'
+            sku_name = 'B_Gen5_1'
             parameters = ServerForCreate(
                 sku=MySqlSku(name=sku_name),
                 location=location,
@@ -92,6 +91,7 @@ def create_database(cmd, database_provider, name, location, admin, password):
                 )
             )
             return server_client.create(resource_group_name=name, server_name=name, parameters=parameters)
+
         def database_creator():
             print('in mysql database creator')
             return database_client.create_or_update(
@@ -124,12 +124,52 @@ def create_database(cmd, database_provider, name, location, admin, password):
     return wrapper
 
 
+RUNTIMES = {
+    'php': {
+        'name': 'php|7.3',
+        'is_linux': True
+    },
+    'node': {
+        'name': 'node|10.6',
+        'is_linux': True
+    },
+    'tomcat': {
+        'name': 'java|11|Tomcat|9.0',
+        'is_linux': True
+    },
+    'jetty': {
+        'name': 'java|11|Jetty|9.3',
+        'is_linux': True
+    },
+    'python': {
+        'name': 'python|3.6',
+        'is_linux': True
+    },
+    'aspnet': {
+        'name': 'aspnet|4.7',
+        'is_linux': False
+    }
+}
+
+DATABASES = {
+    'mysql': {
+        'host': '{}.mysql.database.azure.com',
+        'port': '3306'
+    },
+    'sql': {
+        'host': '{}.database.windows.net',
+        'port': '1433'
+    }
+}
+
+
 def create_website(cmd, name, runtime, deployment_local_git=True, deployment_user=None):
+    runtime_values = RUNTIMES[runtime.lower()]
     deployment_user_password = None
     create_app_service_plan(cmd, resource_group_name=name,
-                            name=name, is_linux=True, hyper_v=False).result()
+                            name=name, is_linux=runtime_values['is_linux'], hyper_v=False).result()
     webapp = create_webapp(cmd, resource_group_name=name,
-                           name=name, plan=name, runtime=runtime,
+                           name=name, plan=name, runtime=runtime_values['name'],
                            deployment_local_git=deployment_local_git)
     if deployment_user:
         deployment_user_password = uuid4()
@@ -145,15 +185,15 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
     site['hostname'] = 'https://{}'.format(webapp.host_names[0])
     return site
 
-
-def set_website_settings(cmd, name, database_admin, database_password):
+def set_website_settings(cmd, name, database_provider, database_admin, database_password):
     # TODO: Update username to avoid issues
+    database_options = DATABASES[database_provider.lower()]
     settings = []
     settings.append('DATABASE_NAME={}'.format(name))
-    settings.append('DATABASE_HOST={}.database.windows.net'.format(name))
-    settings.append('DATABASE_PORT=1433')
+    settings.append('DATABASE_HOST={}'.format(database_options['host'].format(name)))
+    settings.append('DATABASE_PORT={}'.format(database_options['port']))
     settings.append('DATABASE_USER={}'.format(database_admin))
-    settings.append('DATABASE_PASSWORD={}'.format(database_admin))
+    settings.append('DATABASE_PASSWORD={}'.format(database_password))
     update_app_settings(cmd, resource_group_name=name,
                         name=name, settings=settings)
     return settings
