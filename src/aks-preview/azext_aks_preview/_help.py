@@ -332,11 +332,11 @@ helps['aks nodepool update'] = """
           short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
-        text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
+        text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
-        text: az aks nodepool update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
+        text: az aks nodepool update --disable-cluster-autoscaler -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
       - name: Update min-count or max-count for cluster auto-scaler.
-        text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
+        text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
 helps['aks nodepool delete'] = """

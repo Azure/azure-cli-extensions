@@ -22,7 +22,7 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     @RoleBasedServicePrincipalPreparer()
-    @AllowLargeResponse
+    @AllowLargeResponse()
     def test_aks_create_default_service_preview(self, resource_group, resource_group_location, sp_name, sp_password):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
@@ -77,7 +77,7 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     @RoleBasedServicePrincipalPreparer()
-    @AllowLargeResponse
+    @AllowLargeResponse()
     def test_aks_create_default_service_enable_autoscaler(self, resource_group, resource_group_location, sp_name, sp_password):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -106,7 +106,7 @@ class AzureKubernetesServicePreviewScenarioTest(ScenarioTest):
 
     def test_aks_get_versions(self):
         # show k8s versions
-        self.cmd('aks get-versions -l {location}', checks=[
+        self.cmd('aks get-versions -l eastus', checks=[
             self.exists('orchestrators[*].orchestratorVersion')
         ])
 
