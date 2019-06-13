@@ -129,11 +129,8 @@ class TestIndex(unittest.TestCase):
                               "{}: 'generator' should be one of {}. "
                               "Build the extension with a different version of the 'wheel' package "
                               "(e.g. `pip install wheel==0.30.0`). "
-                              "This is due to https://github.com/pypa/wheel/issues/195; the actual "
-                              "metadata is {}, ext_file is {}".format(ext_name,
-                                                                      supported_generators,
-                                                                      metadata,
-                                                                      ext_file))
+                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
+                                                                                               supported_generators))
                 self.assertDictEqual(metadata, item['metadata'],
                                      "Metadata for {} in index doesn't match the expected of: \n"
                                      "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
