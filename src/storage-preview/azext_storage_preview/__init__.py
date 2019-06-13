@@ -21,7 +21,6 @@ class StorageCommandsLoader(AzCommandsLoader):
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    min_profile='2017-03-10-profile',
                                                     resource_type=CUSTOM_DATA_STORAGE,
                                                     custom_command_type=storage_custom,
                                                     command_group_cls=StorageCommandGroup,
