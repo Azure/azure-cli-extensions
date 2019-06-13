@@ -51,6 +51,7 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('dns_service_ip')
         c.argument('docker_bridge_address')
+        c.argument('load_balancer_sku')
         c.argument('enable_addons', options_list=['--enable-addons', '-a'])
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
@@ -100,7 +101,7 @@ def load_arguments(self, _):
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
             c.argument('os_type', type=str)
 
-    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade']:
+    for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
