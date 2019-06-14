@@ -19,8 +19,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
         webapp_custom = CliCommandType(
             operations_tmpl='azext_webapp.custom#{}')
         super(WebappExtCommandLoader, self).__init__(cli_ctx=cli_ctx,
-                                                     custom_command_type=webapp_custom,
-                                                     min_profile="2017-03-10-profile")
+                                                     custom_command_type=webapp_custom)
 
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
