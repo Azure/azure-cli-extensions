@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.4.4
++++++
+* Add support for per node pool auto scaler settings.
+* Add `az aks nodepool update` to allow users to change auto scaler settings per node pool.
+* Add support for Standard sku load balancer.
+
 0.4.1
 +++++
 * Add `az aks get-versions -l location` to allow users to see all managed cluster versions.

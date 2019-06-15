@@ -21,8 +21,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
         super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                              custom_command_type=acs_custom,
-                                                             resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-                                                             min_profile='2017-03-10-profile')
+                                                             resource_type=CUSTOM_MGMT_AKS_PREVIEW)
 
     def load_command_table(self, args):
         super(ContainerServiceCommandsLoader, self).load_command_table(args)
