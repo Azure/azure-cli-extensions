@@ -16,7 +16,6 @@ class FrontDoorCommandsLoader(AzCommandsLoader):
         super(FrontDoorCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             custom_command_type=CliCommandType(operations_tmpl='azext_front_door.custom#{}'),
-            min_profile='2017-03-10-profile'
         )
 
     def load_command_table(self, args):

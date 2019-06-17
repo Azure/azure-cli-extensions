@@ -14,8 +14,7 @@ class EventGridCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
         eventgrid_custom = CliCommandType(operations_tmpl='azext_eventgrid.custom#{}')
         super(EventGridCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                      custom_command_type=eventgrid_custom,
-                                                      min_profile='2017-03-10-profile')
+                                                      custom_command_type=eventgrid_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table
