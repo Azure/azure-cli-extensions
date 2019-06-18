@@ -69,33 +69,7 @@ def validate_restore(cmd, namespace):
 
     # No repair param given, find repair vm using tags
     if not namespace.repair_vm_id:
-        # Find repair VM
-        tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
-        try:
-            find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
-                                  .format(tag=tag)
-            logger.info('Searching for the repair VM within subscription...')
-            output = _call_az_command(find_repair_command)
-        except AzCommandError as azCommandError:
-            logger.error(azCommandError)
-            raise CLIError('Unexpected error occured while locating the repair VM.')
-        repair_list = loads(output)
-
-        # No repair VM found
-        if not repair_list:
-            raise CLIError('Repair VM not found for {vm_name}. Please check if the repair resources were removed.'.format(vm_name=namespace.vm_name))
-
-        # More than one repair VM found
-        if len(repair_list) > 1:
-            message = 'More than one repair VM found:\n'
-            for vm in repair_list:
-                message += vm['id'] + '\n'
-            message += '\nPlease specify the --repair-vm-id to restore with.'
-            raise CLIError(message)
-
-        # One repair VM found
-        namespace.repair_vm_id = repair_list[0]['id']
-        logger.info('Restoring from repair VM: %s', namespace.repair_vm_id)
+       fetch_repair_vm(namespace)
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
@@ -114,6 +88,18 @@ def validate_restore(cmd, namespace):
     else:  # check disk name
         if not [disk for disk in data_disks if disk.name == namespace.disk_name]:
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
+
+
+def validate_run_repair(cmd, namespace):
+    
+    # Check if VM exists and is not classic VM
+    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+
+    if not namespace.repair_vm_id:
+       fetch_repair_vm(namespace)
+
+    if not is_valid_resource_id(namespace.repair_vm_id):
+        raise CLIError('Repair resource id is not valid.')
 
 
 def _prompt_repair_username(namespace):
@@ -209,3 +195,33 @@ def _validate_resource_group_name(rg_name):
 
     if rg_name in [rg.lower() for rg in rg_list]:
         raise CLIError('Resource group with name \'{}\' already exists within subscription.'.format(rg_name))
+
+
+def fetch_repair_vm(namespace):
+    # Find repair VM
+    tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
+    try:
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
+                              .format(tag=tag)
+        logger.info('Searching for repair-vm within subscription...')
+        output = _call_az_command(find_repair_command)
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        raise CLIError('Unexpected error occured while locating repair VM.')
+    repair_list = loads(output)
+
+    # No repair VM found
+    if not repair_list:
+        raise CLIError('Repair VM not found for {vm_name}. Please check if the repair resources were removed.'.format(vm_name=namespace.vm_name))
+
+    # More than one repair VM found
+    if len(repair_list) > 1:
+        message = 'More than one repair VM found:\n'
+        for vm in repair_list:
+            message += vm['id'] + '\n'
+        message += '\nPlease specify the --repair-vm-id to restore the disk-swap with.'
+        raise CLIError(message)
+
+    # One repair VM found
+    namespace.repair_vm_id = repair_list[0]['id']
+    logger.warning('Repair-vm-id not given, restoring from only matching repair VM: %s', namespace.repair_vm_id)

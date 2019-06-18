@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import requests
+import json
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
@@ -18,7 +20,7 @@ from .repair_utils import (
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except
 
@@ -264,3 +266,55 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     logger.info('\n%s\n', return_dict['message'])
     return return_dict
+
+
+def run_repair(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None):
+
+    try:
+        repair_vm_id = parse_resource_id(repair_vm_id)
+        repair_vm_name = repair_vm_id['name']
+        repair_resource_group = repair_vm_id['resource_group']
+
+        # GET json from url function
+        # Fetch map.json and get script path
+        map_url = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
+        response = requests.get(url=map_url)
+        # Raise exception when request fails
+        response.raise_for_status()
+        map_json = response.json()
+        repair_script_path = [script['path'] for script in map_json if script['id'] == mitigation_id]
+        if repair_script_path:
+            repair_script_path = repair_script_path[0]
+        else:
+            raise MitigationScriptNotFoundForIdError('Mitigation not found for id: {}. Please validate if the id is correct.'.format(mitigation_id))
+        # FUNCTION END
+
+        win_run_script_path = '../scripts/win-run-repair.ps1'
+
+        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id RunPowerShellScript ' \
+                             '--scripts "@{run_script}" --parameters "script_path=./{repair_script}"' \
+                             .format(rg=repair_resource_group, vm=repair_vm_name, run_script=win_run_script_path, repair_script=repair_script_path)
+        logger.info('Running repair scripts within repair VM...')
+        return_str = _call_az_command(repair_run_command)
+
+        # Set up return codes and conditions
+        return_json = json.loads(return_str)
+        stdout = return_json['value'][0]['message']
+        stderr = return_json['value'][1]['message']
+        print("stdout: " + stdout)
+
+    except KeyboardInterrupt:
+        logger.error("Command interrupted by user input.")
+    except AzCommandError as azCommandError:
+        logger.error(azCommandError)
+        logger.error("Repair run-repair failed.")
+    except requests.exceptions.RequestException as exception:
+        logger.error(exception)
+        logger.error("Failed to fetch mitigation script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library")
+    except MitigationScriptNotFoundForIdError as exception:
+        logger.error(exception)
+    except Exception as exception:
+        logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
+        logger.debug(exception)
+
+    return None
