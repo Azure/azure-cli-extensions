@@ -5,6 +5,7 @@
 
 import sys
 
+from azure.cli.core.commands import cached_get, cached_put
 from azure.cli.core.util import sdk_no_wait
 
 from knack.log import get_logger
@@ -573,7 +574,7 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
 
 
 def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
-                      custom_block_response_status_code=None, customblockresponsebody=None,
+                      custom_block_response_status_code=None, custom_block_response_body=None,
                       disabled=False):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
@@ -708,22 +709,44 @@ def list_managed_rules_definitions(cmd):
 
 
 def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority, rule_type, action,
-                          match_conditions = [], rate_limit_duration=None, rate_limit_threshold=None, transforms=None):
+                          rate_limit_duration=None, rate_limit_threshold=None):
     from azext_front_door.vendored_sdks.models import CustomRule
     client = cf_waf_policies(cmd.cli_ctx, None)
-    policy = client.get(resource_group_name, policy_name)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
     rule = CustomRule(
         name=rule_name,
         priority=priority,
         rule_type=rule_type,
         action=action,
-        match_conditions=match_conditions,
+        match_conditions=[],
         rate_limit_duration_in_minutes=rate_limit_duration,
         rate_limit_threshold=rate_limit_threshold,
-        transforms=transforms
     )
     policy.custom_rules.rules.append(rule)
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+
+
+def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority=None, action=None,
+                          rate_limit_duration=None, rate_limit_threshold=None):
+    from azext_front_door.vendored_sdks.models import CustomRule
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    foundRule = False
+    for rule in instance.custom_rules.rules:
+        if( rule.name.lower() == rule_name):
+            foundRule = True
+            with UpdateContext(rule) as c:
+                c.update_param('priority', priority, None)
+                c.update_param('action', action, None)
+                c.update_param('rate_limit_duration', rate_limit_duration, None)
+                c.update_param('rate_limit_threshold', rate_limit_threshold, None)
+
+    if( not foundRule ):
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def delete_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
@@ -746,5 +769,72 @@ def show_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
         return next(x for x in policy.custom_rules.rules if x.name.lower() == rule_name.lower())
     except StopIteration:
         from knack.util import CLIError
-        raise CLIError("rule '{} not found".format(rule_name))
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+
+def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
+                          index):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    foundRule = False
+    for rule in policy.custom_rules.rules:
+        if rule.name.upper() == rule_name.upper():
+            foundRule = True
+
+            if( index >= len(rule.match_conditions) ):
+                from knack.util import CLIError
+                raise CLIError("Index out of bounds")
+
+            rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
+
+    if( not foundRule):
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+
+
+def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
+                          match_variable, operator, values, negate=None, transforms=None):
+    from azext_front_door.vendored_sdks.models import MatchCondition
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    selector = None
+    variable_parts = match_variable.split('.')
+    if( len(variable_parts) == 2 ):
+        match_variable=variable_parts[0]
+        selector = variable_parts[1]
+
+    foundRule = False
+    for rule in policy.custom_rules.rules:
+        if rule.name.upper() == rule_name.upper():
+            foundRule = True
+            rule.match_conditions.append(MatchCondition(
+                        match_variable=match_variable,
+                        selector=selector,
+                        operator=operator,
+                        negate_condition=negate,
+                        match_value=values,
+                        transforms=transforms
+                ))
+
+    if( not foundRule):
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+
+
+def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rule_name):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    for rule in policy.custom_rules.rules:
+        if rule.name.upper() == rule_name.upper():
+            return rule.match_conditions
+
+    from knack.util import CLIError
+    raise CLIError("rule '{}' not found".format(rule_name))
 # endregion

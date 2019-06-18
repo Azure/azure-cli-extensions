@@ -135,9 +135,7 @@ def load_command_table(self, _):
     with self.command_group('network front-door waf-policy managed-rules', waf_policy_sdk) as g:
         g.custom_command('add', 'add_azure_managed_rule_set')
         g.custom_command('remove', 'remove_azure_managed_rule_set')
-        g.custom_command('override', 'override_azure_managed_rule_set')
         g.custom_command('list', 'list_azure_managed_rule_set')
-        g.custom_command('show', 'show_wp_custom_rule')
 
     with self.command_group('network front-door waf-policy managed-rules override', waf_policy_sdk) as g:
         g.custom_command('add', 'add_override_azure_managed_rule_set')
@@ -147,8 +145,14 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_managed_rules_definitions')
 
     with self.command_group('network front-door waf-policy rule', waf_policy_sdk) as g:
-        g.custom_command('create', 'create_wp_custom_rule')
+        g.custom_command('create', 'create_wp_custom_rule', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
+        g.custom_command('update', 'update_wp_custom_rule', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
         g.custom_command('delete', 'delete_wp_custom_rule')
         g.custom_command('list', 'list_wp_custom_rules')
         g.custom_command('show', 'show_wp_custom_rule')
+
+    with self.command_group('network front-door waf-policy rule match-condition', waf_policy_sdk) as g:
+        g.custom_command('add', 'add_custom_rule_match_condition', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
+        g.custom_command('remove', 'remove_custom_rule_match_condition', supports_local_cache=True)
+        g.custom_command('list', 'list_custom_rule_match_conditions', supports_local_cache=True)
     # endregion

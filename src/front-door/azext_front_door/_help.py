@@ -257,11 +257,6 @@ helps['network front-door waf-policy delete'] = """
     short-summary: Delete a WAF policy.
 """
 
-helps['network front-door waf-policy set-managed-ruleset'] = """
-    type: command
-    short-summary: Configure Azure-managed ruleset.
-"""
-
 helps['network front-door waf-policy rule'] = """
     type: group
     short-summary: Manage WAF policy custom rules.
@@ -270,18 +265,24 @@ helps['network front-door waf-policy rule'] = """
 helps['network front-door waf-policy rule create'] = """
     type: command
     short-summary: Create a WAF policy custom rule.
+""".format(
+    variables=', '.join([x.value for x in MatchVariable]),
+    operators=', '.join([x.value for x in Operator])
+)
+
+helps['network front-door waf-policy rule match-condition add'] = """
+    type: command
+    short-summary: Add a match-condition to a WAF policy custom rule.
     parameters:
         - name: --match-condition
           short-summary: Match condition for the rule.
           long-summary: |
 
-            Usage:   --match-condition VARIABLE OPERATOR [VALUE [VALUE ...]]
+            Usage:   [--negate] --match-variable VARIABLE[.selector] --operator OPERATOR --value [VALUE [VALUE ...]]
 
               Variable allowed values: {variables}
 
               Operator allowed values: {operators}
-
-            Multiple match conditions can be specified by using more than one `--match-condition` argument.
 """.format(
     variables=', '.join([x.value for x in MatchVariable]),
     operators=', '.join([x.value for x in Operator])
@@ -300,5 +301,12 @@ helps['network front-door waf-policy rule show'] = """
 helps['network front-door waf-policy rule delete'] = """
     type: command
     short-summary: Delete a WAF policy custom rule.
+"""
+
+helps['network front-door waf-policy managed-rules add'] = """
+    type: command
+    short-summary: Add a managed rule set to a WAF policy.
+    long-summary: >
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available managed rulesets.
 """
 # endregion

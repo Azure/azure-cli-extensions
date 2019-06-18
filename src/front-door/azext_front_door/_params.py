@@ -177,7 +177,7 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rule-definition list') as c:
         c.argument('policy_name', waf_policy_name_type)
 
-    with self.argument_context('network front-door waf-policy rule') as c:
+    with self.argument_context('network front-door waf-policy rule create') as c:
         c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
         c.argument('policy_name', waf_policy_name_type)
         c.argument('priority', type=int, help='Priority of the rule.')
@@ -185,9 +185,34 @@ def load_arguments(self, _):
         c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
         c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
         c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
-        c.argument('transforms', nargs='+', arg_type=get_enum_type(TransformType), help='Space-separated list of transforms to apply.')
-        c.argument('match_conditions', nargs='*', options_list='--match-condition', action=MatchConditionAction)
+
+    with self.argument_context('network front-door waf-policy rule update') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('priority', type=int, help='Priority of the rule.')
+        c.argument('rate_limit_duration', type=int, help='Rate limit duration in minutes.')
+        c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
+        c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
 
     with self.argument_context('network front-door waf-policy rule list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)
+
+    with self.argument_context('network front-door waf-policy rule match-condition add') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('match_variable', help='Variable[.Selector] Request variable to test with optional selector.')
+        c.argument('operator', help='Operator used to compare the variable to the values.')
+        c.argument('values', nargs='+', help='Space-separated list of values to match against.')
+        c.argument('negate', arg_type=get_three_state_flag(), help='Applies "Not" to the operator.')
+        c.argument('transforms', nargs='+', arg_type=get_enum_type(TransformType), help='Space-separated list of transforms to apply.')
+
+    with self.argument_context('network front-door waf-policy rule match-condition remove') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('index', type=int, help='0-based index of the match condition to remove')
+
+    with self.argument_context('network front-door waf-policy rule match-condition list') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
     # endregion
