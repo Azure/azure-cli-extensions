@@ -9,7 +9,8 @@ from .utils import(
     create_resource_group,
     create_database,
     create_website,
-    set_website_settings
+    set_website_settings,
+    create_cogsvcs_key
 )
 
 logger = get_logger(__name__)
@@ -24,6 +25,12 @@ def hack_up(cmd, name, runtime, database='sql'):
     logger.warning("Creating resource group")
     create_resource_group(cmd, name, location)
     logger.warning("Created resource group")
+
+    # Create CogSvcs key
+    # TODO: Make this async and move it to the top
+    logger.warning('Creating Cognitive Services key')
+    create_cogsvcs_key(cmd, name, location)
+
     # Create SQL server and database
     logger.warning("Starting database creation job...")
     database_poller = create_database(cmd, database, name, location, database_admin, database_password)

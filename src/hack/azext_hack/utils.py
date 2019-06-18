@@ -1,3 +1,8 @@
+from azure.cli.command_modules.cognitiveservices.custom import (
+    create as create_cogsvcs_account,
+    list_skus as list_cogsvcs_keys
+)
+from azure.cli.command_modules.cognitiveservices._client_factory import cf_accounts
 from uuid import uuid4
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
@@ -93,7 +98,6 @@ def create_database(cmd, database_provider, name, location, admin, password):
             return server_client.create(resource_group_name=name, server_name=name, parameters=parameters)
 
         def database_creator():
-            print('in mysql database creator')
             return database_client.create_or_update(
                 resource_group_name=name, server_name=name, database_name=name)
     else:
@@ -185,15 +189,29 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
     site['hostname'] = 'https://{}'.format(webapp.host_names[0])
     return site
 
+
 def set_website_settings(cmd, name, database_provider, database_admin, database_password):
+    cog_svcs_key = list_cogsvcs_keys(cmd, resource_group_name=name, account_name=name)['key1']
+
     # TODO: Update username to avoid issues
     database_options = DATABASES[database_provider.lower()]
     settings = []
     settings.append('DATABASE_NAME={}'.format(name))
-    settings.append('DATABASE_HOST={}'.format(database_options['host'].format(name)))
+    settings.append('DATABASE_HOST={}'.format(
+        database_options['host'].format(name)))
     settings.append('DATABASE_PORT={}'.format(database_options['port']))
     settings.append('DATABASE_USER={}'.format(database_admin))
     settings.append('DATABASE_PASSWORD={}'.format(database_password))
+    settings.append('COGNITIVE_SERVICES_KEY={}'.format(cog_svcs_key))
     update_app_settings(cmd, resource_group_name=name,
                         name=name, settings=settings)
     return settings
+
+
+def create_cogsvcs_key(cmd, name, location):
+    client = cf_accounts(cmd.cli_ctx)
+    result = create_cogsvcs_account(client, resource_group_name=name,
+                                    account_name=name, sku_name='S0',
+                                    kind='CognitiveServices', location=location,
+                                    yes=True)
+    return result
