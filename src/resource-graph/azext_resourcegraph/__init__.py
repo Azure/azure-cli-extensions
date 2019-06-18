@@ -20,7 +20,6 @@ class ResourceGraphCommandsLoader(AzCommandsLoader):
         super(ResourceGraphCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,
             custom_command_type=resource_graph_custom,
-            min_profile='2017-03-10-profile'
         )
 
     def load_command_table(self, args):

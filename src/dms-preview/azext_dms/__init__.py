@@ -16,7 +16,6 @@ class DmsCommandsLoader(AzCommandsLoader):
         dms_custom = CliCommandType(operations_tmpl='azext_dms.custom#{}',
                                     exception_handler=dms_api_exception_handler)
         super(DmsCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                min_profile='2017-03-10-profile',
                                                 custom_command_type=dms_custom)
 
     def load_command_table(self, args):
