@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.10"
+VERSION = "0.1.11"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -36,6 +36,7 @@ setup(
     version=VERSION,
     description='Support for querying Azure resources with Resource Graph.',
     long_description=README + '\n\n' + HISTORY,
+    long_description_content_type='text/markdown',
     license='MIT',
     author='Ilia Demianenko',
     author_email='ilidemi@microsoft.com',
