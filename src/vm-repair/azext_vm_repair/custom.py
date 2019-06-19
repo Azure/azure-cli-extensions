@@ -18,7 +18,8 @@ from .repair_utils import (
     _fetch_compatible_sku,
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
-    _fetch_compatible_windows_os_urn
+    _fetch_compatible_windows_os_urn,
+    _fetch_mitigation_script_path
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
 
@@ -271,23 +272,18 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 def run_repair(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None):
 
     try:
+        source_vm = get_vm(cmd, resource_group_name, vm_name)
+
+        if _is_linux_os(source_vm):
+            # raise linux not supported yet exception
+            pass
+
         repair_vm_id = parse_resource_id(repair_vm_id)
         repair_vm_name = repair_vm_id['name']
         repair_resource_group = repair_vm_id['resource_group']
 
-        # GET json from url function
-        # Fetch map.json and get script path
-        map_url = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
-        response = requests.get(url=map_url)
-        # Raise exception when request fails
-        response.raise_for_status()
-        map_json = response.json()
-        repair_script_path = [script['path'] for script in map_json if script['id'] == mitigation_id]
-        if repair_script_path:
-            repair_script_path = repair_script_path[0]
-        else:
-            raise MitigationScriptNotFoundForIdError('Mitigation not found for id: {}. Please validate if the id is correct.'.format(mitigation_id))
-        # FUNCTION END
+        # Fetch mitigation path from GitHub
+        repair_script_path = _fetch_mitigation_script_path(mitigation_id)
 
         win_run_script_path = '../scripts/win-run-repair.ps1'
 

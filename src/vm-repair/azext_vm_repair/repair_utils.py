@@ -6,6 +6,7 @@
 import subprocess
 import shlex
 import os
+import requests
 from json import loads
 
 from knack.log import get_logger
@@ -13,6 +14,8 @@ from knack.prompting import prompt_y_n, NoTTYException
 
 from .exceptions import AzCommandError, WindowsOsNotAvailableError
 # pylint: disable=line-too-long
+
+REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
 logger = get_logger(__name__)
 
@@ -173,3 +176,17 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
     raise Exception(
         'API version is required and could not be resolved for resource {}'
         .format(resource_type))
+
+
+def _fetch_mitigation_script_path(mitigation_id):
+    # Fetch map.json from GitHub
+    response = requests.get(url=REPAIR_MAP_URL)
+    # Raise exception when request fails
+    response.raise_for_status()
+
+    map_json = response.json()
+    repair_script_path = [script['path'] for script in map_json if script['id'] == mitigation_id]
+    if repair_script_path:
+        return repair_script_path[0]
+    else:
+        raise MitigationScriptNotFoundForIdError('Mitigation not found for id: {}. Please validate if the id is correct.'.format(mitigation_id))

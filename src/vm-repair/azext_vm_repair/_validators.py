@@ -224,4 +224,5 @@ def fetch_repair_vm(namespace):
 
     # One repair VM found
     namespace.repair_vm_id = repair_list[0]['id']
-    logger.warning('Repair-vm-id not given, restoring from only matching repair VM: %s', namespace.repair_vm_id)
+
+    logger.info('Performing command on repair VM: %s\n', namespace.repair_vm_id)
