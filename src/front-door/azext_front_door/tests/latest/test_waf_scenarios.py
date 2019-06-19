@@ -5,7 +5,8 @@
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer,
                                api_version_constraint)
 from .frontdoor_test_util import WafScenarioMixin
-
+from knack.cli import CLIError
+from azext_front_door.vendored_sdks.models.error_response_py3 import ErrorResponseException
 
 class WafTests(WafScenarioMixin, ScenarioTest):
 
@@ -293,10 +294,10 @@ az network front-door waf-policy rule update -g {resource_group} --policy-name {
 az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {disabledRateLimit}
 az network front-door waf-policy rule show -g {resource_group} --policy-name {policyName} -n {rateLimit}
 az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}
-az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestHeaders.value --operator contains --values foo boo
-az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestHeaders --operator contains --values foo boo <-- expect error, no selector
-az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {match} --match-variable RequestUri --operator contains --values foo boo [--negate]
-az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {match} --match-variable RequestHeaders.value --operator contains --values foo boo [--negate] [--transforms Lowercase UrlDecode]
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestHeaders.value --operator Contains --values foo boo
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestHeaders --operator Contains --values foo boo <-- expect error, no selector
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {match} --match-variable RequestUri --operator Contains --values foo boo [--negate]
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {match} --match-variable RequestHeaders.value --operator Contains --values foo boo [--negate] [--transforms Lowercase UrlDecode]
 az network front-door waf-policy rule match-condition remove -g {resource_group} --policy-name {policyName} -n {match} --index 1
 az network front-door waf-policy rule match-condition list -g {resource_group} --policy-name {policyName} -n {match}
 """
@@ -309,9 +310,113 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         rateLimit = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit} --priority 10 --action log --rule-type ratelimitrule --rate-limit-duration 5 --rate-limit-threshold 10000 --defer'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
-        self.assertIn('customRules', result)
+        self.assertEqual(result['customRules']['rules'][0]['rateLimitDurationInMinutes'], 5)
+        self.assertEqual(result['customRules']['rules'][0]['rateLimitThreshold'], 10000)
 
-        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestBody --operator RegEx --values "something"'.format(**locals())
+        badRateLimit = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {badRateLimit} --priority 20 --action log --rule-type ratelimitrule --rate-limit-threshold 10000 --defer'.format(**locals())
+        try:
+            result = self.cmd(cmd)
+            self.fail("should throw exception")
+        except CLIError as e:
+            self.assertEqual(str(e), "rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
+
+        disabledRateLimit = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {disabledRateLimit} --priority 30 --action log --rule-type ratelimitrule --disabled --rate-limit-duration 1 --rate-limit-threshold 10000 --defer'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
-        self.assertEqual(result['customRules']['rules'][0]['matchConditions'][0]['matchValue'][0], "something")
-        #TODO bomar
+        self.assertEqual(result['customRules']['rules'][1]['enabledState'], "Disabled")
+
+        match = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {match} --priority 40 --action log --rule-type matchrule --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][2]['ruleType'], "MatchRule")
+
+        cmd = 'az network front-door waf-policy rule update -g {resource_group} --policy-name {policyName} -n {rateLimit} --priority 45 --action block --rate-limit-duration 5 --rate-limit-threshold 10000 --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][0]['priority'], 45)
+        self.assertEqual(result['customRules']['rules'][0]['action'], "Block")
+
+        cmd = 'az network front-door waf-policy rule update -g {resource_group} --policy-name {policyName} -n {disabledRateLimit} --priority 75 --disabled --rate-limit-duration 5 --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][1]['priority'], 75)
+        self.assertEqual(result['customRules']['rules'][1]['rateLimitDurationInMinutes'], 1)
+        self.assertEqual(result['customRules']['rules'][1]['enabledState'], 'Disabled')
+
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestHeader.value --operator Contains --values foo boo --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][0]['matchConditions'][0]['matchVariable'], 'RequestHeader')
+        self.assertEqual(result['customRules']['rules'][0]['matchConditions'][0]['selector'], 'value')
+        self.assertEqual(result['customRules']['rules'][0]['matchConditions'][0]['matchValue'][0], 'foo')
+        self.assertEqual(result['customRules']['rules'][0]['matchConditions'][0]['matchValue'][1], 'boo')
+
+        # Note that this causes 'Selector must be set when using RequestHeader match variable' when we submit the policy to the back-end
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimit} --match-variable RequestHeader --operator Contains --values foo boo --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {disabledRateLimit} --match-variable RequestUri --operator Contains --values foo boo --negate --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][1]['matchConditions'][0]['matchVariable'], 'RequestUri')
+        self.assertEqual(result['customRules']['rules'][1]['matchConditions'][0]['selector'], None)
+        self.assertEqual(result['customRules']['rules'][1]['matchConditions'][0]['negateCondition'], True)
+        self.assertEqual(result['customRules']['rules'][1]['matchConditions'][0]['matchValue'][0], 'foo')
+        self.assertEqual(result['customRules']['rules'][1]['matchConditions'][0]['matchValue'][1], 'boo')
+
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {match} --match-variable RequestUri --operator Contains --values foo boo --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][0]['matchVariable'], 'RequestUri')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][0]['selector'], None)
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][0]['negateCondition'], None)
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][0]['matchValue'][0], 'foo')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][0]['matchValue'][1], 'boo')
+
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {match} --match-variable RequestHeader.value --operator Contains --values foo boo --transforms Lowercase UrlDecode --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][1]['matchVariable'], 'RequestHeader')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][1]['selector'], 'value')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][1]['matchValue'][0], 'foo')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][1]['matchValue'][1], 'boo')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][1]['transforms'][0], 'Lowercase')
+        self.assertEqual(result['customRules']['rules'][2]['matchConditions'][1]['transforms'][1], 'UrlDecode')
+
+        cmd = 'az network front-door waf-policy rule match-condition remove -g {resource_group} --policy-name {policyName} -n {match} --index 1 --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result['customRules']['rules'][2]['matchConditions']), 1)
+
+        cmd = 'az network front-door waf-policy rule match-condition list -g {resource_group} --policy-name {policyName} -n {match} --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 1)
+
+        # complete updates on all deferred policies
+        try:
+            cmd = 'az network front-door waf-policy rule update -g {resource_group} --policy-name {policyName} -n {disabledRateLimit} --priority 75'.format(**locals())
+            result = self.cmd(cmd)
+            self.fail()
+        except ErrorResponseException as e:
+            # fails because of missing selector on RequestHeader
+            self.assertTrue("400" in str(e.response))
+
+        # delete problematic match condition
+        cmd = 'az network front-door waf-policy rule match-condition remove -g {resource_group} --policy-name {policyName} -n {rateLimit} --index 1 --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        # complete updates on all deferred policies
+        cmd = 'az network front-door waf-policy rule update -g {resource_group} --policy-name {policyName} -n {disabledRateLimit} --priority 75'.format(**locals())
+        result = self.cmd(cmd)
+
+        cmd = 'az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 3)
+
+        cmd = 'az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {disabledRateLimit}'.format(**locals())
+        result = self.cmd(cmd)
+
+        cmd = 'az network front-door waf-policy rule show -g {resource_group} --policy-name {policyName} -n {rateLimit}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['name'], rateLimit)
+        self.assertEqual(result['priority'], 45)
+        self.assertEqual(result['action'], "Block")
+        self.assertEqual(result['rateLimitDurationInMinutes'], 5)
+
+        cmd = 'az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 2)

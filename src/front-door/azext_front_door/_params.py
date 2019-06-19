@@ -185,6 +185,15 @@ def load_arguments(self, _):
         c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
         c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
         c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
+        c.argument('disabled', help='Whether to disable the rule.')
+
+    with self.argument_context('network front-door waf-policy rule delete') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+
+    with self.argument_context('network front-door waf-policy rule show') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
 
     with self.argument_context('network front-door waf-policy rule update') as c:
         c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
@@ -194,6 +203,7 @@ def load_arguments(self, _):
         c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
         c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
         c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
+        c.argument('disabled', help='Whether to disable the rule.')
 
     with self.argument_context('network front-door waf-policy rule list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)

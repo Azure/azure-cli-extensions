@@ -709,7 +709,11 @@ def list_managed_rules_definitions(cmd):
 
 
 def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority, rule_type, action,
-                          rate_limit_duration=None, rate_limit_threshold=None):
+                          rate_limit_duration=None, rate_limit_threshold=None, disabled=None):
+    if rule_type.lower() == "ratelimitrule" and (rate_limit_duration is None or rate_limit_threshold is None):
+        from knack.util import CLIError
+        raise CLIError("rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
+    
     from azext_front_door.vendored_sdks.models import CustomRule
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = cached_get(cmd, client.get, resource_group_name, policy_name)
@@ -721,26 +725,28 @@ def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, prio
         match_conditions=[],
         rate_limit_duration_in_minutes=rate_limit_duration,
         rate_limit_threshold=rate_limit_threshold,
+        enabled_state='Enabled' if not disabled else 'Disabled'
     )
     policy.custom_rules.rules.append(rule)
     return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority=None, action=None,
-                          rate_limit_duration=None, rate_limit_threshold=None):
+                          rate_limit_duration=None, rate_limit_threshold=None, disabled=None):
     from azext_front_door.vendored_sdks.models import CustomRule
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = cached_get(cmd, client.get, resource_group_name, policy_name)
 
     foundRule = False
-    for rule in instance.custom_rules.rules:
-        if( rule.name.lower() == rule_name):
+    for rule in policy.custom_rules.rules:
+        if( rule.name.lower() == rule_name.lower()):
             foundRule = True
             with UpdateContext(rule) as c:
                 c.update_param('priority', priority, None)
                 c.update_param('action', action, None)
                 c.update_param('rate_limit_duration', rate_limit_duration, None)
                 c.update_param('rate_limit_threshold', rate_limit_threshold, None)
+                c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
 
     if( not foundRule ):
         from knack.util import CLIError
@@ -758,13 +764,13 @@ def delete_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
 
 def list_wp_custom_rules(cmd, resource_group_name, policy_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
-    policy = client.get(resource_group_name, policy_name)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
     return policy.custom_rules.rules
 
 
 def show_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
-    policy = client.get(resource_group_name, policy_name)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
     try:
         return next(x for x in policy.custom_rules.rules if x.name.lower() == rule_name.lower())
     except StopIteration:
@@ -801,16 +807,17 @@ def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = cached_get(cmd, client.get, resource_group_name, policy_name)
 
-    selector = None
-    variable_parts = match_variable.split('.')
-    if( len(variable_parts) == 2 ):
-        match_variable=variable_parts[0]
-        selector = variable_parts[1]
-
     foundRule = False
     for rule in policy.custom_rules.rules:
         if rule.name.upper() == rule_name.upper():
             foundRule = True
+
+            selector = None
+            variable_parts = match_variable.split('.')
+            if( len(variable_parts) == 2 ):
+                match_variable=variable_parts[0]
+                selector = variable_parts[1]
+
             rule.match_conditions.append(MatchCondition(
                         match_variable=match_variable,
                         selector=selector,
