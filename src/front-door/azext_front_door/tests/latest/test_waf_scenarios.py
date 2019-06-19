@@ -208,8 +208,7 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
         self.assertEqual(result ['frontendEndpoints'][0]['hostName'], hostName)
         self.assertEqual(result ['frontendEndpoints'][0]['webApplicationFirewallPolicyLink']['id'], wafId)
 
-        todoBobbyBomar = False
-        if( todoBobbyBomar and self.is_live ):
+        if( self.is_live ):
             import requests
 
             import time
