@@ -61,4 +61,5 @@ def load_command_table(self, _):
         g.custom_command('add', 'aks_agentpool_add', supports_no_wait=True)
         g.custom_command('scale', 'aks_agentpool_scale', supports_no_wait=True)
         g.custom_command('upgrade', 'aks_agentpool_upgrade', supports_no_wait=True)
+        g.custom_command('update', 'aks_agentpool_update', supports_no_wait=True)
         g.custom_command('delete', 'aks_agentpool_delete', supports_no_wait=True)
