@@ -90,7 +90,7 @@ def validate_restore(cmd, namespace):
             message = 'More than one repair VM found:\n'
             for vm in repair_list:
                 message += vm['id'] + '\n'
-            message += '\nPlease specify the --repair-vm-id to restore the disk-swap with.'
+            message += '\nPlease specify the --repair-vm-id to restore with.'
             raise CLIError(message)
 
         # One repair VM found
