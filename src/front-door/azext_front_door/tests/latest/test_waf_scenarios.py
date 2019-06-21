@@ -8,8 +8,8 @@ from .frontdoor_test_util import WafScenarioMixin
 from knack.cli import CLIError
 from azext_front_door.vendored_sdks.models.error_response_py3 import ErrorResponseException
 
-class WafTests(WafScenarioMixin, ScenarioTest):
 
+class WafTests(WafScenarioMixin, ScenarioTest):
 
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_basic(self, resource_group):
@@ -104,7 +104,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
         # TODO uncomment once API support for updating tags is fixed :-O
-        #self.assertEqual(result['tags'], { 'test': 'best' })
+        # self.assertEqual(result['tags'], { 'test': 'best' })
         self.assertIn('customRules', result)
         self.assertIn('managedRules', result)
         self.assertIn('id', result)
@@ -125,7 +125,6 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(result['name'], blockpolicy)
         self.assertEqual(result['policySettings']['mode'], "Prevention")
         self.assertEqual(result['policySettings']['customBlockResponseStatusCode'], 406)
-
 
         cmd = 'az network front-door waf-policy update -g {resource_group} -n {blockpolicy} --custom-block-response-status-code 405 --custom-block-response-body YiBvZHk='.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
@@ -159,7 +158,6 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(len(result), 4)
         self.assertEqual(len([policy for policy in result if policy['name'] == blockpolicy]), 0)
-
 
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_custom_rule_matching(self, resource_group):
@@ -199,24 +197,24 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
 
         self.assertIn('frontendEndpoints', result)
         hostName = result['frontendEndpoints'][0]['hostName']
-        self.assertTrue(hostName != None)
+        self.assertTrue(hostName is not None)
 
         wafId = '/subscriptions/{subscription}/resourcegroups/{resource_group}/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/{policyName}'.format(**locals())
         cmd = 'az network front-door update --name {frontdoorName} --resource-group {resource_group} --set "FrontendEndpoints[0].WebApplicationFirewallPolicyLink.id={wafId}"'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertIn('frontendEndpoints', result)
-        self.assertEqual(result ['frontendEndpoints'][0]['hostName'], hostName)
-        self.assertEqual(result ['frontendEndpoints'][0]['webApplicationFirewallPolicyLink']['id'], wafId)
+        self.assertEqual(result['frontendEndpoints'][0]['hostName'], hostName)
+        self.assertEqual(result['frontendEndpoints'][0]['webApplicationFirewallPolicyLink']['id'], wafId)
 
-        if( self.is_live ):
+        if self.is_live:
             import requests
 
             import time
             time.sleep(480)
-            r = requests.post('http://{hostName}/'.format(**locals()), data = "'key':'value'")
+            r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
             self.assertEqual(r.status_code, 200)
 
-            r = requests.post('http://{hostName}/'.format(**locals()), data = "'key':'something'")
+            r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
             self.assertEqual(r.status_code, 403)
 
     @ResourceGroupPreparer(location='westus')
@@ -278,7 +276,6 @@ az network front-door waf-policy managed-rule-definition list
         rule = [rule for rule in sqlGroup['rules'] if rule['ruleId'] == ruleid][0]
         self.assertEqual(rule['ruleId'], ruleid)
 
-        
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_custom_rules(self, resource_group):
         # multi-line comment below

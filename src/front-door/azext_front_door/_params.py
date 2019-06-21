@@ -1,3 +1,5 @@
+# pylint: disable=W0611
+# ^^ pylint gives spurious "unused imports" for the models classes
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15,7 +17,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
     validate_waf_policy, validate_load_balancing_settings, validate_probe_settings,
-    validate_frontend_endpoints, validate_backend_pool, MatchConditionAction)
+    validate_frontend_endpoints, validate_backend_pool)
 
 
 class RouteType(str, Enum):
@@ -150,7 +152,7 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rules add') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('type', help='Name of the ruleset to apply.')
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to apply.')
         c.argument('version', help='Rule set version.')
 
     with self.argument_context('network front-door waf-policy managed-rules list') as c:
@@ -159,20 +161,20 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rules override add') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('type', help='Name of the ruleset to override.')
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to override.')
         c.argument('rule_group_id', help='Name of the rule group containing the rule to override.')
         c.argument('rule_id', help='Name of the rule to override.')
         c.argument('disabled', help='Whether to disable the rule.')
 
     with self.argument_context('network front-door waf-policy managed-rules override remove') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('type', help='Name of the ruleset with the override to remove.')
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the override to remove.')
         c.argument('rule_group_id', help='Name of the rule group containing the override to remove.')
         c.argument('rule_id', help='Name of the rule override to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rules remove') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('type', help='Name of the ruleset to remove.')
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rule-definition list') as c:
         c.argument('policy_name', waf_policy_name_type)
