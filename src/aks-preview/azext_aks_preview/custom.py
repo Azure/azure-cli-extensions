@@ -501,7 +501,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku=None,
+               load_balancer_sku="basic",
                enable_addons=None,
                workspace_resource_id=None,
                min_count=None,
@@ -596,8 +596,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             service_cidr,
             dns_service_ip,
             docker_bridge_address,
-            network_policy,
-            load_balancer_sku]):
+            network_policy]):
         if not network_plugin:
             raise CLIError('Please explicitly specify the network plugin type')
         if pod_cidr and network_plugin == "azure":
@@ -609,8 +608,14 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             dns_service_ip=dns_service_ip,
             docker_bridge_cidr=docker_bridge_address,
             network_policy=network_policy,
-            load_balancer_sku=load_balancer_sku
+            load_balancer_sku=load_balancer_sku.lower()
         )
+    else:
+        if load_balancer_sku.lower() == "standard":
+            network_profile = ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                load_balancer_sku=load_balancer_sku.lower()
+            )
 
     addon_profiles = _handle_addons_args(
         cmd,
