@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.3.2
++++++
+Remove min profile version and max core version
+
+0.3.1
++++++
+Add cli max core version
+
 0.3.0
 +++++
 R4 RP standard
