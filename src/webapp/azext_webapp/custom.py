@@ -27,6 +27,70 @@ def _ping_scm_site(cmd, resource_group, name):
     authorization = urllib3.util.make_headers(basic_auth='{}:{}'.format(user_name, password))
     requests.get(scm_url + '/api/settings', headers=authorization)
 
+def start_scan(cmd, resource_group_name, name,timeout="", slot=None):
+    import requests
+    logger.warning("Getting scm site credentials for scan")
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+    scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    start_scan_url = scm_url + '/api/scan/start/' + timeout
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['content-type'] = 'application/octet-stream'
+
+    response = requests.get(start_scan_url, headers=authorization)
+    
+    return response.json()
+
+def get_scan_result(cmd, resource_group_name, name,scan_id, slot=None):
+    import requests
+    logger.warning("Getting scm site credentials for scan result")
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+    scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    scan_result_url = scm_url + '/api/scan/' + scan_id + '/result'
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['content-type'] = 'application/octet-stream'
+
+    response = requests.get(scan_result_url, headers=authorization)
+    
+    return response.json()
+
+def track_scan(cmd, resource_group_name, name,scan_id, slot=None):
+    import requests
+    logger.warning("Getting scm site credentials for scan result")
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+    scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    scan_result_url = scm_url + '/api/scan/' + scan_id + '/track'
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['content-type'] = 'application/octet-stream'
+
+    response = requests.get(scan_result_url, headers=authorization)
+    
+    return response.json()
+
+def get_all_scan_result(cmd, resource_group_name, name, slot=None):
+    import requests
+    logger.warning("Getting scm site credentials for all scans")
+    user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+    scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    scan_result_url = scm_url + '/api/scan/results'
+
+    import urllib3
+    authorization = urllib3.util.make_headers(basic_auth='{0}:{1}'.format(user_name, password))
+    headers = authorization
+    headers['content-type'] = 'application/octet-stream'
+
+    response = requests.get(scan_result_url, headers=authorization)
+    
+    return response.json()
+
 
 def _get_app_url(cmd, rg_name, app_name):
     site = _generic_site_operation(cmd.cli_ctx, rg_name, app_name, 'get')

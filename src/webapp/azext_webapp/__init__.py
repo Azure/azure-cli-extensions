@@ -20,6 +20,13 @@ class WebappExtCommandLoader(AzCommandsLoader):
     def load_command_table(self, _):
         with self.command_group('webapp') as g:
             g.custom_command('remote-connection create', 'create_tunnel')
+
+        with self.command_group('webapp scan') as g:
+            g.custom_command('start-scan', 'start_scan')
+            g.custom_command('get-scan-result', 'get_scan_result')
+            g.custom_command('track-scan', 'track_scan')
+            g.custom_command('get-all-scan-result', 'get_all_scan_result')
+
         return self.command_table
 
     def load_arguments(self, _):
@@ -29,6 +36,9 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('port', options_list=['--port', '-p'],
                        help='Port for the remote connection. Default: Random available port', type=int)
             c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
+        with self.argument_context('webapp scan') as c:
+            c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
+        
 
 
 COMMAND_LOADER_CLS = WebappExtCommandLoader
