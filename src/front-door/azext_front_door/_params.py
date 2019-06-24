@@ -29,7 +29,7 @@ class RouteType(str, Enum):
 def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
-        PolicyMode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, ManagedRuleGroupOverride, ActionType, RuleType, TransformType,
+        PolicyMode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol
     )
 
