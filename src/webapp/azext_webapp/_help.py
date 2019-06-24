@@ -17,25 +17,25 @@ helps['webapp remote-connection create'] = """
 
 helps['webapp scan'] = """
     type: group
-    short-summary: Holds group of commands which cater to webapp scans
+    short-summary: Holds group of commands which cater to webapp scans.
 """
 
 helps['webapp scan start-scan'] = """
     type: command
-    short-summary: Starts the scan on the specified webapp files
+    short-summary: Starts the scan on the specified webapp files in the wwwroot directory. It returns a JSON containing the ScanID, traking and results URL.
 """
 
 helps['webapp scan get-scan-result'] = """
     type: command
-    short-summary: Get results of specified scan-id
+    short-summary: Get results of specified scan-id. This will fetch you the Scan log results of the specified scan-id.
 """
 
 helps['webapp scan track-scan'] = """
     type: command
-    short-summary: Track status of scan by providing scan-id
+    short-summary: Track status of scan by providing scan-id. You can track the status of the scan from [Starting, Success, Failed, TimeoutFailure, Executing]
 """
 
 helps['webapp scan get-all-scan-result'] = """
     type: command
-    short-summary: Get details of all scans conducted on webapp, upto max scan limit set on the webapp
+    short-summary: Get details of all scans conducted on webapp, upto max scan limit set on the webapp This will get you the scan log results in addition to the scan status of each scan conducted on the webapp.
 """
