@@ -127,3 +127,27 @@ az aks update \
     -n MyManagedCluster \
     --disable-pod-security-policy \
 ```
+
+#### Enable cluster auto scaler for a node pool
+*Examples:*
+```
+az aks nodepool update \
+    -g MyResourceGroup \
+    -n nodepool1
+    --cluster-name MyManagedCluster \
+    --enable-cluster-autoscaler \
+    --max-count 10 \
+    --min-count 3
+```
+
+#### Update cluster auto scaler settings for a node pool
+*Examples:*
+```
+az aks nodepool update \
+    -g MyResourceGroup \
+    -n nodepool1
+    --cluster-name MyManagedCluster \
+    --update-cluster-autoscaler \
+    --max-count 10 \
+    --min-count 3
+```
