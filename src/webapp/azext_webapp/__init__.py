@@ -38,7 +38,6 @@ class WebappExtCommandLoader(AzCommandsLoader):
             c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
         with self.argument_context('webapp scan') as c:
             c.argument('name', options_list=['--name', '-n'], help='Name of the webapp to connect to')
-        
 
 
 COMMAND_LOADER_CLS = WebappExtCommandLoader
