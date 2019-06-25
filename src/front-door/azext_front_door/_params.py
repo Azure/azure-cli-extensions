@@ -125,6 +125,7 @@ def load_arguments(self, _):
         c.argument('backend_pool', help='Name or ID of a backend pool.', validator=validate_backend_pool)
         c.argument('frontend_endpoints', help='Space-separated list of frontend endpoint names or IDs.', nargs='+', validator=validate_frontend_endpoints)
         c.argument('custom_forwarding_path', help='Custom path used to rewrite resource paths matched by this rule. Leave empty to use incoming path.')
+        c.argument('caching', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=False), help='Whether to enable caching for this route.')
         c.argument('dynamic_compression', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Use dynamic compression for cached content.')
         c.argument('query_parameter_strip_directive', arg_type=get_enum_type(FrontDoorQuery), help='Treatment of URL query terms when forming the cache key.')
         c.argument('redirect_type', arg_type=get_enum_type(FrontDoorRedirectType), help='The redirect type the rule will use when redirecting traffic.')
