@@ -29,6 +29,12 @@ def _ping_scm_site(cmd, resource_group, name):
 
 
 def start_scan(cmd, resource_group_name, name, timeout="", slot=None):
+    webapp = show_webapp(cmd, resource_group_name, name, slot)
+    is_linux = webapp.reserved
+    if not is_linux:
+        logger.error("Only Linux App Service Plans supported, Found a Windows App Service Plan")
+        return
+
     import requests
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
     scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
@@ -44,6 +50,12 @@ def start_scan(cmd, resource_group_name, name, timeout="", slot=None):
 
 
 def get_scan_result(cmd, resource_group_name, name, scan_id, slot=None):
+    webapp = show_webapp(cmd, resource_group_name, name, slot)
+    is_linux = webapp.reserved
+    if not is_linux:
+        logger.error("Only Linux App Service Plans supported, Found a Windows App Service Plan")
+        return
+
     import requests
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
     scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
@@ -60,6 +72,12 @@ def get_scan_result(cmd, resource_group_name, name, scan_id, slot=None):
 
 
 def track_scan(cmd, resource_group_name, name, scan_id, slot=None):
+    webapp = show_webapp(cmd, resource_group_name, name, slot)
+    is_linux = webapp.reserved
+    if not is_linux:
+        logger.error("Only Linux App Service Plans supported, Found a Windows App Service Plan")
+        return
+
     import requests
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
     scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
@@ -76,6 +94,12 @@ def track_scan(cmd, resource_group_name, name, scan_id, slot=None):
 
 
 def get_all_scan_result(cmd, resource_group_name, name, slot=None):
+    webapp = show_webapp(cmd, resource_group_name, name, slot)
+    is_linux = webapp.reserved
+    if not is_linux:
+        logger.error("Only Linux App Service Plans supported, Found a Windows App Service Plan")
+        return
+
     import requests
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
     scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
