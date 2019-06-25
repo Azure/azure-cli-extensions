@@ -74,8 +74,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_managed:
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
             # Copy OS disk command
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s}  --location {l} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, l=source_vm.location, s=target_disk_name)
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s}  --location {loc} --query id -o tsv' \
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, loc=source_vm.location)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
