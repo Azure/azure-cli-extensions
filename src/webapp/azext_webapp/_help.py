@@ -17,7 +17,7 @@ helps['webapp remote-connection create'] = """
 
 helps['webapp scan'] = """
     type: group
-    short-summary: Holds group of commands which cater to webapp scans.
+    short-summary: Holds group of commands which cater to webapp scans. Currently available only for Linux based webapps.
 """
 
 helps['webapp scan start-scan'] = """
