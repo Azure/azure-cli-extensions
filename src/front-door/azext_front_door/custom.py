@@ -467,7 +467,7 @@ def update_fd_load_balancing_settings(instance, sample_size=None, successful_sam
 def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name, frontend_endpoints, route_type,
                             backend_pool=None, accepted_protocols=None, patterns_to_match=None,
                             custom_forwarding_path=None, forwarding_protocol=None, disabled=None,
-                            dynamic_compression=None, query_parameter_strip_directive=None,
+                            caching=None, dynamic_compression=None, query_parameter_strip_directive=None,
                             redirect_type='Moved', redirect_protocol='MatchRequest', custom_host=None, custom_path=None,
                             custom_fragment=None, custom_query_string=None):
     from azext_front_door.vendored_sdks.models import (CacheConfiguration, RoutingRule, SubResource,
@@ -476,6 +476,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
     forwarding_usage = ('usage error: [--backend-pool BACKEND_POOL] '
                         '[--custom-forwarding-path CUSTOM_FORWARDING_PATH] '
                         '[--forwarding-protocol FORWARDING_PROTOCOL] '
+                        '[--caching {Enabled,Disbaled}]'
                         '[--query-parameter-strip-directive {StripNone,StripAll}] '
                         '[--dynamic-compression [{Enabled,Disabled}]]')
     redirect_usage = ('usage error: [--redirect-type {Moved,Found,TemporaryRedirect,PermanentRedirect}]'
@@ -506,7 +507,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                 cache_configuration=CacheConfiguration(
                     query_parameter_strip_directive=query_parameter_strip_directive,
                     dynamic_compression=dynamic_compression
-                )
+                ) if caching else None
             )
         )
     elif route_type == 'Redirect':

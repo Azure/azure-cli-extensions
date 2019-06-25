@@ -15,8 +15,7 @@ class DevspacesExtCommandLoader(AzCommandsLoader):  # pylint:disable=too-few-pub
         from azure.cli.core.commands import CliCommandType
         dev_spaces_custom = CliCommandType(
             operations_tmpl='azext_dev_spaces.custom#{}')
-        super(DevspacesExtCommandLoader, self).__init__(cli_ctx=cli_ctx,
-                                                        custom_command_type=dev_spaces_custom)
+        super(DevspacesExtCommandLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=dev_spaces_custom)
 
 
 COMMAND_LOADER_CLS = DevspacesExtCommandLoader
