@@ -10,9 +10,10 @@ import json
 
 from azure.cli.core._profile import Profile
 from knack.util import todict, CLIError
+
 from .vendored_sdks.resourcegraph import ResourceGraphClient
 from .vendored_sdks.resourcegraph.models import \
-    QueryRequest, QueryRequestOptions, QueryResponse, Table, ErrorResponseException, ErrorResponse
+    QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponseException, ErrorResponse
 
 __ROWS_PER_PAGE = 1000
 
@@ -30,12 +31,14 @@ def execute_query(client, graph_query, first, skip, subscriptions):
             request_options = QueryRequestOptions(
                 top=min(first - len(results), __ROWS_PER_PAGE),
                 skip=skip + len(results),
-                skip_token=skip_token
+                skip_token=skip_token,
+                result_format=ResultFormat.object_array
             )
+
             request = QueryRequest(query=graph_query, subscriptions=subs_list, options=request_options)
             response = client.resources(request)  # type: QueryResponse
             skip_token = response.skip_token
-            results.extend(_table_to_dicts(response.data))
+            results.extend(response.data)
 
             if len(results) >= first or skip_token is None:
                 break
@@ -51,18 +54,6 @@ def _get_cached_subscriptions():
 
     cached_subs = Profile().load_cached_subscriptions()
     return [sub['id'] for sub in cached_subs]
-
-
-def _table_to_dicts(table):
-    # type: (Table) -> list[dict]
-
-    results = []
-    for row in table.rows:
-        result = {}
-        for col_index in range(len(table.columns)):
-            result[table.columns[col_index].name] = row[col_index]
-        results.append(result)
-    return results
 
 
 def _to_dict(obj):
