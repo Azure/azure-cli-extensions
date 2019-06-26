@@ -22,10 +22,10 @@ class WebappExtCommandLoader(AzCommandsLoader):
             g.custom_command('remote-connection create', 'create_tunnel')
 
         with self.command_group('webapp scan') as g:
-            g.custom_command('start-scan', 'start_scan')
-            g.custom_command('get-scan-result', 'get_scan_result')
-            g.custom_command('track-scan', 'track_scan')
-            g.custom_command('get-all-scan-result', 'get_all_scan_result')
+            g.custom_command('start', 'start_scan')
+            g.custom_command('show-result', 'get_scan_result')
+            g.custom_command('track', 'track_scan')
+            g.custom_command('list-result', 'get_all_scan_result')
 
         return self.command_table
 
