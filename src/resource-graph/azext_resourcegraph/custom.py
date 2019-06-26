@@ -19,8 +19,7 @@ from .vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponseException, ErrorResponse
 
 __ROWS_PER_PAGE = 1000
-
-logger = get_logger(__name__)
+__logger = get_logger(__name__)
 
 
 def execute_query(client, graph_query, first, skip, subscriptions, include):
@@ -54,7 +53,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
             queries_parts.append(graph_query)
             full_query = "| ".join(queries_parts)
         except Exception as e:
-            logger.warning("Failed to include displayNames to result. Error: " + str(e))
+            __logger.warning("Failed to include displayNames to result. Error: " + str(e))
 
     try:
         while True:
