@@ -5,26 +5,56 @@
 
 # pylint: disable=unused-import
 
-from collections import OrderedDict
 import json
+from collections import OrderedDict
 
+import requests
 from azure.cli.core._profile import Profile
+from knack.log import get_logger
 from knack.util import todict, CLIError
 
+from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
 from .vendored_sdks.resourcegraph import ResourceGraphClient
 from .vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponseException, ErrorResponse
 
 __ROWS_PER_PAGE = 1000
 
+logger = get_logger(__name__)
 
-def execute_query(client, graph_query, first, skip, subscriptions):
-    # type: (ResourceGraphClient, str, int, int, list[str]) -> object
+
+def execute_query(client, graph_query, first, skip, subscriptions, include):
+    # type: (ResourceGraphClient, str, int, int, list[str], str) -> object
 
     subs_list = subscriptions or _get_cached_subscriptions()
 
     results = []
     skip_token = None
+    full_query = graph_query
+
+    if include == IncludeOptionsEnum.display_names:
+        try:
+            queries_parts = []
+            subscription_list = _get_cached_detailed_subscriptions()
+            if len(subscription_list) > 0:
+                sub_query = "extend subscriptionDisplayName=case("
+                for sub in subscription_list:
+                    sub_query += "subscriptionId=='" + sub[0] + "', '" + sub[1] + "',"
+                sub_query += "'')"
+                queries_parts.append(sub_query)
+
+            tenant_list = _get_cached_detailed_tenant()
+            if len(tenant_list) > 0:
+                tenant_query = "extend tenantDisplayName=case("
+                for tenant in tenant_list:
+                    tenant_query += "tenantId=='" + tenant[0] + "', '" + tenant[1] + "',"
+                tenant_query += "'')"
+                queries_parts.append(tenant_query)
+
+            queries_parts.append(graph_query)
+            full_query = "| ".join(queries_parts)
+        except Exception as e:
+            logger.warning("Failed to include displayNames to result. Error: " + str(e))
 
     try:
         while True:
@@ -35,7 +65,7 @@ def execute_query(client, graph_query, first, skip, subscriptions):
                 result_format=ResultFormat.object_array
             )
 
-            request = QueryRequest(query=graph_query, subscriptions=subs_list, options=request_options)
+            request = QueryRequest(query=full_query, subscriptions=subs_list, options=request_options)
             response = client.resources(request)  # type: QueryResponse
             skip_token = response.skip_token
             results.extend(response.data)
@@ -54,6 +84,23 @@ def _get_cached_subscriptions():
 
     cached_subs = Profile().load_cached_subscriptions()
     return [sub['id'] for sub in cached_subs]
+
+
+def _get_cached_detailed_subscriptions():
+    # type: () -> List[Tuple[Any, Any]]
+
+    cached_subs = Profile().load_cached_subscriptions()
+    return [(sub['id'], sub["name"]) for sub in cached_subs]
+
+
+def _get_cached_detailed_tenant():
+    # type: () -> List[Tuple[Any, Any]]
+
+    token = Profile().get_raw_token()
+    bearer_token = token[0][0] + " " + token[0][1]
+    result = requests.get(url="https://management.azure.com/tenants?api-version=2019-05-10",
+                          headers={'Authorization': bearer_token})
+    return [(tenant['tenantId'], tenant["displayName"]) for tenant in eval(result.text)["value"]]
 
 
 def _to_dict(obj):
