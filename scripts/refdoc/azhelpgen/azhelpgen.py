@@ -124,15 +124,14 @@ class AzHelpGenDirective(Directive):
                             pass
                         yield '{}:default: {}'.format(DOUBLEINDENT, arg.default)
                     if arg.value_sources:
-                        yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(_get_populator_commands(arg)))
+                        yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(arg.value_sources))
                     yield ''
             yield ''
             if len(help_file.examples) > 0:
                for e in help_file.examples:
-                  fields = _get_example_fields(e)
-                  yield '{}.. cliexample:: {}'.format(INDENT, fields['summary'])
+                  yield '{}.. cliexample:: {}'.format(INDENT, e.name)
                   yield ''
-                  yield DOUBLEINDENT + fields['command'].replace("\\", "\\\\")
+                  yield DOUBLEINDENT + e.text.replace("\\", "\\\\")
                   yield ''
 
     def run(self):
@@ -144,6 +143,7 @@ class AzHelpGenDirective(Directive):
 
         nested_parse_with_titles(self.state, result, node)
         return node.children
+
 
 def setup(app):
     app.add_directive('azhelpgen', AzHelpGenDirective)
@@ -159,32 +159,11 @@ def _store_parsers(parser, parser_keys, parser_values, sub_parser_keys, sub_pars
                 sub_parser_values.append(c)
                 _store_parsers(c, parser_keys, parser_values, sub_parser_keys, sub_parser_values)
 
+
 def _is_group(parser):
     return getattr(parser, '_subparsers', None) is not None \
         or getattr(parser, 'choices', None) is not None
 
+
 def _get_parser_name(s):
     return (s._prog_prefix if hasattr(s, '_prog_prefix') else s.prog)[3:]
-
-
-def _get_populator_commands(param):
-    commands = []
-    for value_source in param.value_sources:
-        try:
-            commands.append(value_source["link"]["command"])
-        except TypeError:  # old value_sources are strings
-            commands.append(value_source)
-        except KeyError:  # new value_sources are dicts
-            continue
-    return commands
-
-def _get_example_fields(ex):
-    res = {}
-    try:
-        res['summary'] = ex.short_summary
-        res['command'] = ex.command
-    except AttributeError:
-        res['summary'] = ex.name
-        res['command'] = ex.text
-
-    return res
