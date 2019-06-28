@@ -124,7 +124,9 @@ class AzHelpGenDirective(Directive):
                             pass
                         yield '{}:default: {}'.format(DOUBLEINDENT, arg.default)
                     if arg.value_sources:
-                        yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(arg.value_sources))
+                        # TODO revert to commented out code once https://github.com/Azure/azure-cli/pull/9790 have been merged and released
+                        # yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(arg.value_sources))
+                        yield '{}:source: {}'.format(DOUBLEINDENT, ', '.join(_get_populator_commands(arg)))
                     yield ''
             yield ''
             if len(help_file.examples) > 0:
@@ -167,3 +169,16 @@ def _is_group(parser):
 
 def _get_parser_name(s):
     return (s._prog_prefix if hasattr(s, '_prog_prefix') else s.prog)[3:]
+
+
+# TODO remove this once changes in https://github.com/Azure/azure-cli/pull/9790 have been merged and released
+def _get_populator_commands(param):
+    commands = []
+    for value_source in param.value_sources:
+        try:
+            commands.append(value_source["link"]["command"])
+        except TypeError:  # old value_sources are strings
+            commands.append(value_source)
+        except KeyError:  # new value_sources are dicts
+            continue
+    return commands
