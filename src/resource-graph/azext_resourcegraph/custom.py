@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=unused-import
+# pylint: disable=unused-import, broad-except
 
 import json
 import os
@@ -126,7 +126,7 @@ def _get_extension():
 
     queries_parts = []
     subscription_list = _get_cached_detailed_subscriptions()
-    if len(subscription_list) > 0:
+    if subscription_list:
         sub_query = "extend subscriptionDisplayName=case("
         for sub in subscription_list:
             sub_query += "subscriptionId=='" + sub[0] + "', '" + sub[1] + "',"
@@ -134,7 +134,7 @@ def _get_extension():
         queries_parts.append(sub_query)
 
     tenant_list = _get_cached_detailed_tenant()
-    if len(tenant_list) > 0:
+    if tenant_list:
         tenant_query = "extend tenantDisplayName=case("
         for tenant in tenant_list:
             tenant_query += "tenantId=='" + tenant[0] + "', '" + tenant[1] + "',"
