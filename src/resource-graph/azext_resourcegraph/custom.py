@@ -6,12 +6,16 @@
 # pylint: disable=unused-import
 
 import json
+import os
+import time
 from collections import OrderedDict
 
 import requests
+from azure.cli.core._config import GLOBAL_CONFIG_DIR
 from azure.cli.core._profile import Profile
+from azure.cli.core._session import SESSION
 from knack.log import get_logger
-from knack.util import todict, CLIError
+from knack.util import todict, CLIError, ensure_dir
 
 from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
 from .vendored_sdks.resourcegraph import ResourceGraphClient
@@ -19,6 +23,8 @@ from .vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponseException, ErrorResponse
 
 __ROWS_PER_PAGE = 1000
+__CACHE_FILE_NAME = ".azgraphcache"
+__CACHE_KEY = "query_extension"
 __logger = get_logger(__name__)
 
 
@@ -26,32 +32,14 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
     # type: (ResourceGraphClient, str, int, int, list[str], str) -> object
 
     subs_list = subscriptions or _get_cached_subscriptions()
-
     results = []
     skip_token = None
     full_query = graph_query
 
     if include == IncludeOptionsEnum.display_names:
         try:
-            queries_parts = []
-            subscription_list = _get_cached_detailed_subscriptions()
-            if len(subscription_list) > 0:
-                sub_query = "extend subscriptionDisplayName=case("
-                for sub in subscription_list:
-                    sub_query += "subscriptionId=='" + sub[0] + "', '" + sub[1] + "',"
-                sub_query += "'')"
-                queries_parts.append(sub_query)
+            full_query = _get_extension() + "| " + graph_query
 
-            tenant_list = _get_cached_detailed_tenant()
-            if len(tenant_list) > 0:
-                tenant_query = "extend tenantDisplayName=case("
-                for tenant in tenant_list:
-                    tenant_query += "tenantId=='" + tenant[0] + "', '" + tenant[1] + "',"
-                tenant_query += "'')"
-                queries_parts.append(tenant_query)
-
-            queries_parts.append(graph_query)
-            full_query = "| ".join(queries_parts)
         except Exception as e:
             __logger.warning("Failed to include displayNames to result. Error: " + str(e))
 
@@ -122,3 +110,41 @@ def _to_dict(obj):
         return [_to_dict(v) for v in obj]
 
     return obj
+
+
+def _get_extension():
+    # try to get from cache
+    ensure_dir(GLOBAL_CONFIG_DIR)
+    path_cache = os.path.join(GLOBAL_CONFIG_DIR, __CACHE_FILE_NAME)
+    SESSION.data = {}
+    SESSION.load(path_cache)
+    query_extension = SESSION.data.get(__CACHE_KEY)
+
+    # if cache is older than 1 day, we don't want to use it
+    if time.mktime(time.localtime()) - os.path.getmtime(path_cache) < 86400 and query_extension is not None:
+        return query_extension
+
+    queries_parts = []
+    subscription_list = _get_cached_detailed_subscriptions()
+    if len(subscription_list) > 0:
+        sub_query = "extend subscriptionDisplayName=case("
+        for sub in subscription_list:
+            sub_query += "subscriptionId=='" + sub[0] + "', '" + sub[1] + "',"
+        sub_query += "'')"
+        queries_parts.append(sub_query)
+
+    tenant_list = _get_cached_detailed_tenant()
+    if len(tenant_list) > 0:
+        tenant_query = "extend tenantDisplayName=case("
+        for tenant in tenant_list:
+            tenant_query += "tenantId=='" + tenant[0] + "', '" + tenant[1] + "',"
+        tenant_query += "'')"
+        queries_parts.append(tenant_query)
+
+    query_extension = "| ".join(queries_parts)
+
+    # save to cache
+    SESSION.filename = path_cache
+    SESSION.data.update({__CACHE_KEY: query_extension})
+    SESSION.save()
+    return query_extension
