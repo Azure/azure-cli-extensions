@@ -8,6 +8,7 @@
 import json
 import os
 import time
+from ast import literal_eval
 from collections import OrderedDict
 
 import requests
@@ -87,7 +88,7 @@ def _get_cached_detailed_tenant():
     bearer_token = token[0][0] + " " + token[0][1]
     result = requests.get(url="https://management.azure.com/tenants?api-version=2019-05-10",
                           headers={'Authorization': bearer_token})
-    return [(tenant['tenantId'], tenant["displayName"]) for tenant in eval(result.text)["value"]]
+    return [(tenant['tenantId'], tenant["displayName"]) for tenant in literal_eval(result.text)["value"]]
 
 
 def _to_dict(obj):
