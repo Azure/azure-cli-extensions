@@ -17,11 +17,12 @@ jobs:
     displayName: 'Use Python 3.7'
     inputs:
       versionSpec: 3.7
-  - task: Bash@3
+  - bash: |
+      #!/usr/bin/env bash
+      set -ev
+      pip install azdev
+      python ./scripts/ci/test_static.py
     displayName: "Source Code Static Check"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_static.sh
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
