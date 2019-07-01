@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.2.19"
+VERSION = "0.2.20"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -34,6 +34,8 @@ setup(
     license='MIT',
     author='Sisira Panchagnula',
     author_email='sisirap@microsoft.com',
+    contributor='Purva Vasudeo',
+    contributor_email='t-puvasu@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/webapp',
     classifiers=CLASSIFIERS,
     package_data={'azext_webapp': ['azext_metadata.json']},
