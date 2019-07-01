@@ -7,9 +7,8 @@
 
 import json
 import os
-import time
-from ast import literal_eval
 from collections import OrderedDict
+from datetime import datetime, timedelta
 
 import requests
 from azure.cli.core._config import GLOBAL_CONFIG_DIR
@@ -17,7 +16,6 @@ from azure.cli.core._profile import Profile
 from azure.cli.core._session import SESSION
 from knack.log import get_logger
 from knack.util import todict, CLIError, ensure_dir
-from datetime import datetime, timedelta
 
 from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
 from .vendored_sdks.resourcegraph import ResourceGraphClient
