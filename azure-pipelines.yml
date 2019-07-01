@@ -1,0 +1,99 @@
+resources:
+- repo: self
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+
+jobs:
+- job: SourceStatic
+  displayName: "Source Code Static Check"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - task: Bash@3
+    displayName: "Source Code Static Check"
+    inputs:
+      targetType: 'filePath'
+      filePath: scripts/ci/test_static.sh
+
+- job: IndexVerify
+  displayName: "Verify Extensions Index"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - bash: |
+      #!/usr/bin/env bash
+      set -ev
+      python ./scripts/ci/test_index.py -v
+    displayName: "Verify Extensions Index"
+
+- job: TestsPython27
+  displayName: "Tests Python 2.7"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 2.7'
+    inputs:
+      versionSpec: 2.7
+  - task: Bash@3
+    displayName: "Tests Python 2.7"
+    inputs:
+      targetType: 'filePath'
+      filePath: scripts/ci/test_source.sh
+
+- job: TestsPython37
+  displayName: "Tests Python 3.7"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - task: Bash@3
+    displayName: "Tests Python 3.7"
+    inputs:
+      targetType: 'filePath'
+      filePath: scripts/ci/test_source.sh
+
+- job: LintModifiedExtensions
+  displayName: "CLI Linter"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - task: Bash@3
+    displayName: "CLI Linter on Modified Extension"
+    inputs:
+      targetType: 'filePath'
+      filePath: scripts/ci/verified_modified_index.sh
+
+- job: IndexRefDocVerify
+  displayName: "Verify Ref Docs"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - task: Bash@3
+    displayName: "Verify Extension Ref Docs"
+    inputs:
+      targetType: 'filePath'
+      filePath: scripts/ci/test_index_ref_doc.sh
