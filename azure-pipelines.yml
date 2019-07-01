@@ -35,6 +35,7 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
+      pip install wheel==0.30.0
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
 
@@ -81,7 +82,7 @@ jobs:
     displayName: "CLI Linter on Modified Extension"
     inputs:
       targetType: 'filePath'
-      filePath: scripts/ci/verified_modified_index.sh
+      filePath: scripts/ci/verify_modified_index.sh
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
