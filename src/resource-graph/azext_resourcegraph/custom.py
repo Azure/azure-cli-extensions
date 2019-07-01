@@ -17,6 +17,7 @@ from azure.cli.core._profile import Profile
 from azure.cli.core._session import SESSION
 from knack.log import get_logger
 from knack.util import todict, CLIError, ensure_dir
+from datetime import datetime, timedelta
 
 from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
 from .vendored_sdks.resourcegraph import ResourceGraphClient
@@ -88,7 +89,7 @@ def _get_cached_detailed_tenant():
     bearer_token = token[0][0] + " " + token[0][1]
     result = requests.get(url="https://management.azure.com/tenants?api-version=2019-05-10",
                           headers={'Authorization': bearer_token})
-    return [(tenant['tenantId'], tenant["displayName"]) for tenant in literal_eval(result.text)["value"]]
+    return [(tenant['tenantId'], tenant["displayName"]) for tenant in result.json()["value"]]
 
 
 def _to_dict(obj):
@@ -122,7 +123,8 @@ def _get_extension():
     query_extension = SESSION.data.get(__CACHE_KEY)
 
     # if cache is older than 1 day, we don't want to use it
-    if time.mktime(time.localtime()) - os.path.getmtime(path_cache) < 86400 and query_extension is not None:
+    if datetime.utcnow() - datetime.utcfromtimestamp(os.path.getmtime(path_cache)) < timedelta(days=1) \
+            and query_extension is not None:
         return query_extension
 
     queries_parts = []
