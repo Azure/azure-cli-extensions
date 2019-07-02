@@ -275,8 +275,11 @@ def run_repair(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=No
         source_vm = get_vm(cmd, resource_group_name, vm_name)
 
         if _is_linux_os(source_vm):
-            # raise linux not supported yet exception
-            pass
+            run_script = './scripts/linux-run-repair.sh'
+            command_id = 'RunShellScript'
+        else:
+            run_script = './scripts/win-run-repair.ps1'
+            command_id = 'RunPowerShellScript'
 
         repair_vm_id = parse_resource_id(repair_vm_id)
         repair_vm_name = repair_vm_id['name']
@@ -285,19 +288,17 @@ def run_repair(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=No
         # Fetch mitigation path from GitHub
         repair_script_path = _fetch_mitigation_script_path(mitigation_id)
 
-        win_run_script_path = '../scripts/win-run-repair.ps1'
-
-        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id RunPowerShellScript ' \
+        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
                              '--scripts "@{run_script}" --parameters "script_path=./{repair_script}"' \
-                             .format(rg=repair_resource_group, vm=repair_vm_name, run_script=win_run_script_path, repair_script=repair_script_path)
+                             .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script, repair_script=repair_script_path)
         logger.info('Running repair scripts within repair VM...')
         return_str = _call_az_command(repair_run_command)
 
         # Set up return codes and conditions
         return_json = json.loads(return_str)
-        stdout = return_json['value'][0]['message']
-        stderr = return_json['value'][1]['message']
-        print("stdout: " + stdout)
+        #stdout = return_json['value'][0]['message']
+        #stderr = return_json['value'][1]['message']
+        print(return_json)
 
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input.")
