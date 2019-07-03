@@ -24,3 +24,13 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_zones', location='eastus')
+    def test_azure_firewall_zones(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'coll': 'rc1',
+        })
+        self.cmd('network firewall create -g {rg} -n {af} --zones 1 3')
+        self.cmd('network firewall update -g {rg} -n {af} --zones 1')

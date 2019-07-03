@@ -74,8 +74,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_managed:
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
             # Copy OS disk command
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name)
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s}  --location {loc} --query id -o tsv' \
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, loc=source_vm.location)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
@@ -87,9 +87,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             attach_disk_command = 'az vm disk attach -g {g} --vm-name {repair} --name {id}' \
                                   .format(g=repair_group_name, repair=repair_vm_name, id=copy_disk_id)
 
-            logger.info('Creating repair vm...')
+            logger.info('Creating repair VM...')
             _call_az_command(create_repair_vm_command, secure_params=[repair_password])
-            logger.info('Attaching copied disk to repair vm...')
+            logger.info('Attaching copied disk to repair VM...')
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
         else:
@@ -149,13 +149,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         logger.error("Command interrupted by user input. Cleaning up resources.")
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
-        logger.error("Repair swap-disk failed. Cleaning up created resources.")
+        logger.error("Repair create failed. Cleaning up created resources.")
     except SkuNotAvailableError as skuNotAvailableError:
         logger.error(skuNotAvailableError)
         logger.error("Please check if the current subscription can create more VM resources. Cleaning up created resources.")
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         logger.error(unmanagedDiskCopyError)
-        logger.error("Repair swap-disk failed. Please try again at another time. Cleaning up created resources.")
+        logger.error("Repair create failed. Please try again at another time. Cleaning up created resources.")
     except WindowsOsNotAvailableError:
         logger.error('A compatible Windows OS image is not available at this time, please check subscription.')
     except Exception as exception:
@@ -175,7 +175,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
                              'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
                              '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
-                             'Note that the copied disk is created within the orignal resource group \'{rg}\'.' \
+                             'Note that the copied disk is created within the original resource group \'{rg}\'.' \
                              .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
     return_dict['repairVmName'] = repair_vm_name
     return_dict['copiedDiskName'] = copy_disk_name
@@ -244,7 +244,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         logger.error("Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
-        logger.error("Repair swap-disk failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
+        logger.error("Repair create failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
     except Exception as exception:
         logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
         logger.debug(exception)
