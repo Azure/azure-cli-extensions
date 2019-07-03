@@ -119,9 +119,9 @@ def delete_apimgmt_api(cmd, client,
     return client.api.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapi
-def list_apimgmt_api(cmd, client,
-                     resource_group,
-                     service_name):
+def list_apimgmt_apisbytag(cmd, client,
+                           resource_group,
+                           service_name):
     if resource_group is not None and service_name is not None:
         return client.api.list_by_tags(resource_group_name=resource_group, service_name=service_name)
     else:
@@ -335,9 +335,9 @@ def delete_apimgmt_tag(cmd, client,
     return client.tag.delete(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id)
 
 # module equivalent: azure_rm_apimanagementtag
-def list_apimgmt_tag(cmd, client,
-                     resource_group,
-                     service_name):
+def list_apimgmt_api_operation_tag(cmd, client,
+                                   resource_group,
+                                   service_name):
     if resource_group is not None and service_name is not None:
         return client.tag.list_by_operation(resource_group_name=resource_group, service_name=service_name)
     elif resource_group is not None and service_name is not None:
@@ -1342,15 +1342,6 @@ def create_apimgmt_group_user(cmd, client,
                               email=None,
                               registration_date=None,
                               groups=None):
-    body = {}
-    body['state'] = state # str
-    body['note'] = note # str
-    body['identities'] = json.loads(identities) if isinstance(identities, str) else identities
-    body['first_name'] = first_name # str
-    body['last_name'] = last_name # str
-    body['email'] = email # str
-    body['registration_date'] = registration_date # datetime
-    body['groups'] = json.loads(groups) if isinstance(groups, str) else groups
     return client.group_user.create(resource_group_name=resource_group, service_name=service_name, group_id=group_id, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementgroupuser
@@ -1504,10 +1495,6 @@ def create_apimgmt_notification(cmd, client,
                                 title,
                                 description=None,
                                 recipients=None):
-    body = {}
-    body['title'] = title # str
-    body['description'] = description # str
-    body['recipients'] = json.loads(recipients) if isinstance(recipients, str) else recipients
     return client.notification.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=name)
 
 # module equivalent: azure_rm_apimanagementnotification
@@ -1518,10 +1505,6 @@ def update_apimgmt_notification(cmd, client,
                                 title,
                                 description=None,
                                 recipients=None):
-    body = {}
-    body['title'] = title # str
-    body['description'] = description # str
-    body['recipients'] = json.loads(recipients) if isinstance(recipients, str) else recipients
     return client.notification.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=name)
 
 # module equivalent: azure_rm_apimanagementnotification
@@ -1543,7 +1526,6 @@ def create_apimgmt_notification_recipientuser(cmd, client,
                                               service_name,
                                               notification_name,
                                               user_id):
-    body = {}
     return client.notification_recipient_user.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
@@ -1552,7 +1534,6 @@ def update_apimgmt_notification_recipientuser(cmd, client,
                                               service_name,
                                               notification_name,
                                               user_id):
-    body = {}
     return client.notification_recipient_user.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
@@ -1576,7 +1557,6 @@ def create_apimgmt_notification_recipientemail(cmd, client,
                                                service_name,
                                                notification_name,
                                                email):
-    body = {}
     return client.notification_recipient_email.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
@@ -1585,7 +1565,6 @@ def update_apimgmt_notification_recipientemail(cmd, client,
                                                service_name,
                                                notification_name,
                                                email):
-    body = {}
     return client.notification_recipient_email.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
@@ -1844,9 +1823,9 @@ def delete_apimgmt_product(cmd, client,
     return client.product.delete(resource_group_name=resource_group, service_name=service_name, product_id=product_id)
 
 # module equivalent: azure_rm_apimanagementproduct
-def list_apimgmt_product(cmd, client,
-                         resource_group,
-                         service_name):
+def list_apimgmt_productsbytag(cmd, client,
+                               resource_group,
+                               service_name):
     if resource_group is not None and service_name is not None:
         return client.product.list_by_tags(resource_group_name=resource_group, service_name=service_name)
     else:
@@ -1883,25 +1862,6 @@ def create_apimgmt_product_api(cmd, client,
                                service_url=None,
                                protocols=None,
                                api_version_set=None):
-    body = {}
-    body['description'] = description # str
-    body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
-    body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
-    body['type'] = type # str
-    body['api_revision'] = api_revision # str
-    body['api_version'] = api_version # str
-    body['is_current'] = is_current # boolean
-    body['is_online'] = is_online # boolean
-    body['api_revision_description'] = api_revision_description # str
-    body['api_version_description'] = api_version_description # str
-    body['api_version_set_id'] = api_version_set_id # str
-    body['subscription_required'] = subscription_required # boolean
-    body['source_api_id'] = source_api_id # str
-    body['display_name'] = display_name # str
-    body['service_url'] = service_url # str
-    body['path'] = path # str
-    body['protocols'] = json.loads(protocols) if isinstance(protocols, str) else protocols
-    body['api_version_set'] = json.loads(api_version_set) if isinstance(api_version_set, str) else api_version_set
     return client.product_api.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementproductapi
@@ -1928,25 +1888,6 @@ def update_apimgmt_product_api(cmd, client,
                                service_url=None,
                                protocols=None,
                                api_version_set=None):
-    body = {}
-    body['description'] = description # str
-    body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
-    body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
-    body['type'] = type # str
-    body['api_revision'] = api_revision # str
-    body['api_version'] = api_version # str
-    body['is_current'] = is_current # boolean
-    body['is_online'] = is_online # boolean
-    body['api_revision_description'] = api_revision_description # str
-    body['api_version_description'] = api_version_description # str
-    body['api_version_set_id'] = api_version_set_id # str
-    body['subscription_required'] = subscription_required # boolean
-    body['source_api_id'] = source_api_id # str
-    body['display_name'] = display_name # str
-    body['service_url'] = service_url # str
-    body['path'] = path # str
-    body['protocols'] = json.loads(protocols) if isinstance(protocols, str) else protocols
-    body['api_version_set'] = json.loads(api_version_set) if isinstance(api_version_set, str) else api_version_set
     return client.product_api.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementproductapi
@@ -1975,12 +1916,6 @@ def create_apimgmt_product_group(cmd, client,
                                  built_in=None,
                                  type=None,
                                  external_id=None):
-    body = {}
-    body['display_name'] = display_name # str
-    body['description'] = description # str
-    body['built_in'] = built_in # boolean
-    body['type'] = type # str
-    body['external_id'] = external_id # str
     return client.product_group.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementproductgroup
@@ -1994,12 +1929,6 @@ def update_apimgmt_product_group(cmd, client,
                                  built_in=None,
                                  type=None,
                                  external_id=None):
-    body = {}
-    body['display_name'] = display_name # str
-    body['description'] = description # str
-    body['built_in'] = built_in # boolean
-    body['type'] = type # str
-    body['external_id'] = external_id # str
     return client.product_group.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementproductgroup
