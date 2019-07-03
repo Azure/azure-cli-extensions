@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 
 from knack.util import CLIError
 import json
@@ -32,7 +34,7 @@ def create_apimgmt_api(cmd, client,
                        format=None,
                        wsdl_selector=None,
                        api_type=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
     body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
@@ -82,7 +84,7 @@ def update_apimgmt_api(cmd, client,
                        format=None,
                        wsdl_selector=None,
                        api_type=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
     body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
@@ -136,7 +138,7 @@ def create_apimgmt_api_release(cmd, client,
                                api_id,
                                release_id,
                                notes=None):
-    body={}
+    body = {}
     body['notes'] = notes # str
     return client.api_release.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, release_id=release_id, parameters=body)
 
@@ -147,7 +149,7 @@ def update_apimgmt_api_release(cmd, client,
                                api_id,
                                release_id,
                                notes=None):
-    body={}
+    body = {}
     body['notes'] = notes # str
     return client.api_release.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, release_id=release_id, parameters=body)
 
@@ -188,7 +190,7 @@ def create_apimgmt_api_operation(cmd, client,
                                  request=None,
                                  responses=None,
                                  policies=None):
-    body={}
+    body = {}
     body['template_parameters'] = json.loads(template_parameters) if isinstance(template_parameters, str) else template_parameters
     body['description'] = description # str
     body['request'] = json.loads(request) if isinstance(request, str) else request
@@ -213,7 +215,7 @@ def update_apimgmt_api_operation(cmd, client,
                                  request=None,
                                  responses=None,
                                  policies=None):
-    body={}
+    body = {}
     body['template_parameters'] = json.loads(template_parameters) if isinstance(template_parameters, str) else template_parameters
     body['description'] = description # str
     body['request'] = json.loads(request) if isinstance(request, str) else request
@@ -256,7 +258,7 @@ def create_apimgmt_api_operation_policy(cmd, client,
                                         policy_id,
                                         value,
                                         format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
@@ -270,7 +272,7 @@ def update_apimgmt_api_operation_policy(cmd, client,
                                         policy_id,
                                         value,
                                         format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
@@ -308,7 +310,7 @@ def create_apimgmt_tag(cmd, client,
                        service_name,
                        tag_id,
                        display_name):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     return client.tag.create_or_update(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id, parameters=body)
 
@@ -318,7 +320,7 @@ def update_apimgmt_tag(cmd, client,
                        service_name,
                        tag_id,
                        display_name):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     return client.tag.create_or_update(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id, parameters=body)
 
@@ -357,7 +359,7 @@ def create_apimgmt_api_policy(cmd, client,
                               policy_id,
                               value,
                               format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.api_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, parameters=body)
@@ -370,7 +372,7 @@ def update_apimgmt_api_policy(cmd, client,
                               policy_id,
                               value,
                               format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.api_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, parameters=body)
@@ -407,7 +409,7 @@ def create_apimgmt_api_schema(cmd, client,
                               schema_id,
                               content_type,
                               document=None):
-    body={}
+    body = {}
     body['content_type'] = content_type # str
     body['document'] = json.loads(document) if isinstance(document, str) else document
     return client.api_schema.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id, parameters=body)
@@ -420,7 +422,7 @@ def update_apimgmt_api_schema(cmd, client,
                               schema_id,
                               content_type,
                               document=None):
-    body={}
+    body = {}
     body['content_type'] = content_type # str
     body['document'] = json.loads(document) if isinstance(document, str) else document
     return client.api_schema.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id, parameters=body)
@@ -460,7 +462,7 @@ def create_apimgmt_api_diagnostic(cmd, client,
                                   frontend=None,
                                   backend=None,
                                   enable_http_correlation_headers=None):
-    body={}
+    body = {}
     body['always_log'] = always_log # str
     body['logger_id'] = logger_id # str
     body['sampling'] = json.loads(sampling) if isinstance(sampling, str) else sampling
@@ -481,7 +483,7 @@ def update_apimgmt_api_diagnostic(cmd, client,
                                   frontend=None,
                                   backend=None,
                                   enable_http_correlation_headers=None):
-    body={}
+    body = {}
     body['always_log'] = always_log # str
     body['logger_id'] = logger_id # str
     body['sampling'] = json.loads(sampling) if isinstance(sampling, str) else sampling
@@ -524,7 +526,7 @@ def create_apimgmt_api_issue(cmd, client,
                              user_id,
                              created_date=None,
                              state=None):
-    body={}
+    body = {}
     body['created_date'] = created_date # datetime
     body['state'] = state # str
     body['title'] = title # str
@@ -543,7 +545,7 @@ def update_apimgmt_api_issue(cmd, client,
                              user_id,
                              created_date=None,
                              state=None):
-    body={}
+    body = {}
     body['created_date'] = created_date # datetime
     body['state'] = state # str
     body['title'] = title # str
@@ -584,7 +586,7 @@ def create_apimgmt_api_issue_comment(cmd, client,
                                      text,
                                      user_id,
                                      created_date=None):
-    body={}
+    body = {}
     body['text'] = text # str
     body['created_date'] = created_date # datetime
     body['user_id'] = user_id # str
@@ -600,7 +602,7 @@ def update_apimgmt_api_issue_comment(cmd, client,
                                      text,
                                      user_id,
                                      created_date=None):
-    body={}
+    body = {}
     body['text'] = text # str
     body['created_date'] = created_date # datetime
     body['user_id'] = user_id # str
@@ -642,7 +644,7 @@ def create_apimgmt_api_issue_attachment(cmd, client,
                                         title,
                                         content_format,
                                         content):
-    body={}
+    body = {}
     body['title'] = title # str
     body['content_format'] = content_format # str
     body['content'] = content # str
@@ -658,7 +660,7 @@ def update_apimgmt_api_issue_attachment(cmd, client,
                                         title,
                                         content_format,
                                         content):
-    body={}
+    body = {}
     body['title'] = title # str
     body['content_format'] = content_format # str
     body['content'] = content # str
@@ -699,7 +701,7 @@ def create_apimgmt_api_tagdescription(cmd, client,
                                       description=None,
                                       external_docs_url=None,
                                       external_docs_description=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['external_docs_url'] = external_docs_url # str
     body['external_docs_description'] = external_docs_description # str
@@ -714,7 +716,7 @@ def update_apimgmt_api_tagdescription(cmd, client,
                                       description=None,
                                       external_docs_url=None,
                                       external_docs_description=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['external_docs_url'] = external_docs_url # str
     body['external_docs_description'] = external_docs_description # str
@@ -753,7 +755,7 @@ def create_apimgmt_apiversionset(cmd, client,
                                  description=None,
                                  version_query_name=None,
                                  version_header_name=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['version_query_name'] = version_query_name # str
     body['version_header_name'] = version_header_name # str
@@ -771,7 +773,7 @@ def update_apimgmt_apiversionset(cmd, client,
                                  description=None,
                                  version_query_name=None,
                                  version_header_name=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['version_query_name'] = version_query_name # str
     body['version_header_name'] = version_header_name # str
@@ -820,7 +822,7 @@ def create_apimgmt_authorizationserver(cmd, client,
                                        client_secret=None,
                                        resource_owner_username=None,
                                        resource_owner_password=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['authorization_methods'] = json.loads(authorization_methods) if isinstance(authorization_methods, str) else authorization_methods
     body['client_authentication_method'] = json.loads(client_authentication_method) if isinstance(client_authentication_method, str) else client_authentication_method
@@ -860,7 +862,7 @@ def update_apimgmt_authorizationserver(cmd, client,
                                        client_secret=None,
                                        resource_owner_username=None,
                                        resource_owner_password=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['authorization_methods'] = json.loads(authorization_methods) if isinstance(authorization_methods, str) else authorization_methods
     body['client_authentication_method'] = json.loads(client_authentication_method) if isinstance(client_authentication_method, str) else client_authentication_method
@@ -913,7 +915,7 @@ def create_apimgmt_backend(cmd, client,
                            credentials=None,
                            proxy=None,
                            tls=None):
-    body={}
+    body = {}
     body['title'] = title # str
     body['description'] = description # str
     body['resource_id'] = resource_id # str
@@ -939,7 +941,7 @@ def update_apimgmt_backend(cmd, client,
                            credentials=None,
                            proxy=None,
                            tls=None):
-    body={}
+    body = {}
     body['title'] = title # str
     body['description'] = description # str
     body['resource_id'] = resource_id # str
@@ -979,7 +981,7 @@ def create_apimgmt_cache(cmd, client,
                          connection_string,
                          description=None,
                          resource_id=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['connection_string'] = connection_string # str
     body['resource_id'] = resource_id # str
@@ -993,7 +995,7 @@ def update_apimgmt_cache(cmd, client,
                          connection_string,
                          description=None,
                          resource_id=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['connection_string'] = connection_string # str
     body['resource_id'] = resource_id # str
@@ -1026,7 +1028,7 @@ def create_apimgmt_certificate(cmd, client,
                                certificate_id,
                                data,
                                password):
-    body={}
+    body = {}
     body['data'] = data # str
     body['password'] = password # str
     return client.certificate.create_or_update(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id, parameters=body)
@@ -1038,7 +1040,7 @@ def update_apimgmt_certificate(cmd, client,
                                certificate_id,
                                data,
                                password):
-    body={}
+    body = {}
     body['data'] = data # str
     body['password'] = password # str
     return client.certificate.create_or_update(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id, parameters=body)
@@ -1082,7 +1084,7 @@ def create_apimgmt(cmd, client,
                    virtual_network_type=None,
                    sku_capacity=None,
                    identity=None):
-    body={}
+    body = {}
     body['tags'] = tags # dictionary
     body['notification_sender_email'] = notification_sender_email # str
     body['hostname_configurations'] = json.loads(hostname_configurations) if isinstance(hostname_configurations, str) else hostname_configurations
@@ -1119,7 +1121,7 @@ def update_apimgmt(cmd, client,
                    virtual_network_type=None,
                    sku_capacity=None,
                    identity=None):
-    body={}
+    body = {}
     body['tags'] = tags # dictionary
     body['notification_sender_email'] = notification_sender_email # str
     body['hostname_configurations'] = json.loads(hostname_configurations) if isinstance(hostname_configurations, str) else hostname_configurations
@@ -1168,7 +1170,7 @@ def create_apimgmt_diagnostic(cmd, client,
                               frontend=None,
                               backend=None,
                               enable_http_correlation_headers=None):
-    body={}
+    body = {}
     body['always_log'] = always_log # str
     body['logger_id'] = logger_id # str
     body['sampling'] = json.loads(sampling) if isinstance(sampling, str) else sampling
@@ -1188,7 +1190,7 @@ def update_apimgmt_diagnostic(cmd, client,
                               frontend=None,
                               backend=None,
                               enable_http_correlation_headers=None):
-    body={}
+    body = {}
     body['always_log'] = always_log # str
     body['logger_id'] = logger_id # str
     body['sampling'] = json.loads(sampling) if isinstance(sampling, str) else sampling
@@ -1226,7 +1228,7 @@ def create_apimgmt_template(cmd, client,
                             title=None,
                             description=None,
                             body=None):
-    body={}
+    body = {}
     body['parameters'] = parameters # placeholder
     body['subject'] = subject # str
     body['title'] = title # str
@@ -1243,7 +1245,7 @@ def update_apimgmt_template(cmd, client,
                             title=None,
                             description=None,
                             body=None):
-    body={}
+    body = {}
     body['parameters'] = parameters # placeholder
     body['subject'] = subject # str
     body['title'] = title # str
@@ -1280,7 +1282,7 @@ def create_apimgmt_group(cmd, client,
                          description=None,
                          type=None,
                          external_id=None):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
     body['type'] = type # str
@@ -1296,7 +1298,7 @@ def update_apimgmt_group(cmd, client,
                          description=None,
                          type=None,
                          external_id=None):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
     body['type'] = type # str
@@ -1337,7 +1339,7 @@ def create_apimgmt_group_user(cmd, client,
                               email=None,
                               registration_date=None,
                               groups=None):
-    body={}
+    body = {}
     body['state'] = state # str
     body['note'] = note # str
     body['identities'] = json.loads(identities) if isinstance(identities, str) else identities
@@ -1377,7 +1379,7 @@ def create_apimgmt_identityprovider(cmd, client,
                                     signin_policy_name=None,
                                     profile_editing_policy_name=None,
                                     password_reset_policy_name=None):
-    body={}
+    body = {}
     body['type'] = type # str
     body['allowed_tenants'] = json.loads(allowed_tenants) if isinstance(allowed_tenants, str) else allowed_tenants
     body['authority'] = authority # str
@@ -1403,7 +1405,7 @@ def update_apimgmt_identityprovider(cmd, client,
                                     signin_policy_name=None,
                                     profile_editing_policy_name=None,
                                     password_reset_policy_name=None):
-    body={}
+    body = {}
     body['type'] = type # str
     body['allowed_tenants'] = json.loads(allowed_tenants) if isinstance(allowed_tenants, str) else allowed_tenants
     body['authority'] = authority # str
@@ -1445,7 +1447,7 @@ def create_apimgmt_logger(cmd, client,
                           description=None,
                           is_buffered=None,
                           resource_id=None):
-    body={}
+    body = {}
     body['logger_type'] = logger_type # str
     body['description'] = description # str
     body['credentials'] = credentials # dictionary
@@ -1463,7 +1465,7 @@ def update_apimgmt_logger(cmd, client,
                           description=None,
                           is_buffered=None,
                           resource_id=None):
-    body={}
+    body = {}
     body['logger_type'] = logger_type # str
     body['description'] = description # str
     body['credentials'] = credentials # dictionary
@@ -1499,7 +1501,7 @@ def create_apimgmt_notification(cmd, client,
                                 title,
                                 description=None,
                                 recipients=None):
-    body={}
+    body = {}
     body['title'] = title # str
     body['description'] = description # str
     body['recipients'] = json.loads(recipients) if isinstance(recipients, str) else recipients
@@ -1513,7 +1515,7 @@ def update_apimgmt_notification(cmd, client,
                                 title,
                                 description=None,
                                 recipients=None):
-    body={}
+    body = {}
     body['title'] = title # str
     body['description'] = description # str
     body['recipients'] = json.loads(recipients) if isinstance(recipients, str) else recipients
@@ -1538,7 +1540,7 @@ def create_apimgmt_notification_recipientuser(cmd, client,
                                               service_name,
                                               notification_name,
                                               user_id):
-    body={}
+    body = {}
     return client.notification_recipient_user.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
@@ -1547,7 +1549,7 @@ def update_apimgmt_notification_recipientuser(cmd, client,
                                               service_name,
                                               notification_name,
                                               user_id):
-    body={}
+    body = {}
     return client.notification_recipient_user.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
@@ -1571,7 +1573,7 @@ def create_apimgmt_notification_recipientemail(cmd, client,
                                                service_name,
                                                notification_name,
                                                email):
-    body={}
+    body = {}
     return client.notification_recipient_email.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
@@ -1580,7 +1582,7 @@ def update_apimgmt_notification_recipientemail(cmd, client,
                                                service_name,
                                                notification_name,
                                                email):
-    body={}
+    body = {}
     return client.notification_recipient_email.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
@@ -1608,7 +1610,7 @@ def create_apimgmt_openidconnectprovider(cmd, client,
                                          client_id,
                                          description=None,
                                          client_secret=None):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
     body['metadata_endpoint'] = metadata_endpoint # str
@@ -1626,7 +1628,7 @@ def update_apimgmt_openidconnectprovider(cmd, client,
                                          client_id,
                                          description=None,
                                          client_secret=None):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
     body['metadata_endpoint'] = metadata_endpoint # str
@@ -1661,7 +1663,7 @@ def create_apimgmt_policy(cmd, client,
                           policy_id,
                           value,
                           format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
@@ -1673,7 +1675,7 @@ def update_apimgmt_policy(cmd, client,
                           policy_id,
                           value,
                           format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
@@ -1704,7 +1706,7 @@ def create_apimgmt_portalsetting(cmd, client,
                                  resource_group,
                                  name,
                                  enabled=None):
-    body={}
+    body = {}
     body['enabled'] = enabled # boolean
     return client.sign_in_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
@@ -1713,7 +1715,7 @@ def update_apimgmt_portalsetting(cmd, client,
                                  resource_group,
                                  name,
                                  enabled=None):
-    body={}
+    body = {}
     body['enabled'] = enabled # boolean
     return client.sign_in_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
@@ -1729,7 +1731,7 @@ def create_apimgmt_portalsetting(cmd, client,
                                  name,
                                  enabled=None,
                                  terms_of_service=None):
-    body={}
+    body = {}
     body['enabled'] = enabled # boolean
     body['terms_of_service'] = json.loads(terms_of_service) if isinstance(terms_of_service, str) else terms_of_service
     return client.sign_up_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
@@ -1740,7 +1742,7 @@ def update_apimgmt_portalsetting(cmd, client,
                                  name,
                                  enabled=None,
                                  terms_of_service=None):
-    body={}
+    body = {}
     body['enabled'] = enabled # boolean
     body['terms_of_service'] = json.loads(terms_of_service) if isinstance(terms_of_service, str) else terms_of_service
     return client.sign_up_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
@@ -1759,7 +1761,7 @@ def create_apimgmt_portalsetting(cmd, client,
                                  validation_key=None,
                                  subscriptions=None,
                                  user_registration=None):
-    body={}
+    body = {}
     body['url'] = url # str
     body['validation_key'] = validation_key # str
     body['subscriptions'] = json.loads(subscriptions) if isinstance(subscriptions, str) else subscriptions
@@ -1774,7 +1776,7 @@ def update_apimgmt_portalsetting(cmd, client,
                                  validation_key=None,
                                  subscriptions=None,
                                  user_registration=None):
-    body={}
+    body = {}
     body['url'] = url # str
     body['validation_key'] = validation_key # str
     body['subscriptions'] = json.loads(subscriptions) if isinstance(subscriptions, str) else subscriptions
@@ -1799,7 +1801,7 @@ def create_apimgmt_product(cmd, client,
                            approval_required=None,
                            subscriptions_limit=None,
                            state=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['terms'] = terms # str
     body['subscription_required'] = subscription_required # boolean
@@ -1821,7 +1823,7 @@ def update_apimgmt_product(cmd, client,
                            approval_required=None,
                            subscriptions_limit=None,
                            state=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['terms'] = terms # str
     body['subscription_required'] = subscription_required # boolean
@@ -1878,7 +1880,7 @@ def create_apimgmt_product_api(cmd, client,
                                service_url=None,
                                protocols=None,
                                api_version_set=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
     body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
@@ -1923,7 +1925,7 @@ def update_apimgmt_product_api(cmd, client,
                                service_url=None,
                                protocols=None,
                                api_version_set=None):
-    body={}
+    body = {}
     body['description'] = description # str
     body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
     body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
@@ -1970,7 +1972,7 @@ def create_apimgmt_product_group(cmd, client,
                                  built_in=None,
                                  type=None,
                                  external_id=None):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
     body['built_in'] = built_in # boolean
@@ -1989,7 +1991,7 @@ def update_apimgmt_product_group(cmd, client,
                                  built_in=None,
                                  type=None,
                                  external_id=None):
-    body={}
+    body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
     body['built_in'] = built_in # boolean
@@ -2020,7 +2022,7 @@ def create_apimgmt_product_policy(cmd, client,
                                   policy_id,
                                   value,
                                   format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
@@ -2033,7 +2035,7 @@ def update_apimgmt_product_policy(cmd, client,
                                   policy_id,
                                   value,
                                   format=None):
-    body={}
+    body = {}
     body['value'] = value # str
     body['format'] = format # str
     return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
@@ -2071,7 +2073,7 @@ def create_apimgmt_property(cmd, client,
                             value,
                             tags=None,
                             secret=None):
-    body={}
+    body = {}
     body['tags'] = json.loads(tags) if isinstance(tags, str) else tags
     body['secret'] = secret # boolean
     body['display_name'] = display_name # str
@@ -2087,7 +2089,7 @@ def update_apimgmt_property(cmd, client,
                             value,
                             tags=None,
                             secret=None):
-    body={}
+    body = {}
     body['tags'] = json.loads(tags) if isinstance(tags, str) else tags
     body['secret'] = secret # boolean
     body['display_name'] = display_name # str
@@ -2127,7 +2129,7 @@ def create_apimgmt_subscription(cmd, client,
                                 secondary_key=None,
                                 state=None,
                                 allow_tracing=None):
-    body={}
+    body = {}
     body['owner_id'] = owner_id # str
     body['scope'] = scope # str
     body['display_name'] = display_name # str
@@ -2150,7 +2152,7 @@ def update_apimgmt_subscription(cmd, client,
                                 secondary_key=None,
                                 state=None,
                                 allow_tracing=None):
-    body={}
+    body = {}
     body['owner_id'] = owner_id # str
     body['scope'] = scope # str
     body['display_name'] = display_name # str
@@ -2193,7 +2195,7 @@ def create_apimgmt_user(cmd, client,
                         identities=None,
                         password=None,
                         confirmation=None):
-    body={}
+    body = {}
     body['state'] = state # str
     body['note'] = note # str
     body['identities'] = json.loads(identities) if isinstance(identities, str) else identities
@@ -2217,7 +2219,7 @@ def update_apimgmt_user(cmd, client,
                         identities=None,
                         password=None,
                         confirmation=None):
-    body={}
+    body = {}
     body['state'] = state # str
     body['note'] = note # str
     body['identities'] = json.loads(identities) if isinstance(identities, str) else identities
