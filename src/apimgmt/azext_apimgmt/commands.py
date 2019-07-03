@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
 from azure.cli.command_modules.apimgmt._client_factory import cf_apimgmt
 def load_command_table(self, _):
