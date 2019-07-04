@@ -184,18 +184,18 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_apimgmt_policy')
         g.custom_command('list', 'list_apimgmt_policy')
         g.custom_command('show', 'show_apimgmt_policy')
-    with self.command_group('apimgmt portalsetting', apimgmt_sdk, client_factory=cf_apimgmt) as g:
-        g.custom_command('create', 'create_apimgmt_portalsetting')
-        g.custom_command('update', 'update_apimgmt_portalsetting')
-        g.custom_command('show', 'show_apimgmt_portalsetting')
-    with self.command_group('apimgmt portalsetting', apimgmt_sdk, client_factory=cf_apimgmt) as g:
-        g.custom_command('create', 'create_apimgmt_portalsetting')
-        g.custom_command('update', 'update_apimgmt_portalsetting')
-        g.custom_command('show', 'show_apimgmt_portalsetting')
-    with self.command_group('apimgmt portalsetting', apimgmt_sdk, client_factory=cf_apimgmt) as g:
-        g.custom_command('create', 'create_apimgmt_portalsetting')
-        g.custom_command('update', 'update_apimgmt_portalsetting')
-        g.custom_command('show', 'show_apimgmt_portalsetting')
+    with self.command_group('apimgmt portalsetting signin', apimgmt_sdk, client_factory=cf_apimgmt) as g:
+        g.custom_command('create', 'create_apimgmt_portalsetting_signin')
+        g.custom_command('update', 'update_apimgmt_portalsetting_signin')
+        g.custom_command('show', 'show_apimgmt_portalsetting_signin')
+    with self.command_group('apimgmt portalsetting signup', apimgmt_sdk, client_factory=cf_apimgmt) as g:
+        g.custom_command('create', 'create_apimgmt_portalsetting_signup')
+        g.custom_command('update', 'update_apimgmt_portalsetting_signup')
+        g.custom_command('show', 'show_apimgmt_portalsetting_signup')
+    with self.command_group('apimgmt portalsetting delegation', apimgmt_sdk, client_factory=cf_apimgmt) as g:
+        g.custom_command('create', 'create_apimgmt_portalsetting_delegation')
+        g.custom_command('update', 'update_apimgmt_portalsetting_delegation')
+        g.custom_command('show', 'show_apimgmt_portalsetting_delegation')
     with self.command_group('apimgmt product', apimgmt_sdk, client_factory=cf_apimgmt) as g:
         g.custom_command('create', 'create_apimgmt_product')
         g.custom_command('update', 'update_apimgmt_product')

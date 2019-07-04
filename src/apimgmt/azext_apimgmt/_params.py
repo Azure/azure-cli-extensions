@@ -1172,45 +1172,45 @@ def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
 
 
-    with self.argument_context('apimgmt portalsetting create') as c:
+    with self.argument_context('apimgmt portalsetting signin create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('enabled', arg_type=get_three_state_flag(), id_part=None, help='Redirect Anonymous users to the Sign-In page.')
 
-    with self.argument_context('apimgmt portalsetting update') as c:
+    with self.argument_context('apimgmt portalsetting signin update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('enabled', arg_type=get_three_state_flag(), id_part=None, help='Redirect Anonymous users to the Sign-In page.')
 
-    with self.argument_context('apimgmt portalsetting show') as c:
+    with self.argument_context('apimgmt portalsetting signin show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
 
 
-    with self.argument_context('apimgmt portalsetting create') as c:
+    with self.argument_context('apimgmt portalsetting signup create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('enabled', arg_type=get_three_state_flag(), id_part=None, help='Allow users to sign up on a developer portal.')
         c.argument('terms_of_service', id_part=None, help='Terms of service contract properties.')
 
-    with self.argument_context('apimgmt portalsetting update') as c:
+    with self.argument_context('apimgmt portalsetting signup update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('enabled', arg_type=get_three_state_flag(), id_part=None, help='Allow users to sign up on a developer portal.')
         c.argument('terms_of_service', id_part=None, help='Terms of service contract properties.')
 
-    with self.argument_context('apimgmt portalsetting show') as c:
+    with self.argument_context('apimgmt portalsetting signup show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
 
 
-    with self.argument_context('apimgmt portalsetting create') as c:
+    with self.argument_context('apimgmt portalsetting delegation create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
         c.argument('parameters', id_part=None, help='undefined')
@@ -1219,7 +1219,7 @@ def load_arguments(self, _):
         c.argument('subscriptions', id_part=None, help='Subscriptions delegation settings.')
         c.argument('user_registration', id_part=None, help='User registration delegation settings.')
 
-    with self.argument_context('apimgmt portalsetting update') as c:
+    with self.argument_context('apimgmt portalsetting delegation update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
         c.argument('parameters', id_part=None, help='undefined')
@@ -1228,7 +1228,7 @@ def load_arguments(self, _):
         c.argument('subscriptions', id_part=None, help='Subscriptions delegation settings.')
         c.argument('user_registration', id_part=None, help='User registration delegation settings.')
 
-    with self.argument_context('apimgmt portalsetting show') as c:
+    with self.argument_context('apimgmt portalsetting delegation show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')

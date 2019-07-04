@@ -12,6 +12,7 @@ from knack.util import CLIError
 import json
 
 # module equivalent: azure_rm_apimanagementapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}
 def create_apimgmt_api(cmd, client,
                        resource_group,
                        service_name,
@@ -62,6 +63,7 @@ def create_apimgmt_api(cmd, client,
     return client.api.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}
 def update_apimgmt_api(cmd, client,
                        resource_group,
                        service_name,
@@ -112,6 +114,7 @@ def update_apimgmt_api(cmd, client,
     return client.api.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}
 def delete_apimgmt_api(cmd, client,
                        resource_group,
                        service_name,
@@ -119,15 +122,17 @@ def delete_apimgmt_api(cmd, client,
     return client.api.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapi
-def list_apimgmt_apisbytag(cmd, client,
-                           resource_group,
-                           service_name):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}
+def list_apimgmt_api(cmd, client,
+                     resource_group,
+                     service_name):
     if resource_group is not None and service_name is not None:
         return client.api.list_by_tags(resource_group_name=resource_group, service_name=service_name)
     else:
         return client.api.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}
 def show_apimgmt_api(cmd, client,
                      resource_group,
                      service_name,
@@ -135,6 +140,7 @@ def show_apimgmt_api(cmd, client,
     return client.api.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapirelease
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/releases/{{ release_name }}
 def create_apimgmt_api_release(cmd, client,
                                resource_group,
                                service_name,
@@ -146,6 +152,7 @@ def create_apimgmt_api_release(cmd, client,
     return client.api_release.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, release_id=release_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapirelease
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/releases/{{ release_name }}
 def update_apimgmt_api_release(cmd, client,
                                resource_group,
                                service_name,
@@ -157,6 +164,7 @@ def update_apimgmt_api_release(cmd, client,
     return client.api_release.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, release_id=release_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapirelease
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/releases/{{ release_name }}
 def delete_apimgmt_api_release(cmd, client,
                                resource_group,
                                service_name,
@@ -165,6 +173,7 @@ def delete_apimgmt_api_release(cmd, client,
     return client.api_release.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, release_id=release_id)
 
 # module equivalent: azure_rm_apimanagementapirelease
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/releases/{{ release_name }}
 def list_apimgmt_api_release(cmd, client,
                              resource_group,
                              service_name,
@@ -172,6 +181,7 @@ def list_apimgmt_api_release(cmd, client,
     return client.api_release.list_by_service(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapirelease
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/releases/{{ release_name }}
 def show_apimgmt_api_release(cmd, client,
                              resource_group,
                              service_name,
@@ -180,6 +190,7 @@ def show_apimgmt_api_release(cmd, client,
     return client.api_release.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, release_id=release_id)
 
 # module equivalent: azure_rm_apimanagementapioperation
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}
 def create_apimgmt_api_operation(cmd, client,
                                  resource_group,
                                  service_name,
@@ -205,6 +216,7 @@ def create_apimgmt_api_operation(cmd, client,
     return client.api_operation.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapioperation
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}
 def update_apimgmt_api_operation(cmd, client,
                                  resource_group,
                                  service_name,
@@ -230,6 +242,7 @@ def update_apimgmt_api_operation(cmd, client,
     return client.api_operation.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapioperation
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}
 def delete_apimgmt_api_operation(cmd, client,
                                  resource_group,
                                  service_name,
@@ -238,6 +251,7 @@ def delete_apimgmt_api_operation(cmd, client,
     return client.api_operation.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id)
 
 # module equivalent: azure_rm_apimanagementapioperation
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}
 def list_apimgmt_api_operation(cmd, client,
                                resource_group,
                                service_name,
@@ -245,6 +259,7 @@ def list_apimgmt_api_operation(cmd, client,
     return client.api_operation.list_by_api(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapioperation
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}
 def show_apimgmt_api_operation(cmd, client,
                                resource_group,
                                service_name,
@@ -253,6 +268,7 @@ def show_apimgmt_api_operation(cmd, client,
     return client.api_operation.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}/policies/{{ policy_name }}
 def create_apimgmt_api_operation_policy(cmd, client,
                                         resource_group,
                                         service_name,
@@ -267,6 +283,7 @@ def create_apimgmt_api_operation_policy(cmd, client,
     return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}/policies/{{ policy_name }}
 def update_apimgmt_api_operation_policy(cmd, client,
                                         resource_group,
                                         service_name,
@@ -281,6 +298,7 @@ def update_apimgmt_api_operation_policy(cmd, client,
     return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}/policies/{{ policy_name }}
 def delete_apimgmt_api_operation_policy(cmd, client,
                                         resource_group,
                                         service_name,
@@ -290,6 +308,7 @@ def delete_apimgmt_api_operation_policy(cmd, client,
     return client.api_operation_policy.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}/policies/{{ policy_name }}
 def list_apimgmt_api_operation_policy(cmd, client,
                                       resource_group,
                                       service_name,
@@ -298,6 +317,7 @@ def list_apimgmt_api_operation_policy(cmd, client,
     return client.api_operation_policy.list_by_operation(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/operations/{{ operation_name }}/policies/{{ policy_name }}
 def show_apimgmt_api_operation_policy(cmd, client,
                                       resource_group,
                                       service_name,
@@ -308,6 +328,7 @@ def show_apimgmt_api_operation_policy(cmd, client,
     return client.api_operation_policy.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, format=format, policy_id=policy_id)
 
 # module equivalent: azure_rm_apimanagementtag
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
 def create_apimgmt_tag(cmd, client,
                        resource_group,
                        service_name,
@@ -318,6 +339,7 @@ def create_apimgmt_tag(cmd, client,
     return client.tag.create_or_update(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementtag
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
 def update_apimgmt_tag(cmd, client,
                        resource_group,
                        service_name,
@@ -328,6 +350,7 @@ def update_apimgmt_tag(cmd, client,
     return client.tag.create_or_update(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementtag
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
 def delete_apimgmt_tag(cmd, client,
                        resource_group,
                        service_name,
@@ -335,9 +358,10 @@ def delete_apimgmt_tag(cmd, client,
     return client.tag.delete(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id)
 
 # module equivalent: azure_rm_apimanagementtag
-def list_apimgmt_api_operation_tag(cmd, client,
-                                   resource_group,
-                                   service_name):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
+def list_apimgmt_tag(cmd, client,
+                     resource_group,
+                     service_name):
     if resource_group is not None and service_name is not None:
         return client.tag.list_by_operation(resource_group_name=resource_group, service_name=service_name)
     elif resource_group is not None and service_name is not None:
@@ -348,6 +372,7 @@ def list_apimgmt_api_operation_tag(cmd, client,
         return client.tag.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementtag
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
 def show_apimgmt_tag(cmd, client,
                      resource_group,
                      service_name,
@@ -355,6 +380,7 @@ def show_apimgmt_tag(cmd, client,
     return client.tag.get(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id)
 
 # module equivalent: azure_rm_apimanagementapipolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/policies/{{ policy_name }}
 def create_apimgmt_api_policy(cmd, client,
                               resource_group,
                               service_name,
@@ -368,6 +394,7 @@ def create_apimgmt_api_policy(cmd, client,
     return client.api_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapipolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/policies/{{ policy_name }}
 def update_apimgmt_api_policy(cmd, client,
                               resource_group,
                               service_name,
@@ -381,6 +408,7 @@ def update_apimgmt_api_policy(cmd, client,
     return client.api_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapipolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/policies/{{ policy_name }}
 def delete_apimgmt_api_policy(cmd, client,
                               resource_group,
                               service_name,
@@ -389,6 +417,7 @@ def delete_apimgmt_api_policy(cmd, client,
     return client.api_policy.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id)
 
 # module equivalent: azure_rm_apimanagementapipolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/policies/{{ policy_name }}
 def list_apimgmt_api_policy(cmd, client,
                             resource_group,
                             service_name,
@@ -396,6 +425,7 @@ def list_apimgmt_api_policy(cmd, client,
     return client.api_policy.list_by_api(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapipolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/policies/{{ policy_name }}
 def show_apimgmt_api_policy(cmd, client,
                             resource_group,
                             service_name,
@@ -405,6 +435,7 @@ def show_apimgmt_api_policy(cmd, client,
     return client.api_policy.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, format=format)
 
 # module equivalent: azure_rm_apimanagementapischema
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/schemas/{{ schema_name }}
 def create_apimgmt_api_schema(cmd, client,
                               resource_group,
                               service_name,
@@ -418,6 +449,7 @@ def create_apimgmt_api_schema(cmd, client,
     return client.api_schema.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapischema
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/schemas/{{ schema_name }}
 def update_apimgmt_api_schema(cmd, client,
                               resource_group,
                               service_name,
@@ -431,6 +463,7 @@ def update_apimgmt_api_schema(cmd, client,
     return client.api_schema.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapischema
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/schemas/{{ schema_name }}
 def delete_apimgmt_api_schema(cmd, client,
                               resource_group,
                               service_name,
@@ -439,6 +472,7 @@ def delete_apimgmt_api_schema(cmd, client,
     return client.api_schema.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id)
 
 # module equivalent: azure_rm_apimanagementapischema
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/schemas/{{ schema_name }}
 def list_apimgmt_api_schema(cmd, client,
                             resource_group,
                             service_name,
@@ -446,6 +480,7 @@ def list_apimgmt_api_schema(cmd, client,
     return client.api_schema.list_by_api(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapischema
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/schemas/{{ schema_name }}
 def show_apimgmt_api_schema(cmd, client,
                             resource_group,
                             service_name,
@@ -454,6 +489,7 @@ def show_apimgmt_api_schema(cmd, client,
     return client.api_schema.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id)
 
 # module equivalent: azure_rm_apimanagementapidiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/diagnostics/{{ diagnostic_name }}
 def create_apimgmt_api_diagnostic(cmd, client,
                                   resource_group,
                                   service_name,
@@ -475,6 +511,7 @@ def create_apimgmt_api_diagnostic(cmd, client,
     return client.api_diagnostic.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, diagnostic_id=diagnostic_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapidiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/diagnostics/{{ diagnostic_name }}
 def update_apimgmt_api_diagnostic(cmd, client,
                                   resource_group,
                                   service_name,
@@ -496,6 +533,7 @@ def update_apimgmt_api_diagnostic(cmd, client,
     return client.api_diagnostic.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, diagnostic_id=diagnostic_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapidiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/diagnostics/{{ diagnostic_name }}
 def delete_apimgmt_api_diagnostic(cmd, client,
                                   resource_group,
                                   service_name,
@@ -504,6 +542,7 @@ def delete_apimgmt_api_diagnostic(cmd, client,
     return client.api_diagnostic.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, diagnostic_id=diagnostic_id)
 
 # module equivalent: azure_rm_apimanagementapidiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/diagnostics/{{ diagnostic_name }}
 def list_apimgmt_api_diagnostic(cmd, client,
                                 resource_group,
                                 service_name,
@@ -511,6 +550,7 @@ def list_apimgmt_api_diagnostic(cmd, client,
     return client.api_diagnostic.list_by_service(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapidiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/diagnostics/{{ diagnostic_name }}
 def show_apimgmt_api_diagnostic(cmd, client,
                                 resource_group,
                                 service_name,
@@ -519,6 +559,7 @@ def show_apimgmt_api_diagnostic(cmd, client,
     return client.api_diagnostic.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, diagnostic_id=diagnostic_id)
 
 # module equivalent: azure_rm_apimanagementapiissue
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}
 def create_apimgmt_api_issue(cmd, client,
                              resource_group,
                              service_name,
@@ -538,6 +579,7 @@ def create_apimgmt_api_issue(cmd, client,
     return client.api_issue.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiissue
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}
 def update_apimgmt_api_issue(cmd, client,
                              resource_group,
                              service_name,
@@ -557,6 +599,7 @@ def update_apimgmt_api_issue(cmd, client,
     return client.api_issue.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiissue
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}
 def delete_apimgmt_api_issue(cmd, client,
                              resource_group,
                              service_name,
@@ -565,6 +608,7 @@ def delete_apimgmt_api_issue(cmd, client,
     return client.api_issue.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id)
 
 # module equivalent: azure_rm_apimanagementapiissue
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}
 def list_apimgmt_api_issue(cmd, client,
                            resource_group,
                            service_name,
@@ -572,6 +616,7 @@ def list_apimgmt_api_issue(cmd, client,
     return client.api_issue.list_by_service(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapiissue
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}
 def show_apimgmt_api_issue(cmd, client,
                            resource_group,
                            service_name,
@@ -580,6 +625,7 @@ def show_apimgmt_api_issue(cmd, client,
     return client.api_issue.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id)
 
 # module equivalent: azure_rm_apimanagementapiissuecomment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/comments/{{ comment_name }}
 def create_apimgmt_api_issue_comment(cmd, client,
                                      resource_group,
                                      service_name,
@@ -596,6 +642,7 @@ def create_apimgmt_api_issue_comment(cmd, client,
     return client.api_issue_comment.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, comment_id=comment_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiissuecomment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/comments/{{ comment_name }}
 def update_apimgmt_api_issue_comment(cmd, client,
                                      resource_group,
                                      service_name,
@@ -612,6 +659,7 @@ def update_apimgmt_api_issue_comment(cmd, client,
     return client.api_issue_comment.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, comment_id=comment_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiissuecomment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/comments/{{ comment_name }}
 def delete_apimgmt_api_issue_comment(cmd, client,
                                      resource_group,
                                      service_name,
@@ -621,6 +669,7 @@ def delete_apimgmt_api_issue_comment(cmd, client,
     return client.api_issue_comment.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, comment_id=comment_id)
 
 # module equivalent: azure_rm_apimanagementapiissuecomment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/comments/{{ comment_name }}
 def list_apimgmt_api_issue_comment(cmd, client,
                                    resource_group,
                                    service_name,
@@ -629,6 +678,7 @@ def list_apimgmt_api_issue_comment(cmd, client,
     return client.api_issue_comment.list_by_service(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id)
 
 # module equivalent: azure_rm_apimanagementapiissuecomment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/comments/{{ comment_name }}
 def show_apimgmt_api_issue_comment(cmd, client,
                                    resource_group,
                                    service_name,
@@ -638,6 +688,7 @@ def show_apimgmt_api_issue_comment(cmd, client,
     return client.api_issue_comment.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, comment_id=comment_id)
 
 # module equivalent: azure_rm_apimanagementapiissueattachment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/attachments/{{ attachment_name }}
 def create_apimgmt_api_issue_attachment(cmd, client,
                                         resource_group,
                                         service_name,
@@ -654,6 +705,7 @@ def create_apimgmt_api_issue_attachment(cmd, client,
     return client.api_issue_attachment.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, attachment_id=attachment_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiissueattachment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/attachments/{{ attachment_name }}
 def update_apimgmt_api_issue_attachment(cmd, client,
                                         resource_group,
                                         service_name,
@@ -670,6 +722,7 @@ def update_apimgmt_api_issue_attachment(cmd, client,
     return client.api_issue_attachment.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, attachment_id=attachment_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiissueattachment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/attachments/{{ attachment_name }}
 def delete_apimgmt_api_issue_attachment(cmd, client,
                                         resource_group,
                                         service_name,
@@ -679,6 +732,7 @@ def delete_apimgmt_api_issue_attachment(cmd, client,
     return client.api_issue_attachment.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, attachment_id=attachment_id)
 
 # module equivalent: azure_rm_apimanagementapiissueattachment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/attachments/{{ attachment_name }}
 def list_apimgmt_api_issue_attachment(cmd, client,
                                       resource_group,
                                       service_name,
@@ -687,6 +741,7 @@ def list_apimgmt_api_issue_attachment(cmd, client,
     return client.api_issue_attachment.list_by_service(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id)
 
 # module equivalent: azure_rm_apimanagementapiissueattachment
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/issues/{{ issue_name }}/attachments/{{ attachment_name }}
 def show_apimgmt_api_issue_attachment(cmd, client,
                                       resource_group,
                                       service_name,
@@ -696,6 +751,7 @@ def show_apimgmt_api_issue_attachment(cmd, client,
     return client.api_issue_attachment.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, issue_id=issue_id, attachment_id=attachment_id)
 
 # module equivalent: azure_rm_apimanagementapitagdescription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/tagDescriptions/{{ tag_description_name }}
 def create_apimgmt_api_tagdescription(cmd, client,
                                       resource_group,
                                       service_name,
@@ -711,6 +767,7 @@ def create_apimgmt_api_tagdescription(cmd, client,
     return client.api_tag_description.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, tag_id=tag_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapitagdescription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/tagDescriptions/{{ tag_description_name }}
 def update_apimgmt_api_tagdescription(cmd, client,
                                       resource_group,
                                       service_name,
@@ -726,6 +783,7 @@ def update_apimgmt_api_tagdescription(cmd, client,
     return client.api_tag_description.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, tag_id=tag_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapitagdescription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/tagDescriptions/{{ tag_description_name }}
 def delete_apimgmt_api_tagdescription(cmd, client,
                                       resource_group,
                                       service_name,
@@ -734,6 +792,7 @@ def delete_apimgmt_api_tagdescription(cmd, client,
     return client.api_tag_description.delete(resource_group_name=resource_group, service_name=service_name, api_id=api_id, tag_id=tag_id)
 
 # module equivalent: azure_rm_apimanagementapitagdescription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/tagDescriptions/{{ tag_description_name }}
 def list_apimgmt_api_tagdescription(cmd, client,
                                     resource_group,
                                     service_name,
@@ -741,6 +800,7 @@ def list_apimgmt_api_tagdescription(cmd, client,
     return client.api_tag_description.list_by_service(resource_group_name=resource_group, service_name=service_name, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementapitagdescription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/tagDescriptions/{{ tag_description_name }}
 def show_apimgmt_api_tagdescription(cmd, client,
                                     resource_group,
                                     service_name,
@@ -749,6 +809,7 @@ def show_apimgmt_api_tagdescription(cmd, client,
     return client.api_tag_description.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, tag_id=tag_id)
 
 # module equivalent: azure_rm_apimanagementapiversionset
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}
 def create_apimgmt_apiversionset(cmd, client,
                                  resource_group,
                                  service_name,
@@ -767,6 +828,7 @@ def create_apimgmt_apiversionset(cmd, client,
     return client.api_version_set.create_or_update(resource_group_name=resource_group, service_name=service_name, version_set_id=version_set_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiversionset
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}
 def update_apimgmt_apiversionset(cmd, client,
                                  resource_group,
                                  service_name,
@@ -785,6 +847,7 @@ def update_apimgmt_apiversionset(cmd, client,
     return client.api_version_set.create_or_update(resource_group_name=resource_group, service_name=service_name, version_set_id=version_set_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapiversionset
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}
 def delete_apimgmt_apiversionset(cmd, client,
                                  resource_group,
                                  service_name,
@@ -792,12 +855,14 @@ def delete_apimgmt_apiversionset(cmd, client,
     return client.api_version_set.delete(resource_group_name=resource_group, service_name=service_name, version_set_id=version_set_id)
 
 # module equivalent: azure_rm_apimanagementapiversionset
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}
 def list_apimgmt_apiversionset(cmd, client,
                                resource_group,
                                service_name):
     return client.api_version_set.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementapiversionset
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}
 def show_apimgmt_apiversionset(cmd, client,
                                resource_group,
                                service_name,
@@ -805,6 +870,7 @@ def show_apimgmt_apiversionset(cmd, client,
     return client.api_version_set.get(resource_group_name=resource_group, service_name=service_name, version_set_id=version_set_id)
 
 # module equivalent: azure_rm_apimanagementauthorizationserver
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/authorizationServers/{{ authorization_server_name }}
 def create_apimgmt_authorizationserver(cmd, client,
                                        resource_group,
                                        service_name,
@@ -845,6 +911,7 @@ def create_apimgmt_authorizationserver(cmd, client,
     return client.authorization_server.create_or_update(resource_group_name=resource_group, service_name=service_name, authsid=authsid, parameters=body)
 
 # module equivalent: azure_rm_apimanagementauthorizationserver
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/authorizationServers/{{ authorization_server_name }}
 def update_apimgmt_authorizationserver(cmd, client,
                                        resource_group,
                                        service_name,
@@ -885,6 +952,7 @@ def update_apimgmt_authorizationserver(cmd, client,
     return client.authorization_server.create_or_update(resource_group_name=resource_group, service_name=service_name, authsid=authsid, parameters=body)
 
 # module equivalent: azure_rm_apimanagementauthorizationserver
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/authorizationServers/{{ authorization_server_name }}
 def delete_apimgmt_authorizationserver(cmd, client,
                                        resource_group,
                                        service_name,
@@ -892,12 +960,14 @@ def delete_apimgmt_authorizationserver(cmd, client,
     return client.authorization_server.delete(resource_group_name=resource_group, service_name=service_name, authsid=authsid)
 
 # module equivalent: azure_rm_apimanagementauthorizationserver
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/authorizationServers/{{ authorization_server_name }}
 def list_apimgmt_authorizationserver(cmd, client,
                                      resource_group,
                                      service_name):
     return client.authorization_server.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementauthorizationserver
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/authorizationServers/{{ authorization_server_name }}
 def show_apimgmt_authorizationserver(cmd, client,
                                      resource_group,
                                      service_name,
@@ -905,6 +975,7 @@ def show_apimgmt_authorizationserver(cmd, client,
     return client.authorization_server.get(resource_group_name=resource_group, service_name=service_name, authsid=authsid)
 
 # module equivalent: azure_rm_apimanagementbackend
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/backends/{{ backend_name }}
 def create_apimgmt_backend(cmd, client,
                            resource_group,
                            service_name,
@@ -931,6 +1002,7 @@ def create_apimgmt_backend(cmd, client,
     return client.backend.create_or_update(resource_group_name=resource_group, service_name=service_name, backend_id=backend_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementbackend
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/backends/{{ backend_name }}
 def update_apimgmt_backend(cmd, client,
                            resource_group,
                            service_name,
@@ -957,6 +1029,7 @@ def update_apimgmt_backend(cmd, client,
     return client.backend.create_or_update(resource_group_name=resource_group, service_name=service_name, backend_id=backend_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementbackend
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/backends/{{ backend_name }}
 def delete_apimgmt_backend(cmd, client,
                            resource_group,
                            service_name,
@@ -964,12 +1037,14 @@ def delete_apimgmt_backend(cmd, client,
     return client.backend.delete(resource_group_name=resource_group, service_name=service_name, backend_id=backend_id)
 
 # module equivalent: azure_rm_apimanagementbackend
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/backends/{{ backend_name }}
 def list_apimgmt_backend(cmd, client,
                          resource_group,
                          service_name):
     return client.backend.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementbackend
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/backends/{{ backend_name }}
 def show_apimgmt_backend(cmd, client,
                          resource_group,
                          service_name,
@@ -977,6 +1052,7 @@ def show_apimgmt_backend(cmd, client,
     return client.backend.get(resource_group_name=resource_group, service_name=service_name, backend_id=backend_id)
 
 # module equivalent: azure_rm_apimanagementcache
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/caches/{{ cache_name }}
 def create_apimgmt_cache(cmd, client,
                          resource_group,
                          service_name,
@@ -991,6 +1067,7 @@ def create_apimgmt_cache(cmd, client,
     return client.cache.create_or_update(resource_group_name=resource_group, service_name=service_name, cache_id=cache_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementcache
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/caches/{{ cache_name }}
 def update_apimgmt_cache(cmd, client,
                          resource_group,
                          service_name,
@@ -1005,6 +1082,7 @@ def update_apimgmt_cache(cmd, client,
     return client.cache.create_or_update(resource_group_name=resource_group, service_name=service_name, cache_id=cache_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementcache
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/caches/{{ cache_name }}
 def delete_apimgmt_cache(cmd, client,
                          resource_group,
                          service_name,
@@ -1012,12 +1090,14 @@ def delete_apimgmt_cache(cmd, client,
     return client.cache.delete(resource_group_name=resource_group, service_name=service_name, cache_id=cache_id)
 
 # module equivalent: azure_rm_apimanagementcache
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/caches/{{ cache_name }}
 def list_apimgmt_cache(cmd, client,
                        resource_group,
                        service_name):
     return client.cache.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementcache
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/caches/{{ cache_name }}
 def show_apimgmt_cache(cmd, client,
                        resource_group,
                        service_name,
@@ -1025,6 +1105,7 @@ def show_apimgmt_cache(cmd, client,
     return client.cache.get(resource_group_name=resource_group, service_name=service_name, cache_id=cache_id)
 
 # module equivalent: azure_rm_apimanagementcertificate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/certificates/{{ certificate_name }}
 def create_apimgmt_certificate(cmd, client,
                                resource_group,
                                service_name,
@@ -1037,6 +1118,7 @@ def create_apimgmt_certificate(cmd, client,
     return client.certificate.create_or_update(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementcertificate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/certificates/{{ certificate_name }}
 def update_apimgmt_certificate(cmd, client,
                                resource_group,
                                service_name,
@@ -1049,6 +1131,7 @@ def update_apimgmt_certificate(cmd, client,
     return client.certificate.create_or_update(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementcertificate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/certificates/{{ certificate_name }}
 def delete_apimgmt_certificate(cmd, client,
                                resource_group,
                                service_name,
@@ -1056,12 +1139,14 @@ def delete_apimgmt_certificate(cmd, client,
     return client.certificate.delete(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id)
 
 # module equivalent: azure_rm_apimanagementcertificate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/certificates/{{ certificate_name }}
 def list_apimgmt_certificate(cmd, client,
                              resource_group,
                              service_name):
     return client.certificate.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementcertificate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/certificates/{{ certificate_name }}
 def show_apimgmt_certificate(cmd, client,
                              resource_group,
                              service_name,
@@ -1069,6 +1154,7 @@ def show_apimgmt_certificate(cmd, client,
     return client.certificate.get(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id)
 
 # module equivalent: azure_rm_apimanagementservice
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}
 def create_apimgmt(cmd, client,
                    resource_group,
                    name,
@@ -1106,6 +1192,7 @@ def create_apimgmt(cmd, client,
     return client.api_management_service.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementservice
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}
 def update_apimgmt(cmd, client,
                    resource_group,
                    name,
@@ -1143,12 +1230,14 @@ def update_apimgmt(cmd, client,
     return client.api_management_service.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementservice
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}
 def delete_apimgmt(cmd, client,
                    resource_group,
                    name):
     return client.api_management_service.delete(resource_group_name=resource_group, service_name=name)
 
 # module equivalent: azure_rm_apimanagementservice
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}
 def list_apimgmt(cmd, client,
                  resource_group):
     if resource_group is not None:
@@ -1157,12 +1246,14 @@ def list_apimgmt(cmd, client,
         return client.api_management_service.list()
 
 # module equivalent: azure_rm_apimanagementservice
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}
 def show_apimgmt(cmd, client,
                  resource_group,
                  name):
     return client.api_management_service.get(resource_group_name=resource_group, service_name=name)
 
 # module equivalent: azure_rm_apimanagementdiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/diagnostics/{{ diagnostic_name }}
 def create_apimgmt_diagnostic(cmd, client,
                               resource_group,
                               service_name,
@@ -1183,6 +1274,7 @@ def create_apimgmt_diagnostic(cmd, client,
     return client.diagnostic.create_or_update(resource_group_name=resource_group, service_name=service_name, diagnostic_id=diagnostic_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementdiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/diagnostics/{{ diagnostic_name }}
 def update_apimgmt_diagnostic(cmd, client,
                               resource_group,
                               service_name,
@@ -1203,6 +1295,7 @@ def update_apimgmt_diagnostic(cmd, client,
     return client.diagnostic.create_or_update(resource_group_name=resource_group, service_name=service_name, diagnostic_id=diagnostic_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementdiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/diagnostics/{{ diagnostic_name }}
 def delete_apimgmt_diagnostic(cmd, client,
                               resource_group,
                               service_name,
@@ -1210,12 +1303,14 @@ def delete_apimgmt_diagnostic(cmd, client,
     return client.diagnostic.delete(resource_group_name=resource_group, service_name=service_name, diagnostic_id=diagnostic_id)
 
 # module equivalent: azure_rm_apimanagementdiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/diagnostics/{{ diagnostic_name }}
 def list_apimgmt_diagnostic(cmd, client,
                             resource_group,
                             service_name):
     return client.diagnostic.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementdiagnostic
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/diagnostics/{{ diagnostic_name }}
 def show_apimgmt_diagnostic(cmd, client,
                             resource_group,
                             service_name,
@@ -1223,6 +1318,7 @@ def show_apimgmt_diagnostic(cmd, client,
     return client.diagnostic.get(resource_group_name=resource_group, service_name=service_name, diagnostic_id=diagnostic_id)
 
 # module equivalent: azure_rm_apimanagementemailtemplate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/templates/{{ template_name }}
 def create_apimgmt_template(cmd, client,
                             resource_group,
                             service_name,
@@ -1240,6 +1336,7 @@ def create_apimgmt_template(cmd, client,
     return client.email_template.create_or_update(resource_group_name=resource_group, service_name=service_name, template_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementemailtemplate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/templates/{{ template_name }}
 def update_apimgmt_template(cmd, client,
                             resource_group,
                             service_name,
@@ -1257,6 +1354,7 @@ def update_apimgmt_template(cmd, client,
     return client.email_template.create_or_update(resource_group_name=resource_group, service_name=service_name, template_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementemailtemplate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/templates/{{ template_name }}
 def delete_apimgmt_template(cmd, client,
                             resource_group,
                             service_name,
@@ -1264,12 +1362,14 @@ def delete_apimgmt_template(cmd, client,
     return client.email_template.delete(resource_group_name=resource_group, service_name=service_name, template_name=name)
 
 # module equivalent: azure_rm_apimanagementemailtemplate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/templates/{{ template_name }}
 def list_apimgmt_template(cmd, client,
                           resource_group,
                           service_name):
     return client.email_template.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementemailtemplate
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/templates/{{ template_name }}
 def show_apimgmt_template(cmd, client,
                           resource_group,
                           service_name,
@@ -1277,6 +1377,7 @@ def show_apimgmt_template(cmd, client,
     return client.email_template.get(resource_group_name=resource_group, service_name=service_name, template_name=name)
 
 # module equivalent: azure_rm_apimanagementgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}
 def create_apimgmt_group(cmd, client,
                          resource_group,
                          service_name,
@@ -1293,6 +1394,7 @@ def create_apimgmt_group(cmd, client,
     return client.group.create_or_update(resource_group_name=resource_group, service_name=service_name, group_id=group_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}
 def update_apimgmt_group(cmd, client,
                          resource_group,
                          service_name,
@@ -1309,6 +1411,7 @@ def update_apimgmt_group(cmd, client,
     return client.group.create_or_update(resource_group_name=resource_group, service_name=service_name, group_id=group_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}
 def delete_apimgmt_group(cmd, client,
                          resource_group,
                          service_name,
@@ -1316,12 +1419,14 @@ def delete_apimgmt_group(cmd, client,
     return client.group.delete(resource_group_name=resource_group, service_name=service_name, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}
 def list_apimgmt_group(cmd, client,
                        resource_group,
                        service_name):
     return client.group.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}
 def show_apimgmt_group(cmd, client,
                        resource_group,
                        service_name,
@@ -1329,6 +1434,7 @@ def show_apimgmt_group(cmd, client,
     return client.group.get(resource_group_name=resource_group, service_name=service_name, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementgroupuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}/users/{{ user_name }}
 def create_apimgmt_group_user(cmd, client,
                               resource_group,
                               service_name,
@@ -1345,6 +1451,7 @@ def create_apimgmt_group_user(cmd, client,
     return client.group_user.create(resource_group_name=resource_group, service_name=service_name, group_id=group_id, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementgroupuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}/users/{{ user_name }}
 def delete_apimgmt_group_user(cmd, client,
                               resource_group,
                               service_name,
@@ -1353,6 +1460,7 @@ def delete_apimgmt_group_user(cmd, client,
     return client.group_user.delete(resource_group_name=resource_group, service_name=service_name, group_id=group_id, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementgroupuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/groups/{{ group_name }}/users/{{ user_name }}
 def list_apimgmt_group_user(cmd, client,
                             resource_group,
                             service_name,
@@ -1360,6 +1468,7 @@ def list_apimgmt_group_user(cmd, client,
     return client.group_user.list(resource_group_name=resource_group, service_name=service_name, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementidentityprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/identityProviders/{{ identity_provider_name }}
 def create_apimgmt_identityprovider(cmd, client,
                                     resource_group,
                                     service_name,
@@ -1386,6 +1495,7 @@ def create_apimgmt_identityprovider(cmd, client,
     return client.identity_provider.create_or_update(resource_group_name=resource_group, service_name=service_name, identity_provider_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementidentityprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/identityProviders/{{ identity_provider_name }}
 def update_apimgmt_identityprovider(cmd, client,
                                     resource_group,
                                     service_name,
@@ -1412,6 +1522,7 @@ def update_apimgmt_identityprovider(cmd, client,
     return client.identity_provider.create_or_update(resource_group_name=resource_group, service_name=service_name, identity_provider_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementidentityprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/identityProviders/{{ identity_provider_name }}
 def delete_apimgmt_identityprovider(cmd, client,
                                     resource_group,
                                     service_name,
@@ -1419,12 +1530,14 @@ def delete_apimgmt_identityprovider(cmd, client,
     return client.identity_provider.delete(resource_group_name=resource_group, service_name=service_name, identity_provider_name=name)
 
 # module equivalent: azure_rm_apimanagementidentityprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/identityProviders/{{ identity_provider_name }}
 def list_apimgmt_identityprovider(cmd, client,
                                   resource_group,
                                   service_name):
     return client.identity_provider.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementidentityprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/identityProviders/{{ identity_provider_name }}
 def show_apimgmt_identityprovider(cmd, client,
                                   resource_group,
                                   service_name,
@@ -1432,6 +1545,7 @@ def show_apimgmt_identityprovider(cmd, client,
     return client.identity_provider.get(resource_group_name=resource_group, service_name=service_name, identity_provider_name=name)
 
 # module equivalent: azure_rm_apimanagementlogger
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/loggers/{{ logger_name }}
 def create_apimgmt_logger(cmd, client,
                           resource_group,
                           service_name,
@@ -1450,6 +1564,7 @@ def create_apimgmt_logger(cmd, client,
     return client.logger.create_or_update(resource_group_name=resource_group, service_name=service_name, logger_id=logger_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementlogger
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/loggers/{{ logger_name }}
 def update_apimgmt_logger(cmd, client,
                           resource_group,
                           service_name,
@@ -1468,6 +1583,7 @@ def update_apimgmt_logger(cmd, client,
     return client.logger.create_or_update(resource_group_name=resource_group, service_name=service_name, logger_id=logger_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementlogger
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/loggers/{{ logger_name }}
 def delete_apimgmt_logger(cmd, client,
                           resource_group,
                           service_name,
@@ -1475,12 +1591,14 @@ def delete_apimgmt_logger(cmd, client,
     return client.logger.delete(resource_group_name=resource_group, service_name=service_name, logger_id=logger_id)
 
 # module equivalent: azure_rm_apimanagementlogger
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/loggers/{{ logger_name }}
 def list_apimgmt_logger(cmd, client,
                         resource_group,
                         service_name):
     return client.logger.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementlogger
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/loggers/{{ logger_name }}
 def show_apimgmt_logger(cmd, client,
                         resource_group,
                         service_name,
@@ -1488,6 +1606,7 @@ def show_apimgmt_logger(cmd, client,
     return client.logger.get(resource_group_name=resource_group, service_name=service_name, logger_id=logger_id)
 
 # module equivalent: azure_rm_apimanagementnotification
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}
 def create_apimgmt_notification(cmd, client,
                                 resource_group,
                                 service_name,
@@ -1498,6 +1617,7 @@ def create_apimgmt_notification(cmd, client,
     return client.notification.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=name)
 
 # module equivalent: azure_rm_apimanagementnotification
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}
 def update_apimgmt_notification(cmd, client,
                                 resource_group,
                                 service_name,
@@ -1508,12 +1628,14 @@ def update_apimgmt_notification(cmd, client,
     return client.notification.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=name)
 
 # module equivalent: azure_rm_apimanagementnotification
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}
 def list_apimgmt_notification(cmd, client,
                               resource_group,
                               service_name):
     return client.notification.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementnotification
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}
 def show_apimgmt_notification(cmd, client,
                               resource_group,
                               service_name,
@@ -1521,6 +1643,7 @@ def show_apimgmt_notification(cmd, client,
     return client.notification.get(resource_group_name=resource_group, service_name=service_name, notification_name=name)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientUsers/{{ recipient_user_name }}
 def create_apimgmt_notification_recipientuser(cmd, client,
                                               resource_group,
                                               service_name,
@@ -1529,6 +1652,7 @@ def create_apimgmt_notification_recipientuser(cmd, client,
     return client.notification_recipient_user.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientUsers/{{ recipient_user_name }}
 def update_apimgmt_notification_recipientuser(cmd, client,
                                               resource_group,
                                               service_name,
@@ -1537,6 +1661,7 @@ def update_apimgmt_notification_recipientuser(cmd, client,
     return client.notification_recipient_user.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientUsers/{{ recipient_user_name }}
 def delete_apimgmt_notification_recipientuser(cmd, client,
                                               resource_group,
                                               service_name,
@@ -1545,6 +1670,7 @@ def delete_apimgmt_notification_recipientuser(cmd, client,
     return client.notification_recipient_user.delete(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientUsers/{{ recipient_user_name }}
 def list_apimgmt_notification_recipientuser(cmd, client,
                                             resource_group,
                                             service_name,
@@ -1552,6 +1678,7 @@ def list_apimgmt_notification_recipientuser(cmd, client,
     return client.notification_recipient_user.list_by_notification(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientEmails/{{ recipient_email_name }}
 def create_apimgmt_notification_recipientemail(cmd, client,
                                                resource_group,
                                                service_name,
@@ -1560,6 +1687,7 @@ def create_apimgmt_notification_recipientemail(cmd, client,
     return client.notification_recipient_email.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientEmails/{{ recipient_email_name }}
 def update_apimgmt_notification_recipientemail(cmd, client,
                                                resource_group,
                                                service_name,
@@ -1568,6 +1696,7 @@ def update_apimgmt_notification_recipientemail(cmd, client,
     return client.notification_recipient_email.create_or_update(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientEmails/{{ recipient_email_name }}
 def delete_apimgmt_notification_recipientemail(cmd, client,
                                                resource_group,
                                                service_name,
@@ -1576,6 +1705,7 @@ def delete_apimgmt_notification_recipientemail(cmd, client,
     return client.notification_recipient_email.delete(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name, email=email)
 
 # module equivalent: azure_rm_apimanagementnotificationrecipientemail
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/notifications/{{ notification_name }}/recipientEmails/{{ recipient_email_name }}
 def list_apimgmt_notification_recipientemail(cmd, client,
                                              resource_group,
                                              service_name,
@@ -1583,6 +1713,7 @@ def list_apimgmt_notification_recipientemail(cmd, client,
     return client.notification_recipient_email.list_by_notification(resource_group_name=resource_group, service_name=service_name, notification_name=notification_name)
 
 # module equivalent: azure_rm_apimanagementopenidconnectprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/openidConnectProviders/{{ openid_connect_provider_name }}
 def create_apimgmt_openidconnectprovider(cmd, client,
                                          resource_group,
                                          service_name,
@@ -1601,6 +1732,7 @@ def create_apimgmt_openidconnectprovider(cmd, client,
     return client.open_id_connect_provider.create_or_update(resource_group_name=resource_group, service_name=service_name, opid=opid, parameters=body)
 
 # module equivalent: azure_rm_apimanagementopenidconnectprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/openidConnectProviders/{{ openid_connect_provider_name }}
 def update_apimgmt_openidconnectprovider(cmd, client,
                                          resource_group,
                                          service_name,
@@ -1619,6 +1751,7 @@ def update_apimgmt_openidconnectprovider(cmd, client,
     return client.open_id_connect_provider.create_or_update(resource_group_name=resource_group, service_name=service_name, opid=opid, parameters=body)
 
 # module equivalent: azure_rm_apimanagementopenidconnectprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/openidConnectProviders/{{ openid_connect_provider_name }}
 def delete_apimgmt_openidconnectprovider(cmd, client,
                                          resource_group,
                                          service_name,
@@ -1626,12 +1759,14 @@ def delete_apimgmt_openidconnectprovider(cmd, client,
     return client.open_id_connect_provider.delete(resource_group_name=resource_group, service_name=service_name, opid=opid)
 
 # module equivalent: azure_rm_apimanagementopenidconnectprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/openidConnectProviders/{{ openid_connect_provider_name }}
 def list_apimgmt_openidconnectprovider(cmd, client,
                                        resource_group,
                                        service_name):
     return client.open_id_connect_provider.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementopenidconnectprovider
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/openidConnectProviders/{{ openid_connect_provider_name }}
 def show_apimgmt_openidconnectprovider(cmd, client,
                                        resource_group,
                                        service_name,
@@ -1639,6 +1774,7 @@ def show_apimgmt_openidconnectprovider(cmd, client,
     return client.open_id_connect_provider.get(resource_group_name=resource_group, service_name=service_name, opid=opid)
 
 # module equivalent: azure_rm_apimanagementpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/policies/{{ policy_name }}
 def create_apimgmt_policy(cmd, client,
                           resource_group,
                           service_name,
@@ -1651,6 +1787,7 @@ def create_apimgmt_policy(cmd, client,
     return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/policies/{{ policy_name }}
 def update_apimgmt_policy(cmd, client,
                           resource_group,
                           service_name,
@@ -1663,6 +1800,7 @@ def update_apimgmt_policy(cmd, client,
     return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/policies/{{ policy_name }}
 def delete_apimgmt_policy(cmd, client,
                           resource_group,
                           service_name,
@@ -1670,12 +1808,14 @@ def delete_apimgmt_policy(cmd, client,
     return client.policy.delete(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id)
 
 # module equivalent: azure_rm_apimanagementpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/policies/{{ policy_name }}
 def list_apimgmt_policy(cmd, client,
                         resource_group,
                         service_name):
     return client.policy.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/policies/{{ policy_name }}
 def show_apimgmt_policy(cmd, client,
                         resource_group,
                         service_name,
@@ -1684,65 +1824,72 @@ def show_apimgmt_policy(cmd, client,
     return client.policy.get(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, format=format)
 
 # module equivalent: azure_rm_apimanagementsigninsetting
-def create_apimgmt_portalsetting(cmd, client,
-                                 resource_group,
-                                 name,
-                                 enabled=None):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signin
+def create_apimgmt_portalsetting_signin(cmd, client,
+                                        resource_group,
+                                        name,
+                                        enabled=None):
     body = {}
     body['enabled'] = enabled # boolean
     return client.sign_in_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementsigninsetting
-def update_apimgmt_portalsetting(cmd, client,
-                                 resource_group,
-                                 name,
-                                 enabled=None):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signin
+def update_apimgmt_portalsetting_signin(cmd, client,
+                                        resource_group,
+                                        name,
+                                        enabled=None):
     body = {}
     body['enabled'] = enabled # boolean
     return client.sign_in_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementsigninsetting
-def show_apimgmt_portalsetting(cmd, client,
-                               resource_group,
-                               name):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signin
+def show_apimgmt_portalsetting_signin(cmd, client,
+                                      resource_group,
+                                      name):
     return client.sign_in_settings.get(resource_group_name=resource_group, service_name=name)
 
 # module equivalent: azure_rm_apimanagementsignupsetting
-def create_apimgmt_portalsetting(cmd, client,
-                                 resource_group,
-                                 name,
-                                 enabled=None,
-                                 terms_of_service=None):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signup
+def create_apimgmt_portalsetting_signup(cmd, client,
+                                        resource_group,
+                                        name,
+                                        enabled=None,
+                                        terms_of_service=None):
     body = {}
     body['enabled'] = enabled # boolean
     body['terms_of_service'] = json.loads(terms_of_service) if isinstance(terms_of_service, str) else terms_of_service
     return client.sign_up_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementsignupsetting
-def update_apimgmt_portalsetting(cmd, client,
-                                 resource_group,
-                                 name,
-                                 enabled=None,
-                                 terms_of_service=None):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signup
+def update_apimgmt_portalsetting_signup(cmd, client,
+                                        resource_group,
+                                        name,
+                                        enabled=None,
+                                        terms_of_service=None):
     body = {}
     body['enabled'] = enabled # boolean
     body['terms_of_service'] = json.loads(terms_of_service) if isinstance(terms_of_service, str) else terms_of_service
     return client.sign_up_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementsignupsetting
-def show_apimgmt_portalsetting(cmd, client,
-                               resource_group,
-                               name):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signup
+def show_apimgmt_portalsetting_signup(cmd, client,
+                                      resource_group,
+                                      name):
     return client.sign_up_settings.get(resource_group_name=resource_group, service_name=name)
 
 # module equivalent: azure_rm_apimanagementdelegationsetting
-def create_apimgmt_portalsetting(cmd, client,
-                                 resource_group,
-                                 name,
-                                 url=None,
-                                 validation_key=None,
-                                 subscriptions=None,
-                                 user_registration=None):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/delegation
+def create_apimgmt_portalsetting_delegation(cmd, client,
+                                            resource_group,
+                                            name,
+                                            url=None,
+                                            validation_key=None,
+                                            subscriptions=None,
+                                            user_registration=None):
     body = {}
     body['url'] = url # str
     body['validation_key'] = validation_key # str
@@ -1751,13 +1898,14 @@ def create_apimgmt_portalsetting(cmd, client,
     return client.delegation_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementdelegationsetting
-def update_apimgmt_portalsetting(cmd, client,
-                                 resource_group,
-                                 name,
-                                 url=None,
-                                 validation_key=None,
-                                 subscriptions=None,
-                                 user_registration=None):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/delegation
+def update_apimgmt_portalsetting_delegation(cmd, client,
+                                            resource_group,
+                                            name,
+                                            url=None,
+                                            validation_key=None,
+                                            subscriptions=None,
+                                            user_registration=None):
     body = {}
     body['url'] = url # str
     body['validation_key'] = validation_key # str
@@ -1766,12 +1914,14 @@ def update_apimgmt_portalsetting(cmd, client,
     return client.delegation_settings.create_or_update(resource_group_name=resource_group, service_name=name, parameters=body)
 
 # module equivalent: azure_rm_apimanagementdelegationsetting
-def show_apimgmt_portalsetting(cmd, client,
-                               resource_group,
-                               name):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/delegation
+def show_apimgmt_portalsetting_delegation(cmd, client,
+                                          resource_group,
+                                          name):
     return client.delegation_settings.get(resource_group_name=resource_group, service_name=name)
 
 # module equivalent: azure_rm_apimanagementproduct
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}
 def create_apimgmt_product(cmd, client,
                            resource_group,
                            service_name,
@@ -1794,6 +1944,7 @@ def create_apimgmt_product(cmd, client,
     return client.product.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproduct
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}
 def update_apimgmt_product(cmd, client,
                            resource_group,
                            service_name,
@@ -1816,6 +1967,7 @@ def update_apimgmt_product(cmd, client,
     return client.product.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproduct
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}
 def delete_apimgmt_product(cmd, client,
                            resource_group,
                            service_name,
@@ -1823,15 +1975,17 @@ def delete_apimgmt_product(cmd, client,
     return client.product.delete(resource_group_name=resource_group, service_name=service_name, product_id=product_id)
 
 # module equivalent: azure_rm_apimanagementproduct
-def list_apimgmt_productsbytag(cmd, client,
-                               resource_group,
-                               service_name):
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}
+def list_apimgmt_product(cmd, client,
+                         resource_group,
+                         service_name):
     if resource_group is not None and service_name is not None:
         return client.product.list_by_tags(resource_group_name=resource_group, service_name=service_name)
     else:
         return client.product.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementproduct
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}
 def show_apimgmt_product(cmd, client,
                          resource_group,
                          service_name,
@@ -1839,6 +1993,7 @@ def show_apimgmt_product(cmd, client,
     return client.product.get(resource_group_name=resource_group, service_name=service_name, product_id=product_id)
 
 # module equivalent: azure_rm_apimanagementproductapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/apis/{{ api_name }}
 def create_apimgmt_product_api(cmd, client,
                                resource_group,
                                service_name,
@@ -1865,6 +2020,7 @@ def create_apimgmt_product_api(cmd, client,
     return client.product_api.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementproductapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/apis/{{ api_name }}
 def update_apimgmt_product_api(cmd, client,
                                resource_group,
                                service_name,
@@ -1891,6 +2047,7 @@ def update_apimgmt_product_api(cmd, client,
     return client.product_api.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementproductapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/apis/{{ api_name }}
 def delete_apimgmt_product_api(cmd, client,
                                resource_group,
                                service_name,
@@ -1899,6 +2056,7 @@ def delete_apimgmt_product_api(cmd, client,
     return client.product_api.delete(resource_group_name=resource_group, service_name=service_name, product_id=product_id, api_id=api_id)
 
 # module equivalent: azure_rm_apimanagementproductapi
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/apis/{{ api_name }}
 def list_apimgmt_product_api(cmd, client,
                              resource_group,
                              service_name,
@@ -1906,6 +2064,7 @@ def list_apimgmt_product_api(cmd, client,
     return client.product_api.list_by_product(resource_group_name=resource_group, service_name=service_name, product_id=product_id)
 
 # module equivalent: azure_rm_apimanagementproductgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/groups/{{ group_name }}
 def create_apimgmt_product_group(cmd, client,
                                  resource_group,
                                  service_name,
@@ -1919,6 +2078,7 @@ def create_apimgmt_product_group(cmd, client,
     return client.product_group.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementproductgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/groups/{{ group_name }}
 def update_apimgmt_product_group(cmd, client,
                                  resource_group,
                                  service_name,
@@ -1932,6 +2092,7 @@ def update_apimgmt_product_group(cmd, client,
     return client.product_group.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementproductgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/groups/{{ group_name }}
 def delete_apimgmt_product_group(cmd, client,
                                  resource_group,
                                  service_name,
@@ -1940,6 +2101,7 @@ def delete_apimgmt_product_group(cmd, client,
     return client.product_group.delete(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
 # module equivalent: azure_rm_apimanagementproductgroup
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/groups/{{ group_name }}
 def list_apimgmt_product_group(cmd, client,
                                resource_group,
                                service_name,
@@ -1947,6 +2109,7 @@ def list_apimgmt_product_group(cmd, client,
     return client.product_group.list_by_product(resource_group_name=resource_group, service_name=service_name, product_id=product_id)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/policies/{{ policy_name }}
 def create_apimgmt_product_policy(cmd, client,
                                   resource_group,
                                   service_name,
@@ -1960,6 +2123,7 @@ def create_apimgmt_product_policy(cmd, client,
     return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/policies/{{ policy_name }}
 def update_apimgmt_product_policy(cmd, client,
                                   resource_group,
                                   service_name,
@@ -1973,6 +2137,7 @@ def update_apimgmt_product_policy(cmd, client,
     return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/policies/{{ policy_name }}
 def delete_apimgmt_product_policy(cmd, client,
                                   resource_group,
                                   service_name,
@@ -1981,6 +2146,7 @@ def delete_apimgmt_product_policy(cmd, client,
     return client.product_policy.delete(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/policies/{{ policy_name }}
 def list_apimgmt_product_policy(cmd, client,
                                 resource_group,
                                 service_name,
@@ -1988,6 +2154,7 @@ def list_apimgmt_product_policy(cmd, client,
     return client.product_policy.list_by_product(resource_group_name=resource_group, service_name=service_name, product_id=product_id)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}/policies/{{ policy_name }}
 def show_apimgmt_product_policy(cmd, client,
                                 resource_group,
                                 service_name,
@@ -1997,6 +2164,7 @@ def show_apimgmt_product_policy(cmd, client,
     return client.product_policy.get(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, format=format)
 
 # module equivalent: azure_rm_apimanagementproperty
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/properties/{{ property_name }}
 def create_apimgmt_property(cmd, client,
                             resource_group,
                             service_name,
@@ -2013,6 +2181,7 @@ def create_apimgmt_property(cmd, client,
     return client.property.create_or_update(resource_group_name=resource_group, service_name=service_name, prop_id=prop_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproperty
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/properties/{{ property_name }}
 def update_apimgmt_property(cmd, client,
                             resource_group,
                             service_name,
@@ -2029,6 +2198,7 @@ def update_apimgmt_property(cmd, client,
     return client.property.create_or_update(resource_group_name=resource_group, service_name=service_name, prop_id=prop_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproperty
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/properties/{{ property_name }}
 def delete_apimgmt_property(cmd, client,
                             resource_group,
                             service_name,
@@ -2036,12 +2206,14 @@ def delete_apimgmt_property(cmd, client,
     return client.property.delete(resource_group_name=resource_group, service_name=service_name, prop_id=prop_id)
 
 # module equivalent: azure_rm_apimanagementproperty
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/properties/{{ property_name }}
 def list_apimgmt_property(cmd, client,
                           resource_group,
                           service_name):
     return client.property.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementproperty
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/properties/{{ property_name }}
 def show_apimgmt_property(cmd, client,
                           resource_group,
                           service_name,
@@ -2049,6 +2221,7 @@ def show_apimgmt_property(cmd, client,
     return client.property.get(resource_group_name=resource_group, service_name=service_name, prop_id=prop_id)
 
 # module equivalent: azure_rm_apimanagementsubscription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/subscriptions/{{ subscription_id }}
 def create_apimgmt_subscription(cmd, client,
                                 resource_group,
                                 service_name,
@@ -2072,6 +2245,7 @@ def create_apimgmt_subscription(cmd, client,
     return client.subscription.create_or_update(resource_group_name=resource_group, service_name=service_name, sid=sid, parameters=body, notify=notify)
 
 # module equivalent: azure_rm_apimanagementsubscription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/subscriptions/{{ subscription_id }}
 def update_apimgmt_subscription(cmd, client,
                                 resource_group,
                                 service_name,
@@ -2095,6 +2269,7 @@ def update_apimgmt_subscription(cmd, client,
     return client.subscription.create_or_update(resource_group_name=resource_group, service_name=service_name, sid=sid, parameters=body, notify=notify)
 
 # module equivalent: azure_rm_apimanagementsubscription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/subscriptions/{{ subscription_id }}
 def delete_apimgmt_subscription(cmd, client,
                                 resource_group,
                                 service_name,
@@ -2102,12 +2277,14 @@ def delete_apimgmt_subscription(cmd, client,
     return client.subscription.delete(resource_group_name=resource_group, service_name=service_name, sid=sid)
 
 # module equivalent: azure_rm_apimanagementsubscription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/subscriptions/{{ subscription_id }}
 def list_apimgmt_subscription(cmd, client,
                               resource_group,
                               service_name):
     return client.subscription.list(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementsubscription
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/subscriptions/{{ subscription_id }}
 def show_apimgmt_subscription(cmd, client,
                               resource_group,
                               service_name,
@@ -2115,6 +2292,7 @@ def show_apimgmt_subscription(cmd, client,
     return client.subscription.get(resource_group_name=resource_group, service_name=service_name, sid=sid)
 
 # module equivalent: azure_rm_apimanagementuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
 def create_apimgmt_user(cmd, client,
                         resource_group,
                         service_name,
@@ -2139,6 +2317,7 @@ def create_apimgmt_user(cmd, client,
     return client.user.create_or_update(resource_group_name=resource_group, service_name=service_name, user_id=user_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
 def update_apimgmt_user(cmd, client,
                         resource_group,
                         service_name,
@@ -2163,6 +2342,7 @@ def update_apimgmt_user(cmd, client,
     return client.user.create_or_update(resource_group_name=resource_group, service_name=service_name, user_id=user_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
 def delete_apimgmt_user(cmd, client,
                         resource_group,
                         service_name,
@@ -2170,12 +2350,14 @@ def delete_apimgmt_user(cmd, client,
     return client.user.delete(resource_group_name=resource_group, service_name=service_name, user_id=user_id)
 
 # module equivalent: azure_rm_apimanagementuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
 def list_apimgmt_user(cmd, client,
                       resource_group,
                       service_name):
     return client.user.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementuser
+# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
 def show_apimgmt_user(cmd, client,
                       resource_group,
                       service_name,

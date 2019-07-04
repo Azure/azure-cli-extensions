@@ -2135,118 +2135,118 @@ helps['apimgmt policy show'] = """
         text: apimgmt policy show  --resource-group rg1 --service-name apimService1 --policy-id policy
 """
 
-helps['apimgmt portalsetting'] = """
+helps['apimgmt portalsetting signin'] = """
     type: group
     short-summary: Commands to manage SignInSetting.
 """
 
-helps['apimgmt portalsetting create'] = """
+helps['apimgmt portalsetting signin create'] = """
     type: command
-    short-summary: create a apimgmt portalsetting.
+    short-summary: create a apimgmt portalsetting signin.
     examples:
 # create_or_update -- create
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin create  --resource-group rg1 --name apimService1 --enabled true
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin create  --resource-group rg1 --name apimService1 --enabled true
 """
 
-helps['apimgmt portalsetting update'] = """
+helps['apimgmt portalsetting signin update'] = """
     type: command
-    short-summary: update a apimgmt portalsetting.
+    short-summary: update a apimgmt portalsetting signin.
     examples:
 # create_or_update -- update
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin update  --resource-group rg1 --name apimService1 --enabled true
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin update  --resource-group rg1 --name apimService1 --enabled true
 """
 
-helps['apimgmt portalsetting show'] = """
+helps['apimgmt portalsetting signin show'] = """
     type: command
-    short-summary: show a apimgmt portalsetting.
+    short-summary: show a apimgmt portalsetting signin.
     examples:
 # get -- show
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signin show  --resource-group rg1 --name apimService1
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signin show  --resource-group rg1 --name apimService1
 """
 
-helps['apimgmt portalsetting'] = """
+helps['apimgmt portalsetting signup'] = """
     type: group
     short-summary: Commands to manage SignUpSetting.
 """
 
-helps['apimgmt portalsetting create'] = """
+helps['apimgmt portalsetting signup create'] = """
     type: command
-    short-summary: create a apimgmt portalsetting.
+    short-summary: create a apimgmt portalsetting signup.
     examples:
 # create_or_update -- create
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup create  --resource-group rg1 --name apimService1 --enabled true
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup create  --resource-group rg1 --name apimService1 --enabled true
 """
 
-helps['apimgmt portalsetting update'] = """
+helps['apimgmt portalsetting signup update'] = """
     type: command
-    short-summary: update a apimgmt portalsetting.
+    short-summary: update a apimgmt portalsetting signup.
     examples:
 # create_or_update -- update
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup update  --resource-group rg1 --name apimService1 --enabled true
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup update  --resource-group rg1 --name apimService1 --enabled true
 """
 
-helps['apimgmt portalsetting show'] = """
+helps['apimgmt portalsetting signup show'] = """
     type: command
-    short-summary: show a apimgmt portalsetting.
+    short-summary: show a apimgmt portalsetting signup.
     examples:
 # get -- show
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signup show  --resource-group rg1 --name apimService1
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signup show  --resource-group rg1 --name apimService1
 """
 
-helps['apimgmt portalsetting'] = """
+helps['apimgmt portalsetting delegation'] = """
     type: group
     short-summary: Commands to manage DelegationSetting.
 """
 
-helps['apimgmt portalsetting create'] = """
+helps['apimgmt portalsetting delegation create'] = """
     type: command
-    short-summary: create a apimgmt portalsetting.
+    short-summary: create a apimgmt portalsetting delegation.
     examples:
 # create_or_update -- create
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting create  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation create  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting create  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation create  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
 """
 
-helps['apimgmt portalsetting update'] = """
+helps['apimgmt portalsetting delegation update'] = """
     type: command
-    short-summary: update a apimgmt portalsetting.
+    short-summary: update a apimgmt portalsetting delegation.
     examples:
 # create_or_update -- update
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting update  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation update  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting update  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation update  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
 """
 
-helps['apimgmt portalsetting show'] = """
+helps['apimgmt portalsetting delegation show'] = """
     type: command
-    short-summary: show a apimgmt portalsetting.
+    short-summary: show a apimgmt portalsetting delegation.
     examples:
 # get -- show
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting delegation show  --resource-group rg1 --name apimService1
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting delegation show  --resource-group rg1 --name apimService1
 """
 
 helps['apimgmt product'] = """
