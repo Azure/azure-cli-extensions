@@ -8,7 +8,6 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
-from knack.util import CLIError
 import json
 
 # module equivalent: azure_rm_apimanagementapi
@@ -128,8 +127,7 @@ def list_apimgmt_api(cmd, client,
                      service_name):
     if resource_group is not None and service_name is not None:
         return client.api.list_by_tags(resource_group_name=resource_group, service_name=service_name)
-    else:
-        return client.api.list_by_service(resource_group_name=resource_group, service_name=service_name)
+    return client.api.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementapi
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}
@@ -368,8 +366,7 @@ def list_apimgmt_tag(cmd, client,
         return client.tag.list_by_product(resource_group_name=resource_group, service_name=service_name)
     elif resource_group is not None and service_name is not None:
         return client.tag.list_by_api(resource_group_name=resource_group, service_name=service_name)
-    else:
-        return client.tag.list_by_service(resource_group_name=resource_group, service_name=service_name)
+    return client.tag.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementtag
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
@@ -1242,8 +1239,7 @@ def list_apimgmt(cmd, client,
                  resource_group):
     if resource_group is not None:
         return client.api_management_service.list_by_resource_group(resource_group_name=resource_group)
-    else:
-        return client.api_management_service.list()
+    return client.api_management_service.list()
 
 # module equivalent: azure_rm_apimanagementservice
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}
@@ -1979,8 +1975,7 @@ def list_apimgmt_product(cmd, client,
                          service_name):
     if resource_group is not None and service_name is not None:
         return client.product.list_by_tags(resource_group_name=resource_group, service_name=service_name)
-    else:
-        return client.product.list_by_service(resource_group_name=resource_group, service_name=service_name)
+    return client.product.list_by_service(resource_group_name=resource_group, service_name=service_name)
 
 # module equivalent: azure_rm_apimanagementproduct
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}

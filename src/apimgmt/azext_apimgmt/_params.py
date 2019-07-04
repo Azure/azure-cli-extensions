@@ -1529,7 +1529,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('user_id', id_part=None, help='User identifier. Must be unique in the current API Management service instance.')
-    apimanagement_name_type = CLIArgumentType(options_list='--apimanagement-name-name', help='Name of the Apimanagement.', id_part='name')
 
     with self.argument_context('apimanagement') as c:
         c.argument('tags', tags_type)
