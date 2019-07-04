@@ -48,12 +48,10 @@ az storage account create \
     --name accountName \
     --resource-group groupName \
     --kind StorageV2 \
-    --file-aad
 
 az storage account update \
     --name accountName \
     --resource-group groupName \
-    --file-aad false
 ```
 
 #### Premium Blobs/Files:
