@@ -8,12 +8,13 @@
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
 from azure.cli.command_modules.apimgmt._client_factory import cf_apimgmt
+
+
 def load_command_table(self, _):
 
     apimgmt_sdk = CliCommandType(
         operations_tmpl='azure.mgmt.apimgmt.operations#ApiManagementOperations.{}',
         client_factory=cf_apimgmt)
-
 
     with self.command_group('apimgmt api', apimgmt_sdk, client_factory=cf_apimgmt) as g:
         g.custom_command('create', 'create_apimgmt_api')

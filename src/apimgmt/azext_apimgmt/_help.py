@@ -5,8 +5,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines
+# pylint: disable=line-too-long
 from knack.help_files import helps  # pylint: disable=unused-import
-
 
 
 helps['apimgmt api'] = """
@@ -20,29 +20,29 @@ helps['apimgmt api create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiUsingOai3Import
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id petstore --path petstore --value https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml --format openapi-link
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "petstore" --path "petstore" --value "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml" --format "openapi-link"
       - name: ApiManagementCreateApiUsingSwaggerImport
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id petstore --path petstore --value http://petstore.swagger.io/v2/swagger.json --format swagger-link-json
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "petstore" --path "petstore" --value "http://petstore.swagger.io/v2/swagger.json" --format "swagger-link-json"
       - name: ApiManagementCreateApiUsingWadlImport
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id petstore --path collector --value https://developer.cisco.com/media/wae-release-6-2-api-reference/wae-collector-rest-api/application.wadl --format wadl-link-json
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "petstore" --path "collector" --value "https://developer.cisco.com/media/wae-release-6-2-api-reference/wae-collector-rest-api/application.wadl" --format "wadl-link-json"
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id soapApi --path currency --value http://www.webservicex.net/CurrencyConvertor.asmx?WSDL --format wsdl-link
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi" --path "currency" --value "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link"
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id soapApi --path currency --value http://www.webservicex.net/CurrencyConvertor.asmx?WSDL --format wsdl-link --api-type soap
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi" --path "currency" --value "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link" --api-type "soap"
       - name: ApiManagementCreateApi
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id tempgroup --description apidescription5200 --display-name apiname1463 --service-url http://newechoapi.cloudapp.net/api --path newapiPath
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup" --description "apidescription5200" --display-name "apiname1463" --service-url "http://newechoapi.cloudapp.net/api" --path "newapiPath"
       - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id echo-api;rev=3 --api-revision_description Creating a Revision of an existing API --source-api_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }} --service-url http://echoapi.cloudapp.net/apiv3 --path echo
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api;rev=3" --api-revision_description "Creating a Revision of an existing API" --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" --service-url "http://echoapi.cloudapp.net/apiv3" --path "echo"
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id echoapiv3 --description Create Echo API into a new Version using Existing Version Set and Copy all Operations. --api-version v4 --is-current true --api-version_set_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }} --subscription-required true --source-api_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }} --display-name Echo API2 --service-url http://echoapi.cloudapp.net/api --path echo2
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "echoapiv3" --description "Create Echo API into a new Version using Existing Version Set and Copy all Operations." --api-version "v4" --is-current true --api-version_set_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}" --subscription-required true --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
       - name: ApiManagementCreateApiClone
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id echo-api2 --description Copy of Existing Echo Api including Operations. --is-current true --subscription-required true --source-api_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }} --display-name Echo API2 --service-url http://echoapi.cloudapp.net/api --path echo2
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api2" --description "Copy of Existing Echo Api including Operations." --is-current true --subscription-required true --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
       - name: ApiManagementCreateApiWithOpenIdConnect
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id tempgroup --description This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters. --display-name Swagger Petstore --service-url http://petstore.swagger.io/v2 --path petstore
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup" --description "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters." --display-name "Swagger Petstore" --service-url "http://petstore.swagger.io/v2" --path "petstore"
       - name: ApiManagementUpdateApi
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id echo-api --display-name Echo API New --service-url http://echoapi.cloudapp.net/api2 --path newecho
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api" --display-name "Echo API New" --service-url "http://echoapi.cloudapp.net/api2" --path "newecho"
       - name: ApiManagementDeleteApi
-        text: apimgmt api create  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api create  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
 """
 
 helps['apimgmt api update'] = """
@@ -51,29 +51,29 @@ helps['apimgmt api update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiUsingOai3Import
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id petstore --path petstore --value https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml --format openapi-link
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "petstore" --path "petstore" --value "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml" --format "openapi-link"
       - name: ApiManagementCreateApiUsingSwaggerImport
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id petstore --path petstore --value http://petstore.swagger.io/v2/swagger.json --format swagger-link-json
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "petstore" --path "petstore" --value "http://petstore.swagger.io/v2/swagger.json" --format "swagger-link-json"
       - name: ApiManagementCreateApiUsingWadlImport
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id petstore --path collector --value https://developer.cisco.com/media/wae-release-6-2-api-reference/wae-collector-rest-api/application.wadl --format wadl-link-json
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "petstore" --path "collector" --value "https://developer.cisco.com/media/wae-release-6-2-api-reference/wae-collector-rest-api/application.wadl" --format "wadl-link-json"
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id soapApi --path currency --value http://www.webservicex.net/CurrencyConvertor.asmx?WSDL --format wsdl-link
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi" --path "currency" --value "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link"
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id soapApi --path currency --value http://www.webservicex.net/CurrencyConvertor.asmx?WSDL --format wsdl-link --api-type soap
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi" --path "currency" --value "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link" --api-type "soap"
       - name: ApiManagementCreateApi
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id tempgroup --description apidescription5200 --display-name apiname1463 --service-url http://newechoapi.cloudapp.net/api --path newapiPath
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup" --description "apidescription5200" --display-name "apiname1463" --service-url "http://newechoapi.cloudapp.net/api" --path "newapiPath"
       - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id echo-api;rev=3 --api-revision_description Creating a Revision of an existing API --source-api_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }} --service-url http://echoapi.cloudapp.net/apiv3 --path echo
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api;rev=3" --api-revision_description "Creating a Revision of an existing API" --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" --service-url "http://echoapi.cloudapp.net/apiv3" --path "echo"
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id echoapiv3 --description Create Echo API into a new Version using Existing Version Set and Copy all Operations. --api-version v4 --is-current true --api-version_set_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }} --subscription-required true --source-api_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }} --display-name Echo API2 --service-url http://echoapi.cloudapp.net/api --path echo2
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "echoapiv3" --description "Create Echo API into a new Version using Existing Version Set and Copy all Operations." --api-version "v4" --is-current true --api-version_set_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apiVersionSets/{{ api_version_set_name }}" --subscription-required true --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
       - name: ApiManagementCreateApiClone
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id echo-api2 --description Copy of Existing Echo Api including Operations. --is-current true --subscription-required true --source-api_id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }} --display-name Echo API2 --service-url http://echoapi.cloudapp.net/api --path echo2
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api2" --description "Copy of Existing Echo Api including Operations." --is-current true --subscription-required true --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
       - name: ApiManagementCreateApiWithOpenIdConnect
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id tempgroup --description This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters. --display-name Swagger Petstore --service-url http://petstore.swagger.io/v2 --path petstore
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup" --description "This is a sample server Petstore server.  You can find out more about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test the authorization filters." --display-name "Swagger Petstore" --service-url "http://petstore.swagger.io/v2" --path "petstore"
       - name: ApiManagementUpdateApi
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id echo-api --display-name Echo API New --service-url http://echoapi.cloudapp.net/api2 --path newecho
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api" --display-name "Echo API New" --service-url "http://echoapi.cloudapp.net/api2" --path "newecho"
       - name: ApiManagementDeleteApi
-        text: apimgmt api update  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api update  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
 """
 
 helps['apimgmt api delete'] = """
@@ -82,29 +82,29 @@ helps['apimgmt api delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiUsingOai3Import
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id petstore
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "petstore"
       - name: ApiManagementCreateApiUsingSwaggerImport
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id petstore
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "petstore"
       - name: ApiManagementCreateApiUsingWadlImport
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id petstore
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "petstore"
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id soapApi
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi"
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id soapApi
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi"
       - name: ApiManagementCreateApi
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id tempgroup
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup"
       - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id echo-api;rev=3
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api;rev=3"
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id echoapiv3
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "echoapiv3"
       - name: ApiManagementCreateApiClone
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id echo-api2
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api2"
       - name: ApiManagementCreateApiWithOpenIdConnect
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id tempgroup
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup"
       - name: ApiManagementUpdateApi
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
       - name: ApiManagementDeleteApi
-        text: apimgmt api delete  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api delete  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
 """
 
 helps['apimgmt api list'] = """
@@ -113,54 +113,54 @@ helps['apimgmt api list'] = """
     examples:
 # list_by_tags -- list
       - name: ApiManagementCreateApiUsingOai3Import
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiUsingSwaggerImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiUsingWadlImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiClone
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiWithOpenIdConnect
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
 # list_by_service -- list
       - name: ApiManagementCreateApiUsingOai3Import
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiUsingSwaggerImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiUsingWadlImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiClone
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateApiWithOpenIdConnect
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteApi
-        text: apimgmt api list  --resource-group rg1 --service-name apimService1
+        text: apimgmt api list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt api show'] = """
@@ -169,29 +169,29 @@ helps['apimgmt api show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiUsingOai3Import
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id petstore
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "petstore"
       - name: ApiManagementCreateApiUsingSwaggerImport
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id petstore
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "petstore"
       - name: ApiManagementCreateApiUsingWadlImport
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id petstore
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "petstore"
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id soapApi
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi"
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id soapApi
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "soapApi"
       - name: ApiManagementCreateApi
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id tempgroup
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup"
       - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id echo-api;rev=3
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api;rev=3"
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id echoapiv3
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "echoapiv3"
       - name: ApiManagementCreateApiClone
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id echo-api2
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api2"
       - name: ApiManagementCreateApiWithOpenIdConnect
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id tempgroup
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "tempgroup"
       - name: ApiManagementUpdateApi
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
       - name: ApiManagementDeleteApi
-        text: apimgmt api show  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api show  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
 """
 
 helps['apimgmt api release'] = """
@@ -205,11 +205,11 @@ helps['apimgmt api release create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiRelease
-        text: apimgmt api release create  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev --notes yahooagain
+        text: apimgmt api release create  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev" --notes "yahooagain"
       - name: ApiManagementUpdateApiRelease
-        text: apimgmt api release create  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev --notes yahooagain
+        text: apimgmt api release create  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev" --notes "yahooagain"
       - name: ApiManagementDeleteApiRelease
-        text: apimgmt api release create  --resource-group rg1 --service-name apimService1 --api-id 5a5fcc09124a7fa9b89f2f1d --release-id testrev
+        text: apimgmt api release create  --resource-group "rg1" --service-name "apimService1" --api-id "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api release update'] = """
@@ -218,11 +218,11 @@ helps['apimgmt api release update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiRelease
-        text: apimgmt api release update  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev --notes yahooagain
+        text: apimgmt api release update  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev" --notes "yahooagain"
       - name: ApiManagementUpdateApiRelease
-        text: apimgmt api release update  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev --notes yahooagain
+        text: apimgmt api release update  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev" --notes "yahooagain"
       - name: ApiManagementDeleteApiRelease
-        text: apimgmt api release update  --resource-group rg1 --service-name apimService1 --api-id 5a5fcc09124a7fa9b89f2f1d --release-id testrev
+        text: apimgmt api release update  --resource-group "rg1" --service-name "apimService1" --api-id "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api release delete'] = """
@@ -231,11 +231,11 @@ helps['apimgmt api release delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiRelease
-        text: apimgmt api release delete  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev
+        text: apimgmt api release delete  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev"
       - name: ApiManagementUpdateApiRelease
-        text: apimgmt api release delete  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev
+        text: apimgmt api release delete  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev"
       - name: ApiManagementDeleteApiRelease
-        text: apimgmt api release delete  --resource-group rg1 --service-name apimService1 --api-id 5a5fcc09124a7fa9b89f2f1d --release-id testrev
+        text: apimgmt api release delete  --resource-group "rg1" --service-name "apimService1" --api-id "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api release list'] = """
@@ -244,11 +244,11 @@ helps['apimgmt api release list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiRelease
-        text: apimgmt api release list  --resource-group rg1 --service-name apimService1 --api-id a1
+        text: apimgmt api release list  --resource-group "rg1" --service-name "apimService1" --api-id "a1"
       - name: ApiManagementUpdateApiRelease
-        text: apimgmt api release list  --resource-group rg1 --service-name apimService1 --api-id a1
+        text: apimgmt api release list  --resource-group "rg1" --service-name "apimService1" --api-id "a1"
       - name: ApiManagementDeleteApiRelease
-        text: apimgmt api release list  --resource-group rg1 --service-name apimService1 --api-id 5a5fcc09124a7fa9b89f2f1d
+        text: apimgmt api release list  --resource-group "rg1" --service-name "apimService1" --api-id "5a5fcc09124a7fa9b89f2f1d"
 """
 
 helps['apimgmt api release show'] = """
@@ -257,11 +257,11 @@ helps['apimgmt api release show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiRelease
-        text: apimgmt api release show  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev
+        text: apimgmt api release show  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev"
       - name: ApiManagementUpdateApiRelease
-        text: apimgmt api release show  --resource-group rg1 --service-name apimService1 --api-id a1 --release-id testrev
+        text: apimgmt api release show  --resource-group "rg1" --service-name "apimService1" --api-id "a1" --release-id "testrev"
       - name: ApiManagementDeleteApiRelease
-        text: apimgmt api release show  --resource-group rg1 --service-name apimService1 --api-id 5a5fcc09124a7fa9b89f2f1d --release-id testrev
+        text: apimgmt api release show  --resource-group "rg1" --service-name "apimService1" --api-id "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api operation'] = """
@@ -275,11 +275,11 @@ helps['apimgmt api operation create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiOperation
-        text: apimgmt api operation create  --resource-group rg1 --service-name apimService1 --api-id PetStoreTemplate2 --operation-id newoperations --description This can only be done by the logged in user. --display-name createUser2 --method POST --url-template /user1
+        text: apimgmt api operation create  --resource-group "rg1" --service-name "apimService1" --api-id "PetStoreTemplate2" --operation-id "newoperations" --description "This can only be done by the logged in user." --display-name "createUser2" --method "POST" --url-template "/user1"
       - name: ApiManagementUpdateApiOperation
-        text: apimgmt api operation create  --resource-group rg1 --service-name apimService1 --api-id echo-api --operation-id operationId --display-name Retrieve resource --method GET --url-template /resource
+        text: apimgmt api operation create  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api" --operation-id "operationId" --display-name "Retrieve resource" --method "GET" --url-template "/resource"
       - name: ApiManagementDeleteApiOperation
-        text: apimgmt api operation create  --resource-group rg1 --service-name apimService1 --api-id 57d2ef278aa04f0888cba3f3 --operation-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api operation create  --resource-group "rg1" --service-name "apimService1" --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation update'] = """
@@ -288,11 +288,11 @@ helps['apimgmt api operation update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiOperation
-        text: apimgmt api operation update  --resource-group rg1 --service-name apimService1 --api-id PetStoreTemplate2 --operation-id newoperations --description This can only be done by the logged in user. --display-name createUser2 --method POST --url-template /user1
+        text: apimgmt api operation update  --resource-group "rg1" --service-name "apimService1" --api-id "PetStoreTemplate2" --operation-id "newoperations" --description "This can only be done by the logged in user." --display-name "createUser2" --method "POST" --url-template "/user1"
       - name: ApiManagementUpdateApiOperation
-        text: apimgmt api operation update  --resource-group rg1 --service-name apimService1 --api-id echo-api --operation-id operationId --display-name Retrieve resource --method GET --url-template /resource
+        text: apimgmt api operation update  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api" --operation-id "operationId" --display-name "Retrieve resource" --method "GET" --url-template "/resource"
       - name: ApiManagementDeleteApiOperation
-        text: apimgmt api operation update  --resource-group rg1 --service-name apimService1 --api-id 57d2ef278aa04f0888cba3f3 --operation-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api operation update  --resource-group "rg1" --service-name "apimService1" --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation delete'] = """
@@ -301,11 +301,11 @@ helps['apimgmt api operation delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiOperation
-        text: apimgmt api operation delete  --resource-group rg1 --service-name apimService1 --api-id PetStoreTemplate2 --operation-id newoperations
+        text: apimgmt api operation delete  --resource-group "rg1" --service-name "apimService1" --api-id "PetStoreTemplate2" --operation-id "newoperations"
       - name: ApiManagementUpdateApiOperation
-        text: apimgmt api operation delete  --resource-group rg1 --service-name apimService1 --api-id echo-api --operation-id operationId
+        text: apimgmt api operation delete  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api" --operation-id "operationId"
       - name: ApiManagementDeleteApiOperation
-        text: apimgmt api operation delete  --resource-group rg1 --service-name apimService1 --api-id 57d2ef278aa04f0888cba3f3 --operation-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api operation delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation list'] = """
@@ -314,11 +314,11 @@ helps['apimgmt api operation list'] = """
     examples:
 # list_by_api -- list
       - name: ApiManagementCreateApiOperation
-        text: apimgmt api operation list  --resource-group rg1 --service-name apimService1 --api-id PetStoreTemplate2
+        text: apimgmt api operation list  --resource-group "rg1" --service-name "apimService1" --api-id "PetStoreTemplate2"
       - name: ApiManagementUpdateApiOperation
-        text: apimgmt api operation list  --resource-group rg1 --service-name apimService1 --api-id echo-api
+        text: apimgmt api operation list  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api"
       - name: ApiManagementDeleteApiOperation
-        text: apimgmt api operation list  --resource-group rg1 --service-name apimService1 --api-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api operation list  --resource-group "rg1" --service-name "apimService1" --api-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api operation show'] = """
@@ -327,11 +327,11 @@ helps['apimgmt api operation show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiOperation
-        text: apimgmt api operation show  --resource-group rg1 --service-name apimService1 --api-id PetStoreTemplate2 --operation-id newoperations
+        text: apimgmt api operation show  --resource-group "rg1" --service-name "apimService1" --api-id "PetStoreTemplate2" --operation-id "newoperations"
       - name: ApiManagementUpdateApiOperation
-        text: apimgmt api operation show  --resource-group rg1 --service-name apimService1 --api-id echo-api --operation-id operationId
+        text: apimgmt api operation show  --resource-group "rg1" --service-name "apimService1" --api-id "echo-api" --operation-id "operationId"
       - name: ApiManagementDeleteApiOperation
-        text: apimgmt api operation show  --resource-group rg1 --service-name apimService1 --api-id 57d2ef278aa04f0888cba3f3 --operation-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api operation show  --resource-group "rg1" --service-name "apimService1" --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation policy'] = """
@@ -345,9 +345,9 @@ helps['apimgmt api operation policy create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiOperationPolicy
-        text: apimgmt api operation policy create  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --operation-id 5600b57e7e8880006a080001 --policy-id policy --value <policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies> --format xml
+        text: apimgmt api operation policy create  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001" --policy-id "policy" --value "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
       - name: ApiManagementDeleteApiOperationPolicy
-        text: apimgmt api operation policy create  --resource-group rg1 --service-name apimService1 --api-id testapi --operation-id testoperation --policy-id policy
+        text: apimgmt api operation policy create  --resource-group "rg1" --service-name "apimService1" --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt api operation policy update'] = """
@@ -356,9 +356,9 @@ helps['apimgmt api operation policy update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiOperationPolicy
-        text: apimgmt api operation policy update  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --operation-id 5600b57e7e8880006a080001 --policy-id policy --value <policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies> --format xml
+        text: apimgmt api operation policy update  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001" --policy-id "policy" --value "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
       - name: ApiManagementDeleteApiOperationPolicy
-        text: apimgmt api operation policy update  --resource-group rg1 --service-name apimService1 --api-id testapi --operation-id testoperation --policy-id policy
+        text: apimgmt api operation policy update  --resource-group "rg1" --service-name "apimService1" --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt api operation policy delete'] = """
@@ -367,9 +367,9 @@ helps['apimgmt api operation policy delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiOperationPolicy
-        text: apimgmt api operation policy delete  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --operation-id 5600b57e7e8880006a080001 --policy-id policy
+        text: apimgmt api operation policy delete  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001" --policy-id "policy"
       - name: ApiManagementDeleteApiOperationPolicy
-        text: apimgmt api operation policy delete  --resource-group rg1 --service-name apimService1 --api-id testapi --operation-id testoperation --policy-id policy
+        text: apimgmt api operation policy delete  --resource-group "rg1" --service-name "apimService1" --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt api operation policy list'] = """
@@ -378,9 +378,9 @@ helps['apimgmt api operation policy list'] = """
     examples:
 # list_by_operation -- list
       - name: ApiManagementCreateApiOperationPolicy
-        text: apimgmt api operation policy list  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --operation-id 5600b57e7e8880006a080001
+        text: apimgmt api operation policy list  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001"
       - name: ApiManagementDeleteApiOperationPolicy
-        text: apimgmt api operation policy list  --resource-group rg1 --service-name apimService1 --api-id testapi --operation-id testoperation
+        text: apimgmt api operation policy list  --resource-group "rg1" --service-name "apimService1" --api-id "testapi" --operation-id "testoperation"
 """
 
 helps['apimgmt api operation policy show'] = """
@@ -389,9 +389,9 @@ helps['apimgmt api operation policy show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiOperationPolicy
-        text: apimgmt api operation policy show  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --operation-id 5600b57e7e8880006a080001 --format xml --policy-id policy
+        text: apimgmt api operation policy show  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001" --format "xml" --policy-id "policy"
       - name: ApiManagementDeleteApiOperationPolicy
-        text: apimgmt api operation policy show  --resource-group rg1 --service-name apimService1 --api-id testapi --operation-id testoperation --policy-id policy
+        text: apimgmt api operation policy show  --resource-group "rg1" --service-name "apimService1" --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt tag'] = """
@@ -405,11 +405,11 @@ helps['apimgmt tag create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateTag
-        text: apimgmt tag create  --resource-group rg1 --service-name apimService1 --tag-id tagId1 --display-name tag1
+        text: apimgmt tag create  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1" --display-name "tag1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag create  --resource-group rg1 --service-name apimService1 --tag-id temptag --display-name temp tag
+        text: apimgmt tag create  --resource-group "rg1" --service-name "apimService1" --tag-id "temptag" --display-name "temp tag"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag create  --resource-group rg1 --service-name apimService1 --tag-id tagId1
+        text: apimgmt tag create  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1"
 """
 
 helps['apimgmt tag update'] = """
@@ -418,11 +418,11 @@ helps['apimgmt tag update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateTag
-        text: apimgmt tag update  --resource-group rg1 --service-name apimService1 --tag-id tagId1 --display-name tag1
+        text: apimgmt tag update  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1" --display-name "tag1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag update  --resource-group rg1 --service-name apimService1 --tag-id temptag --display-name temp tag
+        text: apimgmt tag update  --resource-group "rg1" --service-name "apimService1" --tag-id "temptag" --display-name "temp tag"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag update  --resource-group rg1 --service-name apimService1 --tag-id tagId1
+        text: apimgmt tag update  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1"
 """
 
 helps['apimgmt tag delete'] = """
@@ -431,11 +431,11 @@ helps['apimgmt tag delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateTag
-        text: apimgmt tag delete  --resource-group rg1 --service-name apimService1 --tag-id tagId1
+        text: apimgmt tag delete  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag delete  --resource-group rg1 --service-name apimService1 --tag-id temptag
+        text: apimgmt tag delete  --resource-group "rg1" --service-name "apimService1" --tag-id "temptag"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag delete  --resource-group rg1 --service-name apimService1 --tag-id tagId1
+        text: apimgmt tag delete  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1"
 """
 
 helps['apimgmt tag list'] = """
@@ -444,32 +444,32 @@ helps['apimgmt tag list'] = """
     examples:
 # list_by_operation -- list
       - name: ApiManagementCreateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
 # list_by_product -- list
       - name: ApiManagementCreateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
 # list_by_api -- list
       - name: ApiManagementCreateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
 # list_by_service -- list
       - name: ApiManagementCreateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag list  --resource-group rg1 --service-name apimService1
+        text: apimgmt tag list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt tag show'] = """
@@ -478,11 +478,11 @@ helps['apimgmt tag show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateTag
-        text: apimgmt tag show  --resource-group rg1 --service-name apimService1 --tag-id tagId1
+        text: apimgmt tag show  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1"
       - name: ApiManagementUpdateTag
-        text: apimgmt tag show  --resource-group rg1 --service-name apimService1 --tag-id temptag
+        text: apimgmt tag show  --resource-group "rg1" --service-name "apimService1" --tag-id "temptag"
       - name: ApiManagementDeleteTag
-        text: apimgmt tag show  --resource-group rg1 --service-name apimService1 --tag-id tagId1
+        text: apimgmt tag show  --resource-group "rg1" --service-name "apimService1" --tag-id "tagId1"
 """
 
 helps['apimgmt api policy'] = """
@@ -496,18 +496,11 @@ helps['apimgmt api policy create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiPolicy
-        text: apimgmt api policy create  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy --value <policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies> --format xml
+        text: apimgmt api policy create  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: apimgmt api policy create  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy --value <policies>
-     <inbound>
-     <base />
-  <set-header name="newvalue" exists-action="override">
-   <value>"@(context.Request.Headers.FirstOrDefault(h => h.Ke=="Via"))" </value>
-    </set-header>
-  </inbound>
-      </policies> --format rawxml
+        text: apimgmt api policy create  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\r\n     <inbound>\r\n     <base />\r\n  <set-header name=\"newvalue\" exists-action=\"override\">\r\n   <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>\r\n    </set-header>\r\n  </inbound>\r\n      </policies>" --format "rawxml"
       - name: ApiManagementDeleteApiPolicy
-        text: apimgmt api policy create  --resource-group rg1 --service-name apimService1 --api-id loggerId --policy-id policy
+        text: apimgmt api policy create  --resource-group "rg1" --service-name "apimService1" --api-id "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api policy update'] = """
@@ -516,18 +509,11 @@ helps['apimgmt api policy update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiPolicy
-        text: apimgmt api policy update  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy --value <policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies> --format xml
+        text: apimgmt api policy update  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: apimgmt api policy update  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy --value <policies>
-     <inbound>
-     <base />
-  <set-header name="newvalue" exists-action="override">
-   <value>"@(context.Request.Headers.FirstOrDefault(h => h.Ke=="Via"))" </value>
-    </set-header>
-  </inbound>
-      </policies> --format rawxml
+        text: apimgmt api policy update  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\r\n     <inbound>\r\n     <base />\r\n  <set-header name=\"newvalue\" exists-action=\"override\">\r\n   <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>\r\n    </set-header>\r\n  </inbound>\r\n      </policies>" --format "rawxml"
       - name: ApiManagementDeleteApiPolicy
-        text: apimgmt api policy update  --resource-group rg1 --service-name apimService1 --api-id loggerId --policy-id policy
+        text: apimgmt api policy update  --resource-group "rg1" --service-name "apimService1" --api-id "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api policy delete'] = """
@@ -536,11 +522,11 @@ helps['apimgmt api policy delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiPolicy
-        text: apimgmt api policy delete  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy
+        text: apimgmt api policy delete  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy"
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: apimgmt api policy delete  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy
+        text: apimgmt api policy delete  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy"
       - name: ApiManagementDeleteApiPolicy
-        text: apimgmt api policy delete  --resource-group rg1 --service-name apimService1 --api-id loggerId --policy-id policy
+        text: apimgmt api policy delete  --resource-group "rg1" --service-name "apimService1" --api-id "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api policy list'] = """
@@ -549,11 +535,11 @@ helps['apimgmt api policy list'] = """
     examples:
 # list_by_api -- list
       - name: ApiManagementCreateApiPolicy
-        text: apimgmt api policy list  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001
+        text: apimgmt api policy list  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001"
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: apimgmt api policy list  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001
+        text: apimgmt api policy list  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001"
       - name: ApiManagementDeleteApiPolicy
-        text: apimgmt api policy list  --resource-group rg1 --service-name apimService1 --api-id loggerId
+        text: apimgmt api policy list  --resource-group "rg1" --service-name "apimService1" --api-id "loggerId"
 """
 
 helps['apimgmt api policy show'] = """
@@ -562,11 +548,11 @@ helps['apimgmt api policy show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiPolicy
-        text: apimgmt api policy show  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy --format xml
+        text: apimgmt api policy show  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --format "xml"
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: apimgmt api policy show  --resource-group rg1 --service-name apimService1 --api-id 5600b57e7e8880006a040001 --policy-id policy --format rawxml
+        text: apimgmt api policy show  --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --format "rawxml"
       - name: ApiManagementDeleteApiPolicy
-        text: apimgmt api policy show  --resource-group rg1 --service-name apimService1 --api-id loggerId --policy-id policy
+        text: apimgmt api policy show  --resource-group "rg1" --service-name "apimService1" --api-id "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api schema'] = """
@@ -580,9 +566,9 @@ helps['apimgmt api schema create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiSchema
-        text: apimgmt api schema create  --resource-group rg1 --service-name apimService1 --api-id 59d6bb8f1f7fab13dc67ec9b --schema-id ec12520d-9d48-4e7b-8f39-698ca2ac63f1 --content-type application/vnd.ms-azure-apim.xsd+xml
+        text: apimgmt api schema create  --resource-group "rg1" --service-name "apimService1" --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1" --content-type "application/vnd.ms-azure-apim.xsd+xml"
       - name: ApiManagementDeleteApiSchema
-        text: apimgmt api schema create  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --schema-id 59d5b28e1f7fab116402044e
+        text: apimgmt api schema create  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api schema update'] = """
@@ -591,9 +577,9 @@ helps['apimgmt api schema update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiSchema
-        text: apimgmt api schema update  --resource-group rg1 --service-name apimService1 --api-id 59d6bb8f1f7fab13dc67ec9b --schema-id ec12520d-9d48-4e7b-8f39-698ca2ac63f1 --content-type application/vnd.ms-azure-apim.xsd+xml
+        text: apimgmt api schema update  --resource-group "rg1" --service-name "apimService1" --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1" --content-type "application/vnd.ms-azure-apim.xsd+xml"
       - name: ApiManagementDeleteApiSchema
-        text: apimgmt api schema update  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --schema-id 59d5b28e1f7fab116402044e
+        text: apimgmt api schema update  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api schema delete'] = """
@@ -602,9 +588,9 @@ helps['apimgmt api schema delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiSchema
-        text: apimgmt api schema delete  --resource-group rg1 --service-name apimService1 --api-id 59d6bb8f1f7fab13dc67ec9b --schema-id ec12520d-9d48-4e7b-8f39-698ca2ac63f1
+        text: apimgmt api schema delete  --resource-group "rg1" --service-name "apimService1" --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1"
       - name: ApiManagementDeleteApiSchema
-        text: apimgmt api schema delete  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --schema-id 59d5b28e1f7fab116402044e
+        text: apimgmt api schema delete  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api schema list'] = """
@@ -613,9 +599,9 @@ helps['apimgmt api schema list'] = """
     examples:
 # list_by_api -- list
       - name: ApiManagementCreateApiSchema
-        text: apimgmt api schema list  --resource-group rg1 --service-name apimService1 --api-id 59d6bb8f1f7fab13dc67ec9b
+        text: apimgmt api schema list  --resource-group "rg1" --service-name "apimService1" --api-id "59d6bb8f1f7fab13dc67ec9b"
       - name: ApiManagementDeleteApiSchema
-        text: apimgmt api schema list  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650
+        text: apimgmt api schema list  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650"
 """
 
 helps['apimgmt api schema show'] = """
@@ -624,9 +610,9 @@ helps['apimgmt api schema show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiSchema
-        text: apimgmt api schema show  --resource-group rg1 --service-name apimService1 --api-id 59d6bb8f1f7fab13dc67ec9b --schema-id ec12520d-9d48-4e7b-8f39-698ca2ac63f1
+        text: apimgmt api schema show  --resource-group "rg1" --service-name "apimService1" --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1"
       - name: ApiManagementDeleteApiSchema
-        text: apimgmt api schema show  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --schema-id 59d5b28e1f7fab116402044e
+        text: apimgmt api schema show  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api diagnostic'] = """
@@ -640,11 +626,11 @@ helps['apimgmt api diagnostic create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiDiagnostic
-        text: apimgmt api diagnostic create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/applicationinsights
+        text: apimgmt api diagnostic create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/applicationinsights"
       - name: ApiManagementUpdateApiDiagnostic
-        text: apimgmt api diagnostic create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/applicationinsights
+        text: apimgmt api diagnostic create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/applicationinsights"
       - name: ApiManagementDeleteApiDiagnostic
-        text: apimgmt api diagnostic create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api diagnostic update'] = """
@@ -653,11 +639,11 @@ helps['apimgmt api diagnostic update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiDiagnostic
-        text: apimgmt api diagnostic update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/applicationinsights
+        text: apimgmt api diagnostic update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/applicationinsights"
       - name: ApiManagementUpdateApiDiagnostic
-        text: apimgmt api diagnostic update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/applicationinsights
+        text: apimgmt api diagnostic update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/applicationinsights"
       - name: ApiManagementDeleteApiDiagnostic
-        text: apimgmt api diagnostic update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api diagnostic delete'] = """
@@ -666,11 +652,11 @@ helps['apimgmt api diagnostic delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiDiagnostic
-        text: apimgmt api diagnostic delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
       - name: ApiManagementUpdateApiDiagnostic
-        text: apimgmt api diagnostic delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
       - name: ApiManagementDeleteApiDiagnostic
-        text: apimgmt api diagnostic delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api diagnostic list'] = """
@@ -679,11 +665,11 @@ helps['apimgmt api diagnostic list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiDiagnostic
-        text: apimgmt api diagnostic list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a
+        text: apimgmt api diagnostic list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a"
       - name: ApiManagementUpdateApiDiagnostic
-        text: apimgmt api diagnostic list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a
+        text: apimgmt api diagnostic list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a"
       - name: ApiManagementDeleteApiDiagnostic
-        text: apimgmt api diagnostic list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a
+        text: apimgmt api diagnostic list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a"
 """
 
 helps['apimgmt api diagnostic show'] = """
@@ -692,11 +678,11 @@ helps['apimgmt api diagnostic show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiDiagnostic
-        text: apimgmt api diagnostic show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
       - name: ApiManagementUpdateApiDiagnostic
-        text: apimgmt api diagnostic show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
       - name: ApiManagementDeleteApiDiagnostic
-        text: apimgmt api diagnostic show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --diagnostic-id applicationinsights
+        text: apimgmt api diagnostic show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api issue'] = """
@@ -710,11 +696,11 @@ helps['apimgmt api issue create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiIssue
-        text: apimgmt api issue create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --created-date 2018-02-01T22:21:20.467Z --state open --title New API issue --description New API issue description --user-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
+        text: apimgmt api issue create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --created-date "2018-02-01T22:21:20.467Z" --state "open" --title "New API issue" --description "New API issue description" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}"
       - name: ApiManagementUpdateApiIssue
-        text: apimgmt api issue create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --state closed
+        text: apimgmt api issue create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --state "closed"
       - name: ApiManagementDeleteApiIssue
-        text: apimgmt api issue create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue update'] = """
@@ -723,11 +709,11 @@ helps['apimgmt api issue update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiIssue
-        text: apimgmt api issue update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --created-date 2018-02-01T22:21:20.467Z --state open --title New API issue --description New API issue description --user-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
+        text: apimgmt api issue update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --created-date "2018-02-01T22:21:20.467Z" --state "open" --title "New API issue" --description "New API issue description" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}"
       - name: ApiManagementUpdateApiIssue
-        text: apimgmt api issue update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --state closed
+        text: apimgmt api issue update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --state "closed"
       - name: ApiManagementDeleteApiIssue
-        text: apimgmt api issue update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue delete'] = """
@@ -736,11 +722,11 @@ helps['apimgmt api issue delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiIssue
-        text: apimgmt api issue delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
       - name: ApiManagementUpdateApiIssue
-        text: apimgmt api issue delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
       - name: ApiManagementDeleteApiIssue
-        text: apimgmt api issue delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue list'] = """
@@ -749,11 +735,11 @@ helps['apimgmt api issue list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiIssue
-        text: apimgmt api issue list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a
+        text: apimgmt api issue list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a"
       - name: ApiManagementUpdateApiIssue
-        text: apimgmt api issue list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a
+        text: apimgmt api issue list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a"
       - name: ApiManagementDeleteApiIssue
-        text: apimgmt api issue list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a
+        text: apimgmt api issue list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a"
 """
 
 helps['apimgmt api issue show'] = """
@@ -762,11 +748,11 @@ helps['apimgmt api issue show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiIssue
-        text: apimgmt api issue show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
       - name: ApiManagementUpdateApiIssue
-        text: apimgmt api issue show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
       - name: ApiManagementDeleteApiIssue
-        text: apimgmt api issue show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue comment'] = """
@@ -780,9 +766,9 @@ helps['apimgmt api issue comment create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiIssueComment
-        text: apimgmt api issue comment create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb --text Issue comment. --created-date 2018-02-01T22:21:20.467Z --user-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
+        text: apimgmt api issue comment create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb" --text "Issue comment." --created-date "2018-02-01T22:21:20.467Z" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}"
       - name: ApiManagementDeleteApiIssueComment
-        text: apimgmt api issue comment create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb
+        text: apimgmt api issue comment create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue comment update'] = """
@@ -791,9 +777,9 @@ helps['apimgmt api issue comment update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiIssueComment
-        text: apimgmt api issue comment update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb --text Issue comment. --created-date 2018-02-01T22:21:20.467Z --user-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}
+        text: apimgmt api issue comment update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb" --text "Issue comment." --created-date "2018-02-01T22:21:20.467Z" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}"
       - name: ApiManagementDeleteApiIssueComment
-        text: apimgmt api issue comment update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb
+        text: apimgmt api issue comment update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue comment delete'] = """
@@ -802,9 +788,9 @@ helps['apimgmt api issue comment delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiIssueComment
-        text: apimgmt api issue comment delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb
+        text: apimgmt api issue comment delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb"
       - name: ApiManagementDeleteApiIssueComment
-        text: apimgmt api issue comment delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb
+        text: apimgmt api issue comment delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue comment list'] = """
@@ -813,9 +799,9 @@ helps['apimgmt api issue comment list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiIssueComment
-        text: apimgmt api issue comment list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue comment list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
       - name: ApiManagementDeleteApiIssueComment
-        text: apimgmt api issue comment list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue comment list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue comment show'] = """
@@ -824,9 +810,9 @@ helps['apimgmt api issue comment show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiIssueComment
-        text: apimgmt api issue comment show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb
+        text: apimgmt api issue comment show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb"
       - name: ApiManagementDeleteApiIssueComment
-        text: apimgmt api issue comment show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --comment-id 599e29ab193c3c0bd0b3e2fb
+        text: apimgmt api issue comment show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue attachment'] = """
@@ -840,9 +826,9 @@ helps['apimgmt api issue attachment create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiIssueAttachment
-        text: apimgmt api issue attachment create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3 --title Issue attachment. --content-format image/jpeg --content IEJhc2U2NA==
+        text: apimgmt api issue attachment create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3" --title "Issue attachment." --content-format "image/jpeg" --content "IEJhc2U2NA=="
       - name: ApiManagementDeleteApiIssueAttachment
-        text: apimgmt api issue attachment create  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api issue attachment create  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api issue attachment update'] = """
@@ -851,9 +837,9 @@ helps['apimgmt api issue attachment update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiIssueAttachment
-        text: apimgmt api issue attachment update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3 --title Issue attachment. --content-format image/jpeg --content IEJhc2U2NA==
+        text: apimgmt api issue attachment update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3" --title "Issue attachment." --content-format "image/jpeg" --content "IEJhc2U2NA=="
       - name: ApiManagementDeleteApiIssueAttachment
-        text: apimgmt api issue attachment update  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api issue attachment update  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api issue attachment delete'] = """
@@ -862,9 +848,9 @@ helps['apimgmt api issue attachment delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiIssueAttachment
-        text: apimgmt api issue attachment delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api issue attachment delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3"
       - name: ApiManagementDeleteApiIssueAttachment
-        text: apimgmt api issue attachment delete  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api issue attachment delete  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api issue attachment list'] = """
@@ -873,9 +859,9 @@ helps['apimgmt api issue attachment list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiIssueAttachment
-        text: apimgmt api issue attachment list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue attachment list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
       - name: ApiManagementDeleteApiIssueAttachment
-        text: apimgmt api issue attachment list  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc
+        text: apimgmt api issue attachment list  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue attachment show'] = """
@@ -884,9 +870,9 @@ helps['apimgmt api issue attachment show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiIssueAttachment
-        text: apimgmt api issue attachment show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api issue attachment show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3"
       - name: ApiManagementDeleteApiIssueAttachment
-        text: apimgmt api issue attachment show  --resource-group rg1 --service-name apimService1 --api-id 57d1f7558aa04f15146d9d8a --issue-id 57d2ef278aa04f0ad01d6cdc --attachment-id 57d2ef278aa04f0888cba3f3
+        text: apimgmt api issue attachment show  --resource-group "rg1" --service-name "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api tagdescription'] = """
@@ -900,9 +886,9 @@ helps['apimgmt api tagdescription create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiTagDescription
-        text: apimgmt api tagdescription create  --resource-group rg1 --service-name apimService1 --api-id 5931a75ae4bbd512a88c680b --tag-id tagId1 --description Some description that will be displayed for operation's tag if the tag is assigned to operation of the API --external-docs_url http://some.url/additionaldoc --external-docs_description Description of the external docs resource
+        text: apimgmt api tagdescription create  --resource-group "rg1" --service-name "apimService1" --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1" --description "Some description that will be displayed for operation's tag if the tag is assigned to operation of the API" --external-docs_url "http://some.url/additionaldoc" --external-docs_description "Description of the external docs resource"
       - name: ApiManagementDeleteApiTagDescription
-        text: apimgmt api tagdescription create  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --tag-id 59d5b28e1f7fab116402044e
+        text: apimgmt api tagdescription create  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api tagdescription update'] = """
@@ -911,9 +897,9 @@ helps['apimgmt api tagdescription update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiTagDescription
-        text: apimgmt api tagdescription update  --resource-group rg1 --service-name apimService1 --api-id 5931a75ae4bbd512a88c680b --tag-id tagId1 --description Some description that will be displayed for operation's tag if the tag is assigned to operation of the API --external-docs_url http://some.url/additionaldoc --external-docs_description Description of the external docs resource
+        text: apimgmt api tagdescription update  --resource-group "rg1" --service-name "apimService1" --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1" --description "Some description that will be displayed for operation's tag if the tag is assigned to operation of the API" --external-docs_url "http://some.url/additionaldoc" --external-docs_description "Description of the external docs resource"
       - name: ApiManagementDeleteApiTagDescription
-        text: apimgmt api tagdescription update  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --tag-id 59d5b28e1f7fab116402044e
+        text: apimgmt api tagdescription update  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api tagdescription delete'] = """
@@ -922,9 +908,9 @@ helps['apimgmt api tagdescription delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiTagDescription
-        text: apimgmt api tagdescription delete  --resource-group rg1 --service-name apimService1 --api-id 5931a75ae4bbd512a88c680b --tag-id tagId1
+        text: apimgmt api tagdescription delete  --resource-group "rg1" --service-name "apimService1" --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1"
       - name: ApiManagementDeleteApiTagDescription
-        text: apimgmt api tagdescription delete  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --tag-id 59d5b28e1f7fab116402044e
+        text: apimgmt api tagdescription delete  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api tagdescription list'] = """
@@ -933,9 +919,9 @@ helps['apimgmt api tagdescription list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiTagDescription
-        text: apimgmt api tagdescription list  --resource-group rg1 --service-name apimService1 --api-id 5931a75ae4bbd512a88c680b
+        text: apimgmt api tagdescription list  --resource-group "rg1" --service-name "apimService1" --api-id "5931a75ae4bbd512a88c680b"
       - name: ApiManagementDeleteApiTagDescription
-        text: apimgmt api tagdescription list  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650
+        text: apimgmt api tagdescription list  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650"
 """
 
 helps['apimgmt api tagdescription show'] = """
@@ -944,9 +930,9 @@ helps['apimgmt api tagdescription show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiTagDescription
-        text: apimgmt api tagdescription show  --resource-group rg1 --service-name apimService1 --api-id 5931a75ae4bbd512a88c680b --tag-id tagId1
+        text: apimgmt api tagdescription show  --resource-group "rg1" --service-name "apimService1" --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1"
       - name: ApiManagementDeleteApiTagDescription
-        text: apimgmt api tagdescription show  --resource-group rg1 --service-name apimService1 --api-id 59d5b28d1f7fab116c282650 --tag-id 59d5b28e1f7fab116402044e
+        text: apimgmt api tagdescription show  --resource-group "rg1" --service-name "apimService1" --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt apiversionset'] = """
@@ -960,11 +946,11 @@ helps['apimgmt apiversionset create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateApiVersionSet
-        text: apimgmt apiversionset create  --resource-group rg1 --service-name apimService1 --version-set_id api1 --description Version configuration --display-name api set 1 --versioning-scheme Segment
+        text: apimgmt apiversionset create  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1" --description "Version configuration" --display-name "api set 1" --versioning-scheme "Segment"
       - name: ApiManagementUpdateApiVersionSet
-        text: apimgmt apiversionset create  --resource-group rg1 --service-name apimService1 --version-set_id api1 --description Version configuration --display-name api set 1 --versioning-scheme Segment
+        text: apimgmt apiversionset create  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1" --description "Version configuration" --display-name "api set 1" --versioning-scheme "Segment"
       - name: ApiManagementDeleteApiVersionSet
-        text: apimgmt apiversionset create  --resource-group rg1 --service-name apimService1 --version-set_id a1
+        text: apimgmt apiversionset create  --resource-group "rg1" --service-name "apimService1" --version-set_id "a1"
 """
 
 helps['apimgmt apiversionset update'] = """
@@ -973,11 +959,11 @@ helps['apimgmt apiversionset update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateApiVersionSet
-        text: apimgmt apiversionset update  --resource-group rg1 --service-name apimService1 --version-set_id api1 --description Version configuration --display-name api set 1 --versioning-scheme Segment
+        text: apimgmt apiversionset update  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1" --description "Version configuration" --display-name "api set 1" --versioning-scheme "Segment"
       - name: ApiManagementUpdateApiVersionSet
-        text: apimgmt apiversionset update  --resource-group rg1 --service-name apimService1 --version-set_id api1 --description Version configuration --display-name api set 1 --versioning-scheme Segment
+        text: apimgmt apiversionset update  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1" --description "Version configuration" --display-name "api set 1" --versioning-scheme "Segment"
       - name: ApiManagementDeleteApiVersionSet
-        text: apimgmt apiversionset update  --resource-group rg1 --service-name apimService1 --version-set_id a1
+        text: apimgmt apiversionset update  --resource-group "rg1" --service-name "apimService1" --version-set_id "a1"
 """
 
 helps['apimgmt apiversionset delete'] = """
@@ -986,11 +972,11 @@ helps['apimgmt apiversionset delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateApiVersionSet
-        text: apimgmt apiversionset delete  --resource-group rg1 --service-name apimService1 --version-set_id api1
+        text: apimgmt apiversionset delete  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1"
       - name: ApiManagementUpdateApiVersionSet
-        text: apimgmt apiversionset delete  --resource-group rg1 --service-name apimService1 --version-set_id api1
+        text: apimgmt apiversionset delete  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1"
       - name: ApiManagementDeleteApiVersionSet
-        text: apimgmt apiversionset delete  --resource-group rg1 --service-name apimService1 --version-set_id a1
+        text: apimgmt apiversionset delete  --resource-group "rg1" --service-name "apimService1" --version-set_id "a1"
 """
 
 helps['apimgmt apiversionset list'] = """
@@ -999,11 +985,11 @@ helps['apimgmt apiversionset list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateApiVersionSet
-        text: apimgmt apiversionset list  --resource-group rg1 --service-name apimService1
+        text: apimgmt apiversionset list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateApiVersionSet
-        text: apimgmt apiversionset list  --resource-group rg1 --service-name apimService1
+        text: apimgmt apiversionset list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteApiVersionSet
-        text: apimgmt apiversionset list  --resource-group rg1 --service-name apimService1
+        text: apimgmt apiversionset list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt apiversionset show'] = """
@@ -1012,11 +998,11 @@ helps['apimgmt apiversionset show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateApiVersionSet
-        text: apimgmt apiversionset show  --resource-group rg1 --service-name apimService1 --version-set_id api1
+        text: apimgmt apiversionset show  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1"
       - name: ApiManagementUpdateApiVersionSet
-        text: apimgmt apiversionset show  --resource-group rg1 --service-name apimService1 --version-set_id api1
+        text: apimgmt apiversionset show  --resource-group "rg1" --service-name "apimService1" --version-set_id "api1"
       - name: ApiManagementDeleteApiVersionSet
-        text: apimgmt apiversionset show  --resource-group rg1 --service-name apimService1 --version-set_id a1
+        text: apimgmt apiversionset show  --resource-group "rg1" --service-name "apimService1" --version-set_id "a1"
 """
 
 helps['apimgmt authorizationserver'] = """
@@ -1030,11 +1016,11 @@ helps['apimgmt authorizationserver create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateAuthorizationServer
-        text: apimgmt authorizationserver create  --resource-group rg1 --service-name apimService1 --authsid newauthServer --description test server --token-endpoint https://www.contoso.com/oauth2/token --support-state true --default-scope read write --client-secret 2 --resource-owner_username un --resource-owner_password pwd --display-name test2 --client-registration_endpoint https://www.contoso.com/apps --authorization-endpoint https://www.contoso.com/oauth2/auth --client-id 1
+        text: apimgmt authorizationserver create  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer" --description "test server" --token-endpoint "https://www.contoso.com/oauth2/token" --support-state true --default-scope "read write" --client-secret "2" --resource-owner_username "un" --resource-owner_password "pwd" --display-name "test2" --client-registration_endpoint "https://www.contoso.com/apps" --authorization-endpoint "https://www.contoso.com/oauth2/auth" --client-id "1"
       - name: ApiManagementUpdateAuthorizationServer
-        text: apimgmt authorizationserver create  --resource-group rg1 --service-name apimService1 --authsid newauthServer --client-secret updated --client-id update
+        text: apimgmt authorizationserver create  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer" --client-secret "updated" --client-id "update"
       - name: ApiManagementDeleteAuthorizationServer
-        text: apimgmt authorizationserver create  --resource-group rg1 --service-name apimService1 --authsid newauthServer2
+        text: apimgmt authorizationserver create  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer2"
 """
 
 helps['apimgmt authorizationserver update'] = """
@@ -1043,11 +1029,11 @@ helps['apimgmt authorizationserver update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateAuthorizationServer
-        text: apimgmt authorizationserver update  --resource-group rg1 --service-name apimService1 --authsid newauthServer --description test server --token-endpoint https://www.contoso.com/oauth2/token --support-state true --default-scope read write --client-secret 2 --resource-owner_username un --resource-owner_password pwd --display-name test2 --client-registration_endpoint https://www.contoso.com/apps --authorization-endpoint https://www.contoso.com/oauth2/auth --client-id 1
+        text: apimgmt authorizationserver update  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer" --description "test server" --token-endpoint "https://www.contoso.com/oauth2/token" --support-state true --default-scope "read write" --client-secret "2" --resource-owner_username "un" --resource-owner_password "pwd" --display-name "test2" --client-registration_endpoint "https://www.contoso.com/apps" --authorization-endpoint "https://www.contoso.com/oauth2/auth" --client-id "1"
       - name: ApiManagementUpdateAuthorizationServer
-        text: apimgmt authorizationserver update  --resource-group rg1 --service-name apimService1 --authsid newauthServer --client-secret updated --client-id update
+        text: apimgmt authorizationserver update  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer" --client-secret "updated" --client-id "update"
       - name: ApiManagementDeleteAuthorizationServer
-        text: apimgmt authorizationserver update  --resource-group rg1 --service-name apimService1 --authsid newauthServer2
+        text: apimgmt authorizationserver update  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer2"
 """
 
 helps['apimgmt authorizationserver delete'] = """
@@ -1056,11 +1042,11 @@ helps['apimgmt authorizationserver delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateAuthorizationServer
-        text: apimgmt authorizationserver delete  --resource-group rg1 --service-name apimService1 --authsid newauthServer
+        text: apimgmt authorizationserver delete  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer"
       - name: ApiManagementUpdateAuthorizationServer
-        text: apimgmt authorizationserver delete  --resource-group rg1 --service-name apimService1 --authsid newauthServer
+        text: apimgmt authorizationserver delete  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer"
       - name: ApiManagementDeleteAuthorizationServer
-        text: apimgmt authorizationserver delete  --resource-group rg1 --service-name apimService1 --authsid newauthServer2
+        text: apimgmt authorizationserver delete  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer2"
 """
 
 helps['apimgmt authorizationserver list'] = """
@@ -1069,11 +1055,11 @@ helps['apimgmt authorizationserver list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateAuthorizationServer
-        text: apimgmt authorizationserver list  --resource-group rg1 --service-name apimService1
+        text: apimgmt authorizationserver list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateAuthorizationServer
-        text: apimgmt authorizationserver list  --resource-group rg1 --service-name apimService1
+        text: apimgmt authorizationserver list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteAuthorizationServer
-        text: apimgmt authorizationserver list  --resource-group rg1 --service-name apimService1
+        text: apimgmt authorizationserver list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt authorizationserver show'] = """
@@ -1082,11 +1068,11 @@ helps['apimgmt authorizationserver show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateAuthorizationServer
-        text: apimgmt authorizationserver show  --resource-group rg1 --service-name apimService1 --authsid newauthServer
+        text: apimgmt authorizationserver show  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer"
       - name: ApiManagementUpdateAuthorizationServer
-        text: apimgmt authorizationserver show  --resource-group rg1 --service-name apimService1 --authsid newauthServer
+        text: apimgmt authorizationserver show  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer"
       - name: ApiManagementDeleteAuthorizationServer
-        text: apimgmt authorizationserver show  --resource-group rg1 --service-name apimService1 --authsid newauthServer2
+        text: apimgmt authorizationserver show  --resource-group "rg1" --service-name "apimService1" --authsid "newauthServer2"
 """
 
 helps['apimgmt backend'] = """
@@ -1100,13 +1086,13 @@ helps['apimgmt backend create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateBackendServiceFabric
-        text: apimgmt backend create  --resource-group rg1 --service-name apimService1 --backend-id sfbackend --description Service Fabric Test App 1 --url fabric:/mytestapp/mytestservice --protocol http
+        text: apimgmt backend create  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend" --description "Service Fabric Test App 1" --url "fabric:/mytestapp/mytestservice" --protocol "http"
       - name: ApiManagementCreateBackendProxyBackend
-        text: apimgmt backend create  --resource-group rg1 --service-name apimService1 --backend-id proxybackend --description description5308 --url https://backendname2644/ --protocol http
+        text: apimgmt backend create  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend" --description "description5308" --url "https://backendname2644/" --protocol "http"
       - name: ApiManagementUpdateBackend
-        text: apimgmt backend create  --resource-group rg1 --service-name apimService1 --backend-id proxybackend --description description5308
+        text: apimgmt backend create  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend" --description "description5308"
       - name: ApiManagementDeleteBackend
-        text: apimgmt backend create  --resource-group rg1 --service-name apimService1 --backend-id sfbackend
+        text: apimgmt backend create  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend"
 """
 
 helps['apimgmt backend update'] = """
@@ -1115,13 +1101,13 @@ helps['apimgmt backend update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateBackendServiceFabric
-        text: apimgmt backend update  --resource-group rg1 --service-name apimService1 --backend-id sfbackend --description Service Fabric Test App 1 --url fabric:/mytestapp/mytestservice --protocol http
+        text: apimgmt backend update  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend" --description "Service Fabric Test App 1" --url "fabric:/mytestapp/mytestservice" --protocol "http"
       - name: ApiManagementCreateBackendProxyBackend
-        text: apimgmt backend update  --resource-group rg1 --service-name apimService1 --backend-id proxybackend --description description5308 --url https://backendname2644/ --protocol http
+        text: apimgmt backend update  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend" --description "description5308" --url "https://backendname2644/" --protocol "http"
       - name: ApiManagementUpdateBackend
-        text: apimgmt backend update  --resource-group rg1 --service-name apimService1 --backend-id proxybackend --description description5308
+        text: apimgmt backend update  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend" --description "description5308"
       - name: ApiManagementDeleteBackend
-        text: apimgmt backend update  --resource-group rg1 --service-name apimService1 --backend-id sfbackend
+        text: apimgmt backend update  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend"
 """
 
 helps['apimgmt backend delete'] = """
@@ -1130,13 +1116,13 @@ helps['apimgmt backend delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateBackendServiceFabric
-        text: apimgmt backend delete  --resource-group rg1 --service-name apimService1 --backend-id sfbackend
+        text: apimgmt backend delete  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend"
       - name: ApiManagementCreateBackendProxyBackend
-        text: apimgmt backend delete  --resource-group rg1 --service-name apimService1 --backend-id proxybackend
+        text: apimgmt backend delete  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend"
       - name: ApiManagementUpdateBackend
-        text: apimgmt backend delete  --resource-group rg1 --service-name apimService1 --backend-id proxybackend
+        text: apimgmt backend delete  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend"
       - name: ApiManagementDeleteBackend
-        text: apimgmt backend delete  --resource-group rg1 --service-name apimService1 --backend-id sfbackend
+        text: apimgmt backend delete  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend"
 """
 
 helps['apimgmt backend list'] = """
@@ -1145,13 +1131,13 @@ helps['apimgmt backend list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateBackendServiceFabric
-        text: apimgmt backend list  --resource-group rg1 --service-name apimService1
+        text: apimgmt backend list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateBackendProxyBackend
-        text: apimgmt backend list  --resource-group rg1 --service-name apimService1
+        text: apimgmt backend list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateBackend
-        text: apimgmt backend list  --resource-group rg1 --service-name apimService1
+        text: apimgmt backend list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteBackend
-        text: apimgmt backend list  --resource-group rg1 --service-name apimService1
+        text: apimgmt backend list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt backend show'] = """
@@ -1160,13 +1146,13 @@ helps['apimgmt backend show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateBackendServiceFabric
-        text: apimgmt backend show  --resource-group rg1 --service-name apimService1 --backend-id sfbackend
+        text: apimgmt backend show  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend"
       - name: ApiManagementCreateBackendProxyBackend
-        text: apimgmt backend show  --resource-group rg1 --service-name apimService1 --backend-id proxybackend
+        text: apimgmt backend show  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend"
       - name: ApiManagementUpdateBackend
-        text: apimgmt backend show  --resource-group rg1 --service-name apimService1 --backend-id proxybackend
+        text: apimgmt backend show  --resource-group "rg1" --service-name "apimService1" --backend-id "proxybackend"
       - name: ApiManagementDeleteBackend
-        text: apimgmt backend show  --resource-group rg1 --service-name apimService1 --backend-id sfbackend
+        text: apimgmt backend show  --resource-group "rg1" --service-name "apimService1" --backend-id "sfbackend"
 """
 
 helps['apimgmt cache'] = """
@@ -1180,11 +1166,11 @@ helps['apimgmt cache create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateCache
-        text: apimgmt cache create  --resource-group rg1 --service-name apimService1 --cache-id westindia --description Redis cache instances in West India --connection-string contoso5.redis.cache.windows.net,ssl=true,password=... --resource-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ redis_name }}
+        text: apimgmt cache create  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia" --description "Redis cache instances in West India" --connection-string "contoso5.redis.cache.windows.net,ssl=true,password=..." --resource-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ redis_name }}"
       - name: ApiManagementUpdateCache
-        text: apimgmt cache create  --resource-group rg1 --service-name apimService1 --cache-id westindia --description Update Cache in west India
+        text: apimgmt cache create  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia" --description "Update Cache in west India"
       - name: ApiManagementDeleteCache
-        text: apimgmt cache create  --resource-group rg1 --service-name apimService1 --cache-id southindia
+        text: apimgmt cache create  --resource-group "rg1" --service-name "apimService1" --cache-id "southindia"
 """
 
 helps['apimgmt cache update'] = """
@@ -1193,11 +1179,11 @@ helps['apimgmt cache update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateCache
-        text: apimgmt cache update  --resource-group rg1 --service-name apimService1 --cache-id westindia --description Redis cache instances in West India --connection-string contoso5.redis.cache.windows.net,ssl=true,password=... --resource-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ redis_name }}
+        text: apimgmt cache update  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia" --description "Redis cache instances in West India" --connection-string "contoso5.redis.cache.windows.net,ssl=true,password=..." --resource-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ redis_name }}"
       - name: ApiManagementUpdateCache
-        text: apimgmt cache update  --resource-group rg1 --service-name apimService1 --cache-id westindia --description Update Cache in west India
+        text: apimgmt cache update  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia" --description "Update Cache in west India"
       - name: ApiManagementDeleteCache
-        text: apimgmt cache update  --resource-group rg1 --service-name apimService1 --cache-id southindia
+        text: apimgmt cache update  --resource-group "rg1" --service-name "apimService1" --cache-id "southindia"
 """
 
 helps['apimgmt cache delete'] = """
@@ -1206,11 +1192,11 @@ helps['apimgmt cache delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateCache
-        text: apimgmt cache delete  --resource-group rg1 --service-name apimService1 --cache-id westindia
+        text: apimgmt cache delete  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia"
       - name: ApiManagementUpdateCache
-        text: apimgmt cache delete  --resource-group rg1 --service-name apimService1 --cache-id westindia
+        text: apimgmt cache delete  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia"
       - name: ApiManagementDeleteCache
-        text: apimgmt cache delete  --resource-group rg1 --service-name apimService1 --cache-id southindia
+        text: apimgmt cache delete  --resource-group "rg1" --service-name "apimService1" --cache-id "southindia"
 """
 
 helps['apimgmt cache list'] = """
@@ -1219,11 +1205,11 @@ helps['apimgmt cache list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateCache
-        text: apimgmt cache list  --resource-group rg1 --service-name apimService1
+        text: apimgmt cache list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateCache
-        text: apimgmt cache list  --resource-group rg1 --service-name apimService1
+        text: apimgmt cache list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteCache
-        text: apimgmt cache list  --resource-group rg1 --service-name apimService1
+        text: apimgmt cache list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt cache show'] = """
@@ -1232,11 +1218,11 @@ helps['apimgmt cache show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateCache
-        text: apimgmt cache show  --resource-group rg1 --service-name apimService1 --cache-id westindia
+        text: apimgmt cache show  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia"
       - name: ApiManagementUpdateCache
-        text: apimgmt cache show  --resource-group rg1 --service-name apimService1 --cache-id westindia
+        text: apimgmt cache show  --resource-group "rg1" --service-name "apimService1" --cache-id "westindia"
       - name: ApiManagementDeleteCache
-        text: apimgmt cache show  --resource-group rg1 --service-name apimService1 --cache-id southindia
+        text: apimgmt cache show  --resource-group "rg1" --service-name "apimService1" --cache-id "southindia"
 """
 
 helps['apimgmt certificate'] = """
@@ -1250,9 +1236,9 @@ helps['apimgmt certificate create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateCertificate
-        text: apimgmt certificate create  --resource-group rg1 --service-name apimService1 --certificate-id tempcert --data ****************Base 64 Encoded Certificate ******************************* --password ****Certificate Password******
+        text: apimgmt certificate create  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert" --data "****************Base 64 Encoded Certificate *******************************" --password "****Certificate Password******"
       - name: ApiManagementDeleteCertificate
-        text: apimgmt certificate create  --resource-group rg1 --service-name apimService1 --certificate-id tempcert
+        text: apimgmt certificate create  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert"
 """
 
 helps['apimgmt certificate update'] = """
@@ -1261,9 +1247,9 @@ helps['apimgmt certificate update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateCertificate
-        text: apimgmt certificate update  --resource-group rg1 --service-name apimService1 --certificate-id tempcert --data ****************Base 64 Encoded Certificate ******************************* --password ****Certificate Password******
+        text: apimgmt certificate update  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert" --data "****************Base 64 Encoded Certificate *******************************" --password "****Certificate Password******"
       - name: ApiManagementDeleteCertificate
-        text: apimgmt certificate update  --resource-group rg1 --service-name apimService1 --certificate-id tempcert
+        text: apimgmt certificate update  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert"
 """
 
 helps['apimgmt certificate delete'] = """
@@ -1272,9 +1258,9 @@ helps['apimgmt certificate delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateCertificate
-        text: apimgmt certificate delete  --resource-group rg1 --service-name apimService1 --certificate-id tempcert
+        text: apimgmt certificate delete  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert"
       - name: ApiManagementDeleteCertificate
-        text: apimgmt certificate delete  --resource-group rg1 --service-name apimService1 --certificate-id tempcert
+        text: apimgmt certificate delete  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert"
 """
 
 helps['apimgmt certificate list'] = """
@@ -1283,9 +1269,9 @@ helps['apimgmt certificate list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateCertificate
-        text: apimgmt certificate list  --resource-group rg1 --service-name apimService1
+        text: apimgmt certificate list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteCertificate
-        text: apimgmt certificate list  --resource-group rg1 --service-name apimService1
+        text: apimgmt certificate list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt certificate show'] = """
@@ -1294,9 +1280,9 @@ helps['apimgmt certificate show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateCertificate
-        text: apimgmt certificate show  --resource-group rg1 --service-name apimService1 --certificate-id tempcert
+        text: apimgmt certificate show  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert"
       - name: ApiManagementDeleteCertificate
-        text: apimgmt certificate show  --resource-group rg1 --service-name apimService1 --certificate-id tempcert
+        text: apimgmt certificate show  --resource-group "rg1" --service-name "apimService1" --certificate-id "tempcert"
 """
 
 helps['apimgmt'] = """
@@ -1310,19 +1296,19 @@ helps['apimgmt create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateService
-        text: apimgmt create  --resource-group rg1 --name apimService1 --publisher-email apim@autorestsdk.com --publisher-name autorestsdk --sku-name Developer --sku-capacity 1 --location Central US
+        text: apimgmt create  --resource-group "rg1" --name "apimService1" --publisher-email "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Developer" --sku-capacity "1" --location "Central US"
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: apimgmt create  --resource-group rg1 --name apimService1 --virtual-network_type External --publisher-email admin@live.com --publisher-name contoso --sku-name Premium --sku-capacity 1 --location Central US
+        text: apimgmt create  --resource-group "rg1" --name "apimService1" --virtual-network_type "External" --publisher-email "admin@live.com" --publisher-name "contoso" --sku-name "Premium" --sku-capacity "1" --location "Central US"
       - name: ApiManagementCreateServiceHavingMsi
-        text: apimgmt create  --resource-group rg1 --name apimService1 --publisher-email apim@autorestsdk.com --publisher-name autorestsdk --sku-name Consumption --location West US
+        text: apimgmt create  --resource-group "rg1" --name "apimService1" --publisher-email "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Consumption" --location "West US"
       - name: ApiManagementCreateServiceWithSystemCertificates
-        text: apimgmt create  --resource-group rg1 --name apimService1 --publisher-email apim@autorestsdk.com --publisher-name autorestsdk --sku-name Basic --sku-capacity 1 --location Central US
+        text: apimgmt create  --resource-group "rg1" --name "apimService1" --publisher-email "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Basic" --sku-capacity "1" --location "Central US"
       - name: ApiManagementUpdateServiceDisableTls10
-        text: apimgmt create  --resource-group rg1 --name apimService1
+        text: apimgmt create  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementUpdateServicePublisherDetails
-        text: apimgmt create  --resource-group rg1 --name apimService1 --publisher-email foobar@live.com --publisher-name Contoso Vnext
+        text: apimgmt create  --resource-group "rg1" --name "apimService1" --publisher-email "foobar@live.com" --publisher-name "Contoso Vnext"
       - name: ApiManagementServiceDeleteService
-        text: apimgmt create  --resource-group rg1 --name apimService1
+        text: apimgmt create  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt update'] = """
@@ -1331,19 +1317,19 @@ helps['apimgmt update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateService
-        text: apimgmt update  --resource-group rg1 --name apimService1 --publisher-email apim@autorestsdk.com --publisher-name autorestsdk --sku-name Developer --sku-capacity 1 --location Central US
+        text: apimgmt update  --resource-group "rg1" --name "apimService1" --publisher-email "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Developer" --sku-capacity "1" --location "Central US"
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: apimgmt update  --resource-group rg1 --name apimService1 --virtual-network_type External --publisher-email admin@live.com --publisher-name contoso --sku-name Premium --sku-capacity 1 --location Central US
+        text: apimgmt update  --resource-group "rg1" --name "apimService1" --virtual-network_type "External" --publisher-email "admin@live.com" --publisher-name "contoso" --sku-name "Premium" --sku-capacity "1" --location "Central US"
       - name: ApiManagementCreateServiceHavingMsi
-        text: apimgmt update  --resource-group rg1 --name apimService1 --publisher-email apim@autorestsdk.com --publisher-name autorestsdk --sku-name Consumption --location West US
+        text: apimgmt update  --resource-group "rg1" --name "apimService1" --publisher-email "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Consumption" --location "West US"
       - name: ApiManagementCreateServiceWithSystemCertificates
-        text: apimgmt update  --resource-group rg1 --name apimService1 --publisher-email apim@autorestsdk.com --publisher-name autorestsdk --sku-name Basic --sku-capacity 1 --location Central US
+        text: apimgmt update  --resource-group "rg1" --name "apimService1" --publisher-email "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Basic" --sku-capacity "1" --location "Central US"
       - name: ApiManagementUpdateServiceDisableTls10
-        text: apimgmt update  --resource-group rg1 --name apimService1
+        text: apimgmt update  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementUpdateServicePublisherDetails
-        text: apimgmt update  --resource-group rg1 --name apimService1 --publisher-email foobar@live.com --publisher-name Contoso Vnext
+        text: apimgmt update  --resource-group "rg1" --name "apimService1" --publisher-email "foobar@live.com" --publisher-name "Contoso Vnext"
       - name: ApiManagementServiceDeleteService
-        text: apimgmt update  --resource-group rg1 --name apimService1
+        text: apimgmt update  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt delete'] = """
@@ -1352,19 +1338,19 @@ helps['apimgmt delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateService
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementCreateServiceHavingMsi
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementCreateServiceWithSystemCertificates
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementUpdateServiceDisableTls10
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementUpdateServicePublisherDetails
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementServiceDeleteService
-        text: apimgmt delete  --resource-group rg1 --name apimService1
+        text: apimgmt delete  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt list'] = """
@@ -1373,34 +1359,34 @@ helps['apimgmt list'] = """
     examples:
 # list_by_resource_group -- list
       - name: ApiManagementCreateService
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementCreateServiceHavingMsi
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementCreateServiceWithSystemCertificates
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementUpdateServiceDisableTls10
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementUpdateServicePublisherDetails
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementServiceDeleteService
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
 # list -- list
       - name: ApiManagementCreateService
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementCreateServiceHavingMsi
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementCreateServiceWithSystemCertificates
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementUpdateServiceDisableTls10
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementUpdateServicePublisherDetails
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
       - name: ApiManagementServiceDeleteService
-        text: apimgmt list  --resource-group rg1
+        text: apimgmt list  --resource-group "rg1"
 """
 
 helps['apimgmt show'] = """
@@ -1409,19 +1395,19 @@ helps['apimgmt show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateService
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementCreateServiceHavingMsi
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementCreateServiceWithSystemCertificates
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementUpdateServiceDisableTls10
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementUpdateServicePublisherDetails
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementServiceDeleteService
-        text: apimgmt show  --resource-group rg1 --name apimService1
+        text: apimgmt show  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt diagnostic'] = """
@@ -1435,11 +1421,11 @@ helps['apimgmt diagnostic create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateDiagnostic
-        text: apimgmt diagnostic create  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/azuremonitor
+        text: apimgmt diagnostic create  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/azuremonitor"
       - name: ApiManagementUpdateDiagnostic
-        text: apimgmt diagnostic create  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/applicationinsights
+        text: apimgmt diagnostic create  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/applicationinsights"
       - name: ApiManagementDeleteDiagnostic
-        text: apimgmt diagnostic create  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic create  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt diagnostic update'] = """
@@ -1448,11 +1434,11 @@ helps['apimgmt diagnostic update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateDiagnostic
-        text: apimgmt diagnostic update  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/azuremonitor
+        text: apimgmt diagnostic update  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/azuremonitor"
       - name: ApiManagementUpdateDiagnostic
-        text: apimgmt diagnostic update  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights --always-log allErrors --logger-id /loggers/applicationinsights
+        text: apimgmt diagnostic update  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id "/loggers/applicationinsights"
       - name: ApiManagementDeleteDiagnostic
-        text: apimgmt diagnostic update  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic update  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt diagnostic delete'] = """
@@ -1461,11 +1447,11 @@ helps['apimgmt diagnostic delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateDiagnostic
-        text: apimgmt diagnostic delete  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic delete  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
       - name: ApiManagementUpdateDiagnostic
-        text: apimgmt diagnostic delete  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic delete  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
       - name: ApiManagementDeleteDiagnostic
-        text: apimgmt diagnostic delete  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic delete  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt diagnostic list'] = """
@@ -1474,11 +1460,11 @@ helps['apimgmt diagnostic list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateDiagnostic
-        text: apimgmt diagnostic list  --resource-group rg1 --service-name apimService1
+        text: apimgmt diagnostic list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateDiagnostic
-        text: apimgmt diagnostic list  --resource-group rg1 --service-name apimService1
+        text: apimgmt diagnostic list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteDiagnostic
-        text: apimgmt diagnostic list  --resource-group rg1 --service-name apimService1
+        text: apimgmt diagnostic list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt diagnostic show'] = """
@@ -1487,11 +1473,11 @@ helps['apimgmt diagnostic show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateDiagnostic
-        text: apimgmt diagnostic show  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic show  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
       - name: ApiManagementUpdateDiagnostic
-        text: apimgmt diagnostic show  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic show  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
       - name: ApiManagementDeleteDiagnostic
-        text: apimgmt diagnostic show  --resource-group rg1 --service-name apimService1 --diagnostic-id applicationinsights
+        text: apimgmt diagnostic show  --resource-group "rg1" --service-name "apimService1" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt template'] = """
@@ -1505,22 +1491,11 @@ helps['apimgmt template create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateEmailTemplate
-        text: apimgmt template create  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage --subject Your request for $IssueName was successfully received.
+        text: apimgmt template create  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage" --subject "Your request for $IssueName was successfully received."
       - name: ApiManagementUpdateEmailTemplate
-        text: apimgmt template create  --resource-group rg1 --service-name apimService1 --name applicationApprovedNotificationMessage --subject Your application $AppName is published in the gallery --body <!DOCTYPE html >
-<html>
-  <head />
-  <body>
-    <p style="font-size:12pt;font-family:'Segoe UI'">Dear $DevFirstName $DevLastName,</p>
-    <p style="font-size:12pt;font-family:'Segoe UI'">
-          We are happy to let you know that your request to publish the $AppName application in the gallery has been approved. Your application has been published and can be viewed <a href="http://$DevPortalUrl/Applications/Details/$AppId">here</a>.
-        </p>
-    <p style="font-size:12pt;font-family:'Segoe UI'">Best,</p>
-    <p style="font-size:12pt;font-family:'Segoe UI'">The $OrganizationName API Team</p>
-  </body>
-</html>
+        text: apimgmt template create  --resource-group "rg1" --service-name "apimService1" --name "applicationApprovedNotificationMessage" --subject "Your application $AppName is published in the gallery" --body "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We are happy to let you know that your request to publish the $AppName application in the gallery has been approved. Your application has been published and can be viewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>"
       - name: ApiManagementDeleteEmailTemplate
-        text: apimgmt template create  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage
+        text: apimgmt template create  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage"
 """
 
 helps['apimgmt template update'] = """
@@ -1529,22 +1504,11 @@ helps['apimgmt template update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateEmailTemplate
-        text: apimgmt template update  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage --subject Your request for $IssueName was successfully received.
+        text: apimgmt template update  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage" --subject "Your request for $IssueName was successfully received."
       - name: ApiManagementUpdateEmailTemplate
-        text: apimgmt template update  --resource-group rg1 --service-name apimService1 --name applicationApprovedNotificationMessage --subject Your application $AppName is published in the gallery --body <!DOCTYPE html >
-<html>
-  <head />
-  <body>
-    <p style="font-size:12pt;font-family:'Segoe UI'">Dear $DevFirstName $DevLastName,</p>
-    <p style="font-size:12pt;font-family:'Segoe UI'">
-          We are happy to let you know that your request to publish the $AppName application in the gallery has been approved. Your application has been published and can be viewed <a href="http://$DevPortalUrl/Applications/Details/$AppId">here</a>.
-        </p>
-    <p style="font-size:12pt;font-family:'Segoe UI'">Best,</p>
-    <p style="font-size:12pt;font-family:'Segoe UI'">The $OrganizationName API Team</p>
-  </body>
-</html>
+        text: apimgmt template update  --resource-group "rg1" --service-name "apimService1" --name "applicationApprovedNotificationMessage" --subject "Your application $AppName is published in the gallery" --body "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We are happy to let you know that your request to publish the $AppName application in the gallery has been approved. Your application has been published and can be viewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>"
       - name: ApiManagementDeleteEmailTemplate
-        text: apimgmt template update  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage
+        text: apimgmt template update  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage"
 """
 
 helps['apimgmt template delete'] = """
@@ -1553,11 +1517,11 @@ helps['apimgmt template delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateEmailTemplate
-        text: apimgmt template delete  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage
+        text: apimgmt template delete  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage"
       - name: ApiManagementUpdateEmailTemplate
-        text: apimgmt template delete  --resource-group rg1 --service-name apimService1 --name applicationApprovedNotificationMessage
+        text: apimgmt template delete  --resource-group "rg1" --service-name "apimService1" --name "applicationApprovedNotificationMessage"
       - name: ApiManagementDeleteEmailTemplate
-        text: apimgmt template delete  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage
+        text: apimgmt template delete  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage"
 """
 
 helps['apimgmt template list'] = """
@@ -1566,11 +1530,11 @@ helps['apimgmt template list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateEmailTemplate
-        text: apimgmt template list  --resource-group rg1 --service-name apimService1
+        text: apimgmt template list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateEmailTemplate
-        text: apimgmt template list  --resource-group rg1 --service-name apimService1
+        text: apimgmt template list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteEmailTemplate
-        text: apimgmt template list  --resource-group rg1 --service-name apimService1
+        text: apimgmt template list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt template show'] = """
@@ -1579,11 +1543,11 @@ helps['apimgmt template show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateEmailTemplate
-        text: apimgmt template show  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage
+        text: apimgmt template show  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage"
       - name: ApiManagementUpdateEmailTemplate
-        text: apimgmt template show  --resource-group rg1 --service-name apimService1 --name applicationApprovedNotificationMessage
+        text: apimgmt template show  --resource-group "rg1" --service-name "apimService1" --name "applicationApprovedNotificationMessage"
       - name: ApiManagementDeleteEmailTemplate
-        text: apimgmt template show  --resource-group rg1 --service-name apimService1 --name newIssueNotificationMessage
+        text: apimgmt template show  --resource-group "rg1" --service-name "apimService1" --name "newIssueNotificationMessage"
 """
 
 helps['apimgmt group'] = """
@@ -1597,13 +1561,13 @@ helps['apimgmt group create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateGroup
-        text: apimgmt group create  --resource-group rg1 --service-name apimService1 --group-id tempgroup --display-name temp group
+        text: apimgmt group create  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup" --display-name "temp group"
       - name: ApiManagementCreateGroupExternal
-        text: apimgmt group create  --resource-group rg1 --service-name apimService1 --group-id aadGroup --display-name NewGroup (samiraad.onmicrosoft.com) --description new group to test --type external --external-id aad://samiraad.onmicrosoft.com/groups/83cf2753-5831-4675-bc0e-2f8dc067c58d
+        text: apimgmt group create  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup" --display-name "NewGroup (samiraad.onmicrosoft.com)" --description "new group to test" --type "external" --external-id "aad://samiraad.onmicrosoft.com/groups/83cf2753-5831-4675-bc0e-2f8dc067c58d"
       - name: ApiManagementUpdateGroup
-        text: apimgmt group create  --resource-group rg1 --service-name apimService1 --group-id tempgroup --display-name temp group
+        text: apimgmt group create  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup" --display-name "temp group"
       - name: ApiManagementDeleteGroup
-        text: apimgmt group create  --resource-group rg1 --service-name apimService1 --group-id aadGroup
+        text: apimgmt group create  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup"
 """
 
 helps['apimgmt group update'] = """
@@ -1612,13 +1576,13 @@ helps['apimgmt group update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateGroup
-        text: apimgmt group update  --resource-group rg1 --service-name apimService1 --group-id tempgroup --display-name temp group
+        text: apimgmt group update  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup" --display-name "temp group"
       - name: ApiManagementCreateGroupExternal
-        text: apimgmt group update  --resource-group rg1 --service-name apimService1 --group-id aadGroup --display-name NewGroup (samiraad.onmicrosoft.com) --description new group to test --type external --external-id aad://samiraad.onmicrosoft.com/groups/83cf2753-5831-4675-bc0e-2f8dc067c58d
+        text: apimgmt group update  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup" --display-name "NewGroup (samiraad.onmicrosoft.com)" --description "new group to test" --type "external" --external-id "aad://samiraad.onmicrosoft.com/groups/83cf2753-5831-4675-bc0e-2f8dc067c58d"
       - name: ApiManagementUpdateGroup
-        text: apimgmt group update  --resource-group rg1 --service-name apimService1 --group-id tempgroup --display-name temp group
+        text: apimgmt group update  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup" --display-name "temp group"
       - name: ApiManagementDeleteGroup
-        text: apimgmt group update  --resource-group rg1 --service-name apimService1 --group-id aadGroup
+        text: apimgmt group update  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup"
 """
 
 helps['apimgmt group delete'] = """
@@ -1627,13 +1591,13 @@ helps['apimgmt group delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateGroup
-        text: apimgmt group delete  --resource-group rg1 --service-name apimService1 --group-id tempgroup
+        text: apimgmt group delete  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup"
       - name: ApiManagementCreateGroupExternal
-        text: apimgmt group delete  --resource-group rg1 --service-name apimService1 --group-id aadGroup
+        text: apimgmt group delete  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup"
       - name: ApiManagementUpdateGroup
-        text: apimgmt group delete  --resource-group rg1 --service-name apimService1 --group-id tempgroup
+        text: apimgmt group delete  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup"
       - name: ApiManagementDeleteGroup
-        text: apimgmt group delete  --resource-group rg1 --service-name apimService1 --group-id aadGroup
+        text: apimgmt group delete  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup"
 """
 
 helps['apimgmt group list'] = """
@@ -1642,13 +1606,13 @@ helps['apimgmt group list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateGroup
-        text: apimgmt group list  --resource-group rg1 --service-name apimService1
+        text: apimgmt group list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateGroupExternal
-        text: apimgmt group list  --resource-group rg1 --service-name apimService1
+        text: apimgmt group list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateGroup
-        text: apimgmt group list  --resource-group rg1 --service-name apimService1
+        text: apimgmt group list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteGroup
-        text: apimgmt group list  --resource-group rg1 --service-name apimService1
+        text: apimgmt group list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt group show'] = """
@@ -1657,13 +1621,13 @@ helps['apimgmt group show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateGroup
-        text: apimgmt group show  --resource-group rg1 --service-name apimService1 --group-id tempgroup
+        text: apimgmt group show  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup"
       - name: ApiManagementCreateGroupExternal
-        text: apimgmt group show  --resource-group rg1 --service-name apimService1 --group-id aadGroup
+        text: apimgmt group show  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup"
       - name: ApiManagementUpdateGroup
-        text: apimgmt group show  --resource-group rg1 --service-name apimService1 --group-id tempgroup
+        text: apimgmt group show  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup"
       - name: ApiManagementDeleteGroup
-        text: apimgmt group show  --resource-group rg1 --service-name apimService1 --group-id aadGroup
+        text: apimgmt group show  --resource-group "rg1" --service-name "apimService1" --group-id "aadGroup"
 """
 
 helps['apimgmt group user'] = """
@@ -1677,9 +1641,9 @@ helps['apimgmt group user create'] = """
     examples:
 # create -- create
       - name: ApiManagementCreateGroupUser
-        text: apimgmt group user create  --resource-group rg1 --service-name apimService1 --group-id tempgroup --user-id 59307d350af58404d8a26300
+        text: apimgmt group user create  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup" --user-id "59307d350af58404d8a26300"
       - name: ApiManagementDeleteGroupUser
-        text: apimgmt group user create  --resource-group rg1 --service-name apimService1 --group-id templategroup --user-id 59307d350af58404d8a26300
+        text: apimgmt group user create  --resource-group "rg1" --service-name "apimService1" --group-id "templategroup" --user-id "59307d350af58404d8a26300"
 """
 
 helps['apimgmt group user delete'] = """
@@ -1688,9 +1652,9 @@ helps['apimgmt group user delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateGroupUser
-        text: apimgmt group user delete  --resource-group rg1 --service-name apimService1 --group-id tempgroup --user-id 59307d350af58404d8a26300
+        text: apimgmt group user delete  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup" --user-id "59307d350af58404d8a26300"
       - name: ApiManagementDeleteGroupUser
-        text: apimgmt group user delete  --resource-group rg1 --service-name apimService1 --group-id templategroup --user-id 59307d350af58404d8a26300
+        text: apimgmt group user delete  --resource-group "rg1" --service-name "apimService1" --group-id "templategroup" --user-id "59307d350af58404d8a26300"
 """
 
 helps['apimgmt group user list'] = """
@@ -1699,9 +1663,9 @@ helps['apimgmt group user list'] = """
     examples:
 # list -- list
       - name: ApiManagementCreateGroupUser
-        text: apimgmt group user list  --resource-group rg1 --service-name apimService1 --group-id tempgroup
+        text: apimgmt group user list  --resource-group "rg1" --service-name "apimService1" --group-id "tempgroup"
       - name: ApiManagementDeleteGroupUser
-        text: apimgmt group user list  --resource-group rg1 --service-name apimService1 --group-id templategroup
+        text: apimgmt group user list  --resource-group "rg1" --service-name "apimService1" --group-id "templategroup"
 """
 
 helps['apimgmt identityprovider'] = """
@@ -1715,11 +1679,11 @@ helps['apimgmt identityprovider create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateIdentityProvider
-        text: apimgmt identityprovider create  --resource-group rg1 --service-name apimService1 --name facebook --client-id facebookid --client-secret facebookapplicationsecret
+        text: apimgmt identityprovider create  --resource-group "rg1" --service-name "apimService1" --name "facebook" --client-id "facebookid" --client-secret "facebookapplicationsecret"
       - name: ApiManagementUpdateIdentityProvider
-        text: apimgmt identityprovider create  --resource-group rg1 --service-name apimService1 --name facebook --client-id updatedfacebookid --client-secret updatedfacebooksecret
+        text: apimgmt identityprovider create  --resource-group "rg1" --service-name "apimService1" --name "facebook" --client-id "updatedfacebookid" --client-secret "updatedfacebooksecret"
       - name: ApiManagementDeleteIdentityProvider
-        text: apimgmt identityprovider create  --resource-group rg1 --service-name apimService1 --name aad
+        text: apimgmt identityprovider create  --resource-group "rg1" --service-name "apimService1" --name "aad"
 """
 
 helps['apimgmt identityprovider update'] = """
@@ -1728,11 +1692,11 @@ helps['apimgmt identityprovider update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateIdentityProvider
-        text: apimgmt identityprovider update  --resource-group rg1 --service-name apimService1 --name facebook --client-id facebookid --client-secret facebookapplicationsecret
+        text: apimgmt identityprovider update  --resource-group "rg1" --service-name "apimService1" --name "facebook" --client-id "facebookid" --client-secret "facebookapplicationsecret"
       - name: ApiManagementUpdateIdentityProvider
-        text: apimgmt identityprovider update  --resource-group rg1 --service-name apimService1 --name facebook --client-id updatedfacebookid --client-secret updatedfacebooksecret
+        text: apimgmt identityprovider update  --resource-group "rg1" --service-name "apimService1" --name "facebook" --client-id "updatedfacebookid" --client-secret "updatedfacebooksecret"
       - name: ApiManagementDeleteIdentityProvider
-        text: apimgmt identityprovider update  --resource-group rg1 --service-name apimService1 --name aad
+        text: apimgmt identityprovider update  --resource-group "rg1" --service-name "apimService1" --name "aad"
 """
 
 helps['apimgmt identityprovider delete'] = """
@@ -1741,11 +1705,11 @@ helps['apimgmt identityprovider delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateIdentityProvider
-        text: apimgmt identityprovider delete  --resource-group rg1 --service-name apimService1 --name facebook
+        text: apimgmt identityprovider delete  --resource-group "rg1" --service-name "apimService1" --name "facebook"
       - name: ApiManagementUpdateIdentityProvider
-        text: apimgmt identityprovider delete  --resource-group rg1 --service-name apimService1 --name facebook
+        text: apimgmt identityprovider delete  --resource-group "rg1" --service-name "apimService1" --name "facebook"
       - name: ApiManagementDeleteIdentityProvider
-        text: apimgmt identityprovider delete  --resource-group rg1 --service-name apimService1 --name aad
+        text: apimgmt identityprovider delete  --resource-group "rg1" --service-name "apimService1" --name "aad"
 """
 
 helps['apimgmt identityprovider list'] = """
@@ -1754,11 +1718,11 @@ helps['apimgmt identityprovider list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateIdentityProvider
-        text: apimgmt identityprovider list  --resource-group rg1 --service-name apimService1
+        text: apimgmt identityprovider list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateIdentityProvider
-        text: apimgmt identityprovider list  --resource-group rg1 --service-name apimService1
+        text: apimgmt identityprovider list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteIdentityProvider
-        text: apimgmt identityprovider list  --resource-group rg1 --service-name apimService1
+        text: apimgmt identityprovider list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt identityprovider show'] = """
@@ -1767,11 +1731,11 @@ helps['apimgmt identityprovider show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateIdentityProvider
-        text: apimgmt identityprovider show  --resource-group rg1 --service-name apimService1 --name facebook
+        text: apimgmt identityprovider show  --resource-group "rg1" --service-name "apimService1" --name "facebook"
       - name: ApiManagementUpdateIdentityProvider
-        text: apimgmt identityprovider show  --resource-group rg1 --service-name apimService1 --name facebook
+        text: apimgmt identityprovider show  --resource-group "rg1" --service-name "apimService1" --name "facebook"
       - name: ApiManagementDeleteIdentityProvider
-        text: apimgmt identityprovider show  --resource-group rg1 --service-name apimService1 --name aad
+        text: apimgmt identityprovider show  --resource-group "rg1" --service-name "apimService1" --name "aad"
 """
 
 helps['apimgmt logger'] = """
@@ -1785,13 +1749,13 @@ helps['apimgmt logger create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateEHLogger
-        text: apimgmt logger create  --resource-group rg1 --service-name apimService1 --logger-id loggerId --logger-type azureEventHub --description adding a new logger
+        text: apimgmt logger create  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId" --logger-type "azureEventHub" --description "adding a new logger"
       - name: ApiManagementCreateAILogger
-        text: apimgmt logger create  --resource-group rg1 --service-name apimService1 --logger-id loggerId --logger-type applicationInsights --description adding a new logger
+        text: apimgmt logger create  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId" --logger-type "applicationInsights" --description "adding a new logger"
       - name: ApiManagementUpdateLogger
-        text: apimgmt logger create  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger create  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementDeleteLogger
-        text: apimgmt logger create  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger create  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
 """
 
 helps['apimgmt logger update'] = """
@@ -1800,13 +1764,13 @@ helps['apimgmt logger update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateEHLogger
-        text: apimgmt logger update  --resource-group rg1 --service-name apimService1 --logger-id loggerId --logger-type azureEventHub --description adding a new logger
+        text: apimgmt logger update  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId" --logger-type "azureEventHub" --description "adding a new logger"
       - name: ApiManagementCreateAILogger
-        text: apimgmt logger update  --resource-group rg1 --service-name apimService1 --logger-id loggerId --logger-type applicationInsights --description adding a new logger
+        text: apimgmt logger update  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId" --logger-type "applicationInsights" --description "adding a new logger"
       - name: ApiManagementUpdateLogger
-        text: apimgmt logger update  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger update  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementDeleteLogger
-        text: apimgmt logger update  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger update  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
 """
 
 helps['apimgmt logger delete'] = """
@@ -1815,13 +1779,13 @@ helps['apimgmt logger delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateEHLogger
-        text: apimgmt logger delete  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger delete  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementCreateAILogger
-        text: apimgmt logger delete  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger delete  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementUpdateLogger
-        text: apimgmt logger delete  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger delete  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementDeleteLogger
-        text: apimgmt logger delete  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger delete  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
 """
 
 helps['apimgmt logger list'] = """
@@ -1830,13 +1794,13 @@ helps['apimgmt logger list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateEHLogger
-        text: apimgmt logger list  --resource-group rg1 --service-name apimService1
+        text: apimgmt logger list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementCreateAILogger
-        text: apimgmt logger list  --resource-group rg1 --service-name apimService1
+        text: apimgmt logger list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateLogger
-        text: apimgmt logger list  --resource-group rg1 --service-name apimService1
+        text: apimgmt logger list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteLogger
-        text: apimgmt logger list  --resource-group rg1 --service-name apimService1
+        text: apimgmt logger list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt logger show'] = """
@@ -1845,13 +1809,13 @@ helps['apimgmt logger show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateEHLogger
-        text: apimgmt logger show  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger show  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementCreateAILogger
-        text: apimgmt logger show  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger show  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementUpdateLogger
-        text: apimgmt logger show  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger show  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
       - name: ApiManagementDeleteLogger
-        text: apimgmt logger show  --resource-group rg1 --service-name apimService1 --logger-id loggerId
+        text: apimgmt logger show  --resource-group "rg1" --service-name "apimService1" --logger-id "loggerId"
 """
 
 helps['apimgmt notification'] = """
@@ -1865,7 +1829,7 @@ helps['apimgmt notification create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateNotification
-        text: apimgmt notification create  --resource-group rg1 --service-name apimService1 --name RequestPublisherNotificationMessage
+        text: apimgmt notification create  --resource-group "rg1" --service-name "apimService1" --name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification update'] = """
@@ -1874,7 +1838,7 @@ helps['apimgmt notification update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateNotification
-        text: apimgmt notification update  --resource-group rg1 --service-name apimService1 --name RequestPublisherNotificationMessage
+        text: apimgmt notification update  --resource-group "rg1" --service-name "apimService1" --name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification list'] = """
@@ -1883,7 +1847,7 @@ helps['apimgmt notification list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateNotification
-        text: apimgmt notification list  --resource-group rg1 --service-name apimService1
+        text: apimgmt notification list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt notification show'] = """
@@ -1892,7 +1856,7 @@ helps['apimgmt notification show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateNotification
-        text: apimgmt notification show  --resource-group rg1 --service-name apimService1 --name RequestPublisherNotificationMessage
+        text: apimgmt notification show  --resource-group "rg1" --service-name "apimService1" --name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification recipientuser'] = """
@@ -1906,9 +1870,9 @@ helps['apimgmt notification recipientuser create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateNotificationRecipientUser
-        text: apimgmt notification recipientuser create  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --user-id 576823d0a40f7e74ec07d642
+        text: apimgmt notification recipientuser create  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id "576823d0a40f7e74ec07d642"
       - name: ApiManagementDeleteNotificationRecipientUser
-        text: apimgmt notification recipientuser create  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --user-id 576823d0a40f7e74ec07d642
+        text: apimgmt notification recipientuser create  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id "576823d0a40f7e74ec07d642"
 """
 
 helps['apimgmt notification recipientuser update'] = """
@@ -1917,9 +1881,9 @@ helps['apimgmt notification recipientuser update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateNotificationRecipientUser
-        text: apimgmt notification recipientuser update  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --user-id 576823d0a40f7e74ec07d642
+        text: apimgmt notification recipientuser update  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id "576823d0a40f7e74ec07d642"
       - name: ApiManagementDeleteNotificationRecipientUser
-        text: apimgmt notification recipientuser update  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --user-id 576823d0a40f7e74ec07d642
+        text: apimgmt notification recipientuser update  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id "576823d0a40f7e74ec07d642"
 """
 
 helps['apimgmt notification recipientuser delete'] = """
@@ -1928,9 +1892,9 @@ helps['apimgmt notification recipientuser delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateNotificationRecipientUser
-        text: apimgmt notification recipientuser delete  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --user-id 576823d0a40f7e74ec07d642
+        text: apimgmt notification recipientuser delete  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id "576823d0a40f7e74ec07d642"
       - name: ApiManagementDeleteNotificationRecipientUser
-        text: apimgmt notification recipientuser delete  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --user-id 576823d0a40f7e74ec07d642
+        text: apimgmt notification recipientuser delete  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id "576823d0a40f7e74ec07d642"
 """
 
 helps['apimgmt notification recipientuser list'] = """
@@ -1939,9 +1903,9 @@ helps['apimgmt notification recipientuser list'] = """
     examples:
 # list_by_notification -- list
       - name: ApiManagementCreateNotificationRecipientUser
-        text: apimgmt notification recipientuser list  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage
+        text: apimgmt notification recipientuser list  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage"
       - name: ApiManagementDeleteNotificationRecipientUser
-        text: apimgmt notification recipientuser list  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage
+        text: apimgmt notification recipientuser list  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification recipientemail'] = """
@@ -1955,9 +1919,9 @@ helps['apimgmt notification recipientemail create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateNotificationRecipientEmail
-        text: apimgmt notification recipientemail create  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --email foobar@live.com
+        text: apimgmt notification recipientemail create  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --email "foobar@live.com"
       - name: ApiManagementDeleteNotificationRecipientEmail
-        text: apimgmt notification recipientemail create  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --email contoso@live.com
+        text: apimgmt notification recipientemail create  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --email "contoso@live.com"
 """
 
 helps['apimgmt notification recipientemail update'] = """
@@ -1966,9 +1930,9 @@ helps['apimgmt notification recipientemail update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateNotificationRecipientEmail
-        text: apimgmt notification recipientemail update  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --email foobar@live.com
+        text: apimgmt notification recipientemail update  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --email "foobar@live.com"
       - name: ApiManagementDeleteNotificationRecipientEmail
-        text: apimgmt notification recipientemail update  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --email contoso@live.com
+        text: apimgmt notification recipientemail update  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --email "contoso@live.com"
 """
 
 helps['apimgmt notification recipientemail delete'] = """
@@ -1977,9 +1941,9 @@ helps['apimgmt notification recipientemail delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateNotificationRecipientEmail
-        text: apimgmt notification recipientemail delete  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --email foobar@live.com
+        text: apimgmt notification recipientemail delete  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --email "foobar@live.com"
       - name: ApiManagementDeleteNotificationRecipientEmail
-        text: apimgmt notification recipientemail delete  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage --email contoso@live.com
+        text: apimgmt notification recipientemail delete  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage" --email "contoso@live.com"
 """
 
 helps['apimgmt notification recipientemail list'] = """
@@ -1988,9 +1952,9 @@ helps['apimgmt notification recipientemail list'] = """
     examples:
 # list_by_notification -- list
       - name: ApiManagementCreateNotificationRecipientEmail
-        text: apimgmt notification recipientemail list  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage
+        text: apimgmt notification recipientemail list  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage"
       - name: ApiManagementDeleteNotificationRecipientEmail
-        text: apimgmt notification recipientemail list  --resource-group rg1 --service-name apimService1 --notification-name RequestPublisherNotificationMessage
+        text: apimgmt notification recipientemail list  --resource-group "rg1" --service-name "apimService1" --notification-name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt openidconnectprovider'] = """
@@ -2004,11 +1968,11 @@ helps['apimgmt openidconnectprovider create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider create  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3 --display-name templateoidprovider3 --metadata-endpoint https://oidprovider-template3.net --client-id oidprovidertemplate3
+        text: apimgmt openidconnectprovider create  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3" --display-name "templateoidprovider3" --metadata-endpoint "https://oidprovider-template3.net" --client-id "oidprovidertemplate3"
       - name: ApiManagementUpdateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider create  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect2 --client-secret updatedsecret
+        text: apimgmt openidconnectprovider create  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect2" --client-secret "updatedsecret"
       - name: ApiManagementDeleteOpenIdConnectProvider
-        text: apimgmt openidconnectprovider create  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3
+        text: apimgmt openidconnectprovider create  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt openidconnectprovider update'] = """
@@ -2017,11 +1981,11 @@ helps['apimgmt openidconnectprovider update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider update  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3 --display-name templateoidprovider3 --metadata-endpoint https://oidprovider-template3.net --client-id oidprovidertemplate3
+        text: apimgmt openidconnectprovider update  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3" --display-name "templateoidprovider3" --metadata-endpoint "https://oidprovider-template3.net" --client-id "oidprovidertemplate3"
       - name: ApiManagementUpdateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider update  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect2 --client-secret updatedsecret
+        text: apimgmt openidconnectprovider update  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect2" --client-secret "updatedsecret"
       - name: ApiManagementDeleteOpenIdConnectProvider
-        text: apimgmt openidconnectprovider update  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3
+        text: apimgmt openidconnectprovider update  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt openidconnectprovider delete'] = """
@@ -2030,11 +1994,11 @@ helps['apimgmt openidconnectprovider delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider delete  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3
+        text: apimgmt openidconnectprovider delete  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3"
       - name: ApiManagementUpdateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider delete  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect2
+        text: apimgmt openidconnectprovider delete  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect2"
       - name: ApiManagementDeleteOpenIdConnectProvider
-        text: apimgmt openidconnectprovider delete  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3
+        text: apimgmt openidconnectprovider delete  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt openidconnectprovider list'] = """
@@ -2043,11 +2007,11 @@ helps['apimgmt openidconnectprovider list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider list  --resource-group rg1 --service-name apimService1
+        text: apimgmt openidconnectprovider list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider list  --resource-group rg1 --service-name apimService1
+        text: apimgmt openidconnectprovider list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteOpenIdConnectProvider
-        text: apimgmt openidconnectprovider list  --resource-group rg1 --service-name apimService1
+        text: apimgmt openidconnectprovider list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt openidconnectprovider show'] = """
@@ -2056,11 +2020,11 @@ helps['apimgmt openidconnectprovider show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider show  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3
+        text: apimgmt openidconnectprovider show  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3"
       - name: ApiManagementUpdateOpenIdConnectProvider
-        text: apimgmt openidconnectprovider show  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect2
+        text: apimgmt openidconnectprovider show  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect2"
       - name: ApiManagementDeleteOpenIdConnectProvider
-        text: apimgmt openidconnectprovider show  --resource-group rg1 --service-name apimService1 --opid templateOpenIdConnect3
+        text: apimgmt openidconnectprovider show  --resource-group "rg1" --service-name "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt policy'] = """
@@ -2074,15 +2038,9 @@ helps['apimgmt policy create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreatePolicy
-        text: apimgmt policy create  --resource-group rg1 --service-name apimService1 --policy-id policy --value <policies>
-  <inbound />
-  <backend>
-    <forward-request />
-  </backend>
-  <outbound />
-</policies> --format xml
+        text: apimgmt policy create  --resource-group "rg1" --service-name "apimService1" --policy-id "policy" --value "<policies>\r\n  <inbound />\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound />\r\n</policies>" --format "xml"
       - name: ApiManagementDeletePolicy
-        text: apimgmt policy create  --resource-group rg1 --service-name apimService1 --policy-id policy
+        text: apimgmt policy create  --resource-group "rg1" --service-name "apimService1" --policy-id "policy"
 """
 
 helps['apimgmt policy update'] = """
@@ -2091,15 +2049,9 @@ helps['apimgmt policy update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreatePolicy
-        text: apimgmt policy update  --resource-group rg1 --service-name apimService1 --policy-id policy --value <policies>
-  <inbound />
-  <backend>
-    <forward-request />
-  </backend>
-  <outbound />
-</policies> --format xml
+        text: apimgmt policy update  --resource-group "rg1" --service-name "apimService1" --policy-id "policy" --value "<policies>\r\n  <inbound />\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound />\r\n</policies>" --format "xml"
       - name: ApiManagementDeletePolicy
-        text: apimgmt policy update  --resource-group rg1 --service-name apimService1 --policy-id policy
+        text: apimgmt policy update  --resource-group "rg1" --service-name "apimService1" --policy-id "policy"
 """
 
 helps['apimgmt policy delete'] = """
@@ -2108,9 +2060,9 @@ helps['apimgmt policy delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreatePolicy
-        text: apimgmt policy delete  --resource-group rg1 --service-name apimService1 --policy-id policy
+        text: apimgmt policy delete  --resource-group "rg1" --service-name "apimService1" --policy-id "policy"
       - name: ApiManagementDeletePolicy
-        text: apimgmt policy delete  --resource-group rg1 --service-name apimService1 --policy-id policy
+        text: apimgmt policy delete  --resource-group "rg1" --service-name "apimService1" --policy-id "policy"
 """
 
 helps['apimgmt policy list'] = """
@@ -2119,9 +2071,9 @@ helps['apimgmt policy list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreatePolicy
-        text: apimgmt policy list  --resource-group rg1 --service-name apimService1
+        text: apimgmt policy list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeletePolicy
-        text: apimgmt policy list  --resource-group rg1 --service-name apimService1
+        text: apimgmt policy list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt policy show'] = """
@@ -2130,9 +2082,9 @@ helps['apimgmt policy show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreatePolicy
-        text: apimgmt policy show  --resource-group rg1 --service-name apimService1 --policy-id policy --format xml
+        text: apimgmt policy show  --resource-group "rg1" --service-name "apimService1" --policy-id "policy" --format "xml"
       - name: ApiManagementDeletePolicy
-        text: apimgmt policy show  --resource-group rg1 --service-name apimService1 --policy-id policy
+        text: apimgmt policy show  --resource-group "rg1" --service-name "apimService1" --policy-id "policy"
 """
 
 helps['apimgmt portalsetting signin'] = """
@@ -2146,9 +2098,9 @@ helps['apimgmt portalsetting signin create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting signin create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin create  --resource-group "rg1" --name "apimService1" --enabled true
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting signin create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin create  --resource-group "rg1" --name "apimService1" --enabled true
 """
 
 helps['apimgmt portalsetting signin update'] = """
@@ -2157,9 +2109,9 @@ helps['apimgmt portalsetting signin update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting signin update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin update  --resource-group "rg1" --name "apimService1" --enabled true
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting signin update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signin update  --resource-group "rg1" --name "apimService1" --enabled true
 """
 
 helps['apimgmt portalsetting signin show'] = """
@@ -2168,9 +2120,9 @@ helps['apimgmt portalsetting signin show'] = """
     examples:
 # get -- show
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting signin show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signin show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementPortalSettingsUpdateSignIn
-        text: apimgmt portalsetting signin show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signin show  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt portalsetting signup'] = """
@@ -2184,9 +2136,9 @@ helps['apimgmt portalsetting signup create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting signup create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup create  --resource-group "rg1" --name "apimService1" --enabled true
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting signup create  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup create  --resource-group "rg1" --name "apimService1" --enabled true
 """
 
 helps['apimgmt portalsetting signup update'] = """
@@ -2195,9 +2147,9 @@ helps['apimgmt portalsetting signup update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting signup update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup update  --resource-group "rg1" --name "apimService1" --enabled true
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting signup update  --resource-group rg1 --name apimService1 --enabled true
+        text: apimgmt portalsetting signup update  --resource-group "rg1" --name "apimService1" --enabled true
 """
 
 helps['apimgmt portalsetting signup show'] = """
@@ -2206,9 +2158,9 @@ helps['apimgmt portalsetting signup show'] = """
     examples:
 # get -- show
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting signup show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signup show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementPortalSettingsUpdateSignUp
-        text: apimgmt portalsetting signup show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting signup show  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt portalsetting delegation'] = """
@@ -2222,9 +2174,9 @@ helps['apimgmt portalsetting delegation create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting delegation create  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation create  --resource-group "rg1" --name "apimService1" --url "http://contoso.com/delegation" --validation-key "nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q=="
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting delegation create  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation create  --resource-group "rg1" --name "apimService1" --url "http://contoso.com/delegation" --validation-key "nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q=="
 """
 
 helps['apimgmt portalsetting delegation update'] = """
@@ -2233,9 +2185,9 @@ helps['apimgmt portalsetting delegation update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting delegation update  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation update  --resource-group "rg1" --name "apimService1" --url "http://contoso.com/delegation" --validation-key "nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q=="
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting delegation update  --resource-group rg1 --name apimService1 --url http://contoso.com/delegation --validation-key nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q==
+        text: apimgmt portalsetting delegation update  --resource-group "rg1" --name "apimService1" --url "http://contoso.com/delegation" --validation-key "nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q=="
 """
 
 helps['apimgmt portalsetting delegation show'] = """
@@ -2244,9 +2196,9 @@ helps['apimgmt portalsetting delegation show'] = """
     examples:
 # get -- show
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting delegation show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting delegation show  --resource-group "rg1" --name "apimService1"
       - name: ApiManagementPortalSettingsUpdateDelegation
-        text: apimgmt portalsetting delegation show  --resource-group rg1 --name apimService1
+        text: apimgmt portalsetting delegation show  --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt product'] = """
@@ -2260,11 +2212,11 @@ helps['apimgmt product create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateProduct
-        text: apimgmt product create  --resource-group rg1 --service-name apimService1 --product-id testproduct --display-name Test Template ProductName 4
+        text: apimgmt product create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --display-name "Test Template ProductName 4"
       - name: ApiManagementUpdateProduct
-        text: apimgmt product create  --resource-group rg1 --service-name apimService1 --product-id testproduct --display-name Test Template ProductName 4
+        text: apimgmt product create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --display-name "Test Template ProductName 4"
       - name: ApiManagementDeleteProduct
-        text: apimgmt product create  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product update'] = """
@@ -2273,11 +2225,11 @@ helps['apimgmt product update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateProduct
-        text: apimgmt product update  --resource-group rg1 --service-name apimService1 --product-id testproduct --display-name Test Template ProductName 4
+        text: apimgmt product update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --display-name "Test Template ProductName 4"
       - name: ApiManagementUpdateProduct
-        text: apimgmt product update  --resource-group rg1 --service-name apimService1 --product-id testproduct --display-name Test Template ProductName 4
+        text: apimgmt product update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --display-name "Test Template ProductName 4"
       - name: ApiManagementDeleteProduct
-        text: apimgmt product update  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product delete'] = """
@@ -2286,11 +2238,11 @@ helps['apimgmt product delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateProduct
-        text: apimgmt product delete  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
       - name: ApiManagementUpdateProduct
-        text: apimgmt product delete  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
       - name: ApiManagementDeleteProduct
-        text: apimgmt product delete  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product list'] = """
@@ -2299,18 +2251,18 @@ helps['apimgmt product list'] = """
     examples:
 # list_by_tags -- list
       - name: ApiManagementCreateProduct
-        text: apimgmt product list  --resource-group rg1 --service-name apimService1
+        text: apimgmt product list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateProduct
-        text: apimgmt product list  --resource-group rg1 --service-name apimService1
+        text: apimgmt product list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteProduct
-        text: apimgmt product list  --resource-group rg1 --service-name apimService1
+        text: apimgmt product list  --resource-group "rg1" --service-name "apimService1"
 # list_by_service -- list
       - name: ApiManagementCreateProduct
-        text: apimgmt product list  --resource-group rg1 --service-name apimService1
+        text: apimgmt product list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateProduct
-        text: apimgmt product list  --resource-group rg1 --service-name apimService1
+        text: apimgmt product list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteProduct
-        text: apimgmt product list  --resource-group rg1 --service-name apimService1
+        text: apimgmt product list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt product show'] = """
@@ -2319,11 +2271,11 @@ helps['apimgmt product show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateProduct
-        text: apimgmt product show  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product show  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
       - name: ApiManagementUpdateProduct
-        text: apimgmt product show  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product show  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
       - name: ApiManagementDeleteProduct
-        text: apimgmt product show  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product show  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product api'] = """
@@ -2337,9 +2289,9 @@ helps['apimgmt product api create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateProductApi
-        text: apimgmt product api create  --resource-group rg1 --service-name apimService1 --product-id testproduct --api-id echo-api
+        text: apimgmt product api create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --api-id "echo-api"
       - name: ApiManagementDeleteProductApi
-        text: apimgmt product api create  --resource-group rg1 --service-name apimService1 --product-id testproduct --api-id echo-api
+        text: apimgmt product api create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --api-id "echo-api"
 """
 
 helps['apimgmt product api update'] = """
@@ -2348,9 +2300,9 @@ helps['apimgmt product api update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateProductApi
-        text: apimgmt product api update  --resource-group rg1 --service-name apimService1 --product-id testproduct --api-id echo-api
+        text: apimgmt product api update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --api-id "echo-api"
       - name: ApiManagementDeleteProductApi
-        text: apimgmt product api update  --resource-group rg1 --service-name apimService1 --product-id testproduct --api-id echo-api
+        text: apimgmt product api update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --api-id "echo-api"
 """
 
 helps['apimgmt product api delete'] = """
@@ -2359,9 +2311,9 @@ helps['apimgmt product api delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateProductApi
-        text: apimgmt product api delete  --resource-group rg1 --service-name apimService1 --product-id testproduct --api-id echo-api
+        text: apimgmt product api delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --api-id "echo-api"
       - name: ApiManagementDeleteProductApi
-        text: apimgmt product api delete  --resource-group rg1 --service-name apimService1 --product-id testproduct --api-id echo-api
+        text: apimgmt product api delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --api-id "echo-api"
 """
 
 helps['apimgmt product api list'] = """
@@ -2370,9 +2322,9 @@ helps['apimgmt product api list'] = """
     examples:
 # list_by_product -- list
       - name: ApiManagementCreateProductApi
-        text: apimgmt product api list  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product api list  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
       - name: ApiManagementDeleteProductApi
-        text: apimgmt product api list  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product api list  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product group'] = """
@@ -2386,9 +2338,9 @@ helps['apimgmt product group create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateProductGroup
-        text: apimgmt product group create  --resource-group rg1 --service-name apimService1 --product-id testproduct --group-id templateGroup
+        text: apimgmt product group create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --group-id "templateGroup"
       - name: ApiManagementDeleteProductGroup
-        text: apimgmt product group create  --resource-group rg1 --service-name apimService1 --product-id testproduct --group-id templateGroup
+        text: apimgmt product group create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --group-id "templateGroup"
 """
 
 helps['apimgmt product group update'] = """
@@ -2397,9 +2349,9 @@ helps['apimgmt product group update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateProductGroup
-        text: apimgmt product group update  --resource-group rg1 --service-name apimService1 --product-id testproduct --group-id templateGroup
+        text: apimgmt product group update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --group-id "templateGroup"
       - name: ApiManagementDeleteProductGroup
-        text: apimgmt product group update  --resource-group rg1 --service-name apimService1 --product-id testproduct --group-id templateGroup
+        text: apimgmt product group update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --group-id "templateGroup"
 """
 
 helps['apimgmt product group delete'] = """
@@ -2408,9 +2360,9 @@ helps['apimgmt product group delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateProductGroup
-        text: apimgmt product group delete  --resource-group rg1 --service-name apimService1 --product-id testproduct --group-id templateGroup
+        text: apimgmt product group delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --group-id "templateGroup"
       - name: ApiManagementDeleteProductGroup
-        text: apimgmt product group delete  --resource-group rg1 --service-name apimService1 --product-id testproduct --group-id templateGroup
+        text: apimgmt product group delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --group-id "templateGroup"
 """
 
 helps['apimgmt product group list'] = """
@@ -2419,9 +2371,9 @@ helps['apimgmt product group list'] = """
     examples:
 # list_by_product -- list
       - name: ApiManagementCreateProductGroup
-        text: apimgmt product group list  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product group list  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
       - name: ApiManagementDeleteProductGroup
-        text: apimgmt product group list  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product group list  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product policy'] = """
@@ -2435,24 +2387,9 @@ helps['apimgmt product policy create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateProductPolicy
-        text: apimgmt product policy create  --resource-group rg1 --service-name apimService1 --product-id 5702e97e5157a50f48dce801 --policy-id policy --value <policies>
-  <inbound>
-    <rate-limit calls="{{call-count}}" renewal-period="15"></rate-limit>
-    <log-to-eventhub logger-id="16">
-                      @( string.Join(",", DateTime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, context.Operation.Name) ) 
-                  </log-to-eventhub>
-    <quota-by-key calls="40" counter-key="cc" renewal-period="3600" increment-count="@(context.Request.Method == &quot;POST&quot; ? 1:2)" />
-    <base />
-  </inbound>
-  <backend>
-    <base />
-  </backend>
-  <outbound>
-    <base />
-  </outbound>
-</policies> --format xml
+        text: apimgmt product policy create  --resource-group "rg1" --service-name "apimService1" --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --value "<policies>\r\n  <inbound>\r\n    <rate-limit calls=\"{{call-count}}\" renewal-period=\"15\"></rate-limit>\r\n    <log-to-eventhub logger-id=\"16\">\r\n                      @( string.Join(\",\", DateTime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, context.Operation.Name) ) \r\n                  </log-to-eventhub>\r\n    <quota-by-key calls=\"40\" counter-key=\"cc\" renewal-period=\"3600\" increment-count=\"@(context.Request.Method == &quot;POST&quot; ? 1:2)\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies>" --format "xml"
       - name: ApiManagementDeleteProductPolicy
-        text: apimgmt product policy create  --resource-group rg1 --service-name apimService1 --product-id testproduct --policy-id policy
+        text: apimgmt product policy create  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt product policy update'] = """
@@ -2461,24 +2398,9 @@ helps['apimgmt product policy update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateProductPolicy
-        text: apimgmt product policy update  --resource-group rg1 --service-name apimService1 --product-id 5702e97e5157a50f48dce801 --policy-id policy --value <policies>
-  <inbound>
-    <rate-limit calls="{{call-count}}" renewal-period="15"></rate-limit>
-    <log-to-eventhub logger-id="16">
-                      @( string.Join(",", DateTime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, context.Operation.Name) ) 
-                  </log-to-eventhub>
-    <quota-by-key calls="40" counter-key="cc" renewal-period="3600" increment-count="@(context.Request.Method == &quot;POST&quot; ? 1:2)" />
-    <base />
-  </inbound>
-  <backend>
-    <base />
-  </backend>
-  <outbound>
-    <base />
-  </outbound>
-</policies> --format xml
+        text: apimgmt product policy update  --resource-group "rg1" --service-name "apimService1" --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --value "<policies>\r\n  <inbound>\r\n    <rate-limit calls=\"{{call-count}}\" renewal-period=\"15\"></rate-limit>\r\n    <log-to-eventhub logger-id=\"16\">\r\n                      @( string.Join(\",\", DateTime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, context.Operation.Name) ) \r\n                  </log-to-eventhub>\r\n    <quota-by-key calls=\"40\" counter-key=\"cc\" renewal-period=\"3600\" increment-count=\"@(context.Request.Method == &quot;POST&quot; ? 1:2)\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies>" --format "xml"
       - name: ApiManagementDeleteProductPolicy
-        text: apimgmt product policy update  --resource-group rg1 --service-name apimService1 --product-id testproduct --policy-id policy
+        text: apimgmt product policy update  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt product policy delete'] = """
@@ -2487,9 +2409,9 @@ helps['apimgmt product policy delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateProductPolicy
-        text: apimgmt product policy delete  --resource-group rg1 --service-name apimService1 --product-id 5702e97e5157a50f48dce801 --policy-id policy
+        text: apimgmt product policy delete  --resource-group "rg1" --service-name "apimService1" --product-id "5702e97e5157a50f48dce801" --policy-id "policy"
       - name: ApiManagementDeleteProductPolicy
-        text: apimgmt product policy delete  --resource-group rg1 --service-name apimService1 --product-id testproduct --policy-id policy
+        text: apimgmt product policy delete  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt product policy list'] = """
@@ -2498,9 +2420,9 @@ helps['apimgmt product policy list'] = """
     examples:
 # list_by_product -- list
       - name: ApiManagementCreateProductPolicy
-        text: apimgmt product policy list  --resource-group rg1 --service-name apimService1 --product-id 5702e97e5157a50f48dce801
+        text: apimgmt product policy list  --resource-group "rg1" --service-name "apimService1" --product-id "5702e97e5157a50f48dce801"
       - name: ApiManagementDeleteProductPolicy
-        text: apimgmt product policy list  --resource-group rg1 --service-name apimService1 --product-id testproduct
+        text: apimgmt product policy list  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct"
 """
 
 helps['apimgmt product policy show'] = """
@@ -2509,9 +2431,9 @@ helps['apimgmt product policy show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateProductPolicy
-        text: apimgmt product policy show  --resource-group rg1 --service-name apimService1 --product-id 5702e97e5157a50f48dce801 --policy-id policy --format xml
+        text: apimgmt product policy show  --resource-group "rg1" --service-name "apimService1" --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --format "xml"
       - name: ApiManagementDeleteProductPolicy
-        text: apimgmt product policy show  --resource-group rg1 --service-name apimService1 --product-id testproduct --policy-id policy
+        text: apimgmt product policy show  --resource-group "rg1" --service-name "apimService1" --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt property'] = """
@@ -2525,11 +2447,11 @@ helps['apimgmt property create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateProperty
-        text: apimgmt property create  --resource-group rg1 --service-name apimService1 --prop-id testprop2 --secret true --display-name prop3name --value propValue
+        text: apimgmt property create  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2" --secret true --display-name "prop3name" --value "propValue"
       - name: ApiManagementUpdateProperty
-        text: apimgmt property create  --resource-group rg1 --service-name apimService1 --prop-id testprop2 --secret true
+        text: apimgmt property create  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2" --secret true
       - name: ApiManagementDeleteProperty
-        text: apimgmt property create  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property create  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
 """
 
 helps['apimgmt property update'] = """
@@ -2538,11 +2460,11 @@ helps['apimgmt property update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateProperty
-        text: apimgmt property update  --resource-group rg1 --service-name apimService1 --prop-id testprop2 --secret true --display-name prop3name --value propValue
+        text: apimgmt property update  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2" --secret true --display-name "prop3name" --value "propValue"
       - name: ApiManagementUpdateProperty
-        text: apimgmt property update  --resource-group rg1 --service-name apimService1 --prop-id testprop2 --secret true
+        text: apimgmt property update  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2" --secret true
       - name: ApiManagementDeleteProperty
-        text: apimgmt property update  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property update  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
 """
 
 helps['apimgmt property delete'] = """
@@ -2551,11 +2473,11 @@ helps['apimgmt property delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateProperty
-        text: apimgmt property delete  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property delete  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
       - name: ApiManagementUpdateProperty
-        text: apimgmt property delete  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property delete  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
       - name: ApiManagementDeleteProperty
-        text: apimgmt property delete  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property delete  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
 """
 
 helps['apimgmt property list'] = """
@@ -2564,11 +2486,11 @@ helps['apimgmt property list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateProperty
-        text: apimgmt property list  --resource-group rg1 --service-name apimService1
+        text: apimgmt property list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateProperty
-        text: apimgmt property list  --resource-group rg1 --service-name apimService1
+        text: apimgmt property list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteProperty
-        text: apimgmt property list  --resource-group rg1 --service-name apimService1
+        text: apimgmt property list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt property show'] = """
@@ -2577,11 +2499,11 @@ helps['apimgmt property show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateProperty
-        text: apimgmt property show  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property show  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
       - name: ApiManagementUpdateProperty
-        text: apimgmt property show  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property show  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
       - name: ApiManagementDeleteProperty
-        text: apimgmt property show  --resource-group rg1 --service-name apimService1 --prop-id testprop2
+        text: apimgmt property show  --resource-group "rg1" --service-name "apimService1" --prop-id "testprop2"
 """
 
 helps['apimgmt subscription'] = """
@@ -2595,11 +2517,11 @@ helps['apimgmt subscription create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateSubscription
-        text: apimgmt subscription create  --resource-group rg1 --service-name apimService1 --sid testsub --owner-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }} --scope /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }} --display-name testsub
+        text: apimgmt subscription create  --resource-group "rg1" --service-name "apimService1" --sid "testsub" --owner-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}" --scope "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}" --display-name "testsub"
       - name: ApiManagementUpdateSubscription
-        text: apimgmt subscription create  --resource-group rg1 --service-name apimService1 --sid testsub --display-name testsub
+        text: apimgmt subscription create  --resource-group "rg1" --service-name "apimService1" --sid "testsub" --display-name "testsub"
       - name: ApiManagementDeleteSubscription
-        text: apimgmt subscription create  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription create  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
 """
 
 helps['apimgmt subscription update'] = """
@@ -2608,11 +2530,11 @@ helps['apimgmt subscription update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateSubscription
-        text: apimgmt subscription update  --resource-group rg1 --service-name apimService1 --sid testsub --owner-id /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }} --scope /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }} --display-name testsub
+        text: apimgmt subscription update  --resource-group "rg1" --service-name "apimService1" --sid "testsub" --owner-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}" --scope "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}" --display-name "testsub"
       - name: ApiManagementUpdateSubscription
-        text: apimgmt subscription update  --resource-group rg1 --service-name apimService1 --sid testsub --display-name testsub
+        text: apimgmt subscription update  --resource-group "rg1" --service-name "apimService1" --sid "testsub" --display-name "testsub"
       - name: ApiManagementDeleteSubscription
-        text: apimgmt subscription update  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription update  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
 """
 
 helps['apimgmt subscription delete'] = """
@@ -2621,11 +2543,11 @@ helps['apimgmt subscription delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateSubscription
-        text: apimgmt subscription delete  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription delete  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
       - name: ApiManagementUpdateSubscription
-        text: apimgmt subscription delete  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription delete  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
       - name: ApiManagementDeleteSubscription
-        text: apimgmt subscription delete  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription delete  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
 """
 
 helps['apimgmt subscription list'] = """
@@ -2634,11 +2556,11 @@ helps['apimgmt subscription list'] = """
     examples:
 # list -- list
       - name: ApiManagementCreateSubscription
-        text: apimgmt subscription list  --resource-group rg1 --service-name apimService1
+        text: apimgmt subscription list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateSubscription
-        text: apimgmt subscription list  --resource-group rg1 --service-name apimService1
+        text: apimgmt subscription list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteSubscription
-        text: apimgmt subscription list  --resource-group rg1 --service-name apimService1
+        text: apimgmt subscription list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt subscription show'] = """
@@ -2647,11 +2569,11 @@ helps['apimgmt subscription show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateSubscription
-        text: apimgmt subscription show  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription show  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
       - name: ApiManagementUpdateSubscription
-        text: apimgmt subscription show  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription show  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
       - name: ApiManagementDeleteSubscription
-        text: apimgmt subscription show  --resource-group rg1 --service-name apimService1 --sid testsub
+        text: apimgmt subscription show  --resource-group "rg1" --service-name "apimService1" --sid "testsub"
 """
 
 helps['apimgmt user'] = """
@@ -2665,11 +2587,11 @@ helps['apimgmt user create'] = """
     examples:
 # create_or_update -- create
       - name: ApiManagementCreateUser
-        text: apimgmt user create  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b --email foobar@outlook.com --first-name foo --last-name bar --confirmation signup
+        text: apimgmt user create  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name "bar" --confirmation "signup"
       - name: ApiManagementUpdateUser
-        text: apimgmt user create  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b --email foobar@outlook.com --first-name foo --last-name bar
+        text: apimgmt user create  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name "bar"
       - name: ApiManagementDeleteUser
-        text: apimgmt user create  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user create  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
 """
 
 helps['apimgmt user update'] = """
@@ -2678,11 +2600,11 @@ helps['apimgmt user update'] = """
     examples:
 # create_or_update -- update
       - name: ApiManagementCreateUser
-        text: apimgmt user update  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b --email foobar@outlook.com --first-name foo --last-name bar --confirmation signup
+        text: apimgmt user update  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name "bar" --confirmation "signup"
       - name: ApiManagementUpdateUser
-        text: apimgmt user update  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b --email foobar@outlook.com --first-name foo --last-name bar
+        text: apimgmt user update  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name "bar"
       - name: ApiManagementDeleteUser
-        text: apimgmt user update  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user update  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
 """
 
 helps['apimgmt user delete'] = """
@@ -2691,11 +2613,11 @@ helps['apimgmt user delete'] = """
     examples:
 # delete -- delete
       - name: ApiManagementCreateUser
-        text: apimgmt user delete  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user delete  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
       - name: ApiManagementUpdateUser
-        text: apimgmt user delete  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user delete  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
       - name: ApiManagementDeleteUser
-        text: apimgmt user delete  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user delete  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
 """
 
 helps['apimgmt user list'] = """
@@ -2704,11 +2626,11 @@ helps['apimgmt user list'] = """
     examples:
 # list_by_service -- list
       - name: ApiManagementCreateUser
-        text: apimgmt user list  --resource-group rg1 --service-name apimService1
+        text: apimgmt user list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementUpdateUser
-        text: apimgmt user list  --resource-group rg1 --service-name apimService1
+        text: apimgmt user list  --resource-group "rg1" --service-name "apimService1"
       - name: ApiManagementDeleteUser
-        text: apimgmt user list  --resource-group rg1 --service-name apimService1
+        text: apimgmt user list  --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt user show'] = """
@@ -2717,9 +2639,9 @@ helps['apimgmt user show'] = """
     examples:
 # get -- show
       - name: ApiManagementCreateUser
-        text: apimgmt user show  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user show  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
       - name: ApiManagementUpdateUser
-        text: apimgmt user show  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user show  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
       - name: ApiManagementDeleteUser
-        text: apimgmt user show  --resource-group rg1 --service-name apimService1 --user-id 5931a75ae4bbd512288c680b
+        text: apimgmt user show  --resource-group "rg1" --service-name "apimService1" --user-id "5931a75ae4bbd512288c680b"
 """
