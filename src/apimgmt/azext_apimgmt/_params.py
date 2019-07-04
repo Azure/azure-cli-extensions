@@ -18,7 +18,6 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
 
-
     with self.argument_context('apimgmt api create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
@@ -86,8 +85,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api release create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -121,8 +118,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API identifier. Must be unique in the current API Management service instance.')
         c.argument('release_id', id_part=None, help='Release identifier within an API. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api operation create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -170,8 +165,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('operation_id', id_part=None, help='Operation identifier within an API. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api operation policy create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -213,8 +206,6 @@ def load_arguments(self, _):
         c.argument('operation_id', id_part=None, help='Operation identifier within an API. Must be unique in the current API Management service instance.')
         c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt tag create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -243,8 +234,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('tag_id', id_part=None, help='Tag identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api policy create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -281,8 +270,6 @@ def load_arguments(self, _):
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api schema create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -318,8 +305,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('schema_id', id_part=None, help='Schema identifier within an API. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api diagnostic create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -363,8 +348,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API identifier. Must be unique in the current API Management service instance.')
         c.argument('diagnostic_id', id_part=None, help='Diagnostic identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api issue create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -406,8 +389,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API identifier. Must be unique in the current API Management service instance.')
         c.argument('issue_id', id_part=None, help='Issue identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api issue comment create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -450,8 +431,6 @@ def load_arguments(self, _):
         c.argument('api_id', id_part=None, help='API identifier. Must be unique in the current API Management service instance.')
         c.argument('issue_id', id_part=None, help='Issue identifier. Must be unique in the current API Management service instance.')
         c.argument('comment_id', id_part=None, help='Comment identifier within an Issue. Must be unique in the current Issue.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api issue attachment create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -494,8 +473,6 @@ def load_arguments(self, _):
         c.argument('api_id', id_part=None, help='API identifier. Must be unique in the current API Management service instance.')
         c.argument('issue_id', id_part=None, help='Issue identifier. Must be unique in the current API Management service instance.')
         c.argument('attachment_id', id_part=None, help='Attachment identifier within an Issue. Must be unique in the current Issue.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt api tagdescription create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -533,8 +510,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('tag_id', id_part=None, help='Tag identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt apiversionset create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -571,8 +546,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('version_set_id', id_part=None, help='Api Version Set identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt authorizationserver create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -631,8 +604,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('authsid', id_part=None, help='Identifier of the authorization server.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt backend create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -677,8 +648,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('backend_id', id_part=None, help='Identifier of the Backend entity. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt cache create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -711,8 +680,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('cache_id', id_part=None, help='Identifier of the Cache entity. Cache identifier (should be either \'default\' or valid Azure region identifier).')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt certificate create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -743,8 +710,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('certificate_id', id_part=None, help='Identifier of the certificate entity. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -796,8 +761,6 @@ def load_arguments(self, _):
     with self.argument_context('apimgmt show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt diagnostic create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -836,8 +799,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('diagnostic_id', id_part=None, help='Diagnostic identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt template create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -872,8 +833,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Email Template Name Identifier.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt group create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -908,8 +867,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('group_id', id_part=None, help='Group identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt group user create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -935,8 +892,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('group_id', id_part=None, help='Group identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt identityprovider create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -981,8 +936,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt logger create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1019,8 +972,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('logger_id', id_part=None, help='Logger identifier. Must be unique in the API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt notification create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1046,8 +997,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Notification Name Identifier.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt notification recipientuser create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1071,8 +1020,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt notification recipientemail create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1096,8 +1043,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt openidconnectprovider create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1134,8 +1079,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('opid', id_part=None, help='Identifier of the OpenID Connect Provider.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt policy create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1167,8 +1110,6 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt portalsetting signin create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1185,8 +1126,6 @@ def load_arguments(self, _):
     with self.argument_context('apimgmt portalsetting signin show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt portalsetting signup create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1205,8 +1144,6 @@ def load_arguments(self, _):
     with self.argument_context('apimgmt portalsetting signup show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt portalsetting delegation create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1229,8 +1166,6 @@ def load_arguments(self, _):
     with self.argument_context('apimgmt portalsetting delegation show') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('name', id_part=None, help='The name of the API Management service.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt product create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1271,8 +1206,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('product_id', id_part=None, help='Product identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt product api create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1332,8 +1265,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('product_id', id_part=None, help='Product identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt product group create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1367,8 +1298,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('product_id', id_part=None, help='Product identifier. Must be unique in the current API Management service instance.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt product policy create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1405,8 +1334,6 @@ def load_arguments(self, _):
         c.argument('product_id', id_part=None, help='Product identifier. Must be unique in the current API Management service instance.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt property create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1441,8 +1368,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('prop_id', id_part=None, help='Identifier of the property.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt subscription create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1485,8 +1410,6 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('sid', id_part=None, help='Subscription entity Identifier. The entity represents the association between a user and a product in API Management.')
-    name_arg_type = CLIArgumentType(options_list=('--name', '-n'), metavar='NAME')
-
 
     with self.argument_context('apimgmt user create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
