@@ -9,8 +9,6 @@
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
-    get_resource_name_completion_list,
-    quotes,
     get_three_state_flag,
     get_enum_type
 )

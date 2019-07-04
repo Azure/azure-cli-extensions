@@ -17,7 +17,7 @@ class ApimgmtCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_apimgmt.custom#{}',
             client_factory=cf_apimgmt)
         super(ApimgmtCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=apimgmt_custom)
+                                                    custom_command_type=apimgmt_custom)
 
     def load_command_table(self, args):
         from azext_apimgmt.commands import load_command_table

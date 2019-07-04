@@ -21,7 +21,7 @@ def create_apimgmt_api(cmd, client,
                        description=None,
                        authentication_settings=None,
                        subscription_key_parameter_names=None,
-                       type=None,
+                       _type=None,
                        api_revision=None,
                        api_version=None,
                        is_current=None,
@@ -35,14 +35,14 @@ def create_apimgmt_api(cmd, client,
                        protocols=None,
                        api_version_set=None,
                        value=None,
-                       format=None,
+                       _format=None,
                        wsdl_selector=None,
                        api_type=None):
     body = {}
     body['description'] = description # str
     body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
     body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
-    body['type'] = type # str
+    body['type'] = _type # str
     body['api_revision'] = api_revision # str
     body['api_version'] = api_version # str
     body['is_current'] = is_current # boolean
@@ -57,7 +57,7 @@ def create_apimgmt_api(cmd, client,
     body['protocols'] = json.loads(protocols) if isinstance(protocols, str) else protocols
     body['api_version_set'] = json.loads(api_version_set) if isinstance(api_version_set, str) else api_version_set
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     body['wsdl_selector'] = json.loads(wsdl_selector) if isinstance(wsdl_selector, str) else wsdl_selector
     body['api_type'] = api_type # str
     return client.api.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, parameters=body)
@@ -72,7 +72,7 @@ def update_apimgmt_api(cmd, client,
                        description=None,
                        authentication_settings=None,
                        subscription_key_parameter_names=None,
-                       type=None,
+                       _type=None,
                        api_revision=None,
                        api_version=None,
                        is_current=None,
@@ -86,14 +86,14 @@ def update_apimgmt_api(cmd, client,
                        protocols=None,
                        api_version_set=None,
                        value=None,
-                       format=None,
+                       _format=None,
                        wsdl_selector=None,
                        api_type=None):
     body = {}
     body['description'] = description # str
     body['authentication_settings'] = json.loads(authentication_settings) if isinstance(authentication_settings, str) else authentication_settings
     body['subscription_key_parameter_names'] = json.loads(subscription_key_parameter_names) if isinstance(subscription_key_parameter_names, str) else subscription_key_parameter_names
-    body['type'] = type # str
+    body['type'] = _type # str
     body['api_revision'] = api_revision # str
     body['api_version'] = api_version # str
     body['is_current'] = is_current # boolean
@@ -108,7 +108,7 @@ def update_apimgmt_api(cmd, client,
     body['protocols'] = json.loads(protocols) if isinstance(protocols, str) else protocols
     body['api_version_set'] = json.loads(api_version_set) if isinstance(api_version_set, str) else api_version_set
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     body['wsdl_selector'] = json.loads(wsdl_selector) if isinstance(wsdl_selector, str) else wsdl_selector
     body['api_type'] = api_type # str
     return client.api.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, parameters=body)
@@ -276,10 +276,10 @@ def create_apimgmt_api_operation_policy(cmd, client,
                                         operation_id,
                                         policy_id,
                                         value,
-                                        format=None):
+                                        _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
@@ -291,10 +291,10 @@ def update_apimgmt_api_operation_policy(cmd, client,
                                         operation_id,
                                         policy_id,
                                         value,
-                                        format=None):
+                                        _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
@@ -324,8 +324,8 @@ def show_apimgmt_api_operation_policy(cmd, client,
                                       api_id,
                                       operation_id,
                                       policy_id,
-                                      format=None):
-    return client.api_operation_policy.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, format=format, policy_id=policy_id)
+                                      _format=None):
+    return client.api_operation_policy.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, format=_format, policy_id=policy_id)
 
 # module equivalent: azure_rm_apimanagementtag
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/tags/{{ tag_name }}
@@ -387,10 +387,10 @@ def create_apimgmt_api_policy(cmd, client,
                               api_id,
                               policy_id,
                               value,
-                              format=None):
+                              _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.api_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapipolicy
@@ -401,10 +401,10 @@ def update_apimgmt_api_policy(cmd, client,
                               api_id,
                               policy_id,
                               value,
-                              format=None):
+                              _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.api_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementapipolicy
@@ -431,8 +431,8 @@ def show_apimgmt_api_policy(cmd, client,
                             service_name,
                             api_id,
                             policy_id,
-                            format=None):
-    return client.api_policy.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, format=format)
+                            _format=None):
+    return client.api_policy.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id, policy_id=policy_id, format=_format)
 
 # module equivalent: azure_rm_apimanagementapischema
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}/schemas/{{ schema_name }}
@@ -1328,7 +1328,6 @@ def create_apimgmt_template(cmd, client,
                             description=None,
                             body=None):
     body = {}
-    body['parameters'] = parameters # placeholder
     body['subject'] = subject # str
     body['title'] = title # str
     body['description'] = description # str
@@ -1346,7 +1345,6 @@ def update_apimgmt_template(cmd, client,
                             description=None,
                             body=None):
     body = {}
-    body['parameters'] = parameters # placeholder
     body['subject'] = subject # str
     body['title'] = title # str
     body['description'] = description # str
@@ -1384,12 +1382,12 @@ def create_apimgmt_group(cmd, client,
                          group_id,
                          display_name,
                          description=None,
-                         type=None,
+                         _type=None,
                          external_id=None):
     body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
-    body['type'] = type # str
+    body['type'] = _type # str
     body['external_id'] = external_id # str
     return client.group.create_or_update(resource_group_name=resource_group, service_name=service_name, group_id=group_id, parameters=body)
 
@@ -1401,12 +1399,12 @@ def update_apimgmt_group(cmd, client,
                          group_id,
                          display_name,
                          description=None,
-                         type=None,
+                         _type=None,
                          external_id=None):
     body = {}
     body['display_name'] = display_name # str
     body['description'] = description # str
-    body['type'] = type # str
+    body['type'] = _type # str
     body['external_id'] = external_id # str
     return client.group.create_or_update(resource_group_name=resource_group, service_name=service_name, group_id=group_id, parameters=body)
 
@@ -1475,7 +1473,7 @@ def create_apimgmt_identityprovider(cmd, client,
                                     name,
                                     client_id,
                                     client_secret,
-                                    type=None,
+                                    _type=None,
                                     allowed_tenants=None,
                                     authority=None,
                                     signup_policy_name=None,
@@ -1483,7 +1481,7 @@ def create_apimgmt_identityprovider(cmd, client,
                                     profile_editing_policy_name=None,
                                     password_reset_policy_name=None):
     body = {}
-    body['type'] = type # str
+    body['type'] = _type # str
     body['allowed_tenants'] = json.loads(allowed_tenants) if isinstance(allowed_tenants, str) else allowed_tenants
     body['authority'] = authority # str
     body['signup_policy_name'] = signup_policy_name # str
@@ -1502,7 +1500,7 @@ def update_apimgmt_identityprovider(cmd, client,
                                     name,
                                     client_id,
                                     client_secret,
-                                    type=None,
+                                    _type=None,
                                     allowed_tenants=None,
                                     authority=None,
                                     signup_policy_name=None,
@@ -1510,7 +1508,7 @@ def update_apimgmt_identityprovider(cmd, client,
                                     profile_editing_policy_name=None,
                                     password_reset_policy_name=None):
     body = {}
-    body['type'] = type # str
+    body['type'] = _type # str
     body['allowed_tenants'] = json.loads(allowed_tenants) if isinstance(allowed_tenants, str) else allowed_tenants
     body['authority'] = authority # str
     body['signup_policy_name'] = signup_policy_name # str
@@ -1780,10 +1778,10 @@ def create_apimgmt_policy(cmd, client,
                           service_name,
                           policy_id,
                           value,
-                          format=None):
+                          _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementpolicy
@@ -1793,10 +1791,10 @@ def update_apimgmt_policy(cmd, client,
                           service_name,
                           policy_id,
                           value,
-                          format=None):
+                          _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementpolicy
@@ -1820,8 +1818,8 @@ def show_apimgmt_policy(cmd, client,
                         resource_group,
                         service_name,
                         policy_id,
-                        format=None):
-    return client.policy.get(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, format=format)
+                        _format=None):
+    return client.policy.get(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, format=_format)
 
 # module equivalent: azure_rm_apimanagementsigninsetting
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/portalsettings/signin
@@ -2003,7 +2001,7 @@ def create_apimgmt_product_api(cmd, client,
                                description=None,
                                authentication_settings=None,
                                subscription_key_parameter_names=None,
-                               type=None,
+                               _type=None,
                                api_revision=None,
                                api_version=None,
                                is_current=None,
@@ -2030,7 +2028,7 @@ def update_apimgmt_product_api(cmd, client,
                                description=None,
                                authentication_settings=None,
                                subscription_key_parameter_names=None,
-                               type=None,
+                               _type=None,
                                api_revision=None,
                                api_version=None,
                                is_current=None,
@@ -2073,7 +2071,7 @@ def create_apimgmt_product_group(cmd, client,
                                  display_name,
                                  description=None,
                                  built_in=None,
-                                 type=None,
+                                 _type=None,
                                  external_id=None):
     return client.product_group.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
@@ -2087,7 +2085,7 @@ def update_apimgmt_product_group(cmd, client,
                                  display_name,
                                  description=None,
                                  built_in=None,
-                                 type=None,
+                                 _type=None,
                                  external_id=None):
     return client.product_group.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, group_id=group_id)
 
@@ -2116,10 +2114,10 @@ def create_apimgmt_product_policy(cmd, client,
                                   product_id,
                                   policy_id,
                                   value,
-                                  format=None):
+                                  _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
@@ -2130,10 +2128,10 @@ def update_apimgmt_product_policy(cmd, client,
                                   product_id,
                                   policy_id,
                                   value,
-                                  format=None):
+                                  _format=None):
     body = {}
     body['value'] = value # str
-    body['format'] = format # str
+    body['format'] = _format # str
     return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
 
 # module equivalent: azure_rm_apimanagementproductpolicy
@@ -2160,8 +2158,8 @@ def show_apimgmt_product_policy(cmd, client,
                                 service_name,
                                 product_id,
                                 policy_id,
-                                format=None):
-    return client.product_policy.get(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, format=format)
+                                _format=None):
+    return client.product_policy.get(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, format=_format)
 
 # module equivalent: azure_rm_apimanagementproperty
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/properties/{{ property_name }}
