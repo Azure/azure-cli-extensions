@@ -22,7 +22,7 @@ def print_status(msg=''):
 
 
 def generate(ext_file, output_dir):
-    # Verify sphinx installed in environment before we get started
+    # Verify sphinx installed in environment before we get started!
     check_call(['sphinx-build', '--version'])
     if not output_dir:
         output_dir = tempfile.mkdtemp(prefix='ref-doc-out-', dir=os.getcwd())
