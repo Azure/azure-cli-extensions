@@ -103,7 +103,7 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('reason', 'AlreadyExists')
         ])
 
-@ResourceGroupPreparer(parameter_name_for_location='location', location='northeurope')
+    @ResourceGroupPreparer(parameter_name_for_location='location', location='northeurope')
     def test_create_storage_account_premium_sku(self, resource_group, location):
         self.kwargs.update({
             'name1': self.create_random_name(prefix='cli', length=24),
