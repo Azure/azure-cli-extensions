@@ -60,11 +60,11 @@ class ContainerServiceClient(SDKClient):
     :vartype config: ContainerServiceClientConfiguration
 
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.containerservice.v2019_02_01.operations.Operations
+    :vartype operations: azure.mgmt.containerservice.v2019_04_01.operations.Operations
     :ivar managed_clusters: ManagedClusters operations
-    :vartype managed_clusters: azure.mgmt.containerservice.v2019_02_01.operations.ManagedClustersOperations
+    :vartype managed_clusters: azure.mgmt.containerservice.v2019_04_01.operations.ManagedClustersOperations
     :ivar agent_pools: AgentPools operations
-    :vartype agent_pools: azure.mgmt.containerservice.v2019_02_01.operations.AgentPoolsOperations
+    :vartype agent_pools: azure.mgmt.containerservice.v2019_04_01.operations.AgentPoolsOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -83,7 +83,7 @@ class ContainerServiceClient(SDKClient):
         super(ContainerServiceClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2019-02-01'
+        self.api_version = '2019-04-01'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 

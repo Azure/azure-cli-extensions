@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -34,7 +34,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='application-insights',
     version=VERSION,
-    description='Support for querying Azure Application Insights metrics, events, and logs.',
+    description='Support for managing Application Insights components and querying metrics, events, and logs from such components.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Ace Eldeib',

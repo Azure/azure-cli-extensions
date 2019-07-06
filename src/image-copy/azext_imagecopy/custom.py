@@ -5,20 +5,21 @@
 
 from multiprocessing import Pool
 
+from knack.util import CLIError
+from knack.log import get_logger
+
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azext_imagecopy.create_target import create_target_image
 
-from knack.util import CLIError
-from knack.log import get_logger
 logger = get_logger(__name__)
 
 
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 def imagecopy(source_resource_group_name, source_object_name, target_location,
-              target_resource_group_name, temporary_resource_group_name, source_type='image',
-              cleanup='false', parallel_degree=-1, tags=None, target_name=None,
-              target_subscription=None, timeout=3600):
+              target_resource_group_name, temporary_resource_group_name='image-copy-rg',
+              source_type='image', cleanup='false', parallel_degree=-1, tags=None, target_name=None,
+              target_subscription=None, export_as_snapshot='false', timeout=3600):
 
     # get the os disk id from source vm/image
     logger.warn("Getting os disk id of the source vm/image")
@@ -47,14 +48,16 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             if source_os_disk_id is None:
                 raise TypeError
             source_os_disk_type = "BLOB"
-            logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+            logger.debug("found %s: %s", source_os_disk_type,
+                         source_os_disk_id)
         except TypeError:
             try:  # images created by e.g. image-copy extension
                 source_os_disk_id = json_cmd_output['storageProfile']['osDisk']['snapshot']['id']
                 if source_os_disk_id is None:
                     raise TypeError
                 source_os_disk_type = "SNAPSHOT"
-                logger.debug("found %s: %s", source_os_disk_type, source_os_disk_id)
+                logger.debug("found %s: %s", source_os_disk_type,
+                             source_os_disk_id)
             except TypeError:
                 pass
 
@@ -79,10 +82,11 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
-    logger.warn("Getting sas url for the source snapshot with timeout seconds: %d", timeout)
+    logger.warn(
+        "Getting sas url for the source snapshot with timeout: %d seconds", timeout)
     if timeout < 3600:
-        logger.warn("Timeout should be greater than 3600")
-        raise CLIError('Inavlid Timeout')
+        logger.error("Timeout should be greater than 3600 seconds")
+        raise CLIError('Invalid Timeout')
 
     cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
                                    '--name', source_os_disk_snapshot_name,
@@ -131,7 +135,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             tasks.append((location, transient_resource_group_name, source_type,
                           source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                           source_os_type, target_resource_group_name, azure_pool_frequency,
-                          tags, target_name, target_subscription, timeout))
+                          tags, target_name, target_subscription, export_as_snapshot, timeout))
 
         logger.warn("Starting async process for all locations")
 

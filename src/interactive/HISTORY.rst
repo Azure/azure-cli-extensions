@@ -2,6 +2,15 @@
 
 Release History
 ===============
+
+0.4.3
++++++
+* Fix config problem in interactive
+
+0.4.2
++++++
+* Update to remain compatible with azure-cli 2.0.62.
+
 0.4.1
 +++++
 * Remove command registration, rely on module to be called.
