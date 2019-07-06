@@ -8,21 +8,20 @@ trigger:
     - '*'
 
 jobs:
-- job: SourceStatic
-  displayName: "Source Code Static Check"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.7'
-    inputs:
-      versionSpec: 3.7
-  - bash: |
-      #!/usr/bin/env bash
-      set -ev
-      pip install azdev
-      python ./scripts/ci/test_static.py
-    displayName: "Source Code Static Check"
+# - job: SourceStatic
+#   displayName: "Source Code Static Check"
+#   pool:
+#     vmImage: 'ubuntu-16.04'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.7'
+#     inputs:
+#       versionSpec: 3.7
+#   - task: Bash@3
+#     displayName: "Source Code Static Check"
+#     inputs:
+#       targetType: 'filePath'
+#       filePath: scripts/ci/test_static.sh
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
