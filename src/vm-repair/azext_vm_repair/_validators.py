@@ -74,11 +74,11 @@ def validate_restore(cmd, namespace):
         try:
             find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
                                   .format(tag=tag)
-            logger.info('Searching for repair-vm within subscription...')
+            logger.info('Searching for the repair VM within subscription...')
             output = _call_az_command(find_repair_command)
         except AzCommandError as azCommandError:
             logger.error(azCommandError)
-            raise CLIError('Unexpected error occured while locating repair VM.')
+            raise CLIError('Unexpected error occured while locating the repair VM.')
         repair_list = loads(output)
 
         # No repair VM found
@@ -90,12 +90,12 @@ def validate_restore(cmd, namespace):
             message = 'More than one repair VM found:\n'
             for vm in repair_list:
                 message += vm['id'] + '\n'
-            message += '\nPlease specify the --repair-vm-id to restore the disk-swap with.'
+            message += '\nPlease specify the --repair-vm-id to restore with.'
             raise CLIError(message)
 
         # One repair VM found
         namespace.repair_vm_id = repair_list[0]['id']
-        logger.warning('Repair-vm-id not given, restoring from only matching repair VM: %s', namespace.repair_vm_id)
+        logger.info('Restoring from repair VM: %s', namespace.repair_vm_id)
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
@@ -110,7 +110,7 @@ def validate_restore(cmd, namespace):
     # Populate disk name
     if not namespace.disk_name:
         namespace.disk_name = data_disks[0].name
-        logger.warning('Disk-name not given. Defaulting to the first data disk attached to the repair VM: %s', data_disks[0].name)
+        logger.info('Disk-name not given. Defaulting to the first data disk attached to the repair VM: %s', data_disks[0].name)
     else:  # check disk name
         if not [disk for disk in data_disks if disk.name == namespace.disk_name]:
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
@@ -122,7 +122,7 @@ def _prompt_repair_username(namespace):
     try:
         namespace.repair_username = prompt('Repair VM admin username: ')
     except NoTTYException:
-        raise CLIError('Please specify username in non-interactive mode.')
+        raise CLIError('Please specify the username parameter in non-interactive mode.')
 
 
 def _prompt_repair_password(namespace):
@@ -130,7 +130,7 @@ def _prompt_repair_password(namespace):
     try:
         namespace.repair_password = prompt_pass('Repair VM admin password: ', confirm=True)
     except NoTTYException:
-        raise CLIError('Please specify password in non-interactive mode.')
+        raise CLIError('Please specify the password parameter in non-interactive mode.')
 
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
