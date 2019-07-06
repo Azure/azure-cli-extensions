@@ -47,11 +47,11 @@ Enable AAD integration for Azure files, which will support SMB access: [more inf
 az storage account create \
     --name accountName \
     --resource-group groupName \
-    --kind StorageV2 \
+    --kind StorageV2
 
 az storage account update \
     --name accountName \
-    --resource-group groupName \
+    --resource-group groupName
 ```
 
 #### Premium Blobs/Files:
