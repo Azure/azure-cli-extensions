@@ -76,7 +76,7 @@ def _run_pylint(module_paths, ignored_modules=None, rcfile=None, cpu_count=1):
     pylint_opts.append("--jobs={}".format(cpu_count))
     pylint_opts.extend(module_paths)
 
-    runobj = lint.Run(pylint_opts, exit=False)
+    runobj = lint.Run(pylint_opts)
     status = runobj.linter.msg_status
     if status:
         sys.exit(status)

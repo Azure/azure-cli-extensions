@@ -8,20 +8,20 @@ trigger:
     - '*'
 
 jobs:
-- job: SourceStatic
-  displayName: "Source Code Static Check"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.7'
-    inputs:
-      versionSpec: 3.7
-  - task: Bash@3
-    displayName: "Source Code Static Check"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_static.sh
+# - job: SourceStatic
+#   displayName: "Source Code Static Check"
+#   pool:
+#     vmImage: 'ubuntu-16.04'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.7'
+#     inputs:
+#       versionSpec: 3.7
+#   - task: Bash@3
+#     displayName: "Source Code Static Check"
+#     inputs:
+#       targetType: 'filePath'
+#       filePath: scripts/ci/test_static.sh
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
@@ -35,41 +35,43 @@ jobs:
   - bash: |
       #!/usr/bin/env bash
       set -ev
+      pip install wheel==0.30.0 requests
+      export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
 
-- job: TestsPython27
-  displayName: "Tests Python 2.7"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 2.7'
-    inputs:
-      versionSpec: 2.7
-  - task: Bash@3
-    displayName: "Tests Python 2.7"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_source.sh
+# - job: TestsPython27
+#   displayName: "Tests Python 2.7"
+#   pool:
+#     vmImage: 'ubuntu-16.04'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 2.7'
+#     inputs:
+#       versionSpec: 2.7
+#   - task: Bash@3
+#     displayName: "Tests Python 2.7"
+#     inputs:
+#       targetType: 'filePath'
+#       filePath: scripts/ci/test_source.sh
 
-- job: TestsPython37
-  displayName: "Tests Python 3.7"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.7'
-    inputs:
-      versionSpec: 3.7
-  - task: Bash@3
-    displayName: "Tests Python 3.7"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/test_source.sh
+# - job: TestsPython37
+#   displayName: "Tests Python 3.7"
+#   pool:
+#     vmImage: 'ubuntu-16.04'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.7'
+#     inputs:
+#       versionSpec: 3.7
+#   - task: Bash@3
+#     displayName: "Tests Python 3.7"
+#     inputs:
+#       targetType: 'filePath'
+#       filePath: scripts/ci/test_source.sh
 
 - job: LintModifiedExtensions
-  displayName: "CLI Linter"
+  displayName: "CLI Linter on Modified Extensions"
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
@@ -81,7 +83,7 @@ jobs:
     displayName: "CLI Linter on Modified Extension"
     inputs:
       targetType: 'filePath'
-      filePath: scripts/ci/verified_modified_index.sh
+      filePath: scripts/ci/verify_modified_index.sh
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
