@@ -70,20 +70,20 @@ jobs:
 #       targetType: 'filePath'
 #       filePath: scripts/ci/test_source.sh
 
-- job: LintModifiedExtensions
-  displayName: "CLI Linter on Modified Extensions"
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: UsePythonVersion@0
-    displayName: 'Use Python 3.7'
-    inputs:
-      versionSpec: 3.7
-  - task: Bash@3
-    displayName: "CLI Linter on Modified Extension"
-    inputs:
-      targetType: 'filePath'
-      filePath: scripts/ci/verify_modified_index.sh
+# - job: LintModifiedExtensions
+#   displayName: "CLI Linter on Modified Extensions"
+#   pool:
+#     vmImage: 'ubuntu-16.04'
+#   steps:
+#   - task: UsePythonVersion@0
+#     displayName: 'Use Python 3.7'
+#     inputs:
+#       versionSpec: 3.7
+#   - task: Bash@3
+#     displayName: "CLI Linter on Modified Extension"
+#     inputs:
+#       targetType: 'filePath'
+#       filePath: scripts/ci/verify_modified_index.sh
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
