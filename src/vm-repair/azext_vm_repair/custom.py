@@ -74,8 +74,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if is_managed:
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
             # Copy OS disk command
-            copy_disk_command = 'az disk create -g {g} -n {n} --source {s}  --location {loc} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, loc=source_vm.location)
+            disk_sku = source_vm.storage_profile.os_disk.managed_disk.storage_account_type
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --query id -o tsv' \
+                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=source_vm.location)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
@@ -184,7 +185,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return_dict['resourceTag'] = resource_tag
     return_dict['createdResources'] = created_resources
 
-    logger.info('\n' + return_dict['message'] + '\n')
+    logger.info('\n%s\n', return_dict['message'])
     return return_dict
 
 
@@ -261,5 +262,5 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
                              'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
                              .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
 
-    logger.info('\n' + return_dict['message'] + '\n')
+    logger.info('\n%s\n', return_dict['message'])
     return return_dict
