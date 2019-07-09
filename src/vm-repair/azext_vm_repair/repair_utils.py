@@ -31,6 +31,10 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     """
 
     tokenized_command = shlex.split(command_string)
+
+    # If command does not start with 'az' then raise exception
+    if not tokenized_command or tokenized_command[0] != 'az':
+        raise AzCommandError("The command string is not an 'az' command!")
     # If run on windows, add 'cmd /c'
     windows_os_name = 'nt'
     if os.name == windows_os_name:
