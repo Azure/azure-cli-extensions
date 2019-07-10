@@ -82,7 +82,6 @@ def get_frontdoor_resource_property_entry(resource, prop):
             from knack.util import CLIError
             raise CLIError("Item '{}' does not exist on {} '{}'".format(
                 item_name, resource, resource_name))
-
         return result
 
     func_name = 'get_fd_{}_{}'.format(resource, prop)

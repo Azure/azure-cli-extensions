@@ -7,18 +7,6 @@ install:
     - pip install pylint==1.9.2 flake8==3.5.0 requests wheel==0.30.0 -q
 jobs:
   include:
-    - stage: precheck
-      env: PURPOSE='SourceStatic'
-      script: ./scripts/ci/test_static.sh
-      python: 3.6
-    - stage: precheck
-      env: PURPOSE='SourceStaticPy'
-      script: python ./scripts/ci/test_static.py
-      python: 3.6
-    - stage: verify
-      env: PURPOSE='IndexVerify'
-      script: python ./scripts/ci/test_index.py -v
-      python: 3.6
     - stage: verify
       env: PURPOSE='SourceTests'
       script: ./scripts/ci/test_source.sh
@@ -26,14 +14,6 @@ jobs:
     - stage: verify
       env: PURPOSE='SourceTests'
       script: ./scripts/ci/test_source.sh
-      python: 3.6
-    - stage: verify
-      env: PURPOSE='Load and Lint Modified Index Entries'
-      script: ./scripts/ci/verify_modified_index.sh
-      python: 3.6
-    - stage: verify
-      env: PURPOSE='IndexRefDocVerify'
-      script: ./scripts/ci/test_index_ref_doc.sh
       python: 3.6
     - stage: publish
       script: |

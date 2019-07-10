@@ -29,12 +29,22 @@ for src_d in os.listdir(SRC_PATH):
         continue
     pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
 
-    # If running in Travis CI, only run tests for edited extensions
-    commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
-    if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
-        continue
+    ci = os.environ.get('CI')
 
-    # Find the package and check it has tests
+    if ci == 'TRAVIS':
+        # If running in Travis CI, only run tests for edited extensions
+        commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
+        if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+            continue
+    elif ci == 'ADO':
+        source_branch = os.environ.get('BUILD_SOURCEBRANCH')
+        target_branch = os.environ.get('SYSTEM_PULLREQUEST_TARGETBRANCH')
+        commit_range = '{}..{}'.format(target_branch, source_branch)
+        print('COMMIT RANGE: {}'.format(commit_range))
+        if source_branch and target_branch and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+            continue
+
+    # Find the package and check if it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
         ALL_TESTS.append((pkg_name, src_d_full))
 
@@ -47,13 +57,16 @@ class TestExtensionSourceMeta(type):
                 ext_install_dir = os.path.join(self.ext_dir, 'ext')
                 pip_args = [sys.executable, '-m', 'pip', 'install', '--upgrade', '--target',
                             ext_install_dir, ext_path]
+                print(pip_args)
                 check_call(pip_args)
                 unittest_args = [sys.executable, '-m', 'unittest', 'discover', '-v', ext_path]
                 env = os.environ.copy()
                 env['PYTHONPATH'] = ext_install_dir
+                print(unittest_args)
                 check_call(unittest_args, env=env)
             return test
 
+        print(ALL_TESTS)
         for tname, ext_path in ALL_TESTS:
             test_name = "test_%s" % tname
             _dict[test_name] = gen_test(ext_path)
@@ -75,11 +88,13 @@ class TestExtensionSource(with_metaclass(TestExtensionSourceMeta, unittest.TestC
 class TestSourceWheels(unittest.TestCase):
 
     def test_source_wheels(self):
+        print('TEST SOURCE WHEELS')
         # Test we can build all sources into wheels and that metadata from the wheel is valid
         built_whl_dir = tempfile.mkdtemp()
         source_extensions = [os.path.join(SRC_PATH, n) for n in os.listdir(SRC_PATH)
                              if os.path.isdir(os.path.join(SRC_PATH, n))]
         for s in source_extensions:
+            print('SOURCE EXT: {}'.format(s))
             if not os.path.isfile(os.path.join(s, 'setup.py')):
                 continue
             try:

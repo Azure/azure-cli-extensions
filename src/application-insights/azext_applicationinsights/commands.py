@@ -74,3 +74,6 @@ def load_command_table(self, _):
 
     with self.command_group('monitor app-insights', query_sdk) as g:
         g.custom_command('query', 'execute_query')
+
+    with self.command_group('monitor app-insights', is_preview=True) as g:
+        pass

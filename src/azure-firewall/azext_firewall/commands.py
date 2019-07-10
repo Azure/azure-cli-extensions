@@ -72,4 +72,7 @@ def load_command_table(self, _):
 
     with self.command_group('network firewall', network_firewall_fqdn_tags_sdk) as g:
         g.command('list-fqdn-tags', 'list_all')
+
+    with self.command_group('network firewall', is_preview=True) as g:
+        pass
     # endregion

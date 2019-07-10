@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 set -ex
 
-# Install CLI & Dev Tools
-echo "Installing azure-cli-dev-tools and azure-cli..."
-git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
-python ../azure-cli/scripts/dev_setup.py
-pip install -e "git+https://github.com/Azure/azure-cli@dev#egg=azure-cli-dev-tools&subdirectory=tools" -q
-echo "Installed."
-az --version
-set +x
-
 # check for index updates
 modified_extensions=$(python ./scripts/ci/index_changes.py)
 echo "Found the following modified extension entries:"
@@ -27,16 +18,16 @@ while read line; do
     echo "New index entries detected for extension:" $ext
     echo "Adding latest entry from source:" $source
     set +e
-    az extension add -s $source -y
+    azdev extension add $ext
     if [ $? != 0 ]; then
         continue
     fi
     set -e
     echo "Load all commands"
-    azdev verify load-all
+    az self-test
     echo "Running linter"
-    azdev cli-lint --ci --extensions $ext
-    az extension remove -n $ext
+    azdev linter $ext
+    azdev extension remove $ext
     echo $ext "extension has been removed."
 done <<< "$modified_extensions"
 

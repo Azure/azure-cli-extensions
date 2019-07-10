@@ -47,7 +47,7 @@ class AliasExtCommandLoader(AzCommandsLoader):
 
     def load_command_table(self, _):
 
-        with self.command_group('alias') as g:
+        with self.command_group('alias', is_preview=True) as g:
             g.custom_command('create', 'create_alias', validator=process_alias_create_namespace)
             g.custom_command('export', 'export_aliases', validator=process_alias_export_namespace)
             g.custom_command('import', 'import_aliases', validator=process_alias_import_namespace)

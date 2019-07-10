@@ -24,14 +24,14 @@ def load_command_table(self, _):
         min_api='2018-08-01'
     )
 
-    with self.command_group('network vnet tap', network_vnet_tap_sdk) as g:
+    with self.command_group('network vnet tap', network_vnet_tap_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_vnet_tap')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_vnet_taps')
         g.show_command('show', 'get')
         g.generic_update_command('update')
 
-    with self.command_group('network nic vtap-config', network_nic_tap_config_sdk) as g:
+    with self.command_group('network nic vtap-config', network_nic_tap_config_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_vtap_config')
         g.command('delete', 'delete')
         g.command('list', 'list')

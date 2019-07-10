@@ -106,3 +106,6 @@ def load_command_table(self, _):
                          client_factory=snapshots_mgmt_client_factory,
                          doc_string_source='azext_netappfiles_preview.vendored_sdks.models#Snapshot',
                          exception_handler=netapp_exception_handler)
+
+    with self.command_group('netappfiles', is_preview=True) as g:
+        pass

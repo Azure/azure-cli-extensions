@@ -10,6 +10,6 @@ from ._validators import validate_create, validate_restore
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
-    with self.command_group('vm repair') as g:
+    with self.command_group('vm repair', is_preview=True) as g:
         g.custom_command('create', 'create', validator=validate_create)
         g.custom_command('restore', 'restore', validator=validate_restore)

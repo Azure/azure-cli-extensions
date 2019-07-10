@@ -15,5 +15,5 @@ def load_command_table(self, _):
         client_factory=cf_resource_graph
     )
 
-    with self.command_group('graph', command_type=graph_sdk, client_factory=cf_resource_graph) as g:
+    with self.command_group('graph', command_type=graph_sdk, client_factory=cf_resource_graph, is_preview=True) as g:
         g.custom_command('query', 'execute_query', validator=validate_query_args)

@@ -22,7 +22,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
               target_subscription=None, export_as_snapshot='false', timeout=3600):
 
     # get the os disk id from source vm/image
-    logger.warn("Getting os disk id of the source vm/image")
+    logger.warning("Getting os disk id of the source vm/image")
     cli_cmd = prepare_cli_command([source_type, 'show',
                                    '--name', source_object_name,
                                    '--resource-group', source_resource_group_name])
@@ -30,7 +30,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     json_cmd_output = run_cli_command(cli_cmd, return_as_json=True)
 
     if json_cmd_output['storageProfile']['dataDisks']:
-        logger.warn(
+        logger.warning(
             "Data disks in the source detected, but are ignored by this extension!")
 
     source_os_disk_id = None
@@ -72,7 +72,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     # create source snapshots
     # TODO: skip creating another snapshot when the source is a snapshot
-    logger.warn("Creating source snapshot")
+    logger.warning("Creating source snapshot")
     source_os_disk_snapshot_name = source_object_name + '_os_disk_snapshot'
     cli_cmd = prepare_cli_command(['snapshot', 'create',
                                    '--name', source_os_disk_snapshot_name,
@@ -82,7 +82,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
     run_cli_command(cli_cmd)
 
     # Get SAS URL for the snapshotName
-    logger.warn(
+    logger.warning(
         "Getting sas url for the source snapshot with timeout: %d seconds", timeout)
     if timeout < 3600:
         logger.error("Timeout should be greater than 3600 seconds")
@@ -109,7 +109,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
                           target_subscription)
 
     target_locations_count = len(target_location)
-    logger.warn("Target location count: %s", target_locations_count)
+    logger.warning("Target location count: %s", target_locations_count)
 
     create_resource_group(target_resource_group_name,
                           target_location[0].strip(),
@@ -137,7 +137,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
                           source_os_type, target_resource_group_name, azure_pool_frequency,
                           tags, target_name, target_subscription, export_as_snapshot, timeout))
 
-        logger.warn("Starting async process for all locations")
+        logger.warning("Starting async process for all locations")
 
         for task in tasks:
             pool.apply_async(create_target_image, task)
@@ -145,16 +145,16 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
         pool.close()
         pool.join()
     except KeyboardInterrupt:
-        logger.warn('User cancelled the operation')
+        logger.warning('User cancelled the operation')
         if cleanup:
-            logger.warn('To cleanup temporary resources look for ones tagged with "image-copy-extension". \n'
-                        'You can use the following command: az resource list --tag created_by=image-copy-extension')
+            logger.warning('To cleanup temporary resources look for ones tagged with "image-copy-extension". \n'
+                           'You can use the following command: az resource list --tag created_by=image-copy-extension')
         pool.terminate()
         return
 
     # Cleanup
     if cleanup:
-        logger.warn('Deleting transient resources')
+        logger.warning('Deleting transient resources')
 
         # Delete resource group
         cli_cmd = prepare_cli_command(['group', 'delete', '--no-wait', '--yes',
@@ -189,7 +189,7 @@ def create_resource_group(resource_group_name, location, subscription=None):
         return
 
     # create the target resource group
-    logger.warn("Creating resource group: %s", resource_group_name)
+    logger.warning("Creating resource group: %s", resource_group_name)
     cli_cmd = prepare_cli_command(['group', 'create',
                                    '--name', resource_group_name,
                                    '--location', location],

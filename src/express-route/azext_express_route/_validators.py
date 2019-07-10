@@ -82,7 +82,7 @@ def validate_circuit_bandwidth(namespace, mbps=True):
         logger.warning('interpretting --bandwidth as %s. Consider being explicit: Mbps, Gbps', unit)
         setattr(namespace, 'bandwidth_in_{}'.format(unit), float(bandwidth_comps[0]))
         return
-    elif len(bandwidth_comps) > 2:
+    if len(bandwidth_comps) > 2:
         raise usage_error
 
     if float(bandwidth_comps[0]) and bandwidth_comps[1].lower() in ['mbps', 'gbps']:

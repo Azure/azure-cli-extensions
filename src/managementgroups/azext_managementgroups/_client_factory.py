@@ -6,7 +6,7 @@
 
 def cf_managementgroups(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_managementgroups.managementgroups import ManagementGroupsAPI
+    from azext_managementgroups.vendored_sdks import ManagementGroupsAPI
     return get_mgmt_service_client(
         cli_ctx,
         ManagementGroupsAPI,

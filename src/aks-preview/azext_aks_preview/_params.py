@@ -45,10 +45,10 @@ def load_arguments(self, _):
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
-        c.argument('aad_client_app_id')
-        c.argument('aad_server_app_id')
-        c.argument('aad_server_app_secret')
-        c.argument('aad_tenant_id')
+        c.argument('aad_client_app_id', is_preview=True)
+        c.argument('aad_server_app_id', is_preview=True)
+        c.argument('aad_server_app_secret', is_preview=True)
+        c.argument('aad_tenant_id', is_preview=True)
         c.argument('dns_service_ip')
         c.argument('docker_bridge_address')
         c.argument('load_balancer_sku')
@@ -58,7 +58,7 @@ def load_arguments(self, _):
                    deprecate_info=c.deprecate(redirect="--disable-rbac", hide="2.0.45"))
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
         c.argument('network_plugin')
-        c.argument('network_policy')
+        c.argument('network_policy', is_preview=True)
         c.argument('no_ssh_key', options_list=['--no-ssh-key', '-x'])
         c.argument('pod_cidr')
         c.argument('service_cidr')
@@ -68,9 +68,9 @@ def load_arguments(self, _):
         c.argument('enable_cluster_autoscaler', action='store_true')
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
-        c.argument('enable_vmss', action='store_true')
-        c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
-        c.argument('enable_pod_security_policy', action='store_true')
+        c.argument('enable_vmss', action='store_true', is_preview=True)
+        c.argument('node_zones', zones_type, options_list='--node-zones', help='Space-separated list of availability zones where agent nodes will be placed.', is_preview=True)
+        c.argument('enable_pod_security_policy', action='store_true', is_preview=True)
         c.argument('node_resource_group')
 
     with self.argument_context('aks update') as c:
@@ -80,8 +80,8 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
-        c.argument('enable_pod_security_policy', action='store_true')
-        c.argument('disable_pod_security_policy', action='store_true')
+        c.argument('enable_pod_security_policy', action='store_true', is_preview=True)
+        c.argument('disable_pod_security_policy', action='store_true', is_preview=True)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -96,7 +96,7 @@ def load_arguments(self, _):
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
-            c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+            c.argument('node_zones', zones_type, options_list='--node-zones', help='Space-separated list of availability zones where agent nodes will be placed.', is_preview=True)
             c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
             c.argument('os_type', type=str)

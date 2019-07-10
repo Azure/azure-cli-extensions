@@ -57,7 +57,7 @@ def load_command_table(self, _):
     )
 
     # region Frontdoors
-    with self.command_group('network front-door', frontdoor_sdk) as g:
+    with self.command_group('network front-door', frontdoor_sdk, is_preview=True) as g:
         g.show_command('show')
         g.custom_command('create', 'create_front_door', supports_no_wait=True)
         g.command('delete', 'delete', supports_no_wait=True)

@@ -25,10 +25,9 @@ def get_query_targets(cli_ctx, apps, resource_group):
         if resource_group:
             return [get_id_from_azure_resource(cli_ctx, apps[0], resource_group)]
         return list(map(lambda x: get_id_from_azure_resource(cli_ctx, x), apps))
-    else:
-        if resource_group:
-            return [get_id_from_azure_resource(cli_ctx, apps, resource_group)]
-        return apps
+    if resource_group:
+        return [get_id_from_azure_resource(cli_ctx, apps, resource_group)]
+    return apps
 
 
 def get_timespan(_, start_time=None, end_time=None, offset=None):

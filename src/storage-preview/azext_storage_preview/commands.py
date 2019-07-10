@@ -107,3 +107,6 @@ The secondary cluster will become the primary cluster after failover. Please und
 
     with self.command_group('storage azcopy', custom_command_type=get_custom_sdk('azcopy', None)) as g:
         g.custom_command('run-command', 'storage_run_command', validator=lambda namespace: None)
+
+    with self.command_group('storage', is_preview=True) as g:
+        pass

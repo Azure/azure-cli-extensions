@@ -6,7 +6,7 @@
 
 def cf_managementpartner(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_managementpartner.managementpartner.ace_provisioning_management_partner_api import (
+    from azext_managementpartner.vendored_sdks.ace_provisioning_management_partner_api import (
         ACEProvisioningManagementPartnerAPI as ManagementPartnerAPI)
     return get_mgmt_service_client(cli_ctx, ManagementPartnerAPI, subscription_bound=False)
 
