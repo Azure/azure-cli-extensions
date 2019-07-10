@@ -7,7 +7,7 @@ import mock
 import psycopg2
 import mysql.connector
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer,
-                               api_version_constraint)
+                               api_version_constraint, live_only)
 
 
 class DbUpTests(ScenarioTest):
@@ -73,6 +73,7 @@ class DbUpTests(ScenarioTest):
             password, user, database, server)).get_output_in_json()
         self.assertEqual(output, output_mirror)
 
+    @live_only()  # "sql up" can only run live as updating dependencies is done once during command execution
     def test_sql_flow(self):
         group = self.create_random_name(prefix='group', length=24)
         server = self.create_random_name(prefix='server', length=24)
@@ -96,8 +97,3 @@ class DbUpTests(ScenarioTest):
         with self.assertRaises(SystemExit) as ex:
             self.cmd('group show -n {}'.format(group))
         self.assertEqual(ex.exception.code, 3)
-
-        # check that show-connection-string matches previous output
-        output_mirror = self.cmd('sql show-connection-string -p {} -u {} -d {} -s {}'.format(
-            password, user, database, server)).get_output_in_json()
-        self.assertEqual(output, output_mirror)

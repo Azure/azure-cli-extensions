@@ -6,16 +6,30 @@
 from __future__ import print_function
 import binascii
 import datetime
+import errno
 import json
 import os
 import os.path
+import platform
 import re
+import ssl
+import stat
+import subprocess
+import sys
+import tempfile
+import threading
 import time
 import uuid
+import webbrowser
 from ipaddress import ip_network
+from six.moves.urllib.request import urlopen  # pylint: disable=import-error
+from six.moves.urllib.error import URLError  # pylint: disable=import-error
+import requests
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
+
+import yaml  # pylint: disable=import-error
 import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
@@ -24,7 +38,7 @@ from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
-from azure.cli.core.util import shell_safe_json_parse, truncate_text, sdk_no_wait
+from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
                                     KeyCredential,
@@ -51,6 +65,55 @@ logger = get_logger(__name__)
 
 
 # pylint:disable=too-many-lines,unused-argument
+
+
+def which(binary):
+    path_var = os.getenv('PATH')
+    if platform.system() == 'Windows':
+        binary = binary + '.exe'
+        parts = path_var.split(';')
+    else:
+        parts = path_var.split(':')
+
+    for part in parts:
+        bin_path = os.path.join(part, binary)
+        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
+            return bin_path
+
+    return None
+
+
+def wait_then_open(url):
+    """
+    Waits for a bit then opens a URL.  Useful for waiting for a proxy to come up, and then open the URL.
+    """
+    for _ in range(1, 10):
+        try:
+            urlopen(url, context=_ssl_context())
+        except URLError:
+            time.sleep(1)
+        break
+    webbrowser.open_new_tab(url)
+
+
+def wait_then_open_async(url):
+    """
+    Spawns a thread that waits for a bit then opens a URL.
+    """
+    t = threading.Thread(target=wait_then_open, args=({url}))
+    t.daemon = True
+    t.start()
+
+
+def _ssl_context():
+    if sys.version_info < (3, 4) or (in_cloud_console() and platform.system() == 'Windows'):
+        try:
+            return ssl.SSLContext(ssl.PROTOCOL_TLS)  # added in python 2.7.13 and 3.6
+        except AttributeError:
+            return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+
+    return ssl.create_default_context()
+
 
 def _build_service_principal(rbac_client, cli_ctx, name, url, client_secret):
     # use get_progress_controller
@@ -339,6 +402,73 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
+               listen_address='127.0.0.1', listen_port='8001'):
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
+
+    # verify the kube-dashboard addon was not disabled
+    instance = client.get(resource_group_name, name)
+    addon_profiles = instance.addon_profiles or {}
+    addon_profile = addon_profiles.get("kubeDashboard", ManagedClusterAddonProfile(enabled=True))
+    if not addon_profile.enabled:
+        raise CLIError('The kube-dashboard addon was disabled for this managed cluster.\n'
+                       'To use "az aks browse" first enable the add-on\n'
+                       'by running "az aks enable-addons --addons kube-dashboard".')
+
+    proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
+    _, browse_path = tempfile.mkstemp()
+    # TODO: need to add an --admin option?
+    aks_get_credentials(cmd, client, resource_group_name, name, admin=False, path=browse_path)
+    # find the dashboard pod's name
+    try:
+        dashboard_pod = subprocess.check_output(
+            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system", "--output", "name",
+             "--selector", "k8s-app=kubernetes-dashboard"],
+            universal_newlines=True)
+    except subprocess.CalledProcessError as err:
+        raise CLIError('Could not find dashboard pod: {}'.format(err))
+    if dashboard_pod:
+        # remove any "pods/" or "pod/" prefix from the name
+        dashboard_pod = str(dashboard_pod).split('/')[-1].strip()
+    else:
+        raise CLIError("Couldn't find the Kubernetes dashboard pod.")
+    # launch kubectl port-forward locally to access the remote dashboard
+    if in_cloud_console():
+        # TODO: better error handling here.
+        response = requests.post('http://localhost:8888/openport/{0}'.format(listen_port))
+        result = json.loads(response.text)
+        term_id = os.environ.get('ACC_TERM_ID')
+        if term_id:
+            response = requests.post('http://localhost:8888/openLink/{}'.format(term_id),
+                                     json={"url": result['url']})
+        logger.warning('To view the console, please open %s in a new tab', result['url'])
+    else:
+        logger.warning('Proxy running on %s', proxy_url)
+
+    logger.warning('Press CTRL+C to close the tunnel...')
+    if not disable_browser:
+        wait_then_open_async(proxy_url)
+    try:
+        try:
+            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "--namespace", "kube-system",
+                                     "port-forward", "--address", listen_address, dashboard_pod,
+                                     "{0}:9090".format(listen_port)], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            if err.output.find(b'unknown flag: --address'):
+                if listen_address != '127.0.0.1':
+                    logger.warning('"--address" is only supported in kubectl v1.13 and later.')
+                    logger.warning('The "--listen-address" argument will be ignored.')
+                subprocess.call(["kubectl", "--kubeconfig", browse_path, "--namespace", "kube-system",
+                                 "port-forward", dashboard_pod, "{0}:9090".format(listen_port)])
+    except KeyboardInterrupt:
+        # Let command processing finish gracefully after the user presses [Ctrl+C]
+        pass
+    finally:
+        # TODO: Better error handling here.
+        requests.post('http://localhost:8888/closeport/8001')
+
+
 def _trim_nodepoolname(nodepool_name):
     if not nodepool_name:
         return "nodepool1"
@@ -371,6 +501,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
+               load_balancer_sku="basic",
                enable_addons=None,
                workspace_resource_id=None,
                min_count=None,
@@ -385,6 +516,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                node_zones=None,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
+               node_resource_group=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -475,8 +607,15 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             service_cidr=service_cidr,
             dns_service_ip=dns_service_ip,
             docker_bridge_cidr=docker_bridge_address,
-            network_policy=network_policy
+            network_policy=network_policy,
+            load_balancer_sku=load_balancer_sku.lower()
         )
+    else:
+        if load_balancer_sku.lower() == "standard":
+            network_profile = ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                load_balancer_sku=load_balancer_sku.lower()
+            )
 
     addon_profiles = _handle_addons_args(
         cmd,
@@ -515,6 +654,9 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         aad_profile=aad_profile,
         enable_pod_security_policy=bool(enable_pod_security_policy))
 
+    if node_resource_group:
+        mc.node_resource_group = node_resource_group
+
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
     retry_exception = Exception(None)
@@ -550,6 +692,9 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
+    if update_flags > 0 and instance.max_agent_pools > 1:
+        raise CLIError('Please use "az aks nodepool command to update per node pool auto scaler settings"')
+
     node_count = instance.agent_pool_profiles[0].count
 
     if min_count is None or max_count is None:
@@ -640,9 +785,31 @@ def _remove_nulls(managed_clusters):
     return managed_clusters
 
 
+def aks_get_credentials(cmd, client, resource_group_name, name, admin=False,
+                        path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                        overwrite_existing=False):
+    credentialResults = None
+    if admin:
+        credentialResults = client.list_cluster_admin_credentials(resource_group_name, name)
+    else:
+        credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
+
+    if not credentialResults:
+        raise CLIError("No Kubernetes credentials found.")
+    else:
+        try:
+            kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
+            _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
+        except (IndexError, ValueError):
+            raise CLIError("Fail to find kubeconfig file.")
+
+
 ADDONS = {
     'http_application_routing': 'httpApplicationRouting',
-    'monitoring': 'omsagent'
+    'monitoring': 'omsagent',
+    'virtual-node': 'aciConnector',
+    'azure-policy': 'azurepolicy',
+    'kube-dashboard': 'kubeDashboard'
 }
 
 
@@ -688,6 +855,9 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     if 'http_application_routing' in addons:
         addon_profiles['httpApplicationRouting'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('http_application_routing')
+    if 'kube-dashboard' in addons:
+        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
+        addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
     if 'monitoring' in addons:
         if not workspace_resource_id:
@@ -706,7 +876,9 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
     elif workspace_resource_id:
         raise CLIError('"--workspace-resource-id" requires "--enable-addons monitoring".')
-
+    if 'azure-policy' in addons:
+        addon_profiles['azurepolicy'] = ManagedClusterAddonProfile(enabled=True)
+        addons.remove('azure-policy')
     # error out if any (unrecognized) addons remain
     if addons:
         raise CLIError('"{}" {} not recognized by the --enable-addons argument.'.format(
@@ -987,8 +1159,7 @@ def _check_cluster_autoscaler_flag(enable_cluster_autoscaler,
 
 def _create_client_secret():
     # Add a special character to satsify AAD SP secret requirements
-    special_chars = '!#$%&*-+_.:;<>=?@][^}{|~'
-    special_char = special_chars[ord(os.urandom(1)) % len(special_chars)]
+    special_char = '$'
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret
 
@@ -1005,18 +1176,27 @@ def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
 def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
                       kubernetes_version=None,
                       node_zones=None,
-                      node_vm_size="Standard_DS2_v2",
+                      node_vm_size=None,
                       node_osdisk_size=0,
                       node_count=3,
                       vnet_subnet_id=None,
                       max_pods=0,
                       os_type="Linux",
+                      min_count=None,
+                      max_count=None,
+                      enable_cluster_autoscaler=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
+
+    if node_vm_size is None:
+        if os_type == "Windows":
+            node_vm_size = "Standard_D2s_v3"
+        else:
+            node_vm_size = "Standard_DS2_v2"
 
     agent_pool = AgentPool(
         name=nodepool_name,
@@ -1030,6 +1210,8 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         orchestrator_version=kubernetes_version,
         availability_zones=node_zones
     )
+
+    _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
 
     if node_osdisk_size:
         agent_pool.os_disk_size_gb = int(node_osdisk_size)
@@ -1061,6 +1243,61 @@ def aks_agentpool_upgrade(cmd, client, resource_group_name, cluster_name,
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
+def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepool_name,
+                         enable_cluster_autoscaler=False,
+                         disable_cluster_autoscaler=False,
+                         update_cluster_autoscaler=False,
+                         min_count=None, max_count=None,
+                         no_wait=False):
+
+    update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+    if update_flags != 1:
+        raise CLIError('Please specify "--enable-cluster-autoscaler" or '
+                       '"--disable-cluster-autoscaler" or '
+                       '"--update-cluster-autoscaler"')
+
+    instance = client.get(resource_group_name, cluster_name, nodepool_name)
+    node_count = instance.count
+
+    if min_count is None or max_count is None:
+        if enable_cluster_autoscaler or update_cluster_autoscaler:
+            raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
+                           '--update-cluster-autoscaler set.')
+    if min_count is not None and max_count is not None:
+        if int(min_count) > int(max_count):
+            raise CLIError('value of min-count should be less than or equal to value of max-count.')
+        if int(node_count) < int(min_count) or int(node_count) > int(max_count):
+            raise CLIError("current node count '{}' is not in the range of min-count and max-count.".format(node_count))
+
+    if enable_cluster_autoscaler:
+        if instance.enable_auto_scaling:
+            logger.warning('Autoscaler is already enabled for this node pool.\n'
+                           'Please run "az aks nodepool update --update-cluster-autoscaler" '
+                           'if you want to update min-count or max-count.')
+            return None
+        instance.min_count = int(min_count)
+        instance.max_count = int(max_count)
+        instance.enable_auto_scaling = True
+
+    if update_cluster_autoscaler:
+        if not instance.enable_auto_scaling:
+            raise CLIError('Autoscaler is not enabled for this node pool.\n'
+                           'Run "az aks nodepool update --enable-cluster-autoscaler" '
+                           'to enable cluster with min-count and max-count.')
+        instance.min_count = int(min_count)
+        instance.max_count = int(max_count)
+
+    if disable_cluster_autoscaler:
+        if not instance.enable_auto_scaling:
+            logger.warning('Autoscaler is already disabled for this node pool.')
+            return None
+        instance.enable_auto_scaling = False
+        instance.min_count = None
+        instance.max_count = None
+
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
+
+
 def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
                          nodepool_name,
                          no_wait=False):
@@ -1076,3 +1313,234 @@ def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
                        "use 'aks nodepool list' to get current node pool list".format(nodepool_name))
 
     return sdk_no_wait(no_wait, client.delete, resource_group_name, cluster_name, nodepool_name)
+
+
+def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
+    instance = client.get(resource_group_name, name)
+    subscription_id = _get_subscription_id(cmd.cli_ctx)
+
+    instance = _update_addons(
+        cmd,
+        instance,
+        subscription_id,
+        resource_group_name,
+        addons,
+        enable=False,
+        no_wait=no_wait
+    )
+
+    # send the managed cluster representation to update the addon profiles
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
+                      subnet_name=None, no_wait=False):
+    instance = client.get(resource_group_name, name)
+    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    service_principal_client_id = instance.service_principal_profile.client_id
+    instance = _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable=True,
+                              workspace_resource_id=workspace_resource_id, subnet_name=subnet_name, no_wait=no_wait)
+
+    if 'omsagent' in instance.addon_profiles:
+        _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
+        cloud_name = cmd.cli_ctx.cloud.name
+        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
+        if cloud_name.lower() == 'azurecloud':
+            from msrestazure.tools import resource_id
+            cluster_resource_id = resource_id(
+                subscription=subscription_id,
+                resource_group=resource_group_name,
+                namespace='Microsoft.ContainerService', type='managedClusters',
+                name=name
+            )
+            if not _add_role_assignment(cmd.cli_ctx, 'Monitoring Metrics Publisher',
+                                        service_principal_client_id, scope=cluster_resource_id):
+                logger.warning('Could not create a role assignment for Monitoring addon. '
+                               'Are you an Owner on this subscription?')
+
+    # send the managed cluster representation to update the addon profiles
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+
+
+def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable, workspace_resource_id=None,
+                   subnet_name=None, no_wait=False):
+    # parse the comma-separated addons argument
+    addon_args = addons.split(',')
+
+    addon_profiles = instance.addon_profiles or {}
+    if 'kube-dashboard' in addon_args and 'kubeDashboard' not in addon_profiles:
+        addon_profiles['kubeDashboard'] = ManagedClusterAddonProfile(enabled=True)
+
+    os_type = 'Linux'
+
+    # for each addons argument
+    for addon_arg in addon_args:
+        addon = ADDONS[addon_arg]
+        if addon == 'aciConnector':
+            # only linux is supported for now, in the future this will be a user flag
+            addon += os_type
+        # addon name is case insensitive
+        addon = next((x for x in addon_profiles.keys() if x.lower() == addon.lower()), addon)
+        if enable:
+            # add new addons or update existing ones and enable them
+            addon_profile = addon_profiles.get(addon, ManagedClusterAddonProfile(enabled=False))
+            # special config handling for certain addons
+            if addon == 'omsagent':
+                if addon_profile.enabled:
+                    raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
+                                   'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
+                                   'before enabling it again.')
+                if not workspace_resource_id:
+                    workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
+                        cmd,
+                        subscription_id,
+                        resource_group_name)
+                workspace_resource_id = workspace_resource_id.strip()
+                if not workspace_resource_id.startswith('/'):
+                    workspace_resource_id = '/' + workspace_resource_id
+                if workspace_resource_id.endswith('/'):
+                    workspace_resource_id = workspace_resource_id.rstrip('/')
+                addon_profile.config = {'logAnalyticsWorkspaceResourceID': workspace_resource_id}
+            elif addon.lower() == ('aciConnector' + os_type).lower():
+                if addon_profile.enabled:
+                    raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
+                                   'To change virtual-node configuration, run '
+                                   '"az aks disable-addons -a virtual-node -g {resource_group_name}" '
+                                   'before enabling it again.')
+                if not subnet_name:
+                    raise CLIError('The aci-connector addon requires setting a subnet name.')
+                addon_profile.config = {'SubnetName': subnet_name}
+            addon_profiles[addon] = addon_profile
+        else:
+            if addon not in addon_profiles:
+                raise CLIError("The addon {} is not installed.".format(addon))
+            addon_profiles[addon].config = None
+        addon_profiles[addon].enabled = enable
+
+    instance.addon_profiles = addon_profiles
+
+    # null out the SP and AAD profile because otherwise validation complains
+    instance.service_principal_profile = None
+    instance.aad_profile = None
+
+    return instance
+
+
+def aks_get_versions(cmd, client, location):
+    return client.list_orchestrators(location, resource_type='managedClusters')
+
+
+def _print_or_merge_credentials(path, kubeconfig, overwrite_existing):
+    """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
+    stdout if the path is "-".
+    """
+    # Special case for printing to stdout
+    if path == "-":
+        print(kubeconfig)
+        return
+
+    # ensure that at least an empty ~/.kube/config exists
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except OSError as ex:
+            if ex.errno != errno.EEXIST:
+                raise
+    if not os.path.exists(path):
+        with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
+            pass
+
+    # merge the new kubeconfig into the existing one
+    fd, temp_path = tempfile.mkstemp()
+    additional_file = os.fdopen(fd, 'w+t')
+    try:
+        additional_file.write(kubeconfig)
+        additional_file.flush()
+        merge_kubernetes_configurations(path, temp_path, overwrite_existing)
+    except yaml.YAMLError as ex:
+        logger.warning('Failed to merge credentials to kube config file: %s', ex)
+    finally:
+        additional_file.close()
+        os.remove(temp_path)
+
+
+def _handle_merge(existing, addition, key, replace):
+    if not addition[key]:
+        return
+    if existing[key] is None:
+        existing[key] = addition[key]
+        return
+
+    for i in addition[key]:
+        for j in existing[key]:
+            if i['name'] == j['name']:
+                if replace or i == j:
+                    existing[key].remove(j)
+                else:
+                    from knack.prompting import prompt_y_n
+                    msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
+                    overwrite = False
+                    try:
+                        overwrite = prompt_y_n(msg.format(i['name']))
+                    except NoTTYException:
+                        pass
+                    if overwrite:
+                        existing[key].remove(j)
+                    else:
+                        msg = 'A different object named {} already exists in {} in your kubeconfig file.'
+                        raise CLIError(msg.format(i['name'], key))
+        existing[key].append(i)
+
+
+def load_kubernetes_configuration(filename):
+    try:
+        with open(filename) as stream:
+            return yaml.safe_load(stream)
+    except (IOError, OSError) as ex:
+        if getattr(ex, 'errno', 0) == errno.ENOENT:
+            raise CLIError('{} does not exist'.format(filename))
+        else:
+            raise
+    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+
+
+def merge_kubernetes_configurations(existing_file, addition_file, replace):
+    existing = load_kubernetes_configuration(existing_file)
+    addition = load_kubernetes_configuration(addition_file)
+
+    # rename the admin context so it doesn't overwrite the user context
+    for ctx in addition.get('contexts', []):
+        try:
+            if ctx['context']['user'].startswith('clusterAdmin'):
+                admin_name = ctx['name'] + '-admin'
+                addition['current-context'] = ctx['name'] = admin_name
+                break
+        except (KeyError, TypeError):
+            continue
+
+    if addition is None:
+        raise CLIError('failed to load additional configuration from {}'.format(addition_file))
+
+    if existing is None:
+        existing = addition
+    else:
+        _handle_merge(existing, addition, 'clusters', replace)
+        _handle_merge(existing, addition, 'users', replace)
+        _handle_merge(existing, addition, 'contexts', replace)
+        existing['current-context'] = addition['current-context']
+
+    # check that ~/.kube/config is only read- and writable by its owner
+    if platform.system() != 'Windows':
+        existing_file_perms = "{:o}".format(stat.S_IMODE(os.lstat(existing_file).st_mode))
+        if not existing_file_perms.endswith('600'):
+            logger.warning('%s has permissions "%s".\nIt should be readable and writable only by its owner.',
+                           existing_file, existing_file_perms)
+
+    with open(existing_file, 'w+') as stream:
+        yaml.safe_dump(existing, stream, default_flow_style=False)
+
+    current_context = addition.get('current-context', 'UNKNOWN')
+    msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
+    print(msg)

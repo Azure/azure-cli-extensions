@@ -47,13 +47,11 @@ Enable AAD integration for Azure files, which will support SMB access: [more inf
 az storage account create \
     --name accountName \
     --resource-group groupName \
-    --kind StorageV2 \
-    --file-aad
+    --kind StorageV2
 
 az storage account update \
     --name accountName \
-    --resource-group groupName \
-    --file-aad false
+    --resource-group groupName
 ```
 
 #### Premium Blobs/Files:
@@ -131,4 +129,18 @@ az storage azcopy blob download \
     -s virtual_directory/path \
     -d download/path \
     --recursive
+```
+###### Sync a single blob and a directory:
+```
+az storage azcopy blob sync \
+    -c containerName \
+    --account-name accountName \
+    -s "file/path" \
+    -d blobName
+
+az storage azcopy blob sync \
+    -c containerName \
+    --account-name accountName \
+    -s directory/path \
+    -d sync/path
 ```

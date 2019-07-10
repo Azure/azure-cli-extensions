@@ -40,7 +40,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.show_command('show', 'get_properties')
         g.custom_command('list', 'list_storage_accounts')
         g.custom_command('show-usage', 'show_storage_account_usage', min_api='2018-02-01')
-        g.custom_command('show-connection-string', 'show_storage_account_connection_string')
         g.generic_update_command('update', getter_name='get_properties', setter_name='update',
                                  custom_func_name='update_storage_account', min_api='2016-12-01')
         g.command('keys renew', 'regenerate_key', transform=lambda x: getattr(x, 'keys', x))
@@ -104,8 +103,7 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.storage_custom_command_oauth('upload', 'storage_blob_upload')
         g.storage_custom_command_oauth('download', 'storage_blob_download')
         g.storage_custom_command_oauth('delete', 'storage_blob_remove')
-
-        # g.storage_custom_command_oauth('sync', 'storage_blob_sync')
+        g.storage_custom_command_oauth('sync', 'storage_blob_sync')
 
     with self.command_group('storage azcopy', custom_command_type=get_custom_sdk('azcopy', None)) as g:
         g.custom_command('run-command', 'storage_run_command', validator=lambda namespace: None)

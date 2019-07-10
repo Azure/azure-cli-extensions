@@ -62,16 +62,18 @@ def _find_item_at_path(instance, path):
 
 
 # region AzureFirewall
-def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None, tags=None):
+def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None, tags=None, zones=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     AzureFirewall = cmd.get_models('AzureFirewall')
-    firewall = AzureFirewall(location=location, tags=tags)
+    firewall = AzureFirewall(location=location, tags=tags, zones=zones)
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
-def update_azure_firewall(instance, tags=None):
+def update_azure_firewall(instance, tags=None, zones=None):
     if tags is not None:
         instance.tags = tags
+    if zones is not None:
+        instance.zones = zones
     return instance
 
 

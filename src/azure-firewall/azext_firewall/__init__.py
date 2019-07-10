@@ -14,7 +14,7 @@ class AzureFirewallCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from .profiles import CUSTOM_FIREWALL
-        register_resource_type('latest', CUSTOM_FIREWALL, '2018-08-01')
+        register_resource_type('latest', CUSTOM_FIREWALL, '2019-04-01')
 
         super(AzureFirewallCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,

@@ -5,19 +5,20 @@
 
 from multiprocessing import Pool
 
+from knack.util import CLIError
+from knack.log import get_logger
+
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 from azext_imagecopy.create_target import create_target_image
 
-from knack.util import CLIError
-from knack.log import get_logger
 logger = get_logger(__name__)
 
 
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 def imagecopy(source_resource_group_name, source_object_name, target_location,
-              target_resource_group_name, temporary_resource_group_name, source_type='image',
-              cleanup='false', parallel_degree=-1, tags=None, target_name=None,
+              target_resource_group_name, temporary_resource_group_name='image-copy-rg',
+              source_type='image', cleanup='false', parallel_degree=-1, tags=None, target_name=None,
               target_subscription=None, export_as_snapshot='false', timeout=3600):
 
     # get the os disk id from source vm/image
@@ -82,10 +83,10 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
     # Get SAS URL for the snapshotName
     logger.warn(
-        "Getting sas url for the source snapshot with timeout seconds: %d", timeout)
+        "Getting sas url for the source snapshot with timeout: %d seconds", timeout)
     if timeout < 3600:
-        logger.warn("Timeout should be greater than 3600")
-        raise CLIError('Inavlid Timeout')
+        logger.error("Timeout should be greater than 3600 seconds")
+        raise CLIError('Invalid Timeout')
 
     cli_cmd = prepare_cli_command(['snapshot', 'grant-access',
                                    '--name', source_os_disk_snapshot_name,
