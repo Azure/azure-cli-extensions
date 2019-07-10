@@ -358,7 +358,7 @@ def _resolve_role_id(role, scope, definitions_client):
         role_defs = list(definitions_client.list(scope, "roleName eq '{}'".format(role)))
         if not role_defs:
             raise CLIError("Role '{}' doesn't exist.".format(role))
-        elif len(role_defs) > 1:
+        if len(role_defs) > 1:
             ids = [r.id for r in role_defs]
             err = "More than one role matches the given name '{}'. Please pick a value from '{}'"
             raise CLIError(err.format(role, ids))
@@ -644,7 +644,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         location=location, tags=tags,
         dns_prefix=dns_name_prefix,
         kubernetes_version=kubernetes_version,
-        enable_rbac=False if disable_rbac else True,
+        enable_rbac=not disable_rbac,
         agent_pool_profiles=[agent_pool_profile],
         linux_profile=linux_profile,
         windows_profile=windows_profile,
@@ -796,12 +796,11 @@ def aks_get_credentials(cmd, client, resource_group_name, name, admin=False,
 
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
-    else:
-        try:
-            kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
-            _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
-        except (IndexError, ValueError):
-            raise CLIError("Fail to find kubeconfig file.")
+    try:
+        kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
+        _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
+    except (IndexError, ValueError):
+        raise CLIError("Fail to find kubeconfig file.")
 
 
 ADDONS = {
@@ -1500,8 +1499,7 @@ def load_kubernetes_configuration(filename):
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
             raise CLIError('{} does not exist'.format(filename))
-        else:
-            raise
+        raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 

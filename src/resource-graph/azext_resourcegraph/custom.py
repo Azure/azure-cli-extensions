@@ -41,7 +41,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
             full_query = _get_extension() + "| " + graph_query
 
         except Exception as e:
-            __logger.warning("Failed to include displayNames to result. Error: " + str(e))
+            __logger.warning("Failed to include displayNames to result. Error: %s", str(e))
 
     try:
         while True:
@@ -67,22 +67,16 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
 
 
 def _get_cached_subscriptions():
-    # type: () -> list[str]
-
     cached_subs = Profile().load_cached_subscriptions()
     return [sub['id'] for sub in cached_subs]
 
 
 def _get_cached_detailed_subscriptions():
-    # type: () -> List[Tuple[Any, Any]]
-
     cached_subs = Profile().load_cached_subscriptions()
     return [(sub['id'], sub["name"]) for sub in cached_subs]
 
 
 def _get_cached_detailed_tenant():
-    # type: () -> List[Tuple[Any, Any]]
-
     token = Profile().get_raw_token()
     bearer_token = token[0][0] + " " + token[0][1]
     result = requests.get(url="https://management.azure.com/tenants?api-version=2019-05-10",

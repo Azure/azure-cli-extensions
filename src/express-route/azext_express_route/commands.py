@@ -84,3 +84,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_express_route', supports_no_wait=True)
         g.custom_command('list', 'list_express_route_circuits')
         g.generic_update_command('update', custom_func_name='update_express_route', supports_no_wait=True)
+
+    with self.command_group('network express-route', is_preview=True) as g:
+        pass

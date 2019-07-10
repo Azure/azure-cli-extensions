@@ -71,7 +71,7 @@ Please refer to the help file 'az dms project create -h' for the supported scena
                 source_platform,
                 target_platform,
                 tags)
-        except:
+        except:  # pylint: disable=try-except-raise
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
             raise
@@ -148,7 +148,7 @@ for the supported scenarios.")
                                         enable_schema_validation,
                                         enable_data_integrity_validation,
                                         enable_query_analysis_validation)
-        except:
+        except:  # pylint: disable=try-except-raise
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
             raise
@@ -166,7 +166,7 @@ for the supported scenarios.")
         if validate_only is False and validated_task_name is None:
             raise CLIError(
                 "When not validating a MongoDB task, you must supply a previously run 'validate_only' task name.")
-        elif validate_only is False and validated_task_name is not None:
+        if validate_only is False and validated_task_name is not None:
             # Though getting the task's properties is pretty quick, we want to let the user know something is happening
             logger.warning("Reviewing validation...")
             v_result = client.get(group_name=resource_group_name,
@@ -376,7 +376,7 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                    password=password,
                                    server_name=server_name,
                                    port=port)
-    elif "postgres" in typeOfInfo:
+    if "postgres" in typeOfInfo:
         database_name = connection_info_json.get('databaseName', "postgres")
         port = connection_info_json.get('port', 5432)
         return PostgreSqlConnectionInfo(user_name=user_name,
@@ -384,7 +384,7 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                         server_name=server_name,
                                         database_name=database_name,
                                         port=port)
-    elif "mongo" in typeOfInfo:
+    if "mongo" in typeOfInfo:
         connection_string = connection_info_json['connectionString']
         # Strip out the username and password from the connection string (if they exist) to store them securely.
         rex_conn_string = re.compile(r'^(mongodb://|mongodb\+srv://|http://|https://)(.*:.*@)?(.*)')
@@ -398,9 +398,8 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
         return MongoDbConnectionInfo(connection_string=connection_string,
                                      user_name=user_name,
                                      password=password)
-    else:
-        # If no match, Pass the connection info through
-        return connection_info_json
+    # If no match, Pass the connection info through
+    return connection_info_json
 
 
 def get_task_migration_properties(

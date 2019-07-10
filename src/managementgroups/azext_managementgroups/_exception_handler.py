@@ -7,13 +7,11 @@ from azure.cli.core.util import CLIError
 
 
 def managementgroups_exception_handler(ex):
-    from azext_managementgroups.managementgroups.models import ErrorResponseException
+    from azext_managementgroups.vendored_sdks.models import ErrorResponseException
     if isinstance(ex, ErrorResponseException):
         if ex.error.error:
             raise CLIError(ex.error.error)
-        else:
-            raise CLIError(ex.error)
-    else:
-        import sys
-        from six import reraise
-        reraise(*sys.exc_info())
+        raise CLIError(ex.error)
+    import sys
+    from six import reraise
+    reraise(*sys.exc_info())

@@ -46,7 +46,7 @@ def get_placeholders(arg, check_duplicates=False):
         # Check if the positional argument is enclosed with {{ }} properly
         if (not last_matched_text and matched_text == '}}') or (last_matched_text == '{{' and matched_text != '}}'):
             raise CLIError(PLACEHOLDER_BRACKETS_ERROR.format(arg))
-        elif last_matched_text == '{{' and matched_text == '}}':
+        if last_matched_text == '{{' and matched_text == '}}':
             # Extract start and end index of the placeholder name
             start_index, end_index = last_match.span()[1], cur_match.span()[0]
             placeholders.append(arg[start_index: end_index].strip())

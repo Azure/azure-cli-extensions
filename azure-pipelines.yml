@@ -6,23 +6,24 @@ trigger:
   branches:
     include:
     - '*'
-
 jobs:
-# - job: SourceStatic
-#   displayName: "Source Code Static Check"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "Source Code Static Check"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/test_static.sh
-
+- job: SourceStatic
+  displayName: "Source Code Static Check"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - bash: |
+      #!/usr/bin/env bash
+      set -ev
+      export CI="ADO"
+      . ./scripts/ci/install_azdev.sh
+      azdev style EXT
+      azdev verify license
+    displayName: "Check Styles"
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
@@ -39,7 +40,6 @@ jobs:
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
-
 # - job: TestsPython27
 #   displayName: "Tests Python 2.7"
 #   pool:
@@ -49,42 +49,48 @@ jobs:
 #     displayName: 'Use Python 2.7'
 #     inputs:
 #       versionSpec: 2.7
-#   - task: Bash@3
+#   - bash: |
+#     #!/usr/bin/env bash
+#     . scripts/ci/test_source.sh
 #     displayName: "Tests Python 2.7"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/test_source.sh
-
-# - job: TestsPython37
-#   displayName: "Tests Python 3.7"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "Tests Python 3.7"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/test_source.sh
-
-# - job: LintModifiedExtensions
-#   displayName: "CLI Linter on Modified Extensions"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "CLI Linter on Modified Extension"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/verify_modified_index.sh
-
+- job: TestsPython37
+  displayName: "Tests Python 3.7"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  - bash: |
+      #!/usr/bin/env bash
+      set -ex
+      export CI="ADO"
+      . ./scripts/ci/install_azdev.sh
+      azdev test EXT
+      python ./scripts/ci/test_source.py -v
+    displayName: "Tests Python 2.7"
+- job: LintModifiedExtensions
+  displayName: "CLI Linter on Modified Extensions"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  # - task: Bash@3
+  #   displayName: "CLI Linter on Modified Extension"
+  #   inputs:
+  #     targetType: 'filePath'
+  #     filePath: scripts/ci/verify_modified_index.sh
+  - bash: |
+      #!/usr/bin/env bash
+      set -ex
+      export CI="ADO"
+      . ./scripts/ci/install_azdev.sh
+      azdev linter --repo . --tgt upstream/$SYSTEM_PULLREQUEST_TARGETBRANCH --src upstream/$SYSTEM_PULLREQUEST_SOURCEBRANCH
+    displayName: "Lint Modified Extensions"
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
   pool:

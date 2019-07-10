@@ -8,5 +8,5 @@
 
 def load_command_table(self, _):
 
-    with self.command_group('monitor log-analytics') as g:
+    with self.command_group('monitor log-analytics', is_preview=True) as g:
         g.custom_command('query', 'execute_query')

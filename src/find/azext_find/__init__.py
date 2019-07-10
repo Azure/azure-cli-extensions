@@ -10,13 +10,15 @@ helps['find'] = """
     type: command
     short-summary: I'm an AI robot, my advice is based on our Azure documentation as well as the usage patterns of Azure CLI and Azure ARM users. Using me improves Azure products and documentation.
     examples:
-        - name: Give me any Azure CLI command or group and I’ll show the most popular commands and parameters.
+        - name: Give me any Azure CLI group and I’ll show the most popular commands within the group.
           text: |
-            az find 'az [group]'           : az find 'az storage'
-            az find 'az [group] [command]' : az find 'az monitor activity-log list'
+            az find 'az storage'
+        - name: Give me any Azure CLI command and I’ll show the most popular parameters and subcommands.
+          text: |
+            az find 'az monitor activity-log list'
         - name: You can also enter a search term, and I'll try to help find the best commands.
           text: |
-            az find '[query]' : az find 'arm template'
+            az find 'arm template'
 """
 
 
@@ -32,7 +34,7 @@ class FindCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, _):
         with self.command_group('') as g:
-            g.custom_command('find', 'process_query')
+            g.custom_command('find', 'process_query', is_preview=True)
         return self.command_table
 
     def load_arguments(self, _):

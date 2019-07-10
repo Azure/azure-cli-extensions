@@ -29,7 +29,7 @@ class AzInteractiveCommandsLoader(MainCommandsLoader):  # pylint: disable=too-fe
             loader.command_table = self.command_table
             loader._update_command_definitions()  # pylint: disable=protected-access
 
-    def load_arguments(self, _):
+    def load_arguments(self, command):
         from azure.cli.core.commands.parameters import resource_group_name_type, get_location_type, deployment_name_type
         from azure.cli.core import ArgumentsContext
 

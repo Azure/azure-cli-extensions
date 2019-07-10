@@ -5,7 +5,7 @@
 
 from knack.log import get_logger
 from knack.util import CLIError
-from azext_subscription.subscription.models import (SubscriptionCreationParameters, AdPrincipal)
+from azext_subscription.vendored_sdks.models import (SubscriptionCreationParameters, AdPrincipal)
 
 logger = get_logger(__name__)
 
@@ -39,10 +39,9 @@ def _get_object_id_from_subscription(graph_client, subscription):
     if subscription['user']:
         if subscription['user']['type'] == 'user':
             return _get_object_id_by_upn(graph_client, subscription['user']['name'])
-        elif subscription['user']['type'] == 'servicePrincipal':
+        if subscription['user']['type'] == 'servicePrincipal':
             return _get_object_id_by_spn(graph_client, subscription['user']['name'])
-        else:
-            logger.warning("Unknown user type '%s'", subscription['user']['type'])
+        logger.warning("Unknown user type '%s'", subscription['user']['type'])
     else:
         logger.warning('Current credentials are not from a user or service principal. '
                        'Azure Key Vault does not work with certificate credentials.')

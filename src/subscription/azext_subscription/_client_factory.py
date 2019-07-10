@@ -6,7 +6,7 @@
 
 def cf_subscription(cli_ctx, **_):
     from azure.cli.core.commands.client_factory import _get_mgmt_service_client
-    from azext_subscription.subscription import SubscriptionClient
+    from azext_subscription.vendored_sdks import SubscriptionClient
     client, _ = _get_mgmt_service_client(cli_ctx, SubscriptionClient, subscription_bound=False)
     return client
 

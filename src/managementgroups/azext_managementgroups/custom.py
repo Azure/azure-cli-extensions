@@ -27,7 +27,7 @@ def _get_subscription_id_from_subscription(cli_ctx, subscription):  # pylint: di
     profile = Profile(cli_ctx=cli_ctx)
     subscriptions_list = profile.load_cached_subscriptions()
     for sub in subscriptions_list:
-        if sub['id'] == subscription or sub['name'] == subscription:
+        if subscription in (sub['id'], sub['name']):
             return sub['id']
     from azure.cli.core.util import CLIError
     raise CLIError("Subscription not found in the current context.")

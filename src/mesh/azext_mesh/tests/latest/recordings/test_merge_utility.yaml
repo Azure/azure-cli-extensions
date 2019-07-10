@@ -1,0 +1,431 @@
+interactions:
+- request:
+    body: '{"properties": {"template": {"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
+      "contentVersion": "1.0.0.0", "parameters": {"location": {"defaultValue": "westus",
+      "type": "String", "metadata": {"description": "Location of the resources."}}},
+      "resources": [{"apiVersion": "2018-07-01-preview", "name": "helloWorldApp",
+      "type": "Microsoft.ServiceFabricMesh/applications", "location": "[parameters(''location'')]",
+      "dependsOn": ["Microsoft.ServiceFabricMesh/networks/helloWorldNetwork"], "properties":
+      {"description": "Service Fabric Mesh HelloWorld Application!", "services": [{"name":
+      "helloworldservice", "properties": {"description": "Service Fabric Mesh Hello
+      World Service.", "osType": "linux", "codePackages": [{"name": "helloWorldCode",
+      "image": "seabreeze/azure-mesh-helloworld:1.1-alpine", "endpoints": [{"name":
+      "helloWorldListener", "port": 80}], "resources": {"requests": {"cpu": 1.0, "memoryInGB":
+      1.0}}}, {"name": "helloWorldSideCar", "image": "seabreeze/azure-mesh-helloworld-sidecar:1.0-alpine",
+      "resources": {"requests": {"cpu": 1.0, "memoryInGB": 1.0}}}], "replicaCount":
+      1, "networkRefs": [{"name": "[resourceId(''Microsoft.ServiceFabricMesh/networks'',''helloWorldNetwork'')]"}]}}]}},
+      {"apiVersion": "2018-07-01-preview", "name": "helloWorldNetwork", "type": "Microsoft.ServiceFabricMesh/networks",
+      "location": "[parameters(''location'')]", "dependsOn": [], "properties": {"addressPrefix":
+      "10.0.0.4/22", "ingressConfig": {"layer4": [{"name": "helloWorldIngress", "publicPort":
+      80, "applicationName": "helloWorldApp", "serviceName": "helloWorldService",
+      "endpointName": "helloWorldListener"}]}}}], "outputs": {"publicIPAddress": {"value":
+      "[reference(''helloWorldNetwork'').ingressConfig.publicIpAddress]", "type":
+      "string"}}}, "mode": "Incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1808'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2018-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002","name":"cli000002","properties":{"templateHash":"773363110224145696","parameters":{"location":{"type":"String","value":"westus"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2019-07-11T21:38:41.4147028Z","duration":"PT0.8252936S","correlationId":"3b0888de-e3fc-44c6-a817-39f241740821","providers":[{"namespace":"Microsoft.ServiceFabricMesh","resourceTypes":[{"resourceType":"applications","locations":["westus"]},{"resourceType":"networks","locations":["westus"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/networks/helloWorldNetwork","resourceType":"Microsoft.ServiceFabricMesh/networks","resourceName":"helloWorldNetwork"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ServiceFabricMesh/applications/helloWorldApp","resourceType":"Microsoft.ServiceFabricMesh/applications","resourceName":"helloWorldApp"}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/cli000002/operationStatuses/08586387257648882071?api-version=2018-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1200'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:38:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:39:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:39:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:40:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:40:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:41:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:41:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Running"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '20'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:42:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mesh deployment create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --input-yaml-files --name
+      User-Agent:
+      - python/3.6.5 (Windows-10-10.0.17763-SP0) msrest/0.6.8 AZURECLISHELL/0.4.3
+        msrest_azure/0.6.1 resourcemanagementclient/2.2.0 Azure-SDK-For-Python AZURECLI/2.0.68
+        AZURECLISHELL/0.4.3
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08586387257648882071?api-version=2018-05-01
+  response:
+    body:
+      string: '{"status":"Failed","error":{"code":"DeploymentOutputEvaluationFailed","message":"Unable
+        to evaluate template outputs: ''publicIPAddress''. Please see error details
+        and deployment operations. Please see https://aka.ms/arm-debug for usage details.","details":[{"code":"DeploymentOutputEvaluationFailed","target":"publicIPAddress","message":"The
+        template output ''publicIPAddress'' is not valid: The language expression
+        property ''publicIpAddress'' doesn''t exist, available properties are ''qosLevel,
+        layer4''.."}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '505'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 11 Jul 2019 21:42:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
