@@ -83,3 +83,6 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.command('show', 'get')
         g.command('list-event-types', 'list_event_types')
+
+    with self.command_group('eventgrid', is_preview=True) as g:
+        pass

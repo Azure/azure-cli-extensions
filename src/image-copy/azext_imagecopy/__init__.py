@@ -51,6 +51,7 @@ class ImageCopyCommandsLoader(AzCommandsLoader):
                        help='Resource Group name where temporary storage account will be created.')
             c.argument('export_as_snapshot', options_list=['--export-as-snapshot'], action='store_true', default=False,
                        help='Include this switch to export the copies as snapshots instead of images.')
+            c.argument('tags', help='Tags.')
 
 
 COMMAND_LOADER_CLS = ImageCopyCommandsLoader

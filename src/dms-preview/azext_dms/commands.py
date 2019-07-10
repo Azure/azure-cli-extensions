@@ -21,10 +21,10 @@ def load_command_table(self, _):
         client_factory=dms_client_factory
     )
 
-    with self.command_group('dms project', dms_projects_sdk, client_factory=dms_cf_projects) as g:
+    with self.command_group('dms project', dms_projects_sdk, client_factory=dms_cf_projects, is_preview=True) as g:
         g.custom_command('create', 'create_or_update_project')
 
-    with self.command_group('dms project task', dms_tasks_sdk, client_factory=dms_cf_tasks) as g:
+    with self.command_group('dms project task', dms_tasks_sdk, client_factory=dms_cf_tasks, is_preview=True) as g:
         g.custom_command('cancel', 'stop_task')
         g.custom_command('create', 'create_task')
         g.custom_command('cutover', 'cutover_sync_task')

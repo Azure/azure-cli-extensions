@@ -86,7 +86,7 @@ def show_api_key(client, application, resource_group_name, api_key=None):
     result = list(filter(lambda result: result.name == api_key, client.list(resource_group_name, application)))
     if len(result) == 1:
         return result[0]
-    elif len(result) > 1:
+    if len(result) > 1:
         return result
     return None
 

@@ -51,7 +51,7 @@ def load_command_table(self, _):
     )
 
     # region VirtualWANs
-    with self.command_group('network vwan', network_vwan_sdk) as g:
+    with self.command_group('network vwan', network_vwan_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_virtual_wan')
         g.command('delete', 'delete')
         g.show_command('show')
@@ -60,7 +60,7 @@ def load_command_table(self, _):
     # endregion
 
     # region VirtualHubs
-    with self.command_group('network vhub', network_vhub_sdk) as g:
+    with self.command_group('network vhub', network_vhub_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_virtual_hub', supports_no_wait=True)
         g.command('delete', 'delete')
         g.show_command('show')
@@ -84,7 +84,7 @@ def load_command_table(self, _):
     # endregion
 
     # region VpnGateways
-    with self.command_group('network vpn-gateway', network_vpn_gateway_sdk) as g:
+    with self.command_group('network vpn-gateway', network_vpn_gateway_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_vpn_gateway', supports_no_wait=True)
         g.command('delete', 'delete')
         g.custom_command('list', 'list_vpn_gateways')
@@ -108,13 +108,13 @@ def load_command_table(self, _):
     # endregion
 
     # region VpnSites
-    with self.command_group('network vpn-site', network_vpn_site_sdk) as g:
+    with self.command_group('network vpn-site', network_vpn_site_sdk, is_preview=True) as g:
         g.custom_command('create', 'create_vpn_site', supports_no_wait=True)
         g.command('delete', 'delete')
         g.custom_command('list', 'list_vpn_sites')
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_vpn_site', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
 
-    with self.command_group('network vpn-site', network_vpn_site_config_sdk) as g:
+    with self.command_group('network vpn-site', network_vpn_site_config_sdk, is_preview=True) as g:
         g.command('download', 'download')
     # endregion

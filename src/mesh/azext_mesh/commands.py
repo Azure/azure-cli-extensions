@@ -178,37 +178,37 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
     )
 
     mesh_service_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.service_operations#ServiceOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.service_operations#ServiceOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     mesh_service_replica_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.service_replica_operations#ServiceReplicaOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.service_replica_operations#ServiceReplicaOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     mesh_cp_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.code_package_operations#CodePackageOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.code_package_operations#CodePackageOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     mesh_network_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.network_operations#NetworkOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.network_operations#NetworkOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     mesh_secret_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_operations#SecretOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.secret_operations#SecretOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     mesh_secret_value_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.secret_value_operations#SecretValueOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.secret_value_operations#SecretValueOperations.{}',
         exception_handler=resource_exception_handler
     )
 
     mesh_gateway_util = CliCommandType(
-        operations_tmpl='azext_mesh.servicefabricmesh.mgmt.servicefabricmesh.operations.gateway_operations#GatewayOperations.{}',
+        operations_tmpl='azext_mesh.vendored_sdks.mgmt.servicefabricmesh.operations.gateway_operations#GatewayOperations.{}',
         exception_handler=resource_exception_handler
     )
 
@@ -275,3 +275,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-statements
 
     with self.command_group('mesh gateway', cmd_util, client_factory=cf_mesh_gateway) as g:
         g.command('list', 'list_secrets', table_transformer=transform_gateway_list)
+
+    with self.command_group('mesh', is_preview=True) as g:
+        pass

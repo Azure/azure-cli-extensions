@@ -682,9 +682,11 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
     # before showing this message. This list includes Azure Automation, EventGrid Trigger based
     # Azure functions, and Azure Logic Apps.
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower() and \
-       "azure-automation" not in endpoint.lower() and \
-       "eventgridextension" not in endpoint.lower() and \
-       "logic.azure" not in endpoint.lower():
+            "azure-automation" not in endpoint.lower() and \
+            "eventgridextension" not in endpoint.lower() and \
+            "logic.azure" not in endpoint.lower():
+
+        # pylint: disable=logging-not-lazy
         logger.warning("If the provided endpoint doesn't support subscription validation " +
                        "handshake, navigate to the validation URL that you receive in the " +
                        "subscription validation event, in order to complete the event " +

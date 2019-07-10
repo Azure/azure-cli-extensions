@@ -9,5 +9,4 @@ def resource_exception_handler(exception):
 
     if exception.response.status_code == 404:
         raise CLIError('Can\'t find the resource.')
-    else:
-        raise CLIError(exception.message)
+    raise CLIError(exception.message)

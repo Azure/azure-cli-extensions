@@ -69,3 +69,6 @@ def load_command_table(self, _):
         g.custom_command('set-record', 'add_privatedns_cname_record', client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
         g.custom_command('remove-record', 'remove_privatedns_cname_record', client_factory=cf_privatedns_mgmt_record_sets, transform=transform_privatedns_record_set_output)
         g.generic_update_command('update', setter_name='update', custom_func_name='update_privatedns_record_set', transform=transform_privatedns_record_set_output)
+
+    with self.command_group('network private-dns', is_preview=True) as g:
+        pass

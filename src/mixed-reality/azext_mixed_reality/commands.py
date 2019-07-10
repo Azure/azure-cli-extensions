@@ -22,3 +22,6 @@ def load_command_table(self, _):
     with self.command_group('spatial-anchors-account key', command_type, client_factory=spatial_anchors_account_factory) as g:  # pylint: disable=line-too-long
         g.show_command('show', 'get_keys')
         g.custom_command('renew', 'renew_key')
+
+    with self.command_group('spatial-anchors-account', is_preview=True) as g:
+        pass
