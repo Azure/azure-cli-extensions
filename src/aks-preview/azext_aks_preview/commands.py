@@ -10,8 +10,10 @@ from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
 from ._format import aks_agentpool_show_table_format
+from ._format import aks_agentpool_list_table_format
 from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
+
 
 def load_command_table(self, _):
 
