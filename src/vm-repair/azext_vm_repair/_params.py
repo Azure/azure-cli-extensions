@@ -33,3 +33,7 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
         c.argument('yes', help='Deletes the repair resources without confirmation.')
+
+    with self.argument_context('vm repair mitigate') as c:
+        c.argument('repair_vm_id', help='Repair VM resource id.')
+        c.argument('mitigation_id', help='Unique mitigation id for mitigation script.')

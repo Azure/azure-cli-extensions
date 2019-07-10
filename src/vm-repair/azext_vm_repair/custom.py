@@ -269,7 +269,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def run_repair(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None):
+def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None):
 
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)

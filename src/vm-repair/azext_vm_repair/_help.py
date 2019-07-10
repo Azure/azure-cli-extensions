@@ -35,3 +35,12 @@ helps['vm repair restore'] = """
           text: >
             az vm repair restore -g MyResourceGroup -n MyVM --disk-name MyDiskCopy --verbose
 """
+
+helps['vm repair mitigate'] = """
+    type: command
+    short-summary: Runs mitigation scripts on the repair VM.
+    examples:
+        - name: Run the mitigation script with <mitigation-id> on the repair VM.
+          text: >
+            az vm repair mitigate -g MyResourceGroup -n MySourceVM --mitigation-id <mitigation-id> --verbose
+"""

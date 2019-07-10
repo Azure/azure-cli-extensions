@@ -90,7 +90,7 @@ def validate_restore(cmd, namespace):
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
 
 
-def validate_run_repair(cmd, namespace):
+def validate_mitigate(cmd, namespace):
     
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
