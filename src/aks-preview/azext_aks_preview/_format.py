@@ -17,14 +17,21 @@ def _aks_agentpool_table_format(result):
 
     parsed = compile_jmes("""{
         name: name,
-        location: location,
-        resourceGroup: resourceGroup,
+        osType: osType,
         kubernetesVersion: kubernetesVersion,
-        provisioningState: provisioningState,
-        count: count
+        vmSize: vmSize,
+        osDiskSizeGB: osDiskSizeGB,
+        count: count,
+        maxPods: maxPods,
+        provisioningState: provisioningState
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict))
+
+
+def aks_agentpool_list_table_format(results):
+    """Format an agent pool list for display with "-o table"."""
+    return [_aks_agentpool_table_format(r) for r in results]
 
 
 def aks_list_table_format(results):
