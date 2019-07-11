@@ -38,7 +38,7 @@ helps['vm repair restore'] = """
 
 helps['vm repair mitigate'] = """
     type: command
-    short-summary: Runs mitigation scripts on the repair VM.
+    short-summary: Run a mitigation script on the repair VM.
     examples:
         - name: Run the mitigation script with <mitigation-id> on the repair VM.
           text: >

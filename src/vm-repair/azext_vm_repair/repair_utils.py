@@ -12,7 +12,7 @@ from json import loads
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-from .exceptions import AzCommandError, WindowsOsNotAvailableError
+from .exceptions import AzCommandError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
 # pylint: disable=line-too-long
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'

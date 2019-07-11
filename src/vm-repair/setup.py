@@ -37,5 +37,6 @@ setup(
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/vm-repair',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
+    package_data={'azext_vm_repair': ['scripts/linux-run-repair.sh', 'scripts/win-run-repair.ps1']},
     install_requires=DEPENDENCIES
 )

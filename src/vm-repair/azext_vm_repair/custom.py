@@ -5,6 +5,8 @@
 
 import requests
 import json
+import os
+import pkgutil
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
@@ -274,11 +276,15 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
 
+        # Build absoulte path of driver script
+        loader = pkgutil.get_loader('azext_vm_repair')
+        mod = loader.load_module('azext_vm_repair')
+        rootpath = os.path.dirname(mod.__file__)
         if _is_linux_os(source_vm):
-            run_script = './scripts/linux-run-repair.sh'
+            run_script = os.path.join(rootpath, 'scripts', 'linux-run-repair.sh')
             command_id = 'RunShellScript'
         else:
-            run_script = './scripts/win-run-repair.ps1'
+            run_script = os.path.join(rootpath, 'scripts', 'win-run-repair.ps1')
             command_id = 'RunPowerShellScript'
 
         repair_vm_id = parse_resource_id(repair_vm_id)
