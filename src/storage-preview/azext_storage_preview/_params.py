@@ -61,7 +61,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_match')
         c.argument('if_none_match')
 
-    for item in ['delete', 'show', 'update', 'show-connection-string', 'keys', 'network-rule', 'failover']:
+    for item in ['delete', 'show', 'update', 'keys', 'network-rule', 'failover']:
         with self.argument_context('storage account {}'.format(item)) as c:
             c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
             c.argument('resource_group_name', required=False, validator=process_resource_group)
@@ -118,13 +118,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage account show') as c:
         c.argument('expand', arg_type=get_enum_type(
             self.get_models('StorageAccountExpand', resource_type=CUSTOM_MGMT_STORAGE)))
-
-    with self.argument_context('storage account show-connection-string') as c:
-        c.argument('protocol', help='The default endpoint protocol.', arg_type=get_enum_type(['http', 'https']))
-        c.argument('key_name', options_list=['--key'], help='The key to use.',
-                   arg_type=get_enum_type(list(storage_account_key_options.keys())))
-        for item in ['blob', 'file', 'queue', 'table']:
-            c.argument('{}_endpoint'.format(item), help='Custom endpoint for {}s.'.format(item))
 
     with self.argument_context('storage account keys renew') as c:
         c.argument('key_name', options_list=['--key'], help='The key to regenerate.', validator=validate_key,
