@@ -1,3 +1,5 @@
+# pylint: disable=W0611
+# ^^ pylint gives spurious "unused imports" for the models classes
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -15,7 +17,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from ._completers import get_fd_subresource_completion_list
 from ._validators import (
     validate_waf_policy, validate_load_balancing_settings, validate_probe_settings,
-    validate_frontend_endpoints, validate_backend_pool, MatchConditionAction)
+    validate_frontend_endpoints, validate_backend_pool)
 
 
 class RouteType(str, Enum):
@@ -27,7 +29,7 @@ class RouteType(str, Enum):
 def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
-        Mode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, RuleGroupOverride, Action, RuleType, Transform,
+        PolicyMode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol
     )
 
@@ -137,32 +139,93 @@ def load_arguments(self, _):
     # endregion
 
     # region WafPolicy
-    with self.argument_context('network waf-policy') as c:
+    with self.argument_context('network front-door waf-policy') as c:
         c.argument('tags', tags_type)
         c.argument('disabled', arg_type=get_three_state_flag(), help='Create in a disabled state.')
         c.argument('enabled', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Enabled status.')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('mode', arg_type=get_enum_type(Mode), help='Firewall policy mode.')
+        c.argument('mode', arg_type=get_enum_type(PolicyMode), help='Firewall policy mode.')
         c.argument('policy_name', waf_policy_name_type, options_list=['--name', '-n'])
+        c.argument('redirect_url', help='URL used for redirect rule action.')
+        c.argument('custom_block_response_status_code', help='HTTP status to return for blocked requests.')
+        c.argument('custom_block_response_body', help='Body to return for blocked requests.')
 
-    with self.argument_context('network waf-policy set-managed-ruleset') as c:
-        c.argument('action', arg_type=get_enum_type(Action), help='Action for overriden rulesets.')
-        c.argument('override', arg_type=get_enum_type(RuleGroupOverride), help='Name of the ruleset to override.')
-        c.argument('priority', type=int, help='Rule priority.')
+    with self.argument_context('network front-door waf-policy managed-rules add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to apply.')
         c.argument('version', help='Rule set version.')
-        c.argument('disable', help='Disable managed ruleset override.', action='store_true')
 
-    with self.argument_context('network waf-policy custom-rule') as c:
+    with self.argument_context('network front-door waf-policy managed-rules list') as c:
+        c.argument('policy_name', waf_policy_name_type)
+
+    with self.argument_context('network front-door waf-policy managed-rules override add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to override.')
+        c.argument('rule_group_id', help='Name of the rule group containing the rule to override.')
+        c.argument('rule_id', help='Name of the rule to override.')
+        c.argument('disabled', help='Whether to disable the rule.')
+
+    with self.argument_context('network front-door waf-policy managed-rules override remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the override to remove.')
+        c.argument('rule_group_id', help='Name of the rule group containing the override to remove.')
+        c.argument('rule_id', help='Name of the rule override to remove.')
+
+    with self.argument_context('network front-door waf-policy managed-rules remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to remove.')
+
+    with self.argument_context('network front-door waf-policy managed-rule-definition list') as c:
+        c.argument('policy_name', waf_policy_name_type)
+
+    with self.argument_context('network front-door waf-policy rule create') as c:
         c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
         c.argument('policy_name', waf_policy_name_type)
         c.argument('priority', type=int, help='Priority of the rule.')
         c.argument('rate_limit_duration', type=int, help='Rate limit duration in minutes.')
         c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
         c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
-        c.argument('action', arg_type=get_enum_type(Action), help='Rule action.')
-        c.argument('transforms', nargs='+', arg_type=get_enum_type(Transform), help='Space-separated list of transforms to apply.')
-        c.argument('match_conditions', nargs='+', options_list='--match-condition', action=MatchConditionAction)
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
+        c.argument('disabled', help='Whether to disable the rule.')
 
-    with self.argument_context('network waf-policy custom-rule list') as c:
+    with self.argument_context('network front-door waf-policy rule delete') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+
+    with self.argument_context('network front-door waf-policy rule show') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+
+    with self.argument_context('network front-door waf-policy rule update') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('priority', type=int, help='Priority of the rule.')
+        c.argument('rate_limit_duration', type=int, help='Rate limit duration in minutes.')
+        c.argument('rate_limit_threshold', type=int, help='Rate limit threshold.')
+        c.argument('rule_type', arg_type=get_enum_type(RuleType), help='Type of rule.')
+        c.argument('action', arg_type=get_enum_type(ActionType), help='Rule action.')
+        c.argument('disabled', help='Whether to disable the rule.')
+
+    with self.argument_context('network front-door waf-policy rule list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)
+
+    with self.argument_context('network front-door waf-policy rule match-condition add') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('match_variable', help='Variable[.Selector] Request variable to test with optional selector.')
+        c.argument('operator', help='Operator used to compare the variable to the values.')
+        c.argument('values', nargs='+', help='Space-separated list of values to match against.')
+        c.argument('negate', arg_type=get_three_state_flag(), help='Applies "Not" to the operator.')
+        c.argument('transforms', nargs='+', arg_type=get_enum_type(TransformType), help='Space-separated list of transforms to apply.')
+
+    with self.argument_context('network front-door waf-policy rule match-condition remove') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('index', type=int, help='0-based index of the match condition to remove')
+
+    with self.argument_context('network front-door waf-policy rule match-condition list') as c:
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('policy_name', waf_policy_name_type)
     # endregion

@@ -1,3 +1,4 @@
+# pylint: disable=C0200, R1702
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -5,11 +6,12 @@
 
 import sys
 
+from azure.cli.core.commands import cached_get, cached_put
 from azure.cli.core.util import sdk_no_wait
 
 from knack.log import get_logger
 
-from ._client_factory import cf_frontdoor, cf_waf_policies, cf_fd_frontend_endpoints
+from ._client_factory import cf_frontdoor, cf_waf_policies, cf_waf_managed_rules, cf_fd_frontend_endpoints
 
 
 logger = get_logger(__name__)
@@ -80,8 +82,8 @@ def get_frontdoor_resource_property_entry(resource, prop):
             from knack.util import CLIError
             raise CLIError("Item '{}' does not exist on {} '{}'".format(
                 item_name, resource, resource_name))
-        else:
-            return result
+
+        return result
 
     func_name = 'get_fd_{}_{}'.format(resource, prop)
     setattr(sys.modules[__name__], func_name, get_func)
@@ -551,72 +553,207 @@ def update_fd_routing_rules(instance, frontend_endpoints=None, accepted_protocol
 
 # region WafPolicy
 def create_waf_policy(cmd, resource_group_name, policy_name,
-                      disabled=False, mode=None, tags=None):
+                      disabled=False, mode=None, redirect_url=None,
+                      custom_block_response_status_code=None,
+                      custom_block_response_body=None, tags=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy1, ManagedRuleSets, PolicySettings, CustomRules)
-    policy = WebApplicationFirewallPolicy1(
+        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList)
+    policy = WebApplicationFirewallPolicy(
         location='global',
         tags=tags,
         policy_settings=PolicySettings(
             enabled_state='Enabled' if not disabled else 'Disabled',
-            mode=mode
+            mode=mode,
+            redirect_url=redirect_url,
+            custom_block_response_status_code=custom_block_response_status_code,
+            custom_block_response_body=custom_block_response_body
         ),
-        custom_rules=CustomRules(rules=[]),
-        managed_rules=ManagedRuleSets(rule_sets=[])
+        custom_rules=CustomRuleList(rules=[]),
+        managed_rules=ManagedRuleSetList(rule_sets=[])
     )
     return client.create_or_update(resource_group_name, policy_name, policy)
 
 
-def update_waf_policy(instance, tags=None, enabled=None, mode=None):
+def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
+                      custom_block_response_status_code=None, custom_block_response_body=None,
+                      disabled=False):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
 
     with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', enabled, False)
+        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
         c.update_param('mode', mode, False)
+        c.update_param('redirect_url', redirect_url, None)
+        c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
+        c.update_param('custom_block_response_body', custom_block_response_body, None)
     return instance
 
 
-def set_azure_managed_rule_set(cmd, resource_group_name, policy_name, action=None, override=None,
-                               priority=None, version=None, disable=False):
-    from azext_front_door.vendored_sdks.models import AzureManagedRuleSet, AzureManagedOverrideRuleGroup
+def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type, version):
+    from azext_front_door.vendored_sdks.models import ManagedRuleSet
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
-    if disable:
-        policy.managed_rules.rule_sets = []
+    rule_set = ManagedRuleSet(
+        rule_set_type=rule_set_type,
+        rule_set_version=version
+    )
+
+    policy_rule_sets = policy.managed_rules.managed_rule_sets
+    if policy_rule_sets is None:
+        policy.managed_rules.managed_rule_sets = [rule_set]
     else:
-        rule_set = AzureManagedRuleSet(
-            priority=priority,
-            version=version,
-            rule_group_overrides=[
-                AzureManagedOverrideRuleGroup(
-                    rule_group_override=override,
-                    action=action
-                )
-            ]
-        )
-        policy.managed_rules.rule_sets = [rule_set]
+        found = False
+        for i in range(len(policy_rule_sets)):
+            if policy_rule_sets[i].rule_set_type.upper() == rule_set_type.upper():
+                policy_rule_sets[i] = rule_set
+                found = True
+                break
+        if not found:
+            policy_rule_sets.append(rule_set)
+
     return client.create_or_update(resource_group_name, policy_name, policy)
 
 
-def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority, rule_type, action,
-                          match_conditions, rate_limit_duration=None, rate_limit_threshold=None, transforms=None):
-    from azext_front_door.vendored_sdks.models import CustomRule
+def list_azure_managed_rule_set(cmd, resource_group_name, policy_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
+    return policy.managed_rules.managed_rule_sets
+
+
+def remove_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    policy.managed_rules.managed_rule_sets = [x for x in policy.managed_rules.managed_rule_sets
+                                              if x.rule_set_type.upper() != rule_set_type.upper()]
+
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def add_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                        rule_group_id, rule_id, action=None, disabled=None):
+    from azext_front_door.vendored_sdks.models import ManagedRuleOverride, ManagedRuleGroupOverride
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+    override = ManagedRuleOverride(
+        rule_id=rule_id,
+        action=action,
+        enabled_state='Enabled' if not disabled else 'Disabled',
+    )
+
+    setRule = False
+    # Find the matching rule_set to put the override in, or fail
+    if policy.managed_rules.managed_rule_sets is None:
+        policy.managed_rules.managed_rule_sets = []
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            if rule_set.rule_group_overrides is None:
+                rule_set.rule_group_overrides = []
+            for rg in rule_set.rule_group_overrides:
+                if rg.rule_group_name.upper() == rule_group_id.upper():
+                    if rg.rules is None:
+                        rg.rules = []
+                    for j, rule in enumerate(rg.rules):
+                        if rule.rule_id.upper() == rule_id.upper():
+                            rg.rules[j] = override
+                            setRule = True
+                    if not setRule:
+                        rg.rules.append(override)
+                        setRule = True
+            if not setRule:
+                rule_set.rule_group_overrides.append(ManagedRuleGroupOverride(
+                    rule_group_name=rule_group_id,
+                    rules=[override]
+                ))
+                setRule = True
+
+    if not setRule:
+        from knack.util import CLIError
+        raise CLIError("type '{}' not found".format(rule_set_type))
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                           rule_group_id, rule_id):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    removedRule = False
+    # Find the matching rule_set to put the override in, or fail
+    if policy.managed_rules.managed_rule_sets is None:
+        policy.managed_rules.managed_rule_sets = []
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            if rule_set.rule_group_overrides is None:
+                rule_set.rule_group_overrides = []
+            for i, rg in enumerate(rule_set.rule_group_overrides):
+                if rg.rule_group_name.upper() == rule_group_id.upper():
+                    if rg.rules is None:
+                        rg.rules = []
+                    for j, rule in enumerate(rg.rules):
+                        if rule.rule_id.upper() == rule_id.upper():
+                            del rg.rules[j]
+                            if not rg.rules:
+                                del rule_set.rule_group_overrides[i]
+                            removedRule = True
+
+    if not removedRule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_id))
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def list_managed_rules_definitions(cmd):
+    client = cf_waf_managed_rules(cmd.cli_ctx, None)
+    definitions = client.list()
+    return definitions
+
+
+def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority, rule_type, action,
+                          rate_limit_duration=None, rate_limit_threshold=None, disabled=None):
+    if rule_type.lower() == "ratelimitrule" and (rate_limit_duration is None or rate_limit_threshold is None):
+        from knack.util import CLIError
+        raise CLIError("rate_limit_duration and rate_limit_threshold are required for a RateLimitRule")
+
+    from azext_front_door.vendored_sdks.models import CustomRule
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
     rule = CustomRule(
         name=rule_name,
         priority=priority,
         rule_type=rule_type,
         action=action,
-        match_conditions=match_conditions,
+        match_conditions=[],
         rate_limit_duration_in_minutes=rate_limit_duration,
         rate_limit_threshold=rate_limit_threshold,
-        transforms=transforms
+        enabled_state='Enabled' if not disabled else 'Disabled'
     )
     policy.custom_rules.rules.append(rule)
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+
+
+def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority=None, action=None,
+                          rate_limit_duration=None, rate_limit_threshold=None, disabled=None):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    foundRule = False
+    for rule in policy.custom_rules.rules:
+        if rule.name.lower() == rule_name.lower():
+            foundRule = True
+            with UpdateContext(rule) as c:
+                c.update_param('priority', priority, None)
+                c.update_param('action', action, None)
+                c.update_param('rate_limit_duration', rate_limit_duration, None)
+                c.update_param('rate_limit_threshold', rate_limit_threshold, None)
+                c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
+
+    if not foundRule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def delete_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
@@ -628,16 +765,84 @@ def delete_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
 
 def list_wp_custom_rules(cmd, resource_group_name, policy_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
-    policy = client.get(resource_group_name, policy_name)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
     return policy.custom_rules.rules
 
 
 def show_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
-    policy = client.get(resource_group_name, policy_name)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
     try:
         return next(x for x in policy.custom_rules.rules if x.name.lower() == rule_name.lower())
     except StopIteration:
         from knack.util import CLIError
-        raise CLIError("rule '{} not found".format(rule_name))
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+
+def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
+                                       index):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    foundRule = False
+    for rule in policy.custom_rules.rules:
+        if rule.name.upper() == rule_name.upper():
+            foundRule = True
+
+            if index >= len(rule.match_conditions):
+                from knack.util import CLIError
+                raise CLIError("Index out of bounds")
+
+            rule.match_conditions = [v for (i, v) in enumerate(rule.match_conditions) if i != index]
+
+    if not foundRule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+
+
+def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
+                                    match_variable, operator, values, negate=None, transforms=None):
+    from azext_front_door.vendored_sdks.models import MatchCondition
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    foundRule = False
+    for rule in policy.custom_rules.rules:
+        if rule.name.upper() == rule_name.upper():
+            foundRule = True
+
+            selector = None
+            variable_parts = match_variable.split('.')
+            if len(variable_parts) == 2:
+                match_variable = variable_parts[0]
+                selector = variable_parts[1]
+
+            rule.match_conditions.append(MatchCondition(
+                match_variable=match_variable,
+                selector=selector,
+                operator=operator,
+                negate_condition=negate,
+                match_value=values,
+                transforms=transforms
+            ))
+
+    if not foundRule:
+        from knack.util import CLIError
+        raise CLIError("rule '{}' not found".format(rule_name))
+
+    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+
+
+def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rule_name):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = cached_get(cmd, client.get, resource_group_name, policy_name)
+
+    for rule in policy.custom_rules.rules:
+        if rule.name.upper() == rule_name.upper():
+            return rule.match_conditions
+
+    from knack.util import CLIError
+    raise CLIError("rule '{}' not found".format(rule_name))
 # endregion
