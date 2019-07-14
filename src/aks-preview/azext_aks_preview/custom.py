@@ -679,9 +679,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                min_count=None, max_count=None, no_wait=False,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
-               disable_pod_security_policy=False):
+               disable_pod_security_policy=False,
+               tags=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    if update_flags != 1 and api_server_authorized_ip_ranges is None and \
+    if update_flags != 1 and api_server_authorized_ip_ranges is None and tags is None and \
        (enable_pod_security_policy is False and disable_pod_security_policy is False):
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
@@ -751,6 +752,9 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                     instance.api_server_authorized_ip_ranges.append(ip_net.with_prefixlen)
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
+
+    if tags is not None:
+        instance.tags = tags
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 

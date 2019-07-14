@@ -82,6 +82,7 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
+        c.argument('tags', tags_type, options_list=["--tags"])
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
