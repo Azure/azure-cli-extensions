@@ -19,37 +19,44 @@ helps['apimgmt api create'] = """
     short-summary: create a apimgmt api.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiUsingOai3Import
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "petstore" --path "petstore" --value "https://raw.githubusercontent.com/OAI/OpenAPI-Specif
                ication/master/examples/v3.0/petstore.yaml" --format "openapi-link"
+# create
       - name: ApiManagementCreateApiUsingSwaggerImport
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "petstore" --path "petstore" --value "http://petstore.swagger.io/v2/swagger.json" \\
                --format "swagger-link-json"
+# create
       - name: ApiManagementCreateApiUsingWadlImport
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "petstore" --path "collector" --value "https://developer.cisco.com/media/wae-release-6-2-a
                pi-reference/wae-collector-rest-api/application.wadl" --format "wadl-link-json"
+# create
       - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "soapApi" --path "currency" --value \\
                "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link"
+# create
       - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "soapApi" --path "currency" --value \\
                "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link" --api-type \\
                "soap"
+# create
       - name: ApiManagementCreateApi
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "tempgroup" --description "apidescription5200" --display-name "apiname1463" --service-url \\
                "http://newechoapi.cloudapp.net/api" --path "newapiPath"
+# create
       - name: ApiManagementCreateApiRevisionFromExistingApi
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -57,6 +64,7 @@ helps['apimgmt api create'] = """
                --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
                providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" \\
                --service-url "http://echoapi.cloudapp.net/apiv3" --path "echo"
+# create
       - name: ApiManagementCreateApiNewVersionUsingExistingApi
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -68,6 +76,7 @@ helps['apimgmt api create'] = """
                --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
                providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" \\
                --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
+# create
       - name: ApiManagementCreateApiClone
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -76,6 +85,7 @@ helps['apimgmt api create'] = """
                sourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_nam
                e }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url \\
                "http://echoapi.cloudapp.net/api" --path "echo2"
+# create
       - name: ApiManagementCreateApiWithOpenIdConnect
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -84,15 +94,6 @@ helps['apimgmt api create'] = """
                ](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test
                 the authorization filters." --display-name "Swagger Petstore" --service-url \\
                "http://petstore.swagger.io/v2" --path "petstore"
-      - name: ApiManagementUpdateApi
-        text: |-
-               az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api" --display-name "Echo API New" --service-url "http://echoapi.cloudapp.net/api2" \\
-               --path "newecho"
-      - name: ApiManagementDeleteApi
-        text: |-
-               az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api"
 """
 
 helps['apimgmt api update'] = """
@@ -100,80 +101,12 @@ helps['apimgmt api update'] = """
     short-summary: update a apimgmt api.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiUsingOai3Import
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore" --path "petstore" --value "https://raw.githubusercontent.com/OAI/OpenAPI-Specif
-               ication/master/examples/v3.0/petstore.yaml" --format "openapi-link"
-      - name: ApiManagementCreateApiUsingSwaggerImport
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore" --path "petstore" --value "http://petstore.swagger.io/v2/swagger.json" \\
-               --format "swagger-link-json"
-      - name: ApiManagementCreateApiUsingWadlImport
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore" --path "collector" --value "https://developer.cisco.com/media/wae-release-6-2-a
-               pi-reference/wae-collector-rest-api/application.wadl" --format "wadl-link-json"
-      - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "soapApi" --path "currency" --value \\
-               "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link"
-      - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "soapApi" --path "currency" --value \\
-               "http://www.webservicex.net/CurrencyConvertor.asmx?WSDL" --format "wsdl-link" --api-type \\
-               "soap"
-      - name: ApiManagementCreateApi
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "tempgroup" --description "apidescription5200" --display-name "apiname1463" --service-url \\
-               "http://newechoapi.cloudapp.net/api" --path "newapiPath"
-      - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api;rev=3" --api-revision_description "Creating a Revision of an existing API" \\
-               --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
-               providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" \\
-               --service-url "http://echoapi.cloudapp.net/apiv3" --path "echo"
-      - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echoapiv3" --description \\
-               "Create Echo API into a new Version using Existing Version Set and Copy all Operations." \\
-               --api-version "v4" --is-current true --api-version_set_id "/subscriptions/{{ subscription_
-               id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ ser
-               vice_name }}/apiVersionSets/{{ api_version_set_name }}" --subscription-required true \\
-               --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
-               providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" \\
-               --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
-      - name: ApiManagementCreateApiClone
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api2" --description "Copy of Existing Echo Api including Operations." --is-current \\
-               true --subscription-required true --source-api_id "/subscriptions/{{ subscription_id }}/re
-               sourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_nam
-               e }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url \\
-               "http://echoapi.cloudapp.net/api" --path "echo2"
-      - name: ApiManagementCreateApiWithOpenIdConnect
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "tempgroup" --description "This is a sample server Petstore server.  You can find out more
-                about Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger
-               ](http://swagger.io/irc/).  For this sample, you can use the api key `special-key` to test
-                the authorization filters." --display-name "Swagger Petstore" --service-url \\
-               "http://petstore.swagger.io/v2" --path "petstore"
+# update
       - name: ApiManagementUpdateApi
         text: |-
                az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
                "echo-api" --display-name "Echo API New" --service-url "http://echoapi.cloudapp.net/api2" \\
                --path "newecho"
-      - name: ApiManagementDeleteApi
-        text: |-
-               az apimgmt api update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api"
 """
 
 helps['apimgmt api delete'] = """
@@ -181,50 +114,7 @@ helps['apimgmt api delete'] = """
     short-summary: delete a apimgmt api.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiUsingOai3Import
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore"
-      - name: ApiManagementCreateApiUsingSwaggerImport
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore"
-      - name: ApiManagementCreateApiUsingWadlImport
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore"
-      - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "soapApi"
-      - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "soapApi"
-      - name: ApiManagementCreateApi
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "tempgroup"
-      - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api;rev=3"
-      - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echoapiv3"
-      - name: ApiManagementCreateApiClone
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api2"
-      - name: ApiManagementCreateApiWithOpenIdConnect
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "tempgroup"
-      - name: ApiManagementUpdateApi
-        text: |-
-               az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api"
+# delete
       - name: ApiManagementDeleteApi
         text: |-
                az apimgmt api delete --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -236,79 +126,7 @@ helps['apimgmt api list'] = """
     short-summary: list a apimgmt api.
     examples:
 # list_by_tags -- list
-      - name: ApiManagementCreateApiUsingOai3Import
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiUsingSwaggerImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiUsingWadlImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiClone
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiWithOpenIdConnect
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
 # list_by_service -- list
-      - name: ApiManagementCreateApiUsingOai3Import
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiUsingSwaggerImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiUsingWadlImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiClone
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateApiWithOpenIdConnect
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteApi
-        text: |-
-               az apimgmt api list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt api show'] = """
@@ -316,54 +134,6 @@ helps['apimgmt api show'] = """
     short-summary: show a apimgmt api.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiUsingOai3Import
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore"
-      - name: ApiManagementCreateApiUsingSwaggerImport
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore"
-      - name: ApiManagementCreateApiUsingWadlImport
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "petstore"
-      - name: ApiManagementCreateSoapToRestApiUsingWsdlImport
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "soapApi"
-      - name: ApiManagementCreateSoapPassThroughApiUsingWsdlImport
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "soapApi"
-      - name: ApiManagementCreateApi
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "tempgroup"
-      - name: ApiManagementCreateApiRevisionFromExistingApi
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api;rev=3"
-      - name: ApiManagementCreateApiNewVersionUsingExistingApi
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echoapiv3"
-      - name: ApiManagementCreateApiClone
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api2"
-      - name: ApiManagementCreateApiWithOpenIdConnect
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "tempgroup"
-      - name: ApiManagementUpdateApi
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api"
-      - name: ApiManagementDeleteApi
-        text: |-
-               az apimgmt api show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api"
 """
 
 helps['apimgmt api release'] = """
@@ -376,18 +146,11 @@ helps['apimgmt api release create'] = """
     short-summary: create a apimgmt api release.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiRelease
         text: |-
                az apimgmt api release create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "a1" --release-id "testrev" --notes "yahooagain"
-      - name: ApiManagementUpdateApiRelease
-        text: |-
-               az apimgmt api release create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "a1" --release-id "testrev" --notes "yahooagain"
-      - name: ApiManagementDeleteApiRelease
-        text: |-
-               az apimgmt api release create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api release update'] = """
@@ -395,18 +158,11 @@ helps['apimgmt api release update'] = """
     short-summary: update a apimgmt api release.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiRelease
-        text: |-
-               az apimgmt api release update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "a1" --release-id "testrev" --notes "yahooagain"
+# update
       - name: ApiManagementUpdateApiRelease
         text: |-
                az apimgmt api release update --resource-group "rg1" --service-name "apimService1" \\
                --api-id "a1" --release-id "testrev" --notes "yahooagain"
-      - name: ApiManagementDeleteApiRelease
-        text: |-
-               az apimgmt api release update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api release delete'] = """
@@ -414,14 +170,7 @@ helps['apimgmt api release delete'] = """
     short-summary: delete a apimgmt api release.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiRelease
-        text: |-
-               az apimgmt api release delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "a1" --release-id "testrev"
-      - name: ApiManagementUpdateApiRelease
-        text: |-
-               az apimgmt api release delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "a1" --release-id "testrev"
+# delete
       - name: ApiManagementDeleteApiRelease
         text: |-
                az apimgmt api release delete --resource-group "rg1" --service-name "apimService1" \\
@@ -433,18 +182,6 @@ helps['apimgmt api release list'] = """
     short-summary: list a apimgmt api release.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiRelease
-        text: |-
-               az apimgmt api release list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "a1"
-      - name: ApiManagementUpdateApiRelease
-        text: |-
-               az apimgmt api release list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "a1"
-      - name: ApiManagementDeleteApiRelease
-        text: |-
-               az apimgmt api release list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5a5fcc09124a7fa9b89f2f1d"
 """
 
 helps['apimgmt api release show'] = """
@@ -452,18 +189,6 @@ helps['apimgmt api release show'] = """
     short-summary: show a apimgmt api release.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiRelease
-        text: |-
-               az apimgmt api release show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "a1" --release-id "testrev"
-      - name: ApiManagementUpdateApiRelease
-        text: |-
-               az apimgmt api release show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "a1" --release-id "testrev"
-      - name: ApiManagementDeleteApiRelease
-        text: |-
-               az apimgmt api release show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5a5fcc09124a7fa9b89f2f1d" --release-id "testrev"
 """
 
 helps['apimgmt api operation'] = """
@@ -476,21 +201,13 @@ helps['apimgmt api operation create'] = """
     short-summary: create a apimgmt api operation.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiOperation
         text: |-
                az apimgmt api operation create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "PetStoreTemplate2" --operation-id "newoperations" --description \\
                "This can only be done by the logged in user." --display-name "createUser2" --method \\
                "POST" --url-template "/user1"
-      - name: ApiManagementUpdateApiOperation
-        text: |-
-               az apimgmt api operation create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "echo-api" --operation-id "operationId" --display-name "Retrieve resource" \\
-               --method "GET" --url-template "/resource"
-      - name: ApiManagementDeleteApiOperation
-        text: |-
-               az apimgmt api operation create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation update'] = """
@@ -498,21 +215,12 @@ helps['apimgmt api operation update'] = """
     short-summary: update a apimgmt api operation.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiOperation
-        text: |-
-               az apimgmt api operation update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "PetStoreTemplate2" --operation-id "newoperations" --description \\
-               "This can only be done by the logged in user." --display-name "createUser2" --method \\
-               "POST" --url-template "/user1"
+# update
       - name: ApiManagementUpdateApiOperation
         text: |-
                az apimgmt api operation update --resource-group "rg1" --service-name "apimService1" \\
                --api-id "echo-api" --operation-id "operationId" --display-name "Retrieve resource" \\
                --method "GET" --url-template "/resource"
-      - name: ApiManagementDeleteApiOperation
-        text: |-
-               az apimgmt api operation update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation delete'] = """
@@ -520,14 +228,7 @@ helps['apimgmt api operation delete'] = """
     short-summary: delete a apimgmt api operation.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiOperation
-        text: |-
-               az apimgmt api operation delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "PetStoreTemplate2" --operation-id "newoperations"
-      - name: ApiManagementUpdateApiOperation
-        text: |-
-               az apimgmt api operation delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "echo-api" --operation-id "operationId"
+# delete
       - name: ApiManagementDeleteApiOperation
         text: |-
                az apimgmt api operation delete --resource-group "rg1" --service-name "apimService1" \\
@@ -539,18 +240,6 @@ helps['apimgmt api operation list'] = """
     short-summary: list a apimgmt api operation.
     examples:
 # list_by_api -- list
-      - name: ApiManagementCreateApiOperation
-        text: |-
-               az apimgmt api operation list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "PetStoreTemplate2"
-      - name: ApiManagementUpdateApiOperation
-        text: |-
-               az apimgmt api operation list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "echo-api"
-      - name: ApiManagementDeleteApiOperation
-        text: |-
-               az apimgmt api operation list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api operation show'] = """
@@ -558,18 +247,6 @@ helps['apimgmt api operation show'] = """
     short-summary: show a apimgmt api operation.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiOperation
-        text: |-
-               az apimgmt api operation show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "PetStoreTemplate2" --operation-id "newoperations"
-      - name: ApiManagementUpdateApiOperation
-        text: |-
-               az apimgmt api operation show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "echo-api" --operation-id "operationId"
-      - name: ApiManagementDeleteApiOperation
-        text: |-
-               az apimgmt api operation show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d2ef278aa04f0888cba3f3" --operation-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api operation policy'] = """
@@ -582,16 +259,13 @@ helps['apimgmt api operation policy create'] = """
     short-summary: create a apimgmt api operation policy.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiOperationPolicy
         text: |-
                az apimgmt api operation policy create --resource-group "rg1" --service-name \\
                "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id \\
                "5600b57e7e8880006a080001" --policy-id "policy" --value "<policies> <inbound /> <backend> 
                   <forward-request />  </backend>  <outbound /></policies>" --format "xml"
-      - name: ApiManagementDeleteApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy create --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt api operation policy update'] = """
@@ -599,16 +273,6 @@ helps['apimgmt api operation policy update'] = """
     short-summary: update a apimgmt api operation policy.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy update --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id \\
-               "5600b57e7e8880006a080001" --policy-id "policy" --value "<policies> <inbound /> <backend> 
-                  <forward-request />  </backend>  <outbound /></policies>" --format "xml"
-      - name: ApiManagementDeleteApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy update --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt api operation policy delete'] = """
@@ -616,11 +280,7 @@ helps['apimgmt api operation policy delete'] = """
     short-summary: delete a apimgmt api operation policy.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy delete --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "5600b57e7e8880006a040001" --operation-id \\
-               "5600b57e7e8880006a080001" --policy-id "policy"
+# delete
       - name: ApiManagementDeleteApiOperationPolicy
         text: |-
                az apimgmt api operation policy delete --resource-group "rg1" --service-name \\
@@ -632,14 +292,6 @@ helps['apimgmt api operation policy list'] = """
     short-summary: list a apimgmt api operation policy.
     examples:
 # list_by_operation -- list
-      - name: ApiManagementCreateApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001"
-      - name: ApiManagementDeleteApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "testapi" --operation-id "testoperation"
 """
 
 helps['apimgmt api operation policy show'] = """
@@ -647,15 +299,6 @@ helps['apimgmt api operation policy show'] = """
     short-summary: show a apimgmt api operation policy.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --operation-id "5600b57e7e8880006a080001" --format \\
-               "xml" --policy-id "policy"
-      - name: ApiManagementDeleteApiOperationPolicy
-        text: |-
-               az apimgmt api operation policy show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "testapi" --operation-id "testoperation" --policy-id "policy"
 """
 
 helps['apimgmt tag'] = """
@@ -668,18 +311,11 @@ helps['apimgmt tag create'] = """
     short-summary: create a apimgmt tag.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateTag
         text: |-
                az apimgmt tag create --resource-group "rg1" --service-name "apimService1" --tag-id \\
                "tagId1" --display-name "tag1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag create --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "temptag" --display-name "temp tag"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag create --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "tagId1"
 """
 
 helps['apimgmt tag update'] = """
@@ -687,18 +323,11 @@ helps['apimgmt tag update'] = """
     short-summary: update a apimgmt tag.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag update --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "tagId1" --display-name "tag1"
+# update
       - name: ApiManagementUpdateTag
         text: |-
                az apimgmt tag update --resource-group "rg1" --service-name "apimService1" --tag-id \\
                "temptag" --display-name "temp tag"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag update --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "tagId1"
 """
 
 helps['apimgmt tag delete'] = """
@@ -706,14 +335,7 @@ helps['apimgmt tag delete'] = """
     short-summary: delete a apimgmt tag.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag delete --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "tagId1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag delete --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "temptag"
+# delete
       - name: ApiManagementDeleteTag
         text: |-
                az apimgmt tag delete --resource-group "rg1" --service-name "apimService1" --tag-id \\
@@ -725,45 +347,9 @@ helps['apimgmt tag list'] = """
     short-summary: list a apimgmt tag.
     examples:
 # list_by_operation -- list
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
 # list_by_product -- list
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
 # list_by_api -- list
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
 # list_by_service -- list
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt tag show'] = """
@@ -771,18 +357,6 @@ helps['apimgmt tag show'] = """
     short-summary: show a apimgmt tag.
     examples:
 # get -- show
-      - name: ApiManagementCreateTag
-        text: |-
-               az apimgmt tag show --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "tagId1"
-      - name: ApiManagementUpdateTag
-        text: |-
-               az apimgmt tag show --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "temptag"
-      - name: ApiManagementDeleteTag
-        text: |-
-               az apimgmt tag show --resource-group "rg1" --service-name "apimService1" --tag-id \\
-               "tagId1"
 """
 
 helps['apimgmt api policy'] = """
@@ -795,11 +369,13 @@ helps['apimgmt api policy create'] = """
     short-summary: create a apimgmt api policy.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiPolicy
         text: |-
                az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <
                backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
+# create
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
         text: |-
                az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
@@ -807,10 +383,6 @@ helps['apimgmt api policy create'] = """
                und>\r\n     <base />\r\n  <set-header name=\"newvalue\" exists-action=\"override\">\r\n  
                 <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>\r\n    
                </set-header>\r\n  </inbound>\r\n      </policies>" --format "rawxml"
-      - name: ApiManagementDeleteApiPolicy
-        text: |-
-               az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api policy update'] = """
@@ -818,22 +390,6 @@ helps['apimgmt api policy update'] = """
     short-summary: update a apimgmt api policy.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiPolicy
-        text: |-
-               az apimgmt api policy update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <
-               backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
-      - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: |-
-               az apimgmt api policy update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\r\n     <inbo
-               und>\r\n     <base />\r\n  <set-header name=\"newvalue\" exists-action=\"override\">\r\n  
-                <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>\r\n    
-               </set-header>\r\n  </inbound>\r\n      </policies>" --format "rawxml"
-      - name: ApiManagementDeleteApiPolicy
-        text: |-
-               az apimgmt api policy update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api policy delete'] = """
@@ -841,14 +397,7 @@ helps['apimgmt api policy delete'] = """
     short-summary: delete a apimgmt api policy.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiPolicy
-        text: |-
-               az apimgmt api policy delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --policy-id "policy"
-      - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: |-
-               az apimgmt api policy delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --policy-id "policy"
+# delete
       - name: ApiManagementDeleteApiPolicy
         text: |-
                az apimgmt api policy delete --resource-group "rg1" --service-name "apimService1" \\
@@ -860,18 +409,6 @@ helps['apimgmt api policy list'] = """
     short-summary: list a apimgmt api policy.
     examples:
 # list_by_api -- list
-      - name: ApiManagementCreateApiPolicy
-        text: |-
-               az apimgmt api policy list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5600b57e7e8880006a040001"
-      - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: |-
-               az apimgmt api policy list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5600b57e7e8880006a040001"
-      - name: ApiManagementDeleteApiPolicy
-        text: |-
-               az apimgmt api policy list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "loggerId"
 """
 
 helps['apimgmt api policy show'] = """
@@ -879,18 +416,6 @@ helps['apimgmt api policy show'] = """
     short-summary: show a apimgmt api policy.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiPolicy
-        text: |-
-               az apimgmt api policy show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5600b57e7e8880006a040001" --policy-id "policy" --format "xml"
-      - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: |-
-               az apimgmt api policy show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5600b57e7e8880006a040001" --policy-id "policy" --format "rawxml"
-      - name: ApiManagementDeleteApiPolicy
-        text: |-
-               az apimgmt api policy show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "loggerId" --policy-id "policy"
 """
 
 helps['apimgmt api schema'] = """
@@ -903,15 +428,12 @@ helps['apimgmt api schema create'] = """
     short-summary: create a apimgmt api schema.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiSchema
         text: |-
                az apimgmt api schema create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1" \\
                --content-type "application/vnd.ms-azure-apim.xsd+xml"
-      - name: ApiManagementDeleteApiSchema
-        text: |-
-               az apimgmt api schema create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api schema update'] = """
@@ -919,15 +441,6 @@ helps['apimgmt api schema update'] = """
     short-summary: update a apimgmt api schema.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiSchema
-        text: |-
-               az apimgmt api schema update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1" \\
-               --content-type "application/vnd.ms-azure-apim.xsd+xml"
-      - name: ApiManagementDeleteApiSchema
-        text: |-
-               az apimgmt api schema update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api schema delete'] = """
@@ -935,10 +448,7 @@ helps['apimgmt api schema delete'] = """
     short-summary: delete a apimgmt api schema.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiSchema
-        text: |-
-               az apimgmt api schema delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1"
+# delete
       - name: ApiManagementDeleteApiSchema
         text: |-
                az apimgmt api schema delete --resource-group "rg1" --service-name "apimService1" \\
@@ -950,14 +460,6 @@ helps['apimgmt api schema list'] = """
     short-summary: list a apimgmt api schema.
     examples:
 # list_by_api -- list
-      - name: ApiManagementCreateApiSchema
-        text: |-
-               az apimgmt api schema list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "59d6bb8f1f7fab13dc67ec9b"
-      - name: ApiManagementDeleteApiSchema
-        text: |-
-               az apimgmt api schema list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "59d5b28d1f7fab116c282650"
 """
 
 helps['apimgmt api schema show'] = """
@@ -965,14 +467,6 @@ helps['apimgmt api schema show'] = """
     short-summary: show a apimgmt api schema.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiSchema
-        text: |-
-               az apimgmt api schema show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "59d6bb8f1f7fab13dc67ec9b" --schema-id "ec12520d-9d48-4e7b-8f39-698ca2ac63f1"
-      - name: ApiManagementDeleteApiSchema
-        text: |-
-               az apimgmt api schema show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "59d5b28d1f7fab116c282650" --schema-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api diagnostic'] = """
@@ -985,20 +479,12 @@ helps['apimgmt api diagnostic create'] = """
     short-summary: create a apimgmt api diagnostic.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiDiagnostic
         text: |-
                az apimgmt api diagnostic create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log \\
                "allErrors" --logger-id "/loggers/applicationinsights"
-      - name: ApiManagementUpdateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log \\
-               "allErrors" --logger-id "/loggers/applicationinsights"
-      - name: ApiManagementDeleteApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api diagnostic update'] = """
@@ -1006,20 +492,12 @@ helps['apimgmt api diagnostic update'] = """
     short-summary: update a apimgmt api diagnostic.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log \\
-               "allErrors" --logger-id "/loggers/applicationinsights"
+# update
       - name: ApiManagementUpdateApiDiagnostic
         text: |-
                az apimgmt api diagnostic update --resource-group "rg1" --service-name "apimService1" \\
                --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights" --always-log \\
                "allErrors" --logger-id "/loggers/applicationinsights"
-      - name: ApiManagementDeleteApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api diagnostic delete'] = """
@@ -1027,14 +505,7 @@ helps['apimgmt api diagnostic delete'] = """
     short-summary: delete a apimgmt api diagnostic.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
-      - name: ApiManagementUpdateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
+# delete
       - name: ApiManagementDeleteApiDiagnostic
         text: |-
                az apimgmt api diagnostic delete --resource-group "rg1" --service-name "apimService1" \\
@@ -1046,18 +517,6 @@ helps['apimgmt api diagnostic list'] = """
     short-summary: list a apimgmt api diagnostic.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a"
-      - name: ApiManagementUpdateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a"
-      - name: ApiManagementDeleteApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a"
 """
 
 helps['apimgmt api diagnostic show'] = """
@@ -1065,18 +524,6 @@ helps['apimgmt api diagnostic show'] = """
     short-summary: show a apimgmt api diagnostic.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
-      - name: ApiManagementUpdateApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
-      - name: ApiManagementDeleteApiDiagnostic
-        text: |-
-               az apimgmt api diagnostic show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt api issue'] = """
@@ -1089,6 +536,7 @@ helps['apimgmt api issue create'] = """
     short-summary: create a apimgmt api issue.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiIssue
         text: |-
                az apimgmt api issue create --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -1097,14 +545,6 @@ helps['apimgmt api issue create'] = """
                "New API issue description" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups
                /{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{
                { user_name }}"
-      - name: ApiManagementUpdateApiIssue
-        text: |-
-               az apimgmt api issue create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --state "closed"
-      - name: ApiManagementDeleteApiIssue
-        text: |-
-               az apimgmt api issue create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue update'] = """
@@ -1112,22 +552,11 @@ helps['apimgmt api issue update'] = """
     short-summary: update a apimgmt api issue.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiIssue
-        text: |-
-               az apimgmt api issue update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --created-date \\
-               "2018-02-01T22:21:20.467Z" --state "open" --title "New API issue" --description \\
-               "New API issue description" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups
-               /{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{
-               { user_name }}"
+# update
       - name: ApiManagementUpdateApiIssue
         text: |-
                az apimgmt api issue update --resource-group "rg1" --service-name "apimService1" --api-id \\
                "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --state "closed"
-      - name: ApiManagementDeleteApiIssue
-        text: |-
-               az apimgmt api issue update --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue delete'] = """
@@ -1135,14 +564,7 @@ helps['apimgmt api issue delete'] = """
     short-summary: delete a apimgmt api issue.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiIssue
-        text: |-
-               az apimgmt api issue delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
-      - name: ApiManagementUpdateApiIssue
-        text: |-
-               az apimgmt api issue delete --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
+# delete
       - name: ApiManagementDeleteApiIssue
         text: |-
                az apimgmt api issue delete --resource-group "rg1" --service-name "apimService1" --api-id \\
@@ -1154,18 +576,6 @@ helps['apimgmt api issue list'] = """
     short-summary: list a apimgmt api issue.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiIssue
-        text: |-
-               az apimgmt api issue list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a"
-      - name: ApiManagementUpdateApiIssue
-        text: |-
-               az apimgmt api issue list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a"
-      - name: ApiManagementDeleteApiIssue
-        text: |-
-               az apimgmt api issue list --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a"
 """
 
 helps['apimgmt api issue show'] = """
@@ -1173,18 +583,6 @@ helps['apimgmt api issue show'] = """
     short-summary: show a apimgmt api issue.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiIssue
-        text: |-
-               az apimgmt api issue show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
-      - name: ApiManagementUpdateApiIssue
-        text: |-
-               az apimgmt api issue show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
-      - name: ApiManagementDeleteApiIssue
-        text: |-
-               az apimgmt api issue show --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue comment'] = """
@@ -1197,6 +595,7 @@ helps['apimgmt api issue comment create'] = """
     short-summary: create a apimgmt api issue comment.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiIssueComment
         text: |-
                az apimgmt api issue comment create --resource-group "rg1" --service-name "apimService1" \\
@@ -1205,11 +604,6 @@ helps['apimgmt api issue comment create'] = """
                "2018-02-01T22:21:20.467Z" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups/
                {{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{
                 user_name }}"
-      - name: ApiManagementDeleteApiIssueComment
-        text: |-
-               az apimgmt api issue comment create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id \\
-               "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue comment update'] = """
@@ -1217,19 +611,6 @@ helps['apimgmt api issue comment update'] = """
     short-summary: update a apimgmt api issue comment.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiIssueComment
-        text: |-
-               az apimgmt api issue comment update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id \\
-               "599e29ab193c3c0bd0b3e2fb" --text "Issue comment." --created-date \\
-               "2018-02-01T22:21:20.467Z" --user-id "/subscriptions/{{ subscription_id }}/resourceGroups/
-               {{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{
-                user_name }}"
-      - name: ApiManagementDeleteApiIssueComment
-        text: |-
-               az apimgmt api issue comment update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id \\
-               "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue comment delete'] = """
@@ -1237,11 +618,7 @@ helps['apimgmt api issue comment delete'] = """
     short-summary: delete a apimgmt api issue comment.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiIssueComment
-        text: |-
-               az apimgmt api issue comment delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id \\
-               "599e29ab193c3c0bd0b3e2fb"
+# delete
       - name: ApiManagementDeleteApiIssueComment
         text: |-
                az apimgmt api issue comment delete --resource-group "rg1" --service-name "apimService1" \\
@@ -1254,14 +631,6 @@ helps['apimgmt api issue comment list'] = """
     short-summary: list a apimgmt api issue comment.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiIssueComment
-        text: |-
-               az apimgmt api issue comment list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
-      - name: ApiManagementDeleteApiIssueComment
-        text: |-
-               az apimgmt api issue comment list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue comment show'] = """
@@ -1269,16 +638,6 @@ helps['apimgmt api issue comment show'] = """
     short-summary: show a apimgmt api issue comment.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiIssueComment
-        text: |-
-               az apimgmt api issue comment show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id \\
-               "599e29ab193c3c0bd0b3e2fb"
-      - name: ApiManagementDeleteApiIssueComment
-        text: |-
-               az apimgmt api issue comment show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --comment-id \\
-               "599e29ab193c3c0bd0b3e2fb"
 """
 
 helps['apimgmt api issue attachment'] = """
@@ -1291,17 +650,13 @@ helps['apimgmt api issue attachment create'] = """
     short-summary: create a apimgmt api issue attachment.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiIssueAttachment
         text: |-
                az apimgmt api issue attachment create --resource-group "rg1" --service-name \\
                "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" \\
                --attachment-id "57d2ef278aa04f0888cba3f3" --title "Issue attachment." --content-format \\
                "image/jpeg" --content "IEJhc2U2NA=="
-      - name: ApiManagementDeleteApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment create --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" \\
-               --attachment-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api issue attachment update'] = """
@@ -1309,17 +664,6 @@ helps['apimgmt api issue attachment update'] = """
     short-summary: update a apimgmt api issue attachment.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment update --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" \\
-               --attachment-id "57d2ef278aa04f0888cba3f3" --title "Issue attachment." --content-format \\
-               "image/jpeg" --content "IEJhc2U2NA=="
-      - name: ApiManagementDeleteApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment update --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" \\
-               --attachment-id "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api issue attachment delete'] = """
@@ -1327,11 +671,7 @@ helps['apimgmt api issue attachment delete'] = """
     short-summary: delete a apimgmt api issue attachment.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment delete --resource-group "rg1" --service-name \\
-               "apimService1" --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" \\
-               --attachment-id "57d2ef278aa04f0888cba3f3"
+# delete
       - name: ApiManagementDeleteApiIssueAttachment
         text: |-
                az apimgmt api issue attachment delete --resource-group "rg1" --service-name \\
@@ -1344,14 +684,6 @@ helps['apimgmt api issue attachment list'] = """
     short-summary: list a apimgmt api issue attachment.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
-      - name: ApiManagementDeleteApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc"
 """
 
 helps['apimgmt api issue attachment show'] = """
@@ -1359,16 +691,6 @@ helps['apimgmt api issue attachment show'] = """
     short-summary: show a apimgmt api issue attachment.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id \\
-               "57d2ef278aa04f0888cba3f3"
-      - name: ApiManagementDeleteApiIssueAttachment
-        text: |-
-               az apimgmt api issue attachment show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "57d1f7558aa04f15146d9d8a" --issue-id "57d2ef278aa04f0ad01d6cdc" --attachment-id \\
-               "57d2ef278aa04f0888cba3f3"
 """
 
 helps['apimgmt api tagdescription'] = """
@@ -1381,6 +703,7 @@ helps['apimgmt api tagdescription create'] = """
     short-summary: create a apimgmt api tagdescription.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiTagDescription
         text: |-
                az apimgmt api tagdescription create --resource-group "rg1" --service-name "apimService1" \\
@@ -1388,10 +711,6 @@ helps['apimgmt api tagdescription create'] = """
                 will be displayed for operation's tag if the tag is assigned to operation of the API" \\
                --external-docs_url "http://some.url/additionaldoc" --external-docs_description \\
                "Description of the external docs resource"
-      - name: ApiManagementDeleteApiTagDescription
-        text: |-
-               az apimgmt api tagdescription create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api tagdescription update'] = """
@@ -1399,17 +718,6 @@ helps['apimgmt api tagdescription update'] = """
     short-summary: update a apimgmt api tagdescription.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiTagDescription
-        text: |-
-               az apimgmt api tagdescription update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1" --description "Some description that
-                will be displayed for operation's tag if the tag is assigned to operation of the API" \\
-               --external-docs_url "http://some.url/additionaldoc" --external-docs_description \\
-               "Description of the external docs resource"
-      - name: ApiManagementDeleteApiTagDescription
-        text: |-
-               az apimgmt api tagdescription update --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt api tagdescription delete'] = """
@@ -1417,10 +725,7 @@ helps['apimgmt api tagdescription delete'] = """
     short-summary: delete a apimgmt api tagdescription.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiTagDescription
-        text: |-
-               az apimgmt api tagdescription delete --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1"
+# delete
       - name: ApiManagementDeleteApiTagDescription
         text: |-
                az apimgmt api tagdescription delete --resource-group "rg1" --service-name "apimService1" \\
@@ -1432,14 +737,6 @@ helps['apimgmt api tagdescription list'] = """
     short-summary: list a apimgmt api tagdescription.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiTagDescription
-        text: |-
-               az apimgmt api tagdescription list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5931a75ae4bbd512a88c680b"
-      - name: ApiManagementDeleteApiTagDescription
-        text: |-
-               az apimgmt api tagdescription list --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d5b28d1f7fab116c282650"
 """
 
 helps['apimgmt api tagdescription show'] = """
@@ -1447,14 +744,6 @@ helps['apimgmt api tagdescription show'] = """
     short-summary: show a apimgmt api tagdescription.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiTagDescription
-        text: |-
-               az apimgmt api tagdescription show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1"
-      - name: ApiManagementDeleteApiTagDescription
-        text: |-
-               az apimgmt api tagdescription show --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
 helps['apimgmt apiversionset'] = """
@@ -1467,20 +756,12 @@ helps['apimgmt apiversionset create'] = """
     short-summary: create a apimgmt apiversionset.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateApiVersionSet
         text: |-
                az apimgmt apiversionset create --resource-group "rg1" --service-name "apimService1" \\
                --version-set_id "api1" --description "Version configuration" --display-name "api set 1" \\
                --versioning-scheme "Segment"
-      - name: ApiManagementUpdateApiVersionSet
-        text: |-
-               az apimgmt apiversionset create --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1" --description "Version configuration" --display-name "api set 1" \\
-               --versioning-scheme "Segment"
-      - name: ApiManagementDeleteApiVersionSet
-        text: |-
-               az apimgmt apiversionset create --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "a1"
 """
 
 helps['apimgmt apiversionset update'] = """
@@ -1488,20 +769,12 @@ helps['apimgmt apiversionset update'] = """
     short-summary: update a apimgmt apiversionset.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateApiVersionSet
-        text: |-
-               az apimgmt apiversionset update --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1" --description "Version configuration" --display-name "api set 1" \\
-               --versioning-scheme "Segment"
+# update
       - name: ApiManagementUpdateApiVersionSet
         text: |-
                az apimgmt apiversionset update --resource-group "rg1" --service-name "apimService1" \\
                --version-set_id "api1" --description "Version configuration" --display-name "api set 1" \\
                --versioning-scheme "Segment"
-      - name: ApiManagementDeleteApiVersionSet
-        text: |-
-               az apimgmt apiversionset update --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "a1"
 """
 
 helps['apimgmt apiversionset delete'] = """
@@ -1509,14 +782,7 @@ helps['apimgmt apiversionset delete'] = """
     short-summary: delete a apimgmt apiversionset.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateApiVersionSet
-        text: |-
-               az apimgmt apiversionset delete --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1"
-      - name: ApiManagementUpdateApiVersionSet
-        text: |-
-               az apimgmt apiversionset delete --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1"
+# delete
       - name: ApiManagementDeleteApiVersionSet
         text: |-
                az apimgmt apiversionset delete --resource-group "rg1" --service-name "apimService1" \\
@@ -1528,15 +794,6 @@ helps['apimgmt apiversionset list'] = """
     short-summary: list a apimgmt apiversionset.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateApiVersionSet
-        text: |-
-               az apimgmt apiversionset list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateApiVersionSet
-        text: |-
-               az apimgmt apiversionset list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteApiVersionSet
-        text: |-
-               az apimgmt apiversionset list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt apiversionset show'] = """
@@ -1544,18 +801,6 @@ helps['apimgmt apiversionset show'] = """
     short-summary: show a apimgmt apiversionset.
     examples:
 # get -- show
-      - name: ApiManagementCreateApiVersionSet
-        text: |-
-               az apimgmt apiversionset show --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1"
-      - name: ApiManagementUpdateApiVersionSet
-        text: |-
-               az apimgmt apiversionset show --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1"
-      - name: ApiManagementDeleteApiVersionSet
-        text: |-
-               az apimgmt apiversionset show --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "a1"
 """
 
 helps['apimgmt authorizationserver'] = """
@@ -1568,6 +813,7 @@ helps['apimgmt authorizationserver create'] = """
     short-summary: create a apimgmt authorizationserver.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateAuthorizationServer
         text: |-
                az apimgmt authorizationserver create --resource-group "rg1" --service-name \\
@@ -1576,14 +822,6 @@ helps['apimgmt authorizationserver create'] = """
                --client-secret "2" --resource-owner_username "un" --resource-owner_password "pwd" \\
                --display-name "test2" --client-registration_endpoint "https://www.contoso.com/apps" \\
                --authorization-endpoint "https://www.contoso.com/oauth2/auth" --client-id "1"
-      - name: ApiManagementUpdateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver create --resource-group "rg1" --service-name \\
-               "apimService1" --authsid "newauthServer" --client-secret "updated" --client-id "update"
-      - name: ApiManagementDeleteAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver create --resource-group "rg1" --service-name \\
-               "apimService1" --authsid "newauthServer2"
 """
 
 helps['apimgmt authorizationserver update'] = """
@@ -1591,22 +829,11 @@ helps['apimgmt authorizationserver update'] = """
     short-summary: update a apimgmt authorizationserver.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver update --resource-group "rg1" --service-name \\
-               "apimService1" --authsid "newauthServer" --description "test server" --token-endpoint \\
-               "https://www.contoso.com/oauth2/token" --support-state true --default-scope "read write" \\
-               --client-secret "2" --resource-owner_username "un" --resource-owner_password "pwd" \\
-               --display-name "test2" --client-registration_endpoint "https://www.contoso.com/apps" \\
-               --authorization-endpoint "https://www.contoso.com/oauth2/auth" --client-id "1"
+# update
       - name: ApiManagementUpdateAuthorizationServer
         text: |-
                az apimgmt authorizationserver update --resource-group "rg1" --service-name \\
                "apimService1" --authsid "newauthServer" --client-secret "updated" --client-id "update"
-      - name: ApiManagementDeleteAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver update --resource-group "rg1" --service-name \\
-               "apimService1" --authsid "newauthServer2"
 """
 
 helps['apimgmt authorizationserver delete'] = """
@@ -1614,14 +841,7 @@ helps['apimgmt authorizationserver delete'] = """
     short-summary: delete a apimgmt authorizationserver.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver delete --resource-group "rg1" --service-name \\
-               "apimService1" --authsid "newauthServer"
-      - name: ApiManagementUpdateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver delete --resource-group "rg1" --service-name \\
-               "apimService1" --authsid "newauthServer"
+# delete
       - name: ApiManagementDeleteAuthorizationServer
         text: |-
                az apimgmt authorizationserver delete --resource-group "rg1" --service-name \\
@@ -1633,15 +853,6 @@ helps['apimgmt authorizationserver list'] = """
     short-summary: list a apimgmt authorizationserver.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt authorizationserver show'] = """
@@ -1649,18 +860,6 @@ helps['apimgmt authorizationserver show'] = """
     short-summary: show a apimgmt authorizationserver.
     examples:
 # get -- show
-      - name: ApiManagementCreateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver show --resource-group "rg1" --service-name "apimService1" \\
-               --authsid "newauthServer"
-      - name: ApiManagementUpdateAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver show --resource-group "rg1" --service-name "apimService1" \\
-               --authsid "newauthServer"
-      - name: ApiManagementDeleteAuthorizationServer
-        text: |-
-               az apimgmt authorizationserver show --resource-group "rg1" --service-name "apimService1" \\
-               --authsid "newauthServer2"
 """
 
 helps['apimgmt backend'] = """
@@ -1673,24 +872,18 @@ helps['apimgmt backend create'] = """
     short-summary: create a apimgmt backend.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateBackendServiceFabric
         text: |-
                az apimgmt backend create --resource-group "rg1" --service-name "apimService1" \\
                --backend-id "sfbackend" --description "Service Fabric Test App 1" --url \\
                "fabric:/mytestapp/mytestservice" --protocol "http"
+# create
       - name: ApiManagementCreateBackendProxyBackend
         text: |-
                az apimgmt backend create --resource-group "rg1" --service-name "apimService1" \\
                --backend-id "proxybackend" --description "description5308" --url \\
                "https://backendname2644/" --protocol "http"
-      - name: ApiManagementUpdateBackend
-        text: |-
-               az apimgmt backend create --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "proxybackend" --description "description5308"
-      - name: ApiManagementDeleteBackend
-        text: |-
-               az apimgmt backend create --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "sfbackend"
 """
 
 helps['apimgmt backend update'] = """
@@ -1698,24 +891,11 @@ helps['apimgmt backend update'] = """
     short-summary: update a apimgmt backend.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateBackendServiceFabric
-        text: |-
-               az apimgmt backend update --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "sfbackend" --description "Service Fabric Test App 1" --url \\
-               "fabric:/mytestapp/mytestservice" --protocol "http"
-      - name: ApiManagementCreateBackendProxyBackend
-        text: |-
-               az apimgmt backend update --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "proxybackend" --description "description5308" --url \\
-               "https://backendname2644/" --protocol "http"
+# update
       - name: ApiManagementUpdateBackend
         text: |-
                az apimgmt backend update --resource-group "rg1" --service-name "apimService1" \\
                --backend-id "proxybackend" --description "description5308"
-      - name: ApiManagementDeleteBackend
-        text: |-
-               az apimgmt backend update --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "sfbackend"
 """
 
 helps['apimgmt backend delete'] = """
@@ -1723,18 +903,7 @@ helps['apimgmt backend delete'] = """
     short-summary: delete a apimgmt backend.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateBackendServiceFabric
-        text: |-
-               az apimgmt backend delete --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "sfbackend"
-      - name: ApiManagementCreateBackendProxyBackend
-        text: |-
-               az apimgmt backend delete --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "proxybackend"
-      - name: ApiManagementUpdateBackend
-        text: |-
-               az apimgmt backend delete --resource-group "rg1" --service-name "apimService1" \\
-               --backend-id "proxybackend"
+# delete
       - name: ApiManagementDeleteBackend
         text: |-
                az apimgmt backend delete --resource-group "rg1" --service-name "apimService1" \\
@@ -1746,18 +915,6 @@ helps['apimgmt backend list'] = """
     short-summary: list a apimgmt backend.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateBackendServiceFabric
-        text: |-
-               az apimgmt backend list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateBackendProxyBackend
-        text: |-
-               az apimgmt backend list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateBackend
-        text: |-
-               az apimgmt backend list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteBackend
-        text: |-
-               az apimgmt backend list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt backend show'] = """
@@ -1765,22 +922,6 @@ helps['apimgmt backend show'] = """
     short-summary: show a apimgmt backend.
     examples:
 # get -- show
-      - name: ApiManagementCreateBackendServiceFabric
-        text: |-
-               az apimgmt backend show --resource-group "rg1" --service-name "apimService1" --backend-id \\
-               "sfbackend"
-      - name: ApiManagementCreateBackendProxyBackend
-        text: |-
-               az apimgmt backend show --resource-group "rg1" --service-name "apimService1" --backend-id \\
-               "proxybackend"
-      - name: ApiManagementUpdateBackend
-        text: |-
-               az apimgmt backend show --resource-group "rg1" --service-name "apimService1" --backend-id \\
-               "proxybackend"
-      - name: ApiManagementDeleteBackend
-        text: |-
-               az apimgmt backend show --resource-group "rg1" --service-name "apimService1" --backend-id \\
-               "sfbackend"
 """
 
 helps['apimgmt cache'] = """
@@ -1793,6 +934,7 @@ helps['apimgmt cache create'] = """
     short-summary: create a apimgmt cache.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateCache
         text: |-
                az apimgmt cache create --resource-group "rg1" --service-name "apimService1" --cache-id \\
@@ -1800,14 +942,6 @@ helps['apimgmt cache create'] = """
                "contoso5.redis.cache.windows.net,ssl=true,password=..." --resource-id "/subscriptions/{{ 
                subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ 
                redis_name }}"
-      - name: ApiManagementUpdateCache
-        text: |-
-               az apimgmt cache create --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "westindia" --description "Update Cache in west India"
-      - name: ApiManagementDeleteCache
-        text: |-
-               az apimgmt cache create --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "southindia"
 """
 
 helps['apimgmt cache update'] = """
@@ -1815,21 +949,11 @@ helps['apimgmt cache update'] = """
     short-summary: update a apimgmt cache.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateCache
-        text: |-
-               az apimgmt cache update --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "westindia" --description "Redis cache instances in West India" --connection-string \\
-               "contoso5.redis.cache.windows.net,ssl=true,password=..." --resource-id "/subscriptions/{{ 
-               subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ 
-               redis_name }}"
+# update
       - name: ApiManagementUpdateCache
         text: |-
                az apimgmt cache update --resource-group "rg1" --service-name "apimService1" --cache-id \\
                "westindia" --description "Update Cache in west India"
-      - name: ApiManagementDeleteCache
-        text: |-
-               az apimgmt cache update --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "southindia"
 """
 
 helps['apimgmt cache delete'] = """
@@ -1837,14 +961,7 @@ helps['apimgmt cache delete'] = """
     short-summary: delete a apimgmt cache.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateCache
-        text: |-
-               az apimgmt cache delete --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "westindia"
-      - name: ApiManagementUpdateCache
-        text: |-
-               az apimgmt cache delete --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "westindia"
+# delete
       - name: ApiManagementDeleteCache
         text: |-
                az apimgmt cache delete --resource-group "rg1" --service-name "apimService1" --cache-id \\
@@ -1856,15 +973,6 @@ helps['apimgmt cache list'] = """
     short-summary: list a apimgmt cache.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateCache
-        text: |-
-               az apimgmt cache list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateCache
-        text: |-
-               az apimgmt cache list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteCache
-        text: |-
-               az apimgmt cache list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt cache show'] = """
@@ -1872,18 +980,6 @@ helps['apimgmt cache show'] = """
     short-summary: show a apimgmt cache.
     examples:
 # get -- show
-      - name: ApiManagementCreateCache
-        text: |-
-               az apimgmt cache show --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "westindia"
-      - name: ApiManagementUpdateCache
-        text: |-
-               az apimgmt cache show --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "westindia"
-      - name: ApiManagementDeleteCache
-        text: |-
-               az apimgmt cache show --resource-group "rg1" --service-name "apimService1" --cache-id \\
-               "southindia"
 """
 
 helps['apimgmt certificate'] = """
@@ -1896,16 +992,13 @@ helps['apimgmt certificate create'] = """
     short-summary: create a apimgmt certificate.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateCertificate
         text: |-
                az apimgmt certificate create --resource-group "rg1" --service-name "apimService1" \\
                --certificate-id "tempcert" --data \\
                "****************Base 64 Encoded Certificate *******************************" --password \\
                "****Certificate Password******"
-      - name: ApiManagementDeleteCertificate
-        text: |-
-               az apimgmt certificate create --resource-group "rg1" --service-name "apimService1" \\
-               --certificate-id "tempcert"
 """
 
 helps['apimgmt certificate update'] = """
@@ -1913,16 +1006,6 @@ helps['apimgmt certificate update'] = """
     short-summary: update a apimgmt certificate.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateCertificate
-        text: |-
-               az apimgmt certificate update --resource-group "rg1" --service-name "apimService1" \\
-               --certificate-id "tempcert" --data \\
-               "****************Base 64 Encoded Certificate *******************************" --password \\
-               "****Certificate Password******"
-      - name: ApiManagementDeleteCertificate
-        text: |-
-               az apimgmt certificate update --resource-group "rg1" --service-name "apimService1" \\
-               --certificate-id "tempcert"
 """
 
 helps['apimgmt certificate delete'] = """
@@ -1930,10 +1013,7 @@ helps['apimgmt certificate delete'] = """
     short-summary: delete a apimgmt certificate.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateCertificate
-        text: |-
-               az apimgmt certificate delete --resource-group "rg1" --service-name "apimService1" \\
-               --certificate-id "tempcert"
+# delete
       - name: ApiManagementDeleteCertificate
         text: |-
                az apimgmt certificate delete --resource-group "rg1" --service-name "apimService1" \\
@@ -1945,12 +1025,6 @@ helps['apimgmt certificate list'] = """
     short-summary: list a apimgmt certificate.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateCertificate
-        text: |-
-               az apimgmt certificate list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteCertificate
-        text: |-
-               az apimgmt certificate list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt certificate show'] = """
@@ -1958,14 +1032,6 @@ helps['apimgmt certificate show'] = """
     short-summary: show a apimgmt certificate.
     examples:
 # get -- show
-      - name: ApiManagementCreateCertificate
-        text: |-
-               az apimgmt certificate show --resource-group "rg1" --service-name "apimService1" \\
-               --certificate-id "tempcert"
-      - name: ApiManagementDeleteCertificate
-        text: |-
-               az apimgmt certificate show --resource-group "rg1" --service-name "apimService1" \\
-               --certificate-id "tempcert"
 """
 
 helps['apimgmt'] = """
@@ -1978,36 +1044,30 @@ helps['apimgmt create'] = """
     short-summary: create a apimgmt.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateService
         text: |-
                az apimgmt create --resource-group "rg1" --name "apimService1" --publisher-email \\
                "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Developer" \\
                --sku-capacity "1" --location "Central US"
+# create
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
         text: |-
                az apimgmt create --resource-group "rg1" --name "apimService1" --virtual-network_type \\
                "External" --publisher-email "admin@live.com" --publisher-name "contoso" --sku-name \\
                "Premium" --sku-capacity "1" --location "Central US"
+# create
       - name: ApiManagementCreateServiceHavingMsi
         text: |-
                az apimgmt create --resource-group "rg1" --name "apimService1" --publisher-email \\
                "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Consumption" --location \\
                "West US"
+# create
       - name: ApiManagementCreateServiceWithSystemCertificates
         text: |-
                az apimgmt create --resource-group "rg1" --name "apimService1" --publisher-email \\
                "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Basic" --sku-capacity \\
                "1" --location "Central US"
-      - name: ApiManagementUpdateServiceDisableTls10
-        text: |-
-               az apimgmt create --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementUpdateServicePublisherDetails
-        text: |-
-               az apimgmt create --resource-group "rg1" --name "apimService1" --publisher-email \\
-               "foobar@live.com" --publisher-name "Contoso Vnext"
-      - name: ApiManagementServiceDeleteService
-        text: |-
-               az apimgmt create --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt update'] = """
@@ -2015,36 +1075,15 @@ helps['apimgmt update'] = """
     short-summary: update a apimgmt.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateService
-        text: |-
-               az apimgmt update --resource-group "rg1" --name "apimService1" --publisher-email \\
-               "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Developer" \\
-               --sku-capacity "1" --location "Central US"
-      - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: |-
-               az apimgmt update --resource-group "rg1" --name "apimService1" --virtual-network_type \\
-               "External" --publisher-email "admin@live.com" --publisher-name "contoso" --sku-name \\
-               "Premium" --sku-capacity "1" --location "Central US"
-      - name: ApiManagementCreateServiceHavingMsi
-        text: |-
-               az apimgmt update --resource-group "rg1" --name "apimService1" --publisher-email \\
-               "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Consumption" --location \\
-               "West US"
-      - name: ApiManagementCreateServiceWithSystemCertificates
-        text: |-
-               az apimgmt update --resource-group "rg1" --name "apimService1" --publisher-email \\
-               "apim@autorestsdk.com" --publisher-name "autorestsdk" --sku-name "Basic" --sku-capacity \\
-               "1" --location "Central US"
+# update
       - name: ApiManagementUpdateServiceDisableTls10
         text: |-
                az apimgmt update --resource-group "rg1" --name "apimService1"
+# update
       - name: ApiManagementUpdateServicePublisherDetails
         text: |-
                az apimgmt update --resource-group "rg1" --name "apimService1" --publisher-email \\
                "foobar@live.com" --publisher-name "Contoso Vnext"
-      - name: ApiManagementServiceDeleteService
-        text: |-
-               az apimgmt update --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt delete'] = """
@@ -2052,24 +1091,7 @@ helps['apimgmt delete'] = """
     short-summary: delete a apimgmt.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateService
-        text: |-
-               az apimgmt delete --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: |-
-               az apimgmt delete --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementCreateServiceHavingMsi
-        text: |-
-               az apimgmt delete --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementCreateServiceWithSystemCertificates
-        text: |-
-               az apimgmt delete --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementUpdateServiceDisableTls10
-        text: |-
-               az apimgmt delete --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementUpdateServicePublisherDetails
-        text: |-
-               az apimgmt delete --resource-group "rg1" --name "apimService1"
+# delete
       - name: ApiManagementServiceDeleteService
         text: |-
                az apimgmt delete --resource-group "rg1" --name "apimService1"
@@ -2080,49 +1102,7 @@ helps['apimgmt list'] = """
     short-summary: list a apimgmt.
     examples:
 # list_by_resource_group -- list
-      - name: ApiManagementCreateService
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementCreateServiceHavingMsi
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementCreateServiceWithSystemCertificates
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementUpdateServiceDisableTls10
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementUpdateServicePublisherDetails
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementServiceDeleteService
-        text: |-
-               az apimgmt list --resource-group "rg1"
 # list -- list
-      - name: ApiManagementCreateService
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementCreateServiceHavingMsi
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementCreateServiceWithSystemCertificates
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementUpdateServiceDisableTls10
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementUpdateServicePublisherDetails
-        text: |-
-               az apimgmt list --resource-group "rg1"
-      - name: ApiManagementServiceDeleteService
-        text: |-
-               az apimgmt list --resource-group "rg1"
 """
 
 helps['apimgmt show'] = """
@@ -2130,27 +1110,6 @@ helps['apimgmt show'] = """
     short-summary: show a apimgmt.
     examples:
 # get -- show
-      - name: ApiManagementCreateService
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementCreateServiceHavingMsi
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementCreateServiceWithSystemCertificates
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementUpdateServiceDisableTls10
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementUpdateServicePublisherDetails
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementServiceDeleteService
-        text: |-
-               az apimgmt show --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt diagnostic'] = """
@@ -2163,20 +1122,12 @@ helps['apimgmt diagnostic create'] = """
     short-summary: create a apimgmt diagnostic.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateDiagnostic
         text: |-
                az apimgmt diagnostic create --resource-group "rg1" --service-name "apimService1" \\
                --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id \\
                "/loggers/azuremonitor"
-      - name: ApiManagementUpdateDiagnostic
-        text: |-
-               az apimgmt diagnostic create --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id \\
-               "/loggers/applicationinsights"
-      - name: ApiManagementDeleteDiagnostic
-        text: |-
-               az apimgmt diagnostic create --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt diagnostic update'] = """
@@ -2184,20 +1135,12 @@ helps['apimgmt diagnostic update'] = """
     short-summary: update a apimgmt diagnostic.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateDiagnostic
-        text: |-
-               az apimgmt diagnostic update --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id \\
-               "/loggers/azuremonitor"
+# update
       - name: ApiManagementUpdateDiagnostic
         text: |-
                az apimgmt diagnostic update --resource-group "rg1" --service-name "apimService1" \\
                --diagnostic-id "applicationinsights" --always-log "allErrors" --logger-id \\
                "/loggers/applicationinsights"
-      - name: ApiManagementDeleteDiagnostic
-        text: |-
-               az apimgmt diagnostic update --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt diagnostic delete'] = """
@@ -2205,14 +1148,7 @@ helps['apimgmt diagnostic delete'] = """
     short-summary: delete a apimgmt diagnostic.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateDiagnostic
-        text: |-
-               az apimgmt diagnostic delete --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
-      - name: ApiManagementUpdateDiagnostic
-        text: |-
-               az apimgmt diagnostic delete --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
+# delete
       - name: ApiManagementDeleteDiagnostic
         text: |-
                az apimgmt diagnostic delete --resource-group "rg1" --service-name "apimService1" \\
@@ -2224,15 +1160,6 @@ helps['apimgmt diagnostic list'] = """
     short-summary: list a apimgmt diagnostic.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateDiagnostic
-        text: |-
-               az apimgmt diagnostic list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateDiagnostic
-        text: |-
-               az apimgmt diagnostic list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteDiagnostic
-        text: |-
-               az apimgmt diagnostic list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt diagnostic show'] = """
@@ -2240,18 +1167,6 @@ helps['apimgmt diagnostic show'] = """
     short-summary: show a apimgmt diagnostic.
     examples:
 # get -- show
-      - name: ApiManagementCreateDiagnostic
-        text: |-
-               az apimgmt diagnostic show --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
-      - name: ApiManagementUpdateDiagnostic
-        text: |-
-               az apimgmt diagnostic show --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
-      - name: ApiManagementDeleteDiagnostic
-        text: |-
-               az apimgmt diagnostic show --resource-group "rg1" --service-name "apimService1" \\
-               --diagnostic-id "applicationinsights"
 """
 
 helps['apimgmt template'] = """
@@ -2264,28 +1179,12 @@ helps['apimgmt template create'] = """
     short-summary: create a apimgmt template.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateEmailTemplate
         text: |-
                az apimgmt template create --resource-group "rg1" --service-name "apimService1" --name \\
                "newIssueNotificationMessage" --subject \\
                "Your request for $IssueName was successfully received."
-      - name: ApiManagementUpdateEmailTemplate
-        text: |-
-               az apimgmt template create --resource-group "rg1" --service-name "apimService1" --name \\
-               "applicationApprovedNotificationMessage" --subject \\
-               "Your application $AppName is published in the gallery" --body "<!DOCTYPE html >\r\n<html>
-               \r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear 
-               $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">
-               \r\n          We are happy to let you know that your request to publish the $AppName appli
-               cation in the gallery has been approved. Your application has been published and can be vi
-               ewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\r\n        </p
-               >\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"fo
-               nt-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n<
-               /html>"
-      - name: ApiManagementDeleteEmailTemplate
-        text: |-
-               az apimgmt template create --resource-group "rg1" --service-name "apimService1" --name \\
-               "newIssueNotificationMessage"
 """
 
 helps['apimgmt template update'] = """
@@ -2293,11 +1192,7 @@ helps['apimgmt template update'] = """
     short-summary: update a apimgmt template.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateEmailTemplate
-        text: |-
-               az apimgmt template update --resource-group "rg1" --service-name "apimService1" --name \\
-               "newIssueNotificationMessage" --subject \\
-               "Your request for $IssueName was successfully received."
+# update
       - name: ApiManagementUpdateEmailTemplate
         text: |-
                az apimgmt template update --resource-group "rg1" --service-name "apimService1" --name \\
@@ -2311,10 +1206,6 @@ helps['apimgmt template update'] = """
                >\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"fo
                nt-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n<
                /html>"
-      - name: ApiManagementDeleteEmailTemplate
-        text: |-
-               az apimgmt template update --resource-group "rg1" --service-name "apimService1" --name \\
-               "newIssueNotificationMessage"
 """
 
 helps['apimgmt template delete'] = """
@@ -2322,14 +1213,7 @@ helps['apimgmt template delete'] = """
     short-summary: delete a apimgmt template.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateEmailTemplate
-        text: |-
-               az apimgmt template delete --resource-group "rg1" --service-name "apimService1" --name \\
-               "newIssueNotificationMessage"
-      - name: ApiManagementUpdateEmailTemplate
-        text: |-
-               az apimgmt template delete --resource-group "rg1" --service-name "apimService1" --name \\
-               "applicationApprovedNotificationMessage"
+# delete
       - name: ApiManagementDeleteEmailTemplate
         text: |-
                az apimgmt template delete --resource-group "rg1" --service-name "apimService1" --name \\
@@ -2341,15 +1225,6 @@ helps['apimgmt template list'] = """
     short-summary: list a apimgmt template.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateEmailTemplate
-        text: |-
-               az apimgmt template list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateEmailTemplate
-        text: |-
-               az apimgmt template list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteEmailTemplate
-        text: |-
-               az apimgmt template list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt template show'] = """
@@ -2357,18 +1232,6 @@ helps['apimgmt template show'] = """
     short-summary: show a apimgmt template.
     examples:
 # get -- show
-      - name: ApiManagementCreateEmailTemplate
-        text: |-
-               az apimgmt template show --resource-group "rg1" --service-name "apimService1" --name \\
-               "newIssueNotificationMessage"
-      - name: ApiManagementUpdateEmailTemplate
-        text: |-
-               az apimgmt template show --resource-group "rg1" --service-name "apimService1" --name \\
-               "applicationApprovedNotificationMessage"
-      - name: ApiManagementDeleteEmailTemplate
-        text: |-
-               az apimgmt template show --resource-group "rg1" --service-name "apimService1" --name \\
-               "newIssueNotificationMessage"
 """
 
 helps['apimgmt group'] = """
@@ -2381,24 +1244,18 @@ helps['apimgmt group create'] = """
     short-summary: create a apimgmt group.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateGroup
         text: |-
                az apimgmt group create --resource-group "rg1" --service-name "apimService1" --group-id \\
                "tempgroup" --display-name "temp group"
+# create
       - name: ApiManagementCreateGroupExternal
         text: |-
                az apimgmt group create --resource-group "rg1" --service-name "apimService1" --group-id \\
                "aadGroup" --display-name "NewGroup (samiraad.onmicrosoft.com)" --description \\
                "new group to test" --type "external" --external-id \\
                "aad://samiraad.onmicrosoft.com/groups/83cf2753-5831-4675-bc0e-2f8dc067c58d"
-      - name: ApiManagementUpdateGroup
-        text: |-
-               az apimgmt group create --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "tempgroup" --display-name "temp group"
-      - name: ApiManagementDeleteGroup
-        text: |-
-               az apimgmt group create --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "aadGroup"
 """
 
 helps['apimgmt group update'] = """
@@ -2406,24 +1263,11 @@ helps['apimgmt group update'] = """
     short-summary: update a apimgmt group.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateGroup
-        text: |-
-               az apimgmt group update --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "tempgroup" --display-name "temp group"
-      - name: ApiManagementCreateGroupExternal
-        text: |-
-               az apimgmt group update --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "aadGroup" --display-name "NewGroup (samiraad.onmicrosoft.com)" --description \\
-               "new group to test" --type "external" --external-id \\
-               "aad://samiraad.onmicrosoft.com/groups/83cf2753-5831-4675-bc0e-2f8dc067c58d"
+# update
       - name: ApiManagementUpdateGroup
         text: |-
                az apimgmt group update --resource-group "rg1" --service-name "apimService1" --group-id \\
                "tempgroup" --display-name "temp group"
-      - name: ApiManagementDeleteGroup
-        text: |-
-               az apimgmt group update --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "aadGroup"
 """
 
 helps['apimgmt group delete'] = """
@@ -2431,18 +1275,7 @@ helps['apimgmt group delete'] = """
     short-summary: delete a apimgmt group.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateGroup
-        text: |-
-               az apimgmt group delete --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "tempgroup"
-      - name: ApiManagementCreateGroupExternal
-        text: |-
-               az apimgmt group delete --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "aadGroup"
-      - name: ApiManagementUpdateGroup
-        text: |-
-               az apimgmt group delete --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "tempgroup"
+# delete
       - name: ApiManagementDeleteGroup
         text: |-
                az apimgmt group delete --resource-group "rg1" --service-name "apimService1" --group-id \\
@@ -2454,18 +1287,6 @@ helps['apimgmt group list'] = """
     short-summary: list a apimgmt group.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateGroup
-        text: |-
-               az apimgmt group list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateGroupExternal
-        text: |-
-               az apimgmt group list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateGroup
-        text: |-
-               az apimgmt group list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteGroup
-        text: |-
-               az apimgmt group list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt group show'] = """
@@ -2473,22 +1294,6 @@ helps['apimgmt group show'] = """
     short-summary: show a apimgmt group.
     examples:
 # get -- show
-      - name: ApiManagementCreateGroup
-        text: |-
-               az apimgmt group show --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "tempgroup"
-      - name: ApiManagementCreateGroupExternal
-        text: |-
-               az apimgmt group show --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "aadGroup"
-      - name: ApiManagementUpdateGroup
-        text: |-
-               az apimgmt group show --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "tempgroup"
-      - name: ApiManagementDeleteGroup
-        text: |-
-               az apimgmt group show --resource-group "rg1" --service-name "apimService1" --group-id \\
-               "aadGroup"
 """
 
 helps['apimgmt group user'] = """
@@ -2501,14 +1306,11 @@ helps['apimgmt group user create'] = """
     short-summary: create a apimgmt group user.
     examples:
 # create -- create
+# create
       - name: ApiManagementCreateGroupUser
         text: |-
                az apimgmt group user create --resource-group "rg1" --service-name "apimService1" \\
                --group-id "tempgroup" --user-id "59307d350af58404d8a26300"
-      - name: ApiManagementDeleteGroupUser
-        text: |-
-               az apimgmt group user create --resource-group "rg1" --service-name "apimService1" \\
-               --group-id "templategroup" --user-id "59307d350af58404d8a26300"
 """
 
 helps['apimgmt group user delete'] = """
@@ -2516,10 +1318,7 @@ helps['apimgmt group user delete'] = """
     short-summary: delete a apimgmt group user.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateGroupUser
-        text: |-
-               az apimgmt group user delete --resource-group "rg1" --service-name "apimService1" \\
-               --group-id "tempgroup" --user-id "59307d350af58404d8a26300"
+# delete
       - name: ApiManagementDeleteGroupUser
         text: |-
                az apimgmt group user delete --resource-group "rg1" --service-name "apimService1" \\
@@ -2531,14 +1330,6 @@ helps['apimgmt group user list'] = """
     short-summary: list a apimgmt group user.
     examples:
 # list -- list
-      - name: ApiManagementCreateGroupUser
-        text: |-
-               az apimgmt group user list --resource-group "rg1" --service-name "apimService1" \\
-               --group-id "tempgroup"
-      - name: ApiManagementDeleteGroupUser
-        text: |-
-               az apimgmt group user list --resource-group "rg1" --service-name "apimService1" \\
-               --group-id "templategroup"
 """
 
 helps['apimgmt identityprovider'] = """
@@ -2551,18 +1342,11 @@ helps['apimgmt identityprovider create'] = """
     short-summary: create a apimgmt identityprovider.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateIdentityProvider
         text: |-
                az apimgmt identityprovider create --resource-group "rg1" --service-name "apimService1" \\
                --name "facebook" --client-id "facebookid" --client-secret "facebookapplicationsecret"
-      - name: ApiManagementUpdateIdentityProvider
-        text: |-
-               az apimgmt identityprovider create --resource-group "rg1" --service-name "apimService1" \\
-               --name "facebook" --client-id "updatedfacebookid" --client-secret "updatedfacebooksecret"
-      - name: ApiManagementDeleteIdentityProvider
-        text: |-
-               az apimgmt identityprovider create --resource-group "rg1" --service-name "apimService1" \\
-               --name "aad"
 """
 
 helps['apimgmt identityprovider update'] = """
@@ -2570,18 +1354,11 @@ helps['apimgmt identityprovider update'] = """
     short-summary: update a apimgmt identityprovider.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateIdentityProvider
-        text: |-
-               az apimgmt identityprovider update --resource-group "rg1" --service-name "apimService1" \\
-               --name "facebook" --client-id "facebookid" --client-secret "facebookapplicationsecret"
+# update
       - name: ApiManagementUpdateIdentityProvider
         text: |-
                az apimgmt identityprovider update --resource-group "rg1" --service-name "apimService1" \\
                --name "facebook" --client-id "updatedfacebookid" --client-secret "updatedfacebooksecret"
-      - name: ApiManagementDeleteIdentityProvider
-        text: |-
-               az apimgmt identityprovider update --resource-group "rg1" --service-name "apimService1" \\
-               --name "aad"
 """
 
 helps['apimgmt identityprovider delete'] = """
@@ -2589,14 +1366,7 @@ helps['apimgmt identityprovider delete'] = """
     short-summary: delete a apimgmt identityprovider.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateIdentityProvider
-        text: |-
-               az apimgmt identityprovider delete --resource-group "rg1" --service-name "apimService1" \\
-               --name "facebook"
-      - name: ApiManagementUpdateIdentityProvider
-        text: |-
-               az apimgmt identityprovider delete --resource-group "rg1" --service-name "apimService1" \\
-               --name "facebook"
+# delete
       - name: ApiManagementDeleteIdentityProvider
         text: |-
                az apimgmt identityprovider delete --resource-group "rg1" --service-name "apimService1" \\
@@ -2608,15 +1378,6 @@ helps['apimgmt identityprovider list'] = """
     short-summary: list a apimgmt identityprovider.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateIdentityProvider
-        text: |-
-               az apimgmt identityprovider list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateIdentityProvider
-        text: |-
-               az apimgmt identityprovider list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteIdentityProvider
-        text: |-
-               az apimgmt identityprovider list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt identityprovider show'] = """
@@ -2624,18 +1385,6 @@ helps['apimgmt identityprovider show'] = """
     short-summary: show a apimgmt identityprovider.
     examples:
 # get -- show
-      - name: ApiManagementCreateIdentityProvider
-        text: |-
-               az apimgmt identityprovider show --resource-group "rg1" --service-name "apimService1" \\
-               --name "facebook"
-      - name: ApiManagementUpdateIdentityProvider
-        text: |-
-               az apimgmt identityprovider show --resource-group "rg1" --service-name "apimService1" \\
-               --name "facebook"
-      - name: ApiManagementDeleteIdentityProvider
-        text: |-
-               az apimgmt identityprovider show --resource-group "rg1" --service-name "apimService1" \\
-               --name "aad"
 """
 
 helps['apimgmt logger'] = """
@@ -2648,22 +1397,16 @@ helps['apimgmt logger create'] = """
     short-summary: create a apimgmt logger.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateEHLogger
         text: |-
                az apimgmt logger create --resource-group "rg1" --service-name "apimService1" --logger-id \\
                "loggerId" --logger-type "azureEventHub" --description "adding a new logger"
+# create
       - name: ApiManagementCreateAILogger
         text: |-
                az apimgmt logger create --resource-group "rg1" --service-name "apimService1" --logger-id \\
                "loggerId" --logger-type "applicationInsights" --description "adding a new logger"
-      - name: ApiManagementUpdateLogger
-        text: |-
-               az apimgmt logger create --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementDeleteLogger
-        text: |-
-               az apimgmt logger create --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
 """
 
 helps['apimgmt logger update'] = """
@@ -2671,19 +1414,8 @@ helps['apimgmt logger update'] = """
     short-summary: update a apimgmt logger.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateEHLogger
-        text: |-
-               az apimgmt logger update --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId" --logger-type "azureEventHub" --description "adding a new logger"
-      - name: ApiManagementCreateAILogger
-        text: |-
-               az apimgmt logger update --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId" --logger-type "applicationInsights" --description "adding a new logger"
+# update
       - name: ApiManagementUpdateLogger
-        text: |-
-               az apimgmt logger update --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementDeleteLogger
         text: |-
                az apimgmt logger update --resource-group "rg1" --service-name "apimService1" --logger-id \\
                "loggerId"
@@ -2694,18 +1426,7 @@ helps['apimgmt logger delete'] = """
     short-summary: delete a apimgmt logger.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateEHLogger
-        text: |-
-               az apimgmt logger delete --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementCreateAILogger
-        text: |-
-               az apimgmt logger delete --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementUpdateLogger
-        text: |-
-               az apimgmt logger delete --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
+# delete
       - name: ApiManagementDeleteLogger
         text: |-
                az apimgmt logger delete --resource-group "rg1" --service-name "apimService1" --logger-id \\
@@ -2717,18 +1438,6 @@ helps['apimgmt logger list'] = """
     short-summary: list a apimgmt logger.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateEHLogger
-        text: |-
-               az apimgmt logger list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementCreateAILogger
-        text: |-
-               az apimgmt logger list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateLogger
-        text: |-
-               az apimgmt logger list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteLogger
-        text: |-
-               az apimgmt logger list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt logger show'] = """
@@ -2736,22 +1445,6 @@ helps['apimgmt logger show'] = """
     short-summary: show a apimgmt logger.
     examples:
 # get -- show
-      - name: ApiManagementCreateEHLogger
-        text: |-
-               az apimgmt logger show --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementCreateAILogger
-        text: |-
-               az apimgmt logger show --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementUpdateLogger
-        text: |-
-               az apimgmt logger show --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
-      - name: ApiManagementDeleteLogger
-        text: |-
-               az apimgmt logger show --resource-group "rg1" --service-name "apimService1" --logger-id \\
-               "loggerId"
 """
 
 helps['apimgmt notification'] = """
@@ -2764,6 +1457,7 @@ helps['apimgmt notification create'] = """
     short-summary: create a apimgmt notification.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateNotification
         text: |-
                az apimgmt notification create --resource-group "rg1" --service-name "apimService1" \\
@@ -2775,10 +1469,6 @@ helps['apimgmt notification update'] = """
     short-summary: update a apimgmt notification.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateNotification
-        text: |-
-               az apimgmt notification update --resource-group "rg1" --service-name "apimService1" \\
-               --name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification list'] = """
@@ -2786,9 +1476,6 @@ helps['apimgmt notification list'] = """
     short-summary: list a apimgmt notification.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateNotification
-        text: |-
-               az apimgmt notification list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt notification show'] = """
@@ -2796,10 +1483,6 @@ helps['apimgmt notification show'] = """
     short-summary: show a apimgmt notification.
     examples:
 # get -- show
-      - name: ApiManagementCreateNotification
-        text: |-
-               az apimgmt notification show --resource-group "rg1" --service-name "apimService1" --name \\
-               "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification recipientuser'] = """
@@ -2812,12 +1495,8 @@ helps['apimgmt notification recipientuser create'] = """
     short-summary: create a apimgmt notification recipientuser.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateNotificationRecipientUser
-        text: |-
-               az apimgmt notification recipientuser create --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
-               "576823d0a40f7e74ec07d642"
-      - name: ApiManagementDeleteNotificationRecipientUser
         text: |-
                az apimgmt notification recipientuser create --resource-group "rg1" --service-name \\
                "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
@@ -2829,16 +1508,6 @@ helps['apimgmt notification recipientuser update'] = """
     short-summary: update a apimgmt notification recipientuser.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateNotificationRecipientUser
-        text: |-
-               az apimgmt notification recipientuser update --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
-               "576823d0a40f7e74ec07d642"
-      - name: ApiManagementDeleteNotificationRecipientUser
-        text: |-
-               az apimgmt notification recipientuser update --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
-               "576823d0a40f7e74ec07d642"
 """
 
 helps['apimgmt notification recipientuser delete'] = """
@@ -2846,11 +1515,7 @@ helps['apimgmt notification recipientuser delete'] = """
     short-summary: delete a apimgmt notification recipientuser.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateNotificationRecipientUser
-        text: |-
-               az apimgmt notification recipientuser delete --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
-               "576823d0a40f7e74ec07d642"
+# delete
       - name: ApiManagementDeleteNotificationRecipientUser
         text: |-
                az apimgmt notification recipientuser delete --resource-group "rg1" --service-name \\
@@ -2863,14 +1528,6 @@ helps['apimgmt notification recipientuser list'] = """
     short-summary: list a apimgmt notification recipientuser.
     examples:
 # list_by_notification -- list
-      - name: ApiManagementCreateNotificationRecipientUser
-        text: |-
-               az apimgmt notification recipientuser list --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage"
-      - name: ApiManagementDeleteNotificationRecipientUser
-        text: |-
-               az apimgmt notification recipientuser list --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt notification recipientemail'] = """
@@ -2883,16 +1540,12 @@ helps['apimgmt notification recipientemail create'] = """
     short-summary: create a apimgmt notification recipientemail.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateNotificationRecipientEmail
         text: |-
                az apimgmt notification recipientemail create --resource-group "rg1" --service-name \\
                "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
                "foobar@live.com"
-      - name: ApiManagementDeleteNotificationRecipientEmail
-        text: |-
-               az apimgmt notification recipientemail create --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
-               "contoso@live.com"
 """
 
 helps['apimgmt notification recipientemail update'] = """
@@ -2900,16 +1553,6 @@ helps['apimgmt notification recipientemail update'] = """
     short-summary: update a apimgmt notification recipientemail.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateNotificationRecipientEmail
-        text: |-
-               az apimgmt notification recipientemail update --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
-               "foobar@live.com"
-      - name: ApiManagementDeleteNotificationRecipientEmail
-        text: |-
-               az apimgmt notification recipientemail update --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
-               "contoso@live.com"
 """
 
 helps['apimgmt notification recipientemail delete'] = """
@@ -2917,11 +1560,7 @@ helps['apimgmt notification recipientemail delete'] = """
     short-summary: delete a apimgmt notification recipientemail.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateNotificationRecipientEmail
-        text: |-
-               az apimgmt notification recipientemail delete --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
-               "foobar@live.com"
+# delete
       - name: ApiManagementDeleteNotificationRecipientEmail
         text: |-
                az apimgmt notification recipientemail delete --resource-group "rg1" --service-name \\
@@ -2934,14 +1573,6 @@ helps['apimgmt notification recipientemail list'] = """
     short-summary: list a apimgmt notification recipientemail.
     examples:
 # list_by_notification -- list
-      - name: ApiManagementCreateNotificationRecipientEmail
-        text: |-
-               az apimgmt notification recipientemail list --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage"
-      - name: ApiManagementDeleteNotificationRecipientEmail
-        text: |-
-               az apimgmt notification recipientemail list --resource-group "rg1" --service-name \\
-               "apimService1" --notification-name "RequestPublisherNotificationMessage"
 """
 
 helps['apimgmt openidconnectprovider'] = """
@@ -2954,20 +1585,13 @@ helps['apimgmt openidconnectprovider create'] = """
     short-summary: create a apimgmt openidconnectprovider.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateOpenIdConnectProvider
         text: |-
                az apimgmt openidconnectprovider create --resource-group "rg1" --service-name \\
                "apimService1" --opid "templateOpenIdConnect3" --display-name "templateoidprovider3" \\
                --metadata-endpoint "https://oidprovider-template3.net" --client-id \\
                "oidprovidertemplate3"
-      - name: ApiManagementUpdateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider create --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect2" --client-secret "updatedsecret"
-      - name: ApiManagementDeleteOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider create --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt openidconnectprovider update'] = """
@@ -2975,20 +1599,11 @@ helps['apimgmt openidconnectprovider update'] = """
     short-summary: update a apimgmt openidconnectprovider.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider update --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect3" --display-name "templateoidprovider3" \\
-               --metadata-endpoint "https://oidprovider-template3.net" --client-id \\
-               "oidprovidertemplate3"
+# update
       - name: ApiManagementUpdateOpenIdConnectProvider
         text: |-
                az apimgmt openidconnectprovider update --resource-group "rg1" --service-name \\
                "apimService1" --opid "templateOpenIdConnect2" --client-secret "updatedsecret"
-      - name: ApiManagementDeleteOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider update --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt openidconnectprovider delete'] = """
@@ -2996,14 +1611,7 @@ helps['apimgmt openidconnectprovider delete'] = """
     short-summary: delete a apimgmt openidconnectprovider.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider delete --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect3"
-      - name: ApiManagementUpdateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider delete --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect2"
+# delete
       - name: ApiManagementDeleteOpenIdConnectProvider
         text: |-
                az apimgmt openidconnectprovider delete --resource-group "rg1" --service-name \\
@@ -3015,18 +1623,6 @@ helps['apimgmt openidconnectprovider list'] = """
     short-summary: list a apimgmt openidconnectprovider.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider list --resource-group "rg1" --service-name \\
-               "apimService1"
-      - name: ApiManagementUpdateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider list --resource-group "rg1" --service-name \\
-               "apimService1"
-      - name: ApiManagementDeleteOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider list --resource-group "rg1" --service-name \\
-               "apimService1"
 """
 
 helps['apimgmt openidconnectprovider show'] = """
@@ -3034,18 +1630,6 @@ helps['apimgmt openidconnectprovider show'] = """
     short-summary: show a apimgmt openidconnectprovider.
     examples:
 # get -- show
-      - name: ApiManagementCreateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider show --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect3"
-      - name: ApiManagementUpdateOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider show --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect2"
-      - name: ApiManagementDeleteOpenIdConnectProvider
-        text: |-
-               az apimgmt openidconnectprovider show --resource-group "rg1" --service-name \\
-               "apimService1" --opid "templateOpenIdConnect3"
 """
 
 helps['apimgmt policy'] = """
@@ -3058,15 +1642,12 @@ helps['apimgmt policy create'] = """
     short-summary: create a apimgmt policy.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreatePolicy
         text: |-
                az apimgmt policy create --resource-group "rg1" --service-name "apimService1" --policy-id \\
                "policy" --value "<policies>\r\n  <inbound />\r\n  <backend>\r\n    <forward-request />\r\
                n  </backend>\r\n  <outbound />\r\n</policies>" --format "xml"
-      - name: ApiManagementDeletePolicy
-        text: |-
-               az apimgmt policy create --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy"
 """
 
 helps['apimgmt policy update'] = """
@@ -3074,15 +1655,6 @@ helps['apimgmt policy update'] = """
     short-summary: update a apimgmt policy.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreatePolicy
-        text: |-
-               az apimgmt policy update --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy" --value "<policies>\r\n  <inbound />\r\n  <backend>\r\n    <forward-request />\r\
-               n  </backend>\r\n  <outbound />\r\n</policies>" --format "xml"
-      - name: ApiManagementDeletePolicy
-        text: |-
-               az apimgmt policy update --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy"
 """
 
 helps['apimgmt policy delete'] = """
@@ -3090,10 +1662,7 @@ helps['apimgmt policy delete'] = """
     short-summary: delete a apimgmt policy.
     examples:
 # delete -- delete
-      - name: ApiManagementCreatePolicy
-        text: |-
-               az apimgmt policy delete --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy"
+# delete
       - name: ApiManagementDeletePolicy
         text: |-
                az apimgmt policy delete --resource-group "rg1" --service-name "apimService1" --policy-id \\
@@ -3105,12 +1674,6 @@ helps['apimgmt policy list'] = """
     short-summary: list a apimgmt policy.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreatePolicy
-        text: |-
-               az apimgmt policy list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeletePolicy
-        text: |-
-               az apimgmt policy list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt policy show'] = """
@@ -3118,14 +1681,6 @@ helps['apimgmt policy show'] = """
     short-summary: show a apimgmt policy.
     examples:
 # get -- show
-      - name: ApiManagementCreatePolicy
-        text: |-
-               az apimgmt policy show --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy" --format "xml"
-      - name: ApiManagementDeletePolicy
-        text: |-
-               az apimgmt policy show --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy"
 """
 
 helps['apimgmt portalsetting signin'] = """
@@ -3138,10 +1693,7 @@ helps['apimgmt portalsetting signin create'] = """
     short-summary: create a apimgmt portalsetting signin.
     examples:
 # create_or_update -- create
-      - name: ApiManagementPortalSettingsUpdateSignIn
-        text: |-
-               az apimgmt portalsetting signin create --resource-group "rg1" --name "apimService1" \\
-               --enabled true
+# create
       - name: ApiManagementPortalSettingsUpdateSignIn
         text: |-
                az apimgmt portalsetting signin create --resource-group "rg1" --name "apimService1" \\
@@ -3153,10 +1705,7 @@ helps['apimgmt portalsetting signin update'] = """
     short-summary: update a apimgmt portalsetting signin.
     examples:
 # create_or_update -- update
-      - name: ApiManagementPortalSettingsUpdateSignIn
-        text: |-
-               az apimgmt portalsetting signin update --resource-group "rg1" --name "apimService1" \\
-               --enabled true
+# update
       - name: ApiManagementPortalSettingsUpdateSignIn
         text: |-
                az apimgmt portalsetting signin update --resource-group "rg1" --name "apimService1" \\
@@ -3168,12 +1717,6 @@ helps['apimgmt portalsetting signin show'] = """
     short-summary: show a apimgmt portalsetting signin.
     examples:
 # get -- show
-      - name: ApiManagementPortalSettingsUpdateSignIn
-        text: |-
-               az apimgmt portalsetting signin show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementPortalSettingsUpdateSignIn
-        text: |-
-               az apimgmt portalsetting signin show --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt portalsetting signup'] = """
@@ -3186,10 +1729,7 @@ helps['apimgmt portalsetting signup create'] = """
     short-summary: create a apimgmt portalsetting signup.
     examples:
 # create_or_update -- create
-      - name: ApiManagementPortalSettingsUpdateSignUp
-        text: |-
-               az apimgmt portalsetting signup create --resource-group "rg1" --name "apimService1" \\
-               --enabled true
+# create
       - name: ApiManagementPortalSettingsUpdateSignUp
         text: |-
                az apimgmt portalsetting signup create --resource-group "rg1" --name "apimService1" \\
@@ -3201,10 +1741,7 @@ helps['apimgmt portalsetting signup update'] = """
     short-summary: update a apimgmt portalsetting signup.
     examples:
 # create_or_update -- update
-      - name: ApiManagementPortalSettingsUpdateSignUp
-        text: |-
-               az apimgmt portalsetting signup update --resource-group "rg1" --name "apimService1" \\
-               --enabled true
+# update
       - name: ApiManagementPortalSettingsUpdateSignUp
         text: |-
                az apimgmt portalsetting signup update --resource-group "rg1" --name "apimService1" \\
@@ -3216,12 +1753,6 @@ helps['apimgmt portalsetting signup show'] = """
     short-summary: show a apimgmt portalsetting signup.
     examples:
 # get -- show
-      - name: ApiManagementPortalSettingsUpdateSignUp
-        text: |-
-               az apimgmt portalsetting signup show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementPortalSettingsUpdateSignUp
-        text: |-
-               az apimgmt portalsetting signup show --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt portalsetting delegation'] = """
@@ -3234,11 +1765,7 @@ helps['apimgmt portalsetting delegation create'] = """
     short-summary: create a apimgmt portalsetting delegation.
     examples:
 # create_or_update -- create
-      - name: ApiManagementPortalSettingsUpdateDelegation
-        text: |-
-               az apimgmt portalsetting delegation create --resource-group "rg1" --name "apimService1" \\
-               --url "http://contoso.com/delegation" --validation-key "nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7
-               o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q=="
+# create
       - name: ApiManagementPortalSettingsUpdateDelegation
         text: |-
                az apimgmt portalsetting delegation create --resource-group "rg1" --name "apimService1" \\
@@ -3251,11 +1778,7 @@ helps['apimgmt portalsetting delegation update'] = """
     short-summary: update a apimgmt portalsetting delegation.
     examples:
 # create_or_update -- update
-      - name: ApiManagementPortalSettingsUpdateDelegation
-        text: |-
-               az apimgmt portalsetting delegation update --resource-group "rg1" --name "apimService1" \\
-               --url "http://contoso.com/delegation" --validation-key "nVF7aKIvr9mV/RM5lOD0sYoi8ThXTRHQP7
-               o66hvUmjCDkPKR3qxPu/otJcNciz2aQdqPuzJH3ECG4TU2yZjQ7Q=="
+# update
       - name: ApiManagementPortalSettingsUpdateDelegation
         text: |-
                az apimgmt portalsetting delegation update --resource-group "rg1" --name "apimService1" \\
@@ -3268,12 +1791,6 @@ helps['apimgmt portalsetting delegation show'] = """
     short-summary: show a apimgmt portalsetting delegation.
     examples:
 # get -- show
-      - name: ApiManagementPortalSettingsUpdateDelegation
-        text: |-
-               az apimgmt portalsetting delegation show --resource-group "rg1" --name "apimService1"
-      - name: ApiManagementPortalSettingsUpdateDelegation
-        text: |-
-               az apimgmt portalsetting delegation show --resource-group "rg1" --name "apimService1"
 """
 
 helps['apimgmt product'] = """
@@ -3286,18 +1803,11 @@ helps['apimgmt product create'] = """
     short-summary: create a apimgmt product.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateProduct
         text: |-
                az apimgmt product create --resource-group "rg1" --service-name "apimService1" \\
                --product-id "testproduct" --display-name "Test Template ProductName 4"
-      - name: ApiManagementUpdateProduct
-        text: |-
-               az apimgmt product create --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --display-name "Test Template ProductName 4"
-      - name: ApiManagementDeleteProduct
-        text: |-
-               az apimgmt product create --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
 """
 
 helps['apimgmt product update'] = """
@@ -3305,18 +1815,11 @@ helps['apimgmt product update'] = """
     short-summary: update a apimgmt product.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateProduct
-        text: |-
-               az apimgmt product update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --display-name "Test Template ProductName 4"
+# update
       - name: ApiManagementUpdateProduct
         text: |-
                az apimgmt product update --resource-group "rg1" --service-name "apimService1" \\
                --product-id "testproduct" --display-name "Test Template ProductName 4"
-      - name: ApiManagementDeleteProduct
-        text: |-
-               az apimgmt product update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
 """
 
 helps['apimgmt product delete'] = """
@@ -3324,14 +1827,7 @@ helps['apimgmt product delete'] = """
     short-summary: delete a apimgmt product.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateProduct
-        text: |-
-               az apimgmt product delete --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
-      - name: ApiManagementUpdateProduct
-        text: |-
-               az apimgmt product delete --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
+# delete
       - name: ApiManagementDeleteProduct
         text: |-
                az apimgmt product delete --resource-group "rg1" --service-name "apimService1" \\
@@ -3343,25 +1839,7 @@ helps['apimgmt product list'] = """
     short-summary: list a apimgmt product.
     examples:
 # list_by_tags -- list
-      - name: ApiManagementCreateProduct
-        text: |-
-               az apimgmt product list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateProduct
-        text: |-
-               az apimgmt product list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteProduct
-        text: |-
-               az apimgmt product list --resource-group "rg1" --service-name "apimService1"
 # list_by_service -- list
-      - name: ApiManagementCreateProduct
-        text: |-
-               az apimgmt product list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateProduct
-        text: |-
-               az apimgmt product list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteProduct
-        text: |-
-               az apimgmt product list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt product show'] = """
@@ -3369,18 +1847,6 @@ helps['apimgmt product show'] = """
     short-summary: show a apimgmt product.
     examples:
 # get -- show
-      - name: ApiManagementCreateProduct
-        text: |-
-               az apimgmt product show --resource-group "rg1" --service-name "apimService1" --product-id \\
-               "testproduct"
-      - name: ApiManagementUpdateProduct
-        text: |-
-               az apimgmt product show --resource-group "rg1" --service-name "apimService1" --product-id \\
-               "testproduct"
-      - name: ApiManagementDeleteProduct
-        text: |-
-               az apimgmt product show --resource-group "rg1" --service-name "apimService1" --product-id \\
-               "testproduct"
 """
 
 helps['apimgmt product api'] = """
@@ -3393,11 +1859,8 @@ helps['apimgmt product api create'] = """
     short-summary: create a apimgmt product api.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateProductApi
-        text: |-
-               az apimgmt product api create --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --api-id "echo-api"
-      - name: ApiManagementDeleteProductApi
         text: |-
                az apimgmt product api create --resource-group "rg1" --service-name "apimService1" \\
                --product-id "testproduct" --api-id "echo-api"
@@ -3408,14 +1871,6 @@ helps['apimgmt product api update'] = """
     short-summary: update a apimgmt product api.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateProductApi
-        text: |-
-               az apimgmt product api update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --api-id "echo-api"
-      - name: ApiManagementDeleteProductApi
-        text: |-
-               az apimgmt product api update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --api-id "echo-api"
 """
 
 helps['apimgmt product api delete'] = """
@@ -3423,10 +1878,7 @@ helps['apimgmt product api delete'] = """
     short-summary: delete a apimgmt product api.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateProductApi
-        text: |-
-               az apimgmt product api delete --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --api-id "echo-api"
+# delete
       - name: ApiManagementDeleteProductApi
         text: |-
                az apimgmt product api delete --resource-group "rg1" --service-name "apimService1" \\
@@ -3438,14 +1890,6 @@ helps['apimgmt product api list'] = """
     short-summary: list a apimgmt product api.
     examples:
 # list_by_product -- list
-      - name: ApiManagementCreateProductApi
-        text: |-
-               az apimgmt product api list --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
-      - name: ApiManagementDeleteProductApi
-        text: |-
-               az apimgmt product api list --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
 """
 
 helps['apimgmt product group'] = """
@@ -3458,11 +1902,8 @@ helps['apimgmt product group create'] = """
     short-summary: create a apimgmt product group.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateProductGroup
-        text: |-
-               az apimgmt product group create --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --group-id "templateGroup"
-      - name: ApiManagementDeleteProductGroup
         text: |-
                az apimgmt product group create --resource-group "rg1" --service-name "apimService1" \\
                --product-id "testproduct" --group-id "templateGroup"
@@ -3473,14 +1914,6 @@ helps['apimgmt product group update'] = """
     short-summary: update a apimgmt product group.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateProductGroup
-        text: |-
-               az apimgmt product group update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --group-id "templateGroup"
-      - name: ApiManagementDeleteProductGroup
-        text: |-
-               az apimgmt product group update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --group-id "templateGroup"
 """
 
 helps['apimgmt product group delete'] = """
@@ -3488,10 +1921,7 @@ helps['apimgmt product group delete'] = """
     short-summary: delete a apimgmt product group.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateProductGroup
-        text: |-
-               az apimgmt product group delete --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --group-id "templateGroup"
+# delete
       - name: ApiManagementDeleteProductGroup
         text: |-
                az apimgmt product group delete --resource-group "rg1" --service-name "apimService1" \\
@@ -3503,14 +1933,6 @@ helps['apimgmt product group list'] = """
     short-summary: list a apimgmt product group.
     examples:
 # list_by_product -- list
-      - name: ApiManagementCreateProductGroup
-        text: |-
-               az apimgmt product group list --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
-      - name: ApiManagementDeleteProductGroup
-        text: |-
-               az apimgmt product group list --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
 """
 
 helps['apimgmt product policy'] = """
@@ -3523,6 +1945,7 @@ helps['apimgmt product policy create'] = """
     short-summary: create a apimgmt product policy.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateProductPolicy
         text: |-
                az apimgmt product policy create --resource-group "rg1" --service-name "apimService1" \\
@@ -3535,10 +1958,6 @@ helps['apimgmt product policy create'] = """
                Method == &quot;POST&quot; ? 1:2)\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n 
                   <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies
                >" --format "xml"
-      - name: ApiManagementDeleteProductPolicy
-        text: |-
-               az apimgmt product policy create --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt product policy update'] = """
@@ -3546,22 +1965,6 @@ helps['apimgmt product policy update'] = """
     short-summary: update a apimgmt product policy.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateProductPolicy
-        text: |-
-               az apimgmt product policy update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --value "<policies>\r\n  <inb
-               ound>\r\n    <rate-limit calls=\"{{call-count}}\" renewal-period=\"15\"></rate-limit>\r\n 
-                  <log-to-eventhub logger-id=\"16\">\r\n                      @( string.Join(\",\", DateT
-               ime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, 
-               context.Operation.Name) ) \r\n                  </log-to-eventhub>\r\n    <quota-by-key ca
-               lls=\"40\" counter-key=\"cc\" renewal-period=\"3600\" increment-count=\"@(context.Request.
-               Method == &quot;POST&quot; ? 1:2)\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n 
-                  <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies
-               >" --format "xml"
-      - name: ApiManagementDeleteProductPolicy
-        text: |-
-               az apimgmt product policy update --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt product policy delete'] = """
@@ -3569,10 +1972,7 @@ helps['apimgmt product policy delete'] = """
     short-summary: delete a apimgmt product policy.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateProductPolicy
-        text: |-
-               az apimgmt product policy delete --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "5702e97e5157a50f48dce801" --policy-id "policy"
+# delete
       - name: ApiManagementDeleteProductPolicy
         text: |-
                az apimgmt product policy delete --resource-group "rg1" --service-name "apimService1" \\
@@ -3584,14 +1984,6 @@ helps['apimgmt product policy list'] = """
     short-summary: list a apimgmt product policy.
     examples:
 # list_by_product -- list
-      - name: ApiManagementCreateProductPolicy
-        text: |-
-               az apimgmt product policy list --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "5702e97e5157a50f48dce801"
-      - name: ApiManagementDeleteProductPolicy
-        text: |-
-               az apimgmt product policy list --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct"
 """
 
 helps['apimgmt product policy show'] = """
@@ -3599,14 +1991,6 @@ helps['apimgmt product policy show'] = """
     short-summary: show a apimgmt product policy.
     examples:
 # get -- show
-      - name: ApiManagementCreateProductPolicy
-        text: |-
-               az apimgmt product policy show --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --format "xml"
-      - name: ApiManagementDeleteProductPolicy
-        text: |-
-               az apimgmt product policy show --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "testproduct" --policy-id "policy"
 """
 
 helps['apimgmt property'] = """
@@ -3619,18 +2003,11 @@ helps['apimgmt property create'] = """
     short-summary: create a apimgmt property.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateProperty
         text: |-
                az apimgmt property create --resource-group "rg1" --service-name "apimService1" --prop-id \\
                "testprop2" --secret true --display-name "prop3name" --value "propValue"
-      - name: ApiManagementUpdateProperty
-        text: |-
-               az apimgmt property create --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2" --secret true
-      - name: ApiManagementDeleteProperty
-        text: |-
-               az apimgmt property create --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
 """
 
 helps['apimgmt property update'] = """
@@ -3638,18 +2015,11 @@ helps['apimgmt property update'] = """
     short-summary: update a apimgmt property.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateProperty
-        text: |-
-               az apimgmt property update --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2" --secret true --display-name "prop3name" --value "propValue"
+# update
       - name: ApiManagementUpdateProperty
         text: |-
                az apimgmt property update --resource-group "rg1" --service-name "apimService1" --prop-id \\
                "testprop2" --secret true
-      - name: ApiManagementDeleteProperty
-        text: |-
-               az apimgmt property update --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
 """
 
 helps['apimgmt property delete'] = """
@@ -3657,14 +2027,7 @@ helps['apimgmt property delete'] = """
     short-summary: delete a apimgmt property.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateProperty
-        text: |-
-               az apimgmt property delete --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
-      - name: ApiManagementUpdateProperty
-        text: |-
-               az apimgmt property delete --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
+# delete
       - name: ApiManagementDeleteProperty
         text: |-
                az apimgmt property delete --resource-group "rg1" --service-name "apimService1" --prop-id \\
@@ -3676,15 +2039,6 @@ helps['apimgmt property list'] = """
     short-summary: list a apimgmt property.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateProperty
-        text: |-
-               az apimgmt property list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateProperty
-        text: |-
-               az apimgmt property list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteProperty
-        text: |-
-               az apimgmt property list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt property show'] = """
@@ -3692,18 +2046,6 @@ helps['apimgmt property show'] = """
     short-summary: show a apimgmt property.
     examples:
 # get -- show
-      - name: ApiManagementCreateProperty
-        text: |-
-               az apimgmt property show --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
-      - name: ApiManagementUpdateProperty
-        text: |-
-               az apimgmt property show --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
-      - name: ApiManagementDeleteProperty
-        text: |-
-               az apimgmt property show --resource-group "rg1" --service-name "apimService1" --prop-id \\
-               "testprop2"
 """
 
 helps['apimgmt subscription'] = """
@@ -3716,6 +2058,7 @@ helps['apimgmt subscription create'] = """
     short-summary: create a apimgmt subscription.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateSubscription
         text: |-
                az apimgmt subscription create --resource-group "rg1" --service-name "apimService1" --sid \\
@@ -3724,14 +2067,6 @@ helps['apimgmt subscription create'] = """
                --scope "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/provider
                s/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}" \\
                --display-name "testsub"
-      - name: ApiManagementUpdateSubscription
-        text: |-
-               az apimgmt subscription create --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub" --display-name "testsub"
-      - name: ApiManagementDeleteSubscription
-        text: |-
-               az apimgmt subscription create --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
 """
 
 helps['apimgmt subscription update'] = """
@@ -3739,22 +2074,11 @@ helps['apimgmt subscription update'] = """
     short-summary: update a apimgmt subscription.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateSubscription
-        text: |-
-               az apimgmt subscription update --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub" --owner-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_grou
-               p }}/providers/Microsoft.ApiManagement/service/{{ service_name }}/users/{{ user_name }}" \\
-               --scope "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/provider
-               s/Microsoft.ApiManagement/service/{{ service_name }}/products/{{ product_name }}" \\
-               --display-name "testsub"
+# update
       - name: ApiManagementUpdateSubscription
         text: |-
                az apimgmt subscription update --resource-group "rg1" --service-name "apimService1" --sid \\
                "testsub" --display-name "testsub"
-      - name: ApiManagementDeleteSubscription
-        text: |-
-               az apimgmt subscription update --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
 """
 
 helps['apimgmt subscription delete'] = """
@@ -3762,14 +2086,7 @@ helps['apimgmt subscription delete'] = """
     short-summary: delete a apimgmt subscription.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateSubscription
-        text: |-
-               az apimgmt subscription delete --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
-      - name: ApiManagementUpdateSubscription
-        text: |-
-               az apimgmt subscription delete --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
+# delete
       - name: ApiManagementDeleteSubscription
         text: |-
                az apimgmt subscription delete --resource-group "rg1" --service-name "apimService1" --sid \\
@@ -3781,15 +2098,6 @@ helps['apimgmt subscription list'] = """
     short-summary: list a apimgmt subscription.
     examples:
 # list -- list
-      - name: ApiManagementCreateSubscription
-        text: |-
-               az apimgmt subscription list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateSubscription
-        text: |-
-               az apimgmt subscription list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteSubscription
-        text: |-
-               az apimgmt subscription list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt subscription show'] = """
@@ -3797,18 +2105,6 @@ helps['apimgmt subscription show'] = """
     short-summary: show a apimgmt subscription.
     examples:
 # get -- show
-      - name: ApiManagementCreateSubscription
-        text: |-
-               az apimgmt subscription show --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
-      - name: ApiManagementUpdateSubscription
-        text: |-
-               az apimgmt subscription show --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
-      - name: ApiManagementDeleteSubscription
-        text: |-
-               az apimgmt subscription show --resource-group "rg1" --service-name "apimService1" --sid \\
-               "testsub"
 """
 
 helps['apimgmt user'] = """
@@ -3821,20 +2117,12 @@ helps['apimgmt user create'] = """
     short-summary: create a apimgmt user.
     examples:
 # create_or_update -- create
+# create
       - name: ApiManagementCreateUser
         text: |-
                az apimgmt user create --resource-group "rg1" --service-name "apimService1" --user-id \\
                "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name \\
                "bar" --confirmation "signup"
-      - name: ApiManagementUpdateUser
-        text: |-
-               az apimgmt user create --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name \\
-               "bar"
-      - name: ApiManagementDeleteUser
-        text: |-
-               az apimgmt user create --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
 """
 
 helps['apimgmt user update'] = """
@@ -3842,20 +2130,12 @@ helps['apimgmt user update'] = """
     short-summary: update a apimgmt user.
     examples:
 # create_or_update -- update
-      - name: ApiManagementCreateUser
-        text: |-
-               az apimgmt user update --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name \\
-               "bar" --confirmation "signup"
+# update
       - name: ApiManagementUpdateUser
         text: |-
                az apimgmt user update --resource-group "rg1" --service-name "apimService1" --user-id \\
                "5931a75ae4bbd512288c680b" --email "foobar@outlook.com" --first-name "foo" --last-name \\
                "bar"
-      - name: ApiManagementDeleteUser
-        text: |-
-               az apimgmt user update --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
 """
 
 helps['apimgmt user delete'] = """
@@ -3863,14 +2143,7 @@ helps['apimgmt user delete'] = """
     short-summary: delete a apimgmt user.
     examples:
 # delete -- delete
-      - name: ApiManagementCreateUser
-        text: |-
-               az apimgmt user delete --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
-      - name: ApiManagementUpdateUser
-        text: |-
-               az apimgmt user delete --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
+# delete
       - name: ApiManagementDeleteUser
         text: |-
                az apimgmt user delete --resource-group "rg1" --service-name "apimService1" --user-id \\
@@ -3882,15 +2155,6 @@ helps['apimgmt user list'] = """
     short-summary: list a apimgmt user.
     examples:
 # list_by_service -- list
-      - name: ApiManagementCreateUser
-        text: |-
-               az apimgmt user list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementUpdateUser
-        text: |-
-               az apimgmt user list --resource-group "rg1" --service-name "apimService1"
-      - name: ApiManagementDeleteUser
-        text: |-
-               az apimgmt user list --resource-group "rg1" --service-name "apimService1"
 """
 
 helps['apimgmt user show'] = """
@@ -3898,16 +2162,4 @@ helps['apimgmt user show'] = """
     short-summary: show a apimgmt user.
     examples:
 # get -- show
-      - name: ApiManagementCreateUser
-        text: |-
-               az apimgmt user show --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
-      - name: ApiManagementUpdateUser
-        text: |-
-               az apimgmt user show --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
-      - name: ApiManagementDeleteUser
-        text: |-
-               az apimgmt user show --resource-group "rg1" --service-name "apimService1" --user-id \\
-               "5931a75ae4bbd512288c680b"
 """
