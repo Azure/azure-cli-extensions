@@ -17,8 +17,8 @@ helps['apimgmt api'] = """
 helps['apimgmt api create'] = """
     type: command
     short-summary: create a apimgmt api.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiUsingOai3Import
         text: |-
@@ -99,8 +99,8 @@ helps['apimgmt api create'] = """
 helps['apimgmt api update'] = """
     type: command
     short-summary: update a apimgmt api.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateApi
         text: |-
@@ -112,8 +112,8 @@ helps['apimgmt api update'] = """
 helps['apimgmt api delete'] = """
     type: command
     short-summary: delete a apimgmt api.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApi
         text: |-
@@ -124,7 +124,6 @@ helps['apimgmt api delete'] = """
 helps['apimgmt api list'] = """
     type: command
     short-summary: list a apimgmt api.
-    examples:
 # list_by_tags -- list
 # list_by_service -- list
 """
@@ -132,7 +131,6 @@ helps['apimgmt api list'] = """
 helps['apimgmt api show'] = """
     type: command
     short-summary: show a apimgmt api.
-    examples:
 # get -- show
 """
 
@@ -144,8 +142,8 @@ helps['apimgmt api release'] = """
 helps['apimgmt api release create'] = """
     type: command
     short-summary: create a apimgmt api release.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiRelease
         text: |-
@@ -156,8 +154,8 @@ helps['apimgmt api release create'] = """
 helps['apimgmt api release update'] = """
     type: command
     short-summary: update a apimgmt api release.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateApiRelease
         text: |-
@@ -168,8 +166,8 @@ helps['apimgmt api release update'] = """
 helps['apimgmt api release delete'] = """
     type: command
     short-summary: delete a apimgmt api release.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiRelease
         text: |-
@@ -180,14 +178,12 @@ helps['apimgmt api release delete'] = """
 helps['apimgmt api release list'] = """
     type: command
     short-summary: list a apimgmt api release.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt api release show'] = """
     type: command
     short-summary: show a apimgmt api release.
-    examples:
 # get -- show
 """
 
@@ -199,8 +195,8 @@ helps['apimgmt api operation'] = """
 helps['apimgmt api operation create'] = """
     type: command
     short-summary: create a apimgmt api operation.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiOperation
         text: |-
@@ -213,8 +209,8 @@ helps['apimgmt api operation create'] = """
 helps['apimgmt api operation update'] = """
     type: command
     short-summary: update a apimgmt api operation.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateApiOperation
         text: |-
@@ -226,8 +222,8 @@ helps['apimgmt api operation update'] = """
 helps['apimgmt api operation delete'] = """
     type: command
     short-summary: delete a apimgmt api operation.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiOperation
         text: |-
@@ -238,14 +234,12 @@ helps['apimgmt api operation delete'] = """
 helps['apimgmt api operation list'] = """
     type: command
     short-summary: list a apimgmt api operation.
-    examples:
 # list_by_api -- list
 """
 
 helps['apimgmt api operation show'] = """
     type: command
     short-summary: show a apimgmt api operation.
-    examples:
 # get -- show
 """
 
@@ -257,8 +251,8 @@ helps['apimgmt api operation policy'] = """
 helps['apimgmt api operation policy create'] = """
     type: command
     short-summary: create a apimgmt api operation policy.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiOperationPolicy
         text: |-
@@ -271,15 +265,14 @@ helps['apimgmt api operation policy create'] = """
 helps['apimgmt api operation policy update'] = """
     type: command
     short-summary: update a apimgmt api operation policy.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt api operation policy delete'] = """
     type: command
     short-summary: delete a apimgmt api operation policy.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiOperationPolicy
         text: |-
@@ -290,14 +283,12 @@ helps['apimgmt api operation policy delete'] = """
 helps['apimgmt api operation policy list'] = """
     type: command
     short-summary: list a apimgmt api operation policy.
-    examples:
 # list_by_operation -- list
 """
 
 helps['apimgmt api operation policy show'] = """
     type: command
     short-summary: show a apimgmt api operation policy.
-    examples:
 # get -- show
 """
 
@@ -309,8 +300,8 @@ helps['apimgmt tag'] = """
 helps['apimgmt tag create'] = """
     type: command
     short-summary: create a apimgmt tag.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateTag
         text: |-
@@ -321,8 +312,8 @@ helps['apimgmt tag create'] = """
 helps['apimgmt tag update'] = """
     type: command
     short-summary: update a apimgmt tag.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateTag
         text: |-
@@ -333,8 +324,8 @@ helps['apimgmt tag update'] = """
 helps['apimgmt tag delete'] = """
     type: command
     short-summary: delete a apimgmt tag.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteTag
         text: |-
@@ -345,7 +336,6 @@ helps['apimgmt tag delete'] = """
 helps['apimgmt tag list'] = """
     type: command
     short-summary: list a apimgmt tag.
-    examples:
 # list_by_operation -- list
 # list_by_product -- list
 # list_by_api -- list
@@ -355,7 +345,6 @@ helps['apimgmt tag list'] = """
 helps['apimgmt tag show'] = """
     type: command
     short-summary: show a apimgmt tag.
-    examples:
 # get -- show
 """
 
@@ -367,8 +356,8 @@ helps['apimgmt api policy'] = """
 helps['apimgmt api policy create'] = """
     type: command
     short-summary: create a apimgmt api policy.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiPolicy
         text: |-
@@ -388,15 +377,14 @@ helps['apimgmt api policy create'] = """
 helps['apimgmt api policy update'] = """
     type: command
     short-summary: update a apimgmt api policy.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt api policy delete'] = """
     type: command
     short-summary: delete a apimgmt api policy.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiPolicy
         text: |-
@@ -407,14 +395,12 @@ helps['apimgmt api policy delete'] = """
 helps['apimgmt api policy list'] = """
     type: command
     short-summary: list a apimgmt api policy.
-    examples:
 # list_by_api -- list
 """
 
 helps['apimgmt api policy show'] = """
     type: command
     short-summary: show a apimgmt api policy.
-    examples:
 # get -- show
 """
 
@@ -426,8 +412,8 @@ helps['apimgmt api schema'] = """
 helps['apimgmt api schema create'] = """
     type: command
     short-summary: create a apimgmt api schema.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiSchema
         text: |-
@@ -439,15 +425,14 @@ helps['apimgmt api schema create'] = """
 helps['apimgmt api schema update'] = """
     type: command
     short-summary: update a apimgmt api schema.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt api schema delete'] = """
     type: command
     short-summary: delete a apimgmt api schema.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiSchema
         text: |-
@@ -458,14 +443,12 @@ helps['apimgmt api schema delete'] = """
 helps['apimgmt api schema list'] = """
     type: command
     short-summary: list a apimgmt api schema.
-    examples:
 # list_by_api -- list
 """
 
 helps['apimgmt api schema show'] = """
     type: command
     short-summary: show a apimgmt api schema.
-    examples:
 # get -- show
 """
 
@@ -477,8 +460,8 @@ helps['apimgmt api diagnostic'] = """
 helps['apimgmt api diagnostic create'] = """
     type: command
     short-summary: create a apimgmt api diagnostic.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiDiagnostic
         text: |-
@@ -490,8 +473,8 @@ helps['apimgmt api diagnostic create'] = """
 helps['apimgmt api diagnostic update'] = """
     type: command
     short-summary: update a apimgmt api diagnostic.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateApiDiagnostic
         text: |-
@@ -503,8 +486,8 @@ helps['apimgmt api diagnostic update'] = """
 helps['apimgmt api diagnostic delete'] = """
     type: command
     short-summary: delete a apimgmt api diagnostic.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiDiagnostic
         text: |-
@@ -515,14 +498,12 @@ helps['apimgmt api diagnostic delete'] = """
 helps['apimgmt api diagnostic list'] = """
     type: command
     short-summary: list a apimgmt api diagnostic.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt api diagnostic show'] = """
     type: command
     short-summary: show a apimgmt api diagnostic.
-    examples:
 # get -- show
 """
 
@@ -534,8 +515,8 @@ helps['apimgmt api issue'] = """
 helps['apimgmt api issue create'] = """
     type: command
     short-summary: create a apimgmt api issue.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiIssue
         text: |-
@@ -550,8 +531,8 @@ helps['apimgmt api issue create'] = """
 helps['apimgmt api issue update'] = """
     type: command
     short-summary: update a apimgmt api issue.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateApiIssue
         text: |-
@@ -562,8 +543,8 @@ helps['apimgmt api issue update'] = """
 helps['apimgmt api issue delete'] = """
     type: command
     short-summary: delete a apimgmt api issue.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiIssue
         text: |-
@@ -574,14 +555,12 @@ helps['apimgmt api issue delete'] = """
 helps['apimgmt api issue list'] = """
     type: command
     short-summary: list a apimgmt api issue.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt api issue show'] = """
     type: command
     short-summary: show a apimgmt api issue.
-    examples:
 # get -- show
 """
 
@@ -593,8 +572,8 @@ helps['apimgmt api issue comment'] = """
 helps['apimgmt api issue comment create'] = """
     type: command
     short-summary: create a apimgmt api issue comment.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiIssueComment
         text: |-
@@ -609,15 +588,14 @@ helps['apimgmt api issue comment create'] = """
 helps['apimgmt api issue comment update'] = """
     type: command
     short-summary: update a apimgmt api issue comment.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt api issue comment delete'] = """
     type: command
     short-summary: delete a apimgmt api issue comment.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiIssueComment
         text: |-
@@ -629,14 +607,12 @@ helps['apimgmt api issue comment delete'] = """
 helps['apimgmt api issue comment list'] = """
     type: command
     short-summary: list a apimgmt api issue comment.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt api issue comment show'] = """
     type: command
     short-summary: show a apimgmt api issue comment.
-    examples:
 # get -- show
 """
 
@@ -648,8 +624,8 @@ helps['apimgmt api issue attachment'] = """
 helps['apimgmt api issue attachment create'] = """
     type: command
     short-summary: create a apimgmt api issue attachment.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiIssueAttachment
         text: |-
@@ -662,15 +638,14 @@ helps['apimgmt api issue attachment create'] = """
 helps['apimgmt api issue attachment update'] = """
     type: command
     short-summary: update a apimgmt api issue attachment.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt api issue attachment delete'] = """
     type: command
     short-summary: delete a apimgmt api issue attachment.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiIssueAttachment
         text: |-
@@ -682,14 +657,12 @@ helps['apimgmt api issue attachment delete'] = """
 helps['apimgmt api issue attachment list'] = """
     type: command
     short-summary: list a apimgmt api issue attachment.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt api issue attachment show'] = """
     type: command
     short-summary: show a apimgmt api issue attachment.
-    examples:
 # get -- show
 """
 
@@ -701,8 +674,8 @@ helps['apimgmt api tagdescription'] = """
 helps['apimgmt api tagdescription create'] = """
     type: command
     short-summary: create a apimgmt api tagdescription.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiTagDescription
         text: |-
@@ -716,15 +689,14 @@ helps['apimgmt api tagdescription create'] = """
 helps['apimgmt api tagdescription update'] = """
     type: command
     short-summary: update a apimgmt api tagdescription.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt api tagdescription delete'] = """
     type: command
     short-summary: delete a apimgmt api tagdescription.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiTagDescription
         text: |-
@@ -735,14 +707,12 @@ helps['apimgmt api tagdescription delete'] = """
 helps['apimgmt api tagdescription list'] = """
     type: command
     short-summary: list a apimgmt api tagdescription.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt api tagdescription show'] = """
     type: command
     short-summary: show a apimgmt api tagdescription.
-    examples:
 # get -- show
 """
 
@@ -754,8 +724,8 @@ helps['apimgmt apiversionset'] = """
 helps['apimgmt apiversionset create'] = """
     type: command
     short-summary: create a apimgmt apiversionset.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateApiVersionSet
         text: |-
@@ -767,8 +737,8 @@ helps['apimgmt apiversionset create'] = """
 helps['apimgmt apiversionset update'] = """
     type: command
     short-summary: update a apimgmt apiversionset.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateApiVersionSet
         text: |-
@@ -780,8 +750,8 @@ helps['apimgmt apiversionset update'] = """
 helps['apimgmt apiversionset delete'] = """
     type: command
     short-summary: delete a apimgmt apiversionset.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteApiVersionSet
         text: |-
@@ -792,14 +762,12 @@ helps['apimgmt apiversionset delete'] = """
 helps['apimgmt apiversionset list'] = """
     type: command
     short-summary: list a apimgmt apiversionset.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt apiversionset show'] = """
     type: command
     short-summary: show a apimgmt apiversionset.
-    examples:
 # get -- show
 """
 
@@ -811,8 +779,8 @@ helps['apimgmt authorizationserver'] = """
 helps['apimgmt authorizationserver create'] = """
     type: command
     short-summary: create a apimgmt authorizationserver.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateAuthorizationServer
         text: |-
@@ -827,8 +795,8 @@ helps['apimgmt authorizationserver create'] = """
 helps['apimgmt authorizationserver update'] = """
     type: command
     short-summary: update a apimgmt authorizationserver.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateAuthorizationServer
         text: |-
@@ -839,8 +807,8 @@ helps['apimgmt authorizationserver update'] = """
 helps['apimgmt authorizationserver delete'] = """
     type: command
     short-summary: delete a apimgmt authorizationserver.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteAuthorizationServer
         text: |-
@@ -851,14 +819,12 @@ helps['apimgmt authorizationserver delete'] = """
 helps['apimgmt authorizationserver list'] = """
     type: command
     short-summary: list a apimgmt authorizationserver.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt authorizationserver show'] = """
     type: command
     short-summary: show a apimgmt authorizationserver.
-    examples:
 # get -- show
 """
 
@@ -870,8 +836,8 @@ helps['apimgmt backend'] = """
 helps['apimgmt backend create'] = """
     type: command
     short-summary: create a apimgmt backend.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateBackendServiceFabric
         text: |-
@@ -889,8 +855,8 @@ helps['apimgmt backend create'] = """
 helps['apimgmt backend update'] = """
     type: command
     short-summary: update a apimgmt backend.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateBackend
         text: |-
@@ -901,8 +867,8 @@ helps['apimgmt backend update'] = """
 helps['apimgmt backend delete'] = """
     type: command
     short-summary: delete a apimgmt backend.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteBackend
         text: |-
@@ -913,14 +879,12 @@ helps['apimgmt backend delete'] = """
 helps['apimgmt backend list'] = """
     type: command
     short-summary: list a apimgmt backend.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt backend show'] = """
     type: command
     short-summary: show a apimgmt backend.
-    examples:
 # get -- show
 """
 
@@ -932,8 +896,8 @@ helps['apimgmt cache'] = """
 helps['apimgmt cache create'] = """
     type: command
     short-summary: create a apimgmt cache.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateCache
         text: |-
@@ -947,8 +911,8 @@ helps['apimgmt cache create'] = """
 helps['apimgmt cache update'] = """
     type: command
     short-summary: update a apimgmt cache.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateCache
         text: |-
@@ -959,8 +923,8 @@ helps['apimgmt cache update'] = """
 helps['apimgmt cache delete'] = """
     type: command
     short-summary: delete a apimgmt cache.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteCache
         text: |-
@@ -971,14 +935,12 @@ helps['apimgmt cache delete'] = """
 helps['apimgmt cache list'] = """
     type: command
     short-summary: list a apimgmt cache.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt cache show'] = """
     type: command
     short-summary: show a apimgmt cache.
-    examples:
 # get -- show
 """
 
@@ -990,8 +952,8 @@ helps['apimgmt certificate'] = """
 helps['apimgmt certificate create'] = """
     type: command
     short-summary: create a apimgmt certificate.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateCertificate
         text: |-
@@ -1004,15 +966,14 @@ helps['apimgmt certificate create'] = """
 helps['apimgmt certificate update'] = """
     type: command
     short-summary: update a apimgmt certificate.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt certificate delete'] = """
     type: command
     short-summary: delete a apimgmt certificate.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteCertificate
         text: |-
@@ -1023,14 +984,12 @@ helps['apimgmt certificate delete'] = """
 helps['apimgmt certificate list'] = """
     type: command
     short-summary: list a apimgmt certificate.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt certificate show'] = """
     type: command
     short-summary: show a apimgmt certificate.
-    examples:
 # get -- show
 """
 
@@ -1042,8 +1001,8 @@ helps['apimgmt'] = """
 helps['apimgmt create'] = """
     type: command
     short-summary: create a apimgmt.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateService
         text: |-
@@ -1073,8 +1032,8 @@ helps['apimgmt create'] = """
 helps['apimgmt update'] = """
     type: command
     short-summary: update a apimgmt.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateServiceDisableTls10
         text: |-
@@ -1089,8 +1048,8 @@ helps['apimgmt update'] = """
 helps['apimgmt delete'] = """
     type: command
     short-summary: delete a apimgmt.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementServiceDeleteService
         text: |-
@@ -1100,7 +1059,6 @@ helps['apimgmt delete'] = """
 helps['apimgmt list'] = """
     type: command
     short-summary: list a apimgmt.
-    examples:
 # list_by_resource_group -- list
 # list -- list
 """
@@ -1108,7 +1066,6 @@ helps['apimgmt list'] = """
 helps['apimgmt show'] = """
     type: command
     short-summary: show a apimgmt.
-    examples:
 # get -- show
 """
 
@@ -1120,8 +1077,8 @@ helps['apimgmt diagnostic'] = """
 helps['apimgmt diagnostic create'] = """
     type: command
     short-summary: create a apimgmt diagnostic.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateDiagnostic
         text: |-
@@ -1133,8 +1090,8 @@ helps['apimgmt diagnostic create'] = """
 helps['apimgmt diagnostic update'] = """
     type: command
     short-summary: update a apimgmt diagnostic.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateDiagnostic
         text: |-
@@ -1146,8 +1103,8 @@ helps['apimgmt diagnostic update'] = """
 helps['apimgmt diagnostic delete'] = """
     type: command
     short-summary: delete a apimgmt diagnostic.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteDiagnostic
         text: |-
@@ -1158,14 +1115,12 @@ helps['apimgmt diagnostic delete'] = """
 helps['apimgmt diagnostic list'] = """
     type: command
     short-summary: list a apimgmt diagnostic.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt diagnostic show'] = """
     type: command
     short-summary: show a apimgmt diagnostic.
-    examples:
 # get -- show
 """
 
@@ -1177,8 +1132,8 @@ helps['apimgmt template'] = """
 helps['apimgmt template create'] = """
     type: command
     short-summary: create a apimgmt template.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateEmailTemplate
         text: |-
@@ -1190,8 +1145,8 @@ helps['apimgmt template create'] = """
 helps['apimgmt template update'] = """
     type: command
     short-summary: update a apimgmt template.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateEmailTemplate
         text: |-
@@ -1211,8 +1166,8 @@ helps['apimgmt template update'] = """
 helps['apimgmt template delete'] = """
     type: command
     short-summary: delete a apimgmt template.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteEmailTemplate
         text: |-
@@ -1223,14 +1178,12 @@ helps['apimgmt template delete'] = """
 helps['apimgmt template list'] = """
     type: command
     short-summary: list a apimgmt template.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt template show'] = """
     type: command
     short-summary: show a apimgmt template.
-    examples:
 # get -- show
 """
 
@@ -1242,8 +1195,8 @@ helps['apimgmt group'] = """
 helps['apimgmt group create'] = """
     type: command
     short-summary: create a apimgmt group.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateGroup
         text: |-
@@ -1261,8 +1214,8 @@ helps['apimgmt group create'] = """
 helps['apimgmt group update'] = """
     type: command
     short-summary: update a apimgmt group.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateGroup
         text: |-
@@ -1273,8 +1226,8 @@ helps['apimgmt group update'] = """
 helps['apimgmt group delete'] = """
     type: command
     short-summary: delete a apimgmt group.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteGroup
         text: |-
@@ -1285,14 +1238,12 @@ helps['apimgmt group delete'] = """
 helps['apimgmt group list'] = """
     type: command
     short-summary: list a apimgmt group.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt group show'] = """
     type: command
     short-summary: show a apimgmt group.
-    examples:
 # get -- show
 """
 
@@ -1304,8 +1255,8 @@ helps['apimgmt group user'] = """
 helps['apimgmt group user create'] = """
     type: command
     short-summary: create a apimgmt group user.
-    examples:
 # create -- create
+    examples:
 # create
       - name: ApiManagementCreateGroupUser
         text: |-
@@ -1316,8 +1267,8 @@ helps['apimgmt group user create'] = """
 helps['apimgmt group user delete'] = """
     type: command
     short-summary: delete a apimgmt group user.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteGroupUser
         text: |-
@@ -1328,7 +1279,6 @@ helps['apimgmt group user delete'] = """
 helps['apimgmt group user list'] = """
     type: command
     short-summary: list a apimgmt group user.
-    examples:
 # list -- list
 """
 
@@ -1340,8 +1290,8 @@ helps['apimgmt identityprovider'] = """
 helps['apimgmt identityprovider create'] = """
     type: command
     short-summary: create a apimgmt identityprovider.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateIdentityProvider
         text: |-
@@ -1352,8 +1302,8 @@ helps['apimgmt identityprovider create'] = """
 helps['apimgmt identityprovider update'] = """
     type: command
     short-summary: update a apimgmt identityprovider.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateIdentityProvider
         text: |-
@@ -1364,8 +1314,8 @@ helps['apimgmt identityprovider update'] = """
 helps['apimgmt identityprovider delete'] = """
     type: command
     short-summary: delete a apimgmt identityprovider.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteIdentityProvider
         text: |-
@@ -1376,14 +1326,12 @@ helps['apimgmt identityprovider delete'] = """
 helps['apimgmt identityprovider list'] = """
     type: command
     short-summary: list a apimgmt identityprovider.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt identityprovider show'] = """
     type: command
     short-summary: show a apimgmt identityprovider.
-    examples:
 # get -- show
 """
 
@@ -1395,8 +1343,8 @@ helps['apimgmt logger'] = """
 helps['apimgmt logger create'] = """
     type: command
     short-summary: create a apimgmt logger.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateEHLogger
         text: |-
@@ -1412,8 +1360,8 @@ helps['apimgmt logger create'] = """
 helps['apimgmt logger update'] = """
     type: command
     short-summary: update a apimgmt logger.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateLogger
         text: |-
@@ -1424,8 +1372,8 @@ helps['apimgmt logger update'] = """
 helps['apimgmt logger delete'] = """
     type: command
     short-summary: delete a apimgmt logger.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteLogger
         text: |-
@@ -1436,14 +1384,12 @@ helps['apimgmt logger delete'] = """
 helps['apimgmt logger list'] = """
     type: command
     short-summary: list a apimgmt logger.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt logger show'] = """
     type: command
     short-summary: show a apimgmt logger.
-    examples:
 # get -- show
 """
 
@@ -1455,8 +1401,8 @@ helps['apimgmt notification'] = """
 helps['apimgmt notification create'] = """
     type: command
     short-summary: create a apimgmt notification.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateNotification
         text: |-
@@ -1467,21 +1413,18 @@ helps['apimgmt notification create'] = """
 helps['apimgmt notification update'] = """
     type: command
     short-summary: update a apimgmt notification.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt notification list'] = """
     type: command
     short-summary: list a apimgmt notification.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt notification show'] = """
     type: command
     short-summary: show a apimgmt notification.
-    examples:
 # get -- show
 """
 
@@ -1493,8 +1436,8 @@ helps['apimgmt notification recipientuser'] = """
 helps['apimgmt notification recipientuser create'] = """
     type: command
     short-summary: create a apimgmt notification recipientuser.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateNotificationRecipientUser
         text: |-
@@ -1506,15 +1449,14 @@ helps['apimgmt notification recipientuser create'] = """
 helps['apimgmt notification recipientuser update'] = """
     type: command
     short-summary: update a apimgmt notification recipientuser.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt notification recipientuser delete'] = """
     type: command
     short-summary: delete a apimgmt notification recipientuser.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteNotificationRecipientUser
         text: |-
@@ -1526,7 +1468,6 @@ helps['apimgmt notification recipientuser delete'] = """
 helps['apimgmt notification recipientuser list'] = """
     type: command
     short-summary: list a apimgmt notification recipientuser.
-    examples:
 # list_by_notification -- list
 """
 
@@ -1538,8 +1479,8 @@ helps['apimgmt notification recipientemail'] = """
 helps['apimgmt notification recipientemail create'] = """
     type: command
     short-summary: create a apimgmt notification recipientemail.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateNotificationRecipientEmail
         text: |-
@@ -1551,15 +1492,14 @@ helps['apimgmt notification recipientemail create'] = """
 helps['apimgmt notification recipientemail update'] = """
     type: command
     short-summary: update a apimgmt notification recipientemail.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt notification recipientemail delete'] = """
     type: command
     short-summary: delete a apimgmt notification recipientemail.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteNotificationRecipientEmail
         text: |-
@@ -1571,7 +1511,6 @@ helps['apimgmt notification recipientemail delete'] = """
 helps['apimgmt notification recipientemail list'] = """
     type: command
     short-summary: list a apimgmt notification recipientemail.
-    examples:
 # list_by_notification -- list
 """
 
@@ -1583,8 +1522,8 @@ helps['apimgmt openidconnectprovider'] = """
 helps['apimgmt openidconnectprovider create'] = """
     type: command
     short-summary: create a apimgmt openidconnectprovider.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateOpenIdConnectProvider
         text: |-
@@ -1597,8 +1536,8 @@ helps['apimgmt openidconnectprovider create'] = """
 helps['apimgmt openidconnectprovider update'] = """
     type: command
     short-summary: update a apimgmt openidconnectprovider.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateOpenIdConnectProvider
         text: |-
@@ -1609,8 +1548,8 @@ helps['apimgmt openidconnectprovider update'] = """
 helps['apimgmt openidconnectprovider delete'] = """
     type: command
     short-summary: delete a apimgmt openidconnectprovider.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteOpenIdConnectProvider
         text: |-
@@ -1621,14 +1560,12 @@ helps['apimgmt openidconnectprovider delete'] = """
 helps['apimgmt openidconnectprovider list'] = """
     type: command
     short-summary: list a apimgmt openidconnectprovider.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt openidconnectprovider show'] = """
     type: command
     short-summary: show a apimgmt openidconnectprovider.
-    examples:
 # get -- show
 """
 
@@ -1640,8 +1577,8 @@ helps['apimgmt policy'] = """
 helps['apimgmt policy create'] = """
     type: command
     short-summary: create a apimgmt policy.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreatePolicy
         text: |-
@@ -1653,15 +1590,14 @@ helps['apimgmt policy create'] = """
 helps['apimgmt policy update'] = """
     type: command
     short-summary: update a apimgmt policy.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt policy delete'] = """
     type: command
     short-summary: delete a apimgmt policy.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeletePolicy
         text: |-
@@ -1672,14 +1608,12 @@ helps['apimgmt policy delete'] = """
 helps['apimgmt policy list'] = """
     type: command
     short-summary: list a apimgmt policy.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt policy show'] = """
     type: command
     short-summary: show a apimgmt policy.
-    examples:
 # get -- show
 """
 
@@ -1691,8 +1625,8 @@ helps['apimgmt portalsetting signin'] = """
 helps['apimgmt portalsetting signin create'] = """
     type: command
     short-summary: create a apimgmt portalsetting signin.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementPortalSettingsUpdateSignIn
         text: |-
@@ -1703,8 +1637,8 @@ helps['apimgmt portalsetting signin create'] = """
 helps['apimgmt portalsetting signin update'] = """
     type: command
     short-summary: update a apimgmt portalsetting signin.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementPortalSettingsUpdateSignIn
         text: |-
@@ -1715,7 +1649,6 @@ helps['apimgmt portalsetting signin update'] = """
 helps['apimgmt portalsetting signin show'] = """
     type: command
     short-summary: show a apimgmt portalsetting signin.
-    examples:
 # get -- show
 """
 
@@ -1727,8 +1660,8 @@ helps['apimgmt portalsetting signup'] = """
 helps['apimgmt portalsetting signup create'] = """
     type: command
     short-summary: create a apimgmt portalsetting signup.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementPortalSettingsUpdateSignUp
         text: |-
@@ -1739,8 +1672,8 @@ helps['apimgmt portalsetting signup create'] = """
 helps['apimgmt portalsetting signup update'] = """
     type: command
     short-summary: update a apimgmt portalsetting signup.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementPortalSettingsUpdateSignUp
         text: |-
@@ -1751,7 +1684,6 @@ helps['apimgmt portalsetting signup update'] = """
 helps['apimgmt portalsetting signup show'] = """
     type: command
     short-summary: show a apimgmt portalsetting signup.
-    examples:
 # get -- show
 """
 
@@ -1763,8 +1695,8 @@ helps['apimgmt portalsetting delegation'] = """
 helps['apimgmt portalsetting delegation create'] = """
     type: command
     short-summary: create a apimgmt portalsetting delegation.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementPortalSettingsUpdateDelegation
         text: |-
@@ -1776,8 +1708,8 @@ helps['apimgmt portalsetting delegation create'] = """
 helps['apimgmt portalsetting delegation update'] = """
     type: command
     short-summary: update a apimgmt portalsetting delegation.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementPortalSettingsUpdateDelegation
         text: |-
@@ -1789,7 +1721,6 @@ helps['apimgmt portalsetting delegation update'] = """
 helps['apimgmt portalsetting delegation show'] = """
     type: command
     short-summary: show a apimgmt portalsetting delegation.
-    examples:
 # get -- show
 """
 
@@ -1801,8 +1732,8 @@ helps['apimgmt product'] = """
 helps['apimgmt product create'] = """
     type: command
     short-summary: create a apimgmt product.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateProduct
         text: |-
@@ -1813,8 +1744,8 @@ helps['apimgmt product create'] = """
 helps['apimgmt product update'] = """
     type: command
     short-summary: update a apimgmt product.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateProduct
         text: |-
@@ -1825,8 +1756,8 @@ helps['apimgmt product update'] = """
 helps['apimgmt product delete'] = """
     type: command
     short-summary: delete a apimgmt product.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteProduct
         text: |-
@@ -1837,7 +1768,6 @@ helps['apimgmt product delete'] = """
 helps['apimgmt product list'] = """
     type: command
     short-summary: list a apimgmt product.
-    examples:
 # list_by_tags -- list
 # list_by_service -- list
 """
@@ -1845,7 +1775,6 @@ helps['apimgmt product list'] = """
 helps['apimgmt product show'] = """
     type: command
     short-summary: show a apimgmt product.
-    examples:
 # get -- show
 """
 
@@ -1857,8 +1786,8 @@ helps['apimgmt product api'] = """
 helps['apimgmt product api create'] = """
     type: command
     short-summary: create a apimgmt product api.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateProductApi
         text: |-
@@ -1869,15 +1798,14 @@ helps['apimgmt product api create'] = """
 helps['apimgmt product api update'] = """
     type: command
     short-summary: update a apimgmt product api.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt product api delete'] = """
     type: command
     short-summary: delete a apimgmt product api.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteProductApi
         text: |-
@@ -1888,7 +1816,6 @@ helps['apimgmt product api delete'] = """
 helps['apimgmt product api list'] = """
     type: command
     short-summary: list a apimgmt product api.
-    examples:
 # list_by_product -- list
 """
 
@@ -1900,8 +1827,8 @@ helps['apimgmt product group'] = """
 helps['apimgmt product group create'] = """
     type: command
     short-summary: create a apimgmt product group.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateProductGroup
         text: |-
@@ -1912,15 +1839,14 @@ helps['apimgmt product group create'] = """
 helps['apimgmt product group update'] = """
     type: command
     short-summary: update a apimgmt product group.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt product group delete'] = """
     type: command
     short-summary: delete a apimgmt product group.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteProductGroup
         text: |-
@@ -1931,7 +1857,6 @@ helps['apimgmt product group delete'] = """
 helps['apimgmt product group list'] = """
     type: command
     short-summary: list a apimgmt product group.
-    examples:
 # list_by_product -- list
 """
 
@@ -1943,8 +1868,8 @@ helps['apimgmt product policy'] = """
 helps['apimgmt product policy create'] = """
     type: command
     short-summary: create a apimgmt product policy.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateProductPolicy
         text: |-
@@ -1963,15 +1888,14 @@ helps['apimgmt product policy create'] = """
 helps['apimgmt product policy update'] = """
     type: command
     short-summary: update a apimgmt product policy.
-    examples:
 # create_or_update -- update
 """
 
 helps['apimgmt product policy delete'] = """
     type: command
     short-summary: delete a apimgmt product policy.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteProductPolicy
         text: |-
@@ -1982,14 +1906,12 @@ helps['apimgmt product policy delete'] = """
 helps['apimgmt product policy list'] = """
     type: command
     short-summary: list a apimgmt product policy.
-    examples:
 # list_by_product -- list
 """
 
 helps['apimgmt product policy show'] = """
     type: command
     short-summary: show a apimgmt product policy.
-    examples:
 # get -- show
 """
 
@@ -2001,8 +1923,8 @@ helps['apimgmt property'] = """
 helps['apimgmt property create'] = """
     type: command
     short-summary: create a apimgmt property.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateProperty
         text: |-
@@ -2013,8 +1935,8 @@ helps['apimgmt property create'] = """
 helps['apimgmt property update'] = """
     type: command
     short-summary: update a apimgmt property.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateProperty
         text: |-
@@ -2025,8 +1947,8 @@ helps['apimgmt property update'] = """
 helps['apimgmt property delete'] = """
     type: command
     short-summary: delete a apimgmt property.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteProperty
         text: |-
@@ -2037,14 +1959,12 @@ helps['apimgmt property delete'] = """
 helps['apimgmt property list'] = """
     type: command
     short-summary: list a apimgmt property.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt property show'] = """
     type: command
     short-summary: show a apimgmt property.
-    examples:
 # get -- show
 """
 
@@ -2056,8 +1976,8 @@ helps['apimgmt subscription'] = """
 helps['apimgmt subscription create'] = """
     type: command
     short-summary: create a apimgmt subscription.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateSubscription
         text: |-
@@ -2072,8 +1992,8 @@ helps['apimgmt subscription create'] = """
 helps['apimgmt subscription update'] = """
     type: command
     short-summary: update a apimgmt subscription.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateSubscription
         text: |-
@@ -2084,8 +2004,8 @@ helps['apimgmt subscription update'] = """
 helps['apimgmt subscription delete'] = """
     type: command
     short-summary: delete a apimgmt subscription.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteSubscription
         text: |-
@@ -2096,14 +2016,12 @@ helps['apimgmt subscription delete'] = """
 helps['apimgmt subscription list'] = """
     type: command
     short-summary: list a apimgmt subscription.
-    examples:
 # list -- list
 """
 
 helps['apimgmt subscription show'] = """
     type: command
     short-summary: show a apimgmt subscription.
-    examples:
 # get -- show
 """
 
@@ -2115,8 +2033,8 @@ helps['apimgmt user'] = """
 helps['apimgmt user create'] = """
     type: command
     short-summary: create a apimgmt user.
-    examples:
 # create_or_update -- create
+    examples:
 # create
       - name: ApiManagementCreateUser
         text: |-
@@ -2128,8 +2046,8 @@ helps['apimgmt user create'] = """
 helps['apimgmt user update'] = """
     type: command
     short-summary: update a apimgmt user.
-    examples:
 # create_or_update -- update
+    examples:
 # update
       - name: ApiManagementUpdateUser
         text: |-
@@ -2141,8 +2059,8 @@ helps['apimgmt user update'] = """
 helps['apimgmt user delete'] = """
     type: command
     short-summary: delete a apimgmt user.
-    examples:
 # delete -- delete
+    examples:
 # delete
       - name: ApiManagementDeleteUser
         text: |-
@@ -2153,13 +2071,11 @@ helps['apimgmt user delete'] = """
 helps['apimgmt user list'] = """
     type: command
     short-summary: list a apimgmt user.
-    examples:
 # list_by_service -- list
 """
 
 helps['apimgmt user show'] = """
     type: command
     short-summary: show a apimgmt user.
-    examples:
 # get -- show
 """
