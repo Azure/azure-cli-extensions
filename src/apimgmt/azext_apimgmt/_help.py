@@ -360,18 +360,18 @@ helps['apimgmt api policy create'] = """
     examples:
 # create
       - name: ApiManagementCreateApiPolicy
-        text: |
+        text: |-
                az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <
                backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
 # create
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
-        text: |
+        text: |-
                az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\r\n     <inbo
-               und>\r\n     <base />\r\n  <set-header name=\"newvalue\" exists-action=\"override\">\r\n  
-                <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>\r\n    
-               </set-header>\r\n  </inbound>\r\n      </policies>" --format "rawxml"
+               --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\\r\\n     <in
+               bound>\\r\\n     <base />\\r\\n  <set-header name=\"newvalue\" exists-action=\"override\">
+               \\r\\n   <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>
+               \\r\\n    </set-header>\\r\\n  </inbound>\\r\\n      </policies>" --format "rawxml"
 """
 
 helps['apimgmt api policy update'] = """
@@ -1152,15 +1152,15 @@ helps['apimgmt template update'] = """
         text: |-
                az apimgmt template update --resource-group "rg1" --service-name "apimService1" --name \\
                "applicationApprovedNotificationMessage" --subject \\
-               "Your application $AppName is published in the gallery" --body "<!DOCTYPE html >\r\n<html>
-               \r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear 
-               $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">
-               \r\n          We are happy to let you know that your request to publish the $AppName appli
-               cation in the gallery has been approved. Your application has been published and can be vi
-               ewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\r\n        </p
-               >\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"fo
-               nt-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n<
-               /html>"
+               "Your application $AppName is published in the gallery" --body "<!DOCTYPE html >\\r\\n<htm
+               l>\\r\\n  <head />\\r\\n  <body>\\r\\n    <p style=\"font-size:12pt;font-family:'Segoe UI'
+               \">Dear $DevFirstName $DevLastName,</p>\\r\\n    <p style=\"font-size:12pt;font-family:'Se
+               goe UI'\">\\r\\n          We are happy to let you know that your request to publish the $A
+               ppName application in the gallery has been approved. Your application has been published a
+               nd can be viewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\\r
+               \\n        </p>\\r\\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\\r\\
+               n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>
+               \\r\\n  </body>\\r\\n</html>"
 """
 
 helps['apimgmt template delete'] = """
@@ -1583,8 +1583,8 @@ helps['apimgmt policy create'] = """
       - name: ApiManagementCreatePolicy
         text: |-
                az apimgmt policy create --resource-group "rg1" --service-name "apimService1" --policy-id \\
-               "policy" --value "<policies>\r\n  <inbound />\r\n  <backend>\r\n    <forward-request />\r\
-               n  </backend>\r\n  <outbound />\r\n</policies>" --format "xml"
+               "policy" --value "<policies>\\r\\n  <inbound />\\r\\n  <backend>\\r\\n    <forward-request
+                />\\r\\n  </backend>\\r\\n  <outbound />\\r\\n</policies>" --format "xml"
 """
 
 helps['apimgmt policy update'] = """
@@ -1874,15 +1874,15 @@ helps['apimgmt product policy create'] = """
       - name: ApiManagementCreateProductPolicy
         text: |-
                az apimgmt product policy create --resource-group "rg1" --service-name "apimService1" \\
-               --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --value "<policies>\r\n  <inb
-               ound>\r\n    <rate-limit calls=\"{{call-count}}\" renewal-period=\"15\"></rate-limit>\r\n 
-                  <log-to-eventhub logger-id=\"16\">\r\n                      @( string.Join(\",\", DateT
-               ime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, 
-               context.Operation.Name) ) \r\n                  </log-to-eventhub>\r\n    <quota-by-key ca
-               lls=\"40\" counter-key=\"cc\" renewal-period=\"3600\" increment-count=\"@(context.Request.
-               Method == &quot;POST&quot; ? 1:2)\" />\r\n    <base />\r\n  </inbound>\r\n  <backend>\r\n 
-                  <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n</policies
-               >" --format "xml"
+               --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --value "<policies>\\r\\n  <i
+               nbound>\\r\\n    <rate-limit calls=\"{{call-count}}\" renewal-period=\"15\"></rate-limit>\
+               \r\\n    <log-to-eventhub logger-id=\"16\">\\r\\n                      @( string.Join(\",\
+               ", DateTime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpA
+               ddress, context.Operation.Name) ) \\r\\n                  </log-to-eventhub>\\r\\n    <quo
+               ta-by-key calls=\"40\" counter-key=\"cc\" renewal-period=\"3600\" increment-count=\"@(cont
+               ext.Request.Method == &quot;POST&quot; ? 1:2)\" />\\r\\n    <base />\\r\\n  </inbound>\\r\
+               \n  <backend>\\r\\n    <base />\\r\\n  </backend>\\r\\n  <outbound>\\r\\n    <base />\\r\\
+               n  </outbound>\\r\\n</policies>" --format "xml"
 """
 
 helps['apimgmt product policy update'] = """
