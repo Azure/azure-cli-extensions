@@ -358,10 +358,7 @@ helps['apimgmt api policy create'] = """
     short-summary: create a apimgmt api policy.
     examples:
       - name: ApiManagementCreateApiPolicy
-        text: |-
-               az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
-               --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <
-               backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
+        text: az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
 """
 
 helps['apimgmt api policy update'] = """
