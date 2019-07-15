@@ -356,19 +356,6 @@ helps['apimgmt api policy'] = """
 helps['apimgmt api policy create'] = """
     type: command
     short-summary: create a apimgmt api policy.
-    #examples:
-    #  - name: ApiManagementCreateApiPolicy
-    #    text: |-
-    #           az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
-    #           --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <
-    #           backend>    <forward-request />  </backend>  <outbound /></policies>" --format "xml"
-    #  - name: ApiManagementCreateApiPolicyNonXmlEncoded
-    #    text: |-
-    #           az apimgmt api policy create --resource-group "rg1" --service-name "apimService1" \\
-    #           --api-id "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\r\n     <inbo
-    #           und>\r\n     <base />\r\n  <set-header name=\"newvalue\" exists-action=\"override\">\r\n  
-    #            <value>\"@(context.Request.Headers.FirstOrDefault(h => h.Ke==\"Via\"))\" </value>\r\n    
-    #           </set-header>\r\n  </inbound>\r\n      </policies>" --format "rawxml"
 """
 
 helps['apimgmt api policy update'] = """
