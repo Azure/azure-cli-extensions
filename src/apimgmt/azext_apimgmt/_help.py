@@ -60,8 +60,8 @@ helps['apimgmt api create'] = """
       - name: ApiManagementCreateApiRevisionFromExistingApi
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "echo-api;rev=3" --api-revision_description "Creating a Revision of an existing API" \\
-               --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
+               "echo-api;rev=3" --api-revision-description "Creating a Revision of an existing API" \\
+               --source-api-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
                providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" \\
                --service-url "http://echoapi.cloudapp.net/apiv3" --path "echo"
 # create
@@ -70,10 +70,10 @@ helps['apimgmt api create'] = """
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "echoapiv3" --description \\
                "Create Echo API into a new Version using Existing Version Set and Copy all Operations." \\
-               --api-version "v4" --is-current true --api-version_set_id "/subscriptions/{{ subscription_
+               --api-version "v4" --is-current true --api-version-set-id "/subscriptions/{{ subscription_
                id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ ser
                vice_name }}/apiVersionSets/{{ api_version_set_name }}" --subscription-required true \\
-               --source-api_id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
+               --source-api-id "/subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/
                providers/Microsoft.ApiManagement/service/{{ service_name }}/apis/{{ api_name }}" \\
                --display-name "Echo API2" --service-url "http://echoapi.cloudapp.net/api" --path "echo2"
 # create
@@ -81,7 +81,7 @@ helps['apimgmt api create'] = """
         text: |-
                az apimgmt api create --resource-group "rg1" --service-name "apimService1" --api-id \\
                "echo-api2" --description "Copy of Existing Echo Api including Operations." --is-current \\
-               true --subscription-required true --source-api_id "/subscriptions/{{ subscription_id }}/re
+               true --subscription-required true --source-api-id "/subscriptions/{{ subscription_id }}/re
                sourceGroups/{{ resource_group }}/providers/Microsoft.ApiManagement/service/{{ service_nam
                e }}/apis/{{ api_name }}" --display-name "Echo API2" --service-url \\
                "http://echoapi.cloudapp.net/api" --path "echo2"
@@ -682,7 +682,7 @@ helps['apimgmt api tagdescription create'] = """
                az apimgmt api tagdescription create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1" --description "Some description that
                 will be displayed for operation's tag if the tag is assigned to operation of the API" \\
-               --external-docs_url "http://some.url/additionaldoc" --external-docs_description \\
+               --external-docs-url "http://some.url/additionaldoc" --external-docs-description \\
                "Description of the external docs resource"
 """
 
@@ -730,7 +730,7 @@ helps['apimgmt apiversionset create'] = """
       - name: ApiManagementCreateApiVersionSet
         text: |-
                az apimgmt apiversionset create --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1" --description "Version configuration" --display-name "api set 1" \\
+               --version-set-id "api1" --description "Version configuration" --display-name "api set 1" \\
                --versioning-scheme "Segment"
 """
 
@@ -743,7 +743,7 @@ helps['apimgmt apiversionset update'] = """
       - name: ApiManagementUpdateApiVersionSet
         text: |-
                az apimgmt apiversionset update --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "api1" --description "Version configuration" --display-name "api set 1" \\
+               --version-set-id "api1" --description "Version configuration" --display-name "api set 1" \\
                --versioning-scheme "Segment"
 """
 
@@ -756,7 +756,7 @@ helps['apimgmt apiversionset delete'] = """
       - name: ApiManagementDeleteApiVersionSet
         text: |-
                az apimgmt apiversionset delete --resource-group "rg1" --service-name "apimService1" \\
-               --version-set_id "a1"
+               --version-set-id "a1"
 """
 
 helps['apimgmt apiversionset list'] = """
@@ -787,8 +787,8 @@ helps['apimgmt authorizationserver create'] = """
                az apimgmt authorizationserver create --resource-group "rg1" --service-name \\
                "apimService1" --authsid "newauthServer" --description "test server" --token-endpoint \\
                "https://www.contoso.com/oauth2/token" --support-state true --default-scope "read write" \\
-               --client-secret "2" --resource-owner_username "un" --resource-owner_password "pwd" \\
-               --display-name "test2" --client-registration_endpoint "https://www.contoso.com/apps" \\
+               --client-secret "2" --resource-owner-username "un" --resource-owner-password "pwd" \\
+               --display-name "test2" --client-registration-endpoint "https://www.contoso.com/apps" \\
                --authorization-endpoint "https://www.contoso.com/oauth2/auth" --client-id "1"
 """
 
@@ -1012,7 +1012,7 @@ helps['apimgmt create'] = """
 # create
       - name: ApiManagementCreateMultiRegionServiceWithCustomHostname
         text: |-
-               az apimgmt create --resource-group "rg1" --name "apimService1" --virtual-network_type \\
+               az apimgmt create --resource-group "rg1" --name "apimService1" --virtual-network-type \\
                "External" --publisher-email "admin@live.com" --publisher-name "contoso" --sku-name \\
                "Premium" --sku-capacity "1" --location "Central US"
 # create
