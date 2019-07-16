@@ -2,11 +2,15 @@
 
 Release History
 ===============
+0.10.6 (2019-6-24)
+++++++++++++++++++
+
+* removed min_profile for the cli core version change to 2.0.67
 
 0.10.2 (2019-5-29)
 ++++++++++++++++++
 
-* removed min_profile for the cli core version change to 2.0.67
+* Locked current version for cli core version < 2.0.67
 
 0.10.2 (2018-11-27)
 ++++++++++++++++++
