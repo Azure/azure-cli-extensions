@@ -280,7 +280,8 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
         loader = pkgutil.get_loader('azext_vm_repair')
         mod = loader.load_module('azext_vm_repair')
         rootpath = os.path.dirname(mod.__file__)
-        if _is_linux_os(source_vm):
+        is_linux = _is_linux_os(source_vm)
+        if is_linux:
             run_script = os.path.join(rootpath, 'scripts', 'linux-run-repair.sh')
             command_id = 'RunShellScript'
         else:
@@ -301,6 +302,7 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
         return_str = _call_az_command(repair_run_command)
 
         # Set up return codes and conditions
+        # Return code and code return from stdout. anything else in stderr?
         return_json = json.loads(return_str)
         #stdout = return_json['value'][0]['message']
         #stderr = return_json['value'][1]['message']

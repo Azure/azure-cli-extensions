@@ -9,7 +9,9 @@ try {
 	Expand-Archive -Path 'repair-script-library.zip' -DestinationPath 'repair-script-library'
 	$reponame = dir repair-script-library -n
 	$command = './repair-script-library/' + $reponame + '/' + $script_path
-	Invoke-Expression $command
+	$result = Invoke-Expression $command
+	return $result
 } catch {
 	$error[0].Exception
+	return -1
 }
