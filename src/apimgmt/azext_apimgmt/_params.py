@@ -26,7 +26,7 @@ def load_arguments(self, _):
         c.argument('description', id_part=None, help='Description of the API. May include HTML formatting tags.')
         c.argument('authentication_settings', id_part=None, help='Collection of authentication settings included into this API.')
         c.argument('subscription_key_parameter_names', id_part=None, help='Protocols over which API is made available.')
-        c.argument('type', arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
         c.argument('api_revision', id_part=None, help='Describes the Revision of the Api. If no value is provided, default revision 1 is created')
         c.argument('api_version', id_part=None, help='Indicates the Version identifier of the API if the API is versioned')
         c.argument('is_current', arg_type=get_three_state_flag(), id_part=None, help='Indicates if API revision is current api revision.')
@@ -41,7 +41,7 @@ def load_arguments(self, _):
         c.argument('protocols', id_part=None, help='Describes on which protocols the operations in this API can be invoked.')
         c.argument('api_version_set', id_part=None, help='Version set details')
         c.argument('value', id_part=None, help='Content value when Importing an API.')
-        c.argument('format', arg_type=get_enum_type(['wadl-xml', 'wadl-link-json', 'swagger-json', 'swagger-link-json', 'wsdl', 'wsdl-link', 'openapi', 'openapi+json', 'openapi-link']), id_part=None, help='Format of the Content in which the API is getting imported.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['wadl-xml', 'wadl-link-json', 'swagger-json', 'swagger-link-json', 'wsdl', 'wsdl-link', 'openapi', 'openapi+json', 'openapi-link']), id_part=None, help='Format of the Content in which the API is getting imported.')
         c.argument('wsdl_selector', id_part=None, help='Criteria to limit import of WSDL to a subset of the document.')
         c.argument('api_type', arg_type=get_enum_type(['SoapToRest', 'SoapPassThrough']), id_part=None, help='Type of Api to create. <br> * `http` creates a SOAP to REST API <br> * `soap` creates a SOAP pass-through API .')
 
@@ -53,7 +53,7 @@ def load_arguments(self, _):
         c.argument('description', id_part=None, help='Description of the API. May include HTML formatting tags.')
         c.argument('authentication_settings', id_part=None, help='Collection of authentication settings included into this API.')
         c.argument('subscription_key_parameter_names', id_part=None, help='Protocols over which API is made available.')
-        c.argument('type', arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
         c.argument('api_revision', id_part=None, help='Describes the Revision of the Api. If no value is provided, default revision 1 is created')
         c.argument('api_version', id_part=None, help='Indicates the Version identifier of the API if the API is versioned')
         c.argument('is_current', arg_type=get_three_state_flag(), id_part=None, help='Indicates if API revision is current api revision.')
@@ -68,7 +68,7 @@ def load_arguments(self, _):
         c.argument('protocols', id_part=None, help='Describes on which protocols the operations in this API can be invoked.')
         c.argument('api_version_set', id_part=None, help='Version set details')
         c.argument('value', id_part=None, help='Content value when Importing an API.')
-        c.argument('format', arg_type=get_enum_type(['wadl-xml', 'wadl-link-json', 'swagger-json', 'swagger-link-json', 'wsdl', 'wsdl-link', 'openapi', 'openapi+json', 'openapi-link']), id_part=None, help='Format of the Content in which the API is getting imported.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['wadl-xml', 'wadl-link-json', 'swagger-json', 'swagger-link-json', 'wsdl', 'wsdl-link', 'openapi', 'openapi+json', 'openapi-link']), id_part=None, help='Format of the Content in which the API is getting imported.')
         c.argument('wsdl_selector', id_part=None, help='Criteria to limit import of WSDL to a subset of the document.')
         c.argument('api_type', arg_type=get_enum_type(['SoapToRest', 'SoapPassThrough']), id_part=None, help='Type of Api to create. <br> * `http` creates a SOAP to REST API <br> * `soap` creates a SOAP pass-through API .')
 
@@ -174,7 +174,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt api operation policy update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -184,7 +184,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt api operation policy delete') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -204,7 +204,7 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('operation_id', id_part=None, help='Operation identifier within an API. Must be unique in the current API Management service instance.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
 
     with self.argument_context('apimgmt tag create') as c:
@@ -242,7 +242,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt api policy update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -251,7 +251,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt api policy delete') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -269,7 +269,7 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt api schema create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -841,7 +841,7 @@ def load_arguments(self, _):
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('display_name', id_part=None, help='Group name.')
         c.argument('description', id_part=None, help='Group description.')
-        c.argument('type', arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
         c.argument('external_id', id_part=None, help='Identifier of the external groups, this property contains the id of the group from the external identity provider, e.g. for Azure Active Directory `aad://<tenant>.onmicrosoft.com/groups/<group object id>`; otherwise the value is null.')
 
     with self.argument_context('apimgmt group update') as c:
@@ -851,7 +851,7 @@ def load_arguments(self, _):
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('display_name', id_part=None, help='Group name.')
         c.argument('description', id_part=None, help='Group description.')
-        c.argument('type', arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
         c.argument('external_id', id_part=None, help='Identifier of the external groups, this property contains the id of the group from the external identity provider, e.g. for Azure Active Directory `aad://<tenant>.onmicrosoft.com/groups/<group object id>`; otherwise the value is null.')
 
     with self.argument_context('apimgmt group delete') as c:
@@ -898,7 +898,7 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
         c.argument('parameters', id_part=None, help='undefined')
-        c.argument('type', arg_type=get_enum_type(['facebook', 'google', 'microsoft', 'twitter', 'aad', 'aadB2C']), id_part=None, help='Identity Provider Type identifier.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['facebook', 'google', 'microsoft', 'twitter', 'aad', 'aadB2C']), id_part=None, help='Identity Provider Type identifier.')
         c.argument('allowed_tenants', id_part=None, help='List of Allowed Tenants when configuring Azure Active Directory login.')
         c.argument('authority', id_part=None, help='OpenID Connect discovery endpoint hostname for AAD or AAD B2C.')
         c.argument('signup_policy_name', id_part=None, help='Signup Policy Name. Only applies to AAD B2C Identity Provider.')
@@ -913,7 +913,7 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
         c.argument('parameters', id_part=None, help='undefined')
-        c.argument('type', arg_type=get_enum_type(['facebook', 'google', 'microsoft', 'twitter', 'aad', 'aadB2C']), id_part=None, help='Identity Provider Type identifier.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['facebook', 'google', 'microsoft', 'twitter', 'aad', 'aadB2C']), id_part=None, help='Identity Provider Type identifier.')
         c.argument('allowed_tenants', id_part=None, help='List of Allowed Tenants when configuring Azure Active Directory login.')
         c.argument('authority', id_part=None, help='OpenID Connect discovery endpoint hostname for AAD or AAD B2C.')
         c.argument('signup_policy_name', id_part=None, help='Signup Policy Name. Only applies to AAD B2C Identity Provider.')
@@ -1086,7 +1086,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt policy update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1094,7 +1094,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt policy delete') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1109,7 +1109,7 @@ def load_arguments(self, _):
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt portalsetting signin create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1215,7 +1215,7 @@ def load_arguments(self, _):
         c.argument('description', id_part=None, help='Description of the API. May include HTML formatting tags.')
         c.argument('authentication_settings', id_part=None, help='Collection of authentication settings included into this API.')
         c.argument('subscription_key_parameter_names', id_part=None, help='Protocols over which API is made available.')
-        c.argument('type', arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
         c.argument('api_revision', id_part=None, help='Describes the Revision of the Api. If no value is provided, default revision 1 is created')
         c.argument('api_version', id_part=None, help='Indicates the Version identifier of the API if the API is versioned')
         c.argument('is_current', arg_type=get_three_state_flag(), id_part=None, help='Indicates if API revision is current api revision.')
@@ -1239,7 +1239,7 @@ def load_arguments(self, _):
         c.argument('description', id_part=None, help='Description of the API. May include HTML formatting tags.')
         c.argument('authentication_settings', id_part=None, help='Collection of authentication settings included into this API.')
         c.argument('subscription_key_parameter_names', id_part=None, help='Protocols over which API is made available.')
-        c.argument('type', arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['http', 'soap']), id_part=None, help='Type of API.')
         c.argument('api_revision', id_part=None, help='Describes the Revision of the Api. If no value is provided, default revision 1 is created')
         c.argument('api_version', id_part=None, help='Indicates the Version identifier of the API if the API is versioned')
         c.argument('is_current', arg_type=get_three_state_flag(), id_part=None, help='Indicates if API revision is current api revision.')
@@ -1274,7 +1274,7 @@ def load_arguments(self, _):
         c.argument('display_name', id_part=None, help='Group name.')
         c.argument('description', id_part=None, help='Group description. Can contain HTML formatting tags.')
         c.argument('built_in', arg_type=get_three_state_flag(), id_part=None, help='true if the group is one of the three system groups (Administrators, Developers, or Guests); otherwise false.')
-        c.argument('type', arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
         c.argument('external_id', id_part=None, help='For external groups, this property contains the id of the group from the external identity provider, e.g. for Azure Active Directory `aad://<tenant>.onmicrosoft.com/groups/<group object id>`; otherwise the value is null.')
 
     with self.argument_context('apimgmt product group update') as c:
@@ -1285,7 +1285,7 @@ def load_arguments(self, _):
         c.argument('display_name', id_part=None, help='Group name.')
         c.argument('description', id_part=None, help='Group description. Can contain HTML formatting tags.')
         c.argument('built_in', arg_type=get_three_state_flag(), id_part=None, help='true if the group is one of the three system groups (Administrators, Developers, or Guests); otherwise false.')
-        c.argument('type', arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
+        c.argument('_type', option_list=['--type'], arg_type=get_enum_type(['custom', 'system', 'external']), id_part=None, help='Group type.')
         c.argument('external_id', id_part=None, help='For external groups, this property contains the id of the group from the external identity provider, e.g. for Azure Active Directory `aad://<tenant>.onmicrosoft.com/groups/<group object id>`; otherwise the value is null.')
 
     with self.argument_context('apimgmt product group delete') as c:
@@ -1306,7 +1306,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt product policy update') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1315,7 +1315,7 @@ def load_arguments(self, _):
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
         c.argument('parameters', id_part=None, help='undefined')
         c.argument('value', id_part=None, help='Contents of the Policy as defined by the format.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt product policy delete') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
@@ -1333,7 +1333,7 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('product_id', id_part=None, help='Product identifier. Must be unique in the current API Management service instance.')
         c.argument('policy_id', id_part=None, help='The identifier of the Policy.')
-        c.argument('format', arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
+        c.argument('_format', option_list=['--format'], arg_type=get_enum_type(['xml', 'xml-link', 'rawxml', 'rawxml-link']), id_part=None, help='Format of the policyContent.')
 
     with self.argument_context('apimgmt property create') as c:
         c.argument('resource_group', id_part=None, help='The name of the resource group.')
