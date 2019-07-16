@@ -44,3 +44,7 @@ def cf_fd_routing_rules(cli_ctx, _):
 
 def cf_waf_policies(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).policies
+
+
+def cf_waf_managed_rules(cli_ctx, _):
+    return frontdoor_client_factory(cli_ctx).managed_rule_sets

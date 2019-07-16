@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.2.8 (2019-7-5)
+++++++++++++++++
+* Remove file-add command argument
+
 0.2.7 (2019-6-14)
 +++++++++++++++++
 * Remove min_profile
