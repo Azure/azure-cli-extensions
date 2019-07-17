@@ -173,6 +173,10 @@ def load_arguments(self, _):
         c.argument('rule_group_id', help='Name of the rule group containing the override to remove.')
         c.argument('rule_id', help='Name of the rule override to remove.')
 
+    with self.argument_context('network front-door waf-policy managed-rules override list') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the overrides to list.')
+
     with self.argument_context('network front-door waf-policy managed-rules remove') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to remove.')

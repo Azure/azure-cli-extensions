@@ -704,6 +704,21 @@ def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name
     return client.create_or_update(resource_group_name, policy_name, policy)
 
 
+def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type):
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    # Find the matching rule_set, or fail
+    if policy.managed_rules.managed_rule_sets is None:
+        policy.managed_rules.managed_rule_sets = []
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            return rule_set.rule_group_overrides
+
+    from knack.util import CLIError
+    raise CLIError("rule set '{}' not found".format(rule_set_type))
+
+
 def list_managed_rules_definitions(cmd):
     client = cf_waf_managed_rules(cmd.cli_ctx, None)
     definitions = client.list()
