@@ -1,9 +1,8 @@
+from uuid import uuid4
 from azure.cli.command_modules.cognitiveservices.custom import (
-    create as create_cogsvcs_account,
-    list_skus as list_cogsvcs_keys
+    create as create_cogsvcs_account
 )
 from azure.cli.command_modules.cognitiveservices._client_factory import cf_accounts
-from uuid import uuid4
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.mgmt.resource.resources.models import ResourceGroup
@@ -22,9 +21,6 @@ from azure.cli.command_modules.appservice.custom import (
     create_webapp,
     update_app_settings,
     set_deployment_user
-)
-from azure.cli.command_modules.rdbms.custom import (
-    _server_create as mysql_server_create
 )
 from azure.cli.command_modules.appservice._client_factory import (
     web_client_factory
@@ -127,7 +123,6 @@ def create_database(cmd, database_provider, name, location, admin, password):
     # poller.add_done_callback(print(poller.result()))
     return wrapper
 
-
 RUNTIMES = {
     'php': {
         'name': 'php|7.3',
@@ -184,14 +179,15 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
     site = {}
     site['deployment_user'] = deployment_user
     site['deployment_password'] = deployment_user_password if deployment_user_password else '***'
-    # 'https://{}@{}.scm.azurewebsites.net/{}.git'.format(deployment_user, name, name)
     site['deployment_url'] = webapp.deploymentLocalGitUrl
     site['hostname'] = 'https://{}'.format(webapp.host_names[0])
     return site
 
 
 def set_website_settings(cmd, name, database_provider, database_admin, database_password):
-    cog_svcs_key = list_cogsvcs_keys(cmd, resource_group_name=name, account_name=name)['key1']
+    from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
+    cogsvcs_client = get_mgmt_service_client(cmd.cli_ctx, CognitiveServicesManagementClient)
+    cogsvcs_key = cogsvcs_client.accounts.list_keys(name, name).key1
 
     # TODO: Update username to avoid issues
     database_options = DATABASES[database_provider.lower()]
@@ -202,9 +198,8 @@ def set_website_settings(cmd, name, database_provider, database_admin, database_
     settings.append('DATABASE_PORT={}'.format(database_options['port']))
     settings.append('DATABASE_USER={}'.format(database_admin))
     settings.append('DATABASE_PASSWORD={}'.format(database_password))
-    settings.append('COGNITIVE_SERVICES_KEY={}'.format(cog_svcs_key))
-    update_app_settings(cmd, resource_group_name=name,
-                        name=name, settings=settings)
+    settings.append('COGNITIVE_SERVICES_KEY={}'.format(cogsvcs_key))
+    update_app_settings(cmd, resource_group_name=name, name=name, settings=settings)
     return settings
 
 
@@ -212,6 +207,5 @@ def create_cogsvcs_key(cmd, name, location):
     client = cf_accounts(cmd.cli_ctx)
     result = create_cogsvcs_account(client, resource_group_name=name,
                                     account_name=name, sku_name='S0',
-                                    kind='CognitiveServices', location=location,
-                                    yes=True)
+                                    kind='CognitiveServices', location=location)
     return result
