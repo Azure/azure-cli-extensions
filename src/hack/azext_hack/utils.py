@@ -96,6 +96,36 @@ def create_database(cmd, database_provider, name, location, admin, password):
         def database_creator():
             return database_client.create_or_update(
                 resource_group_name=name, server_name=name, database_name=name)
+    elif database_provider.lower() == 'cosmosdb' or database_provider.lower() == 'mongodb':
+        from azure.mgmt.cosmosdb import CosmosDB
+        cosmosdb_client = get_mgmt_service_client(cmd.cli_ctx, CosmosDB)
+
+        from azure.mgmt.cosmosdb.models import (
+            DatabaseAccountCreateUpdateParameters,
+            DatabaseAccountKind,
+            Location,
+            ConsistencyPolicy
+        )
+
+        def server_creator():
+            params = DatabaseAccountCreateUpdateParameters(
+                location=location,
+                locations=[Location(
+                    location_name=location,
+                    failover_priority=0,
+                    is_zone_redundant=False)],
+                kind=DatabaseAccountKind.global_document_db.value,
+                consistency_policy=ConsistencyPolicy(
+                    default_consistency_level=1,
+                    max_staleness_prefix=100,
+                    max_interval_in_seconds=5
+                )
+            )
+            return cosmosdb_client.create_or_update(name, name, params)
+        def database_creator():
+            return cosmosdb_client.database_accounts.CreateDatabase(
+                {'id': name}, {'offerThroughput': None}
+            )
     else:
         sql_client = get_sql_management_client(cmd.cli_ctx)
         sql_parameters = {
@@ -122,6 +152,7 @@ def create_database(cmd, database_provider, name, location, admin, password):
     poller.add_done_callback(wrapper.create_database)
     # poller.add_done_callback(print(poller.result()))
     return wrapper
+
 
 RUNTIMES = {
     'php': {
@@ -186,7 +217,8 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
 
 def set_website_settings(cmd, name, database_provider, database_admin, database_password):
     from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
-    cogsvcs_client = get_mgmt_service_client(cmd.cli_ctx, CognitiveServicesManagementClient)
+    cogsvcs_client = get_mgmt_service_client(
+        cmd.cli_ctx, CognitiveServicesManagementClient)
     cogsvcs_key = cogsvcs_client.accounts.list_keys(name, name).key1
 
     # TODO: Update username to avoid issues
@@ -199,7 +231,8 @@ def set_website_settings(cmd, name, database_provider, database_admin, database_
     settings.append('DATABASE_USER={}'.format(database_admin))
     settings.append('DATABASE_PASSWORD={}'.format(database_password))
     settings.append('COGNITIVE_SERVICES_KEY={}'.format(cogsvcs_key))
-    update_app_settings(cmd, resource_group_name=name, name=name, settings=settings)
+    update_app_settings(cmd, resource_group_name=name,
+                        name=name, settings=settings)
     return settings
 
 
