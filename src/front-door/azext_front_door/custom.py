@@ -285,7 +285,7 @@ def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
-                                                certificate_source=None, vault_id=None):
+                                                certificate_source='FrontDoor', vault_id=None):
     keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
                       '--secret-name NAME --secret-version VERSION')
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
