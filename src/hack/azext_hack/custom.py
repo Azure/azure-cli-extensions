@@ -15,7 +15,7 @@ from .utils import(
 
 logger = get_logger(__name__)
 
-def hack_up(cmd, name, runtime, database='sql'):
+def hack_up(cmd, name, runtime, database, ai=None):
     location = 'westus'
     database_admin = name + '_user'
     database_password = uuid4()
@@ -28,8 +28,9 @@ def hack_up(cmd, name, runtime, database='sql'):
 
     # Create CogSvcs key
     # TODO: Make this async and move it to the top
-    logger.warning('Creating Cognitive Services key')
-    create_cogsvcs_key(cmd, name, location)
+    if ai:
+        logger.warning('Starting creation of Cognitive Services keys...')
+        create_cogsvcs_key(cmd, name, location)
 
     # Create SQL server and database
     logger.warning("Starting database creation job...")
