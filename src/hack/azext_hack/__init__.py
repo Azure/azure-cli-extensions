@@ -20,13 +20,26 @@ class HackExtCommandLoader(AzCommandsLoader):
 
     def load_arguments(self, _):
         with self.argument_context('hack up') as c:
-            c.argument('name', options_list=[
-                '--name', '-n'], help='Name of resources')
-            c.argument('database', options_list=[
-                '--database', '-d'], help='Database type - { SQL | MySQL }', choices=['SQL', 'MySQL'], default='sql')
-            c.argument('runtime', options_list=['--runtime', '-r'], help='Runtime', choices=[
-                'php', 'node', 'tomcat', 'jetty', 'python', 'aspnet'])
-            c.argument('ai', help='Enable Azure Cognitive Services', options_list=[
-                '--ai', '-ai'], default=False, action='store_true')
+            c.argument('name',
+                options_list=['--name', '-n'],
+                help='Name of resources'
+            )
+            c.argument('database',
+                options_list=['--database', '-d'],
+                help='Database type - { SQL | MySQL | CosmosDB }',
+                choices=['SQL', 'MySQL', 'CosmosDB'],
+                default='sql'
+            )
+            c.argument('runtime',
+                options_list=['--runtime', '-r'],
+                help='Runtime',
+                choices=['php', 'node', 'tomcat', 'jetty', 'python', 'aspnet']
+            )
+            c.argument('ai',
+                help='Enable Azure Cognitive Services',
+                options_list=['--ai', '-ai'],
+                default=False,
+                action='store_true'
+            )
 
 COMMAND_LOADER_CLS = HackExtCommandLoader
