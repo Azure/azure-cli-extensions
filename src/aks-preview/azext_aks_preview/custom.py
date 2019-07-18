@@ -964,9 +964,9 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "chinanorth2": "chinaeast2"
     }
 
-    rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)    
+    rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
     cloud_name = cmd.cli_ctx.cloud.name
-        
+
     if cloud_name.lower() == 'azurecloud':
         workspace_region = AzureCloudRegionToOmsRegionMap.get(rg_location, "eastus")
         workspace_region_code = AzureCloudLocationToOmsRegionCodeMap.get(workspace_region, "EUS")
@@ -1020,7 +1020,7 @@ def _ensure_container_insights_for_monitoring(cmd, addon):
      # Workaround for this addon key which has been seen lowercased in the wild.
     if 'loganalyticsworkspaceresourceid' in addon.config:
         addon.config['logAnalyticsWorkspaceResourceID'] = addon.config.pop('loganalyticsworkspaceresourceid')
-                
+
     workspace_resource_id = addon.config['logAnalyticsWorkspaceResourceID']
 
     workspace_resource_id = workspace_resource_id.strip()
