@@ -14,3 +14,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'create', validator=validate_create)
         g.custom_command('restore', 'restore', validator=validate_restore)
         g.custom_command('mitigate', 'mitigate', validator=validate_mitigate)
+   
+    with self.command_group('vm repair mitigate') as g:
+        g.custom_command('list', 'mitigate_list')

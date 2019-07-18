@@ -178,13 +178,19 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
         .format(resource_type))
 
 
-def _fetch_mitigation_script_path(mitigation_id):
+def _fetch_mitigation_script_map():
+
     # Fetch map.json from GitHub
     response = requests.get(url=REPAIR_MAP_URL)
     # Raise exception when request fails
     response.raise_for_status()
 
-    map_json = response.json()
+    return response.json()
+
+
+def _fetch_mitigation_script_path(mitigation_id):
+
+    map_json = _fetch_mitigation_script_map()
     repair_script_path = [script['path'] for script in map_json if script['id'] == mitigation_id]
     if repair_script_path:
         return repair_script_path[0]

@@ -21,6 +21,7 @@ from .repair_utils import (
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
+    _fetch_mitigation_script_map,
     _fetch_mitigation_script_path
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
@@ -271,7 +272,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None):
+def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None, custom_mitigation_file=None):
 
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
@@ -292,21 +293,31 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
         repair_vm_name = repair_vm_id['name']
         repair_resource_group = repair_vm_id['resource_group']
 
-        # Fetch mitigation path from GitHub
-        repair_script_path = _fetch_mitigation_script_path(mitigation_id)
-
         repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                             '--scripts "@{run_script}" --parameters "script_path=./{repair_script}"' \
-                             .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script, repair_script=repair_script_path)
+                             '--scripts "@{run_script}"' \
+                             .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+
+        # Normal scenario with mitigation id
+        if not custom_mitigation_file:
+            # Fetch mitigation path from GitHub
+            repair_script_path = _fetch_mitigation_script_path(mitigation_id)
+            repair_run_command += ' --parameters script_path=./{repair_script}'.format(repair_script=repair_script_path)
+        # Custom script scenario for testing
+        else:
+            # no-op mitigation id
+            repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_mitigation_file)
+        
         logger.info('Running repair scripts within repair VM...')
         return_str = _call_az_command(repair_run_command)
 
         # Set up return codes and conditions
         # Return code and code return from stdout. anything else in stderr?
         return_json = json.loads(return_str)
-        #stdout = return_json['value'][0]['message']
-        #stderr = return_json['value'][1]['message']
-        print(return_json)
+        stdout = return_json['value'][0]['message']
+        stderr = return_json['value'][1]['message']
+        print(stdout)
+        print('stderr:\n')
+        print(stderr)
 
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input.")
@@ -323,3 +334,7 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
         logger.debug(exception)
 
     return None
+
+
+def mitigate_list(cmd):
+    return _fetch_mitigation_script_map()

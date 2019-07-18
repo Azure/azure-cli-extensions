@@ -8,9 +8,12 @@ try {
 	(new-object net.webclient).DownloadFile('https://github.com/Azure/repair-script-library/zipball/master/', (Join-Path $pwd 'repair-script-library.zip'))
 	Expand-Archive -Path 'repair-script-library.zip' -DestinationPath 'repair-script-library'
 	$reponame = dir repair-script-library -n
-	$command = './repair-script-library/' + $reponame + '/' + $script_path
-	$result = Invoke-Expression $command
-	return $result
+	Set-Location (Join-Path 'repair-script-library' $reponame)
+	If ($script_path -ne 'no-op')
+	{
+		$result = Invoke-Expression $script_path
+		return $result
+	}
 } catch {
 	$error[0].Exception
 	return -1
