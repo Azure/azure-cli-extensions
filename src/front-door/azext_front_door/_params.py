@@ -230,6 +230,6 @@ def load_arguments(self, _):
         c.argument('index', type=int, help='0-based index of the match condition to remove')
 
     with self.argument_context('network front-door waf-policy rule match-condition list') as c:
-        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part=None)
-        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.')
+        c.argument('policy_name', waf_policy_name_type, id_part=None)
     # endregion
