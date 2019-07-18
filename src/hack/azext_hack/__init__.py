@@ -38,7 +38,7 @@ class HackExtCommandLoader(AzCommandsLoader):
             c.argument('ai',
                 help='Enable Azure Cognitive Services',
                 options_list=['--ai', '-ai'],
-                default=False,
+                default=None,
                 action='store_true'
             )
 

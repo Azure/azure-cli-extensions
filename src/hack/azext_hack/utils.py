@@ -114,16 +114,16 @@ def create_database(cmd, database_provider, name, location, admin, password):
                     location_name=location,
                     failover_priority=0,
                     is_zone_redundant=False)],
-                kind=DatabaseAccountKind.global_document_db.value,
+                kind=DatabaseAccountKind.mongo_db.value,
                 consistency_policy=ConsistencyPolicy(
                     default_consistency_level=1,
                     max_staleness_prefix=100,
                     max_interval_in_seconds=5
                 )
             )
-            return cosmosdb_client.create_or_update(name, name, params)
+            return cosmosdb_client.database_accounts.create_or_update(name, name, params)
         def database_creator():
-            return cosmosdb_client.database_accounts.CreateDatabase(
+            return cosmosdb_client.database_accounts.create_database(
                 {'id': name}, {'offerThroughput': None}
             )
     else:
@@ -189,6 +189,10 @@ DATABASES = {
     'sql': {
         'host': '{}.database.windows.net',
         'port': '1433'
+    },
+    'cosmosdb': {
+        'host': '{}.documents.azure.com',
+        'port': '12354'
     }
 }
 
@@ -214,23 +218,24 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
     site['hostname'] = 'https://{}'.format(webapp.host_names[0])
     return site
 
+def set_website_settings(cmd, name, database_provider, database_admin, database_password, ai):
+    settings = []
 
-def set_website_settings(cmd, name, database_provider, database_admin, database_password):
-    from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
-    cogsvcs_client = get_mgmt_service_client(
-        cmd.cli_ctx, CognitiveServicesManagementClient)
-    cogsvcs_key = cogsvcs_client.accounts.list_keys(name, name).key1
+    if ai:
+        from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
+        cogsvcs_client = get_mgmt_service_client(
+            cmd.cli_ctx, CognitiveServicesManagementClient)
+        cogsvcs_key = cogsvcs_client.accounts.list_keys(name, name).key1
+        settings.append('COGNITIVE_SERVICES_KEY={}'.format(cogsvcs_key))
 
     # TODO: Update username to avoid issues
     database_options = DATABASES[database_provider.lower()]
-    settings = []
     settings.append('DATABASE_NAME={}'.format(name))
     settings.append('DATABASE_HOST={}'.format(
         database_options['host'].format(name)))
     settings.append('DATABASE_PORT={}'.format(database_options['port']))
     settings.append('DATABASE_USER={}'.format(database_admin))
     settings.append('DATABASE_PASSWORD={}'.format(database_password))
-    settings.append('COGNITIVE_SERVICES_KEY={}'.format(cogsvcs_key))
     update_app_settings(cmd, resource_group_name=name,
                         name=name, settings=settings)
     return settings
