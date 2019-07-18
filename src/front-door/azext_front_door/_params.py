@@ -157,7 +157,7 @@ def load_arguments(self, _):
         c.argument('version', help='Rule set version.')
 
     with self.argument_context('network front-door waf-policy managed-rules list') as c:
-        c.argument('policy_name', waf_policy_name_type)
+        c.argument('policy_name', waf_policy_name_type, id_part=None)
 
     with self.argument_context('network front-door waf-policy managed-rules override add') as c:
         c.argument('policy_name', waf_policy_name_type)
@@ -174,7 +174,7 @@ def load_arguments(self, _):
         c.argument('rule_id', help='Name of the rule override to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rules override list') as c:
-        c.argument('policy_name', waf_policy_name_type)
+        c.argument('policy_name', waf_policy_name_type, id_part=None)
         c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the overrides to list.')
 
     with self.argument_context('network front-door waf-policy managed-rules remove') as c:
@@ -230,6 +230,6 @@ def load_arguments(self, _):
         c.argument('index', type=int, help='0-based index of the match condition to remove')
 
     with self.argument_context('network front-door waf-policy rule match-condition list') as c:
-        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part='child_name_1')
+        c.argument('rule_name', options_list=['--name', '-n'], help='Name of the custom rule.', id_part=None)
         c.argument('policy_name', waf_policy_name_type)
     # endregion

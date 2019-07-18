@@ -277,16 +277,12 @@ helps['network front-door waf-policy rule match-condition'] = """
 helps['network front-door waf-policy rule match-condition add'] = """
     type: command
     short-summary: Add a match-condition to a WAF policy custom rule.
-    parameters:
-        - name: match-condition
-          short-summary: Match condition for the rule.
-          long-summary: |
+    long-summary: >
+        Usage:   [--negate] --match-variable VARIABLE[.selector] --operator OPERATOR --value [VALUE [VALUE ...]]
 
-            Usage:   [--negate] --match-variable VARIABLE[.selector] --operator OPERATOR --value [VALUE [VALUE ...]]
+          Variable allowed values: {variables}
 
-              Variable allowed values: {variables}
-
-              Operator allowed values: {operators}
+          Operator allowed values: {operators}
 """.format(
     variables=', '.join([x.value for x in MatchVariable]),
     operators=', '.join([x.value for x in Operator])
