@@ -38,7 +38,7 @@ def hack_up(cmd, name, runtime, database, ai=None):
     # Create app service plan and website
     logger.warning("Starting website creation job...")
     output = create_website(cmd, name, runtime)
-    output['settings'] = set_website_settings(cmd, name, database, database_admin, database_password)
+    output['settings'] = set_website_settings(cmd, name, database, database_admin, database_password, ai)
     # Database takes a while. Wait at the end for it to complete
     while True:
         database_poller.result(15)
