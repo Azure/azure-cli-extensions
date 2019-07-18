@@ -13,8 +13,7 @@ from .._client_factory import storage_client_factory
 # pylint: disable=too-many-locals
 def create_storage_account(cmd, resource_group_name, account_name, sku=None, location=None, kind=None,
                            tags=None, custom_domain=None, encryption_services=None, access_tier=None, https_only=None,
-                           file_aad=None, hierarchical_namespace=None, bypass=None, default_action=None,
-                           assign_identity=False):
+                           hierarchical_namespace=None, bypass=None, default_action=None, assign_identity=False):
     StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
                        'Encryption', 'NetworkRuleSet')
@@ -30,8 +29,6 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
         params.identity = Identity()
     if https_only:
         params.enable_https_traffic_only = https_only
-    if file_aad:
-        params.enable_azure_files_aad_integration = file_aad
     if hierarchical_namespace:
         params.is_hns_enabled = hierarchical_namespace
 
@@ -94,7 +91,7 @@ def show_storage_account_usage(cmd, location):
 # pylint: disable=too-many-locals
 def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=None, use_subdomain=None,
                            encryption_services=None, encryption_key_source=None, encryption_key_vault_properties=None,
-                           access_tier=None, https_only=None, file_aad=None, assign_identity=False, bypass=None,
+                           access_tier=None, https_only=None, assign_identity=False, bypass=None,
                            default_action=None):
     StorageAccountUpdateParameters, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountUpdateParameters', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
@@ -125,9 +122,7 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
         custom_domain=domain,
         encryption=encryption,
         access_tier=AccessTier(access_tier) if access_tier is not None else instance.access_tier,
-        enable_https_traffic_only=https_only if https_only is not None else instance.enable_https_traffic_only,
-        enable_azure_files_aad_integration=file_aad if file_aad is not None
-        else instance.enable_azure_files_aad_integration
+        enable_https_traffic_only=https_only if https_only is not None else instance.enable_https_traffic_only
     )
     if assign_identity:
         params.identity = Identity()

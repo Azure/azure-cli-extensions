@@ -89,6 +89,10 @@ helps['aks create'] = """
           short-summary: A specific IP address and netmask for the Docker bridge, using standard CIDR notation.
           long-summary: This address must not be in any Subnet IP ranges, or the Kubernetes service address range.
                         For example, 172.17.0.1/16.
+        - name: --load-balancer-sku
+          type: string
+          short-summary: Azure Load Balancer SKU selection for your cluster. Basic or Standard.
+          long-summary: Select between Basic or Standard Azure Load Balancer SKU for your AKS cluster.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -143,10 +147,10 @@ helps['aks create'] = """
           long-summary: If specified, please make sure the kubernetes version is larger than 1.10.6.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
         - name: --enable-vmss
           type: bool
           short-summary: (PREVIEW) Enable VMSS agent type.
@@ -201,13 +205,13 @@ helps['aks update'] = """
           short-summary: Disable cluster autoscaler.
         - name: --update-cluster-autoscaler -u
           type: bool
-          short-summary: Update min-count or max-count for cluser auto-scaler.
+          short-summary: Update min-count or max-count for cluster autoscaler.
         - name: --min-count
           type: int
-          short-summary: Minimun nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
         - name: --max-count
           type: int
-          short-summary: Maximum nodes count used for auto scaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
         - name: --api-server-authorized-ip-ranges
           type: str
           short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
@@ -222,7 +226,7 @@ helps['aks update'] = """
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
       - name: Disable cluster-autoscaler for an existing cluster
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
-      - name: Update min-count or max-count for cluster auto-scaler.
+      - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
       - name: Enable authorized IP ranges for apiserver.
         text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
@@ -278,6 +282,15 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --enable-cluster-autoscaler -e
+          type: bool
+          short-summary: Enable cluster autoscaler.
+        - name: --min-count
+          type: int
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --max-count
+          type: int
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
 """
 
 helps['aks nodepool scale'] = """
@@ -296,6 +309,34 @@ helps['aks nodepool upgrade'] = """
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to upgrade the node pool to, such as "1.11.12".
+"""
+
+helps['aks nodepool update'] = """
+    type: command
+    short-summary: Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count
+    parameters:
+        - name: --enable-cluster-autoscaler -e
+          type: bool
+          short-summary: Enable cluster autoscaler.
+        - name: --disable-cluster-autoscaler -d
+          type: bool
+          short-summary: Disable cluster autoscaler.
+        - name: --update-cluster-autoscaler -u
+          type: bool
+          short-summary: Update min-count or max-count for cluster autoscaler.
+        - name: --min-count
+          type: int
+          short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --max-count
+          type: int
+          short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+    examples:
+      - name: Enable cluster-autoscaler within node count range [1,5]
+        text: az aks nodepool update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Disable cluster-autoscaler for an existing cluster
+        text: az aks nodepool update --disable-cluster-autoscaler -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
+      - name: Update min-count or max-count for cluster autoscaler.
+        text: az aks nodepool update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
 """
 
 helps['aks nodepool delete'] = """

@@ -7,7 +7,7 @@
 import argparse
 
 from azure.cli.core.commands.parameters import (
-    get_resource_name_completion_list, tags_type, get_enum_type, get_location_type)
+    get_resource_name_completion_list, tags_type, get_enum_type, get_location_type, zones_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
 from knack.arguments import CLIArgumentType
@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument('translated_address', help='Translated address for this NAT rule.')
         c.argument('translated_port', help='Translated port for this NAT rule.')
         c.argument('tags', tags_type)
+        c.argument('zones', zones_type)
 
     for scope in ['network-rule', 'nat-rule']:
         with self.argument_context('network firewall {}'.format(scope)) as c:

@@ -5,7 +5,7 @@
 
 from knack.help_files import helps
 
-from azext_front_door.vendored_sdks.models import MatchCondition, Operator
+from azext_front_door.vendored_sdks.models import MatchVariable, Operator
 
 # region FrontDoor
 helps['network front-door'] = """
@@ -227,78 +227,86 @@ helps['network front-door routing-rule delete'] = """
 # endregion
 
 # region WAFPolicy
-helps['network waf-policy'] = """
+helps['network front-door waf-policy'] = """
     type: group
     short-summary: Manage WebApplication Firewall (WAF) policies.
 """
 
-helps['network waf-policy create'] = """
+helps['network front-door waf-policy create'] = """
     type: command
     short-summary: Create a WAF policy.
 """
 
-helps['network waf-policy list'] = """
+helps['network front-door waf-policy list'] = """
     type: command
     short-summary: List WAF policies.
 """
 
-helps['network waf-policy show'] = """
+helps['network front-door waf-policy show'] = """
     type: command
     short-summary: Get the details of a WAF policy.
 """
 
-helps['network waf-policy update'] = """
+helps['network front-door waf-policy update'] = """
     type: command
     short-summary: Update settings of a WAF policy.
 """
 
-helps['network waf-policy delete'] = """
+helps['network front-door waf-policy delete'] = """
     type: command
     short-summary: Delete a WAF policy.
 """
 
-helps['network waf-policy set-managed-ruleset'] = """
-    type: command
-    short-summary: Configure Azure-managed ruleset.
-"""
-
-helps['network waf-policy custom-rule'] = """
+helps['network front-door waf-policy rule'] = """
     type: group
     short-summary: Manage WAF policy custom rules.
 """
 
-helps['network waf-policy custom-rule create'] = """
+helps['network front-door waf-policy rule create'] = """
     type: command
     short-summary: Create a WAF policy custom rule.
+""".format(
+    variables=', '.join([x.value for x in MatchVariable]),
+    operators=', '.join([x.value for x in Operator])
+)
+
+helps['network front-door waf-policy rule match-condition add'] = """
+    type: command
+    short-summary: Add a match-condition to a WAF policy custom rule.
     parameters:
         - name: --match-condition
           short-summary: Match condition for the rule.
           long-summary: |
 
-            Usage:   --match-condition VARIABLE OPERATOR [VALUE [VALUE ...]]
+            Usage:   [--negate] --match-variable VARIABLE[.selector] --operator OPERATOR --value [VALUE [VALUE ...]]
 
               Variable allowed values: {variables}
 
               Operator allowed values: {operators}
-
-            Multiple match conditions can be specified by using more than one `--match-condition` argument.
 """.format(
-    variables=', '.join([x.value for x in MatchCondition]),
+    variables=', '.join([x.value for x in MatchVariable]),
     operators=', '.join([x.value for x in Operator])
 )
 
-helps['network waf-policy custom-rule list'] = """
+helps['network front-door waf-policy rule list'] = """
     type: command
     short-summary: List WAF policy custom rules.
 """
 
-helps['network waf-policy custom-rule show'] = """
+helps['network front-door waf-policy rule show'] = """
     type: command
     short-summary: Get the details of a WAF policy custom rule.
 """
 
-helps['network waf-policy custom-rule delete'] = """
+helps['network front-door waf-policy rule delete'] = """
     type: command
     short-summary: Delete a WAF policy custom rule.
+"""
+
+helps['network front-door waf-policy managed-rules add'] = """
+    type: command
+    short-summary: Add a managed rule set to a WAF policy.
+    long-summary: >
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available managed rulesets.
 """
 # endregion
