@@ -8,5 +8,7 @@ tar -xf repair-script-library.tar.gz -C repair-script-library
 cd repair-script-library
 reponame=$(ls)
 cd $reponame
-chmod u+x $1
-exec $1
+if [ $1 != 'no-op' ]; then
+	chmod u+x $1
+	bash -e $1
+fi

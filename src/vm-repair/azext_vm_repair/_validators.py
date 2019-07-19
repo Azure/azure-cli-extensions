@@ -91,6 +91,14 @@ def validate_restore(cmd, namespace):
 
 
 def validate_mitigate(cmd, namespace):
+
+    # Check mitigation-id and custom mitigation file parameters
+    if not namespace.mitigation_id and not namespace.custom_mitigation_file:
+        raise CLIError('Please specify the mitigation id with --mitigation-id.')
+    if namespace.mitigation_id and namespace.custom_mitigation_file:
+        raise CLIError('Cannot run both the mitigation id and the custom mitigation file. Please specify just one.')
+    if namespace.custom_mitigation_file:
+        namespace.mitigation_id = 'no-op'
     
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)

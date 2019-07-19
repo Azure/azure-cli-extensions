@@ -12,9 +12,8 @@ try {
 	If ($script_path -ne 'no-op')
 	{
 		$result = Invoke-Expression $script_path
-		return $result
+		Write-Output $result
 	}
 } catch {
-	$error[0].Exception
-	return -1
+	Write-Error $error[0].Exception.Message
 }

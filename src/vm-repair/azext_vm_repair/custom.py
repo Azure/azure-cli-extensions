@@ -272,8 +272,12 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None, custom_mitigation_file=None):
+def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id=None, custom_mitigation_file=None):
 
+    return_dict = {}
+
+    # Overall success flag
+    command_succeeded = False
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
 
@@ -310,14 +314,28 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
         logger.info('Running repair scripts within repair VM...')
         return_str = _call_az_command(repair_run_command)
 
-        # Set up return codes and conditions
-        # Return code and code return from stdout. anything else in stderr?
-        return_json = json.loads(return_str)
-        stdout = return_json['value'][0]['message']
-        stderr = return_json['value'][1]['message']
-        print(stdout)
-        print('stderr:\n')
-        print(stderr)
+        # Extract stdout and stderr, if stderr exists then possible error
+        run_command_return = json.loads(return_str)
+
+        if is_linux:
+            run_command_message = run_command_return['value'][0]['message'].split('[stdout]')[1].split('[stderr]')
+            stdout = run_command_message[0].strip('\n')
+            stderr = run_command_message[1].strip('\n')
+        else:
+            stdout = run_command_return['value'][0]['message']
+            stderr = run_command_return['value'][1]['message']
+
+        if not stderr:
+            message = 'Script completed without error.'
+            logger.info(message)
+        else:
+            message = 'Script returned with possible errors.'
+            logger.warning(message)
+
+        return_dict['message'] = message
+        return_dict['stdout'] = stdout
+        return_dict['stderr'] = stderr
+        command_succeeded = True
 
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input.")
@@ -333,8 +351,10 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id, repair_vm_id=None
         logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
         logger.debug(exception)
 
-    return None
+    if not command_succeeded:
+        return None
 
+    return return_dict
 
 def mitigate_list(cmd):
     return _fetch_mitigation_script_map()
