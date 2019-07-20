@@ -6,29 +6,30 @@
 from __future__ import print_function
 from knack.log import get_logger
 from knack.util import CLIError
+from azure.mgmt.web.models import (AppServicePlan, SkuDescription)
 from azure.cli.command_modules.appservice.custom import (
     show_webapp,
     _get_site_credential,
     _get_scm_url,
     list_publish_profiles,
     get_site_configs,
-    update_container_settings)
+    update_container_settings, create_webapp,
+    get_sku_name)
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
-from .acr_util import (queue_acr_build, generate_img_name)
-from azure.cli.command_modules.appservice.create_util import (
+from azure.cli.command_modules.appservice._create_util import (
     should_create_new_rg,
     create_resource_group,
     web_client_factory,
-    should_create_new_asp,
     should_create_new_app
 )
-from ._constants import (NODE_RUNTIME_NAME, OS_DEFAULT, STATIC_RUNTIME_NAME, PYTHON_RUNTIME_NAME)
+from .acr_util import (queue_acr_build, generate_img_name)
 logger = get_logger(__name__)
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches,line-too-long
 
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches,line-too-long
 def create_deploy_container_app(cmd, name, source_location=None, docker_custom_image_name=None, dryrun=False, registry_rg=None, registry_name=None):  # pylint: disable=too-many-statements
     import os
+    import json
     if not source_location:
         # the dockerfile is expected to be in the current directory the command is running from
         source_location = os.getcwd()
@@ -68,7 +69,6 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
             "location" : "%s"
             }
             """ % (name, asp, rg_str, full_sku, location)
-            #, docker_custom_image_name)
     create_json = json.loads(dry_run_str)
 
     if dryrun:
@@ -84,7 +84,7 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
         _create_new_asp = True
     else:
         logger.warning("Resource group '%s' already exists.", rg_name)
-        _create_new_asp = should_create_new_asp(cmd, rg_name, asp, location)
+        _create_new_asp = _should_create_new_asp(cmd, rg_name, asp, location)
     # create new ASP if an existing one cannot be used
     if _create_new_asp:
         logger.warning("Creating App service plan '%s' ...", asp)
@@ -97,15 +97,14 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
     else:
         logger.warning("App service plan '%s' already exists.", asp)
         _create_new_app = should_create_new_app(cmd, rg_name, name)
-    
+
     # create the app
     if _create_new_app:
         logger.warning("Creating app '%s' ....", name)
         # TODO: Deploy without container params and update separately instead?
         # deployment_container_image_name=docker_custom_image_name)
-        create_webapp(cmd, rg_name, name, asp, deployment_container_image_name=img_name) 
+        create_webapp(cmd, rg_name, name, asp, deployment_container_image_name=img_name)
         logger.warning("Webapp creation complete")
-        _set_build_appSetting = True
     else:
         logger.warning("App '%s' already exists", name)
 
@@ -118,6 +117,7 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
 
     logger.warning("All done.")
     return create_json
+
 
 def _ping_scm_site(cmd, resource_group, name):
     #  wakeup kudu, by making an SCM call
@@ -271,3 +271,14 @@ def _start_tunnel(tunnel_server, remote_debugging_enabled):
     if remote_debugging_enabled is False:
         logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
+
+
+def _should_create_new_asp(cmd, rg_name, asp_name, location):
+    # get all appservice plans from RG
+    client = web_client_factory(cmd.cli_ctx)
+    for item in list(client.app_service_plans.list_by_resource_group(rg_name)):
+        if (item.name.lower() == asp_name.lower() and
+                item.location.replace(" ", "").lower() == location or
+                item.location == location):
+            return False
+    return True

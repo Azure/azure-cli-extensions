@@ -10,13 +10,13 @@ from datetime import datetime
 from knack.log import get_logger
 from knack.util import CLIError
 
-#from azure.cli.command_modules.acr.build import acr_build
 from azure.cli.command_modules.acr._archive_utils import upload_source_code
 from azure.cli.command_modules.acr._stream_utils import stream_logs
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 
 logger = get_logger(__name__)
+
 
 def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     import os
@@ -51,7 +51,8 @@ def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     platform_arch = Architecture.amd64.value
     platform_variant = None
 
-    DockerBuildRequest, PlatformProperties = cmd.get_models('DockerBuildRequest', 'PlatformProperties', resource_type=ResourceType.MGMT_CONTAINERREGISTRY)
+    DockerBuildRequest, PlatformProperties = cmd.get_models('DockerBuildRequest', 'PlatformProperties',
+                                                            resource_type=ResourceType.MGMT_CONTAINERREGISTRY)
     docker_build_request = DockerBuildRequest(
         image_names=[img_name],
         is_push_enabled=True,
@@ -74,19 +75,18 @@ def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     logger.warning("Queued a build with ID: %s", run_id)
     logger.warning("Waiting for agent...")
 
-    #if no_logs:
-    #    return get_run_with_polling(client, run_id, registry_name, resource_group_name)
-
     client_runs = get_acr_service_client(cmd.cli_ctx).runs
 
     return stream_logs(client_runs, run_id, registry_name, registry_rg, False, True)
+
 
 def get_acr_service_client(cli_ctx, api_version=None):
     """Returns the client for managing container registries. """
     from azure.mgmt.containerregistry import ContainerRegistryManagementClient
     return get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient, api_version=api_version)
 
+
 def generate_img_name(src_dir):
     import os
-    img_name = os.path.basename(src_dir) + ':' +  datetime.now().strftime('%Y%m%d_%H%M%S')
+    img_name = os.path.basename(src_dir) + ':' + datetime.now().strftime('%Y%m%d_%H%M%S')
     return img_name
