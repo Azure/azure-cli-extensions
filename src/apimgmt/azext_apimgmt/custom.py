@@ -353,9 +353,7 @@ def create_apimgmt_tag(cmd, client,
                        service_name,
                        tag_id,
                        display_name):
-    body = {}
-    body['display_name'] = display_name  # str
-    return client.tag.create_or_update(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id, parameters=body)
+    return client.tag.create_or_update(resource_group_name=resource_group, service_name=service_name, tag_id=tag_id, display_name=display_name)
 
 
 # module equivalent: azure_rm_apimanagementtag
@@ -474,7 +472,7 @@ def create_apimgmt_api_schema(cmd, client,
     body = {}
     body['content_type'] = content_type  # str
     body['document'] = json.loads(document) if isinstance(document, str) else document
-    return client.api_schema.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id, parameters=body)
+    return client.api_schema.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, schema_id=schema_id, content_type=content_type, document=document)
 
 
 # module equivalent: azure_rm_apimanagementapischema
@@ -1911,10 +1909,7 @@ def create_apimgmt_policy(cmd, client,
                           policy_id,
                           value,
                           _format=None):
-    body = {}
-    body['value'] = value  # str
-    body['format'] = _format  # str
-    return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, parameters=body)
+    return client.policy.create_or_update(resource_group_name=resource_group, service_name=service_name, policy_id=policy_id, value=value, format=_format)
 
 
 # module equivalent: azure_rm_apimanagementpolicy
@@ -2273,10 +2268,7 @@ def create_apimgmt_product_policy(cmd, client,
                                   policy_id,
                                   value,
                                   _format=None):
-    body = {}
-    body['value'] = value  # str
-    body['format'] = _format  # str
-    return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, parameters=body)
+    return client.product_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, product_id=product_id, policy_id=policy_id, value=value, format=_format)
 
 
 # module equivalent: azure_rm_apimanagementproductpolicy
