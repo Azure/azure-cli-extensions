@@ -90,3 +90,4 @@ def generate_img_name(src_dir):
     import os
     img_name = os.path.basename(src_dir) + ':' + datetime.now().strftime('%Y%m%d_%H%M%S')
     return img_name
+
