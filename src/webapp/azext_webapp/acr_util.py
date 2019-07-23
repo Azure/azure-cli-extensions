@@ -18,6 +18,7 @@ from azure.cli.core.commands import LongRunningOperation
 logger = get_logger(__name__)
 VERSION_2019_06_01_PREVIEW = "2019-06-01-preview"
 
+
 def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     import os
     client_registries = get_acr_service_client(cmd.cli_ctx, VERSION_2019_06_01_PREVIEW).registries
@@ -90,4 +91,3 @@ def generate_img_name(src_dir):
     import os
     img_name = os.path.basename(src_dir) + ':' + datetime.now().strftime('%Y%m%d_%H%M%S')
     return img_name
-

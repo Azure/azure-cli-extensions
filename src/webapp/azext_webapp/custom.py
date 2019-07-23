@@ -41,13 +41,16 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
     _create_acr_img = True
 
     if docker_custom_image_name:
+        logger.warning('Image will be pulled from DockerHub')
         img_name = docker_custom_image_name
         _create_acr_img = False
     else:
+        logger.warning('Source code will be uploaded and built in Azure Container Registry')
+        if not registry_name:
+            raise CLIError("--registry-name not specified")
+        if not registry_rg:
+            raise CLIError("--registry-rg not specified")
         img_name = generate_img_name(source_location)
-        logger.warning("Starting ACR build")
-        queue_acr_build(cmd, registry_rg, registry_name, img_name, source_location)
-        logger.warning("ACR build done. Deploying web app.")
 
     sku = 'P1V2'
     full_sku = get_sku_name(sku)
@@ -74,6 +77,10 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
         logger.warning("Web app will be created with the below configuration,re-run command "
                        "without the --dryrun flag to create & deploy a new app")
         return create_json
+
+    logger.warning("Starting ACR build")
+    queue_acr_build(cmd, registry_rg, registry_name, img_name, source_location)
+    logger.warning("ACR build done. Deploying web app.")
 
     # create RG if the RG doesn't already exist
     if _create_new_rg:
