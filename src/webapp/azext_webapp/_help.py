@@ -51,6 +51,6 @@ helps['webapp container up'] = """
     examples:
         - name: Deploy a container using an image from DockerHub. This example uses nginx.
           text: az webapp container up -n AppName -i nginx
-        - name: Upload files from the current directory to an Azure Container Registry, then build a container image and deploy it to a web app.
+        - name: Upload files from the current directory to an Azure Container Registry, then build a container image and deploy it to a web app. The Azure Container Registry must already exist.
           text: az webapp container up -n AppName --registry-rg ContainerRegistryResourceGroup --registry-name ContainerRegistryName
 """
