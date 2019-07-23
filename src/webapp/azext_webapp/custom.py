@@ -6,16 +6,116 @@
 from __future__ import print_function
 from knack.log import get_logger
 from knack.util import CLIError
+from azure.mgmt.web.models import (AppServicePlan, SkuDescription)
 from azure.cli.command_modules.appservice.custom import (
     show_webapp,
     _get_site_credential,
     _get_scm_url,
     list_publish_profiles,
-    get_site_configs)
+    get_site_configs,
+    update_container_settings, create_webapp,
+    get_sku_name)
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
+from azure.cli.command_modules.appservice._create_util import (
+    should_create_new_rg,
+    create_resource_group,
+    web_client_factory,
+    should_create_new_app
+)
+from .acr_util import (queue_acr_build, generate_img_name)
 logger = get_logger(__name__)
 
+
 # pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches,line-too-long
+def create_deploy_container_app(cmd, name, source_location=None, docker_custom_image_name=None, dryrun=False, registry_rg=None, registry_name=None):  # pylint: disable=too-many-statements
+    import os
+    import json
+    if not source_location:
+        # the dockerfile is expected to be in the current directory the command is running from
+        source_location = os.getcwd()
+
+    client = web_client_factory(cmd.cli_ctx)
+    _create_new_rg = True
+    _create_new_asp = True
+    _create_new_app = True
+    _create_acr_img = True
+
+    if docker_custom_image_name:
+        img_name = docker_custom_image_name
+        _create_acr_img = False
+    else:
+        img_name = generate_img_name(source_location)
+        logger.warning("Starting ACR build")
+        queue_acr_build(cmd, registry_rg, registry_name, img_name, source_location)
+        logger.warning("ACR build done. Deploying web app.")
+
+    sku = 'P1V2'
+    full_sku = get_sku_name(sku)
+    location = 'Central US'
+    loc_name = 'centralus'
+    asp = "appsvc_asp_linux_{}".format(loc_name)
+    rg_name = "appsvc_rg_linux_{}".format(loc_name)
+    # Resource group: check if default RG is set
+    _create_new_rg = should_create_new_rg(cmd, rg_name, True)
+
+    rg_str = "{}".format(rg_name)
+
+    dry_run_str = r""" {
+            "name" : "%s",
+            "serverfarm" : "%s",
+            "resourcegroup" : "%s",
+            "sku": "%s",
+            "location" : "%s"
+            }
+            """ % (name, asp, rg_str, full_sku, location)
+    create_json = json.loads(dry_run_str)
+
+    if dryrun:
+        logger.warning("Web app will be created with the below configuration,re-run command "
+                       "without the --dryrun flag to create & deploy a new app")
+        return create_json
+
+    # create RG if the RG doesn't already exist
+    if _create_new_rg:
+        logger.warning("Creating Resource group '%s' ...", rg_name)
+        create_resource_group(cmd, rg_name, location)
+        logger.warning("Resource group creation complete")
+        _create_new_asp = True
+    else:
+        logger.warning("Resource group '%s' already exists.", rg_name)
+        _create_new_asp = _should_create_new_asp(cmd, rg_name, asp, location)
+    # create new ASP if an existing one cannot be used
+    if _create_new_asp:
+        logger.warning("Creating App service plan '%s' ...", asp)
+        sku_def = SkuDescription(tier=full_sku, name=sku, capacity=1)
+        plan_def = AppServicePlan(location=loc_name, app_service_plan_name=asp,
+                                  sku=sku_def, reserved=True)
+        client.app_service_plans.create_or_update(rg_name, asp, plan_def)
+        logger.warning("App service plan creation complete")
+        _create_new_app = True
+    else:
+        logger.warning("App service plan '%s' already exists.", asp)
+        _create_new_app = should_create_new_app(cmd, rg_name, name)
+
+    # create the app
+    if _create_new_app:
+        logger.warning("Creating app '%s' ....", name)
+        # TODO: Deploy without container params and update separately instead?
+        # deployment_container_image_name=docker_custom_image_name)
+        create_webapp(cmd, rg_name, name, asp, deployment_container_image_name=img_name)
+        logger.warning("Webapp creation complete")
+    else:
+        logger.warning("App '%s' already exists", name)
+
+    # Set up the container
+    if _create_acr_img:
+        logger.warning("Configuring ACR container settings.")
+        registry_url = 'https://' + registry_name + '.azurecr.io'
+        acr_img_name = registry_name + '.azurecr.io/' + img_name
+        update_container_settings(cmd, rg_name, name, registry_url, acr_img_name)
+
+    logger.warning("All done.")
+    return create_json
 
 
 def _ping_scm_site(cmd, resource_group, name):
@@ -170,3 +270,14 @@ def _start_tunnel(tunnel_server, remote_debugging_enabled):
     if remote_debugging_enabled is False:
         logger.warning('SSH is available { username: root, password: Docker! }')
     tunnel_server.start_server()
+
+
+def _should_create_new_asp(cmd, rg_name, asp_name, location):
+    # get all appservice plans from RG
+    client = web_client_factory(cmd.cli_ctx)
+    for item in list(client.app_service_plans.list_by_resource_group(rg_name)):
+        if (item.name.lower() == asp_name.lower() and
+                item.location.replace(" ", "").lower() == location or
+                item.location == location):
+            return False
+    return True
