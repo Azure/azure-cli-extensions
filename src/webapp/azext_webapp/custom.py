@@ -56,7 +56,6 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
     asp = "appsvc_asp_linux_{}".format(loc_name)
     rg_name = "appsvc_rg_linux_{}".format(loc_name)
     # Resource group: check if default RG is set
-    default_rg = cmd.cli_ctx.config.get('defaults', 'group', fallback=None)
     _create_new_rg = should_create_new_rg(cmd, rg_name, True)
 
     rg_str = "{}".format(rg_name)
