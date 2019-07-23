@@ -16,11 +16,12 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 
 logger = get_logger(__name__)
+VERSION_2019_06_01_PREVIEW = "2019-06-01-preview"
 
 
 def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     import os
-    client_registries = get_acr_service_client(cmd.cli_ctx).registries
+    client_registries = get_acr_service_client(cmd.cli_ctx, VERSION_2019_06_01_PREVIEW).registries
 
     if not os.path.isdir(src_dir):
         raise CLIError("Source directory should be a local directory path.")
@@ -75,7 +76,7 @@ def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     logger.warning("Queued a build with ID: %s", run_id)
     logger.warning("Waiting for agent...")
 
-    client_runs = get_acr_service_client(cmd.cli_ctx).runs
+    client_runs = get_acr_service_client(cmd.cli_ctx, VERSION_2019_06_01_PREVIEW).runs
 
     return stream_logs(client_runs, run_id, registry_name, registry_rg, False, True)
 
