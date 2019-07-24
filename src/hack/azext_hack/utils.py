@@ -123,8 +123,12 @@ def create_database(cmd, database_provider, name, location, admin, password):
             )
             return cosmosdb_client.database_accounts.create_or_update(name, name, params)
         def database_creator():
-            return cosmosdb_client.database_accounts.create_database(
-                {'id': name}, {'offerThroughput': None}
+            return cosmosdb_client.database_accounts.create_update_mongo_db_database(
+                resource_group_name=name,
+                account_name=name,
+                database_name=name,
+                resource={'id': name},
+                options={}
             )
     else:
         sql_client = get_sql_management_client(cmd.cli_ctx)
@@ -192,7 +196,7 @@ DATABASES = {
     },
     'cosmosdb': {
         'host': '{}.documents.azure.com',
-        'port': '12354'
+        'port': '10255'
     }
 }
 
@@ -227,6 +231,15 @@ def set_website_settings(cmd, name, database_provider, database_admin, database_
             cmd.cli_ctx, CognitiveServicesManagementClient)
         cogsvcs_key = cogsvcs_client.accounts.list_keys(name, name).key1
         settings.append('COGNITIVE_SERVICES_KEY={}'.format(cogsvcs_key))
+    
+    if database_provider.lower() == 'cosmosdb':
+        from azure.mgmt.cosmosdb import CosmosDB
+        cosmosdb_client = get_mgmt_service_client(cmd.cli_ctx, CosmosDB)
+        result = cosmosdb_client.database_accounts.list_keys(
+            resource_group_name=name,
+            account_name=name
+        )
+        database_password = result.primary_master_key
 
     # TODO: Update username to avoid issues
     database_options = DATABASES[database_provider.lower()]
