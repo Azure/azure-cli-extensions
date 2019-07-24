@@ -38,13 +38,13 @@ def hack_up(cmd, name, runtime, database, ai=None):
     # Create app service plan and website
     logger.warning("Starting website creation job...")
     output = create_website(cmd, name, runtime)
-    output['settings'] = set_website_settings(cmd, name, database, database_admin, database_password, ai)
     # Database takes a while. Wait at the end for it to complete
     while True:
         database_poller.result(15)
         if database_poller.done():
             break
 
+    output['settings'] = set_website_settings(cmd, name, database, database_admin, database_password, ai)
     if output['deployment_password'] == '***':
         logger.warning('Deployment user was already created. To change password use `az webapp deployment user set`')
     else:
