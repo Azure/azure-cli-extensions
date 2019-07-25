@@ -1,4 +1,4 @@
-Param([Parameter(Mandatory=$true)][string]$script_path)
+Param([Parameter(Mandatory=$true)][string]$script_path,[Parameter(Mandatory=$false)][string]$params='')
 try {
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 	Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -11,7 +11,10 @@ try {
 	Set-Location (Join-Path 'repair-script-library' $reponame)
 	If ($script_path -ne 'no-op')
 	{
-		$result = Invoke-Expression $script_path
+		# Work around for passing space characters through run-command
+		$params = $params.replace('{space}', ' ')
+		$command = $script_path + ' ' + $params
+		$result = Invoke-Expression $command
 		Write-Output $result
 	}
 } catch {

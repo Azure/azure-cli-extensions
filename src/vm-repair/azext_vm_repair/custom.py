@@ -22,7 +22,9 @@ from .repair_utils import (
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
     _fetch_mitigation_script_map,
-    _fetch_mitigation_script_path
+    _fetch_mitigation_script_path,
+    _process_ps_parameters,
+    _process_bash_parameters
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
 
@@ -272,7 +274,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id=None, custom_mitigation_file=None):
+def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id=None, custom_mitigation_file=None, parameters=None):
 
     return_dict = {}
 
@@ -310,7 +312,16 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
         else:
             # no-op mitigation id
             repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_mitigation_file)
-        
+        # Append Parameters
+        if parameters:
+            if is_linux:
+                param_string =_process_bash_parameters(parameters)
+            else:
+                param_string = _process_ps_parameters(parameters)
+            # Work around for run-command bug, unexpected behavior with space characters
+            param_string = param_string.replace(' ', '{space}')
+            repair_run_command += ' params="{}"'.format(param_string)
+
         logger.info('Running repair scripts within repair VM...')
         return_str = _call_az_command(repair_run_command)
 
@@ -328,9 +339,12 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
         if not stderr:
             message = 'Script completed without error.'
             logger.info(message)
+            logger.info('stdout:\n%s', stdout)
         else:
             message = 'Script returned with possible errors.'
             logger.warning(message)
+            logger.info('stdout:\n%s', stdout)
+            logger.info('stderr:\n%s', stderr)
 
         return_dict['message'] = message
         return_dict['stdout'] = stdout

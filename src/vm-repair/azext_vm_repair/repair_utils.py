@@ -196,3 +196,33 @@ def _fetch_mitigation_script_path(mitigation_id):
         return repair_script_path[0]
     else:
         raise MitigationScriptNotFoundForIdError('Mitigation not found for id: {}. Please validate if the id is correct.'.format(mitigation_id))
+
+
+def _process_ps_parameters(parameters):
+    """
+    Returns a ps script formatted parameter string from a list of parameters.
+    Example: [param1=1, param2=2] => -param1 1 -param2 2
+    """
+    param_string = ''
+    for param in parameters:
+        if '=' in param:
+            n, v = param.split('=', 1)
+            param_string += '-{name} {value} '.format(name=n, value=v)
+        else:
+            param_string += '{}'.format(param)
+                
+    return param_string.strip(' ')
+
+
+def _process_bash_parameters(parameters):
+    """
+    Returns a bash script formatted parameter string from a list of parameters.
+    Example: [param1=1, param2=2] => 1 2
+    """
+    param_string = ''
+    for param in parameters:
+        if '=' in param:
+            param = param.split('=', 1)[1]
+        param_string += '{p} '.format(p=param)
+
+    return param_string.strip(' ')

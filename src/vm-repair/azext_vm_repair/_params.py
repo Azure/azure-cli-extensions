@@ -38,3 +38,4 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('mitigation_id', help='Unique mitigation id for mitigation script.')
         c.argument('custom_mitigation_file', help='Custom mitigation file to run on repair VM.')
+        c.argument('parameters', nargs='+', help="space-separated parameters in the format of '[name=]value'")
