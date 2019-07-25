@@ -33,6 +33,15 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
     # type: (ResourceGraphClient, str, int, int, list[str], str) -> object
 
     subs_list = subscriptions or _get_cached_subscriptions()
+
+    if len(subs_list) > __SUBSCRIPTION_LIMIT:
+        subs_list = subs_list[:__SUBSCRIPTION_LIMIT]
+        warning_message = "The query included more subscriptions than allowed. "\
+                          "Only the first {0} subscriptions were included for the results. "\
+                          "To use more than {0} subscriptions, "\
+                          "see the docs for examples: https://aka.ms/arg-error-toomanysubs".format(__SUBSCRIPTION_LIMIT)
+        __logger.warning(warning_message)
+
     results = []
     skip_token = None
     full_query = graph_query
