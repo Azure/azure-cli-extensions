@@ -25,6 +25,7 @@ from .vendored_sdks.resourcegraph.models import \
 __ROWS_PER_PAGE = 1000
 __CACHE_FILE_NAME = ".azgraphcache"
 __CACHE_KEY = "query_extension"
+__SUBSCRIPTION_LIMIT = 1000
 __logger = get_logger(__name__)
 
 
