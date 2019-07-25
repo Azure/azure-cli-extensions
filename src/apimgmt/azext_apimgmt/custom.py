@@ -291,10 +291,7 @@ def create_apimgmt_api_operation_policy(cmd, client,
                                         policy_id,
                                         value,
                                         _format=None):
-    body = {}
-    body['value'] = value  # str
-    body['format'] = _format  # str
-    return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, parameters=body)
+    return client.api_operation_policy.create_or_update(resource_group_name=resource_group, service_name=service_name, api_id=api_id, operation_id=operation_id, policy_id=policy_id, value=value, format=_format)
 
 
 # module equivalent: azure_rm_apimanagementapioperationpolicy
