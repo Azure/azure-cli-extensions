@@ -1185,10 +1185,7 @@ def create_apimgmt_certificate(cmd, client,
                                certificate_id,
                                data,
                                password):
-    body = {}
-    body['data'] = data  # str
-    body['password'] = password  # str
-    return client.certificate.create_or_update(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id, parameters=body)
+    return client.certificate.create_or_update(resource_group_name=resource_group, service_name=service_name, certificate_id=certificate_id, data=data, password=password)
 
 
 # module equivalent: azure_rm_apimanagementcertificate
