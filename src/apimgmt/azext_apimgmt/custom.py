@@ -1658,7 +1658,7 @@ def create_apimgmt_logger(cmd, client,
     body = {}
     body['logger_type'] = logger_type  # str
     body['description'] = description  # str
-    body['credentials'] = credentials  # dictionary
+    body['credentials'] = json.loads(credentials) if isinstance(credentials, str) else credentials
     body['is_buffered'] = is_buffered  # boolean
     body['resource_id'] = resource_id  # str
     return client.logger.create_or_update(resource_group_name=resource_group, service_name=service_name, logger_id=logger_id, parameters=body)
