@@ -129,12 +129,12 @@ class TestIndex(unittest.TestCase):
                               "{}: 'generator' should be one of {}. "
                               "Build the extension with a different version of the 'wheel' package "
                               "(e.g. `pip install wheel==0.30.0`). "
-                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
+                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,supported_generators))
                 if metadata.get("azext.isPreview", False):
                     if metadata["azext.isPreview"] == item["metadata"]["azext.isPreview"]:
                         print("GANESHA: TWO ARE EQUAL" + metadata["azext.isPreview"] + item["metadata"]["azext.isPreview"])
                     else:
-                        print("GANESHA: TWO ARE NOT EQUAL" + metadata["azext.isPreview"] + item["metadata"]["azext.isPreview"])                                                                             supported_generators))
+                        print("GANESHA: TWO ARE NOT EQUAL" + metadata["azext.isPreview"] + item["metadata"]["azext.isPreview"])
                 self.assertDictEqual(metadata, item['metadata'],
                                      "Metadata for {} in index doesn't match the expected of: \n"
                                      "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
