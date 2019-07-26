@@ -15,8 +15,8 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ApimgmtScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_apimgmt')
-    def test_apimgmt(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_apim')
+    def test_apim(self, resource_group):
 
         self.kwargs.update({
             'name': 'test1'

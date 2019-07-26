@@ -5,27 +5,27 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_apimgmt._help import helps  # pylint: disable=unused-import
+from azext_apim._help import helps  # pylint: disable=unused-import
 
 
 class ApimgmtCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_apimgmt._client_factory import cf_apimgmt
-        apimgmt_custom = CliCommandType(
-            operations_tmpl='azext_apimgmt.custom#{}',
-            client_factory=cf_apimgmt)
+        from azext_apim._client_factory import cf_apim
+        apim_custom = CliCommandType(
+            operations_tmpl='azext_apim.custom#{}',
+            client_factory=cf_apim)
         super(ApimgmtCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    custom_command_type=apimgmt_custom)
+                                                    custom_command_type=apim_custom)
 
     def load_command_table(self, args):
-        from azext_apimgmt.commands import load_command_table
+        from azext_apim.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_apimgmt._params import load_arguments
+        from azext_apim._params import load_arguments
         load_arguments(self, command)
 
 

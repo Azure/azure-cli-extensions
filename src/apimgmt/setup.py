@@ -58,5 +58,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_apimgmt': ['azext_metadata.json']},
+    package_data={'azext_apim': ['azext_metadata.json']},
 )
