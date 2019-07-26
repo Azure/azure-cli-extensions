@@ -11,7 +11,8 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_three_state_flag,
     get_enum_type,
-    resource_group_name_type
+    resource_group_name_type,
+    get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
@@ -730,7 +731,7 @@ def load_arguments(self, _):
         c.argument('sku_name', arg_type=get_enum_type(['Developer', 'Standard', 'Premium', 'Basic', 'Consumption']), id_part=None, help='Name of the Sku.')
         c.argument('sku_capacity', id_part=None, help='Capacity of the SKU (number of deployed units of the SKU).')
         c.argument('identity', id_part=None, help='Managed service identity of the Api Management service.')
-        c.argument('location', id_part=None, help='Resource location.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('apim update') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -750,7 +751,7 @@ def load_arguments(self, _):
         c.argument('sku_name', arg_type=get_enum_type(['Developer', 'Standard', 'Premium', 'Basic', 'Consumption']), id_part=None, help='Name of the Sku.')
         c.argument('sku_capacity', id_part=None, help='Capacity of the SKU (number of deployed units of the SKU).')
         c.argument('identity', id_part=None, help='Managed service identity of the Api Management service.')
-        c.argument('location', id_part=None, help='Resource location.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('apim delete') as c:
         c.argument('resource_group', resource_group_name_type)
