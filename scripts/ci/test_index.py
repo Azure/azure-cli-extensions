@@ -130,7 +130,7 @@ class TestIndex(unittest.TestCase):
                               "Build the extension with a different version of the 'wheel' package "
                               "(e.g. `pip install wheel==0.30.0`). "
                               "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
-                 if metadata.get("azext.isPreview", False):
+                if metadata.get("azext.isPreview", False):
                     if metadata["azext.isPreview"] == item["metadata"]["azext.isPreview"]:
                         print("GANESHA: TWO ARE EQUAL" + metadata["azext.isPreview"] + item["metadata"]["azext.isPreview"])
                     else:
