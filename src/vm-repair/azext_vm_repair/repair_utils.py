@@ -209,7 +209,7 @@ def _process_ps_parameters(parameters):
             n, v = param.split('=', 1)
             param_string += '-{name} {value} '.format(name=n, value=v)
         else:
-            param_string += '{}'.format(param)
+            param_string += '{} '.format(param)
                 
     return param_string.strip(' ')
 
