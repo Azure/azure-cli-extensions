@@ -130,18 +130,26 @@ class TestIndex(unittest.TestCase):
                               "Build the extension with a different version of the 'wheel' package "
                               "(e.g. `pip install wheel==0.30.0`). "
                               "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,supported_generators))
-                print(len(metadata), len(item['metadata']))
+                print("Length is:", len(metadata), len(items['metadata']))
                 for key, value in metadata.items():
                     v = item['metadata'].get(key, "not found")
                     if value != v:
                         print("THEY ARE NOT EQUAL: key, " + key)
                         print(metadata[key])
+                        if key in item['metadata']:
+                            print(item['metadata'][key])
+
+                for key, value in items['metadata'].items():
+                    v = metadata.get(key, "not found")
+                    if value != v:
+                        print("THEY ARE NOT EQUAL: key, " + key)
                         print(item['metadata'][key])
-                # if metadata.get("azext.isPreview", False):
-                #     if metadata["azext.isPreview"] == item["metadata"]["azext.isPreview"]:
-                #         print("GANESHA: TWO ARE EQUAL" + metadata["azext.isPreview"] + item["metadata"]["azext.isPreview"])
-                #     else:
-                #         print("GANESHA: TWO ARE NOT EQUAL" + metadata["azext.isPreview"] + item["metadata"]["azext.isPreview"])
+                        if key in metadata:
+                            print(metadata[key])
+                if metadata == item['metadata']:
+                    print("structs are equal")
+                else:
+                    print("structs are unequal")
                 self.assertDictEqual(metadata, item['metadata'],
                                      "Metadata for {} in index doesn't match the expected of: \n"
                                      "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
