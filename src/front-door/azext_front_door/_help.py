@@ -264,29 +264,39 @@ helps['network front-door waf-policy rule'] = """
 
 helps['network front-door waf-policy rule create'] = """
     type: command
-    short-summary: Create a WAF policy custom rule.
-""".format(
-    variables=', '.join([x.value for x in MatchVariable]),
-    operators=', '.join([x.value for x in Operator])
-)
+    short-summary: Create a WAF policy custom rule. Use --defer and add a rule match-condition.
+"""
+
+helps['network front-door waf-policy rule match-condition'] = """
+    type: group
+    short-summary: Alter match-conditions associated with a WAF policy custom rule.
+    long-summary: >
+        Note that at least one match-condition must be associated with a custom rule.
+"""
 
 helps['network front-door waf-policy rule match-condition add'] = """
     type: command
     short-summary: Add a match-condition to a WAF policy custom rule.
-    parameters:
-        - name: --match-condition
-          short-summary: Match condition for the rule.
-          long-summary: |
+    long-summary: >
+        Usage:   [--negate] --match-variable VARIABLE[.selector] --operator OPERATOR --value [VALUE [VALUE ...]]
 
-            Usage:   [--negate] --match-variable VARIABLE[.selector] --operator OPERATOR --value [VALUE [VALUE ...]]
+          Variable allowed values: {variables}
 
-              Variable allowed values: {variables}
-
-              Operator allowed values: {operators}
+          Operator allowed values: {operators}
 """.format(
     variables=', '.join([x.value for x in MatchVariable]),
     operators=', '.join([x.value for x in Operator])
 )
+
+helps['network front-door waf-policy rule match-condition list'] = """
+    type: command
+    short-summary: Show all match-conditions associated with a WAF policy custom rule.
+"""
+
+helps['network front-door waf-policy rule match-condition remove'] = """
+    type: command
+    short-summary: Remove a match-condition from a WAF policy custom rule.
+"""
 
 helps['network front-door waf-policy rule list'] = """
     type: command
@@ -298,9 +308,24 @@ helps['network front-door waf-policy rule show'] = """
     short-summary: Get the details of a WAF policy custom rule.
 """
 
+helps['network front-door waf-policy rule update'] = """
+    type: command
+    short-summary: Alter the details of a WAF policy custom rule.
+"""
+
 helps['network front-door waf-policy rule delete'] = """
     type: command
     short-summary: Delete a WAF policy custom rule.
+"""
+
+helps['network front-door waf-policy managed-rules'] = """
+    type: group
+    short-summary: Change and view managed rule sets associated with your WAF policy.
+"""
+
+helps['network front-door waf-policy managed-rules list'] = """
+    type: command
+    short-summary: Show which managed rule sets are applied to a WAF policy.
 """
 
 helps['network front-door waf-policy managed-rules add'] = """
@@ -308,5 +333,47 @@ helps['network front-door waf-policy managed-rules add'] = """
     short-summary: Add a managed rule set to a WAF policy.
     long-summary: >
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available managed rulesets.
+"""
+
+helps['network front-door waf-policy managed-rules remove'] = """
+    type: command
+    short-summary: Remove a managed rule set from a WAF policy.
+"""
+
+helps['network front-door waf-policy managed-rules override add'] = """
+    type: command
+    short-summary: Add an override on a managed rule within a managed rule set.
+    long-summary: >
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules override remove'] = """
+    type: command
+    short-summary: Remove an override on a managed rule within a managed rule set.
+    long-summary: >
+        After this command, the standard behavior for the rule within the managed rule set will apply.
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules override list'] = """
+    type: command
+    short-summary: List the overrides on managed rules within a managed rule set.
+"""
+
+helps['network front-door waf-policy managed-rules override'] = """
+    type: group
+    short-summary: View and alter overrides on managed rules within a managed rule set.
+    long-summary: >
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rule-definition'] = """
+    type: group
+    short-summary: Learn about available managed rule sets.
+"""
+
+helps['network front-door waf-policy managed-rule-definition list'] = """
+    type: command
+    short-summary: Show a detailed list of available managed rule sets.
 """
 # endregion
