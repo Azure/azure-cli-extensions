@@ -22,19 +22,19 @@ class ApimgmtScenarioTest(ScenarioTest):
             'name': 'test1'
         })
 
-        self.cmd('apimgmt create -g {rg} -n {name} --tags foo=doo', checks=[
+        self.cmd('apim create -g {rg} -n {name} --tags foo=doo', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        self.cmd('apimgmt update -g {rg} -n {name} --tags foo=boo', checks=[
+        self.cmd('apim update -g {rg} -n {name} --tags foo=boo', checks=[
             self.check('tags.foo', 'boo')
         ])
-        count = len(self.cmd('apimgmt list').get_output_in_json())
-        self.cmd('apimgmt show - {rg} -n {name}', checks=[
+        count = len(self.cmd('apim list').get_output_in_json())
+        self.cmd('apim show - {rg} -n {name}', checks=[
             self.check('name', '{name}'),
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'boo')
         ])
-        self.cmd('apimgmt delete -g {rg} -n {name}')
-        final_count = len(self.cmd('apimgmt list').get_output_in_json())
+        self.cmd('apim delete -g {rg} -n {name}')
+        final_count = len(self.cmd('apim list').get_output_in_json())
         self.assertTrue(final_count, count - 1)

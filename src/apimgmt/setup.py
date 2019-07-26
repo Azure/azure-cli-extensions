@@ -45,7 +45,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='apimgmt',
+    name='apim',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Apimgmt Extension',
     # TODO: Update author and email, if applicable

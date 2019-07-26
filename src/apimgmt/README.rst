@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'apimgmt' Extension
+Microsoft Azure CLI 'apim' Extension
 ==========================================
 
-This package is for the 'apimgmt' extension.
-i.e. 'az apimgmt'
+This package is for the 'apim' extension.
+i.e. 'az apim'
