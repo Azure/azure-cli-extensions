@@ -36,7 +36,7 @@ setup(
     description='Provides a preview for upcoming AKS features',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
-    author='Microsoft Corporation',
+    author='Microsoft',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aks-preview',
     classifiers=CLASSIFIERS,
