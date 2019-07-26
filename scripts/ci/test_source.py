@@ -37,8 +37,8 @@ for src_d in os.listdir(SRC_PATH):
         if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
             continue
     elif ci == 'ADO':
-        source_branch = os.environ.get('SYSTEM_PULL_REQUEST_SOURCE_BRANCH')
-        target_branch = os.environ.get('SYSTEM_PULL_REQUEST_TARGET_BRANCH')
+        source_branch = os.environ.get('SYSTEM_PULLREQUEST_SOURCEBRANCH')
+        target_branch = os.environ.get('SYSTEM_PULLREQUEST_TARGETBRANCH')
         commit_range = '{}..{}'.format(target_branch, source_branch)
         print('COMMIT RANGE: {}'.format(commit_range))
         if source_branch and target_branch and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):

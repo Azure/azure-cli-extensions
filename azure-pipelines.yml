@@ -6,7 +6,6 @@ trigger:
   branches:
     include:
     - '*'
-
 jobs:
 - job: SourceStatic
   displayName: "Source Code Static Check"
@@ -24,6 +23,7 @@ jobs:
       . ./scripts/ci/install_azdev.sh
       azdev style EXT
       azdev verify license
+    displayName: "Check Styles"
 - job: IndexVerify
   displayName: "Verify Extensions Index"
   pool:
@@ -67,26 +67,36 @@ jobs:
       set -ex
       export CI="ADO"
       . ./scripts/ci/install_azdev.sh
+      printenv
+      git status
       # TODO: scope to just the extensions that changed
-      # azdev test EXT
+      azdev test EXT --repo . --tgt upstream/$SYSTEM_PULLREQUEST_TARGETBRANCH --src upstream/$SYSTEM_PULLREQUEST_SOURCEBRANCH
       python ./scripts/ci/test_source.py -v
       displayName: "Tests Python 2.7"
 
-# - job: LintModifiedExtensions
-#   displayName: "CLI Linter on Modified Extensions"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "CLI Linter on Modified Extension"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/verify_modified_index.sh
-
+- job: LintModifiedExtensions
+  displayName: "CLI Linter on Modified Extensions"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.7'
+    inputs:
+      versionSpec: 3.7
+  # - task: Bash@3
+  #   displayName: "CLI Linter on Modified Extension"
+  #   inputs:
+  #     targetType: 'filePath'
+  #     filePath: scripts/ci/verify_modified_index.sh
+  - bash: |
+      #!/usr/bin/env bash
+      set -ex
+      export CI="ADO"
+      . ./scripts/ci/install_azdev.sh
+      printenv
+      git status
+      azdev linter --repo . --tgt upstream/$SYSTEM_PULLREQUEST_TARGETBRANCH --src upstream/$SYSTEM_PULLREQUEST_SOURCEBRANCH
+    displayName: "Lint Modified Extensions"
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
   pool:
