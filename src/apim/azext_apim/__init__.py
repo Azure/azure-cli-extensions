@@ -12,12 +12,12 @@ class ApimgmtCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        #from azext_apim._client_factory import cf_apim
-        #apim_custom = CliCommandType(
-        #    operations_tmpl='azext_apim.custom#{}',
-        #    client_factory=cf_apim)
-        super(ApimgmtCommandsLoader, self).__init__(cli_ctx=cli_ctx) #,
-        #                                            custom_command_type=apim_custom)
+        from azext_apim._client_factory import cf_apim
+        apim_custom = CliCommandType(
+            operations_tmpl='azext_apim.custom#{}',
+            client_factory=cf_apim)
+        super(ApimgmtCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                    custom_command_type=apim_custom)
 
     def load_command_table(self, args):
         from azext_apim.commands import load_command_table
