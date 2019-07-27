@@ -239,4 +239,4 @@ def cf_subscription(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, SubscriptionOperations)
 
 def cf_user(cli_ctx, *_):
-    return cf_apim(cli_ctx).user_operations
+    return cf_apim(cli_ctx).operations.user_operations
