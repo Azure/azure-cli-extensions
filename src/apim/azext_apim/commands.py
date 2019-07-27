@@ -13,7 +13,7 @@ from ._client_factory import cf_apim
 def load_command_table(self, _):
 
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_operations#ApiOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_operations#ApiOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api', apim_sdk, client_factory=cf_apim) as g:
@@ -23,7 +23,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api')
         g.custom_command('show', 'show_apim_api')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_release_operations#ApiReleaseOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_release_operations#ApiReleaseOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api release', apim_sdk, client_factory=cf_apim) as g:
@@ -33,7 +33,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_release')
         g.custom_command('show', 'show_apim_api_release')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_operation_operations#ApiOperationOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_operation_operations#ApiOperationOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api operation', apim_sdk, client_factory=cf_apim) as g:
@@ -43,7 +43,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_operation')
         g.custom_command('show', 'show_apim_api_operation')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_operation_policy_operations#ApiOperationPolicyOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_operation_policy_operations#ApiOperationPolicyOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api operation policy', apim_sdk, client_factory=cf_apim) as g:
@@ -53,7 +53,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_operation_policy')
         g.custom_command('show', 'show_apim_api_operation_policy')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.tag_operations#TagOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.tag_operations#TagOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim tag', apim_sdk, client_factory=cf_apim) as g:
@@ -63,7 +63,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_tag')
         g.custom_command('show', 'show_apim_tag')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_policy_operations#ApiPolicyOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_policy_operations#ApiPolicyOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api policy', apim_sdk, client_factory=cf_apim) as g:
@@ -73,7 +73,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_policy')
         g.custom_command('show', 'show_apim_api_policy')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_schema_operations#ApiSchemaOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_schema_operations#ApiSchemaOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api schema', apim_sdk, client_factory=cf_apim) as g:
@@ -83,7 +83,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_schema')
         g.custom_command('show', 'show_apim_api_schema')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_diagnostic_operations#ApiDiagnosticOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_diagnostic_operations#ApiDiagnosticOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api diagnostic', apim_sdk, client_factory=cf_apim) as g:
@@ -93,7 +93,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_diagnostic')
         g.custom_command('show', 'show_apim_api_diagnostic')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_issue_operations#ApiIssueOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_issue_operations#ApiIssueOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api issue', apim_sdk, client_factory=cf_apim) as g:
@@ -103,7 +103,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_issue')
         g.custom_command('show', 'show_apim_api_issue')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_issue_comment_operations#ApiIssueCommentOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_issue_comment_operations#ApiIssueCommentOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api issue comment', apim_sdk, client_factory=cf_apim) as g:
@@ -113,7 +113,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_issue_comment')
         g.custom_command('show', 'show_apim_api_issue_comment')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_issue_attachment_operations#ApiIssueAttachmentOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_issue_attachment_operations#ApiIssueAttachmentOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api issue attachment', apim_sdk, client_factory=cf_apim) as g:
@@ -123,7 +123,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_issue_attachment')
         g.custom_command('show', 'show_apim_api_issue_attachment')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_tag_description_operations#ApiTagDescriptionOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_tag_description_operations#ApiTagDescriptionOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api tag-description', apim_sdk, client_factory=cf_apim) as g:
@@ -133,7 +133,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_tag_description')
         g.custom_command('show', 'show_apim_api_tag_description')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_version_set_operations#ApiVersionSetOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_version_set_operations#ApiVersionSetOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api-version-set', apim_sdk, client_factory=cf_apim) as g:
@@ -143,7 +143,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_api_version_set')
         g.custom_command('show', 'show_apim_api_version_set')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.authorization_server_operations#AuthorizationServerOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.authorization_server_operations#AuthorizationServerOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim authorization-server', apim_sdk, client_factory=cf_apim) as g:
@@ -153,7 +153,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_authorization_server')
         g.custom_command('show', 'show_apim_authorization_server')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.backend_operations#BackendOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.backend_operations#BackendOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim backend', apim_sdk, client_factory=cf_apim) as g:
@@ -163,7 +163,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_backend')
         g.custom_command('show', 'show_apim_backend')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.cache_operations#CacheOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.cache_operations#CacheOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim cache', apim_sdk, client_factory=cf_apim) as g:
@@ -173,7 +173,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_cache')
         g.custom_command('show', 'show_apim_cache')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.certificate_operations#CertificateOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.certificate_operations#CertificateOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim certificate', apim_sdk, client_factory=cf_apim) as g:
@@ -183,7 +183,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_certificate')
         g.custom_command('show', 'show_apim_certificate')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.api_management_service_operations#ApiManagementServiceOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.api_management_service_operations#ApiManagementServiceOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim', apim_sdk, client_factory=cf_apim) as g:
@@ -193,7 +193,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim')
         g.custom_command('show', 'show_apim')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.diagnostic_operations#DiagnosticOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.diagnostic_operations#DiagnosticOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim diagnostic', apim_sdk, client_factory=cf_apim) as g:
@@ -203,7 +203,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_diagnostic')
         g.custom_command('show', 'show_apim_diagnostic')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.email_template_operations#EmailTemplateOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.email_template_operations#EmailTemplateOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim template', apim_sdk, client_factory=cf_apim) as g:
@@ -213,7 +213,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_template')
         g.custom_command('show', 'show_apim_template')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.group_operations#GroupOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.group_operations#GroupOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim group', apim_sdk, client_factory=cf_apim) as g:
@@ -223,7 +223,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_group')
         g.custom_command('show', 'show_apim_group')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.group_user_operations#GroupUserOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.group_user_operations#GroupUserOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim group user', apim_sdk, client_factory=cf_apim) as g:
@@ -231,7 +231,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_group_user')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.identity_provider_operations#IdentityProviderOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.identity_provider_operations#IdentityProviderOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim identity-provider', apim_sdk, client_factory=cf_apim) as g:
@@ -241,7 +241,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_identity_provider')
         g.custom_command('show', 'show_apim_identity_provider')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.logger_operations#LoggerOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.logger_operations#LoggerOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim logger', apim_sdk, client_factory=cf_apim) as g:
@@ -251,7 +251,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_logger')
         g.custom_command('show', 'show_apim_logger')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.notification_operations#NotificationOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.notification_operations#NotificationOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim notification', apim_sdk, client_factory=cf_apim) as g:
@@ -260,7 +260,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_notification')
         g.custom_command('show', 'show_apim_notification')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.notification_recipient_user_operations#NotificationRecipientUserOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.notification_recipient_user_operations#NotificationRecipientUserOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim notification recipient-user', apim_sdk, client_factory=cf_apim) as g:
@@ -269,7 +269,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_notification_recipient_user')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.notification_recipient_email_operations#NotificationRecipientEmailOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.notification_recipient_email_operations#NotificationRecipientEmailOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim notification recipient-email', apim_sdk, client_factory=cf_apim) as g:
@@ -278,7 +278,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_notification_recipient_email')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.open_id_connect_provider_operations#OpenIdConnectProviderOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.open_id_connect_provider_operations#OpenIdConnectProviderOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim openid-connect-provider', apim_sdk, client_factory=cf_apim) as g:
@@ -288,7 +288,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_openid_connect_provider')
         g.custom_command('show', 'show_apim_openid_connect_provider')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.policy_operations#PolicyOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.policy_operations#PolicyOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim policy', apim_sdk, client_factory=cf_apim) as g:
@@ -298,7 +298,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_policy')
         g.custom_command('show', 'show_apim_policy')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.sign_in_settings_operations#SignInSettingsOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.sign_in_settings_operations#SignInSettingsOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim portalsetting signin', apim_sdk, client_factory=cf_apim) as g:
@@ -306,7 +306,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_portalsetting_signin')
         g.custom_command('show', 'show_apim_portalsetting_signin')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.sign_up_settings_operations#SignUpSettingsOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.sign_up_settings_operations#SignUpSettingsOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim portalsetting signup', apim_sdk, client_factory=cf_apim) as g:
@@ -314,7 +314,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_portalsetting_signup')
         g.custom_command('show', 'show_apim_portalsetting_signup')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.delegation_settings_operations#DelegationSettingsOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.delegation_settings_operations#DelegationSettingsOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim portalsetting delegation', apim_sdk, client_factory=cf_apim) as g:
@@ -322,7 +322,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_portalsetting_delegation')
         g.custom_command('show', 'show_apim_portalsetting_delegation')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.product_operations#ProductOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.product_operations#ProductOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim product', apim_sdk, client_factory=cf_apim) as g:
@@ -332,7 +332,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_product')
         g.custom_command('show', 'show_apim_product')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.product_api_operations#ProductApiOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.product_api_operations#ProductApiOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim product api', apim_sdk, client_factory=cf_apim) as g:
@@ -341,7 +341,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_product_api')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.product_group_operations#ProductGroupOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.product_group_operations#ProductGroupOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim product group', apim_sdk, client_factory=cf_apim) as g:
@@ -350,7 +350,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_product_group')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.product_policy_operations#ProductPolicyOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.product_policy_operations#ProductPolicyOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim product policy', apim_sdk, client_factory=cf_apim) as g:
@@ -360,7 +360,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_product_policy')
         g.custom_command('show', 'show_apim_product_policy')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.property_operations#PropertyOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.property_operations#PropertyOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim property', apim_sdk, client_factory=cf_apim) as g:
@@ -370,7 +370,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_property')
         g.custom_command('show', 'show_apim_property')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.subscription_operations#SubscriptionOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.subscription_operations#SubscriptionOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim subscription', apim_sdk, client_factory=cf_apim) as g:
@@ -380,7 +380,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_apim_subscription')
         g.custom_command('show', 'show_apim_subscription')
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.user_operations#UserOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.user_operations#UserOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim user', apim_sdk, client_factory=cf_apim) as g:
