@@ -13,7 +13,7 @@ from ._client_factory import cf_apim
 def load_command_table(self, _):
 
     apim_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.apim.operations#ApiManagementOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations#ApiManagementOperations.{}',
         client_factory=cf_apim)
 
     with self.command_group('apim api', apim_sdk, client_factory=cf_apim) as g:
