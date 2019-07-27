@@ -11,7 +11,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['apim api'] = """
     type: group
-    short-summary: Commands to manage Api.
+    short-summary: Commands to manage api.
 """
 
 helps['apim api create'] = """
@@ -118,7 +118,7 @@ helps['apim api show'] = """
 
 helps['apim api release'] = """
     type: group
-    short-summary: Commands to manage ApiRelease.
+    short-summary: Commands to manage api release.
 """
 
 helps['apim api release create'] = """
@@ -163,7 +163,7 @@ helps['apim api release show'] = """
 
 helps['apim api operation'] = """
     type: group
-    short-summary: Commands to manage ApiOperation.
+    short-summary: Commands to manage api operation.
 """
 
 helps['apim api operation create'] = """
@@ -211,7 +211,7 @@ helps['apim api operation show'] = """
 
 helps['apim api operation policy'] = """
     type: group
-    short-summary: Commands to manage ApiOperationPolicy.
+    short-summary: Commands to manage api operation policy.
 """
 
 helps['apim api operation policy create'] = """
@@ -253,7 +253,7 @@ helps['apim api operation policy show'] = """
 
 helps['apim tag'] = """
     type: group
-    short-summary: Commands to manage Tag.
+    short-summary: Commands to manage tag.
 """
 
 helps['apim tag create'] = """
@@ -297,7 +297,7 @@ helps['apim tag show'] = """
 
 helps['apim api policy'] = """
     type: group
-    short-summary: Commands to manage ApiPolicy.
+    short-summary: Commands to manage api policy.
 """
 
 helps['apim api policy create'] = """
@@ -345,7 +345,7 @@ helps['apim api policy show'] = """
 
 helps['apim api schema'] = """
     type: group
-    short-summary: Commands to manage ApiSchema.
+    short-summary: Commands to manage api schema.
 """
 
 helps['apim api schema create'] = """
@@ -386,7 +386,7 @@ helps['apim api schema show'] = """
 
 helps['apim api diagnostic'] = """
     type: group
-    short-summary: Commands to manage ApiDiagnostic.
+    short-summary: Commands to manage api diagnostic.
 """
 
 helps['apim api diagnostic create'] = """
@@ -433,7 +433,7 @@ helps['apim api diagnostic show'] = """
 
 helps['apim api issue'] = """
     type: group
-    short-summary: Commands to manage ApiIssue.
+    short-summary: Commands to manage api issue.
 """
 
 helps['apim api issue create'] = """
@@ -482,7 +482,7 @@ helps['apim api issue show'] = """
 
 helps['apim api issue comment'] = """
     type: group
-    short-summary: Commands to manage ApiIssueComment.
+    short-summary: Commands to manage api issue comment.
 """
 
 helps['apim api issue comment create'] = """
@@ -527,7 +527,7 @@ helps['apim api issue comment show'] = """
 
 helps['apim api issue attachment'] = """
     type: group
-    short-summary: Commands to manage ApiIssueAttachment.
+    short-summary: Commands to manage api issue attachment.
 """
 
 helps['apim api issue attachment create'] = """
@@ -570,7 +570,7 @@ helps['apim api issue attachment show'] = """
 
 helps['apim api tagdescription'] = """
     type: group
-    short-summary: Commands to manage ApiTagDescription.
+    short-summary: Commands to manage api tag description.
 """
 
 helps['apim api tagdescription create'] = """
@@ -613,7 +613,7 @@ helps['apim api tagdescription show'] = """
 
 helps['apim apiversionset'] = """
     type: group
-    short-summary: Commands to manage ApiVersionSet.
+    short-summary: Commands to manage api version set.
 """
 
 helps['apim apiversionset create'] = """
@@ -660,7 +660,7 @@ helps['apim apiversionset show'] = """
 
 helps['apim authorizationserver'] = """
     type: group
-    short-summary: Commands to manage AuthorizationServer.
+    short-summary: Commands to manage authorization server.
 """
 
 helps['apim authorizationserver create'] = """
@@ -709,7 +709,7 @@ helps['apim authorizationserver show'] = """
 
 helps['apim backend'] = """
     type: group
-    short-summary: Commands to manage Backend.
+    short-summary: Commands to manage backend.
 """
 
 helps['apim backend create'] = """
@@ -760,7 +760,7 @@ helps['apim backend show'] = """
 
 helps['apim cache'] = """
     type: group
-    short-summary: Commands to manage Cache.
+    short-summary: Commands to manage cache.
 """
 
 helps['apim cache create'] = """
@@ -808,7 +808,7 @@ helps['apim cache show'] = """
 
 helps['apim certificate'] = """
     type: group
-    short-summary: Commands to manage Certificate.
+    short-summary: Commands to manage certificate.
 """
 
 helps['apim certificate create'] = """
@@ -850,7 +850,7 @@ helps['apim certificate show'] = """
 
 helps['apim'] = """
     type: group
-    short-summary: Commands to manage ApiManagementService.
+    short-summary: Commands to manage api management service.
 """
 
 helps['apim create'] = """
@@ -913,7 +913,7 @@ helps['apim show'] = """
 
 helps['apim diagnostic'] = """
     type: group
-    short-summary: Commands to manage Diagnostic.
+    short-summary: Commands to manage diagnostic.
 """
 
 helps['apim diagnostic create'] = """
@@ -960,7 +960,7 @@ helps['apim diagnostic show'] = """
 
 helps['apim template'] = """
     type: group
-    short-summary: Commands to manage EmailTemplate.
+    short-summary: Commands to manage email template.
 """
 
 helps['apim template create'] = """
@@ -1015,7 +1015,7 @@ helps['apim template show'] = """
 
 helps['apim group'] = """
     type: group
-    short-summary: Commands to manage Group.
+    short-summary: Commands to manage group.
 """
 
 helps['apim group create'] = """
@@ -1066,7 +1066,7 @@ helps['apim group show'] = """
 
 helps['apim group user'] = """
     type: group
-    short-summary: Commands to manage GroupUser.
+    short-summary: Commands to manage group user.
 """
 
 helps['apim group user create'] = """
@@ -1096,7 +1096,7 @@ helps['apim group user list'] = """
 
 helps['apim identityprovider'] = """
     type: group
-    short-summary: Commands to manage IdentityProvider.
+    short-summary: Commands to manage identity provider.
 """
 
 helps['apim identityprovider create'] = """
@@ -1141,7 +1141,7 @@ helps['apim identityprovider show'] = """
 
 helps['apim logger'] = """
     type: group
-    short-summary: Commands to manage Logger.
+    short-summary: Commands to manage logger.
 """
 
 helps['apim logger create'] = """
@@ -1190,7 +1190,7 @@ helps['apim logger show'] = """
 
 helps['apim notification'] = """
     type: group
-    short-summary: Commands to manage Notification.
+    short-summary: Commands to manage notification.
 """
 
 helps['apim notification create'] = """
@@ -1220,7 +1220,7 @@ helps['apim notification show'] = """
 
 helps['apim notification recipientuser'] = """
     type: group
-    short-summary: Commands to manage NotificationRecipientUser.
+    short-summary: Commands to manage notification recipient user.
 """
 
 helps['apim notification recipientuser create'] = """
@@ -1257,7 +1257,7 @@ helps['apim notification recipientuser list'] = """
 
 helps['apim notification recipientemail'] = """
     type: group
-    short-summary: Commands to manage NotificationRecipientEmail.
+    short-summary: Commands to manage notification recipient email.
 """
 
 helps['apim notification recipientemail create'] = """
@@ -1294,7 +1294,7 @@ helps['apim notification recipientemail list'] = """
 
 helps['apim openidconnectprovider'] = """
     type: group
-    short-summary: Commands to manage OpenIdConnectProvider.
+    short-summary: Commands to manage open id connect provider.
 """
 
 helps['apim openidconnectprovider create'] = """
@@ -1340,7 +1340,7 @@ helps['apim openidconnectprovider show'] = """
 
 helps['apim policy'] = """
     type: group
-    short-summary: Commands to manage Policy.
+    short-summary: Commands to manage policy.
 """
 
 helps['apim policy create'] = """
@@ -1381,7 +1381,7 @@ helps['apim policy show'] = """
 
 helps['apim portalsetting signin'] = """
     type: group
-    short-summary: Commands to manage SignInSetting.
+    short-summary: Commands to manage sign in setting.
 """
 
 helps['apim portalsetting signin create'] = """
@@ -1411,7 +1411,7 @@ helps['apim portalsetting signin show'] = """
 
 helps['apim portalsetting signup'] = """
     type: group
-    short-summary: Commands to manage SignUpSetting.
+    short-summary: Commands to manage sign up setting.
 """
 
 helps['apim portalsetting signup create'] = """
@@ -1441,7 +1441,7 @@ helps['apim portalsetting signup show'] = """
 
 helps['apim portalsetting delegation'] = """
     type: group
-    short-summary: Commands to manage DelegationSetting.
+    short-summary: Commands to manage delegation setting.
 """
 
 helps['apim portalsetting delegation create'] = """
@@ -1473,7 +1473,7 @@ helps['apim portalsetting delegation show'] = """
 
 helps['apim product'] = """
     type: group
-    short-summary: Commands to manage Product.
+    short-summary: Commands to manage product.
 """
 
 helps['apim product create'] = """
@@ -1518,7 +1518,7 @@ helps['apim product show'] = """
 
 helps['apim product api'] = """
     type: group
-    short-summary: Commands to manage ProductApi.
+    short-summary: Commands to manage product api.
 """
 
 helps['apim product api create'] = """
@@ -1553,7 +1553,7 @@ helps['apim product api list'] = """
 
 helps['apim product group'] = """
     type: group
-    short-summary: Commands to manage ProductGroup.
+    short-summary: Commands to manage product group.
 """
 
 helps['apim product group create'] = """
@@ -1588,7 +1588,7 @@ helps['apim product group list'] = """
 
 helps['apim product policy'] = """
     type: group
-    short-summary: Commands to manage ProductPolicy.
+    short-summary: Commands to manage product policy.
 """
 
 helps['apim product policy create'] = """
@@ -1636,7 +1636,7 @@ helps['apim product policy show'] = """
 
 helps['apim property'] = """
     type: group
-    short-summary: Commands to manage Property.
+    short-summary: Commands to manage property.
 """
 
 helps['apim property create'] = """
@@ -1681,7 +1681,7 @@ helps['apim property show'] = """
 
 helps['apim subscription'] = """
     type: group
-    short-summary: Commands to manage Subscription.
+    short-summary: Commands to manage subscription.
 """
 
 helps['apim subscription create'] = """
@@ -1730,7 +1730,7 @@ helps['apim subscription show'] = """
 
 helps['apim user'] = """
     type: group
-    short-summary: Commands to manage User.
+    short-summary: Commands to manage user.
 """
 
 helps['apim user create'] = """
