@@ -82,24 +82,24 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_apim_api_issue_attachment')
         g.custom_command('list', 'list_apim_api_issue_attachment')
         g.custom_command('show', 'show_apim_api_issue_attachment')
-    with self.command_group('apim api tagdescription', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_api_tagdescription')
-        g.custom_command('update', 'update_apim_api_tagdescription')
-        g.custom_command('delete', 'delete_apim_api_tagdescription')
-        g.custom_command('list', 'list_apim_api_tagdescription')
-        g.custom_command('show', 'show_apim_api_tagdescription')
-    with self.command_group('apim apiversionset', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_apiversionset')
-        g.custom_command('update', 'update_apim_apiversionset')
-        g.custom_command('delete', 'delete_apim_apiversionset')
-        g.custom_command('list', 'list_apim_apiversionset')
-        g.custom_command('show', 'show_apim_apiversionset')
-    with self.command_group('apim authorizationserver', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_authorizationserver')
-        g.custom_command('update', 'update_apim_authorizationserver')
-        g.custom_command('delete', 'delete_apim_authorizationserver')
-        g.custom_command('list', 'list_apim_authorizationserver')
-        g.custom_command('show', 'show_apim_authorizationserver')
+    with self.command_group('apim api tag-description', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_api_tag_description')
+        g.custom_command('update', 'update_apim_api_tag_description')
+        g.custom_command('delete', 'delete_apim_api_tag_description')
+        g.custom_command('list', 'list_apim_api_tag_description')
+        g.custom_command('show', 'show_apim_api_tag_description')
+    with self.command_group('apim api-version-set', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_api_version_set')
+        g.custom_command('update', 'update_apim_api_version_set')
+        g.custom_command('delete', 'delete_apim_api_version_set')
+        g.custom_command('list', 'list_apim_api_version_set')
+        g.custom_command('show', 'show_apim_api_version_set')
+    with self.command_group('apim authorization-server', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_authorization_server')
+        g.custom_command('update', 'update_apim_authorization_server')
+        g.custom_command('delete', 'delete_apim_authorization_server')
+        g.custom_command('list', 'list_apim_authorization_server')
+        g.custom_command('show', 'show_apim_authorization_server')
     with self.command_group('apim backend', apim_sdk, client_factory=cf_apim) as g:
         g.custom_command('create', 'create_apim_backend')
         g.custom_command('update', 'update_apim_backend')
@@ -146,12 +146,12 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_apim_group_user')
         g.custom_command('delete', 'delete_apim_group_user')
         g.custom_command('list', 'list_apim_group_user')
-    with self.command_group('apim identityprovider', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_identityprovider')
-        g.custom_command('update', 'update_apim_identityprovider')
-        g.custom_command('delete', 'delete_apim_identityprovider')
-        g.custom_command('list', 'list_apim_identityprovider')
-        g.custom_command('show', 'show_apim_identityprovider')
+    with self.command_group('apim identity-provider', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_identity_provider')
+        g.custom_command('update', 'update_apim_identity_provider')
+        g.custom_command('delete', 'delete_apim_identity_provider')
+        g.custom_command('list', 'list_apim_identity_provider')
+        g.custom_command('show', 'show_apim_identity_provider')
     with self.command_group('apim logger', apim_sdk, client_factory=cf_apim) as g:
         g.custom_command('create', 'create_apim_logger')
         g.custom_command('update', 'update_apim_logger')
@@ -163,22 +163,22 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_notification')
         g.custom_command('list', 'list_apim_notification')
         g.custom_command('show', 'show_apim_notification')
-    with self.command_group('apim notification recipientuser', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_notification_recipientuser')
-        g.custom_command('update', 'update_apim_notification_recipientuser')
-        g.custom_command('delete', 'delete_apim_notification_recipientuser')
-        g.custom_command('list', 'list_apim_notification_recipientuser')
-    with self.command_group('apim notification recipientemail', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_notification_recipientemail')
-        g.custom_command('update', 'update_apim_notification_recipientemail')
-        g.custom_command('delete', 'delete_apim_notification_recipientemail')
-        g.custom_command('list', 'list_apim_notification_recipientemail')
-    with self.command_group('apim openidconnectprovider', apim_sdk, client_factory=cf_apim) as g:
-        g.custom_command('create', 'create_apim_openidconnectprovider')
-        g.custom_command('update', 'update_apim_openidconnectprovider')
-        g.custom_command('delete', 'delete_apim_openidconnectprovider')
-        g.custom_command('list', 'list_apim_openidconnectprovider')
-        g.custom_command('show', 'show_apim_openidconnectprovider')
+    with self.command_group('apim notification recipient-user', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_notification_recipient_user')
+        g.custom_command('update', 'update_apim_notification_recipient_user')
+        g.custom_command('delete', 'delete_apim_notification_recipient_user')
+        g.custom_command('list', 'list_apim_notification_recipient_user')
+    with self.command_group('apim notification recipient-email', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_notification_recipient_email')
+        g.custom_command('update', 'update_apim_notification_recipient_email')
+        g.custom_command('delete', 'delete_apim_notification_recipient_email')
+        g.custom_command('list', 'list_apim_notification_recipient_email')
+    with self.command_group('apim openid-connect-provider', apim_sdk, client_factory=cf_apim) as g:
+        g.custom_command('create', 'create_apim_openid_connect_provider')
+        g.custom_command('update', 'update_apim_openid_connect_provider')
+        g.custom_command('delete', 'delete_apim_openid_connect_provider')
+        g.custom_command('list', 'list_apim_openid_connect_provider')
+        g.custom_command('show', 'show_apim_openid_connect_provider')
     with self.command_group('apim policy', apim_sdk, client_factory=cf_apim) as g:
         g.custom_command('create', 'create_apim_policy')
         g.custom_command('update', 'update_apim_policy')

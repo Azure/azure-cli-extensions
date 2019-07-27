@@ -476,7 +476,7 @@ def load_arguments(self, _):
         c.argument('issue_id', id_part=None, help='Issue identifier. Must be unique in the current API Management service instance.')
         c.argument('attachment_id', id_part=None, help='Attachment identifier within an Issue. Must be unique in the current Issue.')
 
-    with self.argument_context('apim api tagdescription create') as c:
+    with self.argument_context('apim api tag-description create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
@@ -486,7 +486,7 @@ def load_arguments(self, _):
         c.argument('external_docs_url', id_part=None, help='Absolute URL of external resources describing the tag.')
         c.argument('external_docs_description', id_part=None, help='Description of the external resources describing the tag.')
 
-    with self.argument_context('apim api tagdescription update') as c:
+    with self.argument_context('apim api tag-description update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
@@ -496,24 +496,24 @@ def load_arguments(self, _):
         c.argument('external_docs_url', id_part=None, help='Absolute URL of external resources describing the tag.')
         c.argument('external_docs_description', id_part=None, help='Description of the external resources describing the tag.')
 
-    with self.argument_context('apim api tagdescription delete') as c:
+    with self.argument_context('apim api tag-description delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('tag_id', id_part=None, help='Tag identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim api tagdescription list') as c:
+    with self.argument_context('apim api tag-description list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
 
-    with self.argument_context('apim api tagdescription show') as c:
+    with self.argument_context('apim api tag-description show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('api_id', id_part=None, help='API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
         c.argument('tag_id', id_part=None, help='Tag identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim apiversionset create') as c:
+    with self.argument_context('apim api-version-set create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('version_set_id', id_part=None, help='Api Version Set identifier. Must be unique in the current API Management service instance.')
@@ -524,7 +524,7 @@ def load_arguments(self, _):
         c.argument('display_name', id_part=None, help='Name of API Version Set')
         c.argument('versioning_scheme', arg_type=get_enum_type(['Segment', 'Query', 'Header']), id_part=None, help='An value that determines where the API Version identifer will be located in a HTTP request.')
 
-    with self.argument_context('apim apiversionset update') as c:
+    with self.argument_context('apim api-version-set update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('version_set_id', id_part=None, help='Api Version Set identifier. Must be unique in the current API Management service instance.')
@@ -535,21 +535,21 @@ def load_arguments(self, _):
         c.argument('display_name', id_part=None, help='Name of API Version Set')
         c.argument('versioning_scheme', arg_type=get_enum_type(['Segment', 'Query', 'Header']), id_part=None, help='An value that determines where the API Version identifer will be located in a HTTP request.')
 
-    with self.argument_context('apim apiversionset delete') as c:
+    with self.argument_context('apim api-version-set delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('version_set_id', id_part=None, help='Api Version Set identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim apiversionset list') as c:
+    with self.argument_context('apim api-version-set list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
 
-    with self.argument_context('apim apiversionset show') as c:
+    with self.argument_context('apim api-version-set show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('version_set_id', id_part=None, help='Api Version Set identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim authorizationserver create') as c:
+    with self.argument_context('apim authorization-server create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('authsid', id_part=None, help='Identifier of the authorization server.')
@@ -571,7 +571,7 @@ def load_arguments(self, _):
         c.argument('grant_types', id_part=None, help='Form of an authorization grant, which the client uses to request the access token.')
         c.argument('client_id', id_part=None, help='Client or app id registered with this authorization server.')
 
-    with self.argument_context('apim authorizationserver update') as c:
+    with self.argument_context('apim authorization-server update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('authsid', id_part=None, help='Identifier of the authorization server.')
@@ -593,16 +593,16 @@ def load_arguments(self, _):
         c.argument('grant_types', id_part=None, help='Form of an authorization grant, which the client uses to request the access token.')
         c.argument('client_id', id_part=None, help='Client or app id registered with this authorization server.')
 
-    with self.argument_context('apim authorizationserver delete') as c:
+    with self.argument_context('apim authorization-server delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('authsid', id_part=None, help='Identifier of the authorization server.')
 
-    with self.argument_context('apim authorizationserver list') as c:
+    with self.argument_context('apim authorization-server list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
 
-    with self.argument_context('apim authorizationserver show') as c:
+    with self.argument_context('apim authorization-server show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('authsid', id_part=None, help='Identifier of the authorization server.')
@@ -895,7 +895,7 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('group_id', id_part=None, help='Group identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim identityprovider create') as c:
+    with self.argument_context('apim identity-provider create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
@@ -910,7 +910,7 @@ def load_arguments(self, _):
         c.argument('client_id', id_part=None, help='Client Id of the Application in the external Identity Provider. It is App ID for Facebook login, Client ID for Google login, App ID for Microsoft.')
         c.argument('client_secret', id_part=None, help='Client secret of the Application in external Identity Provider, used to authenticate login request. For example, it is App Secret for Facebook login, API Key for Google login, Public Key for Microsoft.')
 
-    with self.argument_context('apim identityprovider update') as c:
+    with self.argument_context('apim identity-provider update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
@@ -925,16 +925,16 @@ def load_arguments(self, _):
         c.argument('client_id', id_part=None, help='Client Id of the Application in the external Identity Provider. It is App ID for Facebook login, Client ID for Google login, App ID for Microsoft.')
         c.argument('client_secret', id_part=None, help='Client secret of the Application in external Identity Provider, used to authenticate login request. For example, it is App Secret for Facebook login, API Key for Google login, Public Key for Microsoft.')
 
-    with self.argument_context('apim identityprovider delete') as c:
+    with self.argument_context('apim identity-provider delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
 
-    with self.argument_context('apim identityprovider list') as c:
+    with self.argument_context('apim identity-provider list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
 
-    with self.argument_context('apim identityprovider show') as c:
+    with self.argument_context('apim identity-provider show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Identity Provider Type identifier.')
@@ -1000,53 +1000,53 @@ def load_arguments(self, _):
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('name', id_part=None, help='Notification Name Identifier.')
 
-    with self.argument_context('apim notification recipientuser create') as c:
+    with self.argument_context('apim notification recipient-user create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
         c.argument('user_id', id_part=None, help='User identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim notification recipientuser update') as c:
+    with self.argument_context('apim notification recipient-user update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
         c.argument('user_id', id_part=None, help='User identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim notification recipientuser delete') as c:
+    with self.argument_context('apim notification recipient-user delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
         c.argument('user_id', id_part=None, help='User identifier. Must be unique in the current API Management service instance.')
 
-    with self.argument_context('apim notification recipientuser list') as c:
+    with self.argument_context('apim notification recipient-user list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
 
-    with self.argument_context('apim notification recipientemail create') as c:
-        c.argument('resource_group', resource_group_name_type)
-        c.argument('service_name', id_part=None, help='The name of the API Management service.')
-        c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
-        c.argument('email', id_part=None, help='Email identifier.')
-
-    with self.argument_context('apim notification recipientemail update') as c:
+    with self.argument_context('apim notification recipient-email create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
         c.argument('email', id_part=None, help='Email identifier.')
 
-    with self.argument_context('apim notification recipientemail delete') as c:
+    with self.argument_context('apim notification recipient-email update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
         c.argument('email', id_part=None, help='Email identifier.')
 
-    with self.argument_context('apim notification recipientemail list') as c:
+    with self.argument_context('apim notification recipient-email delete') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('service_name', id_part=None, help='The name of the API Management service.')
+        c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
+        c.argument('email', id_part=None, help='Email identifier.')
+
+    with self.argument_context('apim notification recipient-email list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('notification_name', id_part=None, help='Notification Name Identifier.')
 
-    with self.argument_context('apim openidconnectprovider create') as c:
+    with self.argument_context('apim openid-connect-provider create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('opid', id_part=None, help='Identifier of the OpenID Connect Provider.')
@@ -1057,7 +1057,7 @@ def load_arguments(self, _):
         c.argument('client_id', id_part=None, help='Client ID of developer console which is the client application.')
         c.argument('client_secret', id_part=None, help='Client Secret of developer console which is the client application.')
 
-    with self.argument_context('apim openidconnectprovider update') as c:
+    with self.argument_context('apim openid-connect-provider update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('opid', id_part=None, help='Identifier of the OpenID Connect Provider.')
@@ -1068,16 +1068,16 @@ def load_arguments(self, _):
         c.argument('client_id', id_part=None, help='Client ID of developer console which is the client application.')
         c.argument('client_secret', id_part=None, help='Client Secret of developer console which is the client application.')
 
-    with self.argument_context('apim openidconnectprovider delete') as c:
+    with self.argument_context('apim openid-connect-provider delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('opid', id_part=None, help='Identifier of the OpenID Connect Provider.')
 
-    with self.argument_context('apim openidconnectprovider list') as c:
+    with self.argument_context('apim openid-connect-provider list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
 
-    with self.argument_context('apim openidconnectprovider show') as c:
+    with self.argument_context('apim openid-connect-provider show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('service_name', id_part=None, help='The name of the API Management service.')
         c.argument('opid', id_part=None, help='Identifier of the OpenID Connect Provider.')

@@ -568,108 +568,108 @@ helps['apim api issue attachment show'] = """
     short-summary: show api issue attachment.
 """
 
-helps['apim api tagdescription'] = """
+helps['apim api tag-description'] = """
     type: group
     short-summary: Commands to manage api tag description.
 """
 
-helps['apim api tagdescription create'] = """
+helps['apim api tag-description create'] = """
     type: command
     short-summary: create api tag description.
     examples:
       - name: ApiManagementCreateApiTagDescription
         text: |-
-               az apim api tagdescription create --resource-group "rg1" --service-name "apimService1" \\
+               az apim api tag-description create --resource-group "rg1" --service-name "apimService1" \\
                --api-id "5931a75ae4bbd512a88c680b" --tag-id "tagId1" --description "Some description that
                 will be displayed for operation's tag if the tag is assigned to operation of the API" \\
                --external-docs-url "http://some.url/additionaldoc" --external-docs-description \\
                "Description of the external docs resource"
 """
 
-helps['apim api tagdescription update'] = """
+helps['apim api tag-description update'] = """
     type: command
     short-summary: update api tag description.
 """
 
-helps['apim api tagdescription delete'] = """
+helps['apim api tag-description delete'] = """
     type: command
     short-summary: delete api tag description.
     examples:
       - name: ApiManagementDeleteApiTagDescription
         text: |-
-               az apim api tagdescription delete --resource-group "rg1" --service-name "apimService1" \\
+               az apim api tag-description delete --resource-group "rg1" --service-name "apimService1" \\
                --api-id "59d5b28d1f7fab116c282650" --tag-id "59d5b28e1f7fab116402044e"
 """
 
-helps['apim api tagdescription list'] = """
+helps['apim api tag-description list'] = """
     type: command
     short-summary: list api tag description.
 """
 
-helps['apim api tagdescription show'] = """
+helps['apim api tag-description show'] = """
     type: command
     short-summary: show api tag description.
 """
 
-helps['apim apiversionset'] = """
+helps['apim api-version-set'] = """
     type: group
     short-summary: Commands to manage api version set.
 """
 
-helps['apim apiversionset create'] = """
+helps['apim api-version-set create'] = """
     type: command
     short-summary: create api version set.
     examples:
       - name: ApiManagementCreateApiVersionSet
         text: |-
-               az apim apiversionset create --resource-group "rg1" --service-name "apimService1" \\
+               az apim api-version-set create --resource-group "rg1" --service-name "apimService1" \\
                --version-set-id "api1" --description "Version configuration" --display-name "api set 1" \\
                --versioning-scheme "Segment"
 """
 
-helps['apim apiversionset update'] = """
+helps['apim api-version-set update'] = """
     type: command
     short-summary: update api version set.
     examples:
       - name: ApiManagementUpdateApiVersionSet
         text: |-
-               az apim apiversionset update --resource-group "rg1" --service-name "apimService1" \\
+               az apim api-version-set update --resource-group "rg1" --service-name "apimService1" \\
                --version-set-id "api1" --description "Version configuration" --display-name "api set 1" \\
                --versioning-scheme "Segment"
 """
 
-helps['apim apiversionset delete'] = """
+helps['apim api-version-set delete'] = """
     type: command
     short-summary: delete api version set.
     examples:
       - name: ApiManagementDeleteApiVersionSet
         text: |-
-               az apim apiversionset delete --resource-group "rg1" --service-name "apimService1" \\
+               az apim api-version-set delete --resource-group "rg1" --service-name "apimService1" \\
                --version-set-id "a1"
 """
 
-helps['apim apiversionset list'] = """
+helps['apim api-version-set list'] = """
     type: command
     short-summary: list api version set.
 """
 
-helps['apim apiversionset show'] = """
+helps['apim api-version-set show'] = """
     type: command
     short-summary: show api version set.
 """
 
-helps['apim authorizationserver'] = """
+helps['apim authorization-server'] = """
     type: group
     short-summary: Commands to manage authorization server.
 """
 
-helps['apim authorizationserver create'] = """
+helps['apim authorization-server create'] = """
     type: command
     short-summary: create authorization server.
     examples:
       - name: ApiManagementCreateAuthorizationServer
         text: |-
-               az apim authorizationserver create --resource-group "rg1" --service-name "apimService1" \\
+               az apim authorization-server create --resource-group "rg1" --service-name "apimService1" \\
                --authsid "newauthServer" --description "test server" --token-endpoint \\
                "https://www.contoso.com/oauth2/token" --support-state true --default-scope "read write" \\
                --client-secret "2" --resource-owner-username "un" --resource-owner-password "pwd" \\
@@ -677,32 +677,32 @@ helps['apim authorizationserver create'] = """
                --authorization-endpoint "https://www.contoso.com/oauth2/auth" --client-id "1"
 """
 
-helps['apim authorizationserver update'] = """
+helps['apim authorization-server update'] = """
     type: command
     short-summary: update authorization server.
     examples:
       - name: ApiManagementUpdateAuthorizationServer
         text: |-
-               az apim authorizationserver update --resource-group "rg1" --service-name "apimService1" \\
+               az apim authorization-server update --resource-group "rg1" --service-name "apimService1" \\
                --authsid "newauthServer" --client-secret "updated" --client-id "update"
 """
 
-helps['apim authorizationserver delete'] = """
+helps['apim authorization-server delete'] = """
     type: command
     short-summary: delete authorization server.
     examples:
       - name: ApiManagementDeleteAuthorizationServer
         text: |-
-               az apim authorizationserver delete --resource-group "rg1" --service-name "apimService1" \\
+               az apim authorization-server delete --resource-group "rg1" --service-name "apimService1" \\
                --authsid "newauthServer2"
 """
 
-helps['apim authorizationserver list'] = """
+helps['apim authorization-server list'] = """
     type: command
     short-summary: list authorization server.
 """
 
-helps['apim authorizationserver show'] = """
+helps['apim authorization-server show'] = """
     type: command
     short-summary: show authorization server.
 """
@@ -1094,47 +1094,47 @@ helps['apim group user list'] = """
     short-summary: list group user.
 """
 
-helps['apim identityprovider'] = """
+helps['apim identity-provider'] = """
     type: group
     short-summary: Commands to manage identity provider.
 """
 
-helps['apim identityprovider create'] = """
+helps['apim identity-provider create'] = """
     type: command
     short-summary: create identity provider.
     examples:
       - name: ApiManagementCreateIdentityProvider
         text: |-
-               az apim identityprovider create --resource-group "rg1" --service-name "apimService1" \\
+               az apim identity-provider create --resource-group "rg1" --service-name "apimService1" \\
                --name "facebook" --client-id "facebookid" --client-secret "facebookapplicationsecret"
 """
 
-helps['apim identityprovider update'] = """
+helps['apim identity-provider update'] = """
     type: command
     short-summary: update identity provider.
     examples:
       - name: ApiManagementUpdateIdentityProvider
         text: |-
-               az apim identityprovider update --resource-group "rg1" --service-name "apimService1" \\
+               az apim identity-provider update --resource-group "rg1" --service-name "apimService1" \\
                --name "facebook" --client-id "updatedfacebookid" --client-secret "updatedfacebooksecret"
 """
 
-helps['apim identityprovider delete'] = """
+helps['apim identity-provider delete'] = """
     type: command
     short-summary: delete identity provider.
     examples:
       - name: ApiManagementDeleteIdentityProvider
         text: |-
-               az apim identityprovider delete --resource-group "rg1" --service-name "apimService1" \\
+               az apim identity-provider delete --resource-group "rg1" --service-name "apimService1" \\
                --name "aad"
 """
 
-helps['apim identityprovider list'] = """
+helps['apim identity-provider list'] = """
     type: command
     short-summary: list identity provider.
 """
 
-helps['apim identityprovider show'] = """
+helps['apim identity-provider show'] = """
     type: command
     short-summary: show identity provider.
 """
@@ -1218,122 +1218,123 @@ helps['apim notification show'] = """
     short-summary: show notification.
 """
 
-helps['apim notification recipientuser'] = """
+helps['apim notification recipient-user'] = """
     type: group
     short-summary: Commands to manage notification recipient user.
 """
 
-helps['apim notification recipientuser create'] = """
+helps['apim notification recipient-user create'] = """
     type: command
     short-summary: create notification recipient user.
     examples:
       - name: ApiManagementCreateNotificationRecipientUser
         text: |-
-               az apim notification recipientuser create --resource-group "rg1" --service-name \\
+               az apim notification recipient-user create --resource-group "rg1" --service-name \\
                "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
                "576823d0a40f7e74ec07d642"
 """
 
-helps['apim notification recipientuser update'] = """
+helps['apim notification recipient-user update'] = """
     type: command
     short-summary: update notification recipient user.
 """
 
-helps['apim notification recipientuser delete'] = """
+helps['apim notification recipient-user delete'] = """
     type: command
     short-summary: delete notification recipient user.
     examples:
       - name: ApiManagementDeleteNotificationRecipientUser
         text: |-
-               az apim notification recipientuser delete --resource-group "rg1" --service-name \\
+               az apim notification recipient-user delete --resource-group "rg1" --service-name \\
                "apimService1" --notification-name "RequestPublisherNotificationMessage" --user-id \\
                "576823d0a40f7e74ec07d642"
 """
 
-helps['apim notification recipientuser list'] = """
+helps['apim notification recipient-user list'] = """
     type: command
     short-summary: list notification recipient user.
 """
 
-helps['apim notification recipientemail'] = """
+helps['apim notification recipient-email'] = """
     type: group
     short-summary: Commands to manage notification recipient email.
 """
 
-helps['apim notification recipientemail create'] = """
+helps['apim notification recipient-email create'] = """
     type: command
     short-summary: create notification recipient email.
     examples:
       - name: ApiManagementCreateNotificationRecipientEmail
         text: |-
-               az apim notification recipientemail create --resource-group "rg1" --service-name \\
+               az apim notification recipient-email create --resource-group "rg1" --service-name \\
                "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
                "foobar@live.com"
 """
 
-helps['apim notification recipientemail update'] = """
+helps['apim notification recipient-email update'] = """
     type: command
     short-summary: update notification recipient email.
 """
 
-helps['apim notification recipientemail delete'] = """
+helps['apim notification recipient-email delete'] = """
     type: command
     short-summary: delete notification recipient email.
     examples:
       - name: ApiManagementDeleteNotificationRecipientEmail
         text: |-
-               az apim notification recipientemail delete --resource-group "rg1" --service-name \\
+               az apim notification recipient-email delete --resource-group "rg1" --service-name \\
                "apimService1" --notification-name "RequestPublisherNotificationMessage" --email \\
                "contoso@live.com"
 """
 
-helps['apim notification recipientemail list'] = """
+helps['apim notification recipient-email list'] = """
     type: command
     short-summary: list notification recipient email.
 """
 
-helps['apim openidconnectprovider'] = """
+helps['apim openid-connect-provider'] = """
     type: group
     short-summary: Commands to manage open id connect provider.
 """
 
-helps['apim openidconnectprovider create'] = """
+helps['apim openid-connect-provider create'] = """
     type: command
     short-summary: create open id connect provider.
     examples:
       - name: ApiManagementCreateOpenIdConnectProvider
         text: |-
-               az apim openidconnectprovider create --resource-group "rg1" --service-name "apimService1" \\
-               --opid "templateOpenIdConnect3" --display-name "templateoidprovider3" --metadata-endpoint \\
-               "https://oidprovider-template3.net" --client-id "oidprovidertemplate3"
+               az apim openid-connect-provider create --resource-group "rg1" --service-name \\
+               "apimService1" --opid "templateOpenIdConnect3" --display-name "templateoidprovider3" \\
+               --metadata-endpoint "https://oidprovider-template3.net" --client-id \\
+               "oidprovidertemplate3"
 """
 
-helps['apim openidconnectprovider update'] = """
+helps['apim openid-connect-provider update'] = """
     type: command
     short-summary: update open id connect provider.
     examples:
       - name: ApiManagementUpdateOpenIdConnectProvider
         text: |-
-               az apim openidconnectprovider update --resource-group "rg1" --service-name "apimService1" \\
-               --opid "templateOpenIdConnect2" --client-secret "updatedsecret"
+               az apim openid-connect-provider update --resource-group "rg1" --service-name \\
+               "apimService1" --opid "templateOpenIdConnect2" --client-secret "updatedsecret"
 """
 
-helps['apim openidconnectprovider delete'] = """
+helps['apim openid-connect-provider delete'] = """
     type: command
     short-summary: delete open id connect provider.
     examples:
       - name: ApiManagementDeleteOpenIdConnectProvider
         text: |-
-               az apim openidconnectprovider delete --resource-group "rg1" --service-name "apimService1" \\
-               --opid "templateOpenIdConnect3"
+               az apim openid-connect-provider delete --resource-group "rg1" --service-name \\
+               "apimService1" --opid "templateOpenIdConnect3"
 """
 
-helps['apim openidconnectprovider list'] = """
+helps['apim openid-connect-provider list'] = """
     type: command
     short-summary: list open id connect provider.
 """
 
-helps['apim openidconnectprovider show'] = """
+helps['apim openid-connect-provider show'] = """
     type: command
     short-summary: show open id connect provider.
 """
