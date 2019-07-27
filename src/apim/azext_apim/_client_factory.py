@@ -239,7 +239,4 @@ def cf_subscription(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, SubscriptionOperations)
 
 def cf_user(cli_ctx, *_):
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.mgmt.apimanagement.operations.user_operations import UserOperations
-    return get_mgmt_service_client(cli_ctx, UserOperations)
+    return cf_apim(cli_ctx).user_operations
