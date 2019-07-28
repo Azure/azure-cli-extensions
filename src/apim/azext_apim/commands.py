@@ -419,7 +419,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_user
     apim_user = CliCommandType(
-        operations_tmpl='azure.mgmt.apimanagement.user_operations#UserOperations.{}',
+        operations_tmpl='azure.mgmt.apimanagement.operations.user_operations#UserOperations.{}',
         client_factory=cf_user)
     with self.command_group('apim user', apim_user, client_factory=cf_user) as g:
         g.custom_command('create', 'create_apim_user')
