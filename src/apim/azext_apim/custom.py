@@ -2193,4 +2193,4 @@ def show_apim_user(cmd, client,
                    resource_group,
                    service_name,
                    user_id):
-    return client.user.get(resource_group_name=resource_group, service_name=service_name, user_id=user_id)
+    return client.get(resource_group_name=resource_group, service_name=service_name, user_id=user_id)
