@@ -21,7 +21,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api')
-        g.custom_command('show', 'show_apim_api')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_release
     apim_api_release = CliCommandType(
@@ -32,7 +32,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_release')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_release')
-        g.custom_command('show', 'show_apim_api_release')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_operation
     apim_api_operation = CliCommandType(
@@ -43,7 +43,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_operation')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_operation')
-        g.custom_command('show', 'show_apim_api_operation')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_operation_policy
     apim_api_operation_policy = CliCommandType(
@@ -54,7 +54,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_operation_policy')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_operation_policy')
-        g.custom_command('show', 'show_apim_api_operation_policy')
+        g.command('show', 'get')
 
     from ._client_factory import cf_tag
     apim_tag = CliCommandType(
@@ -65,7 +65,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_tag')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_tag')
-        g.custom_command('show', 'show_apim_tag')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_policy
     apim_api_policy = CliCommandType(
@@ -76,7 +76,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_policy')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_policy')
-        g.custom_command('show', 'show_apim_api_policy')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_schema
     apim_api_schema = CliCommandType(
@@ -87,7 +87,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_schema')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_schema')
-        g.custom_command('show', 'show_apim_api_schema')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_diagnostic
     apim_api_diagnostic = CliCommandType(
@@ -98,7 +98,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_diagnostic')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_diagnostic')
-        g.custom_command('show', 'show_apim_api_diagnostic')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_issue
     apim_api_issue = CliCommandType(
@@ -109,7 +109,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_issue')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_issue')
-        g.custom_command('show', 'show_apim_api_issue')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_issue_comment
     apim_api_issue_comment = CliCommandType(
@@ -120,7 +120,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_issue_comment')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_issue_comment')
-        g.custom_command('show', 'show_apim_api_issue_comment')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_issue_attachment
     apim_api_issue_attachment = CliCommandType(
@@ -131,7 +131,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_issue_attachment')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_issue_attachment')
-        g.custom_command('show', 'show_apim_api_issue_attachment')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_tag_description
     apim_api_tag_description = CliCommandType(
@@ -142,7 +142,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_tag_description')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_tag_description')
-        g.custom_command('show', 'show_apim_api_tag_description')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_version_set
     apim_api_version_set = CliCommandType(
@@ -153,7 +153,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_api_version_set')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_api_version_set')
-        g.custom_command('show', 'show_apim_api_version_set')
+        g.command('show', 'get')
 
     from ._client_factory import cf_authorization_server
     apim_authorization_server = CliCommandType(
@@ -164,7 +164,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_authorization_server')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_authorization_server')
-        g.custom_command('show', 'show_apim_authorization_server')
+        g.command('show', 'get')
 
     from ._client_factory import cf_backend
     apim_backend = CliCommandType(
@@ -175,7 +175,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_backend')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_backend')
-        g.custom_command('show', 'show_apim_backend')
+        g.command('show', 'get')
 
     from ._client_factory import cf_cache
     apim_cache = CliCommandType(
@@ -186,7 +186,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_cache')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_cache')
-        g.custom_command('show', 'show_apim_cache')
+        g.command('show', 'get')
 
     from ._client_factory import cf_certificate
     apim_certificate = CliCommandType(
@@ -197,7 +197,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_certificate')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_certificate')
-        g.custom_command('show', 'show_apim_certificate')
+        g.command('show', 'get')
 
     from ._client_factory import cf_api_management_service
     apim_api_management_service = CliCommandType(
@@ -208,7 +208,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim')
-        g.custom_command('show', 'show_apim')
+        g.command('show', 'get')
 
     from ._client_factory import cf_diagnostic
     apim_diagnostic = CliCommandType(
@@ -219,7 +219,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_diagnostic')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_diagnostic')
-        g.custom_command('show', 'show_apim_diagnostic')
+        g.command('show', 'get')
 
     from ._client_factory import cf_email_template
     apim_email_template = CliCommandType(
@@ -230,7 +230,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_template')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_template')
-        g.custom_command('show', 'show_apim_template')
+        g.command('show', 'get')
 
     from ._client_factory import cf_group
     apim_group = CliCommandType(
@@ -241,7 +241,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_group')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_group')
-        g.custom_command('show', 'show_apim_group')
+        g.command('show', 'get')
 
     from ._client_factory import cf_group_user
     apim_group_user = CliCommandType(
@@ -261,7 +261,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_identity_provider')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_identity_provider')
-        g.custom_command('show', 'show_apim_identity_provider')
+        g.command('show', 'get')
 
     from ._client_factory import cf_logger
     apim_logger = CliCommandType(
@@ -272,7 +272,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_logger')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_logger')
-        g.custom_command('show', 'show_apim_logger')
+        g.command('show', 'get')
 
     from ._client_factory import cf_notification
     apim_notification = CliCommandType(
@@ -282,7 +282,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_apim_notification')
         g.custom_command('update', 'update_apim_notification')
         g.custom_command('list', 'list_apim_notification')
-        g.custom_command('show', 'show_apim_notification')
+        g.command('show', 'get')
 
     from ._client_factory import cf_notification_recipient_user
     apim_notification_recipient_user = CliCommandType(
@@ -313,7 +313,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_openid_connect_provider')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_openid_connect_provider')
-        g.custom_command('show', 'show_apim_openid_connect_provider')
+        g.command('show', 'get')
 
     from ._client_factory import cf_policy
     apim_policy = CliCommandType(
@@ -324,7 +324,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_policy')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_policy')
-        g.custom_command('show', 'show_apim_policy')
+        g.command('show', 'get')
 
     from ._client_factory import cf_sign_in_settings
     apim_sign_in_settings = CliCommandType(
@@ -333,7 +333,7 @@ def load_command_table(self, _):
     with self.command_group('apim portalsetting signin', apim_sign_in_settings, client_factory=cf_sign_in_settings) as g:
         g.custom_command('create', 'create_apim_portalsetting_signin')
         g.custom_command('update', 'update_apim_portalsetting_signin')
-        g.custom_command('show', 'show_apim_portalsetting_signin')
+        g.command('show', 'get')
 
     from ._client_factory import cf_sign_up_settings
     apim_sign_up_settings = CliCommandType(
@@ -342,7 +342,7 @@ def load_command_table(self, _):
     with self.command_group('apim portalsetting signup', apim_sign_up_settings, client_factory=cf_sign_up_settings) as g:
         g.custom_command('create', 'create_apim_portalsetting_signup')
         g.custom_command('update', 'update_apim_portalsetting_signup')
-        g.custom_command('show', 'show_apim_portalsetting_signup')
+        g.command('show', 'get')
 
     from ._client_factory import cf_delegation_settings
     apim_delegation_settings = CliCommandType(
@@ -351,7 +351,7 @@ def load_command_table(self, _):
     with self.command_group('apim portalsetting delegation', apim_delegation_settings, client_factory=cf_delegation_settings) as g:
         g.custom_command('create', 'create_apim_portalsetting_delegation')
         g.custom_command('update', 'update_apim_portalsetting_delegation')
-        g.custom_command('show', 'show_apim_portalsetting_delegation')
+        g.command('show', 'get')
 
     from ._client_factory import cf_product
     apim_product = CliCommandType(
@@ -362,7 +362,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_product')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_product')
-        g.custom_command('show', 'show_apim_product')
+        g.command('show', 'get')
 
     from ._client_factory import cf_product_api
     apim_product_api = CliCommandType(
@@ -393,7 +393,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_product_policy')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_product_policy')
-        g.custom_command('show', 'show_apim_product_policy')
+        g.command('show', 'get')
 
     from ._client_factory import cf_property
     apim_property = CliCommandType(
@@ -404,7 +404,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_property')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_property')
-        g.custom_command('show', 'show_apim_property')
+        g.command('show', 'get')
 
     from ._client_factory import cf_subscription
     apim_subscription = CliCommandType(
@@ -415,7 +415,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_subscription')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_subscription')
-        g.custom_command('show', 'show_apim_subscription')
+        g.command('show', 'get')
 
     from ._client_factory import cf_user
     apim_user = CliCommandType(
@@ -426,4 +426,4 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_apim_user')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_apim_user')
-        g.custom_command('show', 'show_apim_user')
+        g.command('show', 'get')
