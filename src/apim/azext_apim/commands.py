@@ -12,7 +12,6 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-
     from ._client_factory import cf_api
     apim_api = CliCommandType(
         operations_tmpl='azure.mgmt.apimanagement.operations.api_operations#ApiOperations.{}',
