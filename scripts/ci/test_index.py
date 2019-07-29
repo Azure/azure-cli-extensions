@@ -129,7 +129,7 @@ class TestIndex(unittest.TestCase):
                               "{}: 'generator' should be one of {}. "
                               "Build the extension with a different version of the 'wheel' package "
                               "(e.g. `pip install wheel==0.30.0`). "
-                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,supported_generators))
+                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name, supported_generators))
 
                 print("Length is:" + str(len(metadata)) + str(len(item['metadata'])))
                 for key, value in metadata.items():
