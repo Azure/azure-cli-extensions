@@ -83,13 +83,13 @@ class MatchConditionAction(argparse._AppendAction):
     # pylint: disable=no-self-use
     def parse_match_condition(self, values):
 
-        from azext_front_door.vendored_sdks.models import MatchCondition1
+        from azext_front_door.vendored_sdks.models import MatchCondition
 
         if not isinstance(values, list):
             values = values.split(' ')
 
         try:
-            return MatchCondition1(
+            return MatchCondition(
                 match_variable=values[0],
                 operator=values[1],
                 match_value=values[2:]
