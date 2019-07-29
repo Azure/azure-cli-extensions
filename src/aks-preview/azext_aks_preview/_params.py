@@ -118,9 +118,10 @@ def load_arguments(self, _):
         c.argument('addons', options_list=['--addons', '-a'])
         c.argument('subnet_name', options_list=['--subnet-name', '-s'])
 
-    with self.argument_context('acs kubernetes get-credentials') as c:
-        c.argument('path', options_list=['--file', '-f'])
-        c.argument('overwrite_existing', action='store_true', help='If specified, overwrite any existing credentials.')
+    with self.argument_context('aks get-credentials') as c:
+        c.argument('admin', options_list=['--admin', '-a'], default=False)
+        c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
+                   default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 
 
 def _get_default_install_location(exe_name):
