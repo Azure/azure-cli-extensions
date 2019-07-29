@@ -123,7 +123,6 @@ def load_arguments(self, _):
         c.argument('overwrite_existing', action='store_true', help='If specified, overwrite any existing credentials.')
 
 
-
 def _get_default_install_location(exe_name):
     system = platform.system()
     if system == 'Windows':
