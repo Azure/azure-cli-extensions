@@ -164,4 +164,3 @@ def cf_subscription(cli_ctx, *_):
 
 def cf_user(cli_ctx, *_):
     return cf_apim(cli_ctx).user
-

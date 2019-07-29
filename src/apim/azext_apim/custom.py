@@ -1231,7 +1231,7 @@ def create_apim_logger(cmd, client,
     body['description'] = description  # str
     try:
         body['credentials'] = json.loads(credentials)
-    except:
+    except Exception:
         body['credentials'] = credentials
     body['is_buffered'] = is_buffered  # boolean
     body['resource_id'] = resource_id  # str
