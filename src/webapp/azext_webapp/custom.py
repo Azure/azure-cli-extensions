@@ -218,7 +218,7 @@ def get_all_scan_result(cmd, resource_group_name, name, slot=None):
 
     return response.json()
 
-def stop_scan(cmd, resource_group_name, name, timeout="", slot=None):
+def stop_scan(cmd, resource_group_name, name, slot=None):
     webapp = show_webapp(cmd, resource_group_name, name, slot)
     is_linux = webapp.reserved
     if not is_linux:
