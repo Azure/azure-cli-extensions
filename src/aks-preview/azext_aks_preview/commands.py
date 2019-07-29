@@ -10,6 +10,7 @@ from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
 from ._format import aks_agentpool_show_table_format
+from ._format import aks_agentpool_list_table_format
 from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 
@@ -56,7 +57,7 @@ def load_command_table(self, _):
 
     # AKS agent pool commands
     with self.command_group('aks nodepool', agent_pools_sdk, client_factory=cf_agent_pools) as g:
-        g.custom_command('list', 'aks_agentpool_list')
+        g.custom_command('list', 'aks_agentpool_list', table_transformer=aks_agentpool_list_table_format)
         g.custom_show_command('show', 'aks_agentpool_show', table_transformer=aks_agentpool_show_table_format)
         g.custom_command('add', 'aks_agentpool_add', supports_no_wait=True)
         g.custom_command('scale', 'aks_agentpool_scale', supports_no_wait=True)
