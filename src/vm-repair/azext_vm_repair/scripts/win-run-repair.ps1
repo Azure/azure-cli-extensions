@@ -7,7 +7,7 @@ try {
 	mkdir $dirname | Out-Null
 	Set-Location $dirname
 	$logFileName = "logs-$curDate.txt"
-	Set-Content -Path "./$logFileName" -Value "[Log Start $(Get-Date)]"
+	Set-Content -Path "./$logFileName" -Value "[Log-Start $(Get-Date)]"
 	$logFile = (Resolve-Path "./$logFileName").Path
 	(new-object net.webclient).DownloadFile('https://github.com/Azure/repair-script-library/zipball/master/', (Join-Path $pwd 'repair-script-library.zip'))
 	Expand-Archive -Path 'repair-script-library.zip' -DestinationPath 'repair-script-library'
@@ -22,8 +22,9 @@ try {
 		Invoke-Expression -Command $command 
 	}
 } catch {
-	Add-Content -Path $logFile -Value "[Exception] $error[0].Exception.Message"
+	$errorMessage = $error[0].Exception.Message
+	Add-Content -Path $logFile -Value "[Error $(Get-Date)] $errorMessage"
 } finally {
-	Add-Content -Path $logFile -Value "[Log End $(Get-Date)]"
+	Add-Content -Path $logFile -Value "[Log-End $(Get-Date)]$logFile"
 	Write-Output (Get-Content -Path $logFile)
 }

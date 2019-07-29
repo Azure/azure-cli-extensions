@@ -24,7 +24,9 @@ from .repair_utils import (
     _fetch_mitigation_script_map,
     _fetch_mitigation_script_path,
     _process_ps_parameters,
-    _process_bash_parameters
+    _process_bash_parameters,
+    _split_run_script_logs,
+    _run_script_succeeded
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
 
@@ -275,7 +277,6 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
 
 def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id=None, custom_mitigation_file=None, parameters=None):
-
     return_dict = {}
 
     # Overall success flag
@@ -336,19 +337,19 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
             stdout = run_command_return['value'][0]['message']
             stderr = run_command_return['value'][1]['message']
 
-        if not stderr:
+        run_script_succeeded = _run_script_succeeded(stdout)
+        logs = _split_run_script_logs(stdout)
+
+        # Output 'output' or 'error' level logs depending on status
+        if run_script_succeeded:
             message = 'Script completed without error.'
-            logger.info(message)
-            logger.info('stdout:\n%s', stdout)
+            output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'output'])
         else:
             message = 'Script returned with possible errors.'
-            logger.warning(message)
-            logger.info('stdout:\n%s', stdout)
-            logger.info('stderr:\n%s', stderr)
-
+            output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
         return_dict['message'] = message
-        return_dict['stdout'] = stdout
-        return_dict['stderr'] = stderr
+        return_dict['logs'] = stdout
+        return_dict['output'] = output
         command_succeeded = True
 
     except KeyboardInterrupt:

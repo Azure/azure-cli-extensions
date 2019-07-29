@@ -7,6 +7,7 @@ import subprocess
 import shlex
 import os
 import requests
+import re
 from json import loads
 
 from knack.log import get_logger
@@ -226,3 +227,34 @@ def _process_bash_parameters(parameters):
         param_string += '{p} '.format(p=param)
 
     return param_string.strip(' ')
+
+
+def _split_run_script_logs(log_string):
+    """
+    Splits one aggregate log string into a list of each log entry.
+    """
+    pattern = r'((?=\[(?:Log-Start|Log-End|Output|Info|Warning|Error|Debug) ' \
+               '[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\])|(?=\[STATUS\]))'
+    log_list = re.split(pattern, log_string)
+    # Remove empty strings in logs
+    log_list = list(filter(None, log_list))
+    # Format them in dictionary to parse out level
+    logs_dict_list = []
+    for log in log_list:
+        log_dict = {}
+        log_dict['message'] = log.strip('\n')
+        log_dict['level'] = log.split(' ', 1)[0][1:]
+        logs_dict_list.append(log_dict)
+
+    return logs_dict_list
+
+
+def _run_script_succeeded(log_string):
+
+    status_success = '[STATUS]::SUCCESS'
+    # status_failure = '[STATUS]::ERROR'
+
+    if status_success in log_string:
+        return True
+    else:
+        return False
