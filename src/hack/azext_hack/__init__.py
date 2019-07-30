@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from ._validators import validate_name
 
 
 class HackExtCommandLoader(AzCommandsLoader):
@@ -21,25 +22,31 @@ class HackExtCommandLoader(AzCommandsLoader):
     def load_arguments(self, _):
         with self.argument_context('hack up') as c:
             c.argument('name',
-                options_list=['--name', '-n'],
-                help='Name of resources'
-            )
+                       options_list=['--name', '-n'],
+                       help='Name of resources',
+                       validator=validate_name,
+                       type=str.lower
+                       )
             c.argument('database',
-                options_list=['--database', '-d'],
-                help='Database type - { SQL | MySQL | CosmosDB }',
-                choices=['SQL', 'MySQL', 'CosmosDB'],
-                default='sql'
-            )
+                       options_list=['--database', '-d'],
+                       help='Database type - { sql | mysql | cosmosdb }',
+                       choices=['sql', 'mysql', 'cosmosdb'],
+                       default='sql',
+                       type=str.lower
+                       )
             c.argument('runtime',
-                options_list=['--runtime', '-r'],
-                help='Runtime',
-                choices=['php', 'node', 'tomcat', 'jetty', 'python', 'aspnet']
-            )
+                       options_list=['--runtime', '-r'],
+                       help='Runtime',
+                       choices=['php', 'node', 'tomcat',
+                                'jetty', 'python', 'aspnet'],
+                       type=str.lower
+                       )
             c.argument('ai',
-                help='Enable Azure Cognitive Services',
-                options_list=['--ai', '-ai'],
-                default=None,
-                action='store_true'
-            )
+                       help='Enable Azure Cognitive Services',
+                       options_list=['--ai', '-ai'],
+                       default=None,
+                       action='store_true'
+                       )
+
 
 COMMAND_LOADER_CLS = HackExtCommandLoader
