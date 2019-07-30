@@ -1,1 +1,0 @@
-az group delete -n geektrainertesting -y && az extension remove -n hack && python setup.py bdist_wheel && az extension add --source .\dist\hack-0.2.17-py2.py3-none-any.whl -y && az hack up -n geektrainertesting -d CosmosDB -r php
