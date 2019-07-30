@@ -384,7 +384,7 @@ short-summary: Get access credentials for a managed Kubernetes cluster.
 parameters:
   - name: --admin -a
     type: bool
-    short-summary: "Get cluster administrator credentialss.  Default: cluster user credentials."
+    short-summary: "Get cluster administrator credentials.  Default: cluster user credentials."
   - name: --file -f
     type: string
     short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
