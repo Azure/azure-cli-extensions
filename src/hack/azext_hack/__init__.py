@@ -44,4 +44,5 @@ class HackExtCommandLoader(AzCommandsLoader):
                        default=None,
                        action='store_true')
 
+
 COMMAND_LOADER_CLS = HackExtCommandLoader

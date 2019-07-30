@@ -122,6 +122,8 @@ def create_database(cmd, database_provider, name, location, admin, password):
                 )
             )
             return cosmosdb_client.database_accounts.create_or_update(name, name, params)
+
+
         def database_creator():
             return cosmosdb_client.database_accounts.create_update_mongo_db_database(
                 resource_group_name=name,
@@ -221,6 +223,7 @@ def create_website(cmd, name, runtime, deployment_local_git=True, deployment_use
     site['deployment_url'] = webapp.deploymentLocalGitUrl
     site['hostname'] = 'https://{}'.format(webapp.host_names[0])
     return site
+
 
 def set_website_settings(cmd, name, database_provider, database_admin, database_password, ai):
     settings = []

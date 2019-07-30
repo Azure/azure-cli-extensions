@@ -5,7 +5,7 @@
 from uuid import uuid4
 from knack.log import get_logger
 
-from .utils import(
+from .utils import (
     create_resource_group,
     create_database,
     create_website,
@@ -14,6 +14,7 @@ from .utils import(
 )
 
 logger = get_logger(__name__)
+
 
 def hack_up(cmd, name, runtime, database, ai=None):
     location = 'westus'
