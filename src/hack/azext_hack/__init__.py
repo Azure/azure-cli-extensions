@@ -25,28 +25,23 @@ class HackExtCommandLoader(AzCommandsLoader):
                        options_list=['--name', '-n'],
                        help='Name of resources',
                        validator=validate_name,
-                       type=str.lower
-                       )
+                       type=str.lower)
             c.argument('database',
                        options_list=['--database', '-d'],
                        help='Database type - { sql | mysql | cosmosdb }',
                        choices=['sql', 'mysql', 'cosmosdb'],
                        default='sql',
-                       type=str.lower
-                       )
+                       type=str.lower)
             c.argument('runtime',
                        options_list=['--runtime', '-r'],
                        help='Runtime',
                        choices=['php', 'node', 'tomcat',
                                 'jetty', 'python', 'aspnet'],
-                       type=str.lower
-                       )
+                       type=str.lower)
             c.argument('ai',
                        help='Enable Azure Cognitive Services',
                        options_list=['--ai', '-ai'],
                        default=None,
-                       action='store_true'
-                       )
-
+                       action='store_true')
 
 COMMAND_LOADER_CLS = HackExtCommandLoader

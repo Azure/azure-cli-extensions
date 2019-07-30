@@ -50,7 +50,3 @@ def hack_up(cmd, name, runtime, database, ai=None):
     else:
         logger.warning('Created password for deployment user. To change use `az webapp deployment user set`')
     return output
-
-def hack_down(cmd, name, dryrun=False, confirm=False):
-    # confirm
-    pass
