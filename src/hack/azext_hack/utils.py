@@ -231,7 +231,7 @@ def set_website_settings(cmd, name, database_provider, database_admin, database_
             cmd.cli_ctx, CognitiveServicesManagementClient)
         cogsvcs_key = cogsvcs_client.accounts.list_keys(name, name).key1
         settings.append('COGNITIVE_SERVICES_KEY={}'.format(cogsvcs_key))
-    
+
     if database_provider.lower() == 'cosmosdb':
         from azure.mgmt.cosmosdb import CosmosDB
         cosmosdb_client = get_mgmt_service_client(cmd.cli_ctx, CosmosDB)
