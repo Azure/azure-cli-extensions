@@ -307,12 +307,12 @@ helps['apim api policy create'] = """
       - name: ApiManagementCreateApiPolicy
         text: |-
                az apim api policy create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <backend> 
+               "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies> <inbound /> <backend>
                   <forward-request />  </backend>  <outbound /></policies>" --format "xml"
       - name: ApiManagementCreateApiPolicyNonXmlEncoded
         text: |-
                az apim api policy create --resource-group "rg1" --service-name "apimService1" --api-id \\
-               "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\\r\\n     <inbound>\\r\\n 
+               "5600b57e7e8880006a040001" --policy-id "policy" --value "<policies>\\r\\n     <inbound>\\r\\n
                    <base />\\r\\n  <set-header name=\\"newvalue\\" exists-action=\\"override\\">\\r\\n   <value>\\
                "@(context.Request.Headers.FirstOrDefault(h => h.Ke==\\"Via\\"))\\" </value>\\r\\n    </set-hea
                der>\\r\\n  </inbound>\\r\\n      </policies>" --format "rawxml"
@@ -771,8 +771,8 @@ helps['apim cache create'] = """
         text: |-
                az apim cache create --resource-group "rg1" --service-name "apimService1" --cache-id \\
                "westindia" --description "Redis cache instances in West India" --connection-string \\
-               "contoso5.redis.cache.windows.net,ssl=true,password=..." --resource-id "/subscriptions/{{ 
-               subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{ 
+               "contoso5.redis.cache.windows.net,ssl=true,password=..." --resource-id "/subscriptions/{{
+               subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.Cache/Redis/{{
                redis_name }}"
 """
 
@@ -983,8 +983,8 @@ helps['apim template update'] = """
                az apim template update --resource-group "rg1" --service-name "apimService1" --name \\
                "applicationApprovedNotificationMessage" --subject \\
                "Your application $AppName is published in the gallery" --body "<!DOCTYPE html >\\r\\n<html>
-               \\r\\n  <head />\\r\\n  <body>\\r\\n    <p style=\\"font-size:12pt;font-family:'Segoe UI'\\">Dear 
-               $DevFirstName $DevLastName,</p>\\r\\n    <p style=\\"font-size:12pt;font-family:'Segoe UI'\\">
+               \\r\\n  <head />\\r\\n  <body>\\r\\n    <p style=\\"font-size:12pt;font-family:'Segoe UI'\\">Dear
+                $DevFirstName $DevLastName,</p>\\r\\n    <p style=\\"font-size:12pt;font-family:'Segoe UI'\\">
                \\r\\n          We are happy to let you know that your request to publish the $AppName appli
                cation in the gallery has been approved. Your application has been published and can be vi
                ewed <a href=\\"http://$DevPortalUrl/Applications/Details/$AppId\\">here</a>.\\r\\n        </p
@@ -1600,12 +1600,12 @@ helps['apim product policy create'] = """
         text: |-
                az apim product policy create --resource-group "rg1" --service-name "apimService1" \\
                --product-id "5702e97e5157a50f48dce801" --policy-id "policy" --value "<policies>\\r\\n  <inb
-               ound>\\r\\n    <rate-limit calls=\\"{{call-count}}\\" renewal-period=\\"15\\"></rate-limit>\\r\\n 
+               ound>\\r\\n    <rate-limit calls=\\"{{call-count}}\\" renewal-period=\\"15\\"></rate-limit>\\r\\n
                   <log-to-eventhub logger-id=\\"16\\">\\r\\n                      @( string.Join(\\",\\", DateT
-               ime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress, 
+               ime.UtcNow, context.Deployment.ServiceName, context.RequestId, context.Request.IpAddress,
                context.Operation.Name) ) \\r\\n                  </log-to-eventhub>\\r\\n    <quota-by-key ca
                lls=\\"40\\" counter-key=\\"cc\\" renewal-period=\\"3600\\" increment-count=\\"@(context.Request.
-               Method == &quot;POST&quot; ? 1:2)\\" />\\r\\n    <base />\\r\\n  </inbound>\\r\\n  <backend>\\r\\n 
+               Method == &quot;POST&quot; ? 1:2)\\" />\\r\\n    <base />\\r\\n  </inbound>\\r\\n  <backend>\\r\\n
                   <base />\\r\\n  </backend>\\r\\n  <outbound>\\r\\n    <base />\\r\\n  </outbound>\\r\\n</policies
                >" --format "xml"
 """
