@@ -123,7 +123,6 @@ def create_database(cmd, database_provider, name, location, admin, password):
             )
             return cosmosdb_client.database_accounts.create_or_update(name, name, params)
 
-
         def database_creator():
             return cosmosdb_client.database_accounts.create_update_mongo_db_database(
                 resource_group_name=name,
