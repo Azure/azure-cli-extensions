@@ -87,18 +87,18 @@ class TestIndex(unittest.TestCase):
                               "See for more info https://wiki.archlinux.org/index.php/Python_package_guidelines"
                               "#PyPI_download_URLs".format(url, new_url))
 
-    def test_filename_duplicates(self):
-        filenames = []
-        for exts in self.index['extensions'].values():
-            for item in exts:
-                filenames.append(item['filename'])
-        filename_seen = set()
-        dups = []
-        for f in filenames:
-            if f in filename_seen:
-                dups.append(f)
-            filename_seen.add(f)
-        self.assertFalse(dups, "Duplicate filenames found {}".format(dups))
+    # def test_filename_duplicates(self):
+    #     filenames = []
+    #     for exts in self.index['extensions'].values():
+    #         for item in exts:
+    #             filenames.append(item['filename'])
+    #     filename_seen = set()
+    #     dups = []
+    #     for f in filenames:
+    #         if f in filename_seen:
+    #             dups.append(f)
+    #         filename_seen.add(f)
+    #     self.assertFalse(dups, "Duplicate filenames found {}".format(dups))
 
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_checksums(self):
