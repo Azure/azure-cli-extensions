@@ -2,6 +2,7 @@
 Microsoft Azure CLI 'hack' Command Module
 =========================================
 
+<<<<<<< HEAD
 A bootstrapping application for quickly creating `web space <https://azure.microsoft.com/en-us/services/app-service/>`_, a database (Cosmos DB, SQL Server, or MySQL), and a `Cognitive Services <https://azure.microsoft.com/en-us/services/cognitive-services/>`_ key.
 
 Creates an Resource Group, an App Service Plan and App Service, database server and database, and optionally enables Cognitive Services. All items are placed in a single resource group for easy cleanup post hack. Uses **Standard** pricing.
@@ -28,3 +29,6 @@ Database to create. Options are *mysql*, *sql*, or *cosmosdb*.
 
 **--ai -ai**
 Create a Cognitive Services key (optional).
+=======
+A bootstrapping application for quickly creating `web space <https://azure.microsoft.com/en-us/services/app-service/>`_, a database (Cosmos DB, SQL Server, or MySQL), and a `Cognitive Services <https://azure.microsoft.com/en-us/services/cognitive-services/>`_ key
+>>>>>>> 2b76d1977e37d2f549d3731e36a95f4e13c0dd7d
