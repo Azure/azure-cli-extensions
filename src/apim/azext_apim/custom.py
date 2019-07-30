@@ -1229,10 +1229,7 @@ def create_apim_logger(cmd, client,
     body = {}
     body['logger_type'] = logger_type  # str
     body['description'] = description  # str
-    try:
-        body['credentials'] = json.loads(credentials)
-    except Exception:
-        body['credentials'] = credentials
+    body['credentials'] = json.loads(credentials)
     body['is_buffered'] = is_buffered  # boolean
     body['resource_id'] = resource_id  # str
     return client.create_or_update(resource_group_name=resource_group, service_name=service_name, logger_id=logger_id, parameters=body)
