@@ -63,6 +63,26 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     return None
 
 
+def check_extension_version(extension_name):
+    from azure.cli.core.extension.operations import list_available_extensions, list_extensions
+ 
+    available_extensions = list_available_extensions()
+    installed_extensions = list_extensions()
+    extension_to_check = [ext for ext in installed_extensions if ext['name'] == extension_name]
+    if not extension_to_check:
+        logger.debug('The extension with name %s does not exist within installed extensions.', extension_name)
+        return
+    else:
+        extension_to_check = extension_to_check[0]
+
+    for ext in available_extensions:
+        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+            logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
+            return
+
+    logger.debug('The extension with name %s does not exist within available extensions.', extension_name)
+
+
 def _clean_up_resources(resource_group_name, confirm):
 
     try:

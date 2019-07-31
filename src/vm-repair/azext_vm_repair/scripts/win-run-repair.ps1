@@ -23,7 +23,8 @@ try {
 	}
 } catch {
 	$errorMessage = $error[0].Exception.Message
-	Add-Content -Path $logFile -Value "[Error $(Get-Date)] $errorMessage"
+	$errorTrace = $error[0].ScriptStackTrace
+	Add-Content -Path $logFile -Value "[Error $(Get-Date)] $errorMessage $errorTrace"
 } finally {
 	Add-Content -Path $logFile -Value "[Log-End $(Get-Date)]$logFile"
 	Write-Output (Get-Content -Path $logFile)

@@ -15,14 +15,16 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from .exceptions import AzCommandError
-from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encrypted_disk, _resolve_api_version
+from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encrypted_disk, _resolve_api_version, check_extension_version
 
 # pylint: disable=line-too-long, broad-except
 
 logger = get_logger(__name__)
-
+EXTENSION_NAME = 'vm-repair'
 
 def validate_create(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -63,6 +65,7 @@ def validate_create(cmd, namespace):
 
 
 def validate_restore(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
 
     # Check if VM exists and is not classic VM
     _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
@@ -91,7 +94,8 @@ def validate_restore(cmd, namespace):
 
 
 def validate_mitigate(cmd, namespace):
-
+    check_extension_version(EXTENSION_NAME)
+    
     # Check mitigation-id and custom mitigation file parameters
     if not namespace.mitigation_id and not namespace.custom_mitigation_file:
         raise CLIError('Please specify the mitigation id with --mitigation-id.')
@@ -101,11 +105,18 @@ def validate_mitigate(cmd, namespace):
         namespace.mitigation_id = 'no-op'
     
     # Check if VM exists and is not classic VM
-    _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)
+
+    # Check if the script type matches the OS
+    if not is_linux and namespace.mitigation_id.startswith('linux'):
+        raise CLIError('Script IDs that start with \'linux\' are Linux Shell scripts. You cannot run linux Shell scripts on a Windows VM.')
+    elif is_linux and namespace.mitigation_id.startswith('win'):
+        raise CLIError('Script IDs that start with \'win\' are Windows PowerShell scripts. You cannot run Windows PowerShell scripts on a Linux VM.')
 
     if not namespace.repair_vm_id:
        fetch_repair_vm(namespace)
-
+    
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
 
