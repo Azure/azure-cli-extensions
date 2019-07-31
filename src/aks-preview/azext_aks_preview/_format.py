@@ -142,4 +142,3 @@ def _custom_functions(preview_versions):
                 return version
 
     return CustomFunctions()
-
