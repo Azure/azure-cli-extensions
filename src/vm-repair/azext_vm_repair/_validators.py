@@ -102,6 +102,18 @@ def validate_run(cmd, namespace):
     if namespace.run_id and namespace.custom_run_file:
         raise CLIError('Cannot continue with both the run-id and the custom-run-file. Please specify just one.')
     if namespace.custom_run_file:
+        # Check if file exists
+        import os.path
+        if not os.path.isfile(namespace.custom_run_file):
+            raise CLIError('Custom run file cannot be found. Please check if the file exists.')
+        # Check for current custom-run-file parameter limitations
+        if namespace.parameters:
+            raise CLIError('Parameter passing does not work for custom run files yet. Please remove --parameters arguments.')
+        with open(namespace.custom_run_file, 'r') as f:
+            first_line = f.readline()
+            if first_line.lower().startswith('param('):
+                raise CLIError('Powershell param() statement does not work for custom run files yet. Please remove the param() line in the file.')
+
         namespace.run_id = 'no-op'
     
     # Check if VM exists and is not classic VM
@@ -231,7 +243,8 @@ def fetch_repair_vm(namespace):
 
     # No repair VM found
     if not repair_list:
-        raise CLIError('Repair VM not found for {vm_name}. Please check if the repair resources were removed.'.format(vm_name=namespace.vm_name))
+        raise CLIError('Repair VM not found for {vm_name}. Run \'az vm repair create -n {vm_name} -g {rg} --verbose\' to create repair vm and rerun the command.' \
+                       .format(vm_name=namespace.vm_name, rg=namespace.resource_group_name))
 
     # More than one repair VM found
     if len(repair_list) > 1:

@@ -249,7 +249,7 @@ def _process_bash_parameters(parameters):
     return param_string.strip(' ')
 
 
-def _split_run_script_logs(log_string):
+def _parse_run_script_raw_logs(log_string):
     """
     Splits one aggregate log string into a list of each log entry.
     """
@@ -269,7 +269,7 @@ def _split_run_script_logs(log_string):
     return logs_dict_list
 
 
-def _run_script_succeeded(log_string):
+def _check_script_succeeded(log_string):
 
     status_success = '[STATUS]::SUCCESS'
     # status_failure = '[STATUS]::ERROR'

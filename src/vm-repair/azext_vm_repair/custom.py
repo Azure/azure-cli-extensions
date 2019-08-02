@@ -25,8 +25,8 @@ from .repair_utils import (
     _fetch_run_script_path,
     _process_ps_parameters,
     _process_bash_parameters,
-    _split_run_script_logs,
-    _run_script_succeeded
+    _parse_run_script_raw_logs,
+    _check_script_succeeded
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 
@@ -277,10 +277,14 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
 
 def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_run_file=None, parameters=None):
-    return_dict = {}
+
+    # begin progress reporting for long running operation
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Running')
 
     # Overall success flag
     command_succeeded = False
+    return_dict = {}
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
 
@@ -337,8 +341,23 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             stdout = run_command_return['value'][0]['message']
             stderr = run_command_return['value'][1]['message']
 
-        run_script_succeeded = _run_script_succeeded(stdout)
-        logs = _split_run_script_logs(stdout)
+        run_script_succeeded = _check_script_succeeded(stdout)
+        # Parse through logs to populate log properties: 'level', 'message'
+        logs = _parse_run_script_raw_logs(stdout)
+
+        # Process log-start and log-end
+        # Log is cutoff at the start if over 4k bytes
+        log_cutoff = True
+        log_fullpath = ''
+        for log in logs:
+            if log['level'] == 'Log-Start':
+                log_cutoff = False
+            if log['level'] == 'Log-End':
+                split_log = log['message'].split(']')
+                if len(split_log) == 2:
+                    log_fullpath = split_log[1]
+        if log_cutoff:
+            logger.warning('Log file is too large and has been cutoff at the start of file. Please locate the log file within the repair-vm using the logFullpath to check full logs.')
 
         # Output 'output' or 'error' level logs depending on status
         if run_script_succeeded:
@@ -349,17 +368,22 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
 
         logger.debug("stderr: %s", stderr)
-        logger.info(output)
+
+        logger.info('\nScript returned with output:\n%s\n', output)
+
         return_dict['message'] = message
         return_dict['logs'] = stdout
+        return_dict['logFullpath'] = log_fullpath
         return_dict['output'] = output
+        return_dict['repairVmName'] = repair_vm_id['name']
+        return_dict['repairResouceGroup'] = repair_vm_id['resource_group']
         command_succeeded = True
 
     except KeyboardInterrupt:
         logger.error("Command interrupted by user input.")
     except AzCommandError as azCommandError:
         logger.error(azCommandError)
-        logger.error("Repair run-repair failed.")
+        logger.error("Repair run script failed.")
     except requests.exceptions.RequestException as exception:
         logger.error(exception)
         logger.error("Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library")
@@ -368,6 +392,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     except Exception as exception:
         logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
         logger.debug(exception)
+    finally:
+        # end long running op for process
+        cmd.cli_ctx.get_progress_controller().end()
+        # Add a new line after progress controller ends
+        logger.info('')
 
     if not command_succeeded:
         return None
