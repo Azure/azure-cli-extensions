@@ -21,14 +21,14 @@ from .repair_utils import (
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
-    _fetch_mitigation_script_map,
-    _fetch_mitigation_script_path,
+    _fetch_run_script_map,
+    _fetch_run_script_path,
     _process_ps_parameters,
     _process_bash_parameters,
     _split_run_script_logs,
     _run_script_succeeded
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except
 
@@ -276,7 +276,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id=None, custom_mitigation_file=None, parameters=None):
+def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_run_file=None, parameters=None):
     return_dict = {}
 
     # Overall success flag
@@ -304,15 +304,15 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
                              '--scripts "@{run_script}"' \
                              .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script)
 
-        # Normal scenario with mitigation id
-        if not custom_mitigation_file:
-            # Fetch mitigation path from GitHub
-            repair_script_path = _fetch_mitigation_script_path(mitigation_id)
-            repair_run_command += ' --parameters script_path=./{repair_script}'.format(repair_script=repair_script_path)
+        # Normal scenario with run id
+        if not custom_run_file:
+            # Fetch run path from GitHub
+            repair_script_path = _fetch_run_script_path(run_id)
+            repair_run_command += ' --parameters script_path="./{repair_script}"'.format(repair_script=repair_script_path)
         # Custom script scenario for testing
         else:
-            # no-op mitigation id
-            repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_mitigation_file)
+            # no-op run id
+            repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_run_file)
         # Append Parameters
         if parameters:
             if is_linux:
@@ -347,6 +347,9 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
         else:
             message = 'Script returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
+
+        logger.debug("stderr: %s", stderr)
+        logger.info(output)
         return_dict['message'] = message
         return_dict['logs'] = stdout
         return_dict['output'] = output
@@ -359,8 +362,8 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
         logger.error("Repair run-repair failed.")
     except requests.exceptions.RequestException as exception:
         logger.error(exception)
-        logger.error("Failed to fetch mitigation script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library")
-    except MitigationScriptNotFoundForIdError as exception:
+        logger.error("Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library")
+    except RunScriptNotFoundForIdError as exception:
         logger.error(exception)
     except Exception as exception:
         logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
@@ -371,5 +374,5 @@ def mitigate(cmd, vm_name, resource_group_name, mitigation_id=None, repair_vm_id
 
     return return_dict
 
-def mitigate_list(cmd):
-    return _fetch_mitigation_script_map()
+def run_list(cmd):
+    return _fetch_run_script_map()

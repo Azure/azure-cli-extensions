@@ -36,11 +36,32 @@ helps['vm repair restore'] = """
             az vm repair restore -g MyResourceGroup -n MyVM --disk-name MyDiskCopy --verbose
 """
 
-helps['vm repair mitigate'] = """
+helps['vm repair run'] = """
     type: command
-    short-summary: Run a mitigation script on the repair VM.
+    short-summary: Run verified scripts on the repair-vm. Run 'az vm repair run-list' to view available scripts.
     examples:
-        - name: Run the mitigation script with <mitigation-id> on the repair VM.
+        - name: Run the script with <run-id> on the repair VM.
           text: >
-            az vm repair mitigate -g MyResourceGroup -n MySourceVM --mitigation-id <mitigation-id> --verbose
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --verbose
+        - name: Run a script with parameters on the repair VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
+        - name: Run a custom script on the repair VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --custom_run_file ./file.ps1 -verbose
+"""
+
+helps['vm repair run-list'] = """
+    type: command
+    short-summary: List available scripts. Located https://github.com/Azure/repair-script-library.
+    examples:
+        - name: List scripts
+          text: >
+            az vm repair run-list --verbose
+        - name: List windows scripts only.
+          text: >
+            az vm repair run-list --query "[?starts_with(id, 'win')]"
+        - name: List scripts with test in its description.
+          text: >
+            az vm repair run-list --query "[?contains(description, 'test')]"
 """

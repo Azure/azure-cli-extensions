@@ -34,8 +34,8 @@ def load_arguments(self, _):
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
         c.argument('yes', help='Deletes the repair resources without confirmation.')
 
-    with self.argument_context('vm repair mitigate') as c:
+    with self.argument_context('vm repair run') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
-        c.argument('mitigation_id', help='Unique mitigation id for mitigation script.')
-        c.argument('custom_mitigation_file', help='Custom mitigation file to run on repair VM.')
-        c.argument('parameters', nargs='+', help="space-separated parameters in the format of '[name=]value'")
+        c.argument('run_id', help='Unique run id for mitigation script.')
+        c.argument('custom_run_file', help='Custom file to run on repair VM.')
+        c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'")

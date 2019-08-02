@@ -13,7 +13,7 @@ from json import loads
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-from .exceptions import AzCommandError, WindowsOsNotAvailableError, MitigationScriptNotFoundForIdError
+from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 # pylint: disable=line-too-long
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
@@ -199,7 +199,7 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
         .format(resource_type))
 
 
-def _fetch_mitigation_script_map():
+def _fetch_run_script_map():
 
     # Fetch map.json from GitHub
     response = requests.get(url=REPAIR_MAP_URL)
@@ -209,14 +209,14 @@ def _fetch_mitigation_script_map():
     return response.json()
 
 
-def _fetch_mitigation_script_path(mitigation_id):
+def _fetch_run_script_path(run_id):
 
-    map_json = _fetch_mitigation_script_map()
-    repair_script_path = [script['path'] for script in map_json if script['id'] == mitigation_id]
+    map_json = _fetch_run_script_map()
+    repair_script_path = [script['path'] for script in map_json if script['id'] == run_id]
     if repair_script_path:
         return repair_script_path[0]
     else:
-        raise MitigationScriptNotFoundForIdError('Mitigation not found for id: {}. Please validate if the id is correct.'.format(mitigation_id))
+        raise RunScriptNotFoundForIdError('Run-script not found for id: {}. Please validate if the id is correct.'.format(run_id))
 
 
 def _process_ps_parameters(parameters):

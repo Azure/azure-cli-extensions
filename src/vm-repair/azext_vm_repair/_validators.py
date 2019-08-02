@@ -93,25 +93,25 @@ def validate_restore(cmd, namespace):
             raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
 
 
-def validate_mitigate(cmd, namespace):
+def validate_run(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
     
-    # Check mitigation-id and custom mitigation file parameters
-    if not namespace.mitigation_id and not namespace.custom_mitigation_file:
-        raise CLIError('Please specify the mitigation id with --mitigation-id.')
-    if namespace.mitigation_id and namespace.custom_mitigation_file:
-        raise CLIError('Cannot run both the mitigation id and the custom mitigation file. Please specify just one.')
-    if namespace.custom_mitigation_file:
-        namespace.mitigation_id = 'no-op'
+    # Check run-id and custom run file parameters
+    if not namespace.run_id and not namespace.custom_run_file:
+        raise CLIError('Please specify the run id with --run-id.')
+    if namespace.run_id and namespace.custom_run_file:
+        raise CLIError('Cannot continue with both the run-id and the custom-run-file. Please specify just one.')
+    if namespace.custom_run_file:
+        namespace.run_id = 'no-op'
     
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
 
     # Check if the script type matches the OS
-    if not is_linux and namespace.mitigation_id.startswith('linux'):
+    if not is_linux and namespace.run_id.startswith('linux'):
         raise CLIError('Script IDs that start with \'linux\' are Linux Shell scripts. You cannot run linux Shell scripts on a Windows VM.')
-    elif is_linux and namespace.mitigation_id.startswith('win'):
+    elif is_linux and namespace.run_id.startswith('win'):
         raise CLIError('Script IDs that start with \'win\' are Windows PowerShell scripts. You cannot run Windows PowerShell scripts on a Linux VM.')
 
     if not namespace.repair_vm_id:
