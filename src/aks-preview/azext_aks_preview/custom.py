@@ -517,7 +517,9 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
-               no_wait=False):
+               no_wait=False,
+               acr_name=None,
+               acr_resource_group=None):
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -639,6 +641,29 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     # Check that both --disable-rbac and --enable-rbac weren't provided
     if all([disable_rbac, enable_rbac]):
         raise CLIError('specify either "--disable-rbac" or "--enable-rbac", not both.')
+
+    acr_rg = None
+    if acr_resource_group:
+        acr_rg = acr_resource_group
+    else:
+        acr_rg = resource_group_name
+
+    from msrestazure.tools import resource_id
+    acr_resource_id = resource_id(
+        subscription=subscription_id,
+        resource_group=acr_rg,
+        namespace='Microsoft.ContainerRegistry', type='registries',
+        name=acr_name
+    )
+
+    logger.info("ACR Resource ID: %s", acr_resource_id)
+
+    if acr_name:
+        _add_role_assignment(
+            cmd.cli_ctx,
+            "acrPull",
+            service_principal_profile.client_id,
+            scope=acr_resource_id)
 
     mc = ManagedCluster(
         location=location, tags=tags,
