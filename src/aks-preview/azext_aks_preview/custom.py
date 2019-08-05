@@ -656,8 +656,6 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         name=acr_name
     )
 
-    logger.info("ACR Resource ID: %s", acr_resource_id)
-
     if acr_name:
         _add_role_assignment(
             cmd.cli_ctx,
