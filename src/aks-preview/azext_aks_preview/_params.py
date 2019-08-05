@@ -101,6 +101,7 @@ def load_arguments(self, _):
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
             c.argument('os_type', type=str)
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
+            c.argument('priority', type=str)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

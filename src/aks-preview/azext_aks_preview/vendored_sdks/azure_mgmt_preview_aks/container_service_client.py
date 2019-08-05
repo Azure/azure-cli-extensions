@@ -129,6 +129,9 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
         elif api_version == '2019-04-01':
             from .v2019_04_01 import models
             return models
+        elif api_version == '2019-06-01':
+            from .v2019_06_01 import models
+            return models
         raise NotImplementedError("APIVersion {} is not available".format(api_version))
 
     @property
@@ -143,6 +146,8 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
             from .v2019_02_01.operations import AgentPoolsOperations as OperationClass
         elif api_version == '2019-04-01':
             from .v2019_04_01.operations import AgentPoolsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AgentPoolsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))

@@ -44,18 +44,18 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_06_01.models import ContainerServiceStorageProfileTypes
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -1185,7 +1185,8 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
-                      no_wait=False):
+                      no_wait=False,
+                      priority=None):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
@@ -1198,6 +1199,9 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         else:
             node_vm_size = "Standard_DS2_v2"
 
+    if priority is None:
+        priority = "Regular"
+
     agent_pool = AgentPool(
         name=nodepool_name,
         count=int(node_count),
@@ -1208,7 +1212,8 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
-        availability_zones=node_zones
+        availability_zones=node_zones,
+        scale_set_priority=priority
     )
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
