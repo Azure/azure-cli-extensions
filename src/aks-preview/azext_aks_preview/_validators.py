@@ -121,3 +121,20 @@ def validate_nodepool_name(namespace):
             raise CLIError('--nodepool-name can contain atmost 12 characters')
         if not namespace.nodepool_name.isalnum():
             raise CLIError('--nodepool-name should only contain alphanumeric characters')
+
+def validate_taints(namespace):
+    """Validates that provided taint is a valid format"""
+    # taints can come in three forms per https://github.com/kubernetes/kubernetes/blob/master/pkg/util/taints/taints.go
+    # key=value:effect, key=value, and key
+
+    if namespace.node_taints is not None:
+        if namespace.node_taints == '':
+            return
+        for taint in namespace.node_taints.split(','):
+            parts = taint.split(':')
+
+            if len(parts) > 2:
+                raise CLIError('Invalid taint format: {}'.format(taint))
+        
+            if parts[1] != "NoSchedule" and parts[1] != "PreferNoSchedule" and parts[1] != "NoExecute":
+                raise CLIError('Invalid taint effect: {}'.format(parts[1]))

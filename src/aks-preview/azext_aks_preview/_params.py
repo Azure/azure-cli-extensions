@@ -17,7 +17,7 @@ from ._completers import (
 from ._validators import (
     validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name)
+    validate_nodepool_name, validate_taints)
 
 
 def load_arguments(self, _):
@@ -101,6 +101,7 @@ def load_arguments(self, _):
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
             c.argument('os_type', type=str)
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
+            c.argument('node_taints', type=str, validator=validate_taints)
             c.argument('priority', type=str)
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
