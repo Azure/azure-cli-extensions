@@ -44,6 +44,8 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
+from azure.mgmt.containerregistry.models import (Registry,
+                                                 Sku as RegistrySku)
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceLinuxProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterWindowsProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceNetworkProfile
@@ -60,6 +62,7 @@ from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
+from ._client_factory import cf_container_registry_service
 
 logger = get_logger(__name__)
 
@@ -517,6 +520,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
+               enable_acr=False,
+               acr_name=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -578,6 +583,14 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     service_principal_profile = ManagedClusterServicePrincipalProfile(
         client_id=principal_obj.get("service_principal"),
         secret=principal_obj.get("client_secret"))
+
+    if enable_acr:
+        _ensure_aks_acr(cmd.cli_ctx,
+                        acr_name,
+                        location,
+                        principal_obj.get("service_principal"),
+                        resource_group_name,
+                        subscription_id)
 
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
@@ -1162,6 +1175,57 @@ def _create_client_secret():
     special_char = '$'
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret
+
+
+def _ensure_aks_acr(cli_ctx,
+                    acr_name,
+                    location,
+                    client_id,
+                    resource_group_name,
+                    subscription_id):
+    acr_client = cf_container_registry_service(cli_ctx)
+    # Generate a default ACR name.
+    registry_name = acr_name
+    if registry_name is None or registry_name == "":
+        alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
+        registry_name = "aks" + alnum_name + "acr"
+    # Get ACR by name.
+    try:
+        acr = acr_client.registries.get(resource_group_name, registry_name)
+    except CloudError as ex:
+        if 'was not found' in ex.message:
+            logger.info(ex.message)
+            logger.info('Creating a new ACR')
+            _ensure_aks_acr_created(acr_client=acr_client,
+                                    resource_group_name=resource_group_name,
+                                    registry_name=registry_name,
+                                    location=location)
+            acr = acr_client.registries.get(resource_group_name, registry_name)
+    except Exception as e:
+        logger.exception(e)
+        raise CLIError(e)
+
+    # Create role assignment for ACR.
+    if not _add_role_assignment(
+            cli_ctx,
+            'acrpull',
+            client_id,
+            scope=acr.id):
+        logger.warning('Could not create a role assignment for ACR. '
+                       'Are you an Owner on this subscription?')
+
+
+def _ensure_aks_acr_created(acr_client, resource_group_name, registry_name, location):
+    registry = Registry(name=registry_name, location=location, sku=RegistrySku(name="standard"))
+    try:
+        acr_client.registries.create(resource_group_name, registry_name, registry)
+    except CloudError as ex:
+        if 'already in use' in ex.message:
+            logger.info(ex.message)
+            raise CLIError("The registry name has already been in use. Please change to another name.")
+    except Exception as e:
+        logger.info(e)
+        raise CLIError(e)
 
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):

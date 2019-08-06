@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.7
++++++
+* Add support for `--enable-acr` and `--acr-name`
+
 0.4.4
 +++++
 * Add support for per node pool auto scaler settings.
