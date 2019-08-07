@@ -168,7 +168,7 @@ helps['aks create'] = """
         - name: Create a Kubernetes cluster with a larger node pool.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-count 7
         - name: Create a kubernetes cluster with preview api version and cluster autosclaler enabled.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.11.2 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.11.2 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5 --enable-vmss
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
