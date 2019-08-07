@@ -1210,22 +1210,21 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
             except ValueError:
                 raise CLIError('Taint is not well-formed.')
 
-    if priority is None:
-        priority = "Regular"
-    elif priority.lower() == "low":
-        # autoscaler is currently required, so if not explicitly configured, set it up implicitly
-        # and set min_count=max_count=node_count
-        
-        enable_cluster_autoscaler=True
+    if priority is not None and priority.lower() == "low":
+        # autoscaler is currently required for low-pri, so if not explicitly configured,
+        # set it up implicitly and set min_count=max_count=node_count
+
+        enable_cluster_autoscaler = True
 
         if min_count is None:
-            min_count=node_count
+            min_count = node_count
         if max_count is None:
-            max_count=node_count
+            max_count = node_count
 
-        # add low pri taint
-        taints_array.append("pooltype=lowpri:NoSchedule")
-
+        # add low pri taint if not already specified
+        low_pri_taint = "pooltype=lowpri:NoSchedule"
+        if low_pri_taint not in taints_array:
+            taints_array.append("pooltype=lowpri:NoSchedule")
 
     agent_pool = AgentPool(
         name=nodepool_name,
