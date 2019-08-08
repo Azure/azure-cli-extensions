@@ -160,6 +160,12 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --enable-acr
+          type: bool
+          short-summary: Grant the 'acrpull' role assignment for the ACR set by --acr-name.
+        - name: --acr-name
+          type: string
+          short-summary: The name of the ACR in AKS resource group. If it's empty and --enable-acr is true, then a new ACR with name 'aks<resource-group>acr' would be created.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
