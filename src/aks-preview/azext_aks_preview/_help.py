@@ -162,10 +162,10 @@ helps['aks create'] = """
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
         - name: --enable-acr
           type: bool
-          short-summary: Grant the 'acrpull' role assignment for the ACR set by --acr-name.
-        - name: --acr-name
+          short-summary: (PREVIEW) Grant the 'acrpull' role assignment for the ACR set by --acr.
+        - name: --acr
           type: string
-          short-summary: The name of the ACR in AKS resource group. If it's empty and --enable-acr is true, then a new ACR with name 'aks<resource-group>acr' would be created.
+          short-summary: (PREVIEW) ACR name in AKS resource group or ACR resource ID. If it's empty and --enable-acr is true, then a new ACR with name 'aks<resource-group>acr' would be created.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -227,6 +227,12 @@ helps['aks update'] = """
         - name: --disable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Disable pod security policy.
+        - name: --enable-acr
+          type: bool
+          short-summary: (PREVIEW) Grant the 'acrpull' role assignment for the ACR set by --acr.
+        - name: --acr
+          type: string
+          short-summary: (PREVIEW) ACR name in AKS resource group or ACR resource ID.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster

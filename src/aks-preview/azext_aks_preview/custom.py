@@ -33,6 +33,7 @@ import yaml  # pylint: disable=import-error
 import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
+from msrestazure.tools import is_valid_resource_id
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -521,7 +522,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                enable_pod_security_policy=False,
                node_resource_group=None,
                enable_acr=False,
-               acr_name=None,
+               acr=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -586,11 +587,12 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
 
     if enable_acr:
         _ensure_aks_acr(cmd.cli_ctx,
-                        acr_name,
+                        acr,
                         location,
                         principal_obj.get("service_principal"),
                         resource_group_name,
-                        subscription_id)
+                        subscription_id,
+                        create_acr=True)
 
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
@@ -692,16 +694,19 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                min_count=None, max_count=None, no_wait=False,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
-               disable_pod_security_policy=False):
+               disable_pod_security_policy=False,
+               enable_acr=False,
+               acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
-       (enable_pod_security_policy is False and disable_pod_security_policy is False):
+       (enable_pod_security_policy is False and disable_pod_security_policy is False) and enable_acr is False:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
-                       '"--api-server-authorized-ip-ranges"')
+                       '"--api-server-authorized-ip-ranges" or'
+                       '"--enable-acr"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
@@ -764,6 +769,17 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                     instance.api_server_authorized_ip_ranges.append(ip_net.with_prefixlen)
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
+
+    if enable_acr:
+        subscription_id = _get_subscription_id(cmd.cli_ctx)
+        location = instance.location
+        service_principal = instance.service_principal_profile.client_id
+        _ensure_aks_acr(cmd.cli_ctx,
+                        acr,
+                        location,
+                        service_principal,
+                        resource_group_name,
+                        subscription_id)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
@@ -1178,40 +1194,64 @@ def _create_client_secret():
 
 
 def _ensure_aks_acr(cli_ctx,
-                    acr_name,
+                    acr,
                     location,
                     client_id,
                     resource_group_name,
-                    subscription_id):
+                    subscription_id,
+                    create_acr=False):
+    if is_valid_resource_id(acr):
+        resources = cf_resources(cli_ctx, subscription_id)
+
+        # check if the ACR exists.
+        try:
+            resources.get_by_id(acr, "2019-05-01")
+        except CloudError as ex:
+            raise ex
+
+        # Create role assignment for ACR.
+        if not _add_role_assignment(cli_ctx,
+                                    'acrpull',
+                                    client_id,
+                                    scope=acr):
+            raise CLIError('Could not create a role assignment for ACR. '
+                           'Are you an Owner on this subscription?')
+        return
+
     acr_client = cf_container_registry_service(cli_ctx)
     # Generate a default ACR name.
-    registry_name = acr_name
+    registry_name = acr
     if registry_name is None or registry_name == "":
         alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
         registry_name = "aks" + alnum_name + "acr"
+
     # Get ACR by name.
     try:
-        acr = acr_client.registries.get(resource_group_name, registry_name)
+        registry = acr_client.registries.get(
+            resource_group_name, registry_name)
     except CloudError as ex:
         if 'was not found' in ex.message:
+            if not create_acr:
+                raise CLIError("ACR {} not found. Have you provided the right ACR name?".format(registry_name))
+
             logger.info(ex.message)
             logger.info('Creating a new ACR')
             _ensure_aks_acr_created(acr_client=acr_client,
                                     resource_group_name=resource_group_name,
                                     registry_name=registry_name,
                                     location=location)
-            acr = acr_client.registries.get(resource_group_name, registry_name)
+            registry = acr_client.registries.get(
+                resource_group_name, registry_name)
     except Exception as e:
         logger.exception(e)
         raise CLIError(e)
 
     # Create role assignment for ACR.
-    if not _add_role_assignment(
-            cli_ctx,
-            'acrpull',
-            client_id,
-            scope=acr.id):
-        logger.warning('Could not create a role assignment for ACR. '
+    if not _add_role_assignment(cli_ctx,
+                                'acrpull',
+                                client_id,
+                                scope=registry.id):
+        raise CLIError('Could not create a role assignment for ACR. '
                        'Are you an Owner on this subscription?')
 
 
