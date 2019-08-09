@@ -18,6 +18,7 @@ from knack.log import get_logger
 from knack.util import todict, CLIError, ensure_dir
 
 from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
+from azext_resourcegraph.vendored_sdks.resourcegraph.models import ResultTruncated
 from .vendored_sdks.resourcegraph import ResourceGraphClient
 from .vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponseException, ErrorResponse
@@ -54,6 +55,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
             __logger.warning("Failed to include displayNames to result. Error: " + str(e))
 
     try:
+        result_truncated = False
         while True:
             request_options = QueryRequestOptions(
                 top=min(first - len(results), __ROWS_PER_PAGE),
@@ -64,11 +66,20 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
 
             request = QueryRequest(query=full_query, subscriptions=subs_list, options=request_options)
             response = client.resources(request)  # type: QueryResponse
+            if response.result_truncated == ResultTruncated.true:
+                result_truncated = True
+
             skip_token = response.skip_token
             results.extend(response.data)
 
             if len(results) >= first or skip_token is None:
                 break
+
+        if result_truncated and len(results) < first:
+            __logger.warning("Unable to paginate the results of the query. "
+                             "Some resources may be missing from the results. "
+                             "To rewrite the query and enable paging, "
+                             "see the docs for an example: https://aka.ms/arg-results-truncated")
 
     except ErrorResponseException as ex:
         raise CLIError(json.dumps(_to_dict(ex.error), indent=4))
