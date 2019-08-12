@@ -78,9 +78,10 @@ def create_deploy_container_app(cmd, name, source_location=None, docker_custom_i
                        "without the --dryrun flag to create & deploy a new app")
         return create_json
 
-    logger.warning("Starting ACR build")
-    queue_acr_build(cmd, registry_rg, registry_name, img_name, source_location)
-    logger.warning("ACR build done. Deploying web app.")
+    if _create_acr_img:
+        logger.warning("Starting ACR build")
+        queue_acr_build(cmd, registry_rg, registry_name, img_name, source_location)
+        logger.warning("ACR build done. Deploying web app.")
 
     # create RG if the RG doesn't already exist
     if _create_new_rg:
