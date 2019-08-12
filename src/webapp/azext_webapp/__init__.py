@@ -31,6 +31,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
             g.custom_command('show-result', 'get_scan_result')
             g.custom_command('track', 'track_scan')
             g.custom_command('list-result', 'get_all_scan_result')
+            g.custom_command('stop', 'stop_scan')
 
         return self.command_table
 
