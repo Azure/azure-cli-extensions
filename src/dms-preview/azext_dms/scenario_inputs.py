@@ -72,7 +72,7 @@ def get_migrate_oracle_to_azuredbforpostgresql_sync_input(database_options_json,
     database_options = []
 
     for d in database_options_json:
-        case_manipulation=d.get('caseManipulation', None)
+        case_manipulation = d.get('caseManipulation', None)
         schema_name = d.get('schemaName', None)
         table_map = d.get('tableMap', None)
 

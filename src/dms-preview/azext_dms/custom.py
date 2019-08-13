@@ -227,7 +227,9 @@ def cutover_sync_task(
                                                              resource_group_name=resource_group_name)
     st = get_scenario_type(source_platform, target_platform, "onlinemigration")
 
-    if st in [ScenarioType.mysql_azuremysql_online, ScenarioType.postgres_azurepostgres_online, ScenarioType.oracle_azurepostgres_online]:
+    if st in [ScenarioType.mysql_azuremysql_online,
+              ScenarioType.postgres_azurepostgres_online,
+              ScenarioType.oracle_azurepostgres_online]:
         if object_name is None:
             raise CLIError("The argument 'object_name' must be present for this task type.")
         command_input = MigrateSyncCompleteCommandInput(database_name=object_name)
@@ -515,7 +517,8 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
         scenario_type = ScenarioType.mongo_mongo_validation if "validation" in task_type else \
             ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline
     elif source_platform == "oracle" and target_platform == "azuredbforpostgresql":
-        scenario_type = ScenarioType.oracle_azurepostgres_online if "online" in task_type else ScenarioType.oracle_azurepostgres_offline
+        scenario_type = ScenarioType.oracle_azurepostgres_online if "online" in task_type else \
+            ScenarioType.oracle_azurepostgres_offline
     else:
         scenario_type = ScenarioType.unknown
 
