@@ -140,19 +140,20 @@ def load_command_table(self, _):
     with self.command_group('network front-door waf-policy managed-rules override', waf_policy_sdk) as g:
         g.custom_command('add', 'add_override_azure_managed_rule_set')
         g.custom_command('remove', 'remove_override_azure_managed_rule_set')
+        g.custom_command('list', 'list_override_azure_managed_rule_set')
 
     with self.command_group('network front-door waf-policy managed-rule-definition', waf_policy_sdk) as g:
         g.custom_command('list', 'list_managed_rules_definitions')
 
-    with self.command_group('network front-door waf-policy rule', waf_policy_sdk) as g:
-        g.custom_command('create', 'create_wp_custom_rule', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
-        g.custom_command('update', 'update_wp_custom_rule', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
-        g.custom_command('delete', 'delete_wp_custom_rule', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
-        g.custom_command('list', 'list_wp_custom_rules', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
-        g.custom_command('show', 'show_wp_custom_rule', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
+    with self.command_group('network front-door waf-policy rule', waf_policy_sdk, supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models') as g:
+        g.custom_command('create', 'create_wp_custom_rule')
+        g.custom_command('update', 'update_wp_custom_rule')
+        g.custom_command('delete', 'delete_wp_custom_rule')
+        g.custom_command('list', 'list_wp_custom_rules')
+        g.custom_command('show', 'show_wp_custom_rule')
 
-    with self.command_group('network front-door waf-policy rule match-condition', waf_policy_sdk) as g:
-        g.custom_command('add', 'add_custom_rule_match_condition', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
-        g.custom_command('remove', 'remove_custom_rule_match_condition', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
-        g.custom_command('list', 'list_custom_rule_match_conditions', supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models')
+    with self.command_group('network front-door waf-policy rule match-condition', waf_policy_sdk, supports_local_cache=True, model_path='azext_front_door.vendored_sdks.models') as g:
+        g.custom_command('add', 'add_custom_rule_match_condition')
+        g.custom_command('remove', 'remove_custom_rule_match_condition')
+        g.custom_command('list', 'list_custom_rule_match_conditions')
     # endregion
