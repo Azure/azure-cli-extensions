@@ -95,6 +95,10 @@ def validate_restore(cmd, namespace):
 
 def validate_run(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
+
+    # Set run_on_repair to True if repair_vm_id given
+    if namespace.repair_vm_id:
+        namespace.run_on_repair = True
     
     # Check run-id and custom run file parameters
     if not namespace.run_id and not namespace.custom_run_file:
@@ -118,6 +122,7 @@ def validate_run(cmd, namespace):
     
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+
     is_linux = _is_linux_os(source_vm)
 
     # Check if the script type matches the OS
@@ -126,8 +131,13 @@ def validate_run(cmd, namespace):
     elif is_linux and namespace.run_id.startswith('win'):
         raise CLIError('Script IDs that start with \'win\' are Windows PowerShell scripts. You cannot run Windows PowerShell scripts on a Linux VM.')
 
-    if not namespace.repair_vm_id:
+    # Fetch repair vm
+    if namespace.run_on_repair and not namespace.repair_vm_id:
        fetch_repair_vm(namespace)
+
+    # If not run_on_repair, repair_vm = source_vm. Scripts directly run on source VM.
+    if not namespace.run_on_repair:
+        namespace.repair_vm_id = source_vm.id
     
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')

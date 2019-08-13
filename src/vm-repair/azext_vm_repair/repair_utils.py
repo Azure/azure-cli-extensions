@@ -255,7 +255,7 @@ def _parse_run_script_raw_logs(log_string):
     """
     pattern = r'((?=\[(?:Log-Start|Log-End|Output|Info|Warning|Error|Debug) ' \
                '[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\])|(?=\[STATUS\]))'
-    log_list = re.split(pattern, log_string)
+    log_list = _regex_split(pattern, log_string)
     # Remove empty strings in logs
     log_list = list(filter(None, log_list))
     # Format them in dictionary to parse out level
@@ -263,10 +263,24 @@ def _parse_run_script_raw_logs(log_string):
     for log in log_list:
         log_dict = {}
         log_dict['message'] = log.strip('\n')
-        log_dict['level'] = log.split(' ', 1)[0][1:]
+        # Set log level property
+        if '[STATUS]::' in log_dict['message']:
+            log_dict['level'] = 'STATUS'
+        else:
+            log_dict['level'] = log_dict['message'].split(' ', 1)[0][1:]
         logs_dict_list.append(log_dict)
 
     return logs_dict_list
+
+
+def _regex_split(pattern, string):
+    """
+    Custom split function for zero width split fix.
+    """
+    splits = list((m.start(), m.end()) for m in re.finditer(pattern, string))
+    starts = [0] + [i[1] for i in splits]
+    ends = [i[0] for i in splits] + [len(string)]
+    return [string[start:end] for start, end in zip(starts, ends)]
 
 
 def _check_script_succeeded(log_string):

@@ -136,3 +136,45 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copiedDiskUri']
+
+
+class WindowsRunHelloWorldTest(ScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_win_hello_world(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test create
+        result = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world').get_output_in_json()
+
+        # Check Output
+        assert 'Hello World!' in result['output']
+
+
+class LinuxRunHelloWorldTest(ScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_linux_hello_world(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image UbuntuLTS --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg}').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test create
+        result = self.cmd('vm repair run -g {rg} -n {vm} --run-id linux-hello-world').get_output_in_json()
+
+        # Check Output
+        assert 'Hello World!' in result['output']

@@ -276,7 +276,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_run_file=None, parameters=None):
+def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_run_file=None, parameters=None, run_on_repair=False):
 
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
@@ -300,6 +300,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             run_script = os.path.join(rootpath, 'scripts', 'win-run-repair.ps1')
             command_id = 'RunPowerShellScript'
 
+        # If run_on_repair is False, then repair_vm is the source_vm (scripts run directly on source vm)
         repair_vm_id = parse_resource_id(repair_vm_id)
         repair_vm_name = repair_vm_id['name']
         repair_resource_group = repair_vm_id['resource_group']
@@ -327,9 +328,8 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             param_string = param_string.replace(' ', '{space}')
             repair_run_command += ' params="{}"'.format(param_string)
 
-        logger.info('Running repair scripts within repair VM...')
+        logger.info('Running script on VM: %s', repair_vm_name)
         return_str = _call_az_command(repair_run_command)
-
         # Extract stdout and stderr, if stderr exists then possible error
         run_command_return = json.loads(return_str)
 
@@ -363,20 +363,20 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         if run_script_succeeded:
             message = 'Script completed without error.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'output'])
+            logger.info('\nScript returned with output:\n%s\n', output)
         else:
             message = 'Script returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
+            logger.error('\nScript returned with error:\n%s\n', output)
 
         logger.debug("stderr: %s", stderr)
-
-        logger.info('\nScript returned with output:\n%s\n', output)
 
         return_dict['message'] = message
         return_dict['logs'] = stdout
         return_dict['logFullpath'] = log_fullpath
         return_dict['output'] = output
-        return_dict['repairVmName'] = repair_vm_id['name']
-        return_dict['repairResouceGroup'] = repair_vm_id['resource_group']
+        return_dict['vmName'] = repair_vm_name
+        return_dict['resouceGroup'] = repair_resource_group
         command_succeeded = True
 
     except KeyboardInterrupt:

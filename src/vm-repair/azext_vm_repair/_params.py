@@ -36,6 +36,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vm repair run') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
-        c.argument('run_id', help='Unique run id for mitigation script.')
+        c.argument('run_id', help='Unique run id for run scripts.')
         c.argument('custom_run_file', help='Custom file to run on repair VM.')
         c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'")
+        c.argument('run_on_repair', help="Script will be run on the linked repair VM.")
