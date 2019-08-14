@@ -72,8 +72,8 @@ def load_arguments(self, _):
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
-        c.argument('enable_acr', is_preview=True)
-        c.argument('acr_name', is_preview=True)
+        c.argument('enable_acr')
+        c.argument('acr')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -84,6 +84,8 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
+        c.argument('enable_acr')
+        c.argument('acr')
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
