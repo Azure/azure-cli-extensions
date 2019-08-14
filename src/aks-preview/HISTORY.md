@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.8
++++++
+* Add update support for `--enable-acr` together with `--acr <name-or-id>`
+* Merge `az aks create --acr-name` into `az aks create --acr <name-or-id>`
+
 0.4.7
 +++++
 * Add support for `--enable-acr` and `--acr-name`
