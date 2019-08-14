@@ -916,60 +916,94 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
 
 
 def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, resource_group_name):
+    # mapping for azure public cloud
     # log analytics workspaces cannot be created in WCUS region due to capacity limits
     # so mapped to EUS per discussion with log analytics team
-    AzureLocationToOmsRegionCodeMap = {
-        "eastus": "EUS",
-        "westeurope": "WEU",
-        "southeastasia": "SEA",
+    AzureCloudLocationToOmsRegionCodeMap = {
         "australiasoutheast": "ASE",
-        "usgovvirginia": "USGV",
-        "westcentralus": "EUS",
-        "japaneast": "EJP",
-        "uksouth": "SUK",
+        "australiaeast": "EAU",
+        "australiacentral": "CAU",
         "canadacentral": "CCA",
         "centralindia": "CIN",
-        "eastus2euap": "EAP"
+        "centralus": "CUS",
+        "eastasia": "EA",
+        "eastus": "EUS",
+        "eastus2": "EUS2",
+        "eastus2euap": "EAP",
+        "francecentral": "PAR",
+        "japaneast": "EJP",
+        "koreacentral": "SE",
+        "northeurope": "NEU",
+        "southcentralus": "SCUS",
+        "southeastasia": "SEA",
+        "uksouth": "SUK",
+        "usgovvirginia": "USGV",
+        "westcentralus": "EUS",
+        "westeurope": "WEU",
+        "westus": "WUS",
+        "westus2": "WUS2"
     }
-    AzureRegionToOmsRegionMap = {
-        "australiaeast": "australiasoutheast",
+    AzureCloudRegionToOmsRegionMap = {
+        "australiacentral": "australiacentral",
+        "australiacentral2": "australiacentral",
+        "australiaeast": "australiaeast",
         "australiasoutheast": "australiasoutheast",
-        "brazilsouth": "eastus",
+        "brazilsouth": "southcentralus",
         "canadacentral": "canadacentral",
         "canadaeast": "canadacentral",
-        "centralus": "eastus",
-        "eastasia": "southeastasia",
+        "centralus": "centralus",
+        "centralindia": "centralindia",
+        "eastasia": "eastasia",
         "eastus": "eastus",
-        "eastus2": "eastus",
+        "eastus2": "eastus2",
+        "francecentral": "francecentral",
+        "francesouth": "francecentral",
         "japaneast": "japaneast",
         "japanwest": "japaneast",
+        "koreacentral": "koreacentral",
+        "koreasouth": "koreacentral",
         "northcentralus": "eastus",
-        "northeurope": "westeurope",
-        "southcentralus": "eastus",
+        "northeurope": "northeurope",
+        "southafricanorth": "westeurope",
+        "southafricawest": "westeurope",
+        "southcentralus": "southcentralus",
         "southeastasia": "southeastasia",
+        "southindia": "centralindia",
         "uksouth": "uksouth",
         "ukwest": "uksouth",
         "westcentralus": "eastus",
         "westeurope": "westeurope",
-        "westus": "eastus",
-        "westus2": "eastus",
-        "centralindia": "centralindia",
-        "southindia": "centralindia",
         "westindia": "centralindia",
-        "koreacentral": "southeastasia",
-        "koreasouth": "southeastasia",
-        "francecentral": "westeurope",
-        "francesouth": "westeurope"
+        "westus": "westus",
+        "westus2": "westus2"
+    }
+
+    # mapping for azure china cloud
+    # log analytics only support China East2 region
+    AzureChinaLocationToOmsRegionCodeMap = {
+        "chinaeast": "EAST2",
+        "chinaeast2": "EAST2",
+        "chinanorth": "EAST2",
+        "chinanorth2": "EAST2"
+    }
+    AzureChinaRegionToOmsRegionMap = {
+        "chinaeast": "chinaeast2",
+        "chinaeast2": "chinaeast2",
+        "chinanorth": "chinaeast2",
+        "chinanorth2": "chinaeast2"
     }
 
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
-    default_region_name = "eastus"
-    default_region_code = "EUS"
+    cloud_name = cmd.cli_ctx.cloud.name
 
-    workspace_region = AzureRegionToOmsRegionMap[
-        rg_location] if AzureRegionToOmsRegionMap[rg_location] else default_region_name
-    workspace_region_code = AzureLocationToOmsRegionCodeMap[
-        workspace_region] if AzureLocationToOmsRegionCodeMap[workspace_region] else default_region_code
+    if cloud_name.lower() == 'azurecloud':
+        workspace_region = AzureCloudRegionToOmsRegionMap.get(rg_location, "eastus")
+        workspace_region_code = AzureCloudLocationToOmsRegionCodeMap.get(workspace_region, "EUS")
+    elif cloud_name.lower() == 'azurechinacloud':
+        workspace_region = AzureChinaRegionToOmsRegionMap.get(rg_location, "chinaeast2")
+        workspace_region_code = AzureChinaLocationToOmsRegionCodeMap.get(workspace_region, "EAST2")
+    else:
+        logger.error("AKS Monitoring addon not supported in cloud : %s", cloud_name)
 
     default_workspace_resource_group = 'DefaultResourceGroup-' + workspace_region_code
     default_workspace_name = 'DefaultWorkspace-{0}-{1}'.format(subscription_id, workspace_region_code)
@@ -1012,10 +1046,11 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
 
 
 def _ensure_container_insights_for_monitoring(cmd, addon):
-    workspace_resource_id = addon.config['logAnalyticsWorkspaceResourceID']
+    # workaround for this addon key which has been seen lowercased in the wild
+    if 'loganalyticsworkspaceresourceid' in addon.config:
+        addon.config['logAnalyticsWorkspaceResourceID'] = addon.config.pop('loganalyticsworkspaceresourceid')
 
-    workspace_resource_id = workspace_resource_id.strip()
-
+    workspace_resource_id = addon.config['logAnalyticsWorkspaceResourceID'].strip()
     if not workspace_resource_id.startswith('/'):
         workspace_resource_id = '/' + workspace_resource_id
 
