@@ -9,7 +9,7 @@ az extension add --name aks-preview
 
 ## Included Features
 ### Cluster Auto Scaler:
-[more info](https://docs.microsoft.com/en-us/azure/aks/autoscaler)
+[more info](https://docs.microsoft.com/azure/aks/autoscaler)
 
 
 #### create aks cluster with enabled cluster autoscaler

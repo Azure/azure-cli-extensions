@@ -145,7 +145,7 @@ class FileService(StorageClient):
         :param str connection_string:
             If specified, this will override all other parameters besides
             request session. See
-            http://azure.microsoft.com/en-us/documentation/articles/storage-configure-connection-string/
+            http://azure.microsoft.com/documentation/articles/storage-configure-connection-string/
             for the connection string format.
         :param int socket_timeout:
             If specified, this will override the default socket timeout. The timeout specified is in seconds.
