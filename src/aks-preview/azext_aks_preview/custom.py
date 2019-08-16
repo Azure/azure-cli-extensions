@@ -34,6 +34,7 @@ import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import is_valid_resource_id
+from distutils.version import LooseVersion, StrictVersion
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -47,18 +48,23 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     GetObjectsParameters)
 from azure.mgmt.containerregistry.models import (Registry,
                                                  Sku as RegistrySku)
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -496,7 +502,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                no_ssh_key=False,
                disable_rbac=None,
                enable_rbac=None,
-               enable_vmss=None,
+               agent_pool_availability_type=None,
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
                network_plugin=None,
@@ -505,7 +511,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku="basic",
+               load_balancer_sku=None,
+               load_balancer_managed_outbound_ip_count=None,
+               load_balancer_outbound_ips=None,
+               load_balancer_outbound_ip_prefixes=None,
                enable_addons=None,
                workspace_resource_id=None,
                min_count=None,
@@ -524,6 +533,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                enable_acr=False,
                acr=None,
                no_wait=False):
+    
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -540,6 +550,29 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if location is None:
         location = rg_location
 
+    if not agent_pool_availability_type:
+        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
+            print("Setting agent_pool_availability_type to availabilityset as it is not specified and kubernetes version(%s) less than 1.12.9 only supports availabilityset\n"%(kubernetes_version))
+            agent_pool_availability_type = "AvailabilitySet"
+
+    if not agent_pool_availability_type:
+        agent_pool_availability_type = "VirtualMachineScaleSets"
+
+    # normalize as server validation is case-sensitive
+    if agent_pool_availability_type.lower() == "AvailabilitySet".lower():
+        agent_pool_availability_type = "AvailabilitySet"
+
+    if agent_pool_availability_type.lower() == "VirtualMachineScaleSets".lower():
+        agent_pool_availability_type = "VirtualMachineScaleSets"
+
+    if not load_balancer_sku:
+        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
+            print("Setting load_balancer_sku to basic as it is not specified and kubernetes version(%s) less than 1.13.0 only supports basic load balancer SKU\n"%(kubernetes_version))
+            load_balancer_sku = "basic"
+
+    if not load_balancer_sku:
+        load_balancer_sku = "standard"
+
     agent_pool_profile = ManagedClusterAgentPoolProfile(
         name=_trim_nodepoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
         count=int(node_count),
@@ -547,11 +580,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         os_type="Linux",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
-        max_pods=int(max_pods) if max_pods else None
+        max_pods=int(max_pods) if max_pods else None,
+        type=agent_pool_availability_type
     )
 
-    if enable_vmss:
-        agent_pool_profile.type = "VirtualMachineScaleSets"
     if node_osdisk_size:
         agent_pool_profile.os_disk_size_gb = int(node_osdisk_size)
 
@@ -604,6 +636,27 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                 scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
+    
+    load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
+    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes)
+
+    load_balancer_profile = None
+    if any([load_balancer_managed_outbound_ip_count,
+            load_balancer_outbound_ip_resources,
+            load_balancer_outbound_ip_prefix_resources]):            
+        load_balancer_profile = ManagedClusterLoadBalancerProfile()
+        if load_balancer_managed_outbound_ip_count:
+            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                count = load_balancer_managed_outbound_ip_count
+            )
+        if load_balancer_outbound_ip_resources:
+            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_ips = load_balancer_outbound_ip_resources
+            )
+        if load_balancer_outbound_ip_prefix_resources:
+            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes = load_balancer_outbound_ip_prefix_resources
+            )
 
     network_profile = None
     if any([network_plugin,
@@ -615,7 +668,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         if not network_plugin:
             raise CLIError('Please explicitly specify the network plugin type')
         if pod_cidr and network_plugin == "azure":
-            raise CLIError('Please use kubenet as the network plugin type when pod_cidr is specified')
+            raise CLIError('Please use kubenet as the network plugin type when pod_cidr is specified')            
         network_profile = ContainerServiceNetworkProfile(
             network_plugin=network_plugin,
             pod_cidr=pod_cidr,
@@ -623,13 +676,15 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             dns_service_ip=dns_service_ip,
             docker_bridge_cidr=docker_bridge_address,
             network_policy=network_policy,
-            load_balancer_sku=load_balancer_sku.lower()
+            load_balancer_sku=load_balancer_sku.lower(),
+            load_balancer_profile=load_balancer_profile,
         )
     else:
-        if load_balancer_sku.lower() == "standard":
+        if load_balancer_sku.lower() == "standard" or load_balancer_profile:
             network_profile = ContainerServiceNetworkProfile(
                 network_plugin="kubenet",
-                load_balancer_sku=load_balancer_sku.lower()
+                load_balancer_sku=load_balancer_sku.lower(),
+                load_balancer_profile=load_balancer_profile,
             )
 
     addon_profiles = _handle_addons_args(
@@ -692,6 +747,9 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False,
+               load_balancer_managed_outbound_ip_count=None,
+               load_balancer_outbound_ips=None,
+               load_balancer_outbound_ip_prefixes=None,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
@@ -759,6 +817,28 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.enable_pod_security_policy = True
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
+    
+    load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
+    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes)
+    load_balancer_profile = None
+    if any([load_balancer_managed_outbound_ip_count,
+            load_balancer_outbound_ip_resources,
+            load_balancer_outbound_ip_prefix_resources]):            
+        load_balancer_profile = ManagedClusterLoadBalancerProfile()
+        if load_balancer_managed_outbound_ip_count:
+            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                count = load_balancer_managed_outbound_ip_count
+            )
+        if load_balancer_outbound_ip_resources:
+            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_ips = load_balancer_outbound_ip_resources
+            )
+        if load_balancer_outbound_ip_prefix_resources:
+            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes = load_balancer_outbound_ip_prefix_resources
+            )
+    if load_balancer_profile:
+        instance.network_profile.load_balancer_profile = load_balancer_profile
 
     if api_server_authorized_ip_ranges is not None:
         instance.api_server_authorized_ip_ranges = []
@@ -1648,3 +1728,26 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace):
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
     print(msg)
+
+
+def _validate_and_get_outbound_ips(load_balancer_outbound_ips):
+    """validate load balancer profile outbound IP ids and return an array of references to the outbound IP resources"""
+    load_balancer_outbound_ip_resources = None
+    if load_balancer_outbound_ips:
+        ip_id_list = [x.strip() for x in load_balancer_outbound_ips.split(',')]
+        if not all(ip_id_list):
+            raise CLIError("Load balancer outbound IP ID cannot be whitespace")
+        load_balancer_outbound_ip_resources = [ResourceReference(id = x) for x in ip_id_list]
+    return load_balancer_outbound_ip_resources
+
+
+def _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
+    """validate load balancer profile outbound IP prefix ids and return an array of references to the outbound IP prefix resources"""
+    load_balancer_outbound_ip_prefix_resources = None
+    if load_balancer_outbound_ip_prefixes:
+        ip_prefix_id_list = [x.strip() for x in load_balancer_outbound_ip_prefixes.split(',')]
+        if not all(ip_prefix_id_list):
+            raise CLIError("Load balancer outbound IP prefix ID cannot be whitespace")
+        load_balancer_outbound_ip_prefix_resources = [ResourceReference(id = x) for x in ip_prefix_id_list]
+    return load_balancer_outbound_ip_prefix_resources 
+
