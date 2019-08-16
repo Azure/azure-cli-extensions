@@ -292,3 +292,16 @@ def _check_script_succeeded(log_string):
         return True
     else:
         return False
+
+
+def _handle_command_error(return_error_detail, return_message):
+    """Output the right error message and reuturn error return dict"""
+    return_dict = {}
+    if return_error_detail:
+            logger.error(return_error_detail)
+    if return_message:
+        logger.error(return_message)
+    return_dict['status'] = 'ERROR'
+    return_dict['message'] = return_message
+    return_dict['errorDetail'] = return_error_detail
+    return return_dict

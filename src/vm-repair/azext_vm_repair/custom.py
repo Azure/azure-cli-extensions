@@ -26,7 +26,8 @@ from .repair_utils import (
     _process_ps_parameters,
     _process_bash_parameters,
     _parse_run_script_raw_logs,
-    _check_script_succeeded
+    _check_script_succeeded,
+    _handle_command_error
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 
@@ -40,6 +41,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
+    # Initialize return variables
+    return_message = ''
+    return_error_detail = ''
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -63,7 +67,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
+        create_repair_vm_command = 'az vm creates -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
                                    .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
         # Add username field only for Windows
         if not is_linux:
@@ -157,32 +161,38 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Some error happened. Stop command and clean-up resources.
     except KeyboardInterrupt:
-        logger.error("Command interrupted by user input. Cleaning up resources.")
+        return_error_detail = "Command interrupted by user input."
+        return_message = "Command interrupted by user input. Cleaning up resources."
     except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        logger.error("Repair create failed. Cleaning up created resources.")
+        return_error_detail = str(azCommandError)
+        return_message = "Repair create failed. Cleaning up created resources."
     except SkuNotAvailableError as skuNotAvailableError:
-        logger.error(skuNotAvailableError)
-        logger.error("Please check if the current subscription can create more VM resources. Cleaning up created resources.")
+        return_error_detail = str(skuNotAvailableError)
+        return_message = "Please check if the current subscription can create more VM resources. Cleaning up created resources."
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
-        logger.error(unmanagedDiskCopyError)
-        logger.error("Repair create failed. Please try again at another time. Cleaning up created resources.")
+        return_error_detail = str(unmanagedDiskCopyError)
+        return_message= "Repair create failed. Please try again at another time. Cleaning up created resources."
     except WindowsOsNotAvailableError:
-        logger.error('A compatible Windows OS image is not available at this time, please check subscription.')
+        return_error_detail = 'Compatible Windows OS image not available.'
+        return_message = 'A compatible Windows OS image is not available at this time, please check subscription.'
     except Exception as exception:
-        logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
-        logger.debug(exception)
+        return_error_detail = str(exception)
+        return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
 
+    # Command failed block. Output right error message and return dict
     if not command_succeeded:
+        return_dict = _handle_command_error(return_error_detail, return_message)
         _clean_up_resources(repair_group_name, confirm=False)
-        return None
+
+        return return_dict
 
     # Construct return dict
     created_resources.append(copy_disk_id)
     return_dict = {}
+    return_dict['status']= 'SUCCESS'
     return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
                              'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
                              '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
@@ -204,6 +214,9 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
+    # Initialize return variables
+    return_message = ''
+    return_error_detail = ''
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(source_vm)
@@ -252,22 +265,25 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         _clean_up_resources(repair_resource_group, confirm=not yes)
         command_succeeded = True
     except KeyboardInterrupt:
-        logger.error("Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
+        return_error_detail = "Command interrupted by user input."
+        return_message = "Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
     except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        logger.error("Repair create failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'.")
+        return_error_detail = str(azCommandError)
+        return_message = "Repair restore failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
     except Exception as exception:
-        logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
-        logger.debug(exception)
+        return_error_detail = str(exception)
+        return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
-        return None
+        return_dict = _handle_command_error(return_error_detail, return_message)
+        return return_dict
 
     # Construct return dict
     return_dict = {}
+    return_dict['status']= 'SUCCESS'
     return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
                              'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
                              .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
@@ -281,6 +297,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
+    # Initialize return variables
+    return_message = ''
+    return_error_detail = ''
 
     # Overall success flag
     command_succeeded = False
@@ -294,10 +313,10 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         rootpath = os.path.dirname(mod.__file__)
         is_linux = _is_linux_os(source_vm)
         if is_linux:
-            run_script = os.path.join(rootpath, 'scripts', 'linux-run-repair.sh')
+            run_script = os.path.join(rootpath, 'scripts', 'linux-run-driver.sh')
             command_id = 'RunShellScript'
         else:
-            run_script = os.path.join(rootpath, 'scripts', 'win-run-repair.ps1')
+            run_script = os.path.join(rootpath, 'scripts', 'win-run-driver.ps1')
             command_id = 'RunPowerShellScript'
 
         # If run_on_repair is False, then repair_vm is the source_vm (scripts run directly on source vm)
@@ -371,6 +390,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
         logger.debug("stderr: %s", stderr)
 
+        return_dict['status'] = 'SUCCESS'
         return_dict['message'] = message
         return_dict['logs'] = stdout
         return_dict['logFullpath'] = log_fullpath
@@ -378,20 +398,21 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_dict['vmName'] = repair_vm_name
         return_dict['resouceGroup'] = repair_resource_group
         command_succeeded = True
-
     except KeyboardInterrupt:
-        logger.error("Command interrupted by user input.")
+        return_error_detail = "Command interrupted by user input."
+        return_message = "Repair run failed. Command interrupted by user input."
     except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        logger.error("Repair run script failed.")
+        return_error_detail = str(azCommandError)
+        return_message = "Repair run failed."
     except requests.exceptions.RequestException as exception:
-        logger.error(exception)
-        logger.error("Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library")
+        return_error_detail = str(exception)
+        return_message = "Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library"
     except RunScriptNotFoundForIdError as exception:
-        logger.error(exception)
+        return_error_detail = str(exception)
+        return_message = "Repair run failed. Run ID not found."
     except Exception as exception:
-        logger.error('An unexpected error occurred. Try running again with the --debug flag to debug.')
-        logger.debug(exception)
+        return_error_detail = str(exception)
+        return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
@@ -399,9 +420,31 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         logger.info('')
 
     if not command_succeeded:
-        return None
+        return_dict = _handle_command_error(return_error_detail, return_message)
 
     return return_dict
 
+
 def run_list(cmd):
-    return _fetch_run_script_map()
+    # Initialize return variables
+    return_message = ''
+    return_error_detail = ''
+    # Overall success flag
+    command_succeeded = False
+    try:
+        run_map = _fetch_run_script_map()
+        return_dict = {}
+        return_dict['status'] = 'SUCCESS'
+        return_dict['map'] = run_map
+        command_succeeded = True
+    except requests.exceptions.RequestException as exception:
+        return_error_detail = str(exception)
+        return_message = "Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library"
+    except Exception as exception:
+        return_error_detail = str(exception)
+        return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+
+    if not command_succeeded:
+        return_dict = _handle_command_error(return_error_detail, return_message)
+
+    return return_dict
