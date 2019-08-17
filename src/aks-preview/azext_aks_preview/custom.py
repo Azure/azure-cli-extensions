@@ -4,27 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import print_function
-import binascii
-import datetime
-import errno
-import json
-import os
-import os.path
-import platform
-import re
-import ssl
-import stat
-import subprocess
-import sys
-import tempfile
-import threading
-import time
-import uuid
-import webbrowser
-import requests
-import yaml  # pylint: disable=import-error
-import dateutil.parser  # pylint: disable=import-error
-
 from ipaddress import ip_network
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
@@ -32,6 +11,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
+from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import is_valid_resource_id
 from distutils.version import StrictVersion  # pylint: disable=import-error
@@ -70,6 +50,27 @@ from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
 from ._client_factory import cf_container_registry_service
+
+import binascii
+import datetime
+import errno
+import json
+import os
+import os.path
+import platform
+import re
+import ssl
+import stat
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import uuid
+import webbrowser
+import requests
+import yaml  # pylint: disable=import-error
+
 
 logger = get_logger(__name__)
 
@@ -278,12 +279,12 @@ def _build_application_creds(password=None, key_value=None, key_type=None,
     if not start_date:
         start_date = datetime.datetime.utcnow()
     elif isinstance(start_date, str):
-        start_date = dateutil.parser.parse(start_date)
+        start_date = parser.parse(start_date)
 
     if not end_date:
         end_date = start_date + relativedelta(years=1)
     elif isinstance(end_date, str):
-        end_date = dateutil.parser.parse(end_date)
+        end_date = parser.parse(end_date)
 
     key_type = key_type or 'AsymmetricX509Cert'
     key_usage = key_usage or 'Verify'
@@ -569,7 +570,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
 
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
-            print("Setting load_balancer_sku to basic as it is not specified and kubernetes version(%s) less than 1.13.0 only supports basic load balancer SKU\n"%(kubernetes_version))
+            print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
+            version(%s) less than 1.13.0 only supports basic load balancer SKU\n'%(kubernetes_version))
             load_balancer_sku = "basic"
 
     if not load_balancer_sku:
@@ -640,7 +642,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                            'Are you an Owner on this subscription?')
 
     load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
-    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes)
+    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(
+        load_balancer_outbound_ip_prefixes)
 
     load_balancer_profile = None
     if any([load_balancer_managed_outbound_ip_count,
@@ -821,7 +824,8 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.enable_pod_security_policy = False
 
     load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
-    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes)
+    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(
+        load_balancer_outbound_ip_prefixes)
     load_balancer_profile = None
     if any([load_balancer_managed_outbound_ip_count,
             load_balancer_outbound_ip_resources,
@@ -1779,12 +1783,12 @@ def _validate_and_get_outbound_ips(load_balancer_outbound_ips):
 
 
 def _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
-    """validate load balancer profile outbound IP prefix ids and return an array of references to the outbound IP prefix resources"""
+    """validate load balancer profile outbound IP prefix ids and return an array \
+    of references to the outbound IP prefix resources"""
     load_balancer_outbound_ip_prefix_resources = None
     if load_balancer_outbound_ip_prefixes:
         ip_prefix_id_list = [x.strip() for x in load_balancer_outbound_ip_prefixes.split(',')]
         if not all(ip_prefix_id_list):
             raise CLIError("Load balancer outbound IP prefix ID cannot be whitespace")
         load_balancer_outbound_ip_prefix_resources = [ResourceReference(id=x) for x in ip_prefix_id_list]
-    return load_balancer_outbound_ip_prefix_resources 
-
+    return load_balancer_outbound_ip_prefix_resources
