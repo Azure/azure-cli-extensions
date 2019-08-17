@@ -4,7 +4,29 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import print_function
+
+import binascii
+import datetime
+import errno
+import json
+import os
+import os.path
+import platform
+import re
+import ssl
+import stat
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import uuid
+import webbrowser
+import requests
+import yaml  # pylint: disable=import-error
+
 from ipaddress import ip_network
+from distutils.version import StrictVersion  # pylint: disable=import-error
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
 from knack.log import get_logger
@@ -14,7 +36,6 @@ from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import is_valid_resource_id
-from distutils.version import StrictVersion  # pylint: disable=import-error
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -50,26 +71,6 @@ from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
 from ._client_factory import cf_container_registry_service
-
-import binascii
-import datetime
-import errno
-import json
-import os
-import os.path
-import platform
-import re
-import ssl
-import stat
-import subprocess
-import sys
-import tempfile
-import threading
-import time
-import uuid
-import webbrowser
-import requests
-import yaml  # pylint: disable=import-error
 
 
 logger = get_logger(__name__)
