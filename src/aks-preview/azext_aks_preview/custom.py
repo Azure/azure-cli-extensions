@@ -22,13 +22,13 @@ import threading
 import time
 import uuid
 import webbrowser
-import requests
 import yaml  # pylint: disable=import-error
 
 from ipaddress import ip_network
 from distutils.version import StrictVersion  # pylint: disable=import-error
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
+import requests
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
