@@ -647,15 +647,15 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         load_balancer_profile = ManagedClusterLoadBalancerProfile()
         if load_balancer_managed_outbound_ip_count:
             load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count = load_balancer_managed_outbound_ip_count
+                count=load_balancer_managed_outbound_ip_count
             )
         if load_balancer_outbound_ip_resources:
             load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
-                public_ips = load_balancer_outbound_ip_resources
+                public_ips=load_balancer_outbound_ip_resources
             )
         if load_balancer_outbound_ip_prefix_resources:
             load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-                public_ip_prefixes = load_balancer_outbound_ip_prefix_resources
+                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
             )
 
     network_profile = None
@@ -827,15 +827,15 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         load_balancer_profile = ManagedClusterLoadBalancerProfile()
         if load_balancer_managed_outbound_ip_count:
             load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count = load_balancer_managed_outbound_ip_count
+                count=load_balancer_managed_outbound_ip_count
             )
         if load_balancer_outbound_ip_resources:
             load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
-                public_ips = load_balancer_outbound_ip_resources
+                public_ips=load_balancer_outbound_ip_resources
             )
         if load_balancer_outbound_ip_prefix_resources:
             load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-                public_ip_prefixes = load_balancer_outbound_ip_prefix_resources
+                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
             )
     if load_balancer_profile:
         instance.network_profile.load_balancer_profile = load_balancer_profile
@@ -1772,7 +1772,7 @@ def _validate_and_get_outbound_ips(load_balancer_outbound_ips):
         ip_id_list = [x.strip() for x in load_balancer_outbound_ips.split(',')]
         if not all(ip_id_list):
             raise CLIError("Load balancer outbound IP ID cannot be whitespace")
-        load_balancer_outbound_ip_resources = [ResourceReference(id = x) for x in ip_id_list]
+        load_balancer_outbound_ip_resources=[ResourceReference(id=x) for x in ip_id_list]
     return load_balancer_outbound_ip_resources
 
 
@@ -1783,6 +1783,6 @@ def _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
         ip_prefix_id_list = [x.strip() for x in load_balancer_outbound_ip_prefixes.split(',')]
         if not all(ip_prefix_id_list):
             raise CLIError("Load balancer outbound IP prefix ID cannot be whitespace")
-        load_balancer_outbound_ip_prefix_resources = [ResourceReference(id = x) for x in ip_prefix_id_list]
+        load_balancer_outbound_ip_prefix_resources=[ResourceReference(id=x) for x in ip_prefix_id_list]
     return load_balancer_outbound_ip_prefix_resources 
 
