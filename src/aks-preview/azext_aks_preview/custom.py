@@ -21,20 +21,20 @@ import threading
 import time
 import uuid
 import webbrowser
+import requests
+import yaml  # pylint: disable=import-error
+import dateutil.parser  # pylint: disable=import-error
+
 from ipaddress import ip_network
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
-import requests
 from knack.log import get_logger
 from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
-
-import yaml  # pylint: disable=import-error
-import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import is_valid_resource_id
-from distutils.version import LooseVersion, StrictVersion
+from distutils.version import StrictVersion  # pylint: disable=import-error
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -533,7 +533,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                enable_acr=False,
                acr=None,
                no_wait=False):
-    
+
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -552,7 +552,9 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
 
     if not agent_pool_availability_type:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
-            print("Setting agent_pool_availability_type to availabilityset as it is not specified and kubernetes version(%s) less than 1.12.9 only supports availabilityset\n"%(kubernetes_version))
+            print('Setting agent_pool_availability_type to availabilityset as it is \
+            not specified and kubernetes version(%s) less than 1.12.9 only supports \
+            availabilityset\n'%(kubernetes_version))
             agent_pool_availability_type = "AvailabilitySet"
 
     if not agent_pool_availability_type:
@@ -636,14 +638,14 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                 scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
-    
+
     load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
     load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes)
 
     load_balancer_profile = None
     if any([load_balancer_managed_outbound_ip_count,
             load_balancer_outbound_ip_resources,
-            load_balancer_outbound_ip_prefix_resources]):            
+            load_balancer_outbound_ip_prefix_resources]):
         load_balancer_profile = ManagedClusterLoadBalancerProfile()
         if load_balancer_managed_outbound_ip_count:
             load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
@@ -668,7 +670,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         if not network_plugin:
             raise CLIError('Please explicitly specify the network plugin type')
         if pod_cidr and network_plugin == "azure":
-            raise CLIError('Please use kubenet as the network plugin type when pod_cidr is specified')            
+            raise CLIError('Please use kubenet as the network plugin type when pod_cidr is specified')
         network_profile = ContainerServiceNetworkProfile(
             network_plugin=network_plugin,
             pod_cidr=pod_cidr,
@@ -817,13 +819,13 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.enable_pod_security_policy = True
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
-    
+
     load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
     load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes)
     load_balancer_profile = None
     if any([load_balancer_managed_outbound_ip_count,
             load_balancer_outbound_ip_resources,
-            load_balancer_outbound_ip_prefix_resources]):            
+            load_balancer_outbound_ip_prefix_resources]):
         load_balancer_profile = ManagedClusterLoadBalancerProfile()
         if load_balancer_managed_outbound_ip_count:
             load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
@@ -1772,7 +1774,7 @@ def _validate_and_get_outbound_ips(load_balancer_outbound_ips):
         ip_id_list = [x.strip() for x in load_balancer_outbound_ips.split(',')]
         if not all(ip_id_list):
             raise CLIError("Load balancer outbound IP ID cannot be whitespace")
-        load_balancer_outbound_ip_resources=[ResourceReference(id=x) for x in ip_id_list]
+        load_balancer_outbound_ip_resources = [ResourceReference(id=x) for x in ip_id_list]
     return load_balancer_outbound_ip_resources
 
 
@@ -1783,6 +1785,6 @@ def _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
         ip_prefix_id_list = [x.strip() for x in load_balancer_outbound_ip_prefixes.split(',')]
         if not all(ip_prefix_id_list):
             raise CLIError("Load balancer outbound IP prefix ID cannot be whitespace")
-        load_balancer_outbound_ip_prefix_resources=[ResourceReference(id=x) for x in ip_prefix_id_list]
+        load_balancer_outbound_ip_prefix_resources = [ResourceReference(id=x) for x in ip_prefix_id_list]
     return load_balancer_outbound_ip_prefix_resources 
 
