@@ -131,11 +131,16 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
 
         tasks = []
         for location in target_location:
+            # Appending location to target name if multiple locations
+            final_target_name = target_name
+            if target_name and target_locations_count > 1:
+                final_target_name = target_name + location
+
             location = location.strip()
             tasks.append((location, transient_resource_group_name, source_type,
                           source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                           source_os_type, target_resource_group_name, azure_pool_frequency,
-                          tags, target_name, target_subscription, export_as_snapshot, timeout))
+                          tags, final_target_name, target_subscription, export_as_snapshot, timeout))
 
         logger.warn("Starting async process for all locations")
 
