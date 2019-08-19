@@ -85,6 +85,7 @@ def load_arguments(self, _):
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
         c.argument('enable_acr')
+        c.argument('disable_acr')
         c.argument('acr')
 
     with self.argument_context('aks scale') as c:

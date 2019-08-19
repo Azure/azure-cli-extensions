@@ -230,6 +230,9 @@ helps['aks update'] = """
         - name: --enable-acr
           type: bool
           short-summary: (PREVIEW) Grant the 'acrpull' role assignment for the ACR set by --acr.
+        - name: --disable-acr
+          type: bool
+          short-summary: (PREVIEW) Disable the 'acrpull' role assignment for the ACR set by --acr.
         - name: --acr
           type: string
           short-summary: (PREVIEW) ACR name in AKS resource group or ACR resource ID.
