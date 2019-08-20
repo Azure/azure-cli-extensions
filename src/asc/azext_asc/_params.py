@@ -6,9 +6,9 @@
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type
-from azure.cli.core.commands.parameters import (get_resource_name_completion_list, name_type, validate_resource_id
+from azure.cli.core.commands.parameters import (get_resource_name_completion_list, name_type,
                 get_location_type, resource_group_name_type)
-from ._validators import (validate_env, validate_key_type, validate_cosmos_type,
+from ._validators import (validate_env, validate_key_type, validate_cosmos_type, validate_resource_id,
                 validate_name, validate_app_name, validate_deployment_name)
 from ._utils import ApiType
 
@@ -51,7 +51,7 @@ def load_arguments(self, _):
     
     for scope in ['asc app update', 'asc app deployment create', 'asc app deploy']:
         with self.argument_context(scope) as c:
-            c.argument('runtime_version')
+            c.argument('runtime_version', help='runtime version of used language')
             c.argument('jvm_options', type=str, help="A string containing jvm options.")
             c.argument('env', env_type)
             c.argument('tags', tags_type)
@@ -71,7 +71,7 @@ def load_arguments(self, _):
     for scope in ['asc app deploy', 'asc app deployment create']:
         with self.argument_context(scope) as c:
             c.argument('jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
-            c.argument('target_module')
+            c.argument('target_module', help='Child module to be deployed, will be supported later')
  
     with self.argument_context('asc app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)   

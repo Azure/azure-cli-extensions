@@ -16,7 +16,7 @@ def load_command_table(self, _):
         #g.custom_command('update', 'asc_update', supports_no_wait=True)
         g.custom_command('debuggingkey list', 'asc_debuggingkey_list')
         g.custom_command('debuggingkey regenerate', 'asc_debuggingkey_regenerate')
-        g.custom_command('test', 'test')
+        #g.custom_command('test', 'test')
         #g.generic_update_command('update', setter_name='update', custom_func_name='update_asc')
 
     with self.command_group('asc app', client_factory=cf_asc) as g:

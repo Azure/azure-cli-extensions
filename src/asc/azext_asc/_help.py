@@ -6,6 +6,10 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['asc'] = """
+    type: group
+    short-summary: Commands to manage Spring cloud service.
+"""
 
 helps['asc create'] = """
     type: command
@@ -122,7 +126,7 @@ helps['asc app scale'] = """
 
 helps['asc app show-deploy-log'] = """
     type: command
-    short-summary: Show a specificed deployment's logs of the app, default to in production deployment.
+    short-summary: Show a specificed deployment's log of the app, default to in production deployment.
 """
 
 helps['asc app set-deployment'] = """
