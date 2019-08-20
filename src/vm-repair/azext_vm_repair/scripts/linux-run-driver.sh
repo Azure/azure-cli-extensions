@@ -20,7 +20,7 @@ if [ $(ls | wc -l) -eq 3 ]; then
 		if [ "$1" != "no-op" ]; then
 			chmod u+x $1 &&
 			# Work around for passing space characters through run-command
-			params=$(echo "$2" | sed "s/{space}/ /") &&
+			params=$(echo "$2" | sed "s/%20/ /") &&
 			command_string="$1 $params" &&
 			bash -e  $command_string >> $logFile
 		else # Custom script scenario

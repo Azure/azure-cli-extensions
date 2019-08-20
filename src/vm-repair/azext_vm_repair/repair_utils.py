@@ -63,6 +63,11 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     return None
 
 
+def _get_current_vmrepair_version():
+	from azure.cli.core.extension.operations import list_extensions
+	return [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair'][0]
+
+
 def check_extension_version(extension_name):
     from azure.cli.core.extension.operations import list_available_extensions, list_extensions
  
@@ -305,3 +310,13 @@ def _handle_command_error(return_error_detail, return_message):
     return_dict['message'] = return_message
     return_dict['errorDetail'] = return_error_detail
     return return_dict
+
+
+def _get_function_param_dict(frame):
+    import inspect
+    _ , _, _, values = inspect.getargvalues(frame)
+    if 'cmd' in values:
+        del values['cmd']
+    if 'repair_password' in values:
+        values['repair_password'] = '********'
+    return values

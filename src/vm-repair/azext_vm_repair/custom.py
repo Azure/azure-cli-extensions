@@ -7,6 +7,8 @@ import requests
 import json
 import os
 import pkgutil
+import timeit
+import inspect
 from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
@@ -27,23 +29,31 @@ from .repair_utils import (
     _process_bash_parameters,
     _parse_run_script_raw_logs,
     _check_script_succeeded,
-    _handle_command_error
+    _handle_command_error,
+    _get_function_param_dict
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
+from .telemetry import _track_command_telemetry, _track_run_command_telemetry
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except
 
+STATUS_SUCCESS = 'SUCCESS'
+STATUS_ERROR = 'ERROR'
 logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
-
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
+    # Function param for telemetry
+    func_params = _get_function_param_dict(inspect.currentframe())
+    # Start timer for custom telemetry
+    start_time = timeit.default_timer()
     # Initialize return variables
     return_message = ''
     return_error_detail = ''
+    return_status = ''
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -67,7 +77,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm creates -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
+        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
                                    .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
         # Add username field only for Windows
         if not is_linux:
@@ -184,39 +194,47 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Command failed block. Output right error message and return dict
     if not command_succeeded:
+        return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
         _clean_up_resources(repair_group_name, confirm=False)
+    else :
+        # Construct return dict
+        return_status = STATUS_SUCCESS
+        created_resources.append(copy_disk_id)
+        return_dict = {}
+        return_dict['status']= return_status
+        return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+                                 'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
+                                 '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
+                                 'Note that the copied disk is created within the original resource group \'{rg}\'.' \
+                                 .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
+        return_dict['repairVmName'] = repair_vm_name
+        return_dict['copiedDiskName'] = copy_disk_name
+        return_dict['copiedDiskUri'] = copy_disk_id
+        return_dict['repairResouceGroup'] = repair_group_name
+        return_dict['resourceTag'] = resource_tag
+        return_dict['createdResources'] = created_resources
 
-        return return_dict
+        logger.info('\n%s\n', return_dict['message'])
 
-    # Construct return dict
-    created_resources.append(copy_disk_id)
-    return_dict = {}
-    return_dict['status']= 'SUCCESS'
-    return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-                             'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
-                             '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
-                             'Note that the copied disk is created within the original resource group \'{rg}\'.' \
-                             .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
-    return_dict['repairVmName'] = repair_vm_name
-    return_dict['copiedDiskName'] = copy_disk_name
-    return_dict['copiedDiskUri'] = copy_disk_id
-    return_dict['repairResouceGroup'] = repair_group_name
-    return_dict['resourceTag'] = resource_tag
-    return_dict['createdResources'] = created_resources
-
-    logger.info('\n%s\n', return_dict['message'])
+    # Track telemetry data
+    elapsed_time = timeit.default_timer() - start_time
+    _track_command_telemetry('vm repair create', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict)
     return return_dict
 
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
-
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
+    # Function param for telemetry
+    func_params = _get_function_param_dict(inspect.currentframe())
+    # Start timer for custom telemetry
+    start_time = timeit.default_timer()
     # Initialize return variables
     return_message = ''
     return_error_detail = ''
+    return_status = ''
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(source_vm)
@@ -278,28 +296,37 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
+        return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
-        return return_dict
+    else:
+        # Construct return dict
+        return_status = STATUS_SUCCESS
+        return_dict = {}
+        return_dict['status']= return_status
+        return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
+                                 'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
+                                 .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
 
-    # Construct return dict
-    return_dict = {}
-    return_dict['status']= 'SUCCESS'
-    return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
-                             'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
-                             .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
+        logger.info('\n%s\n', return_dict['message'])
 
-    logger.info('\n%s\n', return_dict['message'])
+    # Track telemetry data
+    elapsed_time = timeit.default_timer() - start_time
+    _track_command_telemetry('vm repair restore', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict)
     return return_dict
 
 
 def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_run_file=None, parameters=None, run_on_repair=False):
-
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
+    # Function param for telemetry
+    func_params = _get_function_param_dict(inspect.currentframe())
+    # Start timer and params for custom telemetry
+    start_time = timeit.default_timer()
     # Initialize return variables
     return_message = ''
     return_error_detail = ''
+    return_status = ''
 
     # Overall success flag
     command_succeeded = False
@@ -344,11 +371,13 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             else:
                 param_string = _process_ps_parameters(parameters)
             # Work around for run-command bug, unexpected behavior with space characters
-            param_string = param_string.replace(' ', '{space}')
+            param_string = param_string.replace(' ', '%20')
             repair_run_command += ' params="{}"'.format(param_string)
 
         logger.info('Running script on VM: %s', repair_vm_name)
+        script_start_time = timeit.default_timer()
         return_str = _call_az_command(repair_run_command)
+        script_duration = timeit.default_timer() - script_start_time
         # Extract stdout and stderr, if stderr exists then possible error
         run_command_return = json.loads(return_str)
 
@@ -380,17 +409,21 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
         # Output 'output' or 'error' level logs depending on status
         if run_script_succeeded:
+            script_status = STATUS_SUCCESS
             message = 'Script completed without error.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'output'])
             logger.info('\nScript returned with output:\n%s\n', output)
         else:
+            script_status = STATUS_ERROR
             message = 'Script returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
             logger.error('\nScript returned with error:\n%s\n', output)
 
         logger.debug("stderr: %s", stderr)
 
-        return_dict['status'] = 'SUCCESS'
+        return_status = STATUS_SUCCESS
+        return_message = message
+        return_dict['status'] = return_status
         return_dict['message'] = message
         return_dict['logs'] = stdout
         return_dict['logFullpath'] = log_fullpath
@@ -420,21 +453,31 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         logger.info('')
 
     if not command_succeeded:
+        return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
-
+    
+    # Track telemetry data
+    elapsed_time = timeit.default_timer() - start_time
+    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict, \
+                                 run_id, script_status, output, script_duration)
     return return_dict
 
 
 def run_list(cmd):
+    # Function param for telemetry
+    func_params = _get_function_param_dict(inspect.currentframe())
+    # Start timer for custom telemetry
+    start_time = timeit.default_timer()
     # Initialize return variables
     return_message = ''
     return_error_detail = ''
+    return_status = ''
+    return_dict = {}
     # Overall success flag
     command_succeeded = False
+
     try:
         run_map = _fetch_run_script_map()
-        return_dict = {}
-        return_dict['status'] = 'SUCCESS'
         return_dict['map'] = run_map
         command_succeeded = True
     except requests.exceptions.RequestException as exception:
@@ -445,6 +488,14 @@ def run_list(cmd):
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
 
     if not command_succeeded:
+        return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
+    else:
+        return_status = STATUS_SUCCESS
+    
+    return_dict['status'] = return_status
 
+    # Track telemetry data
+    elapsed_time = timeit.default_timer() - start_time
+    _track_command_telemetry('vm repair run-list', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict)
     return return_dict

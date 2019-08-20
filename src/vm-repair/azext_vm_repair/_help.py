@@ -42,13 +42,13 @@ helps['vm repair run'] = """
     examples:
         - name: Run the script with <run-id> on the repair VM.
           text: >
-            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --verbose
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --run-on-repair --verbose
         - name: Run a script with parameters on the repair VM.
           text: >
-            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --run-on-repair --verbose
         - name: Run a custom script on the repair VM.
           text: >
-            az vm repair run -g MyResourceGroup -n MySourceWinVM --custom_run_file ./file.ps1 -verbose
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --custom_run_file ./file.ps1 --run-on-repair --verbose
 """
 
 helps['vm repair run-list'] = """
