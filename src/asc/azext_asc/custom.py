@@ -363,14 +363,13 @@ def _app_deploy(client,
     try:
         response = client.apps.get_resource_upload_url(resource_group,
                                                     service,
-                                                    name,
+                                                    app,
                                                     None,
                                                     None)
         upload_url = response.upload_url
         relative_path = response.relative_path
     except (AttributeError, CloudError) as e:
         raise CLIError("Failed to get a SAS URL to upload context. Error: {}".format(e.message))
-
     
     if not upload_url:
         raise CLIError("Failed to get a SAS URL to upload context.")
@@ -378,7 +377,7 @@ def _app_deploy(client,
     prase_result = urlparse(upload_url)
     storage_name = prase_result.netloc.split('.')[0]
     split_path = prase_result.path.split('/')[1:3]
-    share_name, file_name = split_path[0], split_path[1]
+    share_name = split_path[0]
     sas_token = "?" + prase_result.query
     deployment_settings = models.DeploymentSettings(
                                     cpu=cpu,
@@ -394,8 +393,7 @@ def _app_deploy(client,
 
     #upload file 
     file_service = FileService(storage_name, sas_token=sas_token)
-    file_service.create_file_from_path(share_name, None, file_name, path)
-    
+    file_service.create_file_from_path(share_name, None, relative_path, path)
     #create deployment
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
@@ -405,8 +403,9 @@ def _app_deploy(client,
                             resource_group, service, app, name, properties)
 
 def test(cmd, resource_group, service=None, app=None, deployment=None):
+    return None
     #sfc = cf_asc(cmd.cli_ctx)
-    _get_resource_info("/subscriptions/685ba005-af8d-4b04-8f16-a7bf38b2eab7/resourceGroups/mymongorg/providers/Microsoft.DocumentDB/databaseAccounts/mymongo")
+    #_get_resource_info("/subscriptions/685ba005-af8d-4b04-8f16-a7bf38b2eab7/resourceGroups/mymongorg/providers/Microsoft.DocumentDB/databaseAccounts/mymongo")
     #_get_upload_local_file()
     #sleep(100000)
     #zero_arg_lambda = lambda: print("dsasdsa")
