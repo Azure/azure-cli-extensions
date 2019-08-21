@@ -114,17 +114,14 @@ def load_arguments(self, _):
         c.argument('api_type', help='Type of api.', arg_type=get_enum_type(
             ApiType), validator=validate_cosmos_type)
 
-    with self.argument_context('asc app binding cosmos update') as c:
-        c.argument('key', help='he actual connection string of the service.')
-
     for scope in ['asc app binding mysql add', 'asc app binding mysql update']:
         with self.argument_context(scope) as c:
-            c.argument('key', help='Key or connection string of the service.')
+            c.argument('key', help='Api key of the service.')
             c.argument('username', help='username of the database')
             c.argument('database_name')
 
     for scope in ['asc app binding redis add', 'asc app binding redis update']:
         with self.argument_context(scope) as c:
-            c.argument('key', help='Key or connection string of the service.')
+            c.argument('key', help='Api key of the service.')
             c.argument('use_ssl', action='store_true',
                        help='If true, use ssl.')

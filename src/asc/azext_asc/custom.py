@@ -380,17 +380,25 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
 
 
 def binding_cosmos_update(cmd, client, resource_group, service, app, name,
-                          key=None,
                           database_name=None,
                           key_space=None,
                           collection_name=None):
+    binding = client.get(resource_group, service, app, name)
+    resource_id = binding['resourceId']
+    resource_name = binding['resourceName']
     binding_parameters = {}
     binding_parameters['databaseName'] = database_name
     binding_parameters['keySpace'] = key_space
     binding_parameters['collectionName'] = collection_name
 
+    try:
+        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+    except:
+        raise CLIError(
+            "Couldn't get cosmosdb {}'s primary key".format(resource_name))
+
     properties = models.BindingResourceProperties(
-        key=key,
+        key=primary_key,
         binding_parameters=binding_parameters
     )
     return client.update(resource_group, service, app, name, properties)
