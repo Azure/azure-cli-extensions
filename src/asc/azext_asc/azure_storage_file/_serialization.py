@@ -58,7 +58,8 @@ def _validate_and_format_range_headers(request, start_range, end_range, start_ra
     request.headers = request.headers or {}
     header_name = 'x-ms-source-range' if is_source else 'x-ms-range'
     if end_range is not None:
-        request.headers[header_name] = 'bytes={0}-{1}'.format(start_range, end_range)
+        request.headers[header_name] = 'bytes={0}-{1}'.format(
+            start_range, end_range)
     elif start_range is not None:
         request.headers[header_name] = 'bytes={0}-'.format(start_range)
 
@@ -75,8 +76,10 @@ def _validate_and_format_range_headers(request, start_range, end_range, start_ra
 def _validate_and_return_file_permission(file_permission, file_permission_key, default_permission):
     # if file_permission and file_permission_key are both empty, then use the default_permission
     # value as file permission, file_permission size should be <= 8KB, else file permission_key should be used
-    empty_file_permission = file_permission is None or len(file_permission) == 0
-    empty_file_permission_key = file_permission_key is None or len(file_permission_key) == 0
+    empty_file_permission = file_permission is None or len(
+        file_permission) == 0
+    empty_file_permission_key = file_permission_key is None or len(
+        file_permission_key) == 0
     file_permission_size_too_big = False if file_permission is None \
         else len(str(file_permission).encode('utf-8')) > 8 * 1024
 

@@ -136,7 +136,8 @@ class _ParallelFileChunkDownloader(_FileChunkDownloader):
 
     def _write_to_stream(self, chunk_data, chunk_start):
         with self.stream_lock:
-            self.stream.seek(self.stream_start + (chunk_start - self.start_index))
+            self.stream.seek(self.stream_start +
+                             (chunk_start - self.start_index))
             self.stream.write(chunk_data)
 
 

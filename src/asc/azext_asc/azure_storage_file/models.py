@@ -9,7 +9,7 @@ from azure.storage.common._common_conversion import _to_str
 class Share(object):
     '''
     File share class.
-    
+
     :ivar str name:
         The name of the share.
     :ivar ShareProperties properties:
@@ -36,7 +36,7 @@ class Share(object):
 class ShareProperties(object):
     '''
     File share's properties class.
-    
+
     :ivar datetime last_modified:
         A datetime object representing the last time the share was modified.
     :ivar str etag:
@@ -55,7 +55,7 @@ class ShareProperties(object):
 class Directory(object):
     '''
     Directory class.
-    
+
     :ivar str name:
         The name of the directory.
     :ivar DirectoryProperties properties:
@@ -77,7 +77,7 @@ class Directory(object):
 class DirectoryProperties(object):
     '''
     File directory's properties class.
-    
+
     :ivar datetime last_modified:
         A datetime object representing the last time the directory was modified.
     :ivar str etag:
@@ -99,7 +99,7 @@ class DirectoryProperties(object):
 class File(object):
     '''
     File class.
-    
+
     :ivar str name:
         The name of the file.
     :ivar content:
@@ -125,7 +125,7 @@ class File(object):
 class FileProperties(object):
     '''
     File Properties.
-    
+
     :ivar datetime last_modified:
         A datetime object representing the last time the file was modified.
     :ivar str etag:
@@ -185,6 +185,7 @@ class SMBProperties(object):
     :ivar str parent_id:
         The Id of this directory's parent. This is what will be returned by service. Users don't need to specify.
     """
+
     def __init__(self, ntfs_attributes=None, creation_time=None, last_write_time=None, permission_key=None):
         self.ntfs_attributes = ntfs_attributes
         self.creation_time = creation_time
@@ -317,7 +318,7 @@ class ContentSettings(object):
 class CopyProperties(object):
     '''
     File Copy Properties.
-    
+
     :ivar str id:
         String identifier for the last attempted Copy File operation where this file
         was the destination file. This header does not appear if this file has never
@@ -366,7 +367,7 @@ class CopyProperties(object):
 class FileRange(object):
     '''
     File Range.
-    
+
     :ivar int start:
         Byte index for start of file range.
     :ivar int end:
@@ -545,6 +546,7 @@ class NTFSAttributes(object):
     :ivar bool no_scrub_data:
         Enable/disable 'NoScrubData' attribute for DIRECTORY or FILE
     """
+
     def __init__(self, read_only=False, hidden=False, system=False, none=False, directory=False, archive=False,
                  temporary=False, offline=False, not_content_indexed=False, no_scrub_data=False, _str=None):
         if not _str:
@@ -557,7 +559,8 @@ class NTFSAttributes(object):
         self.archive = archive or ('Archive' in _str)
         self.temporary = temporary or ('Temporary' in _str)
         self.offline = offline or ('Offline' in _str)
-        self.not_content_indexed = not_content_indexed or ('NotContentIndexed' in _str)
+        self.not_content_indexed = not_content_indexed or (
+            'NotContentIndexed' in _str)
         self.no_scrub_data = no_scrub_data or ('NoScrubData' in _str)
 
     def __or__(self, other):

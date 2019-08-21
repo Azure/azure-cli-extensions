@@ -41,7 +41,8 @@ class Microservices4SpringManagementClientOperationsMixin(object):
         """
         availability_parameters = None
         if type is not None or name is not None:
-            availability_parameters = models.NameAvailabilityParameters(type=type, name=name)
+            availability_parameters = models.NameAvailabilityParameters(
+                type=type, name=name)
 
         # Construct URL
         url = self.check_name_availability.metadata['url']
@@ -53,7 +54,8 @@ class Microservices4SpringManagementClientOperationsMixin(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -64,16 +66,19 @@ class Microservices4SpringManagementClientOperationsMixin(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if availability_parameters is not None:
-            body_content = self._serialize.body(availability_parameters, 'NameAvailabilityParameters')
+            body_content = self._serialize.body(
+                availability_parameters, 'NameAvailabilityParameters')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        request = self._client.post(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -90,4 +95,5 @@ class Microservices4SpringManagementClientOperationsMixin(object):
             return client_raw_response
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Microservices4Spring/locations/{location}/checkNameAvailability'}
+    check_name_availability.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Microservices4Spring/locations/{location}/checkNameAvailability'}

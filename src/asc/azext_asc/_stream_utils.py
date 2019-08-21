@@ -31,10 +31,10 @@ def stream_logs(client,
 
     try:
         log_file_sas = client.get_log_file_url(
-                resource_group_name=resource_group,
-                app_cluster_name=service,
-                app_name=app,
-                deployment_name=deployment).url
+            resource_group_name=resource_group,
+            app_cluster_name=service,
+            app_name=app,
+            deployment_name=deployment).url
     except (AttributeError, CloudError) as e:
         logger.debug("%s Exception: %s", error_msg, e)
         raise CLIError(error_msg)
@@ -56,6 +56,7 @@ def stream_logs(client,
                  container_name,
                  blob_name,
                  raise_error_on_failure)
+
 
 def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
                  byte_size,

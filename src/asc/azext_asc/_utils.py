@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from enum import Enum
 import os
 import codecs
 import tarfile
@@ -18,6 +19,7 @@ from knack.output import _ComplexEncoder
 
 logger = get_logger(__name__)
 
+
 def _get_upload_local_file(jar_path=None):
     file_path = jar_path
     file_type = "Jar"
@@ -29,16 +31,19 @@ def _get_upload_local_file(jar_path=None):
         _pack_source_code(os.getcwd(), file_path)
     return file_type, file_path
 
+
 def _pack_source_code(source_location, tar_file_path):
     logger.warning("Packing source code into tar to upload...")
 
     ignore_list, ignore_list_size = _load_gitignore_file(source_location)
-    common_vcs_ignore_list = {'.git', '.gitignore', '.mvn', 'bzrignore', '.hg', '.hgignore', '.svn', '.circleci', 'target', 'docker','mvnw', 'mvnw.cmd'}
+    common_vcs_ignore_list = {'.git', '.gitignore', '.mvn', 'bzrignore', '.hg',
+                              '.hgignore', '.svn', '.circleci', 'target', 'docker', 'mvnw', 'mvnw.cmd'}
 
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
         if tarinfo.name in common_vcs_ignore_list:
-            logger.warning("Excluding '%s' based on default ignore rules", tarinfo.name)
+            logger.warning(
+                "Excluding '%s' based on default ignore rules", tarinfo.name)
             return True, parent_matching_rule_index
 
         if ignore_list is None:
@@ -69,6 +74,7 @@ def _pack_source_code(source_location, tar_file_path):
                                   parent_ignored=False,
                                   parent_matching_rule_index=ignore_list_size,
                                   ignore_check=_ignore_check)
+
 
 class IgnoreRule(object):  # pylint: disable=too-few-public-methods
     def __init__(self, rule):
@@ -150,9 +156,10 @@ def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matchin
                                       parent_ignored=ignored, parent_matching_rule_index=matching_rule_index,
                                       ignore_check=ignore_check)
 
+
 def get_blob_info(blob_sas_url):
     match = search((r"http(s)?://(?P<account_name>.*?)\.blob\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/"
-                       r"(?P<blob_name>.*?)\?(?P<sas_token>.*)"), blob_sas_url)
+                    r"(?P<blob_name>.*?)\?(?P<sas_token>.*)"), blob_sas_url)
     account_name = match.group('account_name')
     endpoint_suffix = match.group('endpoint_suffix')
     container_name = match.group('container_name')
@@ -160,11 +167,11 @@ def get_blob_info(blob_sas_url):
     sas_token = match.group('sas_token')
 
     if not account_name or not container_name or not blob_name or not sas_token:
-        raise CLIError("Failed to parse the SAS URL: '{!s}'.".format(blob_sas_url))
+        raise CLIError(
+            "Failed to parse the SAS URL: '{!s}'.".format(blob_sas_url))
 
     return account_name, endpoint_suffix, container_name, blob_name, sas_token
 
-from enum import Enum
 
 class ApiType(Enum):
     mongo = "mongo"
@@ -173,10 +180,11 @@ class ApiType(Enum):
     gremlin = 'gremlin'
     table = 'table'
 
+
 def dump(client, obj):
     from json import dumps
     type_name = obj.__class__.__name__
     input_dict = client._serialize.body(obj, type_name)
     json_object = dumps(input_dict, ensure_ascii=False, indent=2, sort_keys=True, cls=_ComplexEncoder,
-                      separators=(',', ': ')) + '\n'
+                        separators=(',', ': ')) + '\n'
     logger.warning(json_object)

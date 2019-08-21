@@ -76,9 +76,11 @@ class AppsOperations(object):
         # Construct parameters
         query_parameters = {}
         if sync_status is not None:
-            query_parameters['syncStatus'] = self._serialize.query("sync_status", sync_status, 'str')
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-        print(self.api_version)
+            query_parameters['syncStatus'] = self._serialize.query(
+                "sync_status", sync_status, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
+
         # Construct headers
         header_parameters = {}
         header_parameters['Accept'] = 'application/json'
@@ -87,12 +89,10 @@ class AppsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        print(url)
-        print(query_parameters)
-        print(header_parameters)
         request = self._client.get(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
@@ -153,7 +153,8 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -164,7 +165,8 @@ class AppsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if app_resource is not None:
@@ -173,7 +175,8 @@ class AppsOperations(object):
             body_content = None
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        request = self._client.put(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -190,7 +193,8 @@ class AppsOperations(object):
             return client_raw_response
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}'}
+    create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}'}
 
     def delete(
             self, resource_group_name, app_cluster_name, app_name, custom_headers=None, raw=False, **operation_config):
@@ -225,7 +229,8 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -234,7 +239,8 @@ class AppsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -248,7 +254,8 @@ class AppsOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}'}
+    delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}'}
 
     def update(
             self, resource_group_name, app_cluster_name, app_name, properties=None, custom_headers=None, raw=False, **operation_config):
@@ -291,7 +298,8 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -302,7 +310,8 @@ class AppsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if app_resource is not None:
@@ -311,7 +320,8 @@ class AppsOperations(object):
             body_content = None
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        request = self._client.patch(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -328,7 +338,8 @@ class AppsOperations(object):
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}'}
+    update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}'}
 
     def list(
             self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
@@ -363,7 +374,8 @@ class AppsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -377,16 +389,19 @@ class AppsOperations(object):
             if custom_headers:
                 header_parameters.update(custom_headers)
             if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+                header_parameters['accept-language'] = self._serialize.header(
+                    "self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            request = self._client.get(
+                url, query_parameters, header_parameters)
             return request
 
         def internal_paging(next_link=None):
             request = prepare_request(next_link)
 
-            response = self._client.send(request, stream=False, **operation_config)
+            response = self._client.send(
+                request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -399,10 +414,12 @@ class AppsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.AppResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.AppResourcePaged(
+            internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps'}
+    list.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps'}
 
     def get_resource_upload_url(
             self, resource_group_name, app_cluster_name, app_name, custom_headers=None, raw=False, **operation_config):
@@ -440,7 +457,8 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -450,7 +468,8 @@ class AppsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -463,14 +482,16 @@ class AppsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('ResourceUploadDefinition', response)
+            deserialized = self._deserialize(
+                'ResourceUploadDefinition', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get_resource_upload_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/getResourceUploadUrl'}
+    get_resource_upload_url.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/getResourceUploadUrl'}
 
     def get_file_share_url(
             self, resource_group_name, app_cluster_name, app_name, start, expiry, custom_headers=None, raw=False, **operation_config):
@@ -500,7 +521,8 @@ class AppsOperations(object):
         """
         get_file_share_url_request = None
         if start is not None or expiry is not None:
-            get_file_share_url_request = models.GetFileShareUrlRequestPayload(start=start, expiry=expiry)
+            get_file_share_url_request = models.GetFileShareUrlRequestPayload(
+                start=start, expiry=expiry)
 
         # Construct URL
         url = self.get_file_share_url.metadata['url']
@@ -514,7 +536,8 @@ class AppsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -525,16 +548,19 @@ class AppsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if get_file_share_url_request is not None:
-            body_content = self._serialize.body(get_file_share_url_request, 'GetFileShareUrlRequestPayload')
+            body_content = self._serialize.body(
+                get_file_share_url_request, 'GetFileShareUrlRequestPayload')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        request = self._client.post(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -551,4 +577,5 @@ class AppsOperations(object):
             return client_raw_response
 
         return deserialized
-    get_file_share_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/getFileShareUrl'}
+    get_file_share_url.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/getFileShareUrl'}

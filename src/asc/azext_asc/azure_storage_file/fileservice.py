@@ -663,7 +663,8 @@ class FileService(StorageClient):
 
         if not fail_on_exist:
             try:
-                self._perform_request(request, expected_errors=[_SHARE_ALREADY_EXISTS_ERROR_CODE])
+                self._perform_request(request, expected_errors=[
+                                      _SHARE_ALREADY_EXISTS_ERROR_CODE])
                 return True
             except AzureHttpError as ex:
                 _dont_fail_on_exist(ex)
@@ -881,7 +882,7 @@ class FileService(StorageClient):
         '''
         Gets the approximate size of the data stored on the share,
         rounded up to the nearest gigabyte.
-        
+
         Note that this value may not include all recently created
         or recently re-sized files.
 
@@ -972,7 +973,8 @@ class FileService(StorageClient):
 
         if not fail_not_exist:
             try:
-                self._perform_request(request, expected_errors=[_SHARE_NOT_FOUND_ERROR_CODE])
+                self._perform_request(request, expected_errors=[
+                                      _SHARE_NOT_FOUND_ERROR_CODE])
                 return True
             except AzureHttpError as ex:
                 _dont_fail_not_exist(ex)
@@ -1037,7 +1039,8 @@ class FileService(StorageClient):
 
         if not fail_on_exist:
             try:
-                self._perform_request(request, expected_errors=_RESOURCE_ALREADY_EXISTS_ERROR_CODE)
+                self._perform_request(
+                    request, expected_errors=_RESOURCE_ALREADY_EXISTS_ERROR_CODE)
                 return True
             except AzureHttpError as ex:
                 _dont_fail_on_exist(ex)
@@ -1106,7 +1109,8 @@ class FileService(StorageClient):
 
         if not fail_not_exist:
             try:
-                self._perform_request(request, expected_errors=[_RESOURCE_NOT_FOUND_ERROR_CODE])
+                self._perform_request(request, expected_errors=[
+                                      _RESOURCE_NOT_FOUND_ERROR_CODE])
                 return True
             except AzureHttpError as ex:
                 _dont_fail_not_exist(ex)
@@ -1213,7 +1217,6 @@ class FileService(StorageClient):
     def list_directories_and_files(self, share_name, directory_name=None,
                                    num_results=None, marker=None, timeout=None,
                                    prefix=None, snapshot=None):
-
         '''
         Returns a generator to list the directories and files under the specified share.
         The generator will lazily follow the continuation tokens returned by
@@ -1307,7 +1310,6 @@ class FileService(StorageClient):
 
     def list_handles(self, share_name, directory_name=None, file_name=None, recursive=None,
                      max_results=None, marker=None, snapshot=None, timeout=None):
-
         """
         Returns a generator to list opened handles on a directory or a file under the specified share.
         The generator will lazily follow the continuation tokens returned by
@@ -1405,7 +1407,6 @@ class FileService(StorageClient):
 
     def close_handles(self, share_name, directory_name=None, file_name=None, recursive=None,
                       handle_id=None, marker=None, snapshot=None, timeout=None):
-
         """
         Returns a generator to close opened handles on a directory or a file under the specified share.
         The generator will lazily follow the continuation tokens returned by
@@ -1511,7 +1512,8 @@ class FileService(StorageClient):
         request.method = 'HEAD'
         request.host_locations = self._get_host_locations()
         request.path = _get_path(share_name, directory_name, file_name)
-        request.query = {'timeout': _int_to_str(timeout), 'sharesnapshot': _to_str(snapshot)}
+        request.query = {'timeout': _int_to_str(
+            timeout), 'sharesnapshot': _to_str(snapshot)}
 
         return self._perform_request(request, _parse_file, [file_name])
 
@@ -1544,7 +1546,8 @@ class FileService(StorageClient):
 
             if file_name is not None:
                 restype = None
-                expected_errors = [_RESOURCE_NOT_FOUND_ERROR_CODE, _PARENT_NOT_FOUND_ERROR_CODE]
+                expected_errors = [
+                    _RESOURCE_NOT_FOUND_ERROR_CODE, _PARENT_NOT_FOUND_ERROR_CODE]
             elif directory_name is not None:
                 restype = 'directory'
                 expected_errors = [_RESOURCE_NOT_FOUND_ERROR_CODE, _SHARE_NOT_FOUND_ERROR_CODE,
@@ -1569,7 +1572,7 @@ class FileService(StorageClient):
         Resizes a file to the specified size. If the specified byte
         value is less than the current size of the file, then all
         ranges above the specified byte value are cleared.
-        
+
         :param str share_name:
             Name of existing share.
         :param str directory_name:
@@ -1586,7 +1589,8 @@ class FileService(StorageClient):
         _validate_not_none('content_length', content_length)
         request = self._get_basic_set_file_or_directory_properties_http_request(share_name, directory_name, file_name,
                                                                                 None, SMBProperties(), timeout)
-        request.headers.update({'x-ms-content-length': _to_str(content_length)})
+        request.headers.update(
+            {'x-ms-content-length': _to_str(content_length)})
 
         self._perform_request(request)
 
@@ -2192,7 +2196,8 @@ class FileService(StorageClient):
         request.method = 'GET'
         request.host_locations = self._get_host_locations()
         request.path = _get_path(share_name, directory_name, file_name)
-        request.query = {'timeout': _int_to_str(timeout), 'sharesnapshot': _to_str(snapshot)}
+        request.query = {'timeout': _int_to_str(
+            timeout), 'sharesnapshot': _to_str(snapshot)}
         _validate_and_format_range_headers(
             request,
             start_range,
@@ -2398,7 +2403,8 @@ class FileService(StorageClient):
 
             # Parse the total file size and adjust the download size if ranges
             # were specified
-            file_size = _parse_length_from_content_range(file.properties.content_range)
+            file_size = _parse_length_from_content_range(
+                file.properties.content_range)
             if end_range is not None:
                 # Use the end_range unless it is over the end of the file
                 download_size = min(file_size, end_range - start_range + 1)
@@ -2428,8 +2434,8 @@ class FileService(StorageClient):
         if progress_callback:
             progress_callback(file.properties.content_length, download_size)
 
-        # Write the content to the user stream  
-        # Clear file content since output has been written to user stream   
+        # Write the content to the user stream
+        # Clear file content since output has been written to user stream
         if file.content is not None:
             stream.write(file.content)
             file.content = None
@@ -2465,14 +2471,15 @@ class FileService(StorageClient):
                 snapshot
             )
 
-            # Set the content length to the download size instead of the size of 
+            # Set the content length to the download size instead of the size of
             # the last range
             file.properties.content_length = download_size
 
             # Overwrite the content range to the user requested range
-            file.properties.content_range = 'bytes {0}-{1}/{2}'.format(start_range, end_range, file_size)
+            file.properties.content_range = 'bytes {0}-{1}/{2}'.format(
+                start_range, end_range, file_size)
 
-            # Overwrite the content MD5 as it is the MD5 for the last range instead 
+            # Overwrite the content MD5 as it is the MD5 for the last range instead
             # of the stored MD5
             # TODO: Set to the stored MD5 when the service returns this
             file.properties.content_md5 = None
@@ -2649,7 +2656,7 @@ class FileService(StorageClient):
                      start_range, end_range, validate_content=False, timeout=None):
         '''
         Writes the bytes specified by the request body into the specified range.
-         
+
         :param str share_name:
             Name of existing share.
         :param str directory_name:
@@ -2678,7 +2685,8 @@ class FileService(StorageClient):
         :param int timeout:
             The timeout parameter is expressed in seconds.
         '''
-        request = self._get_basic_update_file_http_request(share_name, directory_name, file_name, timeout=timeout)
+        request = self._get_basic_update_file_http_request(
+            share_name, directory_name, file_name, timeout=timeout)
 
         _validate_not_none('data', data)
         _validate_and_format_range_headers(request, start_range, end_range)
@@ -2729,13 +2737,15 @@ class FileService(StorageClient):
             The timeout parameter is expressed in seconds.
         '''
 
-        request = self._get_basic_update_file_http_request(share_name, directory_name, file_name, timeout=timeout)
+        request = self._get_basic_update_file_http_request(
+            share_name, directory_name, file_name, timeout=timeout)
 
         _validate_not_none('source', source)
         _validate_and_format_range_headers(request, start_range, end_range)
         _validate_and_format_range_headers(request,
                                            source_start_range,
-                                           source_start_range+(end_range-start_range),
+                                           source_start_range +
+                                           (end_range-start_range),
                                            is_source=True)
 
         request.headers.update({
@@ -2767,7 +2777,7 @@ class FileService(StorageClient):
         '''
         Clears the specified range and releases the space used in storage for 
         that range.
-         
+
         :param str share_name:
             Name of existing share.
         :param str directory_name:

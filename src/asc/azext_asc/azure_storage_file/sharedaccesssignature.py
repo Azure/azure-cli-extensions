@@ -31,7 +31,8 @@ class FileSharedAccessSignature(SharedAccessSignature):
         :param str account_key:
             The access key to generate the shares access signatures.
         '''
-        super(FileSharedAccessSignature, self).__init__(account_name, account_key, x_ms_version=X_MS_VERSION)
+        super(FileSharedAccessSignature, self).__init__(
+            account_name, account_key, x_ms_version=X_MS_VERSION)
 
     def generate_file(self, share_name, directory_name=None, file_name=None,
                       permission=None, expiry=None, start=None, id=None,
@@ -106,13 +107,15 @@ class FileSharedAccessSignature(SharedAccessSignature):
         resource_path += '/' + _to_str(file_name)
 
         sas = _FileSharedAccessHelper()
-        sas.add_base(permission, expiry, start, ip, protocol, self.x_ms_version)
+        sas.add_base(permission, expiry, start, ip,
+                     protocol, self.x_ms_version)
         sas.add_id(id)
         sas.add_resource('f')
         sas.add_override_response_headers(cache_control, content_disposition,
                                           content_encoding, content_language,
                                           content_type)
-        sas.add_resource_signature(self.account_name, self.account_key, resource_path)
+        sas.add_resource_signature(
+            self.account_name, self.account_key, resource_path)
 
         return sas.get_token()
 
@@ -179,13 +182,15 @@ class FileSharedAccessSignature(SharedAccessSignature):
             using this shared access signature.
         '''
         sas = _FileSharedAccessHelper()
-        sas.add_base(permission, expiry, start, ip, protocol, self.x_ms_version)
+        sas.add_base(permission, expiry, start, ip,
+                     protocol, self.x_ms_version)
         sas.add_id(id)
         sas.add_resource('s')
         sas.add_override_response_headers(cache_control, content_disposition,
                                           content_encoding, content_language,
                                           content_type)
-        sas.add_resource_signature(self.account_name, self.account_key, share_name)
+        sas.add_resource_signature(
+            self.account_name, self.account_key, share_name)
 
         return sas.get_token()
 

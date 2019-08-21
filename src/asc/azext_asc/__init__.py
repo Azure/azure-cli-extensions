@@ -17,7 +17,7 @@ class AscCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_asc.custom#{}',
             client_factory=cf_asc)
         super(AscCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=asc_custom)
+                                                custom_command_type=asc_custom)
 
     def load_command_table(self, args):
         from azext_asc.commands import load_command_table

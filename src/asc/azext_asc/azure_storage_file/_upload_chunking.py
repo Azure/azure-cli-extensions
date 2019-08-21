@@ -29,10 +29,12 @@ def _upload_file_chunks(file_service, share_name, directory_name, file_name,
     if max_connections > 1:
         import concurrent.futures
         executor = concurrent.futures.ThreadPoolExecutor(max_connections)
-        range_ids = list(executor.map(uploader.process_chunk, uploader.get_chunk_offsets()))
+        range_ids = list(executor.map(uploader.process_chunk,
+                                      uploader.get_chunk_offsets()))
     else:
         if file_size is not None:
-            range_ids = [uploader.process_chunk(start) for start in uploader.get_chunk_offsets()]
+            range_ids = [uploader.process_chunk(
+                start) for start in uploader.get_chunk_offsets()]
         else:
             range_ids = uploader.process_all_unknown_size()
 

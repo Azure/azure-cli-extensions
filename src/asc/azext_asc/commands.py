@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 from ._client_factory import (cf_app_clusters, cf_asc, cf_bindings)
 
+
 def load_command_table(self, _):
 
     with self.command_group('asc', client_factory=cf_app_clusters) as g:
@@ -15,8 +16,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'asc_get')
         #g.custom_command('update', 'asc_update', supports_no_wait=True)
         g.custom_command('debuggingkey list', 'asc_debuggingkey_list')
-        g.custom_command('debuggingkey regenerate', 'asc_debuggingkey_regenerate')
-        g.custom_command('test', 'test')
+        g.custom_command('debuggingkey regenerate',
+                         'asc_debuggingkey_regenerate')
+        #g.custom_command('test', 'test')
         #g.generic_update_command('update', setter_name='update', custom_func_name='update_asc')
 
     with self.command_group('asc app', client_factory=cf_asc) as g:
@@ -25,14 +27,15 @@ def load_command_table(self, _):
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
         g.custom_command('scale', 'app_scale', supports_no_wait=True)
         g.custom_command('show-deploy-log', 'app_get_log')
-        g.custom_command('set-deployment', 'app_set_deployment', supports_no_wait=True)
+        g.custom_command('set-deployment', 'app_set_deployment',
+                         supports_no_wait=True)
         g.custom_command('delete', 'app_delete')
         g.custom_command('list', 'app_list')
         g.custom_show_command('show', 'app_get')
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
-    
+
     with self.command_group('asc app deployment', client_factory=cf_asc) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
         g.custom_command('list', 'deployment_list')
@@ -49,6 +52,6 @@ def load_command_table(self, _):
         g.custom_command('redis add', 'binding_redis_add')
         g.custom_command('redis update', 'binding_redis_update')
         g.custom_show_command('remove', 'binding_remove')
-    
+
     with self.command_group('asc', is_preview=True):
         pass

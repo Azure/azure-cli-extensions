@@ -89,7 +89,8 @@ def _parse_file(response, name, validate_content=False):
     content_settings = getattr(props, 'content_settings')
     if 'content-range' in response.headers:
         if 'x-ms-content-md5' in response.headers:
-            setattr(content_settings, 'content_md5', _to_str(response.headers['x-ms-content-md5']))
+            setattr(content_settings, 'content_md5', _to_str(
+                response.headers['x-ms-content-md5']))
         else:
             delattr(content_settings, 'content_md5')
 
@@ -153,7 +154,8 @@ def _convert_xml_to_shares(response):
 
         # Properties
         properties_element = share_element.find('Properties')
-        share.properties.last_modified = parser.parse(properties_element.findtext('Last-Modified'))
+        share.properties.last_modified = parser.parse(
+            properties_element.findtext('Last-Modified'))
         share.properties.etag = properties_element.findtext('Etag')
         share.properties.quota = int(properties_element.findtext('Quota'))
 
@@ -202,7 +204,8 @@ def _convert_xml_to_directories_and_files(response):
 
         # Properties
         properties_element = file_element.find('Properties')
-        file.properties.content_length = int(properties_element.findtext('Content-Length'))
+        file.properties.content_length = int(
+            properties_element.findtext('Content-Length'))
 
         # Add file to list
         entries.append(file)
@@ -304,7 +307,8 @@ def _convert_xml_to_ranges(response):
 
     for range_element in ranges_element.findall('Range'):
         # Parse range
-        range = FileRange(int(range_element.findtext('Start')), int(range_element.findtext('End')))
+        range = FileRange(int(range_element.findtext('Start')),
+                          int(range_element.findtext('End')))
 
         # Add range to list
         ranges.append(range)

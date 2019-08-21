@@ -11,9 +11,9 @@
 
 from ._configuration import Microservices4SpringManagementClientConfiguration
 from ._microservices4_spring_management_client import Microservices4SpringManagementClient
-__all__ = ['Microservices4SpringManagementClient', 'Microservices4SpringManagementClientConfiguration']
+__all__ = ['Microservices4SpringManagementClient',
+           'Microservices4SpringManagementClientConfiguration']
 
 from .version import VERSION
 
 __version__ = VERSION
-

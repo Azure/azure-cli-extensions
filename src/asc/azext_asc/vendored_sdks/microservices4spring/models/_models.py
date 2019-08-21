@@ -228,7 +228,8 @@ class AppResourceProperties(Model):
         self.public = kwargs.get('public', None)
         self.url = None
         self.provisioning_state = None
-        self.active_deployment_name = kwargs.get('active_deployment_name', None)
+        self.active_deployment_name = kwargs.get(
+            'active_deployment_name', None)
 
 
 class AuthorizationCredentials(Model):
@@ -366,7 +367,8 @@ class CloudErrorException(HttpOperationError):
 
     def __init__(self, deserialize, response, *args):
 
-        super(CloudErrorException, self).__init__(deserialize, response, 'CloudError', *args)
+        super(CloudErrorException, self).__init__(
+            deserialize, response, 'CloudError', *args)
 
 
 class CloudErrorBody(Model):
@@ -609,8 +611,10 @@ class DebuggingKeys(Model):
         super(DebuggingKeys, self).__init__(**kwargs)
         self.primary_key = kwargs.get('primary_key', None)
         self.secondary_key = kwargs.get('secondary_key', None)
-        self.primary_debugging_endpoint = kwargs.get('primary_debugging_endpoint', None)
-        self.secondary_debugging_endpoint = kwargs.get('secondary_debugging_endpoint', None)
+        self.primary_debugging_endpoint = kwargs.get(
+            'primary_debugging_endpoint', None)
+        self.secondary_debugging_endpoint = kwargs.get(
+            'secondary_debugging_endpoint', None)
 
 
 class DeploymentInstance(Model):
@@ -1020,8 +1024,10 @@ class MetricSpecification(Model):
         self.unit = kwargs.get('unit', None)
         self.category = kwargs.get('category', None)
         self.aggregation_type = kwargs.get('aggregation_type', None)
-        self.supported_aggregation_types = kwargs.get('supported_aggregation_types', None)
-        self.supported_time_grain_types = kwargs.get('supported_time_grain_types', None)
+        self.supported_aggregation_types = kwargs.get(
+            'supported_aggregation_types', None)
+        self.supported_time_grain_types = kwargs.get(
+            'supported_time_grain_types', None)
         self.fill_gap_with_zero = kwargs.get('fill_gap_with_zero', None)
         self.dimensions = kwargs.get('dimensions', None)
 
@@ -1298,7 +1304,8 @@ class TraceProperties(Model):
     def __init__(self, **kwargs):
         super(TraceProperties, self).__init__(**kwargs)
         self.enabled = kwargs.get('enabled', None)
-        self.app_insight_instrumentation_key = kwargs.get('app_insight_instrumentation_key', None)
+        self.app_insight_instrumentation_key = kwargs.get(
+            'app_insight_instrumentation_key', None)
 
 
 class UserSourceInfo(Model):
