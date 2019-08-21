@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.9
++++++
+* Use https if dashboard container port is using https 
+
 0.4.8
 +++++
 * Add update support for `--enable-acr` together with `--acr <name-or-id>`
