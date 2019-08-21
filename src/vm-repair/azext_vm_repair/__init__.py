@@ -12,9 +12,9 @@ class VmRepairCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         import os
-        # prod_env_string = 'AZURE_CLI_VM_REPAIR_PROD'
-        test_env_string = 'AZURE_CLI_VM_REPAIR_TEST'
-        os.environ[test_env_string] = test_env_string
+        prod_env_string = 'AZURE_CLI_VM_REPAIR_PROD'
+        # test_env_string = 'AZURE_CLI_VM_REPAIR_TEST'
+        os.environ[prod_env_string] = prod_env_string
         custom_type = CliCommandType(operations_tmpl='azext_vm_repair.custom#{}')
         super(VmRepairCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                      custom_command_type=custom_type)

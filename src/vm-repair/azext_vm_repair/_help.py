@@ -43,7 +43,7 @@ helps['vm repair run'] = """
         - name: Run the script with <run-id> on the repair VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --run-on-repair --verbose
-        - name: Run a script with parameters on the repair VM.
+        - name: Run a script with parameters on the repair VM. Remove --run-on-repair to run directly on VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --run-on-repair --verbose
         - name: Run a custom script on the repair VM.
