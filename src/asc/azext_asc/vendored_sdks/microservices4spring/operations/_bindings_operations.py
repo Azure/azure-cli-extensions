@@ -170,7 +170,7 @@ class BindingsOperations(object):
             body_content = self._serialize.body(binding_resource, 'BindingResource')
         else:
             body_content = None
-
+        print(body_content)
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
@@ -223,6 +223,7 @@ class BindingsOperations(object):
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'bindingName': self._serialize.url("binding_name", binding_name, 'str')
         }
+        print(path_format_arguments)
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters

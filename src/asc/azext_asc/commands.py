@@ -16,7 +16,7 @@ def load_command_table(self, _):
         #g.custom_command('update', 'asc_update', supports_no_wait=True)
         g.custom_command('debuggingkey list', 'asc_debuggingkey_list')
         g.custom_command('debuggingkey regenerate', 'asc_debuggingkey_regenerate')
-        #g.custom_command('test', 'test')
+        g.custom_command('test', 'test')
         #g.generic_update_command('update', setter_name='update', custom_func_name='update_asc')
 
     with self.command_group('asc app', client_factory=cf_asc) as g:
@@ -39,18 +39,16 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'deployment_get')
         g.custom_command('delete', 'deployment_delete')
 
-    '''
     with self.command_group('asc app binding', client_factory=cf_bindings) as g:
         g.custom_command('list', 'binding_list')
         g.custom_command('show', 'binding_get')
         g.custom_command('cosmos add', 'binding_cosmos_add')
-        #g.custom_command('cosmos update', 'binding_cosmos_update')
-        #g.custom_command('mysql add', 'binding_mysql_add')
-        #g.custom_command('mysql update', 'binding_mysql_update')
-        #g.custom_command('redis add', 'binding_redis_add')
-        #g.custom_command('redis update', 'binding_redis_update')
-        #g.custom_show_command('remove', 'binding_remove')
-    '''
+        g.custom_command('cosmos update', 'binding_cosmos_update')
+        g.custom_command('mysql add', 'binding_mysql_add')
+        g.custom_command('mysql update', 'binding_mysql_update')
+        g.custom_command('redis add', 'binding_redis_add')
+        g.custom_command('redis update', 'binding_redis_update')
+        g.custom_show_command('remove', 'binding_remove')
     
     with self.command_group('asc', is_preview=True):
         pass

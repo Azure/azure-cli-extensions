@@ -80,8 +80,30 @@ def load_arguments(self, _):
     with self.argument_context('asc app binding') as c:
         c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)   
         c.argument('name', name_type, help='Name of service binding.')
-        c.argument('resource_id', validator=validate_resource_id, help='The Azure resource id of the binding service. The format is: /subscriptions/{guid}/resourceGroups/{resource-group-name}/{resource-provider-namespace}/{resource-type}/{resource-name}.')         
-        c.argument('api_type', help='Type of api.', arg_type=get_enum_type(ApiType))
-        c.argument('database_name', help=' Name of database. required for mongo, sql, gremlin', validator=validate_cosmos_type)
-        c.argument('key_space', help='Required for cassandra')
-        c.argument('collection_name', help=' Required for gremlin')
+
+    for scope in ['asc app binding cosmos add', 'asc app binding mysql add', 'asc app binding redis add']:
+        with self.argument_context(scope) as c:
+            c.argument('resource_id', validator=validate_resource_id, help='The Azure resource id of the binding service. The format is: /subscriptions/{guid}/resourceGroups/{resource-group-name}/{resource-provider-namespace}/{resource-type}/{resource-name}.')         
+    
+    for scope in ['asc app binding cosmos add', 'asc app binding cosmos update']:  
+        with self.argument_context(scope) as c:
+            c.argument('database_name', help=' Name of database. required for mongo, sql, gremlin')
+            c.argument('key_space', help='Required for cassandra')
+            c.argument('collection_name', help=' Required for gremlin')
+
+    with self.argument_context('asc app binding cosmos add') as c:
+        c.argument('api_type', help='Type of api.', arg_type=get_enum_type(ApiType), validator=validate_cosmos_type)
+
+    with self.argument_context('asc app binding cosmos update') as c:
+        c.argument('key', help='he actual connection string of the service.')
+
+    for scope in ['asc app binding mysql add', 'asc app binding mysql update']:  
+        with self.argument_context(scope) as c:
+            c.argument('key', help='Key or connection string of the service.')
+            c.argument('username', help='username of the database')
+            c.argument('database_name')
+
+    for scope in ['asc app binding redis add', 'asc app binding redis update']:  
+        with self.argument_context(scope) as c:
+            c.argument('key', help='Key or connection string of the service.')
+            c.argument('use_ssl', action='store_true', help='If true, use ssl.')

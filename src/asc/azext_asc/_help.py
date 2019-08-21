@@ -167,7 +167,6 @@ helps['asc app deployment create'] = """
       text: az asc app deployment create -n green-deployment --app MyApp -s Myasc --jar-path app.jar --jvm-options "-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
-'''
 helps['asc app binding'] = """
     type: group
     short-summary: Commands to manage service bindings of an app in Spring cloud service.
@@ -196,6 +195,10 @@ helps['asc app binding show'] = """
     type: command
     short-summary: Show the details of a service binding.
 """
+helps['asc app binding delete'] = """
+    type: command
+    short-summary: Delete a service binding of the app.
+"""
 
 helps['asc app binding cosmos add'] = """
     type: command
@@ -204,4 +207,28 @@ helps['asc app binding cosmos add'] = """
     - name: Bind an Azure Cosmos DB service.
       text: az asc app binding cosmos create -n mysqlProduction --app MyApp --resource-id ${COSMOSDB_ID} --api-type mongo --database mymongo
 """
-'''
+
+helps['asc app binding cosmos update'] = """
+    type: command
+    short-summary: Update an Azure Cosmos DB service binding of the app.
+"""
+
+helps['asc app binding mysql add'] = """
+    type: command
+    short-summary: Bind an Azure DB for MySQL service with the app.
+"""
+
+helps['asc app binding mysql update'] = """
+    type: command
+    short-summary: Update an Azure DB for MySQL service binding of the app.
+"""
+
+helps['asc app binding redis add'] = """
+    type: command
+    short-summary: Bind an Azure Redis Cache service with the app.
+"""
+
+helps['asc app binding redis update'] = """
+    type: command
+    short-summary: Update an Azure Redis Cache service binding of the app.
+"""

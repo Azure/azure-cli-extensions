@@ -18,6 +18,7 @@ from urllib.request import urlretrieve
 from urllib.parse import urlparse
 from .azure_storage_file import FileService
 from azure.cli.core.util import sdk_no_wait
+from ast import literal_eval
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_URL='https://github.com/peizhou298/Helloworld/releases/download/0.1/jb-hello-world-maven-0.1.0.jar'
@@ -68,32 +69,32 @@ def app_create(cmd, client, resource_group, service, name,
         urlretrieve(DEFAULT_DEPLOYMENT_URL, DEFAULT_DEPLOYMENT_FILE)
 
     # create default deployment
-    try:
-        logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
-        poller = _app_deploy(client,
-                            resource_group,
-                            service,
-                            name,
-                            DEFAULT_DEPLOYMENT_NAME,
-                            DEFAULT_DEPLOYMENT_FILE,
-                            None,
-                            None,
-                            cpu,
-                            memory,
-                            instance_count,
-                            None,
-                            None)
-        poller.add_done_callback(lambda x: dump(client, x.resource()))
-        logger.warning("waiting for the default deployment completion")
-        while poller.done() is False:
-            sleep(5)
+    #try:
+    logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
+    poller = _app_deploy(client,
+                        resource_group,
+                        service,
+                        name,
+                        DEFAULT_DEPLOYMENT_NAME,
+                        DEFAULT_DEPLOYMENT_FILE,
+                        None,
+                        None,
+                        cpu,
+                        memory,
+                        instance_count,
+                        None,
+                        None)
+    poller.add_done_callback(lambda x: dump(client, x.resource()))
+    logger.warning("waiting for the default deployment completion")
+    while poller.done() is False:
+        sleep(5)
 
-        logger.warning("updating app active deployment")
-        properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
-        return client.apps.update(resource_group, service, name, properties)
-    except:
-        logger.warning("Create default deployment or set active deployment failed, trying to delete app")
-        client.apps.delete(resource_group, service, name)
+    logger.warning("updating app active deployment")
+    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
+    return client.apps.update(resource_group, service, name, properties)
+    #except:
+    #    logger.warning("Create default deployment or set active deployment failed, trying to delete app")
+    #    client.apps.delete(resource_group, service, name)
 
 def app_update(cmd, client, resource_group, service, name,
                is_public=None,
@@ -269,12 +270,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         raise CLIError("deployment " + name + " already exists")
 
     file_type, file_path = _get_upload_local_file(jar_path)
-    return _app_deploy(client,
-                       resource_group,
-                       service,
-                       app,
-                       name,
-                       file_path,
+    return _app_deploy(client, resource_group, service, app, name, file_path,
                        runtime_version,
                        jvm_options,
                        cpu,
@@ -306,27 +302,135 @@ def binding_remove(cmd, client, resource_group, service, app, name):
 
 def binding_cosmos_add(cmd, client, resource_group, service, app, name,
                        resource_id,
-                       api_type=None,
+                       api_type,
                        database_name=None,
                        key_space=None,
                        collection_name=None):
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
-    bindint_parameters = {}
-    bindint_parameters['apiType'] = api_type
-    bindint_parameters['databaseName'] = database_name
-    bindint_parameters['keySpace'] = key_space
-    bindint_parameters['collectionName'] = collection_name
-    get_key_url = 'https://management.azure.com/subscriptions/subid/resourceGroups/{}/providers/Microsoft.DocumentDB/databaseAccounts/{}/listKeys?api-version=2015-04-08'.format(resource_group, resource_name)
+    binding_parameters = {}
+    binding_parameters['apiType'] = api_type
+    if database_name:
+        binding_parameters['databaseName'] = database_name
+    if key_space:
+        binding_parameters['keySpace'] = key_space
+    if collection_name:
+        binding_parameters['collectionName'] = collection_name
+
+    try:
+        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+    except:
+        raise CLIError("Couldn't get cosmosdb {}'s primary key".format(resource_name))
 
     properties = models.BindingResourceProperties(
         resource_name = resource_name,
         resource_type = resource_type,
         resource_id = resource_id,
-        binding_parameters = bindint_parameters
+        key=primary_key,
+        binding_parameters = binding_parameters
     )
     return client.create_or_update(resource_group, service, app, name, properties)
+
+def binding_cosmos_update(cmd, client, resource_group, service, app, name,
+                        key=None,
+                        database_name=None,
+                        key_space=None,
+                        collection_name=None):
+    binding_parameters = {}
+    binding_parameters['databaseName'] = database_name
+    binding_parameters['keySpace'] = key_space
+    binding_parameters['collectionName'] = collection_name
+
+    properties = models.BindingResourceProperties(
+        key=key,
+        binding_parameters = binding_parameters
+    )
+    return client.update(resource_group, service, app, name, properties)
+
+def binding_mysql_add(cmd, client, resource_group, service, app, name,
+                       resource_id,
+                       key,
+                       username,
+                       database_name):
+    resource_id_dict = parse_resource_id(resource_id)
+    resource_type = resource_id_dict['resource_type']
+    resource_name = resource_id_dict['resource_name']
+    binding_parameters = {}
+    binding_parameters['username'] = username
+    binding_parameters['databaseName'] = database_name
+
+    properties = models.BindingResourceProperties(
+        resource_name = resource_name,
+        resource_type = resource_type,
+        resource_id = resource_id,
+        key=key,
+        binding_parameters = binding_parameters
+    )
+    return client.create_or_update(resource_group, service, app, name, properties)
+    
+def binding_mysql_update(cmd, client, resource_group, service, app, name,
+                        key=None,
+                        username=None,
+                        database_name=None):
+    binding_parameters = {}
+    binding_parameters['username'] = username
+    binding_parameters['databaseName'] = database_name
+
+    properties = models.BindingResourceProperties(
+        key=key,
+        binding_parameters = binding_parameters
+    )
+    return client.update(resource_group, service, app, name, properties)
+
+def binding_redis_add(cmd, client, resource_group, service, app, name,
+                       resource_id,
+                       key,
+                       use_ssl=None):
+    resource_id_dict = parse_resource_id(resource_id)
+    resource_type = resource_id_dict['resource_type']
+    resource_name = resource_id_dict['resource_name']
+    binding_parameters = {}
+    binding_parameters['useSsl'] = use_ssl
+
+    properties = models.BindingResourceProperties(
+        resource_name = resource_name,
+        resource_type = resource_type,
+        resource_id = resource_id,
+        key=key,
+        binding_parameters = binding_parameters
+    )
+    return client.create_or_update(resource_group, service, app, name, properties)
+    
+def binding_redis_update(cmd, client, resource_group, service, app, name,
+                       key=None,
+                       use_ssl=None):
+    binding_parameters = {}
+    binding_parameters['useSsl'] = use_ssl
+
+    properties = models.BindingResourceProperties(
+        key=key,
+        binding_parameters = binding_parameters
+    )
+    return client.create_or_update(resource_group, service, app, name, properties)
+
+def _get_cosmosdb_primary_key(client, resource_id):
+    url = '{}/listKeys'.format(resource_id)
+    operation_config = {}
+    # Construct parameters
+    query_parameters = {}
+    query_parameters['api-version'] = client._serialize.query("client.api_version", '2015-04-08', 'str')
+
+    # Construct headers
+    header_parameters = {}
+    header_parameters['Accept'] = 'application/json'
+
+    # Construct and send request
+    request = client._client.post(url, query_parameters, header_parameters)
+    response = client._client.send(request, stream=False, **operation_config)
+    keys = response.content.decode("utf-8")
+    keys_dict = literal_eval(keys)
+    return keys_dict['primaryMasterKey']
 
 def _get_all_deployments(client, resource_group, service, app):
     deployments = []
@@ -342,16 +446,7 @@ def _get_all_apps(client, resource_group, service):
     apps = (app.name for app in apps)
     return apps
 
-def _app_deploy(client,
-                resource_group,
-                service,
-                app,
-                name,
-                path,
-                runtime_version,
-                jvm_options,
-                cpu,
-                memory,
+def _app_deploy(client, resource_group, service, app, name, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
                 tags,
@@ -402,8 +497,9 @@ def _app_deploy(client,
         return sdk_no_wait(no_wait, client.deployments.create_or_update,
                             resource_group, service, app, name, properties)
 
-def test(cmd, resource_group, service=None, app=None, deployment=None):
-    return None
+def test(cmd, client, resource_group, service=None, app=None, deployment=None):
+    #_list_cosmosdb_keys(client, resource_group, 'raphael-cosmosdb-cassandra')
+    #print(res)
     #sfc = cf_asc(cmd.cli_ctx)
     #_get_resource_info("/subscriptions/685ba005-af8d-4b04-8f16-a7bf38b2eab7/resourceGroups/mymongorg/providers/Microsoft.DocumentDB/databaseAccounts/mymongo")
     #_get_upload_local_file()
@@ -411,3 +507,4 @@ def test(cmd, resource_group, service=None, app=None, deployment=None):
     #zero_arg_lambda = lambda: print("dsasdsa")
     #zero_arg_lambda()
     #_pack_source_code(os.getcwd(), TEMP_TAR)
+    return None

@@ -78,7 +78,7 @@ class AppsOperations(object):
         if sync_status is not None:
             query_parameters['syncStatus'] = self._serialize.query("sync_status", sync_status, 'str')
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-
+        print(self.api_version)
         # Construct headers
         header_parameters = {}
         header_parameters['Accept'] = 'application/json'
@@ -90,6 +90,9 @@ class AppsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
+        print(url)
+        print(query_parameters)
+        print(header_parameters)
         request = self._client.get(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 

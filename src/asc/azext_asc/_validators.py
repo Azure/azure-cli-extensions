@@ -55,19 +55,15 @@ def validate_resource_id(namespace):
 def validate_cosmos_type(namespace):
     if namespace.api_type is None:
             return
-    type = namespace.api_type
+    type = ApiType(namespace.api_type)
     if type == ApiType.mongo or type == ApiType.sql or type == ApiType.gremlin:
         if namespace.database_name is None:
-            raise CLIError("Cosmosdb with type %s should specify database name", type)
+            raise CLIError("Cosmosdb with type {} should specify database name".format(type))
     
     if type == ApiType.cassandra:
         if namespace.key_space is None:
-            raise CLIError("Cosmosdb with type %s should specify key space", type)
-
-    if type == ApiType.cassandra:
-        if namespace.key_space is None:
-            raise CLIError("Cosmosdb with type %s should specify key space", type)
-
+            raise CLIError("Cosmosdb with type {} should specify key space".format(type))
+            
     if type == ApiType.gremlin:
         if namespace.key_space is None:
-            raise CLIError("Cosmosdb with type %s should specify collection name", type)
+            raise CLIError("Cosmosdb with type {} should specify collection name".format(type))
