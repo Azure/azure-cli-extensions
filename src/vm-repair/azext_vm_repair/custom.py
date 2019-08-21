@@ -11,6 +11,7 @@ import timeit
 import inspect
 from knack.log import get_logger
 
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
@@ -208,18 +209,18 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                  '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
                                  'Note that the copied disk is created within the original resource group \'{rg}\'.' \
                                  .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
-        return_dict['repairVmName'] = repair_vm_name
-        return_dict['copiedDiskName'] = copy_disk_name
-        return_dict['copiedDiskUri'] = copy_disk_id
-        return_dict['repairResouceGroup'] = repair_group_name
-        return_dict['resourceTag'] = resource_tag
-        return_dict['createdResources'] = created_resources
+        return_dict['repair_vm_name'] = repair_vm_name
+        return_dict['copied_disk_name'] = copy_disk_name
+        return_dict['copied_disk_uri'] = copy_disk_id
+        return_dict['repair_resouce_group'] = repair_group_name
+        return_dict['resource_tag'] = resource_tag
+        return_dict['created_resources'] = created_resources
 
         logger.info('\n%s\n', return_dict['message'])
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_command_telemetry('vm repair create', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict)
+    _track_command_telemetry('vm repair create', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
     return return_dict
 
 
@@ -311,7 +312,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_command_telemetry('vm repair restore', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict)
+    _track_command_telemetry('vm repair restore', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
     return return_dict
 
 
@@ -360,7 +361,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             repair_run_command += ' --parameters script_path="./{repair_script}"'.format(repair_script=repair_script_path)
-        # Custom script scenario for testing
+        # Custom script scenario for script testers
         else:
             # no-op run id
             repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_run_file)
@@ -426,10 +427,10 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_dict['status'] = return_status
         return_dict['message'] = message
         return_dict['logs'] = stdout
-        return_dict['logFullpath'] = log_fullpath
+        return_dict['log_full_path'] = log_fullpath
         return_dict['output'] = output
-        return_dict['vmName'] = repair_vm_name
-        return_dict['resouceGroup'] = repair_resource_group
+        return_dict['vm_name'] = repair_vm_name
+        return_dict['resouce_group'] = repair_resource_group
         command_succeeded = True
     except KeyboardInterrupt:
         return_error_detail = "Command interrupted by user input."
@@ -458,7 +459,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict, \
+    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict, \
                                  run_id, script_status, output, script_duration)
     return return_dict
 
@@ -497,5 +498,5 @@ def run_list(cmd):
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_command_telemetry('vm repair run-list', func_params, return_status, return_message, return_error_detail, elapsed_time, return_dict)
+    _track_command_telemetry('vm repair run-list', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
     return return_dict

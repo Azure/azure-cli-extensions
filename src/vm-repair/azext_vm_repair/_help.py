@@ -38,7 +38,7 @@ helps['vm repair restore'] = """
 
 helps['vm repair run'] = """
     type: command
-    short-summary: Run verified scripts on the repair-vm. 'az vm repair run-list' to view available scripts.
+    short-summary: Run verified scripts from GitHub on a VM. 'az vm repair run-list' to view scripts.
     examples:
         - name: Run the script with <run-id> on the repair VM.
           text: >
