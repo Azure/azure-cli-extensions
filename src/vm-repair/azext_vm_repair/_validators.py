@@ -15,12 +15,19 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from .exceptions import AzCommandError
-from .repair_utils import _call_az_command, _get_repair_resource_tag, _uses_encrypted_disk, _resolve_api_version, check_extension_version
+from .repair_utils import (
+    _call_az_command,
+    _get_repair_resource_tag,
+    _uses_encrypted_disk,
+    _resolve_api_version,
+    check_extension_version
+)
 
 # pylint: disable=line-too-long, broad-except
 
 logger = get_logger(__name__)
 EXTENSION_NAME = 'vm-repair'
+
 
 def validate_create(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
@@ -72,7 +79,7 @@ def validate_restore(cmd, namespace):
 
     # No repair param given, find repair vm using tags
     if not namespace.repair_vm_id:
-       fetch_repair_vm(namespace)
+        fetch_repair_vm(namespace)
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
@@ -99,7 +106,7 @@ def validate_run(cmd, namespace):
     # Set run_on_repair to True if repair_vm_id given
     if namespace.repair_vm_id:
         namespace.run_on_repair = True
-    
+
     # Check run-id and custom run file parameters
     if not namespace.run_id and not namespace.custom_run_file:
         raise CLIError('Please specify the run id with --run-id.')
@@ -119,7 +126,7 @@ def validate_run(cmd, namespace):
                 raise CLIError('Powershell param() statement does not work for custom run files yet. Please remove the param() line in the file.')
 
         namespace.run_id = 'no-op'
-    
+
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
 
@@ -128,17 +135,17 @@ def validate_run(cmd, namespace):
     # Check if the script type matches the OS
     if not is_linux and namespace.run_id.startswith('linux'):
         raise CLIError('Script IDs that start with \'linux\' are Linux Shell scripts. You cannot run linux Shell scripts on a Windows VM.')
-    elif is_linux and namespace.run_id.startswith('win'):
+    if is_linux and namespace.run_id.startswith('win'):
         raise CLIError('Script IDs that start with \'win\' are Windows PowerShell scripts. You cannot run Windows PowerShell scripts on a Linux VM.')
 
     # Fetch repair vm
     if namespace.run_on_repair and not namespace.repair_vm_id:
-       fetch_repair_vm(namespace)
+        fetch_repair_vm(namespace)
 
     # If not run_on_repair, repair_vm = source_vm. Scripts directly run on source VM.
     if not namespace.run_on_repair:
         namespace.repair_vm_id = source_vm.id
-    
+
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
 
@@ -253,7 +260,7 @@ def fetch_repair_vm(namespace):
 
     # No repair VM found
     if not repair_list:
-        raise CLIError('Repair VM not found for {vm_name}. Run \'az vm repair create -n {vm_name} -g {rg} --verbose\' to create repair vm and rerun the command.' \
+        raise CLIError('Repair VM not found for {vm_name}. Run \'az vm repair create -n {vm_name} -g {rg} --verbose\' to create repair vm and rerun the command.'
                        .format(vm_name=namespace.vm_name, rg=namespace.resource_group_name))
 
     # More than one repair VM found

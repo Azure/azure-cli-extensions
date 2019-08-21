@@ -6,15 +6,15 @@
 import subprocess
 import shlex
 import os
-import requests
 import re
 from json import loads
+import requests
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -64,21 +64,21 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 
 
 def _get_current_vmrepair_version():
-	from azure.cli.core.extension.operations import list_extensions
-	return [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair'][0]
+    from azure.cli.core.extension.operations import list_extensions
+    return [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair'][0]
 
 
 def check_extension_version(extension_name):
     from azure.cli.core.extension.operations import list_available_extensions, list_extensions
- 
+
     available_extensions = list_available_extensions()
     installed_extensions = list_extensions()
     extension_to_check = [ext for ext in installed_extensions if ext['name'] == extension_name]
     if not extension_to_check:
         logger.debug('The extension with name %s does not exist within installed extensions.', extension_name)
         return
-    else:
-        extension_to_check = extension_to_check[0]
+
+    extension_to_check = extension_to_check[0]
 
     for ext in available_extensions:
         if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
@@ -220,8 +220,8 @@ def _fetch_run_script_path(run_id):
     repair_script_path = [script['path'] for script in map_json if script['id'] == run_id]
     if repair_script_path:
         return repair_script_path[0]
-    else:
-        raise RunScriptNotFoundForIdError('Run-script not found for id: {}. Please validate if the id is correct.'.format(run_id))
+
+    raise RunScriptNotFoundForIdError('Run-script not found for id: {}. Please validate if the id is correct.'.format(run_id))
 
 
 def _process_ps_parameters(parameters):
@@ -236,7 +236,7 @@ def _process_ps_parameters(parameters):
             param_string += '-{name} {value} '.format(name=n, value=v)
         else:
             param_string += '{} '.format(param)
-                
+
     return param_string.strip(' ')
 
 
@@ -259,7 +259,7 @@ def _parse_run_script_raw_logs(log_string):
     Splits one aggregate log string into a list of each log entry.
     """
     pattern = r'((?=\[(?:Log-Start|Log-End|Output|Info|Warning|Error|Debug) ' \
-               '[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\])|(?=\[STATUS\]))'
+              r'[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\])|(?=\[STATUS\]))'
     log_list = _regex_split(pattern, log_string)
     # Remove empty strings in logs
     log_list = list(filter(None, log_list))
@@ -293,17 +293,14 @@ def _check_script_succeeded(log_string):
     status_success = '[STATUS]::SUCCESS'
     # status_failure = '[STATUS]::ERROR'
 
-    if status_success in log_string:
-        return True
-    else:
-        return False
+    return status_success in log_string
 
 
 def _handle_command_error(return_error_detail, return_message):
     """Output the right error message and reuturn error return dict"""
     return_dict = {}
     if return_error_detail:
-            logger.error(return_error_detail)
+        logger.error(return_error_detail)
     if return_message:
         logger.error(return_message)
     return_dict['status'] = 'ERROR'
@@ -314,7 +311,8 @@ def _handle_command_error(return_error_detail, return_message):
 
 def _get_function_param_dict(frame):
     import inspect
-    _ , _, _, values = inspect.getargvalues(frame)
+    # getargvalues inadvertently marked as deprecated in Python 3.5
+    _, _, _, values = inspect.getargvalues(frame)
     if 'cmd' in values:
         del values['cmd']
     if 'repair_password' in values:

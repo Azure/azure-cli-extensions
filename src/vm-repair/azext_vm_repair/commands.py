@@ -14,4 +14,4 @@ def load_command_table(self, _):
         g.custom_command('create', 'create', validator=validate_create)
         g.custom_command('restore', 'restore', validator=validate_restore)
         g.custom_command('run', 'run', validator=validate_run)
-        g.custom_command('run-list', 'run_list')        
+        g.custom_command('run-list', 'run_list')

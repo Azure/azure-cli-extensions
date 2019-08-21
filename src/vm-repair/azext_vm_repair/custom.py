@@ -3,13 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import requests
+# pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
 import os
 import pkgutil
 import timeit
 import inspect
 from knack.log import get_logger
+import requests
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
@@ -36,7 +37,6 @@ from .repair_utils import (
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 from .telemetry import _track_command_telemetry, _track_run_command_telemetry
 
-# pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except
 
 STATUS_SUCCESS = 'SUCCESS'
 STATUS_ERROR = 'ERROR'
@@ -182,7 +182,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_message = "Please check if the current subscription can create more VM resources. Cleaning up created resources."
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
         return_error_detail = str(unmanagedDiskCopyError)
-        return_message= "Repair create failed. Please try again at another time. Cleaning up created resources."
+        return_message = "Repair create failed. Please try again at another time. Cleaning up created resources."
     except WindowsOsNotAvailableError:
         return_error_detail = 'Compatible Windows OS image not available.'
         return_message = 'A compatible Windows OS image is not available at this time, please check subscription.'
@@ -198,12 +198,12 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
         _clean_up_resources(repair_group_name, confirm=False)
-    else :
+    else:
         # Construct return dict
         return_status = STATUS_SUCCESS
         created_resources.append(copy_disk_id)
         return_dict = {}
-        return_dict['status']= return_status
+        return_dict['status'] = return_status
         return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
                                  'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
                                  '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
@@ -303,7 +303,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         # Construct return dict
         return_status = STATUS_SUCCESS
         return_dict = {}
-        return_dict['status']= return_status
+        return_dict['status'] = return_status
         return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
                                  'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
                                  .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
@@ -368,14 +368,17 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         # Append Parameters
         if parameters:
             if is_linux:
-                param_string =_process_bash_parameters(parameters)
+                param_string = _process_bash_parameters(parameters)
             else:
                 param_string = _process_ps_parameters(parameters)
             # Work around for run-command bug, unexpected behavior with space characters
             param_string = param_string.replace(' ', '%20')
             repair_run_command += ' params="{}"'.format(param_string)
-
-        logger.info('Running script on VM: %s', repair_vm_name)
+        if run_on_repair:
+            vm_string = 'VM'
+        else:
+            vm_string = 'repair VM'
+        logger.info('Running script on %s: %s', vm_string, repair_vm_name)
         script_start_time = timeit.default_timer()
         return_str = _call_az_command(repair_run_command)
         script_duration = timeit.default_timer() - script_start_time
@@ -406,7 +409,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
                 if len(split_log) == 2:
                     log_fullpath = split_log[1]
         if log_cutoff:
-            logger.warning('Log file is too large and has been cutoff at the start of file. Please locate the log file within the repair-vm using the logFullpath to check full logs.')
+            logger.warning('Log file is too large and has been cutoff at the start of file. Please locate the log file within the %s using the logFullpath to check full logs.', vm_string)
 
         # Output 'output' or 'error' level logs depending on status
         if run_script_succeeded:
@@ -450,17 +453,15 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     finally:
         # end long running op for process
         cmd.cli_ctx.get_progress_controller().end()
-        # Add a new line after progress controller ends
-        logger.info('')
 
     if not command_succeeded:
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
-    
+
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict, \
-                                 run_id, script_status, output, script_duration)
+    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx),
+                                 return_dict, run_id, script_status, output, script_duration)
     return return_dict
 
 
@@ -493,7 +494,7 @@ def run_list(cmd):
         return_dict = _handle_command_error(return_error_detail, return_message)
     else:
         return_status = STATUS_SUCCESS
-    
+
     return_dict['status'] = return_status
 
     # Track telemetry data
