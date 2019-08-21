@@ -68,32 +68,28 @@ def app_create(cmd, client, resource_group, service, name,
         urlretrieve(DEFAULT_DEPLOYMENT_URL, DEFAULT_DEPLOYMENT_FILE)
 
     # create default deployment
-    try:
-        logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
-        poller = _app_deploy(client,
-                            resource_group,
-                            service,
-                            name,
-                            DEFAULT_DEPLOYMENT_NAME,
-                            DEFAULT_DEPLOYMENT_FILE,
-                            None,
-                            None,
-                            cpu,
-                            memory,
-                            instance_count,
-                            None,
-                            None)
-        poller.add_done_callback(lambda x: dump(client, x.resource()))
-        logger.warning("waiting for the default deployment completion")
-        while poller.done() is False:
-            sleep(5)
+    logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
+    poller = _app_deploy(client,
+                        resource_group,
+                        service,
+                        name,
+                        DEFAULT_DEPLOYMENT_NAME,
+                        DEFAULT_DEPLOYMENT_FILE,
+                        None,
+                        None,
+                        cpu,
+                        memory,
+                        instance_count,
+                        None,
+                        None)
+    poller.add_done_callback(lambda x: dump(client, x.resource()))
+    logger.warning("waiting for the default deployment completion")
+    while poller.done() is False:
+        sleep(5)
 
-        logger.warning("updating app active deployment")
-        properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
-        return client.apps.update(resource_group, service, name, properties)
-    except:
-        logger.warning("Create default deployment or set active deployment failed, trying to delete app")
-        client.apps.delete(resource_group, service, name)
+    logger.warning("updating app active deployment")
+    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
+    return client.apps.update(resource_group, service, name, properties)
 
 def app_update(cmd, client, resource_group, service, name,
                is_public=None,
