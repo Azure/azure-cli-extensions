@@ -134,7 +134,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             # Appending location to target name if multiple locations
             final_target_name = target_name
             if target_name and target_locations_count > 1:
-                final_target_name = target_name + location
+                final_target_name = target_name + '-' + location
 
             location = location.strip()
             tasks.append((location, transient_resource_group_name, source_type,
