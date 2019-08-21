@@ -65,7 +65,10 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 
 def _get_current_vmrepair_version():
     from azure.cli.core.extension.operations import list_extensions
-    return [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair'][0]
+    version = [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair']
+    if version:
+        return version[0]
+    return None
 
 
 def check_extension_version(extension_name):

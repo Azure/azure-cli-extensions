@@ -9,8 +9,8 @@ import os
 import pkgutil
 import timeit
 import inspect
-from knack.log import get_logger
 import requests
+from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
