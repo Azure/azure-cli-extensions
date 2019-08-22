@@ -5,6 +5,7 @@ Release History
 0.4.9
 +++++
 * Use https if dashboard container port is using https 
+* Add support for `az aks update --disable-acr --acr <name-or-id>`
 
 0.4.8
 +++++

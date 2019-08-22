@@ -171,6 +171,31 @@ def _add_role_assignment(cli_ctx, role, service_principal, delay=2, scope=None):
     return True
 
 
+def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=None):
+    # AAD can have delays in propagating data, so sleep and retry
+    hook = cli_ctx.get_progress_controller(True)
+    hook.add(message='Waiting for AAD role to delete', value=0, total_val=1.0)
+    logger.info('Waiting for AAD role to delete')
+    for x in range(0, 10):
+        hook.add(message='Waiting for AAD role to delete', value=0.1 * x, total_val=1.0)
+        try:
+            delete_role_assignments(cli_ctx,
+                                    role=role,
+                                    assignee=service_principal,
+                                    scope=scope)
+            break
+        except CLIError as ex:
+            raise ex
+        except CloudError as ex:
+            logger.info(ex)
+        time.sleep(delay + delay * x)
+    else:
+        return False
+    hook.add(message='AAD role deletion done', value=1.0, total_val=1.0)
+    logger.info('AAD role deletion done')
+    return True
+
+
 def _get_subscription_id(cli_ctx):
     _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
     return sub_id
@@ -336,6 +361,81 @@ def _create_role_assignment(cli_ctx, role, assignee, resource_group_name=None, s
     assignment_name = uuid.uuid4()
     custom_headers = None
     return assignments_client.create(scope, assignment_name, parameters, custom_headers=custom_headers)
+
+
+def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resource_group_name=None,
+                            scope=None, include_inherited=False, yes=None):
+    factory = get_auth_management_client(cli_ctx, scope)
+    assignments_client = factory.role_assignments
+    definitions_client = factory.role_definitions
+    ids = ids or []
+    if ids:
+        if assignee or role or resource_group_name or scope or include_inherited:
+            raise CLIError('When assignment ids are used, other parameter values are not required')
+        for i in ids:
+            assignments_client.delete_by_id(i)
+        return
+    if not any([ids, assignee, role, resource_group_name, scope, assignee, yes]):
+        from knack.prompting import prompt_y_n
+        msg = 'This will delete all role assignments under the subscription. Are you sure?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
+    scope = _build_role_scope(resource_group_name, scope,
+                              assignments_client.config.subscription_id)
+    assignments = _search_role_assignments(cli_ctx, assignments_client, definitions_client,
+                                           scope, assignee, role, include_inherited,
+                                           include_groups=False)
+
+    if assignments:
+        for a in assignments:
+            assignments_client.delete_by_id(a.id)
+    else:
+        raise CLIError('No matched assignments were found to delete')
+
+
+def _search_role_assignments(cli_ctx, assignments_client, definitions_client,
+                             scope, assignee, role, include_inherited, include_groups):
+    assignee_object_id = None
+    if assignee:
+        assignee_object_id = _resolve_object_id(cli_ctx, assignee)
+
+    # always use "scope" if provided, so we can get assignments beyond subscription e.g. management groups
+    if scope:
+        assignments = list(assignments_client.list_for_scope(
+            scope=scope, filter='atScope()'))
+    elif assignee_object_id:
+        if include_groups:
+            f = "assignedTo('{}')".format(assignee_object_id)
+        else:
+            f = "principalId eq '{}'".format(assignee_object_id)
+        assignments = list(assignments_client.list(filter=f))
+    else:
+        assignments = list(assignments_client.list())
+
+    if assignments:
+        assignments = [a for a in assignments if (
+            not scope or
+            include_inherited and re.match(_get_role_property(a, 'scope'), scope, re.I) or
+            _get_role_property(a, 'scope').lower() == scope.lower()
+        )]
+
+        if role:
+            role_id = _resolve_role_id(role, scope, definitions_client)
+            assignments = [i for i in assignments if _get_role_property(
+                i, 'role_definition_id') == role_id]
+
+        if assignee_object_id:
+            assignments = [i for i in assignments if _get_role_property(
+                i, 'principal_id') == assignee_object_id]
+
+    return assignments
+
+
+def _get_role_property(obj, property_name):
+    if isinstance(obj, dict):
+        return obj[property_name]
+    return getattr(obj, property_name)
 
 
 def _build_role_scope(resource_group_name, scope, subscription_id):
@@ -717,17 +817,21 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
                enable_acr=False,
+               disable_acr=False,
                acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+    update_acr = enable_acr or disable_acr
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
-       (enable_pod_security_policy is False and disable_pod_security_policy is False) and enable_acr is False:
+       (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
+            update_acr is False:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
-                       '"--api-server-authorized-ip-ranges" or'
-                       '"--enable-acr"')
+                       '"--api-server-authorized-ip-ranges" or '
+                       '"--enable-acr" or '
+                       '"--disable-acr"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
@@ -791,16 +895,29 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
+    if enable_acr and disable_acr:
+        raise CLIError('Cannot specify --enable-acr and --disable-acr at the same time.')
+
+    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    location = instance.location
+    service_principal = instance.service_principal_profile.client_id
+    if not service_principal:
+        raise CLIError('Cannot get the AKS cluster\'s service principal.')
+
     if enable_acr:
-        subscription_id = _get_subscription_id(cmd.cli_ctx)
-        location = instance.location
-        service_principal = instance.service_principal_profile.client_id
         _ensure_aks_acr(cmd.cli_ctx,
                         acr,
                         location,
                         service_principal,
                         resource_group_name,
                         subscription_id)
+
+    if disable_acr:
+        _ensure_aks_acr_disabled(cmd.cli_ctx,
+                                 acr,
+                                 service_principal,
+                                 resource_group_name,
+                                 subscription_id)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
@@ -1322,6 +1439,47 @@ def _ensure_aks_acr_created(acr_client, resource_group_name, registry_name, loca
     except Exception as e:
         logger.info(e)
         raise CLIError(e)
+
+
+def _ensure_aks_acr_disabled(cli_ctx,
+                             acr,
+                             client_id,
+                             resource_group_name,
+                             subscription_id):
+    acr_resource_id = ""
+    if is_valid_resource_id(acr):
+        acr_resource_id = acr
+        resources = cf_resources(cli_ctx, subscription_id)
+
+        # check if the ACR exists.
+        try:
+            resources.get_by_id(acr, "2019-05-01")
+        except CloudError as ex:
+            raise ex
+    else:
+        acr_client = cf_container_registry_service(cli_ctx)
+        # Generate the default ACR name if it is not provided.
+        registry_name = acr
+        if registry_name is None or registry_name == "":
+            alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
+            registry_name = "aks" + alnum_name + "acr"
+
+        # Get ACR by name.
+        try:
+            registry = acr_client.registries.get(
+                resource_group_name, registry_name)
+        except CloudError as ex:
+            raise ex
+
+        acr_resource_id = registry.id
+
+    # delete role assignment for ACR.
+    if not _delete_role_assignments(cli_ctx,
+                                    'acrpull',
+                                    client_id,
+                                    scope=acr_resource_id):
+        raise CLIError('Could not disable role assignments for ACR. '
+                       'Are you an Owner on this subscription?')
 
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
