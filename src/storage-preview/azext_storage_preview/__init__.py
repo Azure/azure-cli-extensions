@@ -21,7 +21,6 @@ class StorageCommandsLoader(AzCommandsLoader):
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    min_profile='2017-03-10-profile',
                                                     resource_type=CUSTOM_DATA_STORAGE,
                                                     custom_command_type=storage_custom,
                                                     command_group_cls=StorageCommandGroup,
@@ -114,10 +113,6 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.argument('https_only', help='Allows https traffic only to storage service.',
                       arg_type=get_three_state_flag())
-        self.argument('file_aad', arg_type=get_three_state_flag(),
-                      help='Allows Azure File Active Directory integration, which will support SMB access to '
-                           'azure files using AAD. Requires AAD domain service setup: "https://'
-                           'docs.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-enable"')
         self.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name))
         self.argument('assign_identity', action='store_true', resource_type=CUSTOM_MGMT_STORAGE,
                       min_api='2017-06-01',

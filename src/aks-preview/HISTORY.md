@@ -2,6 +2,32 @@
 
 Release History
 ===============
+0.4.9
++++++
+* Use https if dashboard container port is using https 
+* Add support for `az aks update --disable-acr --acr <name-or-id>`
+
+0.4.8
++++++
+* Add update support for `--enable-acr` together with `--acr <name-or-id>`
+* Merge `az aks create --acr-name` into `az aks create --acr <name-or-id>`
+
+0.4.7
++++++
+* Add support for `--enable-acr` and `--acr-name`
+
+0.4.4
++++++
+* Add support for per node pool auto scaler settings.
+* Add `az aks nodepool update` to allow users to change auto scaler settings per node pool.
+* Add support for Standard sku load balancer.
+
+0.4.1
++++++
+* Add `az aks get-versions -l location` to allow users to see all managed cluster versions.
+* Add `az aks get-upgrades` to get all available versions to upgrade.
+* Add '(preview)' suffix if kubernetes version is preview when using `get-versions` and `get-upgrades`
+
 0.4.0
 +++++
 * Add support for Azure policy add-on.

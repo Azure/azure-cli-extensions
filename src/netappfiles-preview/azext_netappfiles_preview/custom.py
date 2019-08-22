@@ -49,7 +49,7 @@ def build_active_directories(active_directories=None):
             dns = ad['dns'] if 'dns' in ad else None
             smbservername = ad['smbservername'] if 'smbservername' in ad else None
             organizational_unit = ad['organizational_unit'] if 'organizational_unit' in ad else None
-            active_directory = ActiveDirectory(username=username, password=password, domain=domain, d_ns=dns, s_mb_server_name=smbservername, organizational_unit=organizational_unit)
+            active_directory = ActiveDirectory(username=username, password=password, domain=domain, dns=dns, smb_server_name=smbservername, organizational_unit=organizational_unit)
             acc_active_directories.append(active_directory)
 
     return acc_active_directories
