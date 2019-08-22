@@ -21,11 +21,9 @@ from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 
 logger = get_logger(__name__)
-DEFAULT_DEPLOYMENT_URL = 'https://github.com/peizhou298/Helloworld/releases/download/0.1/jb-hello-world-maven-0.1.0.jar'
-DEFAULT_DEPLOYMENT_FILE = os.path.join(tempfile.gettempdir(), 'helloworld.jar')
+#DEFAULT_DEPLOYMENT_URL='https://github.com/peizhou298/Helloworld/releases/download/0.1/jb-hello-world-maven-0.1.0.jar'
+#DEFAULT_DEPLOYMENT_FILE = os.path.join(tempfile.gettempdir(), 'helloworld.jar')
 DEFAULT_DEPLOYMENT_NAME = "default01"
-TEMP_TAR = "temp.tar.gz"
-
 
 def asc_create(cmd, client, resource_group, name, location=None, no_wait=False):
     resource = None
@@ -71,39 +69,27 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning("Creating app " + name)
     properties = models.AppResourceProperties(public=is_public)
     client.apps.create_or_update(resource_group, service, name, properties)
-    # download default jar if not exist
-    if not os.path.exists(DEFAULT_DEPLOYMENT_FILE):
-        urlretrieve(DEFAULT_DEPLOYMENT_URL, DEFAULT_DEPLOYMENT_FILE)
+
+    deployment_settings = models.DeploymentSettings(
+                                    cpu=cpu,
+                                    memory_in_gb=memory,
+                                    instance_count=instance_count)
+    user_source_info = models.UserSourceInfo(relative_path='<default>', type='Jar')
+    properties = models.DeploymentResourceProperties(
+                            deployment_settings=deployment_settings,
+                            source=user_source_info)
 
     # create default deployment
-    try:
-        logger.warning("Creating default deployment with name '" +
-                    DEFAULT_DEPLOYMENT_NAME + "'")
-        poller = _app_deploy(client,
-                            resource_group,
-                            service,
-                            name,
-                            DEFAULT_DEPLOYMENT_NAME,
-                            DEFAULT_DEPLOYMENT_FILE,
-                            None,
-                            None,
-                            cpu,
-                            memory,
-                            instance_count,
-                            None,
-                            None)
-        poller.add_done_callback(lambda x: dump(client, x.resource()))
-        logger.warning("waiting for the default deployment completion")
-        while poller.done() is False:
-            sleep(5)
+    logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
+    poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
+    poller.add_done_callback(lambda x: dump(client, x.resource()))
+    logger.warning("waiting for the default deployment completion")
+    while poller.done() is False:
+        sleep(5)
 
-        logger.warning("updating app active deployment")
-        properties = models.AppResourceProperties(
-            active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
-        return client.apps.update(resource_group, service, name, properties)
-    except:
-        logger.warning("Create default deployment or set active deployment failed, trying to delete app")
-        client.apps.delete(resource_group, service, name)
+    logger.warning("updating app active deployment")
+    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
+    return client.apps.update(resource_group, service, name, properties)
 
 
 def app_update(cmd, client, resource_group, service, name,
