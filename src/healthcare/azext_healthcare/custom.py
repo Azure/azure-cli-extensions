@@ -14,22 +14,22 @@ import json
 # module equivalent: azure_rm_healthcareapisservice
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}
 def create_healthcare(cmd, client,
-                        resource_group,
-                        name,
-                        kind,
-                        location,
-                        access_policies_object_id,
-                        tags=None,
-                        etag=None,
-                        cosmos_db_offer_throughput=None,
-                        authentication_authority=None,
-                        authentication_audience=None,
-                        authentication_smart_proxy_enabled=None,
-                        cors_origins=None,
-                        cors_headers=None,
-                        cors_methods=None,
-                        cors_max_age=None,
-                        cors_allow_credentials=None):
+                      resource_group,
+                      name,
+                      kind,
+                      location,
+                      access_policies_object_id,
+                      tags=None,
+                      etag=None,
+                      cosmos_db_offer_throughput=None,
+                      authentication_authority=None,
+                      authentication_audience=None,
+                      authentication_smart_proxy_enabled=None,
+                      cors_origins=None,
+                      cors_headers=None,
+                      cors_methods=None,
+                      cors_max_age=None,
+                      cors_allow_credentials=None):
 
     service_description={}
     service_description['location'] = location
@@ -57,22 +57,22 @@ def create_healthcare(cmd, client,
 # module equivalent: azure_rm_healthcareapisservice
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}
 def update_healthcare(cmd, client, body,
-                        resource_group,
-                        name,
-                        kind,
-                        location,
-                        access_policies_object_id,
-                        tags=None,
-                        etag=None,
-                        cosmos_db_offer_throughput=None,
-                        authentication_authority=None,
-                        authentication_audience=None,
-                        authentication_smart_proxy_enabled=None,
-                        cors_origins=None,
-                        cors_headers=None,
-                        cors_methods=None,
-                        cors_max_age=None,
-                        cors_allow_credentials=None):
+                      resource_group,
+                      name,
+                      kind,
+                      location,
+                      access_policies_object_id,
+                      tags=None,
+                      etag=None,
+                      cosmos_db_offer_throughput=None,
+                      authentication_authority=None,
+                      authentication_audience=None,
+                      authentication_smart_proxy_enabled=None,
+                      cors_origins=None,
+                      cors_headers=None,
+                      cors_methods=None,
+                      cors_max_age=None,
+                      cors_allow_credentials=None):
     return client.create_or_update(resource_group_name=resource_group, resource_name=name)
 
 
