@@ -12,4 +12,3 @@ def cf_healthcare(cli_ctx, *_):
 
 def cf_services(cli_ctx, *_):
     return cf_healthcare(cli_ctx).services
-

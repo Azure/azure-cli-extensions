@@ -31,7 +31,7 @@ def create_healthcare(cmd, client,
                       cors_max_age=None,
                       cors_allow_credentials=None):
 
-    service_description={}
+    service_description = {}
     service_description['location'] = location
     service_description['kind'] = kind
     service_description['properties'] = {}
@@ -50,7 +50,7 @@ def create_healthcare(cmd, client,
     service_description['authentication_configuration']['authority'] = authentication_authority
     service_description['authentication_configuration']['audience'] = authentication_audience
     service_description['authentication_configuration']['smart_proxy_enabled'] = authentication_smart_proxy_enabled
-                    
+
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
