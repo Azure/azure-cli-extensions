@@ -8,8 +8,6 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
-import json
-
 
 # module equivalent: azure_rm_healthcareapisservice
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}

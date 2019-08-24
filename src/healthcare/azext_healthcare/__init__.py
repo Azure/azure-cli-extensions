@@ -17,7 +17,7 @@ class HealthcareCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_healthcare.custom#{}',
             client_factory=cf_healthcare)
         super(HealthcareCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=healthcare_custom)
+                                                       custom_command_type=healthcare_custom)
 
     def load_command_table(self, args):
         from azext_healthcare.commands import load_command_table
