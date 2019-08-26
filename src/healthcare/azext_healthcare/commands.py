@@ -21,4 +21,4 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_healthcare')
         g.custom_command('delete', 'delete_healthcare')
         g.custom_command('list', 'list_healthcare')
-        g.custom_command('show', 'get_healthcare')
+        g.custom_command('show', 'show_healthcare')
