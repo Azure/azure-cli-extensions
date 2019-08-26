@@ -72,7 +72,6 @@ def update_healthcare(cmd, client, body,
                       cors_max_age=None,
                       cors_allow_credentials=None):
     service_description = client.get(resource_group_name=resource_group, service_name=service_name, api_id=api_id).as_dict()
-    service_description = {}
     service_description['location'] = location
     service_description['kind'] = kind
     service_description['properties'] = {}
