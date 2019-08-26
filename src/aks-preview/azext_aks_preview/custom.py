@@ -23,7 +23,7 @@ import time
 import uuid
 import webbrowser
 from ipaddress import ip_network
-from distutils.version import StrictVersion  # pylint: disable=import-error
+from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
 import requests
