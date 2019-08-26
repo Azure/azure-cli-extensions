@@ -71,7 +71,7 @@ def load_arguments(self, _):
         c.argument('enable_cluster_autoscaler', action='store_true')
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
-        c.argument('agent_pool_availability_type')
+        c.argument('vm_set_type')
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')

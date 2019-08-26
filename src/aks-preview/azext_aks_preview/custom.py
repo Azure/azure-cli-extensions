@@ -625,7 +625,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                no_ssh_key=False,
                disable_rbac=None,
                enable_rbac=None,
-               agent_pool_availability_type=None,
+               vm_set_type=None,
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
                network_plugin=None,
@@ -673,22 +673,22 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if location is None:
         location = rg_location
 
-    if not agent_pool_availability_type:
+    if not vm_set_type:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
-            print('Setting agent_pool_availability_type to availabilityset as it is \
+            print('Setting vm_set_type to availabilityset as it is \
             not specified and kubernetes version(%s) less than 1.12.9 only supports \
             availabilityset\n' % (kubernetes_version))
-            agent_pool_availability_type = "AvailabilitySet"
+            vm_set_type = "AvailabilitySet"
 
-    if not agent_pool_availability_type:
-        agent_pool_availability_type = "VirtualMachineScaleSets"
+    if not vm_set_type:
+        vm_set_type = "VirtualMachineScaleSets"
 
     # normalize as server validation is case-sensitive
-    if agent_pool_availability_type.lower() == "AvailabilitySet".lower():
-        agent_pool_availability_type = "AvailabilitySet"
+    if vm_set_type.lower() == "AvailabilitySet".lower():
+        vm_set_type = "AvailabilitySet"
 
-    if agent_pool_availability_type.lower() == "VirtualMachineScaleSets".lower():
-        agent_pool_availability_type = "VirtualMachineScaleSets"
+    if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
+        vm_set_type = "VirtualMachineScaleSets"
 
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
@@ -707,7 +707,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
         max_pods=int(max_pods) if max_pods else None,
-        type=agent_pool_availability_type
+        type=vm_set_type
     )
 
     if node_osdisk_size:

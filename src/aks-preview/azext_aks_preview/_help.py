@@ -163,7 +163,7 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
-        - name: --agent-pool-availability-type
+        - name: --vm-set-type
           type: string
           short-summary: Agent pool availability type. VirtualMachineScaleSets or AvailabilitySet.
         - name: --enable-pod-security-policy
@@ -188,8 +188,8 @@ helps['aks create'] = """
         - name: Create a kubernetes cluster with cluster autosclaler enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5
         - name: Create a kubernetes cluster with k8s 1.13.9 but use vmas.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --agent-pool-availability-type AvailabilitySet
-        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(standard) and default agent pool profile(VirtualMachineScaleSets).
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --vm-set-type AvailabilitySet
+        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(standard) and default vm set type(VirtualMachineScaleSets).
           text: az aks create -g MyResourceGroup -n MyManagedCluster
         - name: Create a kubernetes cluster with standard SKU load balancer and two AKS created IPs for the load balancer outbound connection usage.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
@@ -197,8 +197,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1, ip-resource-id-2>
         - name: Create a kubernetes cluster with standard SKU load balancer and use the provided public IP prefixes for the load balancer outbound connection usage.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1, ip-prefix-resource-id-2>
-        - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet agent pool profile.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --agent-pool-availability-type AvailabilitySet
+        - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 

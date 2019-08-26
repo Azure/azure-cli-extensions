@@ -88,7 +88,7 @@ az aks update \
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --agent-pool-availability-type AvailabilitySet \
+    --vm-set-type AvailabilitySet \
 ```
 
 #### Use VMSS for new cluster(default)
@@ -97,7 +97,7 @@ az aks create \
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --agent-pool-availability-type VirtualMachineScaleSets \
+    --vm-set-type VirtualMachineScaleSets \
 ```
 
 #### Use VMSS for new cluster with availability zone feature
@@ -106,7 +106,7 @@ az aks create \
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --agent-pool-availability-type VirtualMachineScaleSets \
+    --vm-set-type VirtualMachineScaleSets \
     --node-zones 1 2 3
 ```
 
