@@ -677,7 +677,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
             print('Setting agent_pool_availability_type to availabilityset as it is \
             not specified and kubernetes version(%s) less than 1.12.9 only supports \
-            availabilityset\n'%(kubernetes_version))
+            availabilityset\n' % (kubernetes_version))
             agent_pool_availability_type = "AvailabilitySet"
 
     if not agent_pool_availability_type:
@@ -693,7 +693,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
             print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
-            version(%s) less than 1.13.0 only supports basic load balancer SKU\n'%(kubernetes_version))
+            version(%s) less than 1.13.0 only supports basic load balancer SKU\n' % (kubernetes_version))
             load_balancer_sku = "basic"
 
     if not load_balancer_sku:
