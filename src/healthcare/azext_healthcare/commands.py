@@ -18,7 +18,7 @@ def load_command_table(self, _):
         client_factory=cf_services)
     with self.command_group('healthcare', healthcare_services, client_factory=cf_services) as g:
         g.custom_command('create', 'create_healthcare')
-        g.generic_update_command('update', custom_func_name='update_healthcare')
+        g.custom_command('update', custom_func_name='update_healthcare')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_healthcare')
         g.show_command('show', 'get')

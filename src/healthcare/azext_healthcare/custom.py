@@ -54,12 +54,12 @@ def create_healthcare(cmd, client,
 
 # module equivalent: azure_rm_healthcareapisservice
 # URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}
-def update_healthcare(cmd, client, body,
-                      #resource_group,
-                      #name,
-                      kind,
-                      location,
-                      access_policies_object_id,
+def update_healthcare(cmd, client,
+                      resource_group,
+                      name,
+                      kind=None,
+                      location=None,
+                      access_policies_object_id=None,
                       tags=None,
                       etag=None,
                       cosmos_db_offer_throughput=None,

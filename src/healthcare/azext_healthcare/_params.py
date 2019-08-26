@@ -35,6 +35,7 @@ def load_arguments(self, _):
         c.argument('cors_allow_credentials', arg_type=get_three_state_flag(), id_part=None, help='If credentials are allowed via CORS.')
 
     with self.argument_context('healthcare update') as c:
+        c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='The name of the service instance.')
         c.argument('kind', arg_type=get_enum_type(['fhir', 'fhir-Stu3', 'fhir-R4']), id_part=None, help='The kind of the service. Valid values are: fhir, fhir-Stu3 and fhir-R4.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
