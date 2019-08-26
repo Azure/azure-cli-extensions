@@ -71,7 +71,7 @@ def update_healthcare(cmd, client, body,
                       cors_methods=None,
                       cors_max_age=None,
                       cors_allow_credentials=None):
-    service_description = client.get(resource_group_name=resource_group, service_name=name).as_dict()
+    service_description = body.as_dict()
     if location is not None:
         service_description['location'] = location
     if kind is not None:
