@@ -9,8 +9,6 @@
 # pylint: disable=unused-argument
 
 
-# module equivalent: azure_rm_healthcareapisservice
-# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}
 def create_healthcare(cmd, client,
                       resource_group,
                       name,
@@ -52,8 +50,6 @@ def create_healthcare(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
-# module equivalent: azure_rm_healthcareapisservice
-# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}
 def update_healthcare(cmd, client,
                       resource_group,
                       name,
@@ -107,10 +103,20 @@ def update_healthcare(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
-# module equivalent: azure_rm_healthcareapisservice
-# URL: /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group }}/providers/Microsoft.HealthcareApis/services/{{ service_name }}
 def list_healthcare(cmd, client,
-                    resource_group):
+                    resource_group=None):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list()
+
+
+def show_healthcare(cmd, client,
+                    resource_group,
+                    name):
+    return client.get(resource_group_name=resource_group, resource_name=name)
+
+
+def delete_healthcare(cmd, client,
+                      resource_group,
+                      name):
+    return client.delete(resource_group_name=resource_group, resource_name=name)
