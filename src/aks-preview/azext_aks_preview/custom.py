@@ -32,7 +32,6 @@ from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
 
 import yaml  # pylint: disable=import-error
-import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
