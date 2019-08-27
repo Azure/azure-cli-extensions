@@ -25,7 +25,7 @@ if ($init)
 			Invoke-Expression -Command $command 
 		}
 		# Custom script scenario
-		else 
+		else
 		{
 			$curScript = ($MyInvocation.MyCommand).Source
 			$command = "$curScript -script_path no-op " + '-init $False ' + "| $logToFile"
@@ -39,6 +39,6 @@ if ($init)
 		Add-Content -Path $logFile -Value "[Log-End $(Get-Date)]$logFile"
 		Write-Output (Get-Content -Path $logFile)
 	}
-	# End and don't run appened scripts from Run-Command.
+	# End and don't run appended scripts from Run-Command.
 	return
 }

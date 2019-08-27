@@ -465,7 +465,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     return return_dict
 
 
-def run_list(cmd):
+def list_scripts(cmd):
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer for custom telemetry

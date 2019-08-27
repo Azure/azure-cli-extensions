@@ -51,17 +51,17 @@ helps['vm repair run'] = """
             az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-run-file ./file.ps1 --run-on-repair --verbose
 """
 
-helps['vm repair run-list'] = """
+helps['vm repair list-scripts'] = """
     type: command
     short-summary: List available scripts. Located https://github.com/Azure/repair-script-library.
     examples:
         - name: List scripts
           text: >
-            az vm repair run-list --verbose
+            az vm repair list-scripts --verbose
         - name: List windows scripts only.
           text: >
-            az vm repair run-list --query "[?starts_with(id, 'win')]"
+            az vm repair list-scripts --query "[?starts_with(id, 'win')]"
         - name: List scripts with test in its description.
           text: >
-            az vm repair run-list --query "[?contains(description, 'test')]"
+            az vm repair list-scripts --query "[?contains(description, 'test')]"
 """
