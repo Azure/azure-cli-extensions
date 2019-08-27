@@ -316,7 +316,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return return_dict
 
 
-def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_run_file=None, parameters=None, run_on_repair=False):
+def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False):
     # begin progress reporting for long running operation
     cmd.cli_ctx.get_progress_controller().begin()
     cmd.cli_ctx.get_progress_controller().add(message='Running')
@@ -357,14 +357,14 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
                              .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script)
 
         # Normal scenario with run id
-        if not custom_run_file:
+        if not custom_script_file:
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             repair_run_command += ' --parameters script_path="./{repair_script}"'.format(repair_script=repair_script_path)
         # Custom script scenario for script testers
         else:
             # no-op run id
-            repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_run_file)
+            repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_script_file)
         # Append Parameters
         if parameters:
             if is_linux:
@@ -375,9 +375,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             param_string = param_string.replace(' ', '%20')
             repair_run_command += ' params="{}"'.format(param_string)
         if run_on_repair:
-            vm_string = 'VM'
-        else:
             vm_string = 'repair VM'
+        else:
+            vm_string = 'VM'
         logger.info('Running script on %s: %s', vm_string, repair_vm_name)
         script_start_time = timeit.default_timer()
         return_str = _call_az_command(repair_run_command)
@@ -414,18 +414,18 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         # Output 'output' or 'error' level logs depending on status
         if run_script_succeeded:
             script_status = STATUS_SUCCESS
+            return_status = STATUS_SUCCESS
             message = 'Script completed without error.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'output'])
             logger.info('\nScript returned with output:\n%s\n', output)
         else:
             script_status = STATUS_ERROR
+            return_status = STATUS_ERROR
             message = 'Script returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
             logger.error('\nScript returned with error:\n%s\n', output)
 
         logger.debug("stderr: %s", stderr)
-
-        return_status = STATUS_SUCCESS
         return_message = message
         return_dict['status'] = return_status
         return_dict['message'] = message
@@ -455,6 +455,9 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
+        script_duration = ''
+        output = 'Script returned with possible errors.'
+        script_status = STATUS_ERROR
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
 

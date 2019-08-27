@@ -38,22 +38,25 @@ helps['vm repair restore'] = """
 
 helps['vm repair run'] = """
     type: command
-    short-summary: Run verified scripts from GitHub on a VM. 'az vm repair run-list' to view scripts.
+    short-summary: Run verified scripts from GitHub on a VM. 'az vm repair list-scripts' to view available scripts.
     examples:
-        - name: Run the script with <run-id> on the repair VM.
+        - name: Run the script with <run-id> directly on the VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --verbose
+        - name: Run the script with <run-id> on the linked repair VM.
           text: >
             az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --run-on-repair --verbose
-        - name: Run a script with parameters on the repair VM. Remove --run-on-repair to run directly on VM.
+        - name: Run a script with parameters on the VM.
           text: >
-            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --run-on-repair --verbose
-        - name: Run a custom script on the repair VM.
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
+        - name: Run a local custom script on the VM.
           text: >
-            az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-run-file ./file.ps1 --run-on-repair --verbose
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
 """
 
 helps['vm repair list-scripts'] = """
     type: command
-    short-summary: List available scripts. Located https://github.com/Azure/repair-script-library.
+    short-summary: List available scripts. Located https://github.com/Azure/repair-script-library
     examples:
         - name: List scripts
           text: >

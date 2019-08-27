@@ -108,33 +108,37 @@ def validate_run(cmd, namespace):
         namespace.run_on_repair = True
 
     # Check run-id and custom run file parameters
-    if not namespace.run_id and not namespace.custom_run_file:
+    if not namespace.run_id and not namespace.custom_script_file:
         raise CLIError('Please specify the run id with --run-id.')
-    if namespace.run_id and namespace.custom_run_file:
+    if namespace.run_id and namespace.custom_script_file:
         raise CLIError('Cannot continue with both the run-id and the custom-run-file. Please specify just one.')
-    if namespace.custom_run_file:
+    # Check if VM exists and is not classic VM
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)
+
+    if namespace.custom_script_file:
+        # Check if file extension is correct
+        if is_linux and not (namespace.custom_script_file.endswith('.sh') or namespace.custom_script_file.endswith('.bash')):
+            raise CLIError('Only .sh or .bash scripts are supported for repair run on a Linux VM.')
+        if not is_linux and not (namespace.custom_script_file.endswith('.ps1') or namespace.custom_script_file.endswith('.ps2')):
+            raise CLIError('Only PowerShell scripts are supported for repair run on a Windows VM.')
         # Check if file exists
         import os.path
-        if not os.path.isfile(namespace.custom_run_file):
-            raise CLIError('Custom run file cannot be found. Please check if the file exists.')
+        if not os.path.isfile(namespace.custom_script_file):
+            raise CLIError('Custom script file cannot be found. Please check if the file exists.')
         # Check for current custom-run-file parameter limitations
         if namespace.parameters:
             raise CLIError('Parameter passing does not work for custom run files yet. Please remove --parameters arguments.')
-        with open(namespace.custom_run_file, 'r') as f:
+        with open(namespace.custom_script_file, 'r') as f:
             first_line = f.readline()
             if first_line.lower().startswith('param('):
-                raise CLIError('Powershell param() statement does not work for custom run files yet. Please remove the param() line in the file.')
+                raise CLIError('Powershell param() statement does not work for custom script files yet. Please remove the param() line in the file.')
 
         namespace.run_id = 'no-op'
 
-    # Check if VM exists and is not classic VM
-    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-
-    is_linux = _is_linux_os(source_vm)
-
     # Check if the script type matches the OS
     if not is_linux and namespace.run_id.startswith('linux'):
-        raise CLIError('Script IDs that start with \'linux\' are Linux Shell scripts. You cannot run linux Shell scripts on a Windows VM.')
+        raise CLIError('Script IDs that start with \'linux\' are Linux Shell scripts. You cannot run Linux Shell scripts on a Windows VM.')
     if is_linux and namespace.run_id.startswith('win'):
         raise CLIError('Script IDs that start with \'win\' are Windows PowerShell scripts. You cannot run Windows PowerShell scripts on a Linux VM.')
 
