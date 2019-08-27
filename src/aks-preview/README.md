@@ -82,22 +82,31 @@ az aks update \
     --api-server-authorized-ip-ranges ""
 ```
 
-#### Enable VMSS for new cluster
+#### Use VMAS for new cluster
 *Examples:*
 ```
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --enable-VMSS \
+    --vm-set-type AvailabilitySet \
 ```
 
-#### Enable VMSS for new cluster with availability zone feature
+#### Use VMSS for new cluster(default)
 *Examples:*
 ```
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --enable-VMSS \
+    --vm-set-type VirtualMachineScaleSets \
+```
+
+#### Use VMSS for new cluster with availability zone feature
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --vm-set-type VirtualMachineScaleSets \
     --node-zones 1 2 3
 ```
 
