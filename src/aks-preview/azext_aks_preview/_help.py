@@ -165,7 +165,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool availability type. VirtualMachineScaleSets or AvailabilitySet.
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
