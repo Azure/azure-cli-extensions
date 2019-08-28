@@ -91,7 +91,7 @@ helps['aks create'] = """
                         For example, 172.17.0.1/16.
         - name: --load-balancer-sku
           type: string
-          short-summary: Azure Load Balancer SKU selection for your cluster. Basic or Standard.
+          short-summary: Azure Load Balancer SKU selection for your cluster. basic or standard.
           long-summary: Select between Basic or Standard Azure Load Balancer SKU for your AKS cluster.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
