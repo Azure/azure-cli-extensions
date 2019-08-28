@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.4.12
++++++
+* Bring back "enable-vmss" flag  for backward compatibility
+* Revert "Set default availability type to VMSS" for backward compatibility
+* Revert "Set default load balancer SKU to Standard" for backward compatibility
+
 0.4.11
 +++++
 * Add support for load-balancer-profile
