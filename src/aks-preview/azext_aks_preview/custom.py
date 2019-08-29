@@ -678,7 +678,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     # Remove the below section when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
     if enable_vmss:
         if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
-            raise CLIError('enable-vmss and provided vm_set_typey ({}) are conflicting with each other'.format(vm_set_type))
+            raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.format(vm_set_type))
         vm_set_type = "VirtualMachineScaleSets"
     else:
         if not vm_set_type:
@@ -881,9 +881,11 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     update_acr = enable_acr or disable_acr
+    update_lb_profile = load_balancer_managed_outbound_ip_count != None or \
+        load_balancer_outbound_ips != None or load_balancer_outbound_ip_prefixes != None
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
        (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
-            update_acr is False:
+            update_acr is False and not update_lb_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -891,7 +893,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges" or '
                        '"--enable-acr" or '
-                       '"--disable-acr"')
+                       '"--disable-acr" or '
+                       '"--load-balancer-managed-outbound-ip-count" or '
+                       '"--load-balancer-outbound-ips" or '
+                       '"--load-balancer-outbound-ip-prefixes"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
