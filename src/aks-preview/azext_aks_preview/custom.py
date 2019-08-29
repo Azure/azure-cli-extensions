@@ -885,6 +885,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     update_acr = enable_acr or disable_acr
     update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
         load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
+    # pylint: disable=too-many-boolean-expressions
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
        (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
             update_acr is False and not update_lb_profile:
