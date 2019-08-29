@@ -66,6 +66,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClus
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -959,12 +960,14 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         instance.network_profile.load_balancer_profile = load_balancer_profile
 
     if api_server_authorized_ip_ranges is not None:
-        instance.api_server_authorized_ip_ranges = []
+        instance.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
+            authorized_ip_ranges = []
+        )
         if api_server_authorized_ip_ranges != "":
             for ip in api_server_authorized_ip_ranges.split(','):
                 try:
                     ip_net = ip_network(ip)
-                    instance.api_server_authorized_ip_ranges.append(ip_net.with_prefixlen)
+                    instance.api_server_access_profile.authorized_ip_ranges.append(ip_net.with_prefixlen)
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
