@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from __future__ import print_function
+
 import binascii
 import datetime
 import errno
@@ -22,6 +23,7 @@ import time
 import uuid
 import webbrowser
 from ipaddress import ip_network
+from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
 import requests
@@ -30,9 +32,10 @@ from knack.util import CLIError
 from knack.prompting import prompt_pass, NoTTYException
 
 import yaml  # pylint: disable=import-error
-import dateutil.parser  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
+from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
+from msrestazure.tools import is_valid_resource_id
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -44,22 +47,31 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceStorageProfileTypes
+from azure.mgmt.containerregistry.models import (Registry,
+                                                 Sku as RegistrySku)
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
+from ._client_factory import cf_container_registry_service
+
 
 logger = get_logger(__name__)
 
@@ -167,6 +179,31 @@ def _add_role_assignment(cli_ctx, role, service_principal, delay=2, scope=None):
     return True
 
 
+def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=None):
+    # AAD can have delays in propagating data, so sleep and retry
+    hook = cli_ctx.get_progress_controller(True)
+    hook.add(message='Waiting for AAD role to delete', value=0, total_val=1.0)
+    logger.info('Waiting for AAD role to delete')
+    for x in range(0, 10):
+        hook.add(message='Waiting for AAD role to delete', value=0.1 * x, total_val=1.0)
+        try:
+            delete_role_assignments(cli_ctx,
+                                    role=role,
+                                    assignee=service_principal,
+                                    scope=scope)
+            break
+        except CLIError as ex:
+            raise ex
+        except CloudError as ex:
+            logger.info(ex)
+        time.sleep(delay + delay * x)
+    else:
+        return False
+    hook.add(message='AAD role deletion done', value=1.0, total_val=1.0)
+    logger.info('AAD role deletion done')
+    return True
+
+
 def _get_subscription_id(cli_ctx):
     _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
     return sub_id
@@ -268,12 +305,12 @@ def _build_application_creds(password=None, key_value=None, key_type=None,
     if not start_date:
         start_date = datetime.datetime.utcnow()
     elif isinstance(start_date, str):
-        start_date = dateutil.parser.parse(start_date)
+        start_date = parser.parse(start_date)
 
     if not end_date:
         end_date = start_date + relativedelta(years=1)
     elif isinstance(end_date, str):
-        end_date = dateutil.parser.parse(end_date)
+        end_date = parser.parse(end_date)
 
     key_type = key_type or 'AsymmetricX509Cert'
     key_usage = key_usage or 'Verify'
@@ -332,6 +369,81 @@ def _create_role_assignment(cli_ctx, role, assignee, resource_group_name=None, s
     assignment_name = uuid.uuid4()
     custom_headers = None
     return assignments_client.create(scope, assignment_name, parameters, custom_headers=custom_headers)
+
+
+def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resource_group_name=None,
+                            scope=None, include_inherited=False, yes=None):
+    factory = get_auth_management_client(cli_ctx, scope)
+    assignments_client = factory.role_assignments
+    definitions_client = factory.role_definitions
+    ids = ids or []
+    if ids:
+        if assignee or role or resource_group_name or scope or include_inherited:
+            raise CLIError('When assignment ids are used, other parameter values are not required')
+        for i in ids:
+            assignments_client.delete_by_id(i)
+        return
+    if not any([ids, assignee, role, resource_group_name, scope, assignee, yes]):
+        from knack.prompting import prompt_y_n
+        msg = 'This will delete all role assignments under the subscription. Are you sure?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
+    scope = _build_role_scope(resource_group_name, scope,
+                              assignments_client.config.subscription_id)
+    assignments = _search_role_assignments(cli_ctx, assignments_client, definitions_client,
+                                           scope, assignee, role, include_inherited,
+                                           include_groups=False)
+
+    if assignments:
+        for a in assignments:
+            assignments_client.delete_by_id(a.id)
+    else:
+        raise CLIError('No matched assignments were found to delete')
+
+
+def _search_role_assignments(cli_ctx, assignments_client, definitions_client,
+                             scope, assignee, role, include_inherited, include_groups):
+    assignee_object_id = None
+    if assignee:
+        assignee_object_id = _resolve_object_id(cli_ctx, assignee)
+
+    # always use "scope" if provided, so we can get assignments beyond subscription e.g. management groups
+    if scope:
+        assignments = list(assignments_client.list_for_scope(
+            scope=scope, filter='atScope()'))
+    elif assignee_object_id:
+        if include_groups:
+            f = "assignedTo('{}')".format(assignee_object_id)
+        else:
+            f = "principalId eq '{}'".format(assignee_object_id)
+        assignments = list(assignments_client.list(filter=f))
+    else:
+        assignments = list(assignments_client.list())
+
+    if assignments:
+        assignments = [a for a in assignments if (
+            not scope or
+            include_inherited and re.match(_get_role_property(a, 'scope'), scope, re.I) or
+            _get_role_property(a, 'scope').lower() == scope.lower()
+        )]
+
+        if role:
+            role_id = _resolve_role_id(role, scope, definitions_client)
+            assignments = [i for i in assignments if _get_role_property(
+                i, 'role_definition_id') == role_id]
+
+        if assignee_object_id:
+            assignments = [i for i in assignments if _get_role_property(
+                i, 'principal_id') == assignee_object_id]
+
+    return assignments
+
+
+def _get_role_property(obj, property_name):
+    if isinstance(obj, dict):
+        return obj[property_name]
+    return getattr(obj, property_name)
 
 
 def _build_role_scope(resource_group_name, scope, subscription_id):
@@ -402,6 +514,7 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
+# pylint: disable=too-many-statements
 def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
                listen_address='127.0.0.1', listen_port='8001'):
     if not which('kubectl'):
@@ -416,9 +529,8 @@ def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
                        'To use "az aks browse" first enable the add-on\n'
                        'by running "az aks enable-addons --addons kube-dashboard".')
 
-    proxy_url = 'http://{0}:{1}/'.format(listen_address, listen_port)
     _, browse_path = tempfile.mkstemp()
-    # TODO: need to add an --admin option?
+
     aks_get_credentials(cmd, client, resource_group_name, name, admin=False, path=browse_path)
     # find the dashboard pod's name
     try:
@@ -433,6 +545,27 @@ def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
         dashboard_pod = str(dashboard_pod).split('/')[-1].strip()
     else:
         raise CLIError("Couldn't find the Kubernetes dashboard pod.")
+
+    # find the port
+    try:
+        dashboard_port = subprocess.check_output(
+            ["kubectl", "get", "pods", "--kubeconfig", browse_path, "--namespace", "kube-system",
+             "--selector", "k8s-app=kubernetes-dashboard",
+             "--output", "jsonpath='{.items[0].spec.containers[0].ports[0].containerPort}'"]
+        )
+        # output format: b"'{port}'"
+        dashboard_port = int((dashboard_port.decode('utf-8').replace("'", "")))
+    except subprocess.CalledProcessError as err:
+        raise CLIError('Could not find dashboard port: {}'.format(err))
+
+    # use https if dashboard container is using https
+    if dashboard_port == 8443:
+        protocol = 'https'
+    else:
+        protocol = 'http'
+
+    proxy_url = '{0}://{1}:{2}/'.format(protocol, listen_address, listen_port)
+
     # launch kubectl port-forward locally to access the remote dashboard
     if in_cloud_console():
         # TODO: better error handling here.
@@ -453,20 +586,20 @@ def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
         try:
             subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "--namespace", "kube-system",
                                      "port-forward", "--address", listen_address, dashboard_pod,
-                                     "{0}:9090".format(listen_port)], stderr=subprocess.STDOUT)
+                                     "{0}:{1}".format(listen_port, dashboard_port)], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             if err.output.find(b'unknown flag: --address'):
                 if listen_address != '127.0.0.1':
                     logger.warning('"--address" is only supported in kubectl v1.13 and later.')
                     logger.warning('The "--listen-address" argument will be ignored.')
                 subprocess.call(["kubectl", "--kubeconfig", browse_path, "--namespace", "kube-system",
-                                 "port-forward", dashboard_pod, "{0}:9090".format(listen_port)])
+                                 "port-forward", dashboard_pod, "{0}:{1}".format(listen_port, dashboard_port)])
     except KeyboardInterrupt:
         # Let command processing finish gracefully after the user presses [Ctrl+C]
         pass
     finally:
-        # TODO: Better error handling here.
-        requests.post('http://localhost:8888/closeport/8001')
+        if in_cloud_console():
+            requests.post('http://localhost:8888/closeport/8001')
 
 
 def _trim_nodepoolname(nodepool_name):
@@ -492,7 +625,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                no_ssh_key=False,
                disable_rbac=None,
                enable_rbac=None,
-               enable_vmss=None,
+               vm_set_type=None,
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
                network_plugin=None,
@@ -501,7 +634,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku="basic",
+               load_balancer_sku=None,
+               load_balancer_managed_outbound_ip_count=None,
+               load_balancer_outbound_ips=None,
+               load_balancer_outbound_ip_prefixes=None,
                enable_addons=None,
                workspace_resource_id=None,
                min_count=None,
@@ -517,7 +653,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
+               enable_acr=False,
+               acr=None,
                no_wait=False):
+
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -534,6 +673,32 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if location is None:
         location = rg_location
 
+    if not vm_set_type:
+        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
+            print('Setting vm_set_type to availabilityset as it is \
+            not specified and kubernetes version(%s) less than 1.12.9 only supports \
+            availabilityset\n' % (kubernetes_version))
+            vm_set_type = "AvailabilitySet"
+
+    if not vm_set_type:
+        vm_set_type = "VirtualMachineScaleSets"
+
+    # normalize as server validation is case-sensitive
+    if vm_set_type.lower() == "AvailabilitySet".lower():
+        vm_set_type = "AvailabilitySet"
+
+    if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
+        vm_set_type = "VirtualMachineScaleSets"
+
+    if not load_balancer_sku:
+        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
+            print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
+            version(%s) less than 1.13.0 only supports basic load balancer SKU\n' % (kubernetes_version))
+            load_balancer_sku = "basic"
+
+    if not load_balancer_sku:
+        load_balancer_sku = "standard"
+
     agent_pool_profile = ManagedClusterAgentPoolProfile(
         name=_trim_nodepoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
         count=int(node_count),
@@ -541,11 +706,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         os_type="Linux",
         vnet_subnet_id=vnet_subnet_id,
         availability_zones=node_zones,
-        max_pods=int(max_pods) if max_pods else None
+        max_pods=int(max_pods) if max_pods else None,
+        type=vm_set_type
     )
 
-    if enable_vmss:
-        agent_pool_profile.type = "VirtualMachineScaleSets"
     if node_osdisk_size:
         agent_pool_profile.os_disk_size_gb = int(node_osdisk_size)
 
@@ -579,6 +743,15 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         client_id=principal_obj.get("service_principal"),
         secret=principal_obj.get("client_secret"))
 
+    if enable_acr:
+        _ensure_aks_acr(cmd.cli_ctx,
+                        acr,
+                        location,
+                        principal_obj.get("service_principal"),
+                        resource_group_name,
+                        subscription_id,
+                        create_acr=True)
+
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
         scope = vnet_subnet_id
@@ -589,6 +762,28 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                 scope=scope):
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
+
+    load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
+    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(
+        load_balancer_outbound_ip_prefixes)
+
+    load_balancer_profile = None
+    if any([load_balancer_managed_outbound_ip_count,
+            load_balancer_outbound_ip_resources,
+            load_balancer_outbound_ip_prefix_resources]):
+        load_balancer_profile = ManagedClusterLoadBalancerProfile()
+        if load_balancer_managed_outbound_ip_count:
+            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                count=load_balancer_managed_outbound_ip_count
+            )
+        if load_balancer_outbound_ip_resources:
+            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_ips=load_balancer_outbound_ip_resources
+            )
+        if load_balancer_outbound_ip_prefix_resources:
+            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
+            )
 
     network_profile = None
     if any([network_plugin,
@@ -608,13 +803,15 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             dns_service_ip=dns_service_ip,
             docker_bridge_cidr=docker_bridge_address,
             network_policy=network_policy,
-            load_balancer_sku=load_balancer_sku.lower()
+            load_balancer_sku=load_balancer_sku.lower(),
+            load_balancer_profile=load_balancer_profile,
         )
     else:
-        if load_balancer_sku.lower() == "standard":
+        if load_balancer_sku.lower() == "standard" or load_balancer_profile:
             network_profile = ContainerServiceNetworkProfile(
                 network_plugin="kubenet",
-                load_balancer_sku=load_balancer_sku.lower()
+                load_balancer_sku=load_balancer_sku.lower(),
+                load_balancer_profile=load_balancer_profile,
             )
 
     addon_profiles = _handle_addons_args(
@@ -677,18 +874,28 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False,
+               load_balancer_managed_outbound_ip_count=None,
+               load_balancer_outbound_ips=None,
+               load_balancer_outbound_ip_prefixes=None,
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
-               disable_pod_security_policy=False):
+               disable_pod_security_policy=False,
+               enable_acr=False,
+               disable_acr=False,
+               acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+    update_acr = enable_acr or disable_acr
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
-       (enable_pod_security_policy is False and disable_pod_security_policy is False):
+       (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
+            update_acr is False:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
-                       '"--api-server-authorized-ip-ranges"')
+                       '"--api-server-authorized-ip-ranges" or '
+                       '"--enable-acr" or '
+                       '"--disable-acr"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
@@ -742,6 +949,29 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
 
+    load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
+    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(
+        load_balancer_outbound_ip_prefixes)
+    load_balancer_profile = None
+    if any([load_balancer_managed_outbound_ip_count,
+            load_balancer_outbound_ip_resources,
+            load_balancer_outbound_ip_prefix_resources]):
+        load_balancer_profile = ManagedClusterLoadBalancerProfile()
+        if load_balancer_managed_outbound_ip_count:
+            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                count=load_balancer_managed_outbound_ip_count
+            )
+        if load_balancer_outbound_ip_resources:
+            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_ips=load_balancer_outbound_ip_resources
+            )
+        if load_balancer_outbound_ip_prefix_resources:
+            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
+            )
+    if load_balancer_profile:
+        instance.network_profile.load_balancer_profile = load_balancer_profile
+
     if api_server_authorized_ip_ranges is not None:
         instance.api_server_authorized_ip_ranges = []
         if api_server_authorized_ip_ranges != "":
@@ -751,6 +981,30 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                     instance.api_server_authorized_ip_ranges.append(ip_net.with_prefixlen)
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
+
+    if enable_acr and disable_acr:
+        raise CLIError('Cannot specify --enable-acr and --disable-acr at the same time.')
+
+    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    location = instance.location
+    service_principal = instance.service_principal_profile.client_id
+    if not service_principal:
+        raise CLIError('Cannot get the AKS cluster\'s service principal.')
+
+    if enable_acr:
+        _ensure_aks_acr(cmd.cli_ctx,
+                        acr,
+                        location,
+                        service_principal,
+                        resource_group_name,
+                        subscription_id)
+
+    if disable_acr:
+        _ensure_aks_acr_disabled(cmd.cli_ctx,
+                                 acr,
+                                 service_principal,
+                                 resource_group_name,
+                                 subscription_id)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
@@ -887,60 +1141,94 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
 
 
 def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id, resource_group_name):
+    # mapping for azure public cloud
     # log analytics workspaces cannot be created in WCUS region due to capacity limits
     # so mapped to EUS per discussion with log analytics team
-    AzureLocationToOmsRegionCodeMap = {
-        "eastus": "EUS",
-        "westeurope": "WEU",
-        "southeastasia": "SEA",
+    AzureCloudLocationToOmsRegionCodeMap = {
         "australiasoutheast": "ASE",
-        "usgovvirginia": "USGV",
-        "westcentralus": "EUS",
-        "japaneast": "EJP",
-        "uksouth": "SUK",
+        "australiaeast": "EAU",
+        "australiacentral": "CAU",
         "canadacentral": "CCA",
         "centralindia": "CIN",
-        "eastus2euap": "EAP"
+        "centralus": "CUS",
+        "eastasia": "EA",
+        "eastus": "EUS",
+        "eastus2": "EUS2",
+        "eastus2euap": "EAP",
+        "francecentral": "PAR",
+        "japaneast": "EJP",
+        "koreacentral": "SE",
+        "northeurope": "NEU",
+        "southcentralus": "SCUS",
+        "southeastasia": "SEA",
+        "uksouth": "SUK",
+        "usgovvirginia": "USGV",
+        "westcentralus": "EUS",
+        "westeurope": "WEU",
+        "westus": "WUS",
+        "westus2": "WUS2"
     }
-    AzureRegionToOmsRegionMap = {
-        "australiaeast": "australiasoutheast",
+    AzureCloudRegionToOmsRegionMap = {
+        "australiacentral": "australiacentral",
+        "australiacentral2": "australiacentral",
+        "australiaeast": "australiaeast",
         "australiasoutheast": "australiasoutheast",
-        "brazilsouth": "eastus",
+        "brazilsouth": "southcentralus",
         "canadacentral": "canadacentral",
         "canadaeast": "canadacentral",
-        "centralus": "eastus",
-        "eastasia": "southeastasia",
+        "centralus": "centralus",
+        "centralindia": "centralindia",
+        "eastasia": "eastasia",
         "eastus": "eastus",
-        "eastus2": "eastus",
+        "eastus2": "eastus2",
+        "francecentral": "francecentral",
+        "francesouth": "francecentral",
         "japaneast": "japaneast",
         "japanwest": "japaneast",
+        "koreacentral": "koreacentral",
+        "koreasouth": "koreacentral",
         "northcentralus": "eastus",
-        "northeurope": "westeurope",
-        "southcentralus": "eastus",
+        "northeurope": "northeurope",
+        "southafricanorth": "westeurope",
+        "southafricawest": "westeurope",
+        "southcentralus": "southcentralus",
         "southeastasia": "southeastasia",
+        "southindia": "centralindia",
         "uksouth": "uksouth",
         "ukwest": "uksouth",
         "westcentralus": "eastus",
         "westeurope": "westeurope",
-        "westus": "eastus",
-        "westus2": "eastus",
-        "centralindia": "centralindia",
-        "southindia": "centralindia",
         "westindia": "centralindia",
-        "koreacentral": "southeastasia",
-        "koreasouth": "southeastasia",
-        "francecentral": "westeurope",
-        "francesouth": "westeurope"
+        "westus": "westus",
+        "westus2": "westus2"
+    }
+
+    # mapping for azure china cloud
+    # log analytics only support China East2 region
+    AzureChinaLocationToOmsRegionCodeMap = {
+        "chinaeast": "EAST2",
+        "chinaeast2": "EAST2",
+        "chinanorth": "EAST2",
+        "chinanorth2": "EAST2"
+    }
+    AzureChinaRegionToOmsRegionMap = {
+        "chinaeast": "chinaeast2",
+        "chinaeast2": "chinaeast2",
+        "chinanorth": "chinaeast2",
+        "chinanorth2": "chinaeast2"
     }
 
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
-    default_region_name = "eastus"
-    default_region_code = "EUS"
+    cloud_name = cmd.cli_ctx.cloud.name
 
-    workspace_region = AzureRegionToOmsRegionMap[
-        rg_location] if AzureRegionToOmsRegionMap[rg_location] else default_region_name
-    workspace_region_code = AzureLocationToOmsRegionCodeMap[
-        workspace_region] if AzureLocationToOmsRegionCodeMap[workspace_region] else default_region_code
+    if cloud_name.lower() == 'azurecloud':
+        workspace_region = AzureCloudRegionToOmsRegionMap.get(rg_location, "eastus")
+        workspace_region_code = AzureCloudLocationToOmsRegionCodeMap.get(workspace_region, "EUS")
+    elif cloud_name.lower() == 'azurechinacloud':
+        workspace_region = AzureChinaRegionToOmsRegionMap.get(rg_location, "chinaeast2")
+        workspace_region_code = AzureChinaLocationToOmsRegionCodeMap.get(workspace_region, "EAST2")
+    else:
+        logger.error("AKS Monitoring addon not supported in cloud : %s", cloud_name)
 
     default_workspace_resource_group = 'DefaultResourceGroup-' + workspace_region_code
     default_workspace_name = 'DefaultWorkspace-{0}-{1}'.format(subscription_id, workspace_region_code)
@@ -983,10 +1271,11 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
 
 
 def _ensure_container_insights_for_monitoring(cmd, addon):
-    workspace_resource_id = addon.config['logAnalyticsWorkspaceResourceID']
+    # workaround for this addon key which has been seen lowercased in the wild
+    if 'loganalyticsworkspaceresourceid' in addon.config:
+        addon.config['logAnalyticsWorkspaceResourceID'] = addon.config.pop('loganalyticsworkspaceresourceid')
 
-    workspace_resource_id = workspace_resource_id.strip()
-
+    workspace_resource_id = addon.config['logAnalyticsWorkspaceResourceID'].strip()
     if not workspace_resource_id.startswith('/'):
         workspace_resource_id = '/' + workspace_resource_id
 
@@ -1162,6 +1451,122 @@ def _create_client_secret():
     special_char = '$'
     client_secret = binascii.b2a_hex(os.urandom(10)).decode('utf-8') + special_char
     return client_secret
+
+
+def _ensure_aks_acr(cli_ctx,
+                    acr,
+                    location,
+                    client_id,
+                    resource_group_name,
+                    subscription_id,
+                    create_acr=False):
+    if is_valid_resource_id(acr):
+        resources = cf_resources(cli_ctx, subscription_id)
+
+        # check if the ACR exists.
+        try:
+            resources.get_by_id(acr, "2019-05-01")
+        except CloudError as ex:
+            raise ex
+
+        # Create role assignment for ACR.
+        if not _add_role_assignment(cli_ctx,
+                                    'acrpull',
+                                    client_id,
+                                    scope=acr):
+            raise CLIError('Could not create a role assignment for ACR. '
+                           'Are you an Owner on this subscription?')
+        return
+
+    acr_client = cf_container_registry_service(cli_ctx)
+    # Generate a default ACR name.
+    registry_name = acr
+    if registry_name is None or registry_name == "":
+        alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
+        registry_name = "aks" + alnum_name + "acr"
+
+    # Get ACR by name.
+    try:
+        registry = acr_client.registries.get(
+            resource_group_name, registry_name)
+    except CloudError as ex:
+        if 'was not found' in ex.message:
+            if not create_acr:
+                raise CLIError("ACR {} not found. Have you provided the right ACR name?".format(registry_name))
+
+            logger.info(ex.message)
+            logger.info('Creating a new ACR')
+            _ensure_aks_acr_created(acr_client=acr_client,
+                                    resource_group_name=resource_group_name,
+                                    registry_name=registry_name,
+                                    location=location)
+            registry = acr_client.registries.get(
+                resource_group_name, registry_name)
+    except Exception as e:
+        logger.exception(e)
+        raise CLIError(e)
+
+    # Create role assignment for ACR.
+    if not _add_role_assignment(cli_ctx,
+                                'acrpull',
+                                client_id,
+                                scope=registry.id):
+        raise CLIError('Could not create a role assignment for ACR. '
+                       'Are you an Owner on this subscription?')
+
+
+def _ensure_aks_acr_created(acr_client, resource_group_name, registry_name, location):
+    registry = Registry(name=registry_name, location=location, sku=RegistrySku(name="standard"))
+    try:
+        acr_client.registries.create(resource_group_name, registry_name, registry)
+    except CloudError as ex:
+        if 'already in use' in ex.message:
+            logger.info(ex.message)
+            raise CLIError("The registry name has already been in use. Please change to another name.")
+    except Exception as e:
+        logger.info(e)
+        raise CLIError(e)
+
+
+def _ensure_aks_acr_disabled(cli_ctx,
+                             acr,
+                             client_id,
+                             resource_group_name,
+                             subscription_id):
+    acr_resource_id = ""
+    if is_valid_resource_id(acr):
+        acr_resource_id = acr
+        resources = cf_resources(cli_ctx, subscription_id)
+
+        # check if the ACR exists.
+        try:
+            resources.get_by_id(acr, "2019-05-01")
+        except CloudError as ex:
+            raise ex
+    else:
+        acr_client = cf_container_registry_service(cli_ctx)
+        # Generate the default ACR name if it is not provided.
+        registry_name = acr
+        if registry_name is None or registry_name == "":
+            alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
+            registry_name = "aks" + alnum_name + "acr"
+
+        # Get ACR by name.
+        try:
+            registry = acr_client.registries.get(
+                resource_group_name, registry_name)
+        except CloudError as ex:
+            raise ex
+
+        acr_resource_id = registry.id
+
+    # delete role assignment for ACR.
+    if not _delete_role_assignments(cli_ctx,
+                                    'acrpull',
+                                    client_id,
+                                    scope=acr_resource_id):
+        raise CLIError('Could not disable role assignments for ACR. '
+                       'Are you an Owner on this subscription?')
 
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
@@ -1544,3 +1949,26 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace):
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
     print(msg)
+
+
+def _validate_and_get_outbound_ips(load_balancer_outbound_ips):
+    """validate load balancer profile outbound IP ids and return an array of references to the outbound IP resources"""
+    load_balancer_outbound_ip_resources = None
+    if load_balancer_outbound_ips:
+        ip_id_list = [x.strip() for x in load_balancer_outbound_ips.split(',')]
+        if not all(ip_id_list):
+            raise CLIError("Load balancer outbound IP ID cannot be whitespace")
+        load_balancer_outbound_ip_resources = [ResourceReference(id=x) for x in ip_id_list]
+    return load_balancer_outbound_ip_resources
+
+
+def _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
+    """validate load balancer profile outbound IP prefix ids and return an array \
+    of references to the outbound IP prefix resources"""
+    load_balancer_outbound_ip_prefix_resources = None
+    if load_balancer_outbound_ip_prefixes:
+        ip_prefix_id_list = [x.strip() for x in load_balancer_outbound_ip_prefixes.split(',')]
+        if not all(ip_prefix_id_list):
+            raise CLIError("Load balancer outbound IP prefix ID cannot be whitespace")
+        load_balancer_outbound_ip_prefix_resources = [ResourceReference(id=x) for x in ip_prefix_id_list]
+    return load_balancer_outbound_ip_prefix_resources

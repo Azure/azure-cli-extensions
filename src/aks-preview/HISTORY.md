@@ -2,6 +2,29 @@
 
 Release History
 ===============
+0.4.11
++++++
+* Add support for load-balancer-profile
+* Set default availability type to VMSS
+* Set default load balancer SKU to Standard
+
+0.4.10
++++++
+* Add support for `az aks update --disable-acr --acr <name-or-id>`
+
+0.4.9
++++++
+* Use https if dashboard container port is using https 
+
+0.4.8
++++++
+* Add update support for `--enable-acr` together with `--acr <name-or-id>`
+* Merge `az aks create --acr-name` into `az aks create --acr <name-or-id>`
+
+0.4.7
++++++
+* Add support for `--enable-acr` and `--acr-name`
+
 0.4.4
 +++++
 * Add support for per node pool auto scaler settings.
