@@ -128,8 +128,9 @@ def validate_vm_set_type(namespace):
     if namespace.vm_set_type is not None:
         if namespace.vm_set_type == '':
             return
-        if namespace.vm_set_type.lower() != "availabilityset" and namespace.vm_set_type.lower() != "virtualmachinescalesets":
-                raise CLIError("--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
+        if namespace.vm_set_type.lower() != "availabilityset" and \
+                namespace.vm_set_type.lower() != "virtualmachinescalesets":
+            raise CLIError("--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
 
 
 def validate_load_balancer_sku(namespace):
@@ -138,7 +139,7 @@ def validate_load_balancer_sku(namespace):
         if namespace.load_balancer_sku == '':
             return
         if namespace.load_balancer_sku.lower() != "basic" and namespace.load_balancer_sku.lower() != "standard":
-                raise CLIError("--load-balancer-sku can only be standard or basic")
+            raise CLIError("--load-balancer-sku can only be standard or basic")
 
 
 def validate_load_balancer_outbound_ips(namespace):

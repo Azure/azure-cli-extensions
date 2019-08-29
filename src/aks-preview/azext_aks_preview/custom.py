@@ -675,17 +675,18 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if location is None:
         location = rg_location
 
-    # Flag to be removed, kept for back-compatibility only.
-    # Remove the below section when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
+    # Flag to be removed, kept for back-compatibility only. Remove the below section
+    # when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
     if enable_vmss:
         if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
-            raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.format(vm_set_type))
+            raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.
+                           format(vm_set_type))
         vm_set_type = "VirtualMachineScaleSets"
     else:
         if not vm_set_type:
             vm_set_type = "AvailabilitySet"
 
-    #NOTE: keep for future default behavior change
+    # NOTE: keep for future default behavior change
     if not vm_set_type:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
             print('Setting vm_set_type to availabilityset as it is \
@@ -703,7 +704,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
         vm_set_type = "VirtualMachineScaleSets"
 
-    #NOTE: keep for future default behavior change
+    # NOTE: keep for future default behavior change
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
             print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
@@ -882,8 +883,8 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     update_acr = enable_acr or disable_acr
-    update_lb_profile = load_balancer_managed_outbound_ip_count != None or \
-        load_balancer_outbound_ips != None or load_balancer_outbound_ip_prefixes != None
+    update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
+        load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
        (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
             update_acr is False and not update_lb_profile:
@@ -961,7 +962,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
 
     if api_server_authorized_ip_ranges is not None:
         instance.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
-            authorized_ip_ranges = []
+            authorized_ip_ranges=[]
         )
         if api_server_authorized_ip_ranges != "":
             for ip in api_server_authorized_ip_ranges.split(','):
@@ -1944,7 +1945,8 @@ def _get_load_balancer_outbound_ips(load_balancer_outbound_ips):
     """parse load balancer profile outbound IP ids and return an array of references to the outbound IP resources"""
     load_balancer_outbound_ip_resources = None
     if load_balancer_outbound_ips:
-        load_balancer_outbound_ip_resources = [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ips.split(',')]
+        load_balancer_outbound_ip_resources = \
+            [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ips.split(',')]
     return load_balancer_outbound_ip_resources
 
 
@@ -1953,7 +1955,8 @@ def _get_load_balancer_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
     of references to the outbound IP prefix resources"""
     load_balancer_outbound_ip_prefix_resources = None
     if load_balancer_outbound_ip_prefixes:
-        load_balancer_outbound_ip_prefix_resources = [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ip_prefixes.split(',')]
+        load_balancer_outbound_ip_prefix_resources = \
+            [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ip_prefixes.split(',')]
     return load_balancer_outbound_ip_prefix_resources
 
 
