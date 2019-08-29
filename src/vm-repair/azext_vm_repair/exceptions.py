@@ -18,3 +18,7 @@ class UnmanagedDiskCopyError(Exception):
 
 class WindowsOsNotAvailableError(Exception):
     """Raised the Windows image not available from gallery."""
+
+
+class RunScriptNotFoundForIdError(Exception):
+    """Raised when the run-id is not found in the repair-script-library"""
