@@ -17,7 +17,8 @@ from ._completers import (
 from ._validators import (
     validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name)
+    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
+    validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes)
 
 
 def load_arguments(self, _):
