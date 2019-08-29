@@ -77,6 +77,7 @@ def load_arguments(self, _):
         c.argument('node_resource_group')
         c.argument('enable_acr')
         c.argument('acr')
+        c.argument('enable_managed_identity', action='store_true')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')

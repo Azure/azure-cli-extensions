@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.4.12
+* Add support for using managed identity to manage cluster resource group
+
 0.4.11
 +++++
 * Add support for load-balancer-profile

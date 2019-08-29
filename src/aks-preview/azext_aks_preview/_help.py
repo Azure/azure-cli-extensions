@@ -178,6 +178,9 @@ helps['aks create'] = """
         - name: --acr
           type: string
           short-summary: (PREVIEW) ACR name in AKS resource group or ACR resource ID. If it's empty and --enable-acr is true, then a new ACR with name 'aks<resource-group>acr' would be created.
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PEWVIEW) Using managed identity to manage cluster resource group.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
