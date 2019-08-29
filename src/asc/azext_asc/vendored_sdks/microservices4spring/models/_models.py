@@ -201,6 +201,8 @@ class AppResourceProperties(Model):
 
     :param public: Indicates whether the App exposes public endpoint
     :type public: bool
+    :param port: The public port of the App.
+    :type port: int
     :ivar url: URL of the App
     :vartype url: str
     :ivar provisioning_state: Provisioning state of the App. Possible values
@@ -218,6 +220,7 @@ class AppResourceProperties(Model):
 
     _attribute_map = {
         'public': {'key': 'public', 'type': 'bool'},
+        'port': {'key': 'port', 'type': 'int'},
         'url': {'key': 'url', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'active_deployment_name': {'key': 'activeDeploymentName', 'type': 'str'},
@@ -226,30 +229,10 @@ class AppResourceProperties(Model):
     def __init__(self, **kwargs):
         super(AppResourceProperties, self).__init__(**kwargs)
         self.public = kwargs.get('public', None)
+        self.port = kwargs.get('port', None)
         self.url = None
         self.provisioning_state = None
-        self.active_deployment_name = kwargs.get(
-            'active_deployment_name', None)
-
-
-class AuthorizationCredentials(Model):
-    """AuthorizationCredentials.
-
-    :param access_token:
-    :type access_token: str
-    :param authorization_code:
-    :type authorization_code: str
-    """
-
-    _attribute_map = {
-        'access_token': {'key': 'accessToken', 'type': 'str'},
-        'authorization_code': {'key': 'authorizationCode', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(AuthorizationCredentials, self).__init__(**kwargs)
-        self.access_token = kwargs.get('access_token', None)
-        self.authorization_code = kwargs.get('authorization_code', None)
+        self.active_deployment_name = kwargs.get('active_deployment_name', None)
 
 
 class BindingResource(ProxyResource):
@@ -367,8 +350,7 @@ class CloudErrorException(HttpOperationError):
 
     def __init__(self, deserialize, response, *args):
 
-        super(CloudErrorException, self).__init__(
-            deserialize, response, 'CloudError', *args)
+        super(CloudErrorException, self).__init__(deserialize, response, 'CloudError', *args)
 
 
 class CloudErrorBody(Model):
@@ -422,8 +404,9 @@ class ClusterResourceProperties(Model):
     :type config_server_git_uri: str
     :param private_git_repo: Private git repo of the App Cluster
     :type private_git_repo: bool
-    :param config_server: Config server git properties of the App Cluster
-    :type config_server:
+    :param config_server_properties: Config server git properties of the App
+     Cluster
+    :type config_server_properties:
      ~azure.mgmt.microservices4spring.models.ConfigServerProperties
     :param trace: Trace properties of the App Cluster
     :type trace: ~azure.mgmt.microservices4spring.models.TraceProperties
@@ -448,7 +431,7 @@ class ClusterResourceProperties(Model):
         'ssh_public_key': {'key': 'sshPublicKey', 'type': 'str'},
         'config_server_git_uri': {'key': 'configServerGitUri', 'type': 'str'},
         'private_git_repo': {'key': 'privateGitRepo', 'type': 'bool'},
-        'config_server': {'key': 'configServer', 'type': 'ConfigServerProperties'},
+        'config_server_properties': {'key': 'configServerProperties', 'type': 'ConfigServerProperties'},
         'trace': {'key': 'trace', 'type': 'TraceProperties'},
         'version': {'key': 'version', 'type': 'int'},
         'app_cluster_id': {'key': 'appClusterId', 'type': 'str'},
@@ -461,74 +444,10 @@ class ClusterResourceProperties(Model):
         self.ssh_public_key = None
         self.config_server_git_uri = kwargs.get('config_server_git_uri', None)
         self.private_git_repo = kwargs.get('private_git_repo', None)
-        self.config_server = kwargs.get('config_server', None)
+        self.config_server_properties = kwargs.get('config_server_properties', None)
         self.trace = kwargs.get('trace', None)
         self.version = None
         self.app_cluster_id = None
-
-
-class ConfigServerCompositeProperties(Model):
-    """ConfigServerCompositeProperties.
-
-    :param properties: Composite properties.
-    :type properties:
-     list[~azure.mgmt.microservices4spring.models.ConfigServerCompositeProperty]
-    """
-
-    _attribute_map = {
-        'properties': {'key': 'properties', 'type': '[ConfigServerCompositeProperty]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ConfigServerCompositeProperties, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
-
-
-class ConfigServerCompositeProperty(Model):
-    """Git properties of composite profile.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param type: Required. Type of config server environment. Possible values
-     include: 'Git', 'Svn', 'Vault'
-    :type type: str or
-     ~azure.mgmt.microservices4spring.models.ConfigServerRepositoryType
-    :param property: Required. Git property of composite.
-    :type property:
-     ~azure.mgmt.microservices4spring.models.ConfigServerGitProperty
-    """
-
-    _validation = {
-        'type': {'required': True},
-        'property': {'required': True},
-    }
-
-    _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-        'property': {'key': 'property', 'type': 'ConfigServerGitProperty'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ConfigServerCompositeProperty, self).__init__(**kwargs)
-        self.type = kwargs.get('type', None)
-        self.property = kwargs.get('property', None)
-
-
-class ConfigServerGitProperty(Model):
-    """Property of git.
-
-    :param repositories: Repositories of git.
-    :type repositories:
-     list[~azure.mgmt.microservices4spring.models.GitRepository]
-    """
-
-    _attribute_map = {
-        'repositories': {'key': 'repositories', 'type': '[GitRepository]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ConfigServerGitProperty, self).__init__(**kwargs)
-        self.repositories = kwargs.get('repositories', None)
 
 
 class ConfigServerProperties(Model):
@@ -537,54 +456,35 @@ class ConfigServerProperties(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param provider: Required. Type of the config server. Possible values
-     include: 'NotAvailable', 'SpringCloudConfig', 'AzureAppConfiguration'
-    :type provider: str or
-     ~azure.mgmt.microservices4spring.models.ConfigServerProvider
     :ivar state: State of the config server. Possible values include:
-     'NotAvailable', 'Deleted', 'Failed', 'Successed', 'Updating'
+     'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
     :vartype state: str or
      ~azure.mgmt.microservices4spring.models.ConfigServerState
-    :param profile: Profile of config server. Possible values include:
-     'Composite', 'Git', 'Svn', 'Vault', 'GitAndSvn', 'GitAndVault',
-     'SvnAndVault'
-    :type profile: str or
-     ~azure.mgmt.microservices4spring.models.ConfigServerProfile
-    :param authorizations:
-    :type authorizations:
-     ~azure.mgmt.microservices4spring.models.RepositoryAuthorizations
-    :param git_property: Property of git environment.
-    :type git_property:
-     ~azure.mgmt.microservices4spring.models.ConfigServerGitProperty
-    :param composite_properties: Property of composite environment.
-    :type composite_properties:
-     ~azure.mgmt.microservices4spring.models.ConfigServerCompositeProperties
+    :param error:
+    :type error: ~azure.mgmt.microservices4spring.models.Error
+    :param application_yaml:
+    :type application_yaml: str
+    :param application_properties:
+    :type application_properties: str
     """
 
     _validation = {
-        'provider': {'required': True},
         'state': {'readonly': True},
     }
 
     _attribute_map = {
-        'provider': {'key': 'provider', 'type': 'str'},
         'state': {'key': 'state', 'type': 'str'},
-        'profile': {'key': 'profile', 'type': 'str'},
-        'authorizations': {'key': 'authorizations', 'type': 'RepositoryAuthorizations'},
-        'git_property': {'key': 'gitProperty', 'type': 'ConfigServerGitProperty'},
-        'composite_properties': {'key': 'compositeProperties', 'type': 'ConfigServerCompositeProperties'},
+        'error': {'key': 'error', 'type': 'Error'},
+        'application_yaml': {'key': 'applicationYaml', 'type': 'str'},
+        'application_properties': {'key': 'applicationProperties', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(ConfigServerProperties, self).__init__(**kwargs)
-        self.provider = kwargs.get('provider', None)
         self.state = None
-        self.profile = kwargs.get('profile', None)
-        self.authorizations = kwargs.get('authorizations', None)
-        self.git_property = kwargs.get('git_property', None)
-        self.composite_properties = kwargs.get('composite_properties', None)
+        self.error = kwargs.get('error', None)
+        self.application_yaml = kwargs.get('application_yaml', None)
+        self.application_properties = kwargs.get('application_properties', None)
 
 
 class DebuggingKeys(Model):
@@ -611,10 +511,8 @@ class DebuggingKeys(Model):
         super(DebuggingKeys, self).__init__(**kwargs)
         self.primary_key = kwargs.get('primary_key', None)
         self.secondary_key = kwargs.get('secondary_key', None)
-        self.primary_debugging_endpoint = kwargs.get(
-            'primary_debugging_endpoint', None)
-        self.secondary_debugging_endpoint = kwargs.get(
-            'secondary_debugging_endpoint', None)
+        self.primary_debugging_endpoint = kwargs.get('primary_debugging_endpoint', None)
+        self.secondary_debugging_endpoint = kwargs.get('secondary_debugging_endpoint', None)
 
 
 class DeploymentInstance(Model):
@@ -698,6 +596,8 @@ class DeploymentResourceProperties(Model):
 
     :param source: Uploaded source information of the deployment.
     :type source: ~azure.mgmt.microservices4spring.models.UserSourceInfo
+    :ivar app_name: App name of the deployment
+    :vartype app_name: str
     :param deployment_settings: Deployment settings of the Deployment
     :type deployment_settings:
      ~azure.mgmt.microservices4spring.models.DeploymentSettings
@@ -717,6 +617,7 @@ class DeploymentResourceProperties(Model):
     """
 
     _validation = {
+        'app_name': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'status': {'readonly': True},
         'active': {'readonly': True},
@@ -725,6 +626,7 @@ class DeploymentResourceProperties(Model):
 
     _attribute_map = {
         'source': {'key': 'source', 'type': 'UserSourceInfo'},
+        'app_name': {'key': 'appName', 'type': 'str'},
         'deployment_settings': {'key': 'deploymentSettings', 'type': 'DeploymentSettings'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
@@ -735,6 +637,7 @@ class DeploymentResourceProperties(Model):
     def __init__(self, **kwargs):
         super(DeploymentResourceProperties, self).__init__(**kwargs)
         self.source = kwargs.get('source', None)
+        self.app_name = None
         self.deployment_settings = kwargs.get('deployment_settings', None)
         self.provisioning_state = None
         self.status = None
@@ -790,6 +693,26 @@ class DeploymentSettings(Model):
         self.runtime_version = kwargs.get('runtime_version', None)
 
 
+class Error(Model):
+    """Error.
+
+    :param code:
+    :type code: str
+    :param message:
+    :type message: str
+    """
+
+    _attribute_map = {
+        'code': {'key': 'code', 'type': 'str'},
+        'message': {'key': 'message', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(Error, self).__init__(**kwargs)
+        self.code = kwargs.get('code', None)
+        self.message = kwargs.get('message', None)
+
+
 class FileShareUrlResponse(Model):
     """File share URL payload.
 
@@ -831,81 +754,6 @@ class GetFileShareUrlRequestPayload(Model):
         super(GetFileShareUrlRequestPayload, self).__init__(**kwargs)
         self.start = kwargs.get('start', None)
         self.expiry = kwargs.get('expiry', None)
-
-
-class GitRepository(Model):
-    """Git repository property payload.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param repository_name: Required. Name of the repository
-    :type repository_name: str
-    :param uri: Required. URI of the repository
-    :type uri: str
-    :param label: Label of the repository
-    :type label: str
-    :param patterns: Collection of pattern of the repository
-    :type patterns: list[str]
-    :param searching_path: Searching path of the repository
-    :type searching_path: list[str]
-    """
-
-    _validation = {
-        'repository_name': {'required': True},
-        'uri': {'required': True},
-    }
-
-    _attribute_map = {
-        'repository_name': {'key': 'repositoryName', 'type': 'str'},
-        'uri': {'key': 'uri', 'type': 'str'},
-        'label': {'key': 'label', 'type': 'str'},
-        'patterns': {'key': 'patterns', 'type': '[str]'},
-        'searching_path': {'key': 'searchingPath', 'type': '[str]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(GitRepository, self).__init__(**kwargs)
-        self.repository_name = kwargs.get('repository_name', None)
-        self.uri = kwargs.get('uri', None)
-        self.label = kwargs.get('label', None)
-        self.patterns = kwargs.get('patterns', None)
-        self.searching_path = kwargs.get('searching_path', None)
-
-
-class GitRepositoryAuthorization(Model):
-    """Authorization payload of git.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param platform: Required. Git platform. Possible values include:
-     'AzureDevOps', 'GitHub'
-    :type platform: str or
-     ~azure.mgmt.microservices4spring.models.RepositoryPlatform
-    :param credentials: Platform credentials
-    :type credentials:
-     ~azure.mgmt.microservices4spring.models.AuthorizationCredentials
-    :param action: Required. Authorization action. Possible values include:
-     'Authorize', 'Revoke', 'TokenApply'
-    :type action: str or
-     ~azure.mgmt.microservices4spring.models.AuthorizationAction
-    """
-
-    _validation = {
-        'platform': {'required': True},
-        'action': {'required': True},
-    }
-
-    _attribute_map = {
-        'platform': {'key': 'platform', 'type': 'str'},
-        'credentials': {'key': 'credentials', 'type': 'AuthorizationCredentials'},
-        'action': {'key': 'action', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(GitRepositoryAuthorization, self).__init__(**kwargs)
-        self.platform = kwargs.get('platform', None)
-        self.credentials = kwargs.get('credentials', None)
-        self.action = kwargs.get('action', None)
 
 
 class LogFileUrlResponse(Model):
@@ -1024,10 +872,8 @@ class MetricSpecification(Model):
         self.unit = kwargs.get('unit', None)
         self.category = kwargs.get('category', None)
         self.aggregation_type = kwargs.get('aggregation_type', None)
-        self.supported_aggregation_types = kwargs.get(
-            'supported_aggregation_types', None)
-        self.supported_time_grain_types = kwargs.get(
-            'supported_time_grain_types', None)
+        self.supported_aggregation_types = kwargs.get('supported_aggregation_types', None)
+        self.supported_time_grain_types = kwargs.get('supported_time_grain_types', None)
         self.fill_gap_with_zero = kwargs.get('fill_gap_with_zero', None)
         self.dimensions = kwargs.get('dimensions', None)
 
@@ -1202,23 +1048,6 @@ class RegenerateDebuggingKeyRequestPayload(Model):
         self.key_type = kwargs.get('key_type', None)
 
 
-class RepositoryAuthorizations(Model):
-    """RepositoryAuthorizations.
-
-    :param git_authorizations: Authorizations of git.
-    :type git_authorizations:
-     list[~azure.mgmt.microservices4spring.models.GitRepositoryAuthorization]
-    """
-
-    _attribute_map = {
-        'git_authorizations': {'key': 'gitAuthorizations', 'type': '[GitRepositoryAuthorization]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(RepositoryAuthorizations, self).__init__(**kwargs)
-        self.git_authorizations = kwargs.get('git_authorizations', None)
-
-
 class ResourceUploadDefinition(Model):
     """Resource upload definition payload.
 
@@ -1304,8 +1133,7 @@ class TraceProperties(Model):
     def __init__(self, **kwargs):
         super(TraceProperties, self).__init__(**kwargs)
         self.enabled = kwargs.get('enabled', None)
-        self.app_insight_instrumentation_key = kwargs.get(
-            'app_insight_instrumentation_key', None)
+        self.app_insight_instrumentation_key = kwargs.get('app_insight_instrumentation_key', None)
 
 
 class UserSourceInfo(Model):
@@ -1316,14 +1144,20 @@ class UserSourceInfo(Model):
     :type type: str or ~azure.mgmt.microservices4spring.models.UserSourceType
     :param relative_path: Relative path of the storage which stores the source
     :type relative_path: str
+    :param artifact_selector: Selector for the artifact to be used for the
+     deployment for multi-module projects. This should be
+     the relative path to the target module/project.
+    :type artifact_selector: str
     """
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
         'relative_path': {'key': 'relativePath', 'type': 'str'},
+        'artifact_selector': {'key': 'artifactSelector', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(UserSourceInfo, self).__init__(**kwargs)
         self.type = kwargs.get('type', None)
         self.relative_path = kwargs.get('relative_path', None)
+        self.artifact_selector = kwargs.get('artifact_selector', None)

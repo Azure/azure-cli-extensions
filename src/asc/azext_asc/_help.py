@@ -169,7 +169,7 @@ helps['asc app deployment create'] = """
 
 helps['asc app binding'] = """
     type: group
-    short-summary: Commands to manage service bindings of an app in Spring cloud service.
+    short-summary: Commands to manage service bindings of an app in Spring cloud service, and only restart app can make settings take effect.
 """
 
 helps['asc app binding cosmos'] = """

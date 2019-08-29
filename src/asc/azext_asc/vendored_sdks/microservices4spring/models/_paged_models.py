@@ -25,8 +25,6 @@ class AppClusterResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(AppClusterResourcePaged, self).__init__(*args, **kwargs)
-
-
 class AppResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`AppResource <azure.mgmt.microservices4spring.models.AppResource>` object
@@ -40,8 +38,6 @@ class AppResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(AppResourcePaged, self).__init__(*args, **kwargs)
-
-
 class BindingResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`BindingResource <azure.mgmt.microservices4spring.models.BindingResource>` object
@@ -55,8 +51,6 @@ class BindingResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(BindingResourcePaged, self).__init__(*args, **kwargs)
-
-
 class DeploymentResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`DeploymentResource <azure.mgmt.microservices4spring.models.DeploymentResource>` object
@@ -70,8 +64,6 @@ class DeploymentResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(DeploymentResourcePaged, self).__init__(*args, **kwargs)
-
-
 class OperationDetailPaged(Paged):
     """
     A paging container for iterating over a list of :class:`OperationDetail <azure.mgmt.microservices4spring.models.OperationDetail>` object

@@ -22,51 +22,13 @@ class ProvisioningState(str, Enum):
     failed = "Failed"
 
 
-class ConfigServerProvider(str, Enum):
-
-    not_available = "NotAvailable"
-    spring_cloud_config = "SpringCloudConfig"
-    azure_app_configuration = "AzureAppConfiguration"
-
-
 class ConfigServerState(str, Enum):
 
     not_available = "NotAvailable"
     deleted = "Deleted"
     failed = "Failed"
-    successed = "Successed"
+    succeeded = "Succeeded"
     updating = "Updating"
-
-
-class ConfigServerProfile(str, Enum):
-
-    composite = "Composite"
-    git = "Git"
-    svn = "Svn"
-    vault = "Vault"
-    git_and_svn = "GitAndSvn"
-    git_and_vault = "GitAndVault"
-    svn_and_vault = "SvnAndVault"
-
-
-class RepositoryPlatform(str, Enum):
-
-    azure_dev_ops = "AzureDevOps"
-    git_hub = "GitHub"
-
-
-class AuthorizationAction(str, Enum):
-
-    authorize = "Authorize"
-    revoke = "Revoke"
-    token_apply = "TokenApply"
-
-
-class ConfigServerRepositoryType(str, Enum):
-
-    git = "Git"
-    svn = "Svn"
-    vault = "Vault"
 
 
 class DebuggingKeyType(str, Enum):

@@ -369,9 +369,9 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
                           database_name=None,
                           key_space=None,
                           collection_name=None):
-    binding = client.get(resource_group, service, app, name)
-    resource_id = binding['resourceId']
-    resource_name = binding['resourceName']
+    binding = client.get(resource_group, service, app, name).properties
+    resource_id = binding.resource_id
+    resource_name = binding.resource_name
     binding_parameters = {}
     binding_parameters['databaseName'] = database_name
     binding_parameters['keySpace'] = key_space
@@ -429,35 +429,51 @@ def binding_mysql_update(cmd, client, resource_group, service, app, name,
 
 def binding_redis_add(cmd, client, resource_group, service, app, name,
                       resource_id,
-                      key,
-                      use_ssl=None):
+                      use_ssl=True):
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
     binding_parameters = {}
     binding_parameters['useSsl'] = use_ssl
+    primary_key = None
+    try:
+        primary_key = _get_redis_primary_key(client, resource_id)
+    except:
+        raise CLIError(
+            "Couldn't get redis {}'s primary key".format(resource_name))
 
     properties = models.BindingResourceProperties(
         resource_name=resource_name,
         resource_type=resource_type,
         resource_id=resource_id,
-        key=key,
+        key=primary_key,
         binding_parameters=binding_parameters
     )
+
     return client.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_redis_update(cmd, client, resource_group, service, app, name,
-                         key=None,
                          use_ssl=None):
+    binding = client.get(resource_group, service, app, name).properties
+    resource_id = binding.resource_id
+    resource_name = binding.resource_name
     binding_parameters = {}
-    binding_parameters['useSsl'] = use_ssl
+    if use_ssl is not None:
+        binding_parameters['useSsl'] = use_ssl
+
+    primary_key = None
+    try:
+        primary_key = _get_redis_primary_key(client, resource_id)
+    except:
+        raise CLIError(
+            "Couldn't get redis {}'s primary key".format(resource_name))
 
     properties = models.BindingResourceProperties(
-        key=key,
+        key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.update(resource_group, service, app, name, properties)
 
 
 def _get_cosmosdb_primary_key(client, resource_id):
@@ -479,6 +495,24 @@ def _get_cosmosdb_primary_key(client, resource_id):
     keys_dict = literal_eval(keys)
     return keys_dict['primaryMasterKey']
 
+def _get_redis_primary_key(client, resource_id):
+    url = '{}/listKeys'.format(resource_id)
+    operation_config = {}
+    # Construct parameters
+    query_parameters = {}
+    query_parameters['api-version'] = client._serialize.query(
+        "client.api_version", '2016-04-01', 'str')
+
+    # Construct headers
+    header_parameters = {}
+    header_parameters['Accept'] = 'application/json'
+
+    # Construct and send request
+    request = client._client.post(url, query_parameters, header_parameters)
+    response = client._client.send(request, stream=False, **operation_config)
+    keys = response.content.decode("utf-8")
+    keys_dict = literal_eval(keys)
+    return keys_dict['primaryKey']
 
 def _get_all_deployments(client, resource_group, service, app):
     deployments = []

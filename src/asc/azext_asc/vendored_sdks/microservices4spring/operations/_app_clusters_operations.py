@@ -72,8 +72,7 @@ class AppClustersOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query(
-            "self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -83,8 +82,7 @@ class AppClustersOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header(
-                "self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
@@ -104,8 +102,8 @@ class AppClustersOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+
 
     def _create_or_update_initial(
             self, resource_group_name, app_cluster_name, resource=None, custom_headers=None, raw=False, **operation_config):
@@ -120,8 +118,7 @@ class AppClustersOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query(
-            "self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -132,8 +129,7 @@ class AppClustersOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header(
-                "self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if resource is not None:
@@ -142,8 +138,7 @@ class AppClustersOperations(object):
             body_content = None
 
         # Construct and send request
-        request = self._client.put(
-            url, query_parameters, header_parameters, body_content)
+        request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
@@ -211,15 +206,12 @@ class AppClustersOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True:
-            polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False:
-            polling_method = NoPolling()
-        else:
-            polling_method = polling
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+
 
     def _delete_initial(
             self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
@@ -234,8 +226,7 @@ class AppClustersOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query(
-            "self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -244,8 +235,7 @@ class AppClustersOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header(
-                "self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -297,15 +287,12 @@ class AppClustersOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True:
-            polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False:
-            polling_method = NoPolling()
-        else:
-            polling_method = polling
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+
 
     def _update_initial(
             self, resource_group_name, app_cluster_name, resource=None, custom_headers=None, raw=False, **operation_config):
@@ -320,8 +307,7 @@ class AppClustersOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query(
-            "self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -332,8 +318,7 @@ class AppClustersOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header(
-                "self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if resource is not None:
@@ -342,8 +327,7 @@ class AppClustersOperations(object):
             body_content = None
 
         # Construct and send request
-        request = self._client.patch(
-            url, query_parameters, header_parameters, body_content)
+        request = self._client.patch(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 202]:
@@ -411,15 +395,11 @@ class AppClustersOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True:
-            polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False:
-            polling_method = NoPolling()
-        else:
-            polling_method = polling
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
 
     def list_debugging_keys(
             self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
@@ -452,8 +432,7 @@ class AppClustersOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query(
-            "self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -463,8 +442,7 @@ class AppClustersOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header(
-                "self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -484,8 +462,7 @@ class AppClustersOperations(object):
             return client_raw_response
 
         return deserialized
-    list_debugging_keys.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/listDebuggingKeys'}
+    list_debugging_keys.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/listDebuggingKeys'}
 
     def regenerate_debugging_key(
             self, resource_group_name, app_cluster_name, key_type, custom_headers=None, raw=False, **operation_config):
@@ -513,8 +490,7 @@ class AppClustersOperations(object):
         """
         regenerate_debugging_key_request = None
         if key_type is not None:
-            regenerate_debugging_key_request = models.RegenerateDebuggingKeyRequestPayload(
-                key_type=key_type)
+            regenerate_debugging_key_request = models.RegenerateDebuggingKeyRequestPayload(key_type=key_type)
 
         # Construct URL
         url = self.regenerate_debugging_key.metadata['url']
@@ -527,8 +503,7 @@ class AppClustersOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query(
-            "self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -539,19 +514,16 @@ class AppClustersOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header(
-                "self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if regenerate_debugging_key_request is not None:
-            body_content = self._serialize.body(
-                regenerate_debugging_key_request, 'RegenerateDebuggingKeyRequestPayload')
+            body_content = self._serialize.body(regenerate_debugging_key_request, 'RegenerateDebuggingKeyRequestPayload')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.post(
-            url, query_parameters, header_parameters, body_content)
+        request = self._client.post(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -568,8 +540,7 @@ class AppClustersOperations(object):
             return client_raw_response
 
         return deserialized
-    regenerate_debugging_key.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/regenerateDebuggingKey'}
+    regenerate_debugging_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/regenerateDebuggingKey'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -596,8 +567,7 @@ class AppClustersOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query(
-                    "self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -611,19 +581,16 @@ class AppClustersOperations(object):
             if custom_headers:
                 header_parameters.update(custom_headers)
             if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header(
-                    "self.config.accept_language", self.config.accept_language, 'str')
+                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(
-                url, query_parameters, header_parameters)
+            request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def internal_paging(next_link=None):
             request = prepare_request(next_link)
 
-            response = self._client.send(
-                request, stream=False, **operation_config)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -636,12 +603,10 @@ class AppClustersOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.AppClusterResourcePaged(
-            internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.AppClusterResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list_by_subscription.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Microservices4Spring/appClusters'}
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Microservices4Spring/appClusters'}
 
     def list(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
@@ -673,8 +638,7 @@ class AppClustersOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query(
-                    "self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -688,19 +652,16 @@ class AppClustersOperations(object):
             if custom_headers:
                 header_parameters.update(custom_headers)
             if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header(
-                    "self.config.accept_language", self.config.accept_language, 'str')
+                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(
-                url, query_parameters, header_parameters)
+            request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def internal_paging(next_link=None):
             request = prepare_request(next_link)
 
-            response = self._client.send(
-                request, stream=False, **operation_config)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -713,9 +674,7 @@ class AppClustersOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.AppClusterResourcePaged(
-            internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.AppClusterResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {
-        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters'}
