@@ -91,7 +91,7 @@ az aks create \
     --vm-set-type AvailabilitySet \
 ```
 
-#### Use VMSS for new cluster(default)
+#### Use VMSS for new cluster
 *Examples:*
 ```
 az aks create \

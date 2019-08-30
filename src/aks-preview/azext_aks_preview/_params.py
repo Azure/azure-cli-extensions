@@ -17,7 +17,8 @@ from ._completers import (
 from ._validators import (
     validate_create_parameters, validate_k8s_version, validate_linux_host_name,
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
-    validate_nodepool_name)
+    validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
+    validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes)
 
 
 def load_arguments(self, _):
@@ -51,10 +52,10 @@ def load_arguments(self, _):
         c.argument('aad_tenant_id')
         c.argument('dns_service_ip')
         c.argument('docker_bridge_address')
-        c.argument('load_balancer_sku')
+        c.argument('load_balancer_sku', type=str, validator=validate_load_balancer_sku)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
-        c.argument('load_balancer_outbound_ips')
-        c.argument('load_balancer_outbound_ip_prefixes')
+        c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
+        c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('enable_addons', options_list=['--enable-addons', '-a'])
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],
@@ -71,7 +72,8 @@ def load_arguments(self, _):
         c.argument('enable_cluster_autoscaler', action='store_true')
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
-        c.argument('vm_set_type')
+        c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.')
+        c.argument('vm_set_type', type=str, validator=validate_vm_set_type)
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
@@ -85,8 +87,8 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
-        c.argument('load_balancer_outbound_ips')
-        c.argument('load_balancer_outbound_ip_prefixes')
+        c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
+        c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')

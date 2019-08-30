@@ -91,7 +91,7 @@ helps['aks create'] = """
                         For example, 172.17.0.1/16.
         - name: --load-balancer-sku
           type: string
-          short-summary: Azure Load Balancer SKU selection for your cluster. Basic or Standard.
+          short-summary: Azure Load Balancer SKU selection for your cluster. basic or standard.
           long-summary: Select between Basic or Standard Azure Load Balancer SKU for your AKS cluster.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
@@ -189,7 +189,7 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5
         - name: Create a kubernetes cluster with k8s 1.13.9 but use vmas.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --vm-set-type AvailabilitySet
-        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(standard) and default vm set type(VirtualMachineScaleSets).
+        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(basic) and default vm set type(AvailabilitySet).
           text: az aks create -g MyResourceGroup -n MyManagedCluster
         - name: Create a kubernetes cluster with standard SKU load balancer and two AKS created IPs for the load balancer outbound connection usage.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2

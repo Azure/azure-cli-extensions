@@ -66,6 +66,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClus
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -625,6 +626,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                no_ssh_key=False,
                disable_rbac=None,
                enable_rbac=None,
+               enable_vmss=None,
                vm_set_type=None,
                skip_subnet_role_assignment=False,
                enable_cluster_autoscaler=False,
@@ -634,7 +636,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku=None,
+               load_balancer_sku="basic",
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
@@ -673,6 +675,18 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if location is None:
         location = rg_location
 
+    # Flag to be removed, kept for back-compatibility only. Remove the below section
+    # when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
+    if enable_vmss:
+        if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
+            raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.
+                           format(vm_set_type))
+        vm_set_type = "VirtualMachineScaleSets"
+    else:
+        if not vm_set_type:
+            vm_set_type = "AvailabilitySet"
+
+    # NOTE: keep for future default behavior change
     if not vm_set_type:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
             print('Setting vm_set_type to availabilityset as it is \
@@ -690,6 +704,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
         vm_set_type = "VirtualMachineScaleSets"
 
+    # NOTE: keep for future default behavior change
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
             print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
@@ -763,27 +778,10 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             logger.warning('Could not create a role assignment for subnet. '
                            'Are you an Owner on this subscription?')
 
-    load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
-    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(
+    load_balancer_profile = _get_load_balancer_profile(
+        load_balancer_managed_outbound_ip_count,
+        load_balancer_outbound_ips,
         load_balancer_outbound_ip_prefixes)
-
-    load_balancer_profile = None
-    if any([load_balancer_managed_outbound_ip_count,
-            load_balancer_outbound_ip_resources,
-            load_balancer_outbound_ip_prefix_resources]):
-        load_balancer_profile = ManagedClusterLoadBalancerProfile()
-        if load_balancer_managed_outbound_ip_count:
-            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=load_balancer_managed_outbound_ip_count
-            )
-        if load_balancer_outbound_ip_resources:
-            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
-                public_ips=load_balancer_outbound_ip_resources
-            )
-        if load_balancer_outbound_ip_prefix_resources:
-            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
-            )
 
     network_profile = None
     if any([network_plugin,
@@ -885,9 +883,12 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
     update_acr = enable_acr or disable_acr
+    update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
+        load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
+    # pylint: disable=too-many-boolean-expressions
     if update_flags != 1 and api_server_authorized_ip_ranges is None and \
        (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
-            update_acr is False:
+            update_acr is False and not update_lb_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -895,7 +896,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges" or '
                        '"--enable-acr" or '
-                       '"--disable-acr"')
+                       '"--disable-acr" or '
+                       '"--load-balancer-managed-outbound-ip-count" or '
+                       '"--load-balancer-outbound-ips" or '
+                       '"--load-balancer-outbound-ip-prefixes"')
 
     # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
@@ -949,36 +953,23 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
 
-    load_balancer_outbound_ip_resources = _validate_and_get_outbound_ips(load_balancer_outbound_ips)
-    load_balancer_outbound_ip_prefix_resources = _validate_and_get_outbound_ip_prefixes(
+    load_balancer_profile = _get_load_balancer_profile(
+        load_balancer_managed_outbound_ip_count,
+        load_balancer_outbound_ips,
         load_balancer_outbound_ip_prefixes)
-    load_balancer_profile = None
-    if any([load_balancer_managed_outbound_ip_count,
-            load_balancer_outbound_ip_resources,
-            load_balancer_outbound_ip_prefix_resources]):
-        load_balancer_profile = ManagedClusterLoadBalancerProfile()
-        if load_balancer_managed_outbound_ip_count:
-            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
-                count=load_balancer_managed_outbound_ip_count
-            )
-        if load_balancer_outbound_ip_resources:
-            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
-                public_ips=load_balancer_outbound_ip_resources
-            )
-        if load_balancer_outbound_ip_prefix_resources:
-            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
-                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
-            )
+
     if load_balancer_profile:
         instance.network_profile.load_balancer_profile = load_balancer_profile
 
     if api_server_authorized_ip_ranges is not None:
-        instance.api_server_authorized_ip_ranges = []
+        instance.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
+            authorized_ip_ranges=[]
+        )
         if api_server_authorized_ip_ranges != "":
             for ip in api_server_authorized_ip_ranges.split(','):
                 try:
                     ip_net = ip_network(ip)
-                    instance.api_server_authorized_ip_ranges.append(ip_net.with_prefixlen)
+                    instance.api_server_access_profile.authorized_ip_ranges.append(ip_net.with_prefixlen)
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
@@ -1951,24 +1942,48 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace):
     print(msg)
 
 
-def _validate_and_get_outbound_ips(load_balancer_outbound_ips):
-    """validate load balancer profile outbound IP ids and return an array of references to the outbound IP resources"""
+def _get_load_balancer_outbound_ips(load_balancer_outbound_ips):
+    """parse load balancer profile outbound IP ids and return an array of references to the outbound IP resources"""
     load_balancer_outbound_ip_resources = None
     if load_balancer_outbound_ips:
-        ip_id_list = [x.strip() for x in load_balancer_outbound_ips.split(',')]
-        if not all(ip_id_list):
-            raise CLIError("Load balancer outbound IP ID cannot be whitespace")
-        load_balancer_outbound_ip_resources = [ResourceReference(id=x) for x in ip_id_list]
+        load_balancer_outbound_ip_resources = \
+            [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ips.split(',')]
     return load_balancer_outbound_ip_resources
 
 
-def _validate_and_get_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
-    """validate load balancer profile outbound IP prefix ids and return an array \
+def _get_load_balancer_outbound_ip_prefixes(load_balancer_outbound_ip_prefixes):
+    """parse load balancer profile outbound IP prefix ids and return an array \
     of references to the outbound IP prefix resources"""
     load_balancer_outbound_ip_prefix_resources = None
     if load_balancer_outbound_ip_prefixes:
-        ip_prefix_id_list = [x.strip() for x in load_balancer_outbound_ip_prefixes.split(',')]
-        if not all(ip_prefix_id_list):
-            raise CLIError("Load balancer outbound IP prefix ID cannot be whitespace")
-        load_balancer_outbound_ip_prefix_resources = [ResourceReference(id=x) for x in ip_prefix_id_list]
+        load_balancer_outbound_ip_prefix_resources = \
+            [ResourceReference(id=x.strip()) for x in load_balancer_outbound_ip_prefixes.split(',')]
     return load_balancer_outbound_ip_prefix_resources
+
+
+def _get_load_balancer_profile(load_balancer_managed_outbound_ip_count,
+                               load_balancer_outbound_ips,
+                               load_balancer_outbound_ip_prefixes):
+    """parse and build load balancer profile"""
+    load_balancer_outbound_ip_resources = _get_load_balancer_outbound_ips(load_balancer_outbound_ips)
+    load_balancer_outbound_ip_prefix_resources = _get_load_balancer_outbound_ip_prefixes(
+        load_balancer_outbound_ip_prefixes)
+
+    load_balancer_profile = None
+    if any([load_balancer_managed_outbound_ip_count,
+            load_balancer_outbound_ip_resources,
+            load_balancer_outbound_ip_prefix_resources]):
+        load_balancer_profile = ManagedClusterLoadBalancerProfile()
+        if load_balancer_managed_outbound_ip_count:
+            load_balancer_profile.managed_outbound_ips = ManagedClusterLoadBalancerProfileManagedOutboundIPs(
+                count=load_balancer_managed_outbound_ip_count
+            )
+        if load_balancer_outbound_ip_resources:
+            load_balancer_profile.outbound_ips = ManagedClusterLoadBalancerProfileOutboundIPs(
+                public_ips=load_balancer_outbound_ip_resources
+            )
+        if load_balancer_outbound_ip_prefix_resources:
+            load_balancer_profile.outbound_ip_prefixes = ManagedClusterLoadBalancerProfileOutboundIPPrefixes(
+                public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
+            )
+    return load_balancer_profile
