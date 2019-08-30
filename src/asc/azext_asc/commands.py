@@ -21,6 +21,11 @@ def load_command_table(self, _):
         #g.custom_command('test', 'test')
         #g.generic_update_command('update', setter_name='update', custom_func_name='update_asc')
 
+    with self.command_group('asc config-server', client_factory=cf_app_clusters) as g:
+        g.custom_command('set', 'config_set', supports_no_wait=True)
+        g.custom_command('clear', 'config_delete')
+        g.custom_show_command('show', 'config_get')
+
     with self.command_group('asc app', client_factory=cf_asc) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update', supports_no_wait=True)

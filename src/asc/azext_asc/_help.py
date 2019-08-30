@@ -167,6 +167,26 @@ helps['asc app deployment create'] = """
       text: az asc app deployment create -n green-deployment --app MyApp -s Myasc --jar-path app.jar --jvm-options "-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
+helps['asc config-server'] = """
+    type: group
+    short-summary: Commands to manage config server in Spring cloud service.
+"""
+
+helps['asc config-server show'] = """
+    type: command
+    short-summary: Commands to show config server.
+"""
+
+helps['asc config-server set'] = """
+    type: command
+    short-summary: Commands to set config server.
+"""
+
+helps['asc config-server clear'] = """
+    type: command
+    short-summary: Commands to clear config server.
+"""
+
 helps['asc app binding'] = """
     type: group
     short-summary: Commands to manage service bindings of an app in Spring cloud service, and only restart app can make settings take effect.

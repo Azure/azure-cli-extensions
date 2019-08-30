@@ -36,11 +36,11 @@ def stream_logs(client,
             app_name=app,
             deployment_name=deployment).url
     except (AttributeError, CloudError) as e:
-        logger.debug("%s Exception: %s", error_msg, e)
+        logger.warning("%s Exception: %s", error_msg, e)
         raise CLIError(error_msg)
 
     if not log_file_sas:
-        logger.debug("%s Empty SAS URL.", error_msg)
+        logger.warning("%s Empty SAS URL.", error_msg)
         raise CLIError(error_msg)
 
     account_name, endpoint_suffix, container_name, blob_name, sas_token = get_blob_info(
@@ -116,10 +116,10 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
                 min_scan_range = max(new_byte_size - amount_read - 1, 0)
                 for i in range(new_byte_size - 1, min_scan_range, -1):
                     if curr_bytes[i - 1:i + 1] == b'\r\n':
-                        flush = curr_bytes[:i]  # won't print \n
+                        flush = curr_bytes[:i]  # won't logger.warning \n
                         stream = BytesIO()
                         stream.write(curr_bytes[i + 1:])
-                        print(flush.decode('utf-8', errors='ignore'))
+                        logger.warning(flush.decode('utf-8', errors='ignore'))
                         break
             except AzureHttpError as ae:
                 if ae.status_code != 404:
@@ -127,7 +127,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
             except KeyboardInterrupt:
                 curr_bytes = stream.getvalue()
                 if curr_bytes:
-                    print(curr_bytes.decode('utf-8', errors='ignore'))
+                    logger.warning(curr_bytes.decode('utf-8', errors='ignore'))
                 return
 
         try:
@@ -140,7 +140,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
                 raise CLIError(ae)
         except KeyboardInterrupt:
             if curr_bytes:
-                print(curr_bytes.decode('utf-8', errors='ignore'))
+                logger.warning(curr_bytes.decode('utf-8', errors='ignore'))
             return
         except Exception as err:
             raise CLIError(err)
@@ -150,7 +150,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
             # if the file has expired and we weren't able to detect any \r\n
             curr_bytes = stream.getvalue()
             if curr_bytes:
-                print(curr_bytes.decode('utf-8', errors='ignore'))
+                logger.warning(curr_bytes.decode('utf-8', errors='ignore'))
 
             logger.warning("Failed to find any new logs in %d seconds. Client will stop polling for additional logs.",
                            consecutive_sleep_in_sec)
@@ -160,17 +160,17 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
         if (_blob_is_not_complete(metadata) and start >= available):
             num_fails += 1
 
-            logger.debug(
+            logger.warning(
                 "Failed to find new content %d times in a row", num_fails)
             if num_fails >= num_fails_for_backoff:
                 num_fails = 0
                 sleep_time = min(sleep_time * 2, max_sleep_time)
-                logger.debug("Resetting failure count to %d", num_fails)
+                logger.warning("Resetting failure count to %d", num_fails)
 
             rnd = uniform(1, 2)  # 1.0 <= x < 2.0
             total_sleep_time = sleep_time + rnd
             consecutive_sleep_in_sec += total_sleep_time
-            logger.debug("Base sleep time: %d, random delay: %d, total: %d, consecutive: %d",
+            logger.warning("Base sleep time: %d, random delay: %d, total: %d, consecutive: %d",
                          sleep_time, rnd, total_sleep_time, consecutive_sleep_in_sec)
             time.sleep(total_sleep_time)
 
@@ -179,10 +179,10 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
     # didn't end in \r\n, so we were unable to flush out the final contents.
     curr_bytes = stream.getvalue()
     if curr_bytes:
-        print(curr_bytes.decode('utf-8', errors='ignore'))
+        logger.warning(curr_bytes.decode('utf-8', errors='ignore'))
 
     build_status = _get_run_status(metadata).lower()
-    logger.debug("status was: '%s'", build_status)
+    logger.warning("status was: '%s'", build_status)
 
     if raise_error_on_failure:
         if build_status in ('internalerror', 'failed'):

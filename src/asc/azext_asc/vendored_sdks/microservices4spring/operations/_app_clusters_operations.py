@@ -341,7 +341,7 @@ class AppClustersOperations(object):
             deserialized = self._deserialize('AppClusterResource', response)
         if response.status_code == 202:
             deserialized = self._deserialize('AppClusterResource', response)
-
+            
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
@@ -656,6 +656,7 @@ class AppClustersOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
+            
             return request
 
         def internal_paging(next_link=None):

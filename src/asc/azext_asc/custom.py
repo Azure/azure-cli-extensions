@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import os
+import yaml
 import urllib.request
 import tempfile
 from time import sleep
@@ -226,6 +227,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                        instance_count,
                        env,
                        tags,
+                       target_module,
                        no_wait,
                        file_type,
                        True)
@@ -297,6 +299,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        instance_count,
                        env,
                        tags,
+                       target_module,
                        no_wait,
                        file_type)
 
@@ -311,6 +314,35 @@ def deployment_get(cmd, client, resource_group, service, app, name):
 
 def deployment_delete(cmd, client, resource_group, service, app, name):
     return client.deployments.delete(resource_group, service, app, name)
+
+def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
+    file_content = None
+    with open(config_file, 'r') as stream:
+        file_content = yaml.safe_load(stream)
+        
+    config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
+    properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
+    appResource = models.AppClusterResource(properties=properties)
+
+    return sdk_no_wait(no_wait, client.update,
+                    resource_group, name, appResource)
+
+
+def config_get(cmd, client, resource_group, name):
+    resource = client.get(resource_group, name)
+    application_yaml = resource.properties.config_server_properties.application_yaml
+    if application_yaml is None:
+        application_yaml = '{}'
+    return yaml.load(application_yaml, Loader=yaml.FullLoader)
+
+
+def config_delete(cmd, client, resource_group, name):
+    file_content = {}
+    config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
+    properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
+    appResource = models.AppClusterResource(properties=properties)
+
+    return client.update(resource_group, name, appResource)
 
 
 def binding_list(cmd, client, resource_group, service, app):
@@ -529,6 +561,7 @@ def _app_deploy(client, resource_group, service, app, name, path, runtime_versio
                 instance_count,
                 env,
                 tags,
+                target_module=None,
                 no_wait=False,
                 file_type="Jar",
                 update=False):
@@ -562,7 +595,8 @@ def _app_deploy(client, resource_group, service, app, name, path, runtime_versio
         runtime_version=runtime_version,
         instance_count=instance_count,)
     user_source_info = models.UserSourceInfo(
-        relative_path=relative_path, type=file_type)
+        relative_path=relative_path, type=file_type,
+        artifact_selector=target_module)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)

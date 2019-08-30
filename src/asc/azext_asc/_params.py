@@ -9,7 +9,7 @@ from azure.cli.core.commands.parameters import get_enum_type
 from azure.cli.core.commands.parameters import (get_resource_name_completion_list, name_type,
                                                 get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_key_type, validate_cosmos_type, validate_resource_id,
-                          validate_name, validate_app_name, validate_deployment_name)
+                          validate_name, validate_app_name, validate_deployment_name, validate_nodes_count)
 from ._utils import ApiType
 
 name_type = CLIArgumentType(options_list=[
@@ -71,22 +71,22 @@ def load_arguments(self, _):
             c.argument('memory', type=int, default=1,
                        help='Number of GB of memory per instance.')
             c.argument('instance_count', type=int,
-                       default=2, help='Number of instance.')
+                       default=1, help='Number of instance.')
 
     for scope in ['asc app deploy', 'asc app scale']:
         with self.argument_context(scope) as c:
             c.argument('cpu', type=int,
-                       help='Number of virtual cpu cores per instance.')
+                       help='Number of virtual cpu cores per instance.', validator=validate_nodes_count)
             c.argument('memory', type=int,
-                       help='Number of GB of memory per instance.')
-            c.argument('instance_count', type=int, help='Number of instance.')
+                       help='Number of GB of memory per instance.', validator=validate_nodes_count)
+            c.argument('instance_count', type=int, help='Number of instance.', validator=validate_nodes_count)
 
     for scope in ['asc app deploy', 'asc app deployment create']:
         with self.argument_context(scope) as c:
             c.argument(
                 'jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
             c.argument(
-                'target_module', help='Child module to be deployed, will be supported later')
+                'target_module', help='Child module to be deployed, left empty if only have one jar package')
 
     with self.argument_context('asc app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',
@@ -125,3 +125,7 @@ def load_arguments(self, _):
             c.argument('key', help='Api key of the service.')
             c.argument('use_ssl', action='store_true',
                        help='If true, use ssl.')
+
+    with self.argument_context('asc config-server set') as c:
+        c.argument('config-file', 
+                    help='A yaml file path for the configuration of Spring Cloud config server')
