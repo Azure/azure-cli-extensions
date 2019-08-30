@@ -2,8 +2,15 @@
 
 Release History
 ===============
-0.4.12
+0.4.13
++++++
 * Add support for using managed identity to manage cluster resource group
+
+0.4.12
++++++
+* Bring back "enable-vmss" flag  for backward compatibility
+* Revert "Set default availability type to VMSS" for backward compatibility
+* Revert "Set default load balancer SKU to Standard" for backward compatibility
 
 0.4.11
 +++++
