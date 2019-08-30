@@ -24,6 +24,7 @@ logger = get_logger(__name__)
 #DEFAULT_DEPLOYMENT_URL='https://github.com/peizhou298/Helloworld/releases/download/0.1/jb-hello-world-maven-0.1.0.jar'
 #DEFAULT_DEPLOYMENT_FILE = os.path.join(tempfile.gettempdir(), 'helloworld.jar')
 DEFAULT_DEPLOYMENT_NAME = "default01"
+NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment"
 
 def asc_create(cmd, client, resource_group, name, location=None, no_wait=False):
     resource = None
@@ -83,11 +84,11 @@ def app_create(cmd, client, resource_group, service, name,
     logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
     poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
     poller.add_done_callback(lambda x: dump(client, x.resource()))
-    logger.warning("waiting for the default deployment completion")
+    logger.warning("Waiting for the default deployment completion")
     while poller.done() is False:
         sleep(5)
 
-    logger.warning("updating app active deployment")
+    logger.warning("Setting default deployment to production")
     properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
     return client.apps.update(resource_group, service, name, properties)
 
@@ -112,7 +113,7 @@ def app_update(cmd, client, resource_group, service, name,
         if deployment is None:
             return
 
-    logger.warning("updating deployment " + deployment)
+    logger.warning("Updating deployment " + deployment)
     deployment_settings = models.DeploymentSettings(
         environment_variables=env,
         jvm_options=jvm_options,
@@ -140,7 +141,7 @@ def app_start(cmd, client,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError("No in-production deployment found, can't start app")
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.start,
                        resource_group, service, name, deployment)
 
@@ -155,7 +156,7 @@ def app_stop(cmd, client,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError("No in-production deployment found, can't stop app")
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.stop,
                        resource_group, service, name, deployment)
 
@@ -170,7 +171,7 @@ def app_restart(cmd, client,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError("No in-production deployment found, can't restart app")
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.restart,
                        resource_group, service, name, deployment)
 
@@ -204,14 +205,12 @@ def app_deploy(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if deployment is None:
-            raise CLIError(
-                "No in-production deployment found, please specify a deployment name")
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     else:
         deployments = _get_all_deployments(
             client, resource_group, service, name)
         if deployment not in deployments:
-            raise CLIError("deployment '" + deployment +
-                           "' not found, use 'az asc app deploy create' to create a new deployment")
+            raise CLIError("Deployment '" + deployment + "' not found, use 'az asc app deployment create' to create a new deployment")
 
     file_type, file_path = _get_upload_local_file(jar_path)
     return _app_deploy(client,
@@ -242,8 +241,7 @@ def app_scale(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError(
-            "No in-production deployment found, please input --deployment")
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)         
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
@@ -259,8 +257,7 @@ def app_get_log(cmd, client, resource_group, service, name, deployment=None):
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError(
-            "No in-production deployment found, please input --deployment")
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)   
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
@@ -269,13 +266,10 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     active_deployment = client.apps.get(
         resource_group, service, name).properties.active_deployment_name
     if deployment == active_deployment:
-        raise CLIError("deployment '" + deployment +
-                       "' is alredy the active deployment")
+        raise CLIError("Deployment '" + deployment + "' is already the production deployment")
     if deployment not in deployments:
-        raise CLIError("deployment '" + deployment +
-                       "' not found, please use 'az asc app deploy create' to create new deployment first")
-    properties = models.AppResourceProperties(
-        active_deployment_name=deployment)
+        raise CLIError("Deployment '" + deployment + "' not found, please use 'az asc app deploy create' to create new deployment first")  
+    properties = models.AppResourceProperties(active_deployment_name=deployment)
     return client.apps.update(resource_group, service, name, properties)
 
 
@@ -292,7 +286,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       no_wait=False):
     deployments = _get_all_deployments(client, resource_group, service, app)
     if name in deployments:
-        raise CLIError("deployment " + name + " already exists")
+        raise CLIError("Deployment " + name + " already exists")
 
     file_type, file_path = _get_upload_local_file(jar_path)
     return _app_deploy(client, resource_group, service, app, name, file_path,
