@@ -614,13 +614,7 @@ def _app_deploy(client, resource_group, service, app, name, path, runtime_versio
 
 
 def test(cmd, client, resource_group, service=None, app=None, deployment=None):
-    #_list_cosmosdb_keys(client, resource_group, 'raphael-cosmosdb-cassandra')
-    # print(res)
-    #sfc = cf_asc(cmd.cli_ctx)
-    # _get_resource_info("/subscriptions/685ba005-af8d-4b04-8f16-a7bf38b2eab7/resourceGroups/mymongorg/providers/Microsoft.DocumentDB/databaseAccounts/mymongo")
-    # _get_upload_local_file()
-    # sleep(100000)
-    #zero_arg_lambda = lambda: print("dsasdsa")
-    # zero_arg_lambda()
-    #_pack_source_code(os.getcwd(), TEMP_TAR)
+    from ._utils import _pack_source_code
+    file_path = 'temp.tar.gz'
+    _pack_source_code(os.getcwd(), file_path)
     return None

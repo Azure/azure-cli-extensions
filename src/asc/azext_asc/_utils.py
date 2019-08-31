@@ -36,8 +36,8 @@ def _pack_source_code(source_location, tar_file_path):
     logger.warning("Packing source code into tar to upload...")
 
     ignore_list, ignore_list_size = _load_gitignore_file(source_location)
-    common_vcs_ignore_list = {'.git', '.gitignore', '.mvn', 'bzrignore', '.hg',
-                              '.hgignore', '.svn', '.circleci', 'target', 'docker', 'mvnw', 'mvnw.cmd'}
+    common_vcs_ignore_list = {'.git', '.gitignore', 'bzrignore', '.hg',
+                              '.hgignore', '.svn', '.circleci', 'target', 'docker'}
 
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
