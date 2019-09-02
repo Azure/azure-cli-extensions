@@ -10,7 +10,7 @@
 # --------------------------------------------------------------------------
 
 from ._configuration import HealthcareApisManagementClientConfiguration
-from ._healthcare_apis_management_client import HealthcareApisManagementClient
+from ._healthcareapis_apis_management_client import HealthcareApisManagementClient
 __all__ = ['HealthcareApisManagementClient', 'HealthcareApisManagementClientConfiguration']
 
 from .version import VERSION

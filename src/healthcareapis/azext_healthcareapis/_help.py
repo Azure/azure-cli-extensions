@@ -9,18 +9,18 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['healthcare'] = """
+helps['healthcareapis'] = """
     type: group
     short-summary: Commands to manage service.
 """
 
-helps['healthcare create'] = """
+helps['healthcareapis create'] = """
     type: command
     short-summary: create service.
     examples:
       - name: ServicePut
         text: |-
-               az healthcare create --resource-group "rg1" --name "service1" --kind "fhir" \\
+               az healthcareapis create --resource-group "rg1" --name "service1" --kind "fhir" \\
                --location "westus" --cosmos-db-offer-throughput "1000" --authentication-authority \\
                "https://login.microsoftonline.com/common" --authentication-audience \\
                "https://azurehealthcare.com" --authentication-smart-proxy-enabled true \\
@@ -29,30 +29,30 @@ helps['healthcare create'] = """
                --cors-origins "*" --cors-headers "*" --cors-methods "DELETE,GET,OPTIONS,PATCH,POST,PUT"
 """
 
-helps['healthcare update'] = """
+helps['healthcareapis update'] = """
     type: command
     short-summary: update service.
     examples:
       - name: ServicePatch
         text: |-
-               az healthcare update --resource-group "rg1" --name "service1"
+               az healthcareapis update --resource-group "rg1" --name "service1"
 """
 
-helps['healthcare delete'] = """
+helps['healthcareapis delete'] = """
     type: command
     short-summary: delete service.
     examples:
       - name: ServiceDelete
         text: |-
-               az healthcare delete --resource-group "rg1" --name "service1"
+               az healthcareapis delete --resource-group "rg1" --name "service1"
 """
 
-helps['healthcare list'] = """
+helps['healthcareapis list'] = """
     type: command
     short-summary: list service.
 """
 
-helps['healthcare show'] = """
+helps['healthcareapis show'] = """
     type: command
     short-summary: show service.
 """

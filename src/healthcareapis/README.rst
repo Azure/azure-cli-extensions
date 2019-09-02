@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'healthcare' Extension
+Microsoft Azure CLI 'healthcareapis' Extension
 ==========================================
 
-This package is for the 'healthcare' extension.
-i.e. 'az healthcare'
+This package is for the 'healthcareapis' extension.
+i.e. 'az healthcareapis'

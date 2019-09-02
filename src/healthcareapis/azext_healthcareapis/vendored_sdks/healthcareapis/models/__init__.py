@@ -43,7 +43,7 @@ except (SyntaxError, ImportError):
     from ._models import ServicesProperties
 from ._paged_models import OperationPaged
 from ._paged_models import ServicesDescriptionPaged
-from ._healthcare_apis_management_client_enums import (
+from ._healthcareapis_apis_management_client_enums import (
     ProvisioningState,
     Kind,
     ServiceNameUnavailabilityReason,

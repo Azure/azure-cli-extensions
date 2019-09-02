@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='healthcare',
+    name='healthcareapis',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Healthcare Extension',
     # TODO: Update author and email, if applicable
