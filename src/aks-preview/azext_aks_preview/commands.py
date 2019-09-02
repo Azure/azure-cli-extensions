@@ -19,7 +19,7 @@ def load_command_table(self, _):
 
     managed_clusters_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.managed_clusters_operations#ManagedClustersOperations.{}',
+                        'operations._managed_clusters_operations#ManagedClustersOperations.{}',
         client_factory=cf_managed_clusters
     )
 
@@ -31,7 +31,7 @@ def load_command_table(self, _):
 
     agent_pools_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.agent_pools_operations#AgentPoolsOperations.{}',
+                        'operations._agent_pools_operations#AgentPoolsOperations.{}',
         client_factory=cf_managed_clusters
     )
 
