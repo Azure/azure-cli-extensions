@@ -9,7 +9,7 @@
 # pylint: disable=unused-argument
 
 
-def create_healthcare(cmd, client,
+def create_healthcareapis(cmd, client,
                       resource_group,
                       name,
                       kind,
@@ -50,7 +50,7 @@ def create_healthcare(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
-def update_healthcare(cmd, client,
+def update_healthcareapis(cmd, client,
                       resource_group,
                       name,
                       kind=None,
@@ -103,20 +103,20 @@ def update_healthcare(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
-def list_healthcare(cmd, client,
+def list_healthcareapis(cmd, client,
                     resource_group=None):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list()
 
 
-def show_healthcare(cmd, client,
+def show_healthcareapis(cmd, client,
                     resource_group,
                     name):
     return client.get(resource_group_name=resource_group, resource_name=name)
 
 
-def delete_healthcare(cmd, client,
+def delete_healthcareapis(cmd, client,
                       resource_group,
                       name):
     return client.delete(resource_group_name=resource_group, resource_name=name)

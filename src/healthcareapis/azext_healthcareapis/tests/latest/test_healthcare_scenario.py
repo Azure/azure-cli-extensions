@@ -15,8 +15,8 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class HealthcareScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_healthcare')
-    def test_healthcare(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_healthcareapis')
+    def test_healthcareapis(self, resource_group):
 
         self.kwargs.update({
             'name': 'test1'
