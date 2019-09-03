@@ -521,7 +521,7 @@ class AppClustersOperations(object):
             body_content = self._serialize.body(regenerate_test_key_request, 'RegenerateTestKeyRequestPayload')
         else:
             body_content = None
-        print(body_content)
+
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
