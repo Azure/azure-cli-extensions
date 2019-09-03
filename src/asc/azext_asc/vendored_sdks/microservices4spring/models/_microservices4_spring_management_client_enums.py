@@ -31,7 +31,7 @@ class ConfigServerState(str, Enum):
     updating = "Updating"
 
 
-class DebuggingKeyType(str, Enum):
+class TestKeyType(str, Enum):
 
     primary = "Primary"
     secondary = "Secondary"

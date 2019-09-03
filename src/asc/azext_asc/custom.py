@@ -52,12 +52,31 @@ def asc_get(cmd, client, resource_group, name):
     return client.get(resource_group, name)
 
 
-def asc_debuggingkey_list(cmd, client, resource_group, name):
-    return client.list_debugging_keys(resource_group, name)
+def enable_test_endpoint(cmd, client, resource_group, name):
+    return client.enable_test_endpoint(resource_group, name)
 
 
-def asc_debuggingkey_regenerate(cmd, client, resource_group, name, key_type):
-    return client.regenerate_debugging_key(resource_group, name, key_type)
+def disable_test_endpoint(cmd, client, resource_group, name):
+    return client.disable_test_endpoint(resource_group, name)
+
+
+def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
+    keys = client.list_test_keys(resource_group, name)
+    if deployment:
+        if app is None:
+            raise CLIError("Deployment should be attached to an specific app")
+        keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment)
+        keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment)
+    else:
+        if app:
+            keys.primary_test_endpoint = "{}/{}/".format(keys.primary_test_endpoint, app)
+            keys.secondary_test_endpoint = "{}/{}/".format(keys.secondary_test_endpoint, app)
+    dump(keys)
+    return None
+
+
+def regenerate_keys(cmd, client, resource_group, name, type):
+    return client.regenerate_test_key(resource_group, name, type)
 
 
 def app_create(cmd, client, resource_group, service, name,

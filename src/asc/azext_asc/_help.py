@@ -34,19 +34,29 @@ helps['asc show'] = """
     short-summary: Show the details for a Spring cloud service.
 """
 
-helps['asc debuggingkey'] = """
+helps['asc test-endpoint'] = """
     type: group
-    short-summary: Commands to manage debugging keys in Spring cloud service.
+    short-summary: Commands to manage  test-endpoint in Spring cloud service.
 """
 
-helps['asc debuggingkey list'] = """
+helps['asc test-endpoint enable'] = """
     type: command
-    short-summary: List all debugging keys of the Spring cloud service.
+    short-summary: Enable test endpoint of the Spring cloud service.
 """
 
-helps['asc debuggingkey regenerate'] = """
+helps['asc test-endpoint disable'] = """
     type: command
-    short-summary: Regenerate a debuggingkey for the Spring cloud service.
+    short-summary: Disable test endpoint of the Spring cloud service.
+"""
+
+helps['asc test-endpoint list'] = """
+    type: command
+    short-summary: List test endpoint keys of the Spring cloud service.
+"""
+
+helps['asc test-endpoint renew-keys'] = """
+    type: command
+    short-summary: Regenerate a test-endpoint key for the Spring cloud service.
 """
 
 helps['asc app'] = """

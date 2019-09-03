@@ -17,14 +17,11 @@ try:
     from ._models_py3 import BindingResourceProperties
     from ._models_py3 import ClusterResourceProperties
     from ._models_py3 import ConfigServerProperties
-    from ._models_py3 import DebuggingKeys
     from ._models_py3 import DeploymentInstance
     from ._models_py3 import DeploymentResource
     from ._models_py3 import DeploymentResourceProperties
     from ._models_py3 import DeploymentSettings
     from ._models_py3 import Error
-    from ._models_py3 import FileShareUrlResponse
-    from ._models_py3 import GetFileShareUrlRequestPayload
     from ._models_py3 import LogFileUrlResponse
     from ._models_py3 import LogSpecification
     from ._models_py3 import MetricDimension
@@ -36,11 +33,12 @@ try:
     from ._models_py3 import OperationProperties
     from ._models_py3 import PersistentDisk
     from ._models_py3 import ProxyResource
-    from ._models_py3 import RegenerateDebuggingKeyRequestPayload
+    from ._models_py3 import RegenerateTestKeyRequestPayload
     from ._models_py3 import Resource
     from ._models_py3 import ResourceUploadDefinition
     from ._models_py3 import ServiceSpecification
     from ._models_py3 import TemporaryDisk
+    from ._models_py3 import TestKeys
     from ._models_py3 import TraceProperties
     from ._models_py3 import TrackedResource
     from ._models_py3 import UserSourceInfo
@@ -52,14 +50,11 @@ except (SyntaxError, ImportError):
     from ._models import BindingResourceProperties
     from ._models import ClusterResourceProperties
     from ._models import ConfigServerProperties
-    from ._models import DebuggingKeys
     from ._models import DeploymentInstance
     from ._models import DeploymentResource
     from ._models import DeploymentResourceProperties
     from ._models import DeploymentSettings
     from ._models import Error
-    from ._models import FileShareUrlResponse
-    from ._models import GetFileShareUrlRequestPayload
     from ._models import LogFileUrlResponse
     from ._models import LogSpecification
     from ._models import MetricDimension
@@ -71,11 +66,12 @@ except (SyntaxError, ImportError):
     from ._models import OperationProperties
     from ._models import PersistentDisk
     from ._models import ProxyResource
-    from ._models import RegenerateDebuggingKeyRequestPayload
+    from ._models import RegenerateTestKeyRequestPayload
     from ._models import Resource
     from ._models import ResourceUploadDefinition
     from ._models import ServiceSpecification
     from ._models import TemporaryDisk
+    from ._models import TestKeys
     from ._models import TraceProperties
     from ._models import TrackedResource
     from ._models import UserSourceInfo
@@ -87,7 +83,7 @@ from ._paged_models import OperationDetailPaged
 from ._microservices4_spring_management_client_enums import (
     ProvisioningState,
     ConfigServerState,
-    DebuggingKeyType,
+    TestKeyType,
     AppResourceProvisioningState,
     UserSourceType,
     RuntimeVersion,
@@ -103,14 +99,11 @@ __all__ = [
     'BindingResourceProperties',
     'ClusterResourceProperties',
     'ConfigServerProperties',
-    'DebuggingKeys',
     'DeploymentInstance',
     'DeploymentResource',
     'DeploymentResourceProperties',
     'DeploymentSettings',
     'Error',
-    'FileShareUrlResponse',
-    'GetFileShareUrlRequestPayload',
     'LogFileUrlResponse',
     'LogSpecification',
     'MetricDimension',
@@ -122,11 +115,12 @@ __all__ = [
     'OperationProperties',
     'PersistentDisk',
     'ProxyResource',
-    'RegenerateDebuggingKeyRequestPayload',
+    'RegenerateTestKeyRequestPayload',
     'Resource',
     'ResourceUploadDefinition',
     'ServiceSpecification',
     'TemporaryDisk',
+    'TestKeys',
     'TraceProperties',
     'TrackedResource',
     'UserSourceInfo',
@@ -137,7 +131,7 @@ __all__ = [
     'OperationDetailPaged',
     'ProvisioningState',
     'ConfigServerState',
-    'DebuggingKeyType',
+    'TestKeyType',
     'AppResourceProvisioningState',
     'UserSourceType',
     'RuntimeVersion',

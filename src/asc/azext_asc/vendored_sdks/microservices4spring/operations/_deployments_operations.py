@@ -329,11 +329,11 @@ class DeploymentsOperations(object):
             body_content = self._serialize.body(deployment_resource, 'DeploymentResource')
         else:
             body_content = None
-            
+
         # Construct and send request
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
-        
+
         if response.status_code not in [200, 202]:
             exp = CloudError(response)
             exp.request_id = response.headers.get('x-ms-request-id')
@@ -412,7 +412,7 @@ class DeploymentsOperations(object):
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}'}
 
     def list(
-            self, resource_group_name, app_cluster_name, app_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, app_cluster_name, app_name, version=None, custom_headers=None, raw=False, **operation_config):
         """Handles requests to list all resources in an App.
 
         :param resource_group_name: The name of the resource group that
@@ -423,6 +423,8 @@ class DeploymentsOperations(object):
         :type app_cluster_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
+        :param version: Version of the deployments to be listed
+        :type version: list[str]
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -447,6 +449,8 @@ class DeploymentsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
+                if version is not None:
+                    query_parameters['version'] = self._serialize.query("version", version, '[str]', div=',')
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
@@ -489,7 +493,7 @@ class DeploymentsOperations(object):
     list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments'}
 
     def list_cluster_all_deployments(
-            self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, app_cluster_name, version=None, custom_headers=None, raw=False, **operation_config):
         """List deployments for a certain app cluster.
 
         :param resource_group_name: The name of the resource group that
@@ -498,6 +502,8 @@ class DeploymentsOperations(object):
         :type resource_group_name: str
         :param app_cluster_name: The name of the App Cluster resource.
         :type app_cluster_name: str
+        :param version: Version of the deployments to be listed
+        :type version: list[str]
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -521,6 +527,8 @@ class DeploymentsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
+                if version is not None:
+                    query_parameters['version'] = self._serialize.query("version", version, '[str]', div=',')
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:

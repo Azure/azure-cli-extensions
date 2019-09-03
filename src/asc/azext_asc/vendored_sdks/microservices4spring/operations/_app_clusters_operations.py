@@ -136,7 +136,7 @@ class AppClustersOperations(object):
             body_content = self._serialize.body(resource, 'AppClusterResource')
         else:
             body_content = None
-        print(body_content)
+
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
@@ -341,7 +341,7 @@ class AppClustersOperations(object):
             deserialized = self._deserialize('AppClusterResource', response)
         if response.status_code == 202:
             deserialized = self._deserialize('AppClusterResource', response)
-            
+
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
@@ -401,9 +401,9 @@ class AppClustersOperations(object):
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}'}
 
-    def list_debugging_keys(
+    def list_test_keys(
             self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
-        """List debugging keys for an App Cluster.
+        """List test keys for an App Cluster.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -416,13 +416,13 @@ class AppClustersOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: DebuggingKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.DebuggingKeys or
+        :return: TestKeys or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.microservices4spring.models.TestKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
-        url = self.list_debugging_keys.metadata['url']
+        url = self.list_test_keys.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -455,18 +455,18 @@ class AppClustersOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('DebuggingKeys', response)
+            deserialized = self._deserialize('TestKeys', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    list_debugging_keys.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/listDebuggingKeys'}
+    list_test_keys.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/listTestKeys'}
 
-    def regenerate_debugging_key(
+    def regenerate_test_key(
             self, resource_group_name, app_cluster_name, key_type, custom_headers=None, raw=False, **operation_config):
-        """Regenerate a debugging key for an App Cluster.
+        """Regenerate a test key for an App Cluster.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -474,26 +474,26 @@ class AppClustersOperations(object):
         :type resource_group_name: str
         :param app_cluster_name: The name of the App Cluster resource.
         :type app_cluster_name: str
-        :param key_type: Type of the debugging key. Possible values include:
+        :param key_type: Type of the test key. Possible values include:
          'Primary', 'Secondary'
         :type key_type: str or
-         ~azure.mgmt.microservices4spring.models.DebuggingKeyType
+         ~azure.mgmt.microservices4spring.models.TestKeyType
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: DebuggingKeys or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.DebuggingKeys or
+        :return: TestKeys or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.microservices4spring.models.TestKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        regenerate_debugging_key_request = None
+        regenerate_test_key_request = None
         if key_type is not None:
-            regenerate_debugging_key_request = models.RegenerateDebuggingKeyRequestPayload(key_type=key_type)
+            regenerate_test_key_request = models.RegenerateTestKeyRequestPayload(key_type=key_type)
 
         # Construct URL
-        url = self.regenerate_debugging_key.metadata['url']
+        url = self.regenerate_test_key.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
@@ -517,11 +517,11 @@ class AppClustersOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        if regenerate_debugging_key_request is not None:
-            body_content = self._serialize.body(regenerate_debugging_key_request, 'RegenerateDebuggingKeyRequestPayload')
+        if regenerate_test_key_request is not None:
+            body_content = self._serialize.body(regenerate_test_key_request, 'RegenerateTestKeyRequestPayload')
         else:
             body_content = None
-
+        print(body_content)
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
@@ -533,14 +533,132 @@ class AppClustersOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('DebuggingKeys', response)
+            deserialized = self._deserialize('TestKeys', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    regenerate_debugging_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/regenerateDebuggingKey'}
+    regenerate_test_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/regenerateTestKey'}
+
+    def disable_test_endpoint(
+            self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
+        """
+
+        :param resource_group_name: The name of the resource group that
+         contains the resource. You can obtain this value from the Azure
+         Resource Manager API or the portal.
+        :type resource_group_name: str
+        :param app_cluster_name: The name of the App Cluster resource.
+        :type app_cluster_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: None or ClientRawResponse if raw=true
+        :rtype: None or ~msrest.pipeline.ClientRawResponse
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+        """
+        # Construct URL
+        url = self.disable_test_endpoint.metadata['url']
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str')
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        if self.config.generate_client_request_id:
+            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+        if custom_headers:
+            header_parameters.update(custom_headers)
+        if self.config.accept_language is not None:
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+        # Construct and send request
+        request = self._client.post(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
+
+        if response.status_code not in [200]:
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
+
+        if raw:
+            client_raw_response = ClientRawResponse(None, response)
+            return client_raw_response
+    disable_test_endpoint.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/disableTestEndpoint'}
+
+    def enable_test_endpoint(
+            self, resource_group_name, app_cluster_name, custom_headers=None, raw=False, **operation_config):
+        """
+
+        :param resource_group_name: The name of the resource group that
+         contains the resource. You can obtain this value from the Azure
+         Resource Manager API or the portal.
+        :type resource_group_name: str
+        :param app_cluster_name: The name of the App Cluster resource.
+        :type app_cluster_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: TestKeys or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.microservices4spring.models.TestKeys or
+         ~msrest.pipeline.ClientRawResponse
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+        """
+        # Construct URL
+        url = self.enable_test_endpoint.metadata['url']
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str')
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
+        if self.config.generate_client_request_id:
+            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+        if custom_headers:
+            header_parameters.update(custom_headers)
+        if self.config.accept_language is not None:
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+        # Construct and send request
+        request = self._client.post(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
+
+        if response.status_code not in [200]:
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('TestKeys', response)
+
+        if raw:
+            client_raw_response = ClientRawResponse(deserialized, response)
+            return client_raw_response
+
+        return deserialized
+    enable_test_endpoint.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/enableTestEndpoint'}
 
     def list_by_subscription(
             self, custom_headers=None, raw=False, **operation_config):
@@ -656,7 +774,6 @@ class AppClustersOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
-            
             return request
 
         def internal_paging(next_link=None):

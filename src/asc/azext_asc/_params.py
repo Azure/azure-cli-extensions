@@ -35,8 +35,8 @@ def load_arguments(self, _):
     with self.argument_context('asc create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
-    with self.argument_context('asc debuggingkey regenerate') as c:
-        c.argument('key_type', type=str, help='Type of debugging key',
+    with self.argument_context('asc test-endpoint renew-key') as c:
+        c.argument('type', type=str, help='Type of test-endpoint key, only accepts "Primary" or "Secondary"',
                    validator=validate_key_type)
 
     with self.argument_context('asc app') as c:

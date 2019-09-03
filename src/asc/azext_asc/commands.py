@@ -15,11 +15,13 @@ def load_command_table(self, _):
         g.custom_command('list', 'asc_list')
         g.custom_show_command('show', 'asc_get')
         #g.custom_command('update', 'asc_update', supports_no_wait=True)
-        g.custom_command('debuggingkey list', 'asc_debuggingkey_list')
-        g.custom_command('debuggingkey regenerate',
-                         'asc_debuggingkey_regenerate')
         #g.custom_command('test', 'test')
-        #g.generic_update_command('update', setter_name='update', custom_func_name='update_asc')
+
+    with self.command_group('asc test-endpoint', client_factory=cf_app_clusters) as g:
+        g.custom_command('enable ', 'enable_test_endpoint')
+        g.custom_show_command('disable ', 'disable_test_endpoint')
+        g.custom_command('renew-key', 'regenerate_keys')
+        g.custom_command('list', 'list_keys')
 
     with self.command_group('asc config-server', client_factory=cf_app_clusters) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)

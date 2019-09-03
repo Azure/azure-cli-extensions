@@ -201,8 +201,6 @@ class AppResourceProperties(Model):
 
     :param public: Indicates whether the App exposes public endpoint
     :type public: bool
-    :param port: The public port of the App.
-    :type port: int
     :ivar url: URL of the App
     :vartype url: str
     :ivar provisioning_state: Provisioning state of the App. Possible values
@@ -211,28 +209,41 @@ class AppResourceProperties(Model):
      ~azure.mgmt.microservices4spring.models.AppResourceProvisioningState
     :param active_deployment_name: Name of the active deployment of the App
     :type active_deployment_name: str
+    :ivar created_time: Date time when the resource is created
+    :vartype created_time: datetime
+    :param temporary_disk: Temporary disk settings
+    :type temporary_disk:
+     ~azure.mgmt.microservices4spring.models.TemporaryDisk
+    :param persistent_disk: Persistent disk settings
+    :type persistent_disk:
+     ~azure.mgmt.microservices4spring.models.PersistentDisk
     """
 
     _validation = {
         'url': {'readonly': True},
         'provisioning_state': {'readonly': True},
+        'created_time': {'readonly': True},
     }
 
     _attribute_map = {
         'public': {'key': 'public', 'type': 'bool'},
-        'port': {'key': 'port', 'type': 'int'},
         'url': {'key': 'url', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'active_deployment_name': {'key': 'activeDeploymentName', 'type': 'str'},
+        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
+        'temporary_disk': {'key': 'temporaryDisk', 'type': 'TemporaryDisk'},
+        'persistent_disk': {'key': 'persistentDisk', 'type': 'PersistentDisk'},
     }
 
-    def __init__(self, *, public: bool=None, port: int=None, active_deployment_name: str=None, **kwargs) -> None:
+    def __init__(self, *, public: bool=None, active_deployment_name: str=None, temporary_disk=None, persistent_disk=None, **kwargs) -> None:
         super(AppResourceProperties, self).__init__(**kwargs)
         self.public = public
-        self.port = port
         self.url = None
         self.provisioning_state = None
         self.active_deployment_name = active_deployment_name
+        self.created_time = None
+        self.temporary_disk = temporary_disk
+        self.persistent_disk = persistent_disk
 
 
 class BindingResource(ProxyResource):
@@ -487,34 +498,6 @@ class ConfigServerProperties(Model):
         self.application_properties = application_properties
 
 
-class DebuggingKeys(Model):
-    """Debugging keys payload.
-
-    :param primary_key: Primary key
-    :type primary_key: str
-    :param secondary_key: Secondary key
-    :type secondary_key: str
-    :param primary_debugging_endpoint: Primary debugging endpoint
-    :type primary_debugging_endpoint: str
-    :param secondary_debugging_endpoint: Secondary debugging endpoint
-    :type secondary_debugging_endpoint: str
-    """
-
-    _attribute_map = {
-        'primary_key': {'key': 'primaryKey', 'type': 'str'},
-        'secondary_key': {'key': 'secondaryKey', 'type': 'str'},
-        'primary_debugging_endpoint': {'key': 'primaryDebuggingEndpoint', 'type': 'str'},
-        'secondary_debugging_endpoint': {'key': 'secondaryDebuggingEndpoint', 'type': 'str'},
-    }
-
-    def __init__(self, *, primary_key: str=None, secondary_key: str=None, primary_debugging_endpoint: str=None, secondary_debugging_endpoint: str=None, **kwargs) -> None:
-        super(DebuggingKeys, self).__init__(**kwargs)
-        self.primary_key = primary_key
-        self.secondary_key = secondary_key
-        self.primary_debugging_endpoint = primary_debugging_endpoint
-        self.secondary_debugging_endpoint = secondary_debugging_endpoint
-
-
 class DeploymentInstance(Model):
     """Deployment instance payload.
 
@@ -611,6 +594,8 @@ class DeploymentResourceProperties(Model):
      ~azure.mgmt.microservices4spring.models.DeploymentResourceStatus
     :ivar active: Indicates whether the Deployment is active
     :vartype active: bool
+    :ivar created_time: Date time when the resource is created
+    :vartype created_time: datetime
     :ivar instances: Collection of instances belong to the Deployment
     :vartype instances:
      list[~azure.mgmt.microservices4spring.models.DeploymentInstance]
@@ -621,6 +606,7 @@ class DeploymentResourceProperties(Model):
         'provisioning_state': {'readonly': True},
         'status': {'readonly': True},
         'active': {'readonly': True},
+        'created_time': {'readonly': True},
         'instances': {'readonly': True},
     }
 
@@ -631,6 +617,7 @@ class DeploymentResourceProperties(Model):
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
         'active': {'key': 'active', 'type': 'bool'},
+        'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
         'instances': {'key': 'instances', 'type': '[DeploymentInstance]'},
     }
 
@@ -642,25 +629,20 @@ class DeploymentResourceProperties(Model):
         self.provisioning_state = None
         self.status = None
         self.active = None
+        self.created_time = None
         self.instances = None
 
 
 class DeploymentSettings(Model):
     """Deployment settings payload.
 
-    :param cpu: Required CPU
+    :param cpu: Required CPU. Default value: 1 .
     :type cpu: int
-    :param memory_in_gb: Required Memory size in GB
+    :param memory_in_gb: Required Memory size in GB. Default value: 1 .
     :type memory_in_gb: int
-    :param temporary_disk: Temporary disk settings
-    :type temporary_disk:
-     ~azure.mgmt.microservices4spring.models.TemporaryDisk
-    :param persistent_disk: Persistent disk settings
-    :type persistent_disk:
-     ~azure.mgmt.microservices4spring.models.PersistentDisk
     :param jvm_options: JVM parameter
     :type jvm_options: str
-    :param instance_count: Instance count
+    :param instance_count: Instance count. Default value: 1 .
     :type instance_count: int
     :param environment_variables: Collection of environment variables
     :type environment_variables: dict[str, str]
@@ -670,23 +652,25 @@ class DeploymentSettings(Model):
      ~azure.mgmt.microservices4spring.models.RuntimeVersion
     """
 
+    _validation = {
+        'cpu': {'maximum': 4, 'minimum': 1},
+        'memory_in_gb': {'maximum': 8, 'minimum': 1},
+        'instance_count': {'maximum': 20, 'minimum': 1},
+    }
+
     _attribute_map = {
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGb', 'type': 'int'},
-        'temporary_disk': {'key': 'temporaryDisk', 'type': 'TemporaryDisk'},
-        'persistent_disk': {'key': 'persistentDisk', 'type': 'PersistentDisk'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
         'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
     }
 
-    def __init__(self, *, cpu: int=None, memory_in_gb: int=None, temporary_disk=None, persistent_disk=None, jvm_options: str=None, instance_count: int=None, environment_variables=None, runtime_version=None, **kwargs) -> None:
+    def __init__(self, *, cpu: int=1, memory_in_gb: int=1, jvm_options: str=None, instance_count: int=1, environment_variables=None, runtime_version=None, **kwargs) -> None:
         super(DeploymentSettings, self).__init__(**kwargs)
         self.cpu = cpu
         self.memory_in_gb = memory_in_gb
-        self.temporary_disk = temporary_disk
-        self.persistent_disk = persistent_disk
         self.jvm_options = jvm_options
         self.instance_count = instance_count
         self.environment_variables = environment_variables
@@ -711,49 +695,6 @@ class Error(Model):
         super(Error, self).__init__(**kwargs)
         self.code = code
         self.message = message
-
-
-class FileShareUrlResponse(Model):
-    """File share URL payload.
-
-    :param url: URL of the file share
-    :type url: str
-    """
-
-    _attribute_map = {
-        'url': {'key': 'url', 'type': 'str'},
-    }
-
-    def __init__(self, *, url: str=None, **kwargs) -> None:
-        super(FileShareUrlResponse, self).__init__(**kwargs)
-        self.url = url
-
-
-class GetFileShareUrlRequestPayload(Model):
-    """Get file share URL payload.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param start: Required. Start time of the file share
-    :type start: datetime
-    :param expiry: Required. End time of the file share
-    :type expiry: datetime
-    """
-
-    _validation = {
-        'start': {'required': True},
-        'expiry': {'required': True},
-    }
-
-    _attribute_map = {
-        'start': {'key': 'start', 'type': 'iso-8601'},
-        'expiry': {'key': 'expiry', 'type': 'iso-8601'},
-    }
-
-    def __init__(self, *, start, expiry, **kwargs) -> None:
-        super(GetFileShareUrlRequestPayload, self).__init__(**kwargs)
-        self.start = start
-        self.expiry = expiry
 
 
 class LogFileUrlResponse(Model):
@@ -1003,36 +944,43 @@ class OperationProperties(Model):
 class PersistentDisk(Model):
     """Persistent disk payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     :param size_in_gb: Size of the persistent disk in GB
     :type size_in_gb: int
+    :ivar used_in_gb: Size of the used persistent disk in GB
+    :vartype used_in_gb: int
     :param mount_path: Mount path of the persistent disk
     :type mount_path: str
     """
 
     _validation = {
         'size_in_gb': {'maximum': 50, 'minimum': 0},
+        'used_in_gb': {'readonly': True, 'maximum': 50, 'minimum': 0},
     }
 
     _attribute_map = {
         'size_in_gb': {'key': 'sizeInGb', 'type': 'int'},
+        'used_in_gb': {'key': 'usedInGb', 'type': 'int'},
         'mount_path': {'key': 'mountPath', 'type': 'str'},
     }
 
     def __init__(self, *, size_in_gb: int=None, mount_path: str=None, **kwargs) -> None:
         super(PersistentDisk, self).__init__(**kwargs)
         self.size_in_gb = size_in_gb
+        self.used_in_gb = None
         self.mount_path = mount_path
 
 
-class RegenerateDebuggingKeyRequestPayload(Model):
-    """Regenerate debugging key request payload.
+class RegenerateTestKeyRequestPayload(Model):
+    """Regenerate test key request payload.
 
     All required parameters must be populated in order to send to Azure.
 
-    :param key_type: Required. Type of the debugging key. Possible values
-     include: 'Primary', 'Secondary'
-    :type key_type: str or
-     ~azure.mgmt.microservices4spring.models.DebuggingKeyType
+    :param key_type: Required. Type of the test key. Possible values include:
+     'Primary', 'Secondary'
+    :type key_type: str or ~azure.mgmt.microservices4spring.models.TestKeyType
     """
 
     _validation = {
@@ -1044,7 +992,7 @@ class RegenerateDebuggingKeyRequestPayload(Model):
     }
 
     def __init__(self, *, key_type, **kwargs) -> None:
-        super(RegenerateDebuggingKeyRequestPayload, self).__init__(**kwargs)
+        super(RegenerateTestKeyRequestPayload, self).__init__(**kwargs)
         self.key_type = key_type
 
 
@@ -1115,6 +1063,34 @@ class TemporaryDisk(Model):
         self.mount_path = mount_path
 
 
+class TestKeys(Model):
+    """Test keys payload.
+
+    :param primary_key: Primary key
+    :type primary_key: str
+    :param secondary_key: Secondary key
+    :type secondary_key: str
+    :param primary_test_endpoint: Primary test endpoint
+    :type primary_test_endpoint: str
+    :param secondary_test_endpoint: Secondary test endpoint
+    :type secondary_test_endpoint: str
+    """
+
+    _attribute_map = {
+        'primary_key': {'key': 'primaryKey', 'type': 'str'},
+        'secondary_key': {'key': 'secondaryKey', 'type': 'str'},
+        'primary_test_endpoint': {'key': 'primaryTestEndpoint', 'type': 'str'},
+        'secondary_test_endpoint': {'key': 'secondaryTestEndpoint', 'type': 'str'},
+    }
+
+    def __init__(self, *, primary_key: str=None, secondary_key: str=None, primary_test_endpoint: str=None, secondary_test_endpoint: str=None, **kwargs) -> None:
+        super(TestKeys, self).__init__(**kwargs)
+        self.primary_key = primary_key
+        self.secondary_key = secondary_key
+        self.primary_test_endpoint = primary_test_endpoint
+        self.secondary_test_endpoint = secondary_test_endpoint
+
+
 class TraceProperties(Model):
     """Trace properties payload.
 
@@ -1144,6 +1120,8 @@ class UserSourceInfo(Model):
     :type type: str or ~azure.mgmt.microservices4spring.models.UserSourceType
     :param relative_path: Relative path of the storage which stores the source
     :type relative_path: str
+    :param version: Version of the source
+    :type version: str
     :param artifact_selector: Selector for the artifact to be used for the
      deployment for multi-module projects. This should be
      the relative path to the target module/project.
@@ -1153,11 +1131,13 @@ class UserSourceInfo(Model):
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
         'relative_path': {'key': 'relativePath', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
         'artifact_selector': {'key': 'artifactSelector', 'type': 'str'},
     }
 
-    def __init__(self, *, type=None, relative_path: str=None, artifact_selector: str=None, **kwargs) -> None:
+    def __init__(self, *, type=None, relative_path: str=None, version: str=None, artifact_selector: str=None, **kwargs) -> None:
         super(UserSourceInfo, self).__init__(**kwargs)
         self.type = type
         self.relative_path = relative_path
+        self.version = version
         self.artifact_selector = artifact_selector

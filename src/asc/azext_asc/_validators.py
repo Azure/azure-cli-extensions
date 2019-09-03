@@ -27,11 +27,11 @@ def validate_env(namespace):
 
 
 def validate_key_type(namespace):
-    key_type = namespace.key_type.lower()
-    if key_type != 'primary' or type != 'secondary':
-        raise CLIError('--key-type can only contain "Primary" or "Secondary"')
-    key_type = key_type[:1].upper + key_type[1:]
-    namespace.key_type = key_type
+    key_type = namespace.type.lower()
+    if key_type != 'primary' and type != 'secondary':
+        raise CLIError('--key-type only accepts "Primary" or "Secondary"')
+    key_type = key_type[:1].upper() + key_type[1:]
+    namespace.type = key_type
 
 
 def validate_name(namespace):
