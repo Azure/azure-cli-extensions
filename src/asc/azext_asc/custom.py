@@ -69,7 +69,7 @@ def app_create(cmd, client, resource_group, service, name,
     if name in apps:
         raise CLIError("App " + name + " already exists.")
     logger.warning("Creating app " + name)
-    properties = models.AppResourceProperties(public=is_public)
+    properties = models.AppResourceProperties()
     client.apps.create_or_update(resource_group, service, name, properties)
 
     deployment_settings = models.DeploymentSettings(
@@ -86,8 +86,8 @@ def app_create(cmd, client, resource_group, service, name,
     poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
 
     logger.warning("Setting default deployment to production")
-    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
-    poller.add_done_callback(lambda x: dump(client, x.resource()))
+    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+    poller.add_done_callback(lambda x: dump(x.resource()))
     logger.warning("Waiting for the default deployment completion")
     while poller.done() is False:
         sleep(5)
@@ -107,7 +107,7 @@ def app_update(cmd, client, resource_group, service, name,
         logger.warning("updating app " + name)
         app_updated = client.apps.update(
             resource_group, service, name, properties)
-        dump(client.apps, app_updated)
+        dump(app_updated)
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -187,7 +187,13 @@ def app_get(cmd, client,
             resource_group,
             service,
             name):
-    return client.apps.get(resource_group, service, name, True)
+    app = client.apps.get(
+        resource_group, service, name)
+    dump(app)
+    deployment_name = app.properties.active_deployment_name
+    if deployment_name is not None:
+         return client.deployments.get(resource_group, service, name, deployment_name)
+    return None
 
 
 def app_deploy(cmd, client, resource_group, service, name,

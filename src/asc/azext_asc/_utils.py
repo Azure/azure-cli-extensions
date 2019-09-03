@@ -9,9 +9,8 @@ import codecs
 import tarfile
 import tempfile
 import uuid
-
 from io import open
-from knack.util import CLIError
+from knack.util import CLIError, todict
 from knack.log import get_logger
 from re import (search, match)
 from codecs import BOM_UTF8
@@ -180,11 +179,9 @@ class ApiType(Enum):
     gremlin = 'gremlin'
     table = 'table'
 
-
-def dump(client, obj):
+def dump(obj):
     from json import dumps
-    type_name = obj.__class__.__name__
-    input_dict = client._serialize.body(obj, type_name)
+    input_dict = todict(obj)
     json_object = dumps(input_dict, ensure_ascii=False, indent=2, sort_keys=True, cls=_ComplexEncoder,
                         separators=(',', ': ')) + '\n'
     logger.warning(json_object)

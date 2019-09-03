@@ -136,7 +136,7 @@ class AppClustersOperations(object):
             body_content = self._serialize.body(resource, 'AppClusterResource')
         else:
             body_content = None
-
+        print(body_content)
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
