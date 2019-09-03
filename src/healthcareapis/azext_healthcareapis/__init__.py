@@ -12,7 +12,7 @@ class HealthcareCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_healthcareapis._client_factory import cf_healthcareapisapis
+        from azext_healthcareapis._client_factory import cf_healthcareapis
         healthcareapis_custom = CliCommandType(
             operations_tmpl='azext_healthcareapis.custom#{}',
             client_factory=cf_healthcareapis)
