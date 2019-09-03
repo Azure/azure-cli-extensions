@@ -677,6 +677,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                enable_pod_security_policy=False,
                node_resource_group=None,
                attach_acr=None,
+               enable_private_cluster=False,
                no_wait=False):
 
     if not no_ssh_key:
@@ -868,6 +869,13 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
+
+    if enable_private_cluster:
+        if load_balancer_sku.lower() != "standard":
+            raise CLIError("Please use standard load balancer for private cluster")
+        mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
+            enable_private_cluster=True
+        )
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30

@@ -81,6 +81,7 @@ def load_arguments(self, _):
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
         c.argument('attach_acr', acr_arg_type)
+        c.argument('enable_private_cluster', action='store_true')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
