@@ -84,13 +84,13 @@ def app_create(cmd, client, resource_group, service, name,
     # create default deployment
     logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
     poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
+
+    logger.warning("Setting default deployment to production")
+    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
     poller.add_done_callback(lambda x: dump(client, x.resource()))
     logger.warning("Waiting for the default deployment completion")
     while poller.done() is False:
         sleep(5)
-
-    logger.warning("Setting default deployment to production")
-    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME)
     return client.apps.update(resource_group, service, name, properties)
 
 
