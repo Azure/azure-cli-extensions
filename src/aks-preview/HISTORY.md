@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.4.13
+++++++
+* Rename a few options for ACR integration, which includes
+  * Rename `--attach-acr <acr-name-or-resource-id>` in `az aks create` command, which allows for attach the ACR to AKS cluster.
+  * Rename `--attach-acr <acr-name-or-resource-id>` and `--detach-acr <acr-name-or-resource-id>` in `az aks update` command, which allows to attach or detach the ACR from AKS cluster.
+
 0.4.12
 +++++
 * Bring back "enable-vmss" flag  for backward compatibility

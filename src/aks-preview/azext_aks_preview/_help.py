@@ -172,12 +172,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
-        - name: --enable-acr
-          type: bool
-          short-summary: (PREVIEW) Grant the 'acrpull' role assignment for the ACR set by --acr.
-        - name: --acr
+        - name: --attach-acr
           type: string
-          short-summary: (PREVIEW) ACR name in AKS resource group or ACR resource ID. If it's empty and --enable-acr is true, then a new ACR with name 'aks<resource-group>acr' would be created.
+          short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -263,15 +260,12 @@ helps['aks update'] = """
         - name: --disable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Disable pod security policy.
-        - name: --enable-acr
-          type: bool
-          short-summary: (PREVIEW) Grant the 'acrpull' role assignment for the ACR set by --acr.
-        - name: --disable-acr
-          type: bool
-          short-summary: (PREVIEW) Disable the 'acrpull' role assignment for the ACR set by --acr.
-        - name: --acr
+        - name: --attach-acr
           type: string
-          short-summary: (PREVIEW) ACR name in AKS resource group or ACR resource ID.
+          short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --detach-acr
+          type: string
+          short-summary: Disable the 'acrpull' role assignment to the ACR specified by name or resource ID.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
