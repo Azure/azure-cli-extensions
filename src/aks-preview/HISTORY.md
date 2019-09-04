@@ -7,6 +7,7 @@ Release History
 * Rename a few options for ACR integration, which includes
   * Rename `--attach-acr <acr-name-or-resource-id>` in `az aks create` command, which allows for attach the ACR to AKS cluster.
   * Rename `--attach-acr <acr-name-or-resource-id>` and `--detach-acr <acr-name-or-resource-id>` in `az aks update` command, which allows to attach or detach the ACR from AKS cluster.
+* Add "--enable-private-cluster" flag for enabling private cluster on creation.
 
 0.4.12
 +++++
@@ -26,7 +27,7 @@ Release History
 
 0.4.9
 +++++
-* Use https if dashboard container port is using https 
+* Use https if dashboard container port is using https
 
 0.4.8
 +++++

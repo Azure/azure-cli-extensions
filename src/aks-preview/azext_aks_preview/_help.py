@@ -175,6 +175,9 @@ helps['aks create'] = """
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --enable-private-cluster
+          type: string
+          short-summary: (PREVIEW) Enable private cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
