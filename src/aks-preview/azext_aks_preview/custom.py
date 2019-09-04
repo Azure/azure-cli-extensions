@@ -35,7 +35,6 @@ import yaml  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
-from msrestazure.tools import is_valid_resource_id
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -47,8 +46,6 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from azure.mgmt.containerregistry.models import (Registry,
-                                                 Sku as RegistrySku)
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceLinuxProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterWindowsProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceNetworkProfile
@@ -71,6 +68,7 @@ from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
+from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 
 
@@ -399,8 +397,31 @@ def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resourc
     if assignments:
         for a in assignments:
             assignments_client.delete_by_id(a.id)
+
+
+def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=None):
+    # AAD can have delays in propagating data, so sleep and retry
+    hook = cli_ctx.get_progress_controller(True)
+    hook.add(message='Waiting for AAD role to delete', value=0, total_val=1.0)
+    logger.info('Waiting for AAD role to delete')
+    for x in range(0, 10):
+        hook.add(message='Waiting for AAD role to delete', value=0.1 * x, total_val=1.0)
+        try:
+            delete_role_assignments(cli_ctx,
+                                    role=role,
+                                    assignee=service_principal,
+                                    scope=scope)
+            break
+        except CLIError as ex:
+            raise ex
+        except CloudError as ex:
+            logger.info(ex)
+        time.sleep(delay + delay * x)
     else:
-        raise CLIError('No matched assignments were found to delete')
+        return False
+    hook.add(message='AAD role deletion done', value=1.0, total_val=1.0)
+    logger.info('AAD role deletion done')
+    return True
 
 
 def _search_role_assignments(cli_ctx, assignments_client, definitions_client,
@@ -655,8 +676,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
-               enable_acr=False,
-               acr=None,
+               attach_acr=None,
                no_wait=False):
 
     if not no_ssh_key:
@@ -758,14 +778,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         client_id=principal_obj.get("service_principal"),
         secret=principal_obj.get("client_secret"))
 
-    if enable_acr:
+    if attach_acr:
         _ensure_aks_acr(cmd.cli_ctx,
-                        acr,
-                        location,
-                        principal_obj.get("service_principal"),
-                        resource_group_name,
-                        subscription_id,
-                        create_acr=True)
+                        client_id=service_principal_profile.client_id,
+                        acr_name_or_id=attach_acr,
+                        subscription_id=subscription_id)
 
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
@@ -878,11 +895,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
-               enable_acr=False,
-               disable_acr=False,
-               acr=None):
+               attach_acr=None,
+               detach_acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    update_acr = enable_acr or disable_acr
+    update_acr = attach_acr is not None or detach_acr is not None
     update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
         load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
     # pylint: disable=too-many-boolean-expressions
@@ -895,8 +911,8 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges" or '
-                       '"--enable-acr" or '
-                       '"--disable-acr" or '
+                       '"--attach-acr" or '
+                       '"--detach-acr" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes"')
@@ -973,29 +989,26 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
-    if enable_acr and disable_acr:
-        raise CLIError('Cannot specify --enable-acr and --disable-acr at the same time.')
+    if attach_acr and detach_acr:
+        raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
     subscription_id = _get_subscription_id(cmd.cli_ctx)
-    location = instance.location
-    service_principal = instance.service_principal_profile.client_id
-    if not service_principal:
+    client_id = instance.service_principal_profile.client_id
+    if not client_id:
         raise CLIError('Cannot get the AKS cluster\'s service principal.')
 
-    if enable_acr:
+    if attach_acr:
         _ensure_aks_acr(cmd.cli_ctx,
-                        acr,
-                        location,
-                        service_principal,
-                        resource_group_name,
-                        subscription_id)
+                        client_id=client_id,
+                        acr_name_or_id=attach_acr,
+                        subscription_id=subscription_id)
 
-    if disable_acr:
-        _ensure_aks_acr_disabled(cmd.cli_ctx,
-                                 acr,
-                                 service_principal,
-                                 resource_group_name,
-                                 subscription_id)
+    if detach_acr:
+        _ensure_aks_acr(cmd.cli_ctx,
+                        client_id=client_id,
+                        acr_name_or_id=detach_acr,
+                        subscription_id=subscription_id,
+                        detach=True)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
@@ -1445,119 +1458,55 @@ def _create_client_secret():
 
 
 def _ensure_aks_acr(cli_ctx,
-                    acr,
-                    location,
                     client_id,
-                    resource_group_name,
+                    acr_name_or_id,
                     subscription_id,
-                    create_acr=False):
-    if is_valid_resource_id(acr):
-        resources = cf_resources(cli_ctx, subscription_id)
-
-        # check if the ACR exists.
+                    detach=False):
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+    # Check if the ACR exists by resource ID.
+    if is_valid_resource_id(acr_name_or_id):
         try:
-            resources.get_by_id(acr, "2019-05-01")
+            parsed_registry = parse_resource_id(acr_name_or_id)
+            acr_client = cf_container_registry_service(cli_ctx, subscription_id=parsed_registry['subscription'])
+            registry = acr_client.registries.get(parsed_registry['resource_group'], parsed_registry['name'])
         except CloudError as ex:
-            raise ex
+            raise CLIError(ex.message)
+        _ensure_aks_acr_role_assignment(cli_ctx, client_id, registry.id, detach)
+        return
 
-        # Create role assignment for ACR.
-        if not _add_role_assignment(cli_ctx,
-                                    'acrpull',
+    # Check if the ACR exists by name accross all resource groups.
+    registry_name = acr_name_or_id
+    registry_resource = 'Microsoft.ContainerRegistry/registries'
+    try:
+        registry = get_resource_by_name(cli_ctx, registry_name, registry_resource)
+    except CloudError as ex:
+        if 'was not found' in ex.message:
+            raise CLIError("ACR {} not found. Have you provided the right ACR name?".format(registry_name))
+        raise CLIError(ex.message)
+    _ensure_aks_acr_role_assignment(cli_ctx, client_id, registry.id, detach)
+    return
+
+
+def _ensure_aks_acr_role_assignment(cli_ctx,
                                     client_id,
-                                    scope=acr):
-            raise CLIError('Could not create a role assignment for ACR. '
+                                    registry_id,
+                                    detach=False):
+    if detach:
+        if not _delete_role_assignments(cli_ctx,
+                                        'acrpull',
+                                        client_id,
+                                        scope=registry_id):
+            raise CLIError('Could not delete role assignments for ACR. '
                            'Are you an Owner on this subscription?')
         return
 
-    acr_client = cf_container_registry_service(cli_ctx)
-    # Generate a default ACR name.
-    registry_name = acr
-    if registry_name is None or registry_name == "":
-        alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
-        registry_name = "aks" + alnum_name + "acr"
-
-    # Get ACR by name.
-    try:
-        registry = acr_client.registries.get(
-            resource_group_name, registry_name)
-    except CloudError as ex:
-        if 'was not found' in ex.message:
-            if not create_acr:
-                raise CLIError("ACR {} not found. Have you provided the right ACR name?".format(registry_name))
-
-            logger.info(ex.message)
-            logger.info('Creating a new ACR')
-            _ensure_aks_acr_created(acr_client=acr_client,
-                                    resource_group_name=resource_group_name,
-                                    registry_name=registry_name,
-                                    location=location)
-            registry = acr_client.registries.get(
-                resource_group_name, registry_name)
-    except Exception as e:
-        logger.exception(e)
-        raise CLIError(e)
-
-    # Create role assignment for ACR.
     if not _add_role_assignment(cli_ctx,
                                 'acrpull',
                                 client_id,
-                                scope=registry.id):
+                                scope=registry_id):
         raise CLIError('Could not create a role assignment for ACR. '
                        'Are you an Owner on this subscription?')
-
-
-def _ensure_aks_acr_created(acr_client, resource_group_name, registry_name, location):
-    registry = Registry(name=registry_name, location=location, sku=RegistrySku(name="standard"))
-    try:
-        acr_client.registries.create(resource_group_name, registry_name, registry)
-    except CloudError as ex:
-        if 'already in use' in ex.message:
-            logger.info(ex.message)
-            raise CLIError("The registry name has already been in use. Please change to another name.")
-    except Exception as e:
-        logger.info(e)
-        raise CLIError(e)
-
-
-def _ensure_aks_acr_disabled(cli_ctx,
-                             acr,
-                             client_id,
-                             resource_group_name,
-                             subscription_id):
-    acr_resource_id = ""
-    if is_valid_resource_id(acr):
-        acr_resource_id = acr
-        resources = cf_resources(cli_ctx, subscription_id)
-
-        # check if the ACR exists.
-        try:
-            resources.get_by_id(acr, "2019-05-01")
-        except CloudError as ex:
-            raise ex
-    else:
-        acr_client = cf_container_registry_service(cli_ctx)
-        # Generate the default ACR name if it is not provided.
-        registry_name = acr
-        if registry_name is None or registry_name == "":
-            alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
-            registry_name = "aks" + alnum_name + "acr"
-
-        # Get ACR by name.
-        try:
-            registry = acr_client.registries.get(
-                resource_group_name, registry_name)
-        except CloudError as ex:
-            raise ex
-
-        acr_resource_id = registry.id
-
-    # delete role assignment for ACR.
-    if not _delete_role_assignments(cli_ctx,
-                                    'acrpull',
-                                    client_id,
-                                    scope=acr_resource_id):
-        raise CLIError('Could not disable role assignments for ACR. '
-                       'Are you an Owner on this subscription?')
+    return
 
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):

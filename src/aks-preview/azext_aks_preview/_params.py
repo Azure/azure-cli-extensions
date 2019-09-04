@@ -11,6 +11,7 @@ import platform
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     file_type, get_resource_name_completion_list, name_type, tags_type, zones_type)
+from knack.arguments import CLIArgumentType
 
 from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list)
@@ -22,6 +23,8 @@ from ._validators import (
 
 
 def load_arguments(self, _):
+
+    acr_arg_type = CLIArgumentType(metavar='ACR_NAME_OR_RESOURCE_ID')
 
     # AKS command argument configuration
     with self.argument_context('aks') as c:
@@ -77,8 +80,7 @@ def load_arguments(self, _):
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
-        c.argument('enable_acr')
-        c.argument('acr')
+        c.argument('attach_acr', acr_arg_type)
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -92,9 +94,8 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
-        c.argument('enable_acr')
-        c.argument('disable_acr')
-        c.argument('acr')
+        c.argument('attach_acr', acr_arg_type)
+        c.argument('detach_acr', acr_arg_type)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
