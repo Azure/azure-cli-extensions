@@ -80,8 +80,6 @@ def load_arguments(self, _):
         c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
-        c.argument('enable_acr')
-        c.argument('acr')
         c.argument('attach_acr', acr_arg_type)
         c.argument('enable_private_cluster', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
