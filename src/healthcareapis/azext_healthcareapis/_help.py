@@ -30,7 +30,7 @@ helps['healthcareapis create'] = """
       - name: Create or Update a service with minimum parameters
         text: |-
                az healthcareapis create --resource-group "rg1" --name "service2" --kind "fhir-R4" \\
-               --location "westus2"
+               --location "westus2" --access-policies-object-id c487e7d1-3210-41a3-8ccc-e9372b78da47
 """
 
 helps['healthcareapis update'] = """
