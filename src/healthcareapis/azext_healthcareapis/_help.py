@@ -9,50 +9,45 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['healthcare'] = """
+helps['healthcareapis'] = """
     type: group
     short-summary: Commands to manage service.
 """
 
-helps['healthcare create'] = """
+helps['healthcareapis create'] = """
     type: command
     short-summary: create service.
     examples:
-      - name: ServicePut
+      - name: Create or Update a service with all parameters
         text: |-
-               az healthcare create --resource-group "rg1" --name "service1" --kind "fhir" \\
-               --location "westus" --cosmos-db-offer-throughput "1000" --authentication-authority \\
+               az healthcareapis create --resource-group "rg1" --name "service1" --kind "fhir-R4" \\
+               --location "westus2" --cosmos-db-offer-throughput "1000" --authentication-authority \\
                "https://login.microsoftonline.com/common" --authentication-audience \\
-               "https://azurehealthcare.com" --authentication-smart-proxy-enabled true \\
+               "https://azurehealthcareapis.com" --authentication-smart-proxy-enabled true \\
                --cors-max-age "1440" --cors-allow-credentials false \\
                --access-policies-object-id c487e7d1-3210-41a3-8ccc-e9372b78da47,5b307da8-43d4-492b-8b66-b0294ade872f \\
                --cors-origins "*" --cors-headers "*" --cors-methods "DELETE,GET,OPTIONS,PATCH,POST,PUT"
-"""
-
-helps['healthcare update'] = """
-    type: command
-    short-summary: update service.
-    examples:
-      - name: ServicePatch
+      - name: Create or Update a service with minimum parameters
         text: |-
-               az healthcare update --resource-group "rg1" --name "service1"
+               az healthcareapis create --resource-group "rg1" --name "service2" --kind "fhir-R4" \\
+               --location "westus2" --access-policies-object-id c487e7d1-3210-41a3-8ccc-e9372b78da47
 """
 
-helps['healthcare delete'] = """
+helps['healthcareapis delete'] = """
     type: command
     short-summary: delete service.
     examples:
-      - name: ServiceDelete
+      - name: Delete Service
         text: |-
-               az healthcare delete --resource-group "rg1" --name "service1"
+               az healthcareapis delete --resource-group "rg1" --name "service1"
 """
 
-helps['healthcare list'] = """
+helps['healthcareapis list'] = """
     type: command
     short-summary: list service.
 """
 
-helps['healthcare show'] = """
+helps['healthcareapis show'] = """
     type: command
     short-summary: show service.
 """
