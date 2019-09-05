@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-pip install pylint==1.9.2 flake8
+pip install pylint==1.9.5 flake8
 
 proc_number=`python -c 'import multiprocessing; print(multiprocessing.cpu_count())'`
 
