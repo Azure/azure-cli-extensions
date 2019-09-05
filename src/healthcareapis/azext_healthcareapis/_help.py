@@ -33,6 +33,16 @@ helps['healthcareapis create'] = """
                --location "westus2" --access-policies-object-id c487e7d1-3210-41a3-8ccc-e9372b78da47
 """
 
+helps['healthcareapis update'] = """
+    type: command
+    short-summary: update service.
+    examples:
+      - name: Patch Service
+        text: |-
+               az healthcareapis update --resource-group "rg1" --name "service2" --kind "fhir-R4" \\
+               --location "westus2" --access-policies-object-id c487e7d1-3210-41a3-8ccc-e9372b78da47
+"""
+
 helps['healthcareapis delete'] = """
     type: command
     short-summary: delete service.
