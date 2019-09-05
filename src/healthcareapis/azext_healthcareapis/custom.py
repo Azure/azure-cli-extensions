@@ -9,23 +9,23 @@
 # pylint: disable=unused-argument
 
 
-def create_healthcare(cmd, client,
-                      resource_group,
-                      name,
-                      kind,
-                      location,
-                      access_policies_object_id,
-                      tags=None,
-                      etag=None,
-                      cosmos_db_offer_throughput=None,
-                      authentication_authority=None,
-                      authentication_audience=None,
-                      authentication_smart_proxy_enabled=None,
-                      cors_origins=None,
-                      cors_headers=None,
-                      cors_methods=None,
-                      cors_max_age=None,
-                      cors_allow_credentials=None):
+def create_healthcareapis(cmd, client,
+                          resource_group,
+                          name,
+                          kind,
+                          location,
+                          access_policies_object_id,
+                          tags=None,
+                          etag=None,
+                          cosmos_db_offer_throughput=None,
+                          authentication_authority=None,
+                          authentication_audience=None,
+                          authentication_smart_proxy_enabled=None,
+                          cors_origins=None,
+                          cors_headers=None,
+                          cors_methods=None,
+                          cors_max_age=None,
+                          cors_allow_credentials=None):
 
     service_description = {}
     service_description['location'] = location
@@ -50,23 +50,23 @@ def create_healthcare(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
-def update_healthcare(cmd, client,
-                      resource_group,
-                      name,
-                      kind=None,
-                      location=None,
-                      access_policies_object_id=None,
-                      tags=None,
-                      etag=None,
-                      cosmos_db_offer_throughput=None,
-                      authentication_authority=None,
-                      authentication_audience=None,
-                      authentication_smart_proxy_enabled=None,
-                      cors_origins=None,
-                      cors_headers=None,
-                      cors_methods=None,
-                      cors_max_age=None,
-                      cors_allow_credentials=None):
+def update_healthcareapis(cmd, client,
+                          resource_group,
+                          name,
+                          kind=None,
+                          location=None,
+                          access_policies_object_id=None,
+                          tags=None,
+                          etag=None,
+                          cosmos_db_offer_throughput=None,
+                          authentication_authority=None,
+                          authentication_audience=None,
+                          authentication_smart_proxy_enabled=None,
+                          cors_origins=None,
+                          cors_headers=None,
+                          cors_methods=None,
+                          cors_max_age=None,
+                          cors_allow_credentials=None):
     service_description = client.get(resource_group_name=resource_group, resource_name=name).as_dict()
     if location is not None:
         service_description['location'] = location
@@ -103,20 +103,20 @@ def update_healthcare(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 
-def list_healthcare(cmd, client,
-                    resource_group=None):
+def list_healthcareapis(cmd, client,
+                        resource_group=None):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list()
 
 
-def show_healthcare(cmd, client,
-                    resource_group,
-                    name):
+def show_healthcareapis(cmd, client,
+                        resource_group,
+                        name):
     return client.get(resource_group_name=resource_group, resource_name=name)
 
 
-def delete_healthcare(cmd, client,
-                      resource_group,
-                      name):
+def delete_healthcareapis(cmd, client,
+                          resource_group,
+                          name):
     return client.delete(resource_group_name=resource_group, resource_name=name)
