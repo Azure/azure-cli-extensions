@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.14
++++++
+* Add support for using managed identity to manage cluster resource group
+
 0.4.13
 ++++++
 * Rename a few options for ACR integration, which includes
