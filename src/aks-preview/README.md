@@ -160,3 +160,12 @@ az aks nodepool update \
     --max-count 10 \
     --min-count 3
 ```
+
+#### Create aks cluster whose cluster resource group will be managed by a managed identity (instead of a service principal)
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-managed-identity
+```

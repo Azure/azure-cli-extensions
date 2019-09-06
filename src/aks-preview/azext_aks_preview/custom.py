@@ -63,6 +63,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClus
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterIdentity
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
@@ -678,6 +679,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                node_resource_group=None,
                attach_acr=None,
                enable_private_cluster=False,
+               enable_managed_identity=False,
                no_wait=False):
 
     if not no_ssh_key:
@@ -853,6 +855,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if all([disable_rbac, enable_rbac]):
         raise CLIError('specify either "--disable-rbac" or "--enable-rbac", not both.')
 
+    identity = None
+    if enable_managed_identity:
+        identity = ManagedClusterIdentity(
+            type="SystemAssigned"
+        )
     mc = ManagedCluster(
         location=location, tags=tags,
         dns_prefix=dns_name_prefix,
@@ -865,7 +872,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         network_profile=network_profile,
         addon_profiles=addon_profiles,
         aad_profile=aad_profile,
-        enable_pod_security_policy=bool(enable_pod_security_policy))
+        enable_pod_security_policy=bool(enable_pod_security_policy),
+        identity=identity)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group

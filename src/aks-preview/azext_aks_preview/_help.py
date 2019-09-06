@@ -178,6 +178,9 @@ helps['aks create'] = """
         - name: --enable-private-cluster
           type: string
           short-summary: (PREVIEW) Enable private cluster.
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
