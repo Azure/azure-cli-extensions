@@ -35,26 +35,31 @@ def validate_key_type(namespace):
 
 
 def validate_name(namespace):
+    namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', namespace.name)
-    if matchObj == False:
+    if matchObj is None:
         raise CLIError('--name can only contain numbers and lowercases')
 
 
 def validate_app_name(namespace):
-    matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', namespace.app)
-    if matchObj == False:
-        raise CLIError(
-            'invalid app name, --app can only contain numbers and lowercases')
+    if namespace.app is not None:
+        namespace.app = namespace.app.lower()
+        matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', namespace.app)
+        if matchObj is None:
+            raise CLIError(
+                'invalid app name, --app can only contain numbers and lowercases')
 
 
 def validate_deployment_name(namespace):
-    if namespace.deployment is None:
-        return
-    from re import match
-    matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', namespace.deployment)
-    if matchObj == False:
-        raise CLIError(
-            'invalid deployment name, --deployment can only contain numbers and lowercases')
+    if namespace.deployment is not None:
+        namespace.deployment = namespace.deployment.lower()
+        if namespace.deployment is None:
+            return
+        from re import match
+        matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', namespace.deployment)
+        if matchObj is None:
+            raise CLIError(
+                'invalid deployment name, --deployment can only contain numbers and lowercases')
 
 
 def validate_resource_id(namespace):

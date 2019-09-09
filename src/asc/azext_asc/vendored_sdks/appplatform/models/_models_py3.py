@@ -46,87 +46,6 @@ class Resource(Model):
         self.type = None
 
 
-class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar id: Fully qualified resource Id for the resource.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource.
-    :vartype type: str
-    :param location: The GEO location of the resource.
-    :type location: str
-    :param tags: Tags of the service which is a list of key value pairs that
-     describe the resource.
-    :type tags: dict[str, str]
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-    }
-
-    def __init__(self, *, location: str=None, tags=None, **kwargs) -> None:
-        super(TrackedResource, self).__init__(**kwargs)
-        self.location = location
-        self.tags = tags
-
-
-class AppClusterResource(TrackedResource):
-    """App Cluster resource.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar id: Fully qualified resource Id for the resource.
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource.
-    :vartype type: str
-    :param location: The GEO location of the resource.
-    :type location: str
-    :param tags: Tags of the service which is a list of key value pairs that
-     describe the resource.
-    :type tags: dict[str, str]
-    :param properties: Properties of the App Cluster resource
-    :type properties:
-     ~azure.mgmt.microservices4spring.models.ClusterResourceProperties
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'properties': {'key': 'properties', 'type': 'ClusterResourceProperties'},
-    }
-
-    def __init__(self, *, location: str=None, tags=None, properties=None, **kwargs) -> None:
-        super(AppClusterResource, self).__init__(location=location, tags=tags, **kwargs)
-        self.properties = properties
-
-
 class ProxyResource(Resource):
     """The resource model definition for a ARM proxy resource. It will have
     everything other than required location and tags.
@@ -171,8 +90,7 @@ class AppResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :param properties: Properties of the App resource
-    :type properties:
-     ~azure.mgmt.microservices4spring.models.AppResourceProperties
+    :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
     """
 
     _validation = {
@@ -206,17 +124,15 @@ class AppResourceProperties(Model):
     :ivar provisioning_state: Provisioning state of the App. Possible values
      include: 'Succeeded', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.microservices4spring.models.AppResourceProvisioningState
+     ~azure.mgmt.appplatform.models.AppResourceProvisioningState
     :param active_deployment_name: Name of the active deployment of the App
     :type active_deployment_name: str
     :ivar created_time: Date time when the resource is created
     :vartype created_time: datetime
     :param temporary_disk: Temporary disk settings
-    :type temporary_disk:
-     ~azure.mgmt.microservices4spring.models.TemporaryDisk
+    :type temporary_disk: ~azure.mgmt.appplatform.models.TemporaryDisk
     :param persistent_disk: Persistent disk settings
-    :type persistent_disk:
-     ~azure.mgmt.microservices4spring.models.PersistentDisk
+    :type persistent_disk: ~azure.mgmt.appplatform.models.PersistentDisk
     """
 
     _validation = {
@@ -259,8 +175,7 @@ class BindingResource(ProxyResource):
     :ivar type: The type of the resource.
     :vartype type: str
     :param properties: Properties of the Binding resource
-    :type properties:
-     ~azure.mgmt.microservices4spring.models.BindingResourceProperties
+    :type properties: ~azure.mgmt.appplatform.models.BindingResourceProperties
     """
 
     _validation = {
@@ -340,7 +255,7 @@ class CloudError(Model):
     """An error response from the service.
 
     :param error:
-    :type error: ~azure.mgmt.microservices4spring.models.CloudErrorBody
+    :type error: ~azure.mgmt.appplatform.models.CloudErrorBody
     """
 
     _attribute_map = {
@@ -377,8 +292,7 @@ class CloudErrorBody(Model):
      of the property in error.
     :type target: str
     :param details: A list of additional details about the error.
-    :type details:
-     list[~azure.mgmt.microservices4spring.models.CloudErrorBody]
+    :type details: list[~azure.mgmt.appplatform.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -397,35 +311,35 @@ class CloudErrorBody(Model):
 
 
 class ClusterResourceProperties(Model):
-    """App Cluster properties payload.
+    """Service properties payload.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar provisioning_state: Provisioning state of the App Cluster. Possible
+    :ivar provisioning_state: Provisioning state of the Service. Possible
      values include: 'Creating', 'Updating', 'Deleting', 'Deleted',
      'Succeeded', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.microservices4spring.models.ProvisioningState
-    :ivar endpoint: Endpoint of the App Cluster
+     ~azure.mgmt.appplatform.models.ProvisioningState
+    :ivar endpoint: Endpoint of the Service
     :vartype endpoint: str
-    :ivar ssh_public_key: SSH Public Key of the App Cluster
+    :ivar ssh_public_key: SSH Public Key of the Service
     :vartype ssh_public_key: str
-    :param config_server_git_uri: Config server git URI of the App Cluster
+    :param config_server_git_uri: Config server git URI of the Service
     :type config_server_git_uri: str
-    :param private_git_repo: Private git repo of the App Cluster
+    :param private_git_repo: Private git repo of the Service
     :type private_git_repo: bool
-    :param config_server_properties: Config server git properties of the App
-     Cluster
+    :param config_server_properties: Config server git properties of the
+     Service
     :type config_server_properties:
-     ~azure.mgmt.microservices4spring.models.ConfigServerProperties
-    :param trace: Trace properties of the App Cluster
-    :type trace: ~azure.mgmt.microservices4spring.models.TraceProperties
-    :ivar version: Version of the App Cluster
+     ~azure.mgmt.appplatform.models.ConfigServerProperties
+    :param trace: Trace properties of the Service
+    :type trace: ~azure.mgmt.appplatform.models.TraceProperties
+    :ivar version: Version of the Service
     :vartype version: int
-    :ivar app_cluster_id: AppCluster GUID which uniquely identifies a created
-     resource
-    :vartype app_cluster_id: str
+    :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a
+     created resource
+    :vartype service_id: str
     """
 
     _validation = {
@@ -433,7 +347,7 @@ class ClusterResourceProperties(Model):
         'endpoint': {'readonly': True},
         'ssh_public_key': {'readonly': True},
         'version': {'readonly': True},
-        'app_cluster_id': {'readonly': True},
+        'service_id': {'readonly': True},
     }
 
     _attribute_map = {
@@ -445,7 +359,7 @@ class ClusterResourceProperties(Model):
         'config_server_properties': {'key': 'configServerProperties', 'type': 'ConfigServerProperties'},
         'trace': {'key': 'trace', 'type': 'TraceProperties'},
         'version': {'key': 'version', 'type': 'int'},
-        'app_cluster_id': {'key': 'appClusterId', 'type': 'str'},
+        'service_id': {'key': 'serviceId', 'type': 'str'},
     }
 
     def __init__(self, *, config_server_git_uri: str=None, private_git_repo: bool=None, config_server_properties=None, trace=None, **kwargs) -> None:
@@ -458,7 +372,66 @@ class ClusterResourceProperties(Model):
         self.config_server_properties = config_server_properties
         self.trace = trace
         self.version = None
-        self.app_cluster_id = None
+        self.service_id = None
+
+
+class ConfigServerGitProperty(Model):
+    """Property of git.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param repositories: Repositories of git.
+    :type repositories:
+     list[~azure.mgmt.appplatform.models.GitPatternRepository]
+    :param uri: Required. URI of the repository
+    :type uri: str
+    :param label: Label of the repository
+    :type label: str
+    :param search_paths: Searching path of the repository
+    :type search_paths: list[str]
+    :param username: Username of git repository basic auth.
+    :type username: str
+    :param password: Password of git repository basic auth.
+    :type password: str
+    :param host_key: Public sshKey of git repository.
+    :type host_key: str
+    :param host_key_algorithm: SshKey algorithm of git repository.
+    :type host_key_algorithm: str
+    :param private_key: Private sshKey algorithm of git repository.
+    :type private_key: str
+    :param strict_host_key_checking: Stric host key checking or not.
+    :type strict_host_key_checking: bool
+    """
+
+    _validation = {
+        'uri': {'required': True},
+    }
+
+    _attribute_map = {
+        'repositories': {'key': 'repositories', 'type': '[GitPatternRepository]'},
+        'uri': {'key': 'uri', 'type': 'str'},
+        'label': {'key': 'label', 'type': 'str'},
+        'search_paths': {'key': 'searchPaths', 'type': '[str]'},
+        'username': {'key': 'username', 'type': 'str'},
+        'password': {'key': 'password', 'type': 'str'},
+        'host_key': {'key': 'hostKey', 'type': 'str'},
+        'host_key_algorithm': {'key': 'hostKeyAlgorithm', 'type': 'str'},
+        'private_key': {'key': 'privateKey', 'type': 'str'},
+        'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
+    }
+
+    def __init__(self, *, uri: str, repositories=None, label: str=None, search_paths=None, username: str=None, password: str=None, host_key: str=None, host_key_algorithm: str=None, private_key: str=None, strict_host_key_checking: bool=None, **kwargs) -> None:
+        super(ConfigServerGitProperty, self).__init__(**kwargs)
+        self.repositories = repositories
+        self.uri = uri
+        self.label = label
+        self.search_paths = search_paths
+        self.username = username
+        self.password = password
+        self.host_key = host_key
+        self.host_key_algorithm = host_key_algorithm
+        self.private_key = private_key
+        self.strict_host_key_checking = strict_host_key_checking
 
 
 class ConfigServerProperties(Model):
@@ -469,14 +442,11 @@ class ConfigServerProperties(Model):
 
     :ivar state: State of the config server. Possible values include:
      'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or
-     ~azure.mgmt.microservices4spring.models.ConfigServerState
-    :param error:
-    :type error: ~azure.mgmt.microservices4spring.models.Error
-    :param application_yaml:
-    :type application_yaml: str
-    :param application_properties:
-    :type application_properties: str
+    :vartype state: str or ~azure.mgmt.appplatform.models.ConfigServerState
+    :param error: Error when apply config server settings.
+    :type error: ~azure.mgmt.appplatform.models.Error
+    :param config_server: Settings of config server.
+    :type config_server: ~azure.mgmt.appplatform.models.ConfigServerSettings
     """
 
     _validation = {
@@ -486,16 +456,30 @@ class ConfigServerProperties(Model):
     _attribute_map = {
         'state': {'key': 'state', 'type': 'str'},
         'error': {'key': 'error', 'type': 'Error'},
-        'application_yaml': {'key': 'applicationYaml', 'type': 'str'},
-        'application_properties': {'key': 'applicationProperties', 'type': 'str'},
+        'config_server': {'key': 'configServer', 'type': 'ConfigServerSettings'},
     }
 
-    def __init__(self, *, error=None, application_yaml: str=None, application_properties: str=None, **kwargs) -> None:
+    def __init__(self, *, error=None, config_server=None, **kwargs) -> None:
         super(ConfigServerProperties, self).__init__(**kwargs)
         self.state = None
         self.error = error
-        self.application_yaml = application_yaml
-        self.application_properties = application_properties
+        self.config_server = config_server
+
+
+class ConfigServerSettings(Model):
+    """The settings of config server.
+
+    :param git_property: Property of git environment.
+    :type git_property: ~azure.mgmt.appplatform.models.ConfigServerGitProperty
+    """
+
+    _attribute_map = {
+        'git_property': {'key': 'gitProperty', 'type': 'ConfigServerGitProperty'},
+    }
+
+    def __init__(self, *, git_property=None, **kwargs) -> None:
+        super(ConfigServerSettings, self).__init__(**kwargs)
+        self.git_property = git_property
 
 
 class DeploymentInstance(Model):
@@ -550,7 +534,7 @@ class DeploymentResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the Deployment resource
     :type properties:
-     ~azure.mgmt.microservices4spring.models.DeploymentResourceProperties
+     ~azure.mgmt.appplatform.models.DeploymentResourceProperties
     """
 
     _validation = {
@@ -578,27 +562,27 @@ class DeploymentResourceProperties(Model):
     sending a request.
 
     :param source: Uploaded source information of the deployment.
-    :type source: ~azure.mgmt.microservices4spring.models.UserSourceInfo
+    :type source: ~azure.mgmt.appplatform.models.UserSourceInfo
     :ivar app_name: App name of the deployment
     :vartype app_name: str
     :param deployment_settings: Deployment settings of the Deployment
     :type deployment_settings:
-     ~azure.mgmt.microservices4spring.models.DeploymentSettings
+     ~azure.mgmt.appplatform.models.DeploymentSettings
     :ivar provisioning_state: Provisioning state of the Deployment. Possible
      values include: 'Creating', 'Processing', 'Succeeded', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.microservices4spring.models.DeploymentResourceProvisioningState
+     ~azure.mgmt.appplatform.models.DeploymentResourceProvisioningState
     :ivar status: Status of the Deployment. Possible values include:
      'Unknown', 'Stopped', 'Running', 'Failed', 'Processing'
     :vartype status: str or
-     ~azure.mgmt.microservices4spring.models.DeploymentResourceStatus
+     ~azure.mgmt.appplatform.models.DeploymentResourceStatus
     :ivar active: Indicates whether the Deployment is active
     :vartype active: bool
     :ivar created_time: Date time when the resource is created
     :vartype created_time: datetime
     :ivar instances: Collection of instances belong to the Deployment
     :vartype instances:
-     list[~azure.mgmt.microservices4spring.models.DeploymentInstance]
+     list[~azure.mgmt.appplatform.models.DeploymentInstance]
     """
 
     _validation = {
@@ -649,7 +633,7 @@ class DeploymentSettings(Model):
     :param runtime_version: Runtime version. Possible values include:
      'Java_8', 'Java_11'
     :type runtime_version: str or
-     ~azure.mgmt.microservices4spring.models.RuntimeVersion
+     ~azure.mgmt.appplatform.models.RuntimeVersion
     """
 
     _validation = {
@@ -678,11 +662,11 @@ class DeploymentSettings(Model):
 
 
 class Error(Model):
-    """Error.
+    """The error code compose of code and message.
 
-    :param code:
+    :param code: The code of error.
     :type code: str
-    :param message:
+    :param message: The message of error.
     :type message: str
     """
 
@@ -695,6 +679,69 @@ class Error(Model):
         super(Error, self).__init__(**kwargs)
         self.code = code
         self.message = message
+
+
+class GitPatternRepository(Model):
+    """Git repository property payload.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param name: Required. Name of the repository
+    :type name: str
+    :param pattern: Collection of pattern of the repository
+    :type pattern: list[str]
+    :param uri: Required. URI of the repository
+    :type uri: str
+    :param label: Label of the repository
+    :type label: str
+    :param search_paths: Searching path of the repository
+    :type search_paths: list[str]
+    :param username: Username of git repository basic auth.
+    :type username: str
+    :param password: Password of git repository basic auth.
+    :type password: str
+    :param host_key: Public sshKey of git repository.
+    :type host_key: str
+    :param host_key_algorithm: SshKey algorithm of git repository.
+    :type host_key_algorithm: str
+    :param private_key: Private sshKey algorithm of git repository.
+    :type private_key: str
+    :param strict_host_key_checking: Stric host key checking or not.
+    :type strict_host_key_checking: bool
+    """
+
+    _validation = {
+        'name': {'required': True},
+        'uri': {'required': True},
+    }
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'pattern': {'key': 'pattern', 'type': '[str]'},
+        'uri': {'key': 'uri', 'type': 'str'},
+        'label': {'key': 'label', 'type': 'str'},
+        'search_paths': {'key': 'searchPaths', 'type': '[str]'},
+        'username': {'key': 'username', 'type': 'str'},
+        'password': {'key': 'password', 'type': 'str'},
+        'host_key': {'key': 'hostKey', 'type': 'str'},
+        'host_key_algorithm': {'key': 'hostKeyAlgorithm', 'type': 'str'},
+        'private_key': {'key': 'privateKey', 'type': 'str'},
+        'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
+    }
+
+    def __init__(self, *, name: str, uri: str, pattern=None, label: str=None, search_paths=None, username: str=None, password: str=None, host_key: str=None, host_key_algorithm: str=None, private_key: str=None, strict_host_key_checking: bool=None, **kwargs) -> None:
+        super(GitPatternRepository, self).__init__(**kwargs)
+        self.name = name
+        self.pattern = pattern
+        self.uri = uri
+        self.label = label
+        self.search_paths = search_paths
+        self.username = username
+        self.password = password
+        self.host_key = host_key
+        self.host_key_algorithm = host_key_algorithm
+        self.private_key = private_key
+        self.strict_host_key_checking = strict_host_key_checking
 
 
 class LogFileUrlResponse(Model):
@@ -744,11 +791,11 @@ class LogSpecification(Model):
 
 
 class MetricDimension(Model):
-    """MetricDimension.
+    """Specifications of the Dimension of metrics.
 
-    :param name:
+    :param name: Name of the dimension
     :type name: str
-    :param display_name:
+    :param display_name: Localized friendly display name of the dimension
     :type display_name: str
     """
 
@@ -788,8 +835,7 @@ class MetricSpecification(Model):
      returned for time duration where no metric is emitted/published.
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric
-    :type dimensions:
-     list[~azure.mgmt.microservices4spring.models.MetricDimension]
+    :type dimensions: list[~azure.mgmt.appplatform.models.MetricDimension]
     """
 
     _attribute_map = {
@@ -871,12 +917,11 @@ class OperationDetail(Model):
     :param data_action: Indicates whether the operation is a data action
     :type data_action: bool
     :param display: Display of the operation
-    :type display: ~azure.mgmt.microservices4spring.models.OperationDisplay
+    :type display: ~azure.mgmt.appplatform.models.OperationDisplay
     :param origin: Origin of the operation
     :type origin: str
     :param properties: Properties of the operation
-    :type properties:
-     ~azure.mgmt.microservices4spring.models.OperationProperties
+    :type properties: ~azure.mgmt.appplatform.models.OperationProperties
     """
 
     _attribute_map = {
@@ -929,7 +974,7 @@ class OperationProperties(Model):
 
     :param service_specification: Service specifications of the operation
     :type service_specification:
-     ~azure.mgmt.microservices4spring.models.ServiceSpecification
+     ~azure.mgmt.appplatform.models.ServiceSpecification
     """
 
     _attribute_map = {
@@ -980,7 +1025,7 @@ class RegenerateTestKeyRequestPayload(Model):
 
     :param key_type: Required. Type of the test key. Possible values include:
      'Primary', 'Secondary'
-    :type key_type: str or ~azure.mgmt.microservices4spring.models.TestKeyType
+    :type key_type: str or ~azure.mgmt.appplatform.models.TestKeyType
     """
 
     _validation = {
@@ -1016,16 +1061,96 @@ class ResourceUploadDefinition(Model):
         self.upload_url = upload_url
 
 
+class TrackedResource(Resource):
+    """The resource model definition for a ARM tracked top level resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :param location: The GEO location of the resource.
+    :type location: str
+    :param tags: Tags of the service which is a list of key value pairs that
+     describe the resource.
+    :type tags: dict[str, str]
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+    }
+
+    def __init__(self, *, location: str=None, tags=None, **kwargs) -> None:
+        super(TrackedResource, self).__init__(**kwargs)
+        self.location = location
+        self.tags = tags
+
+
+class ServiceResource(TrackedResource):
+    """Service resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :param location: The GEO location of the resource.
+    :type location: str
+    :param tags: Tags of the service which is a list of key value pairs that
+     describe the resource.
+    :type tags: dict[str, str]
+    :param properties: Properties of the Service resource
+    :type properties: ~azure.mgmt.appplatform.models.ClusterResourceProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'properties': {'key': 'properties', 'type': 'ClusterResourceProperties'},
+    }
+
+    def __init__(self, *, location: str=None, tags=None, properties=None, **kwargs) -> None:
+        super(ServiceResource, self).__init__(location=location, tags=tags, **kwargs)
+        self.properties = properties
+
+
 class ServiceSpecification(Model):
     """Service specification payload.
 
     :param log_specifications: Specifications of the Log for Azure Monitoring
     :type log_specifications:
-     list[~azure.mgmt.microservices4spring.models.LogSpecification]
+     list[~azure.mgmt.appplatform.models.LogSpecification]
     :param metric_specifications: Specifications of the Metrics for Azure
      Monitoring
     :type metric_specifications:
-     list[~azure.mgmt.microservices4spring.models.MetricSpecification]
+     list[~azure.mgmt.appplatform.models.MetricSpecification]
     """
 
     _attribute_map = {
@@ -1117,7 +1242,7 @@ class UserSourceInfo(Model):
 
     :param type: Type of the source uploaded. Possible values include: 'Jar',
      'Source'
-    :type type: str or ~azure.mgmt.microservices4spring.models.UserSourceType
+    :type type: str or ~azure.mgmt.appplatform.models.UserSourceType
     :param relative_path: Relative path of the storage which stores the source
     :type relative_path: str
     :param version: Version of the source

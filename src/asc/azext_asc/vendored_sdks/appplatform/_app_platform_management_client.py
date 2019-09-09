@@ -12,9 +12,9 @@
 from msrest.service_client import SDKClient
 from msrest import Serializer, Deserializer
 
-from ._configuration import Microservices4SpringManagementClientConfiguration
-from .operations import Microservices4SpringManagementClientOperationsMixin
-from .operations import AppClustersOperations
+from ._configuration import AppPlatformManagementClientConfiguration
+from .operations import AppPlatformManagementClientOperationsMixin
+from .operations import ServicesOperations
 from .operations import AppsOperations
 from .operations import BindingsOperations
 from .operations import DeploymentsOperations
@@ -22,22 +22,22 @@ from .operations import Operations
 from . import models
 
 
-class Microservices4SpringManagementClient(Microservices4SpringManagementClientOperationsMixin, SDKClient):
-    """REST API for Azure Microservices For Spring
+class AppPlatformManagementClient(AppPlatformManagementClientOperationsMixin, SDKClient):
+    """REST API for Azure Spring Cloud
 
     :ivar config: Configuration for client.
-    :vartype config: Microservices4SpringManagementClientConfiguration
+    :vartype config: AppPlatformManagementClientConfiguration
 
-    :ivar app_clusters: AppClusters operations
-    :vartype app_clusters: azure.mgmt.microservices4spring.operations.AppClustersOperations
+    :ivar services: Services operations
+    :vartype services: azure.mgmt.appplatform.operations.ServicesOperations
     :ivar apps: Apps operations
-    :vartype apps: azure.mgmt.microservices4spring.operations.AppsOperations
+    :vartype apps: azure.mgmt.appplatform.operations.AppsOperations
     :ivar bindings: Bindings operations
-    :vartype bindings: azure.mgmt.microservices4spring.operations.BindingsOperations
+    :vartype bindings: azure.mgmt.appplatform.operations.BindingsOperations
     :ivar deployments: Deployments operations
-    :vartype deployments: azure.mgmt.microservices4spring.operations.DeploymentsOperations
+    :vartype deployments: azure.mgmt.appplatform.operations.DeploymentsOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.microservices4spring.operations.Operations
+    :vartype operations: azure.mgmt.appplatform.operations.Operations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -52,15 +52,15 @@ class Microservices4SpringManagementClient(Microservices4SpringManagementClientO
     def __init__(
             self, credentials, subscription_id, base_url=None):
 
-        self.config = Microservices4SpringManagementClientConfiguration(credentials, subscription_id, base_url)
-        super(Microservices4SpringManagementClient, self).__init__(self.config.credentials, self.config)
+        self.config = AppPlatformManagementClientConfiguration(credentials, subscription_id, base_url)
+        super(AppPlatformManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self.api_version = '2019-05-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.app_clusters = AppClustersOperations(
+        self.services = ServicesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.apps = AppsOperations(
             self._client, self.config, self._serialize, self._deserialize)

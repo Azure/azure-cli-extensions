@@ -42,15 +42,15 @@ class DeploymentsOperations(object):
         self.config = config
 
     def get(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
         """Get a Deployment and its properties.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
@@ -61,7 +61,7 @@ class DeploymentsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DeploymentResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.DeploymentResource or
+        :rtype: ~azure.mgmt.appplatform.models.DeploymentResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -70,7 +70,7 @@ class DeploymentsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -108,11 +108,11 @@ class DeploymentsOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
 
     def _create_or_update_initial(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, **operation_config):
         deployment_resource = None
         if properties is not None:
             deployment_resource = models.DeploymentResource(properties=properties)
@@ -122,7 +122,7 @@ class DeploymentsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -172,22 +172,22 @@ class DeploymentsOperations(object):
         return deserialized
 
     def create_or_update(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
         """Create a new Deployment or update an exiting Deployment.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
         :type deployment_name: str
         :param properties: Properties of the Deployment resource
         :type properties:
-         ~azure.mgmt.microservices4spring.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.models.DeploymentResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -196,14 +196,14 @@ class DeploymentsOperations(object):
         :return: An instance of LROPoller that returns DeploymentResource or
          ClientRawResponse<DeploymentResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.microservices4spring.models.DeploymentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.DeploymentResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.microservices4spring.models.DeploymentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.DeploymentResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
-            app_cluster_name=app_cluster_name,
+            service_name=service_name,
             app_name=app_name,
             deployment_name=deployment_name,
             properties=properties,
@@ -228,18 +228,18 @@ class DeploymentsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
     def delete(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
         """Operation to delete a Deployment.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
@@ -258,7 +258,7 @@ class DeploymentsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -289,11 +289,11 @@ class DeploymentsOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
 
     def _update_initial(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, **operation_config):
         deployment_resource = None
         if properties is not None:
             deployment_resource = models.DeploymentResource(properties=properties)
@@ -303,7 +303,7 @@ class DeploymentsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -353,22 +353,22 @@ class DeploymentsOperations(object):
         return deserialized
 
     def update(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
         """Operation to update an exiting Deployment.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
         :type deployment_name: str
         :param properties: Properties of the Deployment resource
         :type properties:
-         ~azure.mgmt.microservices4spring.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.models.DeploymentResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -377,14 +377,14 @@ class DeploymentsOperations(object):
         :return: An instance of LROPoller that returns DeploymentResource or
          ClientRawResponse<DeploymentResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.microservices4spring.models.DeploymentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.models.DeploymentResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.microservices4spring.models.DeploymentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.models.DeploymentResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
-            app_cluster_name=app_cluster_name,
+            service_name=service_name,
             app_name=app_name,
             deployment_name=deployment_name,
             properties=properties,
@@ -409,18 +409,18 @@ class DeploymentsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
     def list(
-            self, resource_group_name, app_cluster_name, app_name, version=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, version=None, custom_headers=None, raw=False, **operation_config):
         """Handles requests to list all resources in an App.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param version: Version of the deployments to be listed
@@ -432,7 +432,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DeploymentResource
         :rtype:
-         ~azure.mgmt.microservices4spring.models.DeploymentResourcePaged[~azure.mgmt.microservices4spring.models.DeploymentResource]
+         ~azure.mgmt.appplatform.models.DeploymentResourcePaged[~azure.mgmt.appplatform.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -442,7 +442,7 @@ class DeploymentsOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+                    'serviceName': self._serialize.url("service_name", service_name, 'str'),
                     'appName': self._serialize.url("app_name", app_name, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -490,18 +490,18 @@ class DeploymentsOperations(object):
         deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments'}
 
     def list_cluster_all_deployments(
-            self, resource_group_name, app_cluster_name, version=None, custom_headers=None, raw=False, **operation_config):
-        """List deployments for a certain app cluster.
+            self, resource_group_name, service_name, version=None, custom_headers=None, raw=False, **operation_config):
+        """List deployments for a certain service.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param version: Version of the deployments to be listed
         :type version: list[str]
         :param dict custom_headers: headers that will be added to the request
@@ -511,7 +511,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DeploymentResource
         :rtype:
-         ~azure.mgmt.microservices4spring.models.DeploymentResourcePaged[~azure.mgmt.microservices4spring.models.DeploymentResource]
+         ~azure.mgmt.appplatform.models.DeploymentResourcePaged[~azure.mgmt.appplatform.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -521,7 +521,7 @@ class DeploymentsOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str')
+                    'serviceName': self._serialize.url("service_name", service_name, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 
@@ -568,17 +568,17 @@ class DeploymentsOperations(object):
         deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list_cluster_all_deployments.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/deployments'}
+    list_cluster_all_deployments.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/deployments'}
 
 
     def _start_initial(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.start.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -611,15 +611,15 @@ class DeploymentsOperations(object):
             return client_raw_response
 
     def start(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, polling=True, **operation_config):
         """Start the deployment.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
@@ -637,7 +637,7 @@ class DeploymentsOperations(object):
         """
         raw_result = self._start_initial(
             resource_group_name=resource_group_name,
-            app_cluster_name=app_cluster_name,
+            service_name=service_name,
             app_name=app_name,
             deployment_name=deployment_name,
             custom_headers=custom_headers,
@@ -657,17 +657,17 @@ class DeploymentsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}/start'}
+    start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/start'}
 
 
     def _stop_initial(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.stop.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -700,15 +700,15 @@ class DeploymentsOperations(object):
             return client_raw_response
 
     def stop(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, polling=True, **operation_config):
         """Stop the deployment.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
@@ -726,7 +726,7 @@ class DeploymentsOperations(object):
         """
         raw_result = self._stop_initial(
             resource_group_name=resource_group_name,
-            app_cluster_name=app_cluster_name,
+            service_name=service_name,
             app_name=app_name,
             deployment_name=deployment_name,
             custom_headers=custom_headers,
@@ -746,17 +746,17 @@ class DeploymentsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}/stop'}
+    stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/stop'}
 
 
     def _restart_initial(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.restart.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -789,15 +789,15 @@ class DeploymentsOperations(object):
             return client_raw_response
 
     def restart(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, polling=True, **operation_config):
         """Restart the deployment.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
@@ -815,7 +815,7 @@ class DeploymentsOperations(object):
         """
         raw_result = self._restart_initial(
             resource_group_name=resource_group_name,
-            app_cluster_name=app_cluster_name,
+            service_name=service_name,
             app_name=app_name,
             deployment_name=deployment_name,
             custom_headers=custom_headers,
@@ -835,18 +835,18 @@ class DeploymentsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    restart.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}/restart'}
+    restart.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/restart'}
 
     def get_log_file_url(
-            self, resource_group_name, app_cluster_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
         """Get deployment log file URL.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
         :param deployment_name: The name of the Deployment resource.
@@ -857,7 +857,7 @@ class DeploymentsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: LogFileUrlResponse or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.LogFileUrlResponse or
+        :rtype: ~azure.mgmt.appplatform.models.LogFileUrlResponse or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -866,7 +866,7 @@ class DeploymentsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
             'appName': self._serialize.url("app_name", app_name, 'str'),
             'deploymentName': self._serialize.url("deployment_name", deployment_name, 'str')
         }
@@ -904,4 +904,4 @@ class DeploymentsOperations(object):
             return client_raw_response
 
         return deserialized
-    get_log_file_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/deployments/{deploymentName}/getLogFileUrl'}
+    get_log_file_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/getLogFileUrl'}

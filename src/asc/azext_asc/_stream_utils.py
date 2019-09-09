@@ -32,7 +32,7 @@ def stream_logs(client,
     try:
         log_file_sas = client.get_log_file_url(
             resource_group_name=resource_group,
-            app_cluster_name=service,
+            service_name=service,
             app_name=app,
             deployment_name=deployment).url
     except (AttributeError, CloudError) as e:

@@ -12,7 +12,7 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id
 from ._utils import _get_upload_local_file, dump
 from knack.util import CLIError
-from .vendored_sdks.microservices4spring import models
+from .vendored_sdks.appplatform import models
 from ._client_factory import cf_asc
 from knack.log import get_logger
 from urllib.request import urlretrieve
@@ -30,15 +30,15 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 def asc_create(cmd, client, resource_group, name, location=None, no_wait=False):
     resource = None
     if location is not None:
-        resource = models.AppClusterResource(location=location)
+        resource = models.ServiceResource(location=location)
 
     return sdk_no_wait(no_wait, client.create_or_update,
-                       resource_group_name=resource_group, app_cluster_name=name, resource=resource)
+                       resource_group_name=resource_group, service_name=name, resource=resource)
 
 
 def asc_delete(cmd, client, resource_group, name, no_wait=False):
     return sdk_no_wait(no_wait, client.delete,
-                       resource_group_name=resource_group, app_cluster_name=name)
+                       resource_group_name=resource_group, service_name=name)
 
 
 def asc_list(cmd, client, resource_group=None):
@@ -347,7 +347,7 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         
     config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
     properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    appResource = models.AppClusterResource(properties=properties)
+    appResource = models.ServiceResource(properties=properties)
 
     return sdk_no_wait(no_wait, client.update,
                     resource_group, name, appResource)
@@ -365,7 +365,7 @@ def config_delete(cmd, client, resource_group, name):
     file_content = {}
     config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
     properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    appResource = models.AppClusterResource(properties=properties)
+    appResource = models.ServiceResource(properties=properties)
 
     return client.update(resource_group, name, appResource)
 
@@ -638,8 +638,9 @@ def _app_deploy(client, resource_group, service, app, name, path, runtime_versio
                            resource_group, service, app, name, properties)
 
 
-def test(cmd, client, resource_group, service=None, app=None, deployment=None):
-    from ._utils import _pack_source_code
-    file_path = 'temp.tar.gz'
-    _pack_source_code(os.getcwd(), file_path)
+def test(cmd, client, resource_group, name=None, app=None, deployment=None):
+    from re import match
+    matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', name)
+    if matchObj is None:
+        raise CLIError('--name can only contain numbers and lowercases')
     return None

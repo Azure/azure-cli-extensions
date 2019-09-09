@@ -16,8 +16,8 @@ from msrestazure.azure_exceptions import CloudError
 from .. import models
 
 
-class BindingsOperations(object):
-    """BindingsOperations operations.
+class AppsOperations(object):
+    """AppsOperations operations.
 
     You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
@@ -40,26 +40,26 @@ class BindingsOperations(object):
         self.config = config
 
     def get(
-            self, resource_group_name, app_cluster_name, app_name, binding_name, custom_headers=None, raw=False, **operation_config):
-        """Get a Binding and its properties.
+            self, resource_group_name, service_name, app_name, sync_status=None, custom_headers=None, raw=False, **operation_config):
+        """Get an App and its properties.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param binding_name: The name of the Binding resource.
-        :type binding_name: str
+        :param sync_status: Indicates whether sync status
+        :type sync_status: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.BindingResource or
+        :return: AppResource or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.appplatform.models.AppResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -68,14 +68,15 @@ class BindingsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str'),
-            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
+            'appName': self._serialize.url("app_name", app_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}
+        if sync_status is not None:
+            query_parameters['syncStatus'] = self._serialize.query("sync_status", sync_status, 'str')
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
@@ -99,54 +100,50 @@ class BindingsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('BindingResource', response)
+            deserialized = self._deserialize('AppResource', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/bindings/{bindingName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
 
     def create_or_update(
-            self, resource_group_name, app_cluster_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, **operation_config):
-        """Create a new Binding or update an exiting Binding.
+            self, resource_group_name, service_name, app_name, properties=None, custom_headers=None, raw=False, **operation_config):
+        """Create a new App or update an exiting App.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param binding_name: The name of the Binding resource.
-        :type binding_name: str
-        :param properties: Properties of the Binding resource
-        :type properties:
-         ~azure.mgmt.microservices4spring.models.BindingResourceProperties
+        :param properties: Properties of the App resource
+        :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.BindingResource or
+        :return: AppResource or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.appplatform.models.AppResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        binding_resource = None
+        app_resource = None
         if properties is not None:
-            binding_resource = models.BindingResource(properties=properties)
+            app_resource = models.AppResource(properties=properties)
 
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str'),
-            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
+            'appName': self._serialize.url("app_name", app_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -166,8 +163,8 @@ class BindingsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        if binding_resource is not None:
-            body_content = self._serialize.body(binding_resource, 'BindingResource')
+        if app_resource is not None:
+            body_content = self._serialize.body(app_resource, 'AppResource')
         else:
             body_content = None
 
@@ -182,29 +179,27 @@ class BindingsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('BindingResource', response)
+            deserialized = self._deserialize('AppResource', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/bindings/{bindingName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
 
     def delete(
-            self, resource_group_name, app_cluster_name, app_name, binding_name, custom_headers=None, raw=False, **operation_config):
-        """Operation to delete a Binding.
+            self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
+        """Operation to delete an App.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param binding_name: The name of the Binding resource.
-        :type binding_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -219,9 +214,8 @@ class BindingsOperations(object):
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str'),
-            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
+            'appName': self._serialize.url("app_name", app_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -250,47 +244,43 @@ class BindingsOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/bindings/{bindingName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
 
     def update(
-            self, resource_group_name, app_cluster_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, **operation_config):
-        """Operation to update an exiting Binding.
+            self, resource_group_name, service_name, app_name, properties=None, custom_headers=None, raw=False, **operation_config):
+        """Operation to update an exiting App.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param binding_name: The name of the Binding resource.
-        :type binding_name: str
-        :param properties: Properties of the Binding resource
-        :type properties:
-         ~azure.mgmt.microservices4spring.models.BindingResourceProperties
+        :param properties: Properties of the App resource
+        :type properties: ~azure.mgmt.appplatform.models.AppResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: BindingResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.BindingResource or
+        :return: AppResource or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.appplatform.models.AppResource or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        binding_resource = None
+        app_resource = None
         if properties is not None:
-            binding_resource = models.BindingResource(properties=properties)
+            app_resource = models.AppResource(properties=properties)
 
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str'),
-            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
+            'appName': self._serialize.url("app_name", app_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -310,8 +300,8 @@ class BindingsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        if binding_resource is not None:
-            body_content = self._serialize.body(binding_resource, 'BindingResource')
+        if app_resource is not None:
+            body_content = self._serialize.body(app_resource, 'AppResource')
         else:
             body_content = None
 
@@ -326,35 +316,33 @@ class BindingsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('BindingResource', response)
+            deserialized = self._deserialize('AppResource', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/bindings/{bindingName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
 
     def list(
-            self, resource_group_name, app_cluster_name, app_name, custom_headers=None, raw=False, **operation_config):
-        """Handles requests to list all resources in an App.
+            self, resource_group_name, service_name, custom_headers=None, raw=False, **operation_config):
+        """Handles requests to list all resources in a Service.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
          Resource Manager API or the portal.
         :type resource_group_name: str
-        :param app_cluster_name: The name of the App Cluster resource.
-        :type app_cluster_name: str
-        :param app_name: The name of the App resource.
-        :type app_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of BindingResource
+        :return: An iterator like instance of AppResource
         :rtype:
-         ~azure.mgmt.microservices4spring.models.BindingResourcePaged[~azure.mgmt.microservices4spring.models.BindingResource]
+         ~azure.mgmt.appplatform.models.AppResourcePaged[~azure.mgmt.appplatform.models.AppResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -364,8 +352,7 @@ class BindingsOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'appClusterName': self._serialize.url("app_cluster_name", app_cluster_name, 'str'),
-                    'appName': self._serialize.url("app_name", app_name, 'str')
+                    'serviceName': self._serialize.url("service_name", service_name, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 
@@ -407,7 +394,74 @@ class BindingsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.BindingResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.AppResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Microservices4Spring/appClusters/{appClusterName}/apps/{appName}/bindings'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps'}
+
+    def get_resource_upload_url(
+            self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
+        """Get an resource upload URL for an App, which may be artifacts or source
+        archive.
+
+        :param resource_group_name: The name of the resource group that
+         contains the resource. You can obtain this value from the Azure
+         Resource Manager API or the portal.
+        :type resource_group_name: str
+        :param service_name: The name of the Service resource.
+        :type service_name: str
+        :param app_name: The name of the App resource.
+        :type app_name: str
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: ResourceUploadDefinition or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.appplatform.models.ResourceUploadDefinition or
+         ~msrest.pipeline.ClientRawResponse
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
+        """
+        # Construct URL
+        url = self.get_resource_upload_url.metadata['url']
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'serviceName': self._serialize.url("service_name", service_name, 'str'),
+            'appName': self._serialize.url("app_name", app_name, 'str')
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
+        if self.config.generate_client_request_id:
+            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
+        if custom_headers:
+            header_parameters.update(custom_headers)
+        if self.config.accept_language is not None:
+            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+
+        # Construct and send request
+        request = self._client.post(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
+
+        if response.status_code not in [200]:
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('ResourceUploadDefinition', response)
+
+        if raw:
+            client_raw_response = ClientRawResponse(deserialized, response)
+            return client_raw_response
+
+        return deserialized
+    get_resource_upload_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/getResourceUploadUrl'}

@@ -17,7 +17,7 @@ from .. import models
 import uuid
 
 
-class Microservices4SpringManagementClientOperationsMixin(object):
+class AppPlatformManagementClientOperationsMixin(object):
 
     def check_name_availability(
             self, location, type=None, name=None, custom_headers=None, raw=False, **operation_config):
@@ -35,7 +35,7 @@ class Microservices4SpringManagementClientOperationsMixin(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: NameAvailability or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.microservices4spring.models.NameAvailability or
+        :rtype: ~azure.mgmt.appplatform.models.NameAvailability or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -90,4 +90,4 @@ class Microservices4SpringManagementClientOperationsMixin(object):
             return client_raw_response
 
         return deserialized
-    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Microservices4Spring/locations/{location}/checkNameAvailability'}
+    check_name_availability.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.AppPlatform/locations/{location}/checkNameAvailability'}

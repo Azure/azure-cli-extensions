@@ -9,9 +9,9 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import Microservices4SpringManagementClientConfiguration
-from ._microservices4_spring_management_client import Microservices4SpringManagementClient
-__all__ = ['Microservices4SpringManagementClient', 'Microservices4SpringManagementClientConfiguration']
+from ._configuration import AppPlatformManagementClientConfiguration
+from ._app_platform_management_client import AppPlatformManagementClient
+__all__ = ['AppPlatformManagementClient', 'AppPlatformManagementClientConfiguration']
 
 from .version import VERSION
 

@@ -42,7 +42,7 @@ class Operations(object):
     def list(
             self, custom_headers=None, raw=False, **operation_config):
         """Lists all of the available REST API operations of the
-        Microsoft.Microservices4Spring provider.
+        Microsoft.AppPlatform provider.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -51,7 +51,7 @@ class Operations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of OperationDetail
         :rtype:
-         ~azure.mgmt.microservices4spring.models.OperationDetailPaged[~azure.mgmt.microservices4spring.models.OperationDetail]
+         ~azure.mgmt.appplatform.models.OperationDetailPaged[~azure.mgmt.appplatform.models.OperationDetail]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -100,4 +100,4 @@ class Operations(object):
         deserialized = models.OperationDetailPaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/providers/Microsoft.Microservices4Spring/operations'}
+    list.metadata = {'url': '/providers/Microsoft.AppPlatform/operations'}

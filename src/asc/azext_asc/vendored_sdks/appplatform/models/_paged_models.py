@@ -12,22 +12,22 @@
 from msrest.paging import Paged
 
 
-class AppClusterResourcePaged(Paged):
+class ServiceResourcePaged(Paged):
     """
-    A paging container for iterating over a list of :class:`AppClusterResource <azure.mgmt.microservices4spring.models.AppClusterResource>` object
+    A paging container for iterating over a list of :class:`ServiceResource <azure.mgmt.appplatform.models.ServiceResource>` object
     """
 
     _attribute_map = {
         'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[AppClusterResource]'}
+        'current_page': {'key': 'value', 'type': '[ServiceResource]'}
     }
 
     def __init__(self, *args, **kwargs):
 
-        super(AppClusterResourcePaged, self).__init__(*args, **kwargs)
+        super(ServiceResourcePaged, self).__init__(*args, **kwargs)
 class AppResourcePaged(Paged):
     """
-    A paging container for iterating over a list of :class:`AppResource <azure.mgmt.microservices4spring.models.AppResource>` object
+    A paging container for iterating over a list of :class:`AppResource <azure.mgmt.appplatform.models.AppResource>` object
     """
 
     _attribute_map = {
@@ -40,7 +40,7 @@ class AppResourcePaged(Paged):
         super(AppResourcePaged, self).__init__(*args, **kwargs)
 class BindingResourcePaged(Paged):
     """
-    A paging container for iterating over a list of :class:`BindingResource <azure.mgmt.microservices4spring.models.BindingResource>` object
+    A paging container for iterating over a list of :class:`BindingResource <azure.mgmt.appplatform.models.BindingResource>` object
     """
 
     _attribute_map = {
@@ -53,7 +53,7 @@ class BindingResourcePaged(Paged):
         super(BindingResourcePaged, self).__init__(*args, **kwargs)
 class DeploymentResourcePaged(Paged):
     """
-    A paging container for iterating over a list of :class:`DeploymentResource <azure.mgmt.microservices4spring.models.DeploymentResource>` object
+    A paging container for iterating over a list of :class:`DeploymentResource <azure.mgmt.appplatform.models.DeploymentResource>` object
     """
 
     _attribute_map = {
@@ -66,7 +66,7 @@ class DeploymentResourcePaged(Paged):
         super(DeploymentResourcePaged, self).__init__(*args, **kwargs)
 class OperationDetailPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`OperationDetail <azure.mgmt.microservices4spring.models.OperationDetail>` object
+    A paging container for iterating over a list of :class:`OperationDetail <azure.mgmt.appplatform.models.OperationDetail>` object
     """
 
     _attribute_map = {

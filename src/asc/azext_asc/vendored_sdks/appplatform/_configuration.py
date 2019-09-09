@@ -13,8 +13,8 @@ from msrestazure import AzureConfiguration
 from .version import VERSION
 
 
-class Microservices4SpringManagementClientConfiguration(AzureConfiguration):
-    """Configuration for Microservices4SpringManagementClient
+class AppPlatformManagementClientConfiguration(AzureConfiguration):
+    """Configuration for AppPlatformManagementClient
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
@@ -38,12 +38,12 @@ class Microservices4SpringManagementClientConfiguration(AzureConfiguration):
         if not base_url:
             base_url = 'https://management.azure.com'
 
-        super(Microservices4SpringManagementClientConfiguration, self).__init__(base_url)
+        super(AppPlatformManagementClientConfiguration, self).__init__(base_url)
 
         # Starting Autorest.Python 4.0.64, make connection pool activated by default
         self.keep_alive = True
 
-        self.add_user_agent('azure-mgmt-microservices4spring/{}'.format(VERSION))
+        self.add_user_agent('azure-mgmt-appplatform/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials

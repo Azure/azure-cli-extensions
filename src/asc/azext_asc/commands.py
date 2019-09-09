@@ -4,12 +4,12 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._client_factory import (cf_app_clusters, cf_asc, cf_bindings)
+from ._client_factory import (cf_app_services, cf_asc, cf_bindings)
 
 
 def load_command_table(self, _):
 
-    with self.command_group('asc', client_factory=cf_app_clusters) as g:
+    with self.command_group('asc', client_factory=cf_app_services) as g:
         g.custom_command('create', 'asc_create', supports_no_wait=True)
         g.custom_command('delete', 'asc_delete', supports_no_wait=True)
         g.custom_command('list', 'asc_list')
@@ -17,13 +17,13 @@ def load_command_table(self, _):
         #g.custom_command('update', 'asc_update', supports_no_wait=True)
         #g.custom_command('test', 'test')
 
-    with self.command_group('asc test-endpoint', client_factory=cf_app_clusters) as g:
+    with self.command_group('asc test-endpoint', client_factory=cf_app_services) as g:
         g.custom_command('enable ', 'enable_test_endpoint')
         g.custom_show_command('disable ', 'disable_test_endpoint')
         g.custom_command('renew-key', 'regenerate_keys')
         g.custom_command('list', 'list_keys')
 
-    with self.command_group('asc config-server', client_factory=cf_app_clusters) as g:
+    with self.command_group('asc config-server', client_factory=cf_app_services) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')
