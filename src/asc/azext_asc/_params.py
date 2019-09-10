@@ -29,8 +29,7 @@ def load_arguments(self, _):
 
     with self.argument_context('asc') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
-        c.argument('name', name_type, help='Name of spring cloud service.',
-                   completer=get_resource_name_completion_list('Microsoft.Microservices4Spring/appClusters'))
+        c.argument('name', name_type, help='Name of spring cloud service.')
 
     with self.argument_context('asc create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))

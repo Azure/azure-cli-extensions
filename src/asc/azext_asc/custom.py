@@ -24,7 +24,7 @@ from ast import literal_eval
 logger = get_logger(__name__)
 #DEFAULT_DEPLOYMENT_URL='https://github.com/peizhou298/Helloworld/releases/download/0.1/jb-hello-world-maven-0.1.0.jar'
 #DEFAULT_DEPLOYMENT_FILE = os.path.join(tempfile.gettempdir(), 'helloworld.jar')
-DEFAULT_DEPLOYMENT_NAME = "default01"
+DEFAULT_DEPLOYMENT_NAME = "default"
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment"
 
 def asc_create(cmd, client, resource_group, name, location=None, no_wait=False):
@@ -344,13 +344,16 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     file_content = None
     with open(config_file, 'r') as stream:
         file_content = yaml.safe_load(stream)
-        
+    
+    print(file_content)
+    a = client._deserialize('ServiceResource', file_content)
+    print(a)
     config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
     properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
     appResource = models.ServiceResource(properties=properties)
 
-    return sdk_no_wait(no_wait, client.update,
-                    resource_group, name, appResource)
+    #return sdk_no_wait(no_wait, client.update,
+    #                resource_group, name, appResource)
 
 
 def config_get(cmd, client, resource_group, name):
