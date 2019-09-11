@@ -7,21 +7,30 @@
 from __future__ import print_function
 from collections import Counter
 from knack.log import get_logger
-from azure.cli.core.util import CLIError
 from msrestazure.azure_exceptions import CloudError
-from azext_privatedns.vendored_sdks.models import (PrivateZone, VirtualNetworkLink, RecordSet, AaaaRecord, ARecord, SrvRecord, TxtRecord, MxRecord, PtrRecord, CnameRecord)
-
+from msrestazure.tools import parse_resource_id
+from azure.cli.core.util import CLIError
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 logger = get_logger(__name__)
 
 
-def list_privatedns_zones(client, resource_group_name=None):
+# pylint: disable=line-too-long
+def list_privatedns_zones(cmd, resource_group_name=None):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).private_zones
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
     return client.list()
 
 
-def create_privatedns_zone(client, resource_group_name, private_zone_name, tags=None):
+def create_privatedns_zone(cmd, resource_group_name, private_zone_name, tags=None):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import PrivateZone
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).private_zones
+    if private_zone_name.endswith(".local"):
+        logger.warning(("Please be aware that DNS names ending with .local are reserved for use with multicast DNS "
+                        "and may not work as expected with some operating systems. For details refer to your operating systems documentation."))
     zone = PrivateZone(location='global', tags=tags)
     return client.create_or_update(resource_group_name, private_zone_name, zone, if_none_match='*')
 
@@ -32,7 +41,10 @@ def update_privatedns_zone(instance, tags=None):
     return instance
 
 
-def create_privatedns_link(client, resource_group_name, private_zone_name, virtual_network_link_name, virtual_network, registration_enabled, tags=None):
+def create_privatedns_link(cmd, resource_group_name, private_zone_name, virtual_network_link_name, virtual_network, registration_enabled, tags=None):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import VirtualNetworkLink
+
     link = VirtualNetworkLink(location='global', tags=tags)
 
     if registration_enabled is not None:
@@ -40,34 +52,45 @@ def create_privatedns_link(client, resource_group_name, private_zone_name, virtu
 
     if virtual_network is not None:
         link.virtual_network = virtual_network
+        aux_subscription = parse_resource_id(virtual_network.id)['subscription']
 
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient, aux_subscriptions=[aux_subscription]).virtual_network_links
     return client.create_or_update(resource_group_name, private_zone_name, virtual_network_link_name, link, if_none_match='*')
 
 
-def update_privatedns_link(instance, registration_enabled=None, tags=None):
+def update_privatedns_link(cmd, resource_group_name, private_zone_name, virtual_network_link_name, registration_enabled=None, tags=None, if_match=None, **kwargs):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    link = kwargs['parameters']
+
     if registration_enabled is not None:
-        instance.registration_enabled = registration_enabled
+        link.registration_enabled = registration_enabled
 
     if tags is not None:
-        instance.tags = tags
+        link.tags = tags
 
-    return instance
+    aux_subscription = parse_resource_id(link.virtual_network.id)['subscription']
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient, aux_subscriptions=[aux_subscription]).virtual_network_links
+    return client.update(resource_group_name, private_zone_name, virtual_network_link_name, link, if_match=if_match)
 
 
-def create_privatedns_record_set(client, resource_group_name, private_zone_name, relative_record_set_name, record_type, metadata=None, ttl=3600):
-
+def create_privatedns_record_set(cmd, resource_group_name, private_zone_name, relative_record_set_name, record_type, metadata=None, ttl=3600):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import RecordSet
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record_set = RecordSet(ttl=ttl, metadata=metadata)
     return client.create_or_update(resource_group_name, private_zone_name, record_type, relative_record_set_name, record_set, if_none_match='*')
 
 
-def list_privatedns_record_set(client, resource_group_name, private_zone_name, record_type=None):
+def list_privatedns_record_set(cmd, resource_group_name, private_zone_name, record_type=None):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     if record_type is not None:
         return client.list_by_type(resource_group_name, private_zone_name, record_type)
 
     return client.list(resource_group_name, private_zone_name)
 
 
-def _type_to_property_name(key):
+def _privatedns_type_to_property_name(key):
     type_dict = {
         'a': 'a_records',
         'aaaa': 'aaaa_records',
@@ -81,8 +104,8 @@ def _type_to_property_name(key):
     return type_dict[key.lower()]
 
 
-def _add_record(record_set, record, record_type, is_list=False):
-    record_property = _type_to_property_name(record_type)
+def _privatedns_add_record(record_set, record, record_type, is_list=False):
+    record_property = _privatedns_type_to_property_name(record_type)
 
     if is_list:
         record_list = getattr(record_set, record_property)
@@ -94,48 +117,68 @@ def _add_record(record_set, record, record_type, is_list=False):
         setattr(record_set, record_property, record)
 
 
-def _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=True):
+def _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=True):
+    from azext_privatedns.vendored_sdks.models import RecordSet
     try:
-        record_set = client.get(resource_group_name, private_zone_name, record_type, relative_record_set_name)
+        record_set = client.get(
+            resource_group_name, private_zone_name, record_type, relative_record_set_name)
     except CloudError:
         record_set = RecordSet(ttl=3600)
 
-    _add_record(record_set, record, record_type, is_list)
-
+    _privatedns_add_record(record_set, record, record_type, is_list)
     return client.create_or_update(resource_group_name, private_zone_name, record_type, relative_record_set_name, record_set)
 
 
-def add_privatedns_aaaa_record(client, resource_group_name, private_zone_name, relative_record_set_name, ipv6_address):
+def add_privatedns_aaaa_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, ipv6_address):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import AaaaRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = AaaaRecord(ipv6_address=ipv6_address)
     record_type = 'aaaa'
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
 
 
-def add_privatedns_a_record(client, resource_group_name, private_zone_name, relative_record_set_name, ipv4_address):
+def add_privatedns_a_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, ipv4_address):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import ARecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = ARecord(ipv4_address=ipv4_address)
     record_type = 'a'
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
 
 
-def add_privatedns_mx_record(client, resource_group_name, private_zone_name, relative_record_set_name, preference, exchange):
+def add_privatedns_mx_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, preference, exchange):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import MxRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = MxRecord(preference=int(preference), exchange=exchange)
     record_type = 'mx'
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
 
 
-def add_privatedns_ptr_record(client, resource_group_name, private_zone_name, relative_record_set_name, dname):
+def add_privatedns_ptr_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, dname):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import PtrRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = PtrRecord(ptrdname=dname)
     record_type = 'ptr'
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
 
 
-def add_privatedns_srv_record(client, resource_group_name, private_zone_name, relative_record_set_name, priority, weight, port, target):
-    record = SrvRecord(priority=priority, weight=weight, port=port, target=target)
+def add_privatedns_srv_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, priority, weight, port, target):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import SrvRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
+    record = SrvRecord(priority=priority, weight=weight,
+                       port=port, target=target)
     record_type = 'srv'
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
 
 
-def add_privatedns_txt_record(client, resource_group_name, private_zone_name, relative_record_set_name, value):
+def add_privatedns_txt_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, value):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import TxtRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = TxtRecord(value=value)
     record_type = 'txt'
     long_text = ''.join(x for x in record.value)
@@ -148,13 +191,16 @@ def add_privatedns_txt_record(client, resource_group_name, private_zone_name, re
     final_str = ''.join(record.value)
     final_len = len(final_str)
     assert original_len == final_len
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name)
 
 
-def add_privatedns_cname_record(client, resource_group_name, private_zone_name, relative_record_set_name, cname):
+def add_privatedns_cname_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, cname):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import CnameRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = CnameRecord(cname=cname)
     record_type = 'cname'
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=False)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=False)
 
 
 def update_privatedns_record_set(instance, metadata=None):
@@ -164,16 +210,18 @@ def update_privatedns_record_set(instance, metadata=None):
     return instance
 
 
-def update_privatedns_soa_record(client, resource_group_name, private_zone_name, host=None, email=None,
+def update_privatedns_soa_record(cmd, resource_group_name, private_zone_name, email=None,
                                  serial_number=None, refresh_time=None, retry_time=None, expire_time=None,
                                  minimum_ttl=None):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     relative_record_set_name = '@'
     record_type = 'soa'
 
-    record_set = client.get(resource_group_name, private_zone_name, record_type, relative_record_set_name)
+    record_set = client.get(
+        resource_group_name, private_zone_name, record_type, relative_record_set_name)
     record = record_set.soa_record
 
-    record.host = host or record.host
     record.email = email or record.email
     record.serial_number = serial_number or record.serial_number
     record.refresh_time = refresh_time or record.refresh_time
@@ -181,54 +229,77 @@ def update_privatedns_soa_record(client, resource_group_name, private_zone_name,
     record.expire_time = expire_time or record.expire_time
     record.minimum_ttl = minimum_ttl or record.minimum_ttl
 
-    return _add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=False)
+    return _privatedns_add_save_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=False)
 
 
-def remove_privatedns_aaaa_record(client, resource_group_name, private_zone_name, relative_record_set_name, ipv6_address, keep_empty_record_set=False):
+def remove_privatedns_aaaa_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, ipv6_address, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import AaaaRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = AaaaRecord(ipv6_address=ipv6_address)
     record_type = 'aaaa'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
 
 
-def remove_privatedns_a_record(client, resource_group_name, private_zone_name, relative_record_set_name, ipv4_address, keep_empty_record_set=False):
+def remove_privatedns_a_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, ipv4_address, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import ARecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = ARecord(ipv4_address=ipv4_address)
     record_type = 'a'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
 
 
-def remove_privatedns_cname_record(client, resource_group_name, private_zone_name, relative_record_set_name, cname, keep_empty_record_set=False):
+def remove_privatedns_cname_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, cname, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import CnameRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = CnameRecord(cname=cname)
     record_type = 'cname'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=False, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, is_list=False, keep_empty_record_set=keep_empty_record_set)
 
 
-def remove_privatedns_mx_record(client, resource_group_name, private_zone_name, relative_record_set_name, preference, exchange, keep_empty_record_set=False):
+def remove_privatedns_mx_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, preference, exchange, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import MxRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = MxRecord(preference=int(preference), exchange=exchange)
     record_type = 'mx'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
 
 
-def remove_privatedns_ptr_record(client, resource_group_name, private_zone_name, relative_record_set_name, dname, keep_empty_record_set=False):
+def remove_privatedns_ptr_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, dname, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import PtrRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = PtrRecord(ptrdname=dname)
     record_type = 'ptr'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
 
 
-def remove_privatedns_srv_record(client, resource_group_name, private_zone_name, relative_record_set_name, priority, weight, port, target, keep_empty_record_set=False):
-    record = SrvRecord(priority=priority, weight=weight, port=port, target=target)
+def remove_privatedns_srv_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, priority, weight, port, target, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import SrvRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
+    record = SrvRecord(priority=priority, weight=weight,
+                       port=port, target=target)
     record_type = 'srv'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
 
 
-def remove_privatedns_txt_record(client, resource_group_name, private_zone_name, relative_record_set_name, value, keep_empty_record_set=False):
+def remove_privatedns_txt_record(cmd, resource_group_name, private_zone_name, relative_record_set_name, value, keep_empty_record_set=False):
+    from azext_privatedns.vendored_sdks import PrivateDnsManagementClient
+    from azext_privatedns.vendored_sdks.models import TxtRecord
+    client = get_mgmt_service_client(cmd.cli_ctx, PrivateDnsManagementClient).record_sets
     record = TxtRecord(value=value)
     record_type = 'txt'
-    return _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
+    return _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set=keep_empty_record_set)
 
 
-def _remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set, is_list=True):
-    record_set = client.get(resource_group_name, private_zone_name, record_type, relative_record_set_name)
-    record_property = _type_to_property_name(record_type)
+def _privatedns_remove_record(client, record, record_type, relative_record_set_name, resource_group_name, private_zone_name, keep_empty_record_set, is_list=True):
+    record_set = client.get(
+        resource_group_name, private_zone_name, record_type, relative_record_set_name)
+    record_property = _privatedns_type_to_property_name(record_type)
 
     if is_list:
         record_list = getattr(record_set, record_property)
