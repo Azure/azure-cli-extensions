@@ -51,30 +51,31 @@ def spring_cloud_get(cmd, client, resource_group, name):
 
 
 def enable_test_endpoint(cmd, client, resource_group, name):
-    return client.enable_test_endpoint(resource_group, name)
+    return client.services.enable_test_endpoint(resource_group, name)
 
 
 def disable_test_endpoint(cmd, client, resource_group, name):
-    return client.disable_test_endpoint(resource_group, name)
+    return client.services.disable_test_endpoint(resource_group, name)
 
 
 def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
-    keys = client.list_test_keys(resource_group, name)
-    if deployment:
-        if app is None:
-            raise CLIError("Deployment should be attached to an specific app")
-        keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment)
-        keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment)
-    else:
-        if app:
-            keys.primary_test_endpoint = "{}/{}/".format(keys.primary_test_endpoint, app)
-            keys.secondary_test_endpoint = "{}/{}/".format(keys.secondary_test_endpoint, app)
-    dump(keys)
-    return None
+    keys = client.services.list_test_keys(resource_group, name)
+    if not keys.enabled:
+        return None
+    if app:
+        if deployment is None:
+            deployment = client.apps.get(
+                resource_group, name, app).properties.active_deployment_name
+            print(app)
+        if deployment: 
+            keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment)
+            keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment)
+
+    return keys
 
 
 def regenerate_keys(cmd, client, resource_group, name, type):
-    return client.regenerate_test_key(resource_group, name, type)
+    return client.services.regenerate_test_key(resource_group, name, type)
 
 
 def app_create(cmd, client, resource_group, service, name,
@@ -86,7 +87,7 @@ def app_create(cmd, client, resource_group, service, name,
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App " + name + " already exists.")
-    logger.warning("Creating app " + name)
+    logger.info("Creating app " + name)
     properties = models.AppResourceProperties()
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=50)
@@ -103,13 +104,13 @@ def app_create(cmd, client, resource_group, service, name,
                             source=user_source_info)
 
     # create default deployment
-    logger.warning("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
+    logger.info("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
     poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
 
-    logger.warning("Setting default deployment to production")
+    logger.info("Setting default deployment to production")
     properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
     poller.add_done_callback(lambda x: dump(x.resource()))
-    logger.warning("Waiting for the default deployment completion")
+    logger.info("Waiting for the default deployment completion")
     while poller.done() is False:
         sleep(5)
     return client.apps.update(resource_group, service, name, properties)
@@ -130,7 +131,7 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    logger.warning("updating app " + name)
+    logger.info("updating app " + name)
     app_updated = client.apps.update(
         resource_group, service, name, properties)
     dump(app_updated)
@@ -141,7 +142,7 @@ def app_update(cmd, client, resource_group, service, name,
         if deployment is None:
             return
 
-    logger.warning("Updating deployment " + deployment)
+    logger.info("Updating deployment " + deployment)
     deployment_settings = models.DeploymentSettings(
         environment_variables=env,
         jvm_options=jvm_options,

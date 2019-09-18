@@ -182,9 +182,8 @@ class ApiType(Enum):
 def dump(obj):
     from json import dumps
     input_dict = todict(obj)
-    json_object = dumps(input_dict, ensure_ascii=False, indent=2, sort_keys=True, cls=_ComplexEncoder,
-                        separators=(',', ': ')) + '\n'
-    logger.warning(json_object)
+    json_object = dumps(input_dict, ensure_ascii=False, indent=2, sort_keys=True, separators=(',', ': ')) + '\n'
+    print(json_object)
 
 class deseralize(object):
     def __init__(self, d):
