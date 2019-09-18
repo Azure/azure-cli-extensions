@@ -45,9 +45,9 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='asc',
+    name='spring-cloud',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Asc Extension',
+    description='Microsoft Azure Command-Line Tools spring-cloud Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
@@ -58,5 +58,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_asc': ['azext_metadata.json']},
+    package_data={'azext_spring-cloud': ['azext_metadata.json']},
 )

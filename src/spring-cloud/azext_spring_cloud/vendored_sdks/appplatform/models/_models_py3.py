@@ -39,7 +39,7 @@ class Resource(Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
@@ -73,7 +73,7 @@ class ProxyResource(Resource):
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super(ProxyResource, self).__init__(**kwargs)
 
 
@@ -106,9 +106,9 @@ class AppResource(ProxyResource):
         'properties': {'key': 'properties', 'type': 'AppResourceProperties'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, properties=None, **kwargs) -> None:
         super(AppResource, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+        self.properties = properties
 
 
 class AppResourceProperties(Model):
@@ -151,15 +151,15 @@ class AppResourceProperties(Model):
         'persistent_disk': {'key': 'persistentDisk', 'type': 'PersistentDisk'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, public: bool=None, active_deployment_name: str=None, temporary_disk=None, persistent_disk=None, **kwargs) -> None:
         super(AppResourceProperties, self).__init__(**kwargs)
-        self.public = kwargs.get('public', None)
+        self.public = public
         self.url = None
         self.provisioning_state = None
-        self.active_deployment_name = kwargs.get('active_deployment_name', None)
+        self.active_deployment_name = active_deployment_name
         self.created_time = None
-        self.temporary_disk = kwargs.get('temporary_disk', None)
-        self.persistent_disk = kwargs.get('persistent_disk', None)
+        self.temporary_disk = temporary_disk
+        self.persistent_disk = persistent_disk
 
 
 class BindingResource(ProxyResource):
@@ -191,9 +191,9 @@ class BindingResource(ProxyResource):
         'properties': {'key': 'properties', 'type': 'BindingResourceProperties'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, properties=None, **kwargs) -> None:
         super(BindingResource, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+        self.properties = properties
 
 
 class BindingResourceProperties(Model):
@@ -239,13 +239,13 @@ class BindingResourceProperties(Model):
         'updated_at': {'key': 'updatedAt', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, resource_name: str=None, resource_type: str=None, resource_id: str=None, key: str=None, binding_parameters=None, **kwargs) -> None:
         super(BindingResourceProperties, self).__init__(**kwargs)
-        self.resource_name = kwargs.get('resource_name', None)
-        self.resource_type = kwargs.get('resource_type', None)
-        self.resource_id = kwargs.get('resource_id', None)
-        self.key = kwargs.get('key', None)
-        self.binding_parameters = kwargs.get('binding_parameters', None)
+        self.resource_name = resource_name
+        self.resource_type = resource_type
+        self.resource_id = resource_id
+        self.key = key
+        self.binding_parameters = binding_parameters
         self.generated_properties = None
         self.created_at = None
         self.updated_at = None
@@ -262,9 +262,9 @@ class CloudError(Model):
         'error': {'key': 'error', 'type': 'CloudErrorBody'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, error=None, **kwargs) -> None:
         super(CloudError, self).__init__(**kwargs)
-        self.error = kwargs.get('error', None)
+        self.error = error
 
 
 class CloudErrorException(HttpOperationError):
@@ -302,12 +302,12 @@ class CloudErrorBody(Model):
         'details': {'key': 'details', 'type': '[CloudErrorBody]'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, code: str=None, message: str=None, target: str=None, details=None, **kwargs) -> None:
         super(CloudErrorBody, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
-        self.target = kwargs.get('target', None)
-        self.details = kwargs.get('details', None)
+        self.code = code
+        self.message = message
+        self.target = target
+        self.details = details
 
 
 class ClusterResourceProperties(Model):
@@ -362,15 +362,15 @@ class ClusterResourceProperties(Model):
         'service_id': {'key': 'serviceId', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, config_server_git_uri: str=None, private_git_repo: bool=None, config_server_properties=None, trace=None, **kwargs) -> None:
         super(ClusterResourceProperties, self).__init__(**kwargs)
         self.provisioning_state = None
         self.endpoint = None
         self.ssh_public_key = None
-        self.config_server_git_uri = kwargs.get('config_server_git_uri', None)
-        self.private_git_repo = kwargs.get('private_git_repo', None)
-        self.config_server_properties = kwargs.get('config_server_properties', None)
-        self.trace = kwargs.get('trace', None)
+        self.config_server_git_uri = config_server_git_uri
+        self.private_git_repo = private_git_repo
+        self.config_server_properties = config_server_properties
+        self.trace = trace
         self.version = None
         self.service_id = None
 
@@ -420,18 +420,18 @@ class ConfigServerGitProperty(Model):
         'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, uri: str, repositories=None, label: str=None, search_paths=None, username: str=None, password: str=None, host_key: str=None, host_key_algorithm: str=None, private_key: str=None, strict_host_key_checking: bool=None, **kwargs) -> None:
         super(ConfigServerGitProperty, self).__init__(**kwargs)
-        self.repositories = kwargs.get('repositories', None)
-        self.uri = kwargs.get('uri', None)
-        self.label = kwargs.get('label', None)
-        self.search_paths = kwargs.get('search_paths', None)
-        self.username = kwargs.get('username', None)
-        self.password = kwargs.get('password', None)
-        self.host_key = kwargs.get('host_key', None)
-        self.host_key_algorithm = kwargs.get('host_key_algorithm', None)
-        self.private_key = kwargs.get('private_key', None)
-        self.strict_host_key_checking = kwargs.get('strict_host_key_checking', None)
+        self.repositories = repositories
+        self.uri = uri
+        self.label = label
+        self.search_paths = search_paths
+        self.username = username
+        self.password = password
+        self.host_key = host_key
+        self.host_key_algorithm = host_key_algorithm
+        self.private_key = private_key
+        self.strict_host_key_checking = strict_host_key_checking
 
 
 class ConfigServerProperties(Model):
@@ -459,11 +459,11 @@ class ConfigServerProperties(Model):
         'config_server': {'key': 'configServer', 'type': 'ConfigServerSettings'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, error=None, config_server=None, **kwargs) -> None:
         super(ConfigServerProperties, self).__init__(**kwargs)
         self.state = None
-        self.error = kwargs.get('error', None)
-        self.config_server = kwargs.get('config_server', None)
+        self.error = error
+        self.config_server = config_server
 
 
 class ConfigServerSettings(Model):
@@ -477,9 +477,9 @@ class ConfigServerSettings(Model):
         'git_property': {'key': 'gitProperty', 'type': 'ConfigServerGitProperty'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, git_property=None, **kwargs) -> None:
         super(ConfigServerSettings, self).__init__(**kwargs)
-        self.git_property = kwargs.get('git_property', None)
+        self.git_property = git_property
 
 
 class DeploymentInstance(Model):
@@ -512,7 +512,7 @@ class DeploymentInstance(Model):
         'discovery_status': {'key': 'discoveryStatus', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super(DeploymentInstance, self).__init__(**kwargs)
         self.name = None
         self.status = None
@@ -550,9 +550,9 @@ class DeploymentResource(ProxyResource):
         'properties': {'key': 'properties', 'type': 'DeploymentResourceProperties'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, properties=None, **kwargs) -> None:
         super(DeploymentResource, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+        self.properties = properties
 
 
 class DeploymentResourceProperties(Model):
@@ -605,11 +605,11 @@ class DeploymentResourceProperties(Model):
         'instances': {'key': 'instances', 'type': '[DeploymentInstance]'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, source=None, deployment_settings=None, **kwargs) -> None:
         super(DeploymentResourceProperties, self).__init__(**kwargs)
-        self.source = kwargs.get('source', None)
+        self.source = source
         self.app_name = None
-        self.deployment_settings = kwargs.get('deployment_settings', None)
+        self.deployment_settings = deployment_settings
         self.provisioning_state = None
         self.status = None
         self.active = None
@@ -651,14 +651,14 @@ class DeploymentSettings(Model):
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, cpu: int=1, memory_in_gb: int=1, jvm_options: str=None, instance_count: int=1, environment_variables=None, runtime_version=None, **kwargs) -> None:
         super(DeploymentSettings, self).__init__(**kwargs)
-        self.cpu = kwargs.get('cpu', 1)
-        self.memory_in_gb = kwargs.get('memory_in_gb', 1)
-        self.jvm_options = kwargs.get('jvm_options', None)
-        self.instance_count = kwargs.get('instance_count', 1)
-        self.environment_variables = kwargs.get('environment_variables', None)
-        self.runtime_version = kwargs.get('runtime_version', None)
+        self.cpu = cpu
+        self.memory_in_gb = memory_in_gb
+        self.jvm_options = jvm_options
+        self.instance_count = instance_count
+        self.environment_variables = environment_variables
+        self.runtime_version = runtime_version
 
 
 class Error(Model):
@@ -675,10 +675,10 @@ class Error(Model):
         'message': {'key': 'message', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, code: str=None, message: str=None, **kwargs) -> None:
         super(Error, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
+        self.code = code
+        self.message = message
 
 
 class GitPatternRepository(Model):
@@ -729,19 +729,19 @@ class GitPatternRepository(Model):
         'strict_host_key_checking': {'key': 'strictHostKeyChecking', 'type': 'bool'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, name: str, uri: str, pattern=None, label: str=None, search_paths=None, username: str=None, password: str=None, host_key: str=None, host_key_algorithm: str=None, private_key: str=None, strict_host_key_checking: bool=None, **kwargs) -> None:
         super(GitPatternRepository, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.pattern = kwargs.get('pattern', None)
-        self.uri = kwargs.get('uri', None)
-        self.label = kwargs.get('label', None)
-        self.search_paths = kwargs.get('search_paths', None)
-        self.username = kwargs.get('username', None)
-        self.password = kwargs.get('password', None)
-        self.host_key = kwargs.get('host_key', None)
-        self.host_key_algorithm = kwargs.get('host_key_algorithm', None)
-        self.private_key = kwargs.get('private_key', None)
-        self.strict_host_key_checking = kwargs.get('strict_host_key_checking', None)
+        self.name = name
+        self.pattern = pattern
+        self.uri = uri
+        self.label = label
+        self.search_paths = search_paths
+        self.username = username
+        self.password = password
+        self.host_key = host_key
+        self.host_key_algorithm = host_key_algorithm
+        self.private_key = private_key
+        self.strict_host_key_checking = strict_host_key_checking
 
 
 class LogFileUrlResponse(Model):
@@ -761,9 +761,9 @@ class LogFileUrlResponse(Model):
         'url': {'key': 'url', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, url: str, **kwargs) -> None:
         super(LogFileUrlResponse, self).__init__(**kwargs)
-        self.url = kwargs.get('url', None)
+        self.url = url
 
 
 class LogSpecification(Model):
@@ -783,11 +783,11 @@ class LogSpecification(Model):
         'blob_duration': {'key': 'blobDuration', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, name: str=None, display_name: str=None, blob_duration: str=None, **kwargs) -> None:
         super(LogSpecification, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.display_name = kwargs.get('display_name', None)
-        self.blob_duration = kwargs.get('blob_duration', None)
+        self.name = name
+        self.display_name = display_name
+        self.blob_duration = blob_duration
 
 
 class MetricDimension(Model):
@@ -804,10 +804,10 @@ class MetricDimension(Model):
         'display_name': {'key': 'displayName', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, name: str=None, display_name: str=None, **kwargs) -> None:
         super(MetricDimension, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.display_name = kwargs.get('display_name', None)
+        self.name = name
+        self.display_name = display_name
 
 
 class MetricSpecification(Model):
@@ -851,18 +851,18 @@ class MetricSpecification(Model):
         'dimensions': {'key': 'dimensions', 'type': '[MetricDimension]'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, name: str=None, display_name: str=None, display_description: str=None, unit: str=None, category: str=None, aggregation_type: str=None, supported_aggregation_types=None, supported_time_grain_types=None, fill_gap_with_zero: bool=None, dimensions=None, **kwargs) -> None:
         super(MetricSpecification, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.display_name = kwargs.get('display_name', None)
-        self.display_description = kwargs.get('display_description', None)
-        self.unit = kwargs.get('unit', None)
-        self.category = kwargs.get('category', None)
-        self.aggregation_type = kwargs.get('aggregation_type', None)
-        self.supported_aggregation_types = kwargs.get('supported_aggregation_types', None)
-        self.supported_time_grain_types = kwargs.get('supported_time_grain_types', None)
-        self.fill_gap_with_zero = kwargs.get('fill_gap_with_zero', None)
-        self.dimensions = kwargs.get('dimensions', None)
+        self.name = name
+        self.display_name = display_name
+        self.display_description = display_description
+        self.unit = unit
+        self.category = category
+        self.aggregation_type = aggregation_type
+        self.supported_aggregation_types = supported_aggregation_types
+        self.supported_time_grain_types = supported_time_grain_types
+        self.fill_gap_with_zero = fill_gap_with_zero
+        self.dimensions = dimensions
 
 
 class NameAvailability(Model):
@@ -882,31 +882,38 @@ class NameAvailability(Model):
         'message': {'key': 'message', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, name_available: bool=None, reason: str=None, message: str=None, **kwargs) -> None:
         super(NameAvailability, self).__init__(**kwargs)
-        self.name_available = kwargs.get('name_available', None)
-        self.reason = kwargs.get('reason', None)
-        self.message = kwargs.get('message', None)
+        self.name_available = name_available
+        self.reason = reason
+        self.message = message
 
 
 class NameAvailabilityParameters(Model):
     """Name availability parameters payload.
 
-    :param type: Type of the resource to check name availability
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. Type of the resource to check name availability
     :type type: str
-    :param name: Name to be checked
+    :param name: Required. Name to be checked
     :type name: str
     """
+
+    _validation = {
+        'type': {'required': True},
+        'name': {'required': True},
+    }
 
     _attribute_map = {
         'type': {'key': 'type', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, type: str, name: str, **kwargs) -> None:
         super(NameAvailabilityParameters, self).__init__(**kwargs)
-        self.type = kwargs.get('type', None)
-        self.name = kwargs.get('name', None)
+        self.type = type
+        self.name = name
 
 
 class OperationDetail(Model):
@@ -932,13 +939,13 @@ class OperationDetail(Model):
         'properties': {'key': 'properties', 'type': 'OperationProperties'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, name: str=None, data_action: bool=None, display=None, origin: str=None, properties=None, **kwargs) -> None:
         super(OperationDetail, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.data_action = kwargs.get('data_action', None)
-        self.display = kwargs.get('display', None)
-        self.origin = kwargs.get('origin', None)
-        self.properties = kwargs.get('properties', None)
+        self.name = name
+        self.data_action = data_action
+        self.display = display
+        self.origin = origin
+        self.properties = properties
 
 
 class OperationDisplay(Model):
@@ -961,12 +968,12 @@ class OperationDisplay(Model):
         'description': {'key': 'description', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, provider: str=None, resource: str=None, operation: str=None, description: str=None, **kwargs) -> None:
         super(OperationDisplay, self).__init__(**kwargs)
-        self.provider = kwargs.get('provider', None)
-        self.resource = kwargs.get('resource', None)
-        self.operation = kwargs.get('operation', None)
-        self.description = kwargs.get('description', None)
+        self.provider = provider
+        self.resource = resource
+        self.operation = operation
+        self.description = description
 
 
 class OperationProperties(Model):
@@ -981,9 +988,9 @@ class OperationProperties(Model):
         'service_specification': {'key': 'serviceSpecification', 'type': 'ServiceSpecification'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, service_specification=None, **kwargs) -> None:
         super(OperationProperties, self).__init__(**kwargs)
-        self.service_specification = kwargs.get('service_specification', None)
+        self.service_specification = service_specification
 
 
 class PersistentDisk(Model):
@@ -1006,16 +1013,16 @@ class PersistentDisk(Model):
     }
 
     _attribute_map = {
-        'size_in_gb': {'key': 'sizeInGb', 'type': 'int'},
-        'used_in_gb': {'key': 'usedInGb', 'type': 'int'},
+        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
+        'used_in_gb': {'key': 'usedInGB', 'type': 'int'},
         'mount_path': {'key': 'mountPath', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, size_in_gb: int=None, mount_path: str=None, **kwargs) -> None:
         super(PersistentDisk, self).__init__(**kwargs)
-        self.size_in_gb = kwargs.get('size_in_gb', None)
+        self.size_in_gb = size_in_gb
         self.used_in_gb = None
-        self.mount_path = kwargs.get('mount_path', None)
+        self.mount_path = mount_path
 
 
 class RegenerateTestKeyRequestPayload(Model):
@@ -1036,9 +1043,9 @@ class RegenerateTestKeyRequestPayload(Model):
         'key_type': {'key': 'keyType', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, key_type, **kwargs) -> None:
         super(RegenerateTestKeyRequestPayload, self).__init__(**kwargs)
-        self.key_type = kwargs.get('key_type', None)
+        self.key_type = key_type
 
 
 class ResourceUploadDefinition(Model):
@@ -1055,10 +1062,10 @@ class ResourceUploadDefinition(Model):
         'upload_url': {'key': 'uploadUrl', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, relative_path: str=None, upload_url: str=None, **kwargs) -> None:
         super(ResourceUploadDefinition, self).__init__(**kwargs)
-        self.relative_path = kwargs.get('relative_path', None)
-        self.upload_url = kwargs.get('upload_url', None)
+        self.relative_path = relative_path
+        self.upload_url = upload_url
 
 
 class TrackedResource(Resource):
@@ -1094,10 +1101,10 @@ class TrackedResource(Resource):
         'tags': {'key': 'tags', 'type': '{str}'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, location: str=None, tags=None, **kwargs) -> None:
         super(TrackedResource, self).__init__(**kwargs)
-        self.location = kwargs.get('location', None)
-        self.tags = kwargs.get('tags', None)
+        self.location = location
+        self.tags = tags
 
 
 class ServiceResource(TrackedResource):
@@ -1136,9 +1143,9 @@ class ServiceResource(TrackedResource):
         'properties': {'key': 'properties', 'type': 'ClusterResourceProperties'},
     }
 
-    def __init__(self, **kwargs):
-        super(ServiceResource, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+    def __init__(self, *, location: str=None, tags=None, properties=None, **kwargs) -> None:
+        super(ServiceResource, self).__init__(location=location, tags=tags, **kwargs)
+        self.properties = properties
 
 
 class ServiceSpecification(Model):
@@ -1158,10 +1165,10 @@ class ServiceSpecification(Model):
         'metric_specifications': {'key': 'metricSpecifications', 'type': '[MetricSpecification]'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, log_specifications=None, metric_specifications=None, **kwargs) -> None:
         super(ServiceSpecification, self).__init__(**kwargs)
-        self.log_specifications = kwargs.get('log_specifications', None)
-        self.metric_specifications = kwargs.get('metric_specifications', None)
+        self.log_specifications = log_specifications
+        self.metric_specifications = metric_specifications
 
 
 class TemporaryDisk(Model):
@@ -1178,14 +1185,14 @@ class TemporaryDisk(Model):
     }
 
     _attribute_map = {
-        'size_in_gb': {'key': 'sizeInGb', 'type': 'int'},
+        'size_in_gb': {'key': 'sizeInGB', 'type': 'int'},
         'mount_path': {'key': 'mountPath', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, size_in_gb: int=None, mount_path: str=None, **kwargs) -> None:
         super(TemporaryDisk, self).__init__(**kwargs)
-        self.size_in_gb = kwargs.get('size_in_gb', None)
-        self.mount_path = kwargs.get('mount_path', None)
+        self.size_in_gb = size_in_gb
+        self.mount_path = mount_path
 
 
 class TestKeys(Model):
@@ -1199,6 +1206,8 @@ class TestKeys(Model):
     :type primary_test_endpoint: str
     :param secondary_test_endpoint: Secondary test endpoint
     :type secondary_test_endpoint: str
+    :param enabled: Indicates whether the test endpoint feature enabled or not
+    :type enabled: bool
     """
 
     _attribute_map = {
@@ -1206,19 +1215,29 @@ class TestKeys(Model):
         'secondary_key': {'key': 'secondaryKey', 'type': 'str'},
         'primary_test_endpoint': {'key': 'primaryTestEndpoint', 'type': 'str'},
         'secondary_test_endpoint': {'key': 'secondaryTestEndpoint', 'type': 'str'},
+        'enabled': {'key': 'enabled', 'type': 'bool'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, primary_key: str=None, secondary_key: str=None, primary_test_endpoint: str=None, secondary_test_endpoint: str=None, enabled: bool=None, **kwargs) -> None:
         super(TestKeys, self).__init__(**kwargs)
-        self.primary_key = kwargs.get('primary_key', None)
-        self.secondary_key = kwargs.get('secondary_key', None)
-        self.primary_test_endpoint = kwargs.get('primary_test_endpoint', None)
-        self.secondary_test_endpoint = kwargs.get('secondary_test_endpoint', None)
+        self.primary_key = primary_key
+        self.secondary_key = secondary_key
+        self.primary_test_endpoint = primary_test_endpoint
+        self.secondary_test_endpoint = secondary_test_endpoint
+        self.enabled = enabled
 
 
 class TraceProperties(Model):
     """Trace properties payload.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar state: State of the trace proxy. Possible values include:
+     'NotAvailable', 'Failed', 'Succeeded', 'Updating'
+    :vartype state: str or ~azure.mgmt.appplatform.models.TraceProxyState
+    :param error: Error when apply trace proxy changes.
+    :type error: ~azure.mgmt.appplatform.models.Error
     :param enabled: Indicates whether enable the tracing functioanlity
     :type enabled: bool
     :param app_insight_instrumentation_key: Target application insight
@@ -1226,15 +1245,23 @@ class TraceProperties(Model):
     :type app_insight_instrumentation_key: str
     """
 
+    _validation = {
+        'state': {'readonly': True},
+    }
+
     _attribute_map = {
+        'state': {'key': 'state', 'type': 'str'},
+        'error': {'key': 'error', 'type': 'Error'},
         'enabled': {'key': 'enabled', 'type': 'bool'},
         'app_insight_instrumentation_key': {'key': 'appInsightInstrumentationKey', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, error=None, enabled: bool=None, app_insight_instrumentation_key: str=None, **kwargs) -> None:
         super(TraceProperties, self).__init__(**kwargs)
-        self.enabled = kwargs.get('enabled', None)
-        self.app_insight_instrumentation_key = kwargs.get('app_insight_instrumentation_key', None)
+        self.state = None
+        self.error = error
+        self.enabled = enabled
+        self.app_insight_instrumentation_key = app_insight_instrumentation_key
 
 
 class UserSourceInfo(Model):
@@ -1260,9 +1287,9 @@ class UserSourceInfo(Model):
         'artifact_selector': {'key': 'artifactSelector', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, type=None, relative_path: str=None, version: str=None, artifact_selector: str=None, **kwargs) -> None:
         super(UserSourceInfo, self).__init__(**kwargs)
-        self.type = kwargs.get('type', None)
-        self.relative_path = kwargs.get('relative_path', None)
-        self.version = kwargs.get('version', None)
-        self.artifact_selector = kwargs.get('artifact_selector', None)
+        self.type = type
+        self.relative_path = relative_path
+        self.version = version
+        self.artifact_selector = artifact_selector

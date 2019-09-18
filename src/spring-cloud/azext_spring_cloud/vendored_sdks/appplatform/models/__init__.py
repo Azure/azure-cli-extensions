@@ -89,6 +89,7 @@ from ._paged_models import ServiceResourcePaged
 from ._app_platform_management_client_enums import (
     ProvisioningState,
     ConfigServerState,
+    TraceProxyState,
     TestKeyType,
     AppResourceProvisioningState,
     UserSourceType,
@@ -140,6 +141,7 @@ __all__ = [
     'OperationDetailPaged',
     'ProvisioningState',
     'ConfigServerState',
+    'TraceProxyState',
     'TestKeyType',
     'AppResourceProvisioningState',
     'UserSourceType',

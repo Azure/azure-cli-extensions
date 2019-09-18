@@ -13,7 +13,7 @@ from msrestazure.tools import parse_resource_id
 from ._utils import _get_upload_local_file, dump
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
-from ._client_factory import cf_asc
+from ._client_factory import cf_spring_cloud
 from knack.log import get_logger
 from urllib.request import urlretrieve
 from urllib.parse import urlparse
@@ -22,12 +22,10 @@ from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 
 logger = get_logger(__name__)
-#DEFAULT_DEPLOYMENT_URL='https://github.com/peizhou298/Helloworld/releases/download/0.1/jb-hello-world-maven-0.1.0.jar'
-#DEFAULT_DEPLOYMENT_FILE = os.path.join(tempfile.gettempdir(), 'helloworld.jar')
 DEFAULT_DEPLOYMENT_NAME = "default"
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment"
 
-def asc_create(cmd, client, resource_group, name, location=None, no_wait=False):
+def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
     resource = None
     if location is not None:
         resource = models.ServiceResource(location=location)
@@ -36,19 +34,19 @@ def asc_create(cmd, client, resource_group, name, location=None, no_wait=False):
                        resource_group_name=resource_group, service_name=name, resource=resource)
 
 
-def asc_delete(cmd, client, resource_group, name, no_wait=False):
+def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
     return sdk_no_wait(no_wait, client.delete,
                        resource_group_name=resource_group, service_name=name)
 
 
-def asc_list(cmd, client, resource_group=None):
+def spring_cloud_list(cmd, client, resource_group=None):
     if resource_group is None:
         return client.list_by_subscription()
     else:
         return client.list(resource_group)
 
 
-def asc_get(cmd, client, resource_group, name):
+def spring_cloud_get(cmd, client, resource_group, name):
     return client.get(resource_group, name)
 
 
@@ -83,12 +81,16 @@ def app_create(cmd, client, resource_group, service, name,
                is_public=None,
                cpu=None,
                memory=None,
-               instance_count=None,):
+               instance_count=None,
+               enable_persistent_storage=None):
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App " + name + " already exists.")
     logger.warning("Creating app " + name)
     properties = models.AppResourceProperties()
+    if enable_persistent_storage:
+        properties.persistent_disk = models.PersistentDisk(size_in_gb=50)
+
     client.apps.create_or_update(resource_group, service, name, properties)
 
     deployment_settings = models.DeploymentSettings(
@@ -120,13 +122,19 @@ def app_update(cmd, client, resource_group, service, name,
                jvm_options=None,
                env=None,
                tags=None,
+               enable_persistent_storage=None,
                no_wait=False):
-    if is_public is not None:
-        properties = models.AppResourceProperties(public=is_public)
-        logger.warning("updating app " + name)
-        app_updated = client.apps.update(
-            resource_group, service, name, properties)
-        dump(app_updated)
+    properties = models.AppResourceProperties(public=is_public)
+    if enable_persistent_storage is True:
+        properties.persistent_disk = models.PersistentDisk(size_in_gb=50, mount_path="/persistent")
+    if enable_persistent_storage is False:
+        properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
+
+    logger.warning("updating app " + name)
+    app_updated = client.apps.update(
+        resource_group, service, name, properties)
+    dump(app_updated)
+    
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -227,6 +235,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                env=None,
                tags=None,
                no_wait=False):
+    print(jvm_options)
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -236,7 +245,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         deployments = _get_all_deployments(
             client, resource_group, service, name)
         if deployment not in deployments:
-            raise CLIError("Deployment '" + deployment + "' not found, use 'az asc app deployment create' to create a new deployment")
+            raise CLIError("Deployment '" + deployment + "' not found, use 'az spring_cloud app deployment create' to create a new deployment")
 
     file_type, file_path = _get_upload_local_file(jar_path)
     return _app_deploy(client,
@@ -295,7 +304,7 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     if deployment == active_deployment:
         raise CLIError("Deployment '" + deployment + "' is already the production deployment")
     if deployment not in deployments:
-        raise CLIError("Deployment '" + deployment + "' not found, please use 'az asc app deploy create' to create new deployment first")  
+        raise CLIError("Deployment '" + deployment + "' not found, please use 'az spring_cloud app deploy create' to create new deployment first")  
     properties = models.AppResourceProperties(active_deployment_name=deployment)
     return client.apps.update(resource_group, service, name, properties)
 
@@ -341,32 +350,60 @@ def deployment_delete(cmd, client, resource_group, service, app, name):
     return client.deployments.delete(resource_group, service, app, name)
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
-    file_content = None
-    with open(config_file, 'r') as stream:
-        file_content = yaml.safe_load(stream)
-    
-    print(file_content)
-    a = client._deserialize('ServiceResource', file_content)
-    print(a)
-    config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
-    properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    appResource = models.ServiceResource(properties=properties)
+    import json
+    def standardization(dic):
+        new_dic = {}
+        for k, v in dic.items():
+            ks = k.split("-")
+            ks = [seg[0].upper() + seg[1:] for seg in ks]
+            k = ''.join(ks)
+            k = k[0].lower() + k[1:]
+            new_dic[k] = v
+        
+        if 'pattern' in new_dic and isinstance(new_dic['pattern'], str):
+            new_dic['pattern'] = new_dic['pattern'].split(',')
+        if 'searchPaths' in new_dic and isinstance(new_dic['searchPaths'], str):
+            new_dic['searchPaths'] = new_dic['searchPaths'].split(',')
+        return new_dic
 
-    #return sdk_no_wait(no_wait, client.update,
-    #                resource_group, name, appResource)
+    with open(config_file, 'r') as stream:
+        yaml_object = yaml.safe_load(stream)
+    config_property = yaml_object['spring']['cloud']['config']['server']['git']
+
+    if 'default-label' in config_property:
+        config_property['label'] = config_property['default-label']
+        del config_property['default-label']
+
+    config_property = standardization(config_property)
+    repositories = []  
+    if 'repos' in config_property:
+        for k,v in config_property['repos'].items():
+            if 'default-label' in v:
+                v['label'] = v['default-label']
+                del v['default-label']
+            v['name'] = k
+            v = standardization(v)
+            repositories.append(v)
+        del config_property['repos']
+
+    config_property['repositories'] = repositories
+    git_property = client._deserialize('ConfigServerGitProperty', config_property)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    cluster_esource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
+    service_resource = models.ServiceResource(properties=cluster_esource_properties)
+    return sdk_no_wait(no_wait, client.update,
+                    resource_group, name, service_resource)
 
 
 def config_get(cmd, client, resource_group, name):
     resource = client.get(resource_group, name)
-    application_yaml = resource.properties.config_server_properties.application_yaml
-    if application_yaml is None:
-        application_yaml = '{}'
-    return yaml.load(application_yaml, Loader=yaml.FullLoader)
+    config_server = resource.properties.config_server_properties.config_server
+    return config_server
 
 
 def config_delete(cmd, client, resource_group, name):
-    file_content = {}
-    config_server_properties = models.ConfigServerProperties(application_yaml=file_content)
+    config_server_properties = models.ConfigServerProperties(config_server=models.ConfigServerSettings())
     properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
     appResource = models.ServiceResource(properties=properties)
 
@@ -642,8 +679,13 @@ def _app_deploy(client, resource_group, service, app, name, path, runtime_versio
 
 
 def test(cmd, client, resource_group, name=None, app=None, deployment=None):
-    from re import match
-    matchObj = match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])$', name)
-    if matchObj is None:
-        raise CLIError('--name can only contain numbers and lowercases')
+    #file_content = ""
+    with open("default.yaml", 'r') as stream:
+        print("in")
+        try:
+            print(yaml.safe_load(stream))
+        except yaml.YAMLError as exc:
+            print(exc)
+    #a = client._deserialize('ServiceResource', file_content)
+    #print(a)
     return None

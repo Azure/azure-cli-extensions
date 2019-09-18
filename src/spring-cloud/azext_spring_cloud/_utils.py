@@ -185,3 +185,11 @@ def dump(obj):
     json_object = dumps(input_dict, ensure_ascii=False, indent=2, sort_keys=True, cls=_ComplexEncoder,
                         separators=(',', ': ')) + '\n'
     logger.warning(json_object)
+
+class deseralize(object):
+    def __init__(self, d):
+        for a, b in d.items():
+            if isinstance(b, (list, tuple)):
+               setattr(self, a, [deseralize(x) if isinstance(x, dict) else x for x in b])
+            else:
+               setattr(self, a, deseralize(b) if isinstance(b, dict) else b)

@@ -1,0 +1,47 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/xscript/piggymetrics-config.git
+          default-label: master
+          repos:
+            sample:
+              pattern: sample/*, dev/*
+              uri: https://github.com/Incarnation-p-lee/spring-cloud-service-config.git
+              default-label: master
+              username: peizhou298
+              password: zpy4121691
+            test:
+              pattern: test/*
+              uri: git@github.com:Incarnation-p-lee/spring-cloud-service-config.git
+              default-label: snapshot
+              search-paths: /
+              private-key: |
+                -----BEGIN RSA PRIVATE KEY-----
+                MIIEogIBAAKCAQEAnrAIdshDN7wxv45pbdD8UU2hnAfnPu+inMqFtAx91gnDgbcM
+                jUZuWZNgYZAfBhYwvH5H6axPIKPHlpsWDk/a76AX8J+N8trzreOCBnvQeckyvXbt
+                dly9UniR3d7htbdxuQuxwOJb5je28cvTSQ/dkXwcU7qkH9rLGagBj2RDbFSP7AtI
+                QfXPjGdm75O9LghEc9/HdonNjRhpE6NDTkIjlF+cY3TPtFq3zl09HFMlt44rear8
+                8ArFaMmV9LoweLxL64hXndz2JXKU6L6gUnUJiujeEkorlHiFRUsw4WUEOR5dTVW8
+                +nLEjmUwBW7UtLdPRmUxxxxxxxxxsxxaxxxxxwxxxQABAoIBACocDnLu2597qjvp
+                36JLldlBX4RXOI8j6iPvPiG0OuREfQP7/jGzIe9VQ3tAUms8EjzCyfSBTBIeRAV8
+                LBMqL6/s7M1mmbV7UrSvLb7otj7LHFLYr1T8cSTkZ9jXn0+oWV5Acy/7IWXrHPn3
+                G59EvYgwxheV7J2jYsfxJFDXy2iAcR46cTPkXbnYBqufyQKGuDsnAlMKvbm1mjz0
+                ixd1f0/YGU+QTBNB1JGFuWQ7kZKJjBmMw5UZe05+fu5VlFprcoIAc36+lhOmsujB
+                PKepoI6cc7o8yltNKQ+BAzDJtKXXkwQ4dmm21ngGgF8m/9ANxur26jkbGc5N3jPt
+                cGbr4rECgYEAzcc0Al4wCQoKN9U1916G8pCsnpv4m5JfOPj8rN7j/EkzSz17BfLd
+                kecoZIBSUdxxxxxxxxxx6xxaxxxIxxxxbxxxxxxExxxxxxx+XUVXj51sFh/ocMbv
+                DyoRfqhhCCXq5QcnpFXr9Cb+nTOh6iyEm7fvLaOlwZcDWNRDd76c4acCgYEAxWqq
+                YnTzOPTGA5wanAtrq4Gdn8ru7CtW7lNmigLXZJVyC2iihFs6hth3lsu2UQtpNOOR
+                BV5NqqJFZLoWwdLVGOnDRl7DGtgPqlkDtxPpaFGZihjLQ+QrSmCdl6QQFAvWcJuf
+                xYAERarg93PKmwbyDOmJrExcou5u1Y8EzFQZijkCgYA/g3CmGnQxFgw5V3GkvGRi
+                kgz1l6aQPgluCEvU/6bWw7E1U/CY0XFaC0MIYiMGZ2UVu0Wp7MQKB36eoWnqDJbW
+                66wlYwiNX+kSR7P2DeUMysYFvit8Q6qdv5pOwaHRZgKuVhsCOhLt9Os5kiozoTH8
+                7jTAnXYX3oiF7l40o3zAmQKBgAuBArrIC+BWyy8sqpRLShPtcqz8G14hzGgI7iG+
+                tqSC3OlzSH0j/84Z0SY1asNgQdo2JJ5Gd4oo+Jg9C9Rxn79a5+ky3nWy/36yvzes
+                7l4I20Sj2zxykF8+MBDFG7a/VdisCOxuYFFa+s8QrU7JYdOEzGQA8yj/ce/57JKn
+                l/FpAoGAZ7cmKxrDv1r1tv6Ww4vGDpd04rNP0piLbb6XnULu6k3CB8eAq6cqcXHQ
+                JNJeK1rb7psj1CaB0iuLxpm+49ijavQ2YEq9RufYZWiWQQpXM8bN8mF/ghcfBzGc
+                zouz+GSi9Szp7PyDazzknwEtUdAbg4LXVnZqzjhD1cR5LdR5NAM=
+                -----END RSA PRIVATE KEY-----

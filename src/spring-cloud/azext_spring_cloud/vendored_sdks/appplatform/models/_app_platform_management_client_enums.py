@@ -31,6 +31,14 @@ class ConfigServerState(str, Enum):
     updating = "Updating"
 
 
+class TraceProxyState(str, Enum):
+
+    not_available = "NotAvailable"
+    failed = "Failed"
+    succeeded = "Succeeded"
+    updating = "Updating"
+
+
 class TestKeyType(str, Enum):
 
     primary = "Primary"

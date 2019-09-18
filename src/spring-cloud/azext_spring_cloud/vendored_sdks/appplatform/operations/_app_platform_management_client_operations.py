@@ -20,7 +20,7 @@ import uuid
 class AppPlatformManagementClientOperationsMixin(object):
 
     def check_name_availability(
-            self, location, type=None, name=None, custom_headers=None, raw=False, **operation_config):
+            self, location, type, name, custom_headers=None, raw=False, **operation_config):
         """Checks that the resource name is valid and is not already in use.
 
         :param location: the region
@@ -39,9 +39,7 @@ class AppPlatformManagementClientOperationsMixin(object):
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
-        availability_parameters = None
-        if type is not None or name is not None:
-            availability_parameters = models.NameAvailabilityParameters(type=type, name=name)
+        availability_parameters = models.NameAvailabilityParameters(type=type, name=name)
 
         # Construct URL
         url = self.check_name_availability.metadata['url']
@@ -67,10 +65,7 @@ class AppPlatformManagementClientOperationsMixin(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        if availability_parameters is not None:
-            body_content = self._serialize.body(availability_parameters, 'NameAvailabilityParameters')
-        else:
-            body_content = None
+        body_content = self._serialize.body(availability_parameters, 'NameAvailabilityParameters')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters, body_content)
