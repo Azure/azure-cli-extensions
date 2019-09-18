@@ -658,7 +658,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku="basic",
+               load_balancer_sku=None,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
@@ -699,15 +699,12 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         location = rg_location
 
     # Flag to be removed, kept for back-compatibility only. Remove the below section
-    # when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
+    # when we deprecate the enable-vmss flag
     if enable_vmss:
         if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
             raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.
                            format(vm_set_type))
         vm_set_type = "VirtualMachineScaleSets"
-    else:
-        if not vm_set_type:
-            vm_set_type = "AvailabilitySet"
 
     # NOTE: keep for future default behavior change
     if not vm_set_type:
@@ -727,7 +724,6 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
         vm_set_type = "VirtualMachineScaleSets"
 
-    # NOTE: keep for future default behavior change
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
             print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
@@ -1238,6 +1234,14 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "chinanorth2": "chinaeast2"
     }
 
+    # mapping for azure us governmner cloud
+    AzureFairfaxLocationToOmsRegionCodeMap = {
+        "usgovvirginia": "USGV"
+    }
+    AzureFairfaxRegionToOmsRegionMap = {
+        "usgovvirginia": "usgovvirginia"
+    }
+
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
     cloud_name = cmd.cli_ctx.cloud.name
 
@@ -1247,6 +1251,9 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     elif cloud_name.lower() == 'azurechinacloud':
         workspace_region = AzureChinaRegionToOmsRegionMap.get(rg_location, "chinaeast2")
         workspace_region_code = AzureChinaLocationToOmsRegionCodeMap.get(workspace_region, "EAST2")
+    elif cloud_name.lower() == 'azureusgovernment':
+        workspace_region = AzureFairfaxRegionToOmsRegionMap.get(rg_location, "usgovvirginia")
+        workspace_region_code = AzureFairfaxLocationToOmsRegionCodeMap.get(workspace_region, "USGV")
     else:
         logger.error("AKS Monitoring addon not supported in cloud : %s", cloud_name)
 
