@@ -6,13 +6,17 @@
 import subprocess
 import shlex
 import os
+import re
 from json import loads
+import requests
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
-from .exceptions import AzCommandError, WindowsOsNotAvailableError
-# pylint: disable=line-too-long
+from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
+# pylint: disable=line-too-long, deprecated-method
+
+REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
 logger = get_logger(__name__)
 
@@ -57,6 +61,34 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
 
         return stdout
     return None
+
+
+def _get_current_vmrepair_version():
+    from azure.cli.core.extension.operations import list_extensions
+    version = [ext['version'] for ext in list_extensions() if ext['name'] == 'vm-repair']
+    if version:
+        return version[0]
+    return None
+
+
+def check_extension_version(extension_name):
+    from azure.cli.core.extension.operations import list_available_extensions, list_extensions
+
+    available_extensions = list_available_extensions()
+    installed_extensions = list_extensions()
+    extension_to_check = [ext for ext in installed_extensions if ext['name'] == extension_name]
+    if not extension_to_check:
+        logger.debug('The extension with name %s does not exist within installed extensions.', extension_name)
+        return
+
+    extension_to_check = extension_to_check[0]
+
+    for ext in available_extensions:
+        if ext['name'] == extension_name and ext['version'] > extension_to_check['version']:
+            logger.warning('The %s extension is not up to date, please update with az extension update -n %s', extension_name, extension_name)
+            return
+
+    logger.debug('The extension with name %s does not exist within available extensions.', extension_name)
 
 
 def _clean_up_resources(resource_group_name, confirm):
@@ -173,3 +205,119 @@ def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path,
     raise Exception(
         'API version is required and could not be resolved for resource {}'
         .format(resource_type))
+
+
+def _fetch_run_script_map():
+
+    # Fetch map.json from GitHub
+    response = requests.get(url=REPAIR_MAP_URL)
+    # Raise exception when request fails
+    response.raise_for_status()
+
+    return response.json()
+
+
+def _fetch_run_script_path(run_id):
+
+    map_json = _fetch_run_script_map()
+    repair_script_path = [script['path'] for script in map_json if script['id'] == run_id]
+    if repair_script_path:
+        return repair_script_path[0]
+
+    raise RunScriptNotFoundForIdError('Run-script not found for id: {}. Please validate if the id is correct.'.format(run_id))
+
+
+def _process_ps_parameters(parameters):
+    """
+    Returns a ps script formatted parameter string from a list of parameters.
+    Example: [param1=1, param2=2] => -param1 1 -param2 2
+    """
+    param_string = ''
+    for param in parameters:
+        if '=' in param:
+            n, v = param.split('=', 1)
+            param_string += '-{name} {value} '.format(name=n, value=v)
+        else:
+            param_string += '{} '.format(param)
+
+    return param_string.strip(' ')
+
+
+def _process_bash_parameters(parameters):
+    """
+    Returns a bash script formatted parameter string from a list of parameters.
+    Example: [param1=1, param2=2] => 1 2
+    """
+    param_string = ''
+    for param in parameters:
+        if '=' in param:
+            param = param.split('=', 1)[1]
+        param_string += '{p} '.format(p=param)
+
+    return param_string.strip(' ')
+
+
+def _parse_run_script_raw_logs(log_string):
+    """
+    Splits one aggregate log string into a list of each log entry.
+    """
+    pattern = r'((?=\[(?:Log-Start|Log-End|Output|Info|Warning|Error|Debug) ' \
+              r'[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\])|(?=\[STATUS\]))'
+    log_list = _regex_split(pattern, log_string)
+    # Remove empty strings in logs
+    log_list = list(filter(None, log_list))
+    # Format them in dictionary to parse out level
+    logs_dict_list = []
+    for log in log_list:
+        log_dict = {}
+        log_dict['message'] = log.strip('\n')
+        # Set log level property
+        if '[STATUS]::' in log_dict['message']:
+            log_dict['level'] = 'STATUS'
+        else:
+            log_dict['level'] = log_dict['message'].split(' ', 1)[0][1:]
+        logs_dict_list.append(log_dict)
+
+    return logs_dict_list
+
+
+def _regex_split(pattern, string):
+    """
+    Custom split function for zero width split fix.
+    """
+    splits = list((m.start(), m.end()) for m in re.finditer(pattern, string))
+    starts = [0] + [i[1] for i in splits]
+    ends = [i[0] for i in splits] + [len(string)]
+    return [string[start:end] for start, end in zip(starts, ends)]
+
+
+def _check_script_succeeded(log_string):
+
+    status_success = '[STATUS]::SUCCESS'
+    # status_failure = '[STATUS]::ERROR'
+
+    return status_success in log_string
+
+
+def _handle_command_error(return_error_detail, return_message):
+    """Output the right error message and reuturn error return dict"""
+    return_dict = {}
+    if return_error_detail:
+        logger.error(return_error_detail)
+    if return_message:
+        logger.error(return_message)
+    return_dict['status'] = 'ERROR'
+    return_dict['message'] = return_message
+    return_dict['errorDetail'] = return_error_detail
+    return return_dict
+
+
+def _get_function_param_dict(frame):
+    import inspect
+    # getargvalues inadvertently marked as deprecated in Python 3.5
+    _, _, _, values = inspect.getargvalues(frame)
+    if 'cmd' in values:
+        del values['cmd']
+    if 'repair_password' in values:
+        values['repair_password'] = '********'
+    return values
