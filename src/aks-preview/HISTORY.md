@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.15
++++++
+* Set default cluster creation to SLB and VMSS
+
 0.4.14
 +++++
 * Add support for using managed identity to manage cluster resource group
