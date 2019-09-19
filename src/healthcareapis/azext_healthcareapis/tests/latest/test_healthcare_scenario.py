@@ -15,26 +15,26 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class HealthcareScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_healthcare')
-    def test_healthcare(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_healthcareapis')
+    def test_healthcareapis(self, resource_group):
 
         self.kwargs.update({
             'name': 'test1'
         })
 
-        self.cmd('healthcare create -g {rg} -n {name} --tags foo=doo', checks=[
+        self.cmd('healthcareapis create -g {rg} -n {name} --tags foo=doo', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        self.cmd('healthcare update -g {rg} -n {name} --tags foo=boo', checks=[
+        self.cmd('healthcareapis update -g {rg} -n {name} --tags foo=boo', checks=[
             self.check('tags.foo', 'boo')
         ])
-        count = len(self.cmd('healthcare list').get_output_in_json())
-        self.cmd('healthcare show - {rg} -n {name}', checks=[
+        count = len(self.cmd('healthcareapis list').get_output_in_json())
+        self.cmd('healthcareapis show - {rg} -n {name}', checks=[
             self.check('name', '{name}'),
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'boo')
         ])
-        self.cmd('healthcare delete -g {rg} -n {name}')
-        final_count = len(self.cmd('healthcare list').get_output_in_json())
+        self.cmd('healthcareapis delete -g {rg} -n {name}')
+        final_count = len(self.cmd('healthcareapis list').get_output_in_json())
         self.assertTrue(final_count, count - 1)

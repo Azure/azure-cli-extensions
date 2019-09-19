@@ -21,6 +21,7 @@ import tempfile
 import threading
 import time
 import uuid
+import base64
 import webbrowser
 from ipaddress import ip_network
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
@@ -35,7 +36,6 @@ import yaml  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
 from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
-from msrestazure.tools import is_valid_resource_id
 
 from azure.cli.core.api import get_config_dir
 from azure.cli.core._profile import Profile
@@ -47,8 +47,6 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from azure.mgmt.containerregistry.models import (Registry,
-                                                 Sku as RegistrySku)
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceLinuxProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterWindowsProfile
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceNetworkProfile
@@ -66,12 +64,15 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClus
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterIdentity
 from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
+from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
+from ._client_factory import cf_storage
 
 
 logger = get_logger(__name__)
@@ -399,8 +400,31 @@ def delete_role_assignments(cli_ctx, ids=None, assignee=None, role=None, resourc
     if assignments:
         for a in assignments:
             assignments_client.delete_by_id(a.id)
+
+
+def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=None):
+    # AAD can have delays in propagating data, so sleep and retry
+    hook = cli_ctx.get_progress_controller(True)
+    hook.add(message='Waiting for AAD role to delete', value=0, total_val=1.0)
+    logger.info('Waiting for AAD role to delete')
+    for x in range(0, 10):
+        hook.add(message='Waiting for AAD role to delete', value=0.1 * x, total_val=1.0)
+        try:
+            delete_role_assignments(cli_ctx,
+                                    role=role,
+                                    assignee=service_principal,
+                                    scope=scope)
+            break
+        except CLIError as ex:
+            raise ex
+        except CloudError as ex:
+            logger.info(ex)
+        time.sleep(delay + delay * x)
     else:
-        raise CLIError('No matched assignments were found to delete')
+        return False
+    hook.add(message='AAD role deletion done', value=1.0, total_val=1.0)
+    logger.info('AAD role deletion done')
+    return True
 
 
 def _search_role_assignments(cli_ctx, assignments_client, definitions_client,
@@ -636,7 +660,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku="basic",
+               load_balancer_sku=None,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
@@ -655,8 +679,9 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
-               enable_acr=False,
-               acr=None,
+               attach_acr=None,
+               enable_private_cluster=False,
+               enable_managed_identity=False,
                no_wait=False):
 
     if not no_ssh_key:
@@ -676,15 +701,12 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         location = rg_location
 
     # Flag to be removed, kept for back-compatibility only. Remove the below section
-    # when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
+    # when we deprecate the enable-vmss flag
     if enable_vmss:
         if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
             raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.
                            format(vm_set_type))
         vm_set_type = "VirtualMachineScaleSets"
-    else:
-        if not vm_set_type:
-            vm_set_type = "AvailabilitySet"
 
     # NOTE: keep for future default behavior change
     if not vm_set_type:
@@ -704,7 +726,6 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
         vm_set_type = "VirtualMachineScaleSets"
 
-    # NOTE: keep for future default behavior change
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
             print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
@@ -758,14 +779,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         client_id=principal_obj.get("service_principal"),
         secret=principal_obj.get("client_secret"))
 
-    if enable_acr:
+    if attach_acr:
         _ensure_aks_acr(cmd.cli_ctx,
-                        acr,
-                        location,
-                        principal_obj.get("service_principal"),
-                        resource_group_name,
-                        subscription_id,
-                        create_acr=True)
+                        client_id=service_principal_profile.client_id,
+                        acr_name_or_id=attach_acr,
+                        subscription_id=subscription_id)
 
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
@@ -835,6 +853,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if all([disable_rbac, enable_rbac]):
         raise CLIError('specify either "--disable-rbac" or "--enable-rbac", not both.')
 
+    identity = None
+    if enable_managed_identity:
+        identity = ManagedClusterIdentity(
+            type="SystemAssigned"
+        )
     mc = ManagedCluster(
         location=location, tags=tags,
         dns_prefix=dns_name_prefix,
@@ -847,10 +870,18 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         network_profile=network_profile,
         addon_profiles=addon_profiles,
         aad_profile=aad_profile,
-        enable_pod_security_policy=bool(enable_pod_security_policy))
+        enable_pod_security_policy=bool(enable_pod_security_policy),
+        identity=identity)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
+
+    if enable_private_cluster:
+        if load_balancer_sku.lower() != "standard":
+            raise CLIError("Please use standard load balancer for private cluster")
+        mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
+            enable_private_cluster=True
+        )
 
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
@@ -878,11 +909,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                api_server_authorized_ip_ranges=None,
                enable_pod_security_policy=False,
                disable_pod_security_policy=False,
-               enable_acr=False,
-               disable_acr=False,
-               acr=None):
+               attach_acr=None,
+               detach_acr=None):
     update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
-    update_acr = enable_acr or disable_acr
+    update_acr = attach_acr is not None or detach_acr is not None
     update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
         load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
     # pylint: disable=too-many-boolean-expressions
@@ -895,8 +925,8 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--enable-pod-security-policy" or '
                        '"--disable-pod-security-policy" or '
                        '"--api-server-authorized-ip-ranges" or '
-                       '"--enable-acr" or '
-                       '"--disable-acr" or '
+                       '"--attach-acr" or '
+                       '"--detach-acr" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes"')
@@ -973,29 +1003,26 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                 except ValueError:
                     raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
-    if enable_acr and disable_acr:
-        raise CLIError('Cannot specify --enable-acr and --disable-acr at the same time.')
+    if attach_acr and detach_acr:
+        raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
     subscription_id = _get_subscription_id(cmd.cli_ctx)
-    location = instance.location
-    service_principal = instance.service_principal_profile.client_id
-    if not service_principal:
+    client_id = instance.service_principal_profile.client_id
+    if not client_id:
         raise CLIError('Cannot get the AKS cluster\'s service principal.')
 
-    if enable_acr:
+    if attach_acr:
         _ensure_aks_acr(cmd.cli_ctx,
-                        acr,
-                        location,
-                        service_principal,
-                        resource_group_name,
-                        subscription_id)
+                        client_id=client_id,
+                        acr_name_or_id=attach_acr,
+                        subscription_id=subscription_id)
 
-    if disable_acr:
-        _ensure_aks_acr_disabled(cmd.cli_ctx,
-                                 acr,
-                                 service_principal,
-                                 resource_group_name,
-                                 subscription_id)
+    if detach_acr:
+        _ensure_aks_acr(cmd.cli_ctx,
+                        client_id=client_id,
+                        acr_name_or_id=detach_acr,
+                        subscription_id=subscription_id,
+                        detach=True)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
@@ -1058,6 +1085,108 @@ ADDONS = {
 }
 
 
+# pylint: disable=line-too-long
+def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sas_token=None):
+    mc = client.get(resource_group_name, name)
+
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
+
+    storage_account_id = None
+    if storage_account is None:
+        print("No storage account specified. Try getting storage account from diagnostic settings")
+        storage_account_id = get_storage_account_from_diag_settings(cmd.cli_ctx, resource_group_name, name)
+        if storage_account_id is None:
+            raise CLIError("A storage account must be specified, since there isn't one in the diagnostic settings.")
+
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+    if storage_account_id is None:
+        if not is_valid_resource_id(storage_account):
+            storage_account_id = resource_id(
+                subscription=_get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Storage', type='storageAccounts',
+                name=storage_account
+            )
+        else:
+            storage_account_id = storage_account
+
+    if is_valid_resource_id(storage_account_id):
+        try:
+            parsed_storage_account = parse_resource_id(storage_account_id)
+        except CloudError as ex:
+            raise CLIError(ex.message)
+    else:
+        raise CLIError("Invalid storage account id %s" % storage_account_id)
+
+    storage_account_name = parsed_storage_account['name']
+
+    readonly_sas_token = None
+    if sas_token is None:
+        storage_client = cf_storage(cmd.cli_ctx, parsed_storage_account['subscription'])
+        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
+        kwargs = {
+            'account_name': storage_account_name,
+            'account_key': storage_account_keys.keys[0].value
+        }
+        cloud_storage_client = cloud_storage_account_service_factory(cmd.cli_ctx, kwargs)
+
+        sas_token = cloud_storage_client.generate_shared_access_signature(
+            'b',
+            'sco',
+            'rwdlacup',
+            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = cloud_storage_client.generate_shared_access_signature(
+            'b',
+            'sco',
+            'rl',
+            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = readonly_sas_token.strip('?')
+
+    print("Confirmed. Diagnostic info will be stored in the storage account %s as outlined in aka.ms/AKSPeriscope." % storage_account_name)
+
+    from knack.prompting import prompt_y_n
+    msg = 'This will deploy a daemon set to your cluster to collect logs and diagnostic information and ' \
+        'save them to the specified storage account as outlined in aka.ms/AKSPeriscope. If you share access ' \
+        'to that storage account to Azure support, you consent to the terms outlined in aka.ms/DiagConsent. ' \
+        'Do you confirm?'
+
+    if not prompt_y_n(msg, default="n"):
+        return
+
+    print("Getting credentials for cluster %s " % name)
+    _, temp_kubeconfig_path = tempfile.mkstemp()
+    aks_get_credentials(cmd, client, resource_group_name, name, admin=True, path=temp_kubeconfig_path)
+
+    print("Starts collecting diag info for cluster %s " % name)
+
+    sas_token = sas_token.strip('?')
+    deployment_yaml = urlopen("https://raw.githubusercontent.com/Azure/aks-periscope/v0.1/deployment/aks-periscope.yaml").read().decode()
+    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>", (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+
+    fd, temp_yaml_path = tempfile.mkstemp()
+    temp_yaml_file = os.fdopen(fd, 'w+t')
+    try:
+        temp_yaml_file.write(deployment_yaml)
+        temp_yaml_file.flush()
+        temp_yaml_file.close()
+        try:
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
+                                     temp_yaml_path], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            raise CLIError(err.output)
+    finally:
+        os.remove(temp_yaml_path)
+
+    if readonly_sas_token is not None:
+        print("You can find the diagnostic info in this readonly SAS Url: https://%s.blob.core.windows.net/%s?%s" % (storage_account_name, mc.fqdn.replace('.', '-'), readonly_sas_token))
+    else:
+        print("You can find the diagnostic info here: https://%s.blob.core.windows.net/%s" % (storage_account_name, mc.fqdn.replace('.', '-')))
+
+
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
@@ -1071,7 +1200,8 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
-def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument
+def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version,
+                control_plane_only=False, no_wait=False, **kwargs):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
 
     if instance.kubernetes_version == kubernetes_version:
@@ -1083,7 +1213,41 @@ def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_w
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
+    from knack.prompting import prompt_y_n
+
+    upgrade_all = False
     instance.kubernetes_version = kubernetes_version
+
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
+    # for legacy clusters, we always upgrade node pools with CCP.
+    if instance.max_agent_pools < 8 or vmas_cluster:
+        if control_plane_only:
+            msg = ("Legacy clusters do not support control plane only upgrade. All node pools will be "
+                   "upgraded to {} as well. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+        upgrade_all = True
+    else:
+        if not control_plane_only:
+            msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
+                   "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+            upgrade_all = True
+        else:
+            msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
+                   "Node pool will not change. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+
+    if upgrade_all:
+        for agent_profile in instance.agent_pool_profiles:
+            agent_profile.orchestrator_version = kubernetes_version
 
     # null out the SP and AAD profile because otherwise validation complains
     instance.service_principal_profile = None
@@ -1209,6 +1373,14 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "chinanorth2": "chinaeast2"
     }
 
+    # mapping for azure us governmner cloud
+    AzureFairfaxLocationToOmsRegionCodeMap = {
+        "usgovvirginia": "USGV"
+    }
+    AzureFairfaxRegionToOmsRegionMap = {
+        "usgovvirginia": "usgovvirginia"
+    }
+
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
     cloud_name = cmd.cli_ctx.cloud.name
 
@@ -1218,6 +1390,9 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     elif cloud_name.lower() == 'azurechinacloud':
         workspace_region = AzureChinaRegionToOmsRegionMap.get(rg_location, "chinaeast2")
         workspace_region_code = AzureChinaLocationToOmsRegionCodeMap.get(workspace_region, "EAST2")
+    elif cloud_name.lower() == 'azureusgovernment':
+        workspace_region = AzureFairfaxRegionToOmsRegionMap.get(rg_location, "usgovvirginia")
+        workspace_region_code = AzureFairfaxLocationToOmsRegionCodeMap.get(workspace_region, "USGV")
     else:
         logger.error("AKS Monitoring addon not supported in cloud : %s", cloud_name)
 
@@ -1445,119 +1620,55 @@ def _create_client_secret():
 
 
 def _ensure_aks_acr(cli_ctx,
-                    acr,
-                    location,
                     client_id,
-                    resource_group_name,
+                    acr_name_or_id,
                     subscription_id,
-                    create_acr=False):
-    if is_valid_resource_id(acr):
-        resources = cf_resources(cli_ctx, subscription_id)
-
-        # check if the ACR exists.
+                    detach=False):
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id
+    # Check if the ACR exists by resource ID.
+    if is_valid_resource_id(acr_name_or_id):
         try:
-            resources.get_by_id(acr, "2019-05-01")
+            parsed_registry = parse_resource_id(acr_name_or_id)
+            acr_client = cf_container_registry_service(cli_ctx, subscription_id=parsed_registry['subscription'])
+            registry = acr_client.registries.get(parsed_registry['resource_group'], parsed_registry['name'])
         except CloudError as ex:
-            raise ex
+            raise CLIError(ex.message)
+        _ensure_aks_acr_role_assignment(cli_ctx, client_id, registry.id, detach)
+        return
 
-        # Create role assignment for ACR.
-        if not _add_role_assignment(cli_ctx,
-                                    'acrpull',
+    # Check if the ACR exists by name accross all resource groups.
+    registry_name = acr_name_or_id
+    registry_resource = 'Microsoft.ContainerRegistry/registries'
+    try:
+        registry = get_resource_by_name(cli_ctx, registry_name, registry_resource)
+    except CloudError as ex:
+        if 'was not found' in ex.message:
+            raise CLIError("ACR {} not found. Have you provided the right ACR name?".format(registry_name))
+        raise CLIError(ex.message)
+    _ensure_aks_acr_role_assignment(cli_ctx, client_id, registry.id, detach)
+    return
+
+
+def _ensure_aks_acr_role_assignment(cli_ctx,
                                     client_id,
-                                    scope=acr):
-            raise CLIError('Could not create a role assignment for ACR. '
+                                    registry_id,
+                                    detach=False):
+    if detach:
+        if not _delete_role_assignments(cli_ctx,
+                                        'acrpull',
+                                        client_id,
+                                        scope=registry_id):
+            raise CLIError('Could not delete role assignments for ACR. '
                            'Are you an Owner on this subscription?')
         return
 
-    acr_client = cf_container_registry_service(cli_ctx)
-    # Generate a default ACR name.
-    registry_name = acr
-    if registry_name is None or registry_name == "":
-        alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
-        registry_name = "aks" + alnum_name + "acr"
-
-    # Get ACR by name.
-    try:
-        registry = acr_client.registries.get(
-            resource_group_name, registry_name)
-    except CloudError as ex:
-        if 'was not found' in ex.message:
-            if not create_acr:
-                raise CLIError("ACR {} not found. Have you provided the right ACR name?".format(registry_name))
-
-            logger.info(ex.message)
-            logger.info('Creating a new ACR')
-            _ensure_aks_acr_created(acr_client=acr_client,
-                                    resource_group_name=resource_group_name,
-                                    registry_name=registry_name,
-                                    location=location)
-            registry = acr_client.registries.get(
-                resource_group_name, registry_name)
-    except Exception as e:
-        logger.exception(e)
-        raise CLIError(e)
-
-    # Create role assignment for ACR.
     if not _add_role_assignment(cli_ctx,
                                 'acrpull',
                                 client_id,
-                                scope=registry.id):
+                                scope=registry_id):
         raise CLIError('Could not create a role assignment for ACR. '
                        'Are you an Owner on this subscription?')
-
-
-def _ensure_aks_acr_created(acr_client, resource_group_name, registry_name, location):
-    registry = Registry(name=registry_name, location=location, sku=RegistrySku(name="standard"))
-    try:
-        acr_client.registries.create(resource_group_name, registry_name, registry)
-    except CloudError as ex:
-        if 'already in use' in ex.message:
-            logger.info(ex.message)
-            raise CLIError("The registry name has already been in use. Please change to another name.")
-    except Exception as e:
-        logger.info(e)
-        raise CLIError(e)
-
-
-def _ensure_aks_acr_disabled(cli_ctx,
-                             acr,
-                             client_id,
-                             resource_group_name,
-                             subscription_id):
-    acr_resource_id = ""
-    if is_valid_resource_id(acr):
-        acr_resource_id = acr
-        resources = cf_resources(cli_ctx, subscription_id)
-
-        # check if the ACR exists.
-        try:
-            resources.get_by_id(acr, "2019-05-01")
-        except CloudError as ex:
-            raise ex
-    else:
-        acr_client = cf_container_registry_service(cli_ctx)
-        # Generate the default ACR name if it is not provided.
-        registry_name = acr
-        if registry_name is None or registry_name == "":
-            alnum_name = ''.join(s for s in resource_group_name if s.isalnum())
-            registry_name = "aks" + alnum_name + "acr"
-
-        # Get ACR by name.
-        try:
-            registry = acr_client.registries.get(
-                resource_group_name, registry_name)
-        except CloudError as ex:
-            raise ex
-
-        acr_resource_id = registry.id
-
-    # delete role assignment for ACR.
-    if not _delete_role_assignments(cli_ctx,
-                                    'acrpull',
-                                    client_id,
-                                    scope=acr_resource_id):
-        raise CLIError('Could not disable role assignments for ACR. '
-                       'Are you an Owner on this subscription?')
+    return
 
 
 def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
@@ -1987,3 +2098,27 @@ def _get_load_balancer_profile(load_balancer_managed_outbound_ip_count,
                 public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
             )
     return load_balancer_profile
+
+
+def cloud_storage_account_service_factory(cli_ctx, kwargs):
+    from azure.cli.core.profiles import ResourceType, get_sdk
+    t_cloud_storage_account = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    sas_token = kwargs.pop('sas_token', None)
+    kwargs.pop('connection_string', None)
+    return t_cloud_storage_account(account_name, account_key, sas_token)
+
+
+def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
+    from azure.mgmt.monitor import MonitorManagementClient
+    diag_settings_client = get_mgmt_service_client(cli_ctx, MonitorManagementClient).diagnostic_settings
+    subscription_id = _get_subscription_id(cli_ctx)
+    aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
+        '/managedClusters/{2}'.format(subscription_id, resource_group_name, name)
+    diag_settings = diag_settings_client.list(aks_resource_id)
+    if diag_settings.value:
+        return diag_settings.value[0].storage_account_id
+
+    print("No diag settings specified")
+    return None
