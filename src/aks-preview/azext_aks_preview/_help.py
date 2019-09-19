@@ -293,6 +293,31 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
 """
 
+helps['aks kollect'] = """
+    type: command
+    short-summary: Collecting diagnostic information for the Kubernetes cluster.
+    long-summary: |-
+        Collect diagnostic information for the Kubernetes cluster and store it in the specified storage account.
+        You can provide the storage account in three ways:
+          storage account name and a shared access signature with write permission.
+          resource Id to a storage account you own.
+          the storagea account in diagnostics settings for your managed cluster.
+    parameters:
+        - name: --storage-account
+          type: string
+          short-summary: Name or ID of the storage account to save the diagnostic information.
+        - name: --sas-token
+          type: string
+          short-summary: The SAS token with writable permission for the storage account.
+    examples:
+      - name: using storage account name and a shared access signature token with write permission
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+      - name: using the resource id of a storagea account resource you own.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account "MyStoreageAccountResourceId"
+      - name: using the storagea account in diagnostics settings for your managed cluster.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in Kubernetes kubernetes cluster.

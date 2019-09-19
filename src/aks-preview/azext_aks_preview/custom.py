@@ -21,6 +21,7 @@ import tempfile
 import threading
 import time
 import uuid
+import base64
 import webbrowser
 from ipaddress import ip_network
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
@@ -71,6 +72,7 @@ from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
+from ._client_factory import cf_storage
 
 
 logger = get_logger(__name__)
@@ -1083,6 +1085,108 @@ ADDONS = {
 }
 
 
+# pylint: disable=line-too-long
+def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sas_token=None):
+    mc = client.get(resource_group_name, name)
+
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
+
+    storage_account_id = None
+    if storage_account is None:
+        print("No storage account specified. Try getting storage account from diagnostic settings")
+        storage_account_id = get_storage_account_from_diag_settings(cmd.cli_ctx, resource_group_name, name)
+        if storage_account_id is None:
+            raise CLIError("A storage account must be specified, since there isn't one in the diagnostic settings.")
+
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+    if storage_account_id is None:
+        if not is_valid_resource_id(storage_account):
+            storage_account_id = resource_id(
+                subscription=_get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Storage', type='storageAccounts',
+                name=storage_account
+            )
+        else:
+            storage_account_id = storage_account
+
+    if is_valid_resource_id(storage_account_id):
+        try:
+            parsed_storage_account = parse_resource_id(storage_account_id)
+        except CloudError as ex:
+            raise CLIError(ex.message)
+    else:
+        raise CLIError("Invalid storage account id %s" % storage_account_id)
+
+    storage_account_name = parsed_storage_account['name']
+
+    readonly_sas_token = None
+    if sas_token is None:
+        storage_client = cf_storage(cmd.cli_ctx, parsed_storage_account['subscription'])
+        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
+        kwargs = {
+            'account_name': storage_account_name,
+            'account_key': storage_account_keys.keys[0].value
+        }
+        cloud_storage_client = cloud_storage_account_service_factory(cmd.cli_ctx, kwargs)
+
+        sas_token = cloud_storage_client.generate_shared_access_signature(
+            'b',
+            'sco',
+            'rwdlacup',
+            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = cloud_storage_client.generate_shared_access_signature(
+            'b',
+            'sco',
+            'rl',
+            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = readonly_sas_token.strip('?')
+
+    print("Confirmed. Diagnostic info will be stored in the storage account %s as outlined in aka.ms/AKSPeriscope." % storage_account_name)
+
+    from knack.prompting import prompt_y_n
+    msg = 'This will deploy a daemon set to your cluster to collect logs and diagnostic information and ' \
+        'save them to the specified storage account as outlined in aka.ms/AKSPeriscope. If you share access ' \
+        'to that storage account to Azure support, you consent to the terms outlined in aka.ms/DiagConsent. ' \
+        'Do you confirm?'
+
+    if not prompt_y_n(msg, default="n"):
+        return
+
+    print("Getting credentials for cluster %s " % name)
+    _, temp_kubeconfig_path = tempfile.mkstemp()
+    aks_get_credentials(cmd, client, resource_group_name, name, admin=True, path=temp_kubeconfig_path)
+
+    print("Starts collecting diag info for cluster %s " % name)
+
+    sas_token = sas_token.strip('?')
+    deployment_yaml = urlopen("https://raw.githubusercontent.com/Azure/aks-periscope/v0.1/deployment/aks-periscope.yaml").read().decode()
+    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>", (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+
+    fd, temp_yaml_path = tempfile.mkstemp()
+    temp_yaml_file = os.fdopen(fd, 'w+t')
+    try:
+        temp_yaml_file.write(deployment_yaml)
+        temp_yaml_file.flush()
+        temp_yaml_file.close()
+        try:
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
+                                     temp_yaml_path], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            raise CLIError(err.output)
+    finally:
+        os.remove(temp_yaml_path)
+
+    if readonly_sas_token is not None:
+        print("You can find the diagnostic info in this readonly SAS Url: https://%s.blob.core.windows.net/%s?%s" % (storage_account_name, mc.fqdn.replace('.', '-'), readonly_sas_token))
+    else:
+        print("You can find the diagnostic info here: https://%s.blob.core.windows.net/%s" % (storage_account_name, mc.fqdn.replace('.', '-')))
+
+
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
@@ -1959,3 +2063,27 @@ def _get_load_balancer_profile(load_balancer_managed_outbound_ip_count,
                 public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
             )
     return load_balancer_profile
+
+
+def cloud_storage_account_service_factory(cli_ctx, kwargs):
+    from azure.cli.core.profiles import ResourceType, get_sdk
+    t_cloud_storage_account = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    sas_token = kwargs.pop('sas_token', None)
+    kwargs.pop('connection_string', None)
+    return t_cloud_storage_account(account_name, account_key, sas_token)
+
+
+def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
+    from azure.mgmt.monitor import MonitorManagementClient
+    diag_settings_client = get_mgmt_service_client(cli_ctx, MonitorManagementClient).diagnostic_settings
+    subscription_id = _get_subscription_id(cli_ctx)
+    aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
+        '/managedClusters/{2}'.format(subscription_id, resource_group_name, name)
+    diag_settings = diag_settings_client.list(aks_resource_id)
+    if diag_settings.value:
+        return diag_settings.value[0].storage_account_id
+
+    print("No diag settings specified")
+    return None
