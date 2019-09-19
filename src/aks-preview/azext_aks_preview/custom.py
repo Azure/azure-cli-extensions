@@ -21,6 +21,7 @@ import tempfile
 import threading
 import time
 import uuid
+import base64
 import webbrowser
 from ipaddress import ip_network
 from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
@@ -71,6 +72,7 @@ from ._client_factory import get_graph_rbac_management_client
 from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
+from ._client_factory import cf_storage
 
 
 logger = get_logger(__name__)
@@ -658,7 +660,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                service_cidr=None,
                dns_service_ip=None,
                docker_bridge_address=None,
-               load_balancer_sku="basic",
+               load_balancer_sku=None,
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
@@ -699,15 +701,12 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         location = rg_location
 
     # Flag to be removed, kept for back-compatibility only. Remove the below section
-    # when we deprecate the enable-vmss flag and change the default value for vm_set_type to vmss
+    # when we deprecate the enable-vmss flag
     if enable_vmss:
         if vm_set_type and vm_set_type.lower() != "VirtualMachineScaleSets".lower():
             raise CLIError('enable-vmss and provided vm_set_type ({}) are conflicting with each other'.
                            format(vm_set_type))
         vm_set_type = "VirtualMachineScaleSets"
-    else:
-        if not vm_set_type:
-            vm_set_type = "AvailabilitySet"
 
     # NOTE: keep for future default behavior change
     if not vm_set_type:
@@ -727,7 +726,6 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
         vm_set_type = "VirtualMachineScaleSets"
 
-    # NOTE: keep for future default behavior change
     if not load_balancer_sku:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
             print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
@@ -1087,6 +1085,108 @@ ADDONS = {
 }
 
 
+# pylint: disable=line-too-long
+def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sas_token=None):
+    mc = client.get(resource_group_name, name)
+
+    if not which('kubectl'):
+        raise CLIError('Can not find kubectl executable in PATH')
+
+    storage_account_id = None
+    if storage_account is None:
+        print("No storage account specified. Try getting storage account from diagnostic settings")
+        storage_account_id = get_storage_account_from_diag_settings(cmd.cli_ctx, resource_group_name, name)
+        if storage_account_id is None:
+            raise CLIError("A storage account must be specified, since there isn't one in the diagnostic settings.")
+
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+    if storage_account_id is None:
+        if not is_valid_resource_id(storage_account):
+            storage_account_id = resource_id(
+                subscription=_get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Storage', type='storageAccounts',
+                name=storage_account
+            )
+        else:
+            storage_account_id = storage_account
+
+    if is_valid_resource_id(storage_account_id):
+        try:
+            parsed_storage_account = parse_resource_id(storage_account_id)
+        except CloudError as ex:
+            raise CLIError(ex.message)
+    else:
+        raise CLIError("Invalid storage account id %s" % storage_account_id)
+
+    storage_account_name = parsed_storage_account['name']
+
+    readonly_sas_token = None
+    if sas_token is None:
+        storage_client = cf_storage(cmd.cli_ctx, parsed_storage_account['subscription'])
+        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
+        kwargs = {
+            'account_name': storage_account_name,
+            'account_key': storage_account_keys.keys[0].value
+        }
+        cloud_storage_client = cloud_storage_account_service_factory(cmd.cli_ctx, kwargs)
+
+        sas_token = cloud_storage_client.generate_shared_access_signature(
+            'b',
+            'sco',
+            'rwdlacup',
+            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = cloud_storage_client.generate_shared_access_signature(
+            'b',
+            'sco',
+            'rl',
+            datetime.datetime.utcnow() + datetime.timedelta(days=1))
+
+        readonly_sas_token = readonly_sas_token.strip('?')
+
+    print("Confirmed. Diagnostic info will be stored in the storage account %s as outlined in aka.ms/AKSPeriscope." % storage_account_name)
+
+    from knack.prompting import prompt_y_n
+    msg = 'This will deploy a daemon set to your cluster to collect logs and diagnostic information and ' \
+        'save them to the specified storage account as outlined in aka.ms/AKSPeriscope. If you share access ' \
+        'to that storage account to Azure support, you consent to the terms outlined in aka.ms/DiagConsent. ' \
+        'Do you confirm?'
+
+    if not prompt_y_n(msg, default="n"):
+        return
+
+    print("Getting credentials for cluster %s " % name)
+    _, temp_kubeconfig_path = tempfile.mkstemp()
+    aks_get_credentials(cmd, client, resource_group_name, name, admin=True, path=temp_kubeconfig_path)
+
+    print("Starts collecting diag info for cluster %s " % name)
+
+    sas_token = sas_token.strip('?')
+    deployment_yaml = urlopen("https://raw.githubusercontent.com/Azure/aks-periscope/v0.1/deployment/aks-periscope.yaml").read().decode()
+    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>", (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+
+    fd, temp_yaml_path = tempfile.mkstemp()
+    temp_yaml_file = os.fdopen(fd, 'w+t')
+    try:
+        temp_yaml_file.write(deployment_yaml)
+        temp_yaml_file.flush()
+        temp_yaml_file.close()
+        try:
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
+                                     temp_yaml_path], stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as err:
+            raise CLIError(err.output)
+    finally:
+        os.remove(temp_yaml_path)
+
+    if readonly_sas_token is not None:
+        print("You can find the diagnostic info in this readonly SAS Url: https://%s.blob.core.windows.net/%s?%s" % (storage_account_name, mc.fqdn.replace('.', '-'), readonly_sas_token))
+    else:
+        print("You can find the diagnostic info here: https://%s.blob.core.windows.net/%s" % (storage_account_name, mc.fqdn.replace('.', '-')))
+
+
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
@@ -1100,7 +1200,8 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
-def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument
+def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version,
+                control_plane_only=False, no_wait=False, **kwargs):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
 
     if instance.kubernetes_version == kubernetes_version:
@@ -1112,7 +1213,41 @@ def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_w
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
+    from knack.prompting import prompt_y_n
+
+    upgrade_all = False
     instance.kubernetes_version = kubernetes_version
+
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
+    # for legacy clusters, we always upgrade node pools with CCP.
+    if instance.max_agent_pools < 8 or vmas_cluster:
+        if control_plane_only:
+            msg = ("Legacy clusters do not support control plane only upgrade. All node pools will be "
+                   "upgraded to {} as well. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+        upgrade_all = True
+    else:
+        if not control_plane_only:
+            msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
+                   "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+            upgrade_all = True
+        else:
+            msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
+                   "Node pool will not change. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+
+    if upgrade_all:
+        for agent_profile in instance.agent_pool_profiles:
+            agent_profile.orchestrator_version = kubernetes_version
 
     # null out the SP and AAD profile because otherwise validation complains
     instance.service_principal_profile = None
@@ -1238,6 +1373,14 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "chinanorth2": "chinaeast2"
     }
 
+    # mapping for azure us governmner cloud
+    AzureFairfaxLocationToOmsRegionCodeMap = {
+        "usgovvirginia": "USGV"
+    }
+    AzureFairfaxRegionToOmsRegionMap = {
+        "usgovvirginia": "usgovvirginia"
+    }
+
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
     cloud_name = cmd.cli_ctx.cloud.name
 
@@ -1247,6 +1390,9 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     elif cloud_name.lower() == 'azurechinacloud':
         workspace_region = AzureChinaRegionToOmsRegionMap.get(rg_location, "chinaeast2")
         workspace_region_code = AzureChinaLocationToOmsRegionCodeMap.get(workspace_region, "EAST2")
+    elif cloud_name.lower() == 'azureusgovernment':
+        workspace_region = AzureFairfaxRegionToOmsRegionMap.get(rg_location, "usgovvirginia")
+        workspace_region_code = AzureFairfaxLocationToOmsRegionCodeMap.get(workspace_region, "USGV")
     else:
         logger.error("AKS Monitoring addon not supported in cloud : %s", cloud_name)
 
@@ -1952,3 +2098,27 @@ def _get_load_balancer_profile(load_balancer_managed_outbound_ip_count,
                 public_ip_prefixes=load_balancer_outbound_ip_prefix_resources
             )
     return load_balancer_profile
+
+
+def cloud_storage_account_service_factory(cli_ctx, kwargs):
+    from azure.cli.core.profiles import ResourceType, get_sdk
+    t_cloud_storage_account = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    sas_token = kwargs.pop('sas_token', None)
+    kwargs.pop('connection_string', None)
+    return t_cloud_storage_account(account_name, account_key, sas_token)
+
+
+def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
+    from azure.mgmt.monitor import MonitorManagementClient
+    diag_settings_client = get_mgmt_service_client(cli_ctx, MonitorManagementClient).diagnostic_settings
+    subscription_id = _get_subscription_id(cli_ctx)
+    aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
+        '/managedClusters/{2}'.format(subscription_id, resource_group_name, name)
+    diag_settings = diag_settings_client.list(aks_resource_id)
+    if diag_settings.value:
+        return diag_settings.value[0].storage_account_id
+
+    print("No diag settings specified")
+    return None

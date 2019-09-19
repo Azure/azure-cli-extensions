@@ -67,18 +67,18 @@ helps['aks create'] = """
           short-summary: User account password to use on windows node VMs.
         - name: --aad-client-app-id
           type: string
-          short-summary: (PREVIEW) The ID of an Azure Active Directory client application of type "Native". This
+          short-summary: The ID of an Azure Active Directory client application of type "Native". This
                          application is for user login via kubectl.
         - name: --aad-server-app-id
           type: string
-          short-summary: (PREVIEW) The ID of an Azure Active Directory server application of type "Web app/API". This
+          short-summary: The ID of an Azure Active Directory server application of type "Web app/API". This
                          application represents the managed cluster's apiserver (Server application).
         - name: --aad-server-app-secret
           type: string
-          short-summary: (PREVIEW) The secret of an Azure Active Directory server application.
+          short-summary: The secret of an Azure Active Directory server application.
         - name: --aad-tenant-id
           type: string
-          short-summary: (PREVIEW) The ID of an Azure Active Directory tenant.
+          short-summary: The ID of an Azure Active Directory tenant.
         - name: --dns-service-ip
           type: string
           short-summary: An IP address assigned to the Kubernetes DNS service.
@@ -224,6 +224,9 @@ helps['aks upgrade'] = """
           short-summary: Version of Kubernetes to upgrade the cluster to, such as "1.11.12".
           populator-commands:
           - "`az aks get-upgrades`"
+        - name: --control-plane-only
+          type: bool
+          short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
 """
 
 helps['aks update'] = """
@@ -291,6 +294,31 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+"""
+
+helps['aks kollect'] = """
+    type: command
+    short-summary: Collecting diagnostic information for the Kubernetes cluster.
+    long-summary: |-
+        Collect diagnostic information for the Kubernetes cluster and store it in the specified storage account.
+        You can provide the storage account in three ways:
+          storage account name and a shared access signature with write permission.
+          resource Id to a storage account you own.
+          the storagea account in diagnostics settings for your managed cluster.
+    parameters:
+        - name: --storage-account
+          type: string
+          short-summary: Name or ID of the storage account to save the diagnostic information.
+        - name: --sas-token
+          type: string
+          short-summary: The SAS token with writable permission for the storage account.
+    examples:
+      - name: using storage account name and a shared access signature token with write permission
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+      - name: using the resource id of a storagea account resource you own.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account "MyStoreageAccountResourceId"
+      - name: using the storagea account in diagnostics settings for your managed cluster.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks nodepool'] = """
