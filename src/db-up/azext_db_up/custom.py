@@ -332,7 +332,7 @@ def _create_postgresql_connection_string(host, user, password, database):
 
 def _create_sql_connection_string(host, user, password, database):
     result = {
-        # https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-nodejs
+        # https://docs.microsoft.com/azure/sql-database/sql-database-connect-query-nodejs
         'ado.net': "Server={host},1433;Initial Catalog={database};User ID={user};Password={password};",
         'jdbc': "jdbc:sqlserver://{host}:1433;database={database};user={user};password={password};",
         'odbc': "Driver={{ODBC Driver 13 for SQL Server}};Server={host},1433;Database={database};Uid={user};"

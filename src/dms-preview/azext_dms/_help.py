@@ -120,7 +120,7 @@ helps['dms project task create'] = """
                                           ...n
                                       ],
                                       // whether shard key is unique
-                                      // see https://docs.microsoft.com/en-us/azure/cosmos-db/partition-data
+                                      // see https://docs.microsoft.com/azure/cosmos-db/partition-data
                                       "isUnique": false
                                   },
                                   "targetRUs": 10000

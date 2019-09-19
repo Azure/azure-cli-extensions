@@ -928,7 +928,7 @@ class StorageAccountsOperations(object):
         :type account_name: str
         :param policy: The Storage Account ManagementPolicies Rules, in JSON
          format. See more details in:
-         https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts.
+         https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.
         :type policy: object
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
