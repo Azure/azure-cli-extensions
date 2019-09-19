@@ -1200,7 +1200,8 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
-def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_wait=False, **kwargs):  # pylint: disable=unused-argument
+def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version,
+                control_plane_only=False, no_wait=False, **kwargs):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
 
     if instance.kubernetes_version == kubernetes_version:
@@ -1212,7 +1213,41 @@ def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version, no_w
             logger.warning("Cluster currently in failed state. Proceeding with upgrade to existing version %s to "
                            "attempt resolution of failed cluster state.", instance.kubernetes_version)
 
+    from knack.prompting import prompt_y_n
+
+    upgrade_all = False
     instance.kubernetes_version = kubernetes_version
+
+    vmas_cluster = False
+    for agent_profile in instance.agent_pool_profiles:
+        if agent_profile.type.lower() == "availabilityset":
+            vmas_cluster = True
+            break
+
+    # for legacy clusters, we always upgrade node pools with CCP.
+    if instance.max_agent_pools < 8 or vmas_cluster:
+        if control_plane_only:
+            msg = ("Legacy clusters do not support control plane only upgrade. All node pools will be "
+                   "upgraded to {} as well. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+        upgrade_all = True
+    else:
+        if not control_plane_only:
+            msg = ("Since control-plane-only argument is not specified, this will upgrade the control plane "
+                   "AND all nodepools to version {}. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+            upgrade_all = True
+        else:
+            msg = ("Since control-plane-only argument is specified, this will upgrade only the control plane to {}. "
+                   "Node pool will not change. Continue?").format(instance.kubernetes_version)
+            if not prompt_y_n(msg, default="n"):
+                return None
+
+    if upgrade_all:
+        for agent_profile in instance.agent_pool_profiles:
+            agent_profile.orchestrator_version = kubernetes_version
 
     # null out the SP and AAD profile because otherwise validation complains
     instance.service_principal_profile = None

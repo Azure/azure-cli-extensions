@@ -224,6 +224,9 @@ helps['aks upgrade'] = """
           short-summary: Version of Kubernetes to upgrade the cluster to, such as "1.11.12".
           populator-commands:
           - "`az aks get-upgrades`"
+        - name: --control-plane-only
+          type: bool
+          short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
 """
 
 helps['aks update'] = """
