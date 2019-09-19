@@ -5,7 +5,6 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azure.cli.core.util import empty_on_404
 from azext_privatedns._client_factory import (cf_privatedns_mgmt_zones, cf_privatedns_mgmt_virtual_network_links, cf_privatedns_mgmt_record_sets)
 from azext_privatedns._format import (transform_privatedns_zone_table_output, transform_privatedns_link_table_output, transform_privatedns_record_set_output, transform_privatedns_record_set_table_output)
 
@@ -27,9 +26,14 @@ def load_command_table(self, _):
         client_factory=cf_privatedns_mgmt_record_sets
     )
 
+    network_privatedns_custom = CliCommandType(
+        operations_tmpl='azext_privatedns.custom#{}',
+        client_factory=cf_privatedns_mgmt_record_sets
+    )
+
     with self.command_group('network private-dns zone', network_privatedns_zone_sdk) as g:
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
-        g.show_command('show', 'get', table_transformer=transform_privatedns_zone_table_output, exception_handler=empty_on_404)
+        g.show_command('show', 'get', table_transformer=transform_privatedns_zone_table_output)
         g.custom_command('list', 'list_privatedns_zones', client_factory=cf_privatedns_mgmt_zones, table_transformer=transform_privatedns_zone_table_output)
         g.custom_command('create', 'create_privatedns_zone', client_factory=cf_privatedns_mgmt_zones, supports_no_wait=True)
         g.generic_update_command('update', setter_name='update', custom_func_name='update_privatedns_zone', supports_no_wait=True)
@@ -37,10 +41,10 @@ def load_command_table(self, _):
 
     with self.command_group('network private-dns link vnet', network_privatedns_virtual_network_link_sdk) as g:
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
-        g.show_command('show', 'get', table_transformer=transform_privatedns_link_table_output, exception_handler=empty_on_404)
+        g.show_command('show', 'get', table_transformer=transform_privatedns_link_table_output)
         g.command('list', 'list', table_transformer=transform_privatedns_link_table_output)
         g.custom_command('create', 'create_privatedns_link', client_factory=cf_privatedns_mgmt_virtual_network_links, supports_no_wait=True)
-        g.generic_update_command('update', setter_name='update', custom_func_name='update_privatedns_link', supports_no_wait=True)
+        g.generic_update_command('update', setter_name='update_privatedns_link', setter_type=network_privatedns_custom, supports_no_wait=True)
         g.wait_command('wait')
 
     with self.command_group('network private-dns record-set') as g:
