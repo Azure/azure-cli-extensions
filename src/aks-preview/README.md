@@ -9,7 +9,7 @@ az extension add --name aks-preview
 
 ## Included Features
 ### Cluster Auto Scaler:
-[more info](https://docs.microsoft.com/en-us/azure/aks/autoscaler)
+[more info](https://docs.microsoft.com/azure/aks/autoscaler)
 
 
 #### create aks cluster with enabled cluster autoscaler
@@ -82,22 +82,31 @@ az aks update \
     --api-server-authorized-ip-ranges ""
 ```
 
-#### Enable VMSS for new cluster
+#### Use VMAS for new cluster
 *Examples:*
 ```
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --enable-VMSS \
+    --vm-set-type AvailabilitySet \
 ```
 
-#### Enable VMSS for new cluster with availability zone feature
+#### Use VMSS for new cluster
 *Examples:*
 ```
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --enable-VMSS \
+    --vm-set-type VirtualMachineScaleSets \
+```
+
+#### Use VMSS for new cluster with availability zone feature
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --vm-set-type VirtualMachineScaleSets \
     --node-zones 1 2 3
 ```
 
@@ -150,4 +159,13 @@ az aks nodepool update \
     --update-cluster-autoscaler \
     --max-count 10 \
     --min-count 3
+```
+
+#### Create aks cluster whose cluster resource group will be managed by a managed identity (instead of a service principal)
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-managed-identity
 ```

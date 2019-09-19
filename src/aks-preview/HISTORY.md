@@ -2,6 +2,50 @@
 
 Release History
 ===============
+0.4.15
++++++
+* Set default cluster creation to SLB and VMSS
+
+0.4.14
++++++
+* Add support for using managed identity to manage cluster resource group
+
+0.4.13
+++++++
+* Rename a few options for ACR integration, which includes
+  * Rename `--attach-acr <acr-name-or-resource-id>` in `az aks create` command, which allows for attach the ACR to AKS cluster.
+  * Rename `--attach-acr <acr-name-or-resource-id>` and `--detach-acr <acr-name-or-resource-id>` in `az aks update` command, which allows to attach or detach the ACR from AKS cluster.
+* Add "--enable-private-cluster" flag for enabling private cluster on creation.
+
+0.4.12
++++++
+* Bring back "enable-vmss" flag  for backward compatibility
+* Revert "Set default availability type to VMSS" for backward compatibility
+* Revert "Set default load balancer SKU to Standard" for backward compatibility
+
+0.4.11
++++++
+* Add support for load-balancer-profile
+* Set default availability type to VMSS
+* Set default load balancer SKU to Standard
+
+0.4.10
++++++
+* Add support for `az aks update --disable-acr --acr <name-or-id>`
+
+0.4.9
++++++
+* Use https if dashboard container port is using https
+
+0.4.8
++++++
+* Add update support for `--enable-acr` together with `--acr <name-or-id>`
+* Merge `az aks create --acr-name` into `az aks create --acr <name-or-id>`
+
+0.4.7
++++++
+* Add support for `--enable-acr` and `--acr-name`
+
 0.4.4
 +++++
 * Add support for per node pool auto scaler settings.
