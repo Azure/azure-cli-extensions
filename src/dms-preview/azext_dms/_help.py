@@ -72,7 +72,25 @@ helps['dms project task create'] = """
               [
                   {
                       "name": "source database",
-                      "target_database_name": "target database"
+                      "target_database_name": "target database",
+                      // Used for manipulating the underlying migration engine.
+                      // Only provide if instructed to do so or if you really know what you are doing.
+                      "migrationSetting": {
+                          "setting1": "value1",
+                          ...n
+                      },
+                      // Used for manipulating the underlying migration engine.
+                      // Only provide if instructed to do so or if you really know what you are doing.
+                      "sourceSetting": {
+                          "setting1": "value1",
+                          ...n
+                      },
+                      // Used for manipulating the underlying migration engine.
+                      // Only provide if instructed to do so or if you really know what you are doing.
+                      "targetSetting": {
+                          "setting1": "value1",
+                          ...n
+                      }
                   },
                   ...n
               ]
@@ -131,6 +149,45 @@ helps['dms project task create'] = """
                       ...n
                   }
               }
+
+            For Oracle to PostgreSQL, the format of the database options JSON object.
+              [
+                  {
+                      // "Preserve" or "ToLower". Not valid when providing "tableMap".
+                      "caseManipulation": "",
+                      // When provided, copies all tables within this schema, preserving the casing of the source object names,
+                      // or using the value of "caseManipulation" if provided.
+                      // Not valid if providing "tableMap".
+                      "schemaName": "",
+                      // Defines custom mapping of schemas and tables. As seen, offers freedom for mapping tables to different schemas, changing schema and table names, and modifying object name casing.
+                      // Not valid if providing "schemaName".
+                      "tableMap": {
+                          "SCHEMA1.TABLE1": "SCHEMA1.TABLE1",
+                          "SCHEMA2.TABLE2": "SCHEMA1.TABLE2",
+                          "SCHEMA2.TABLE3": "schema2.OtherTableName
+                          ...n
+                      },
+                      "targetDatabaseName": "database_name",
+                      // Used for manipulating the underlying migration engine.
+                      // Only provide if instructed to do so or if you really know what you are doing.
+                      "migrationSetting": {
+                          "setting1": "value1",
+                          ...n
+                      },
+                      // Used for manipulating the underlying migration engine.
+                      // Only provide if instructed to do so or if you really know what you are doing.
+                      "sourceSetting": {
+                          "setting1": "value1",
+                          ...n
+                      },
+                      // Used for manipulating the underlying migration engine.
+                      // Only provide if instructed to do so or if you really know what you are doing.
+                      "targetSetting": {
+                          "setting1": "value1",
+                          ...n
+                      }
+                  }
+              ]
         - name: --source-connection-json
           type: string
           short-summary: >
@@ -168,6 +225,13 @@ helps['dms project task create'] = """
                   "userName": null,   // if this is missing or null, you will be prompted
                   "password": null,   // if this is missing or null (highly recommended) you will be prompted
                   "connectionString": "mongodb://hostOrIp:port"
+              }
+
+            The format of the connection JSON object for Oracle connections.
+              {
+                  "userName": null,   // if this is missing or null, you will be prompted
+                  "password": null,   // if this is missing or null (highly recommended) you will be prompted
+                  "dataSource": "//hostOrIp:port/serviceName"   // accepts EZConnect or Tnsnames formats
               }
         - name: --target-connection-json
           type: string
