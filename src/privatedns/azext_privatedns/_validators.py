@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint:disable=import-error
-from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 
 # pylint: disable=inconsistent-return-statements
@@ -14,20 +14,19 @@ def privatedns_zone_name_type(value):
         return value[:-1] if value[-1] == '.' else value
 
 
-def validate_metadata(ns):
+def validate_privatedns_metadata(ns):
+    def _validate_metadata_single(string):
+        result = {}
+        if string:
+            comps = string.split('=', 1)
+            result = {comps[0]: comps[1]} if len(comps) > 1 else {string: ''}
+        return result
+
     if isinstance(ns.metadata, list):
         metadata_dict = {}
         for item in ns.metadata:
             metadata_dict.update(_validate_metadata_single(item))
         ns.metadata = metadata_dict
-
-
-def _validate_metadata_single(string):
-    result = {}
-    if string:
-        comps = string.split('=', 1)
-        result = {comps[0]: comps[1]} if len(comps) > 1 else {string: ''}
-    return result
 
 
 def get_vnet_validator(cmd, namespace):

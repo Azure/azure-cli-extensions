@@ -19,7 +19,7 @@ def load_command_table(self, _):
 
     managed_clusters_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.managed_clusters_operations#ManagedClustersOperations.{}',
+                        'operations._managed_clusters_operations#ManagedClustersOperations.{}',
         client_factory=cf_managed_clusters
     )
 
@@ -31,12 +31,13 @@ def load_command_table(self, _):
 
     agent_pools_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.agent_pools_operations#AgentPoolsOperations.{}',
+                        'operations._agent_pools_operations#AgentPoolsOperations.{}',
         client_factory=cf_managed_clusters
     )
 
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('kollect', 'aks_kollect')
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
