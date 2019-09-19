@@ -15,6 +15,10 @@ CUSTOM_MGMT_AKS = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt
                                      'ContainerServiceClient')
 
 
+def cf_storage(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE, subscription_id=subscription_id)
+
+
 def cf_compute_service(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
 
