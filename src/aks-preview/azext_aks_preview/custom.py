@@ -1190,6 +1190,8 @@ def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sa
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.get(resource_group_name, name)
     # TODO: change this approach when we support multiple agent pools.
+    if node_count == 0:
+        raise CLIError("Can't scale down to 0 nodes.")
     for agent_profile in instance.agent_pool_profiles:
         if agent_profile.name == nodepool_name or (nodepool_name == "" and len(instance.agent_pool_profiles) == 1):
             agent_profile.count = int(node_count)  # pylint: disable=no-member
@@ -1733,7 +1735,7 @@ def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     new_node_count = int(node_count)
     if new_node_count == 0:
-        raise CLIError("Can't scale down to 0 node.")
+        raise CLIError("Can't scale down to 0 nodes.")
     if new_node_count == instance.count:
         raise CLIError("The new node count is the same as the current node count.")
     instance.count = new_node_count  # pylint: disable=no-member
