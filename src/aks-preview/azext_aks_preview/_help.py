@@ -297,26 +297,23 @@ helps['aks kollect'] = """
     type: command
     short-summary: Collecting diagnostic information for the Kubernetes cluster.
     long-summary: |-
-        Collecting diagnostic information for the Kubernetes cluster and store them in the specified storage account.
-        You can provider the storage account in three ways:
+        Collect diagnostic information for the Kubernetes cluster and store it in the specified storage account.
+        You can provide the storage account in three ways:
           storage account name and a shared access signature with write permission.
           resource Id to a storage account you own.
           the storagea account in diagnostics settings for your managed cluster.
     parameters:
-        - name: --storage-account-name
+        - name: --storage-account
           type: string
-          short-summary: The name of the storage account to save the diagnostic information.
+          short-summary: Name or ID of the storage account to save the diagnostic information.
         - name: --sas-token
           type: string
           short-summary: The SAS token with writable permission for the storage account.
-        - name: --storage-account-id
-          type: string
-          short-summary: The resource Id of the storage account to save the diag info.
     examples:
-      - name: using storagea account name and a shared access signature token with write permission
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account-name MyStorageAccount --sas-token "MySasToken"
+      - name: using storage account name and a shared access signature token with write permission
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
       - name: using the resource id of a storagea account resource you own.
-        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account-id "MyStoreageAccountResourceId"
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account "MyStoreageAccountResourceId"
       - name: using the storagea account in diagnostics settings for your managed cluster.
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster
 """

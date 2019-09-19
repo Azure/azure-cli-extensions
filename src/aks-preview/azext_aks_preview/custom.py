@@ -1086,33 +1086,43 @@ ADDONS = {
 
 
 # pylint: disable=line-too-long
-def aks_kollect(cmd, client, resource_group_name, name, storage_account_name=None, sas_token=None, storage_account_id=None,):
+def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sas_token=None):
     mc = client.get(resource_group_name, name)
 
     if not which('kubectl'):
         raise CLIError('Can not find kubectl executable in PATH')
 
-    if (sas_token is None) != (storage_account_name is None):
-        raise CLIError("Please specify both storage account name and a SAS token with write permission.")
+    storage_account_id = None
+    if storage_account is None:
+        print("No storage account specified. Try getting storage account from diagnostic settings")
+        storage_account_id = get_storage_account_from_diag_settings(cmd.cli_ctx, resource_group_name, name)
+        if storage_account_id is None:
+            raise CLIError("A storage account must be specified, since there isn't one in the diagnostic settings.")
+
+    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+    if storage_account_id is None:
+        if not is_valid_resource_id(storage_account):
+            storage_account_id = resource_id(
+                subscription=_get_subscription_id(cmd.cli_ctx),
+                resource_group=resource_group_name,
+                namespace='Microsoft.Storage', type='storageAccounts',
+                name=storage_account
+            )
+        else:
+            storage_account_id = storage_account
+
+    if is_valid_resource_id(storage_account_id):
+        try:
+            parsed_storage_account = parse_resource_id(storage_account_id)
+        except CloudError as ex:
+            raise CLIError(ex.message)
+    else:
+        raise CLIError("Invalid storage account id %s" % storage_account_id)
+
+    storage_account_name = parsed_storage_account['name']
 
     readonly_sas_token = None
-    if storage_account_name is None:
-        if storage_account_id is None:
-            print("No storage account resource id specified. Try getting storage account from diagnostic settings")
-            storage_account_id = get_storage_account_from_diag_settings(cmd.cli_ctx, resource_group_name, name)
-            if storage_account_id is None:
-                raise CLIError("A storage account must be specified, since there isn't one in the diagnostic settings.")
-
-        from msrestazure.tools import is_valid_resource_id, parse_resource_id
-        if is_valid_resource_id(storage_account_id):
-            try:
-                parsed_storage_account = parse_resource_id(storage_account_id)
-            except CloudError as ex:
-                raise CLIError(ex.message)
-        else:
-            raise CLIError("Invalid storage account id %s" % storage_account_id)
-
-        storage_account_name = parsed_storage_account['name']
+    if sas_token is None:
         storage_client = cf_storage(cmd.cli_ctx, parsed_storage_account['subscription'])
         storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
         kwargs = {
