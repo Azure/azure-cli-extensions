@@ -192,3 +192,10 @@ class deseralize(object):
                setattr(self, a, [deseralize(x) if isinstance(x, dict) else x for x in b])
             else:
                setattr(self, a, deseralize(b) if isinstance(b, dict) else b)
+
+def _get_rg_location(ctx, resource_group_name, subscription_id=None):
+    from ._client_factory import cf_resource_groups
+    groups = cf_resource_groups(ctx, subscription_id=subscription_id)
+    # Just do the get, we don't need the result, it will error out if the group doesn't exist.
+    rg = groups.get(resource_group_name)
+    return rg.location

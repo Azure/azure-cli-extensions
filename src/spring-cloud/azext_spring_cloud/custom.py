@@ -21,15 +21,17 @@ from .azure_storage_file import FileService
 from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 from azure.cli.core.commands import cached_get, cached_put
+from ._utils import _get_rg_location
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
-    resource = None
-    if location is not None:
-        resource = models.ServiceResource(location=location)
+    rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
+    if location is None:
+        location = rg_location
+    resource = models.ServiceResource(location=location)
 
     return sdk_no_wait(no_wait, client.create_or_update,
                        resource_group_name=resource_group, service_name=name, resource=resource)
@@ -821,12 +823,6 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
 def test(cmd, client, resource_group, name=None, app=None, deployment=None):
     #file_content = ""
-    with open("default.yaml", 'r') as stream:
-        print("in")
-        try:
-            print(yaml.safe_load(stream))
-        except yaml.YAMLError as exc:
-            print(exc)
-    #a = client._deserialize('ServiceResource', file_content)
-    #print(a)
+    rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
+    print(rg_location)
     return None
