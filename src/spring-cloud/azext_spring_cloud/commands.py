@@ -15,7 +15,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'spring_cloud_list')
         g.custom_show_command('show', 'spring_cloud_get')
         #g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
-        g.custom_command('test', 'test')
+        #g.custom_command('test', 'test')
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud) as g:
         g.custom_command('enable ', 'enable_test_endpoint')
