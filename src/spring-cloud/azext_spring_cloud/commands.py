@@ -27,6 +27,13 @@ def load_command_table(self, _):
         g.custom_command('set', 'config_set', supports_no_wait=True)
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')
+    
+    with self.command_group('spring-cloud config-server git', client_factory=cf_app_services, supports_local_cache=True) as g:
+        g.custom_command('set', 'config_git_set')
+        g.custom_command('repo add', 'config_repo_add')
+        g.custom_command('repo remove', 'config_repo_delete')
+        g.custom_command('repo update', 'config_repo_update')
+        g.custom_command('repo list', 'config_repo_list')
 
     with self.command_group('spring-cloud app', client_factory=cf_spring_cloud) as g:
         g.custom_command('create', 'app_create')

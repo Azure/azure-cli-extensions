@@ -29,7 +29,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
-        c.argument('name', name_type, help='Name of Azure Spring Cloud Service.')
+        c.argument('name', service_name_type,options_list = ['--name', '-n'], help='Name of Azure Spring Cloud Service.')
 
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -71,7 +71,6 @@ def load_arguments(self, _):
             c.argument('jvm_options', type=str,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash prase error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
-            c.argument('tags', tags_type)
 
     for scope in ['spring-cloud app create', 'spring-cloud app deployment create']:
         with self.argument_context(scope) as c:
@@ -96,6 +95,8 @@ def load_arguments(self, _):
                 'jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
             c.argument(
                 'target_module', help='Child module to be deployed, left empty if only have one jar package')
+            c.argument(
+                'version', help='Deployment version,  keep unchanged if not set.')
 
     with self.argument_context('spring-cloud app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',
@@ -136,5 +137,26 @@ def load_arguments(self, _):
                        help='If true, use ssl.')
 
     with self.argument_context('spring-cloud config-server set') as c:
-        c.argument('config-file', 
+        c.argument('config_file', 
                     help='A yaml file path for the configuration of Spring Cloud config server')
+
+
+    for scope in ['spring-cloud config-server git set', 'spring-cloud config-server git repo add', 'spring-cloud config-server git repo update']:
+        with self.argument_context(scope) as c:
+            c.argument('uri', help='Uri of the added config.')
+            c.argument('label', help='Label of the added config.')
+            c.argument('search_paths', help='search_paths of the added config, use , as delimiter for multiple paths.')
+            c.argument('username', help='Username of the added config.')
+            c.argument('password', help='Password of the added config.')
+            c.argument('Host_key', help='Host_key of the added config.')
+            c.argument('Host_key_algorithm', help='Host_key_algorithm of the added config.')
+            c.argument('private_key', help='Private_key of the added config.')
+            c.argument('strict_host_key_checking', help='Strict_host_key_checking of the added config.')
+    
+    for scope in ['spring-cloud config-server git repo add', 'spring-cloud config-server git repo update', 'spring-cloud config-server git repo remove']:
+        with self.argument_context(scope) as c:
+            c.argument('repo_name', help='Uri of the repo.')
+
+    for scope in ['spring-cloud config-server git repo add', 'spring-cloud config-server git repo update']:
+        with self.argument_context(scope) as c:
+            c.argument('pattern', help='Pattern of the repo, use , as delimiter for multiple patterns')

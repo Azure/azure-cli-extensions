@@ -21,7 +21,7 @@ helps['spring-cloud create'] = """
 
 helps['spring-cloud delete'] = """
     type: command
-    short-summary: Delete a Azure Spring Cloud Service.
+    short-summary: Delete an Azure Spring Cloud Service.
 """
 
 helps['spring-cloud list'] = """
@@ -31,12 +31,12 @@ helps['spring-cloud list'] = """
 
 helps['spring-cloud show'] = """
     type: command
-    short-summary: Show the details for a Azure Spring Cloud Service.
+    short-summary: Show the details for an Azure Spring Cloud Service.
 """
 
 helps['spring-cloud test-endpoint'] = """
     type: group
-    short-summary: Commands to manage  test-endpoint in Azure Spring Cloud Service.
+    short-summary: Commands to manage test-endpoint in Azure Spring Cloud Service.
 """
 
 helps['spring-cloud test-endpoint enable'] = """
@@ -54,7 +54,7 @@ helps['spring-cloud test-endpoint list'] = """
     short-summary: List test endpoint keys of the Azure Spring Cloud Service.
 """
 
-helps['spring-cloud test-endpoint renew-keys'] = """
+helps['spring-cloud test-endpoint renew-key'] = """
     type: command
     short-summary: Regenerate a test-endpoint key for the Azure Spring Cloud Service.
 """
@@ -71,7 +71,7 @@ helps['spring-cloud app create'] = """
     - name: Create an app with the default configuration.
       text: az spring-cloud app create -n MyApp -s Myspring-cloud
     - name: Create an public accessible app with 3 instance and 2 cpu cores and 3 Gb of memory per instance.
-      text: az spring-cloud app create -n MyApp -s Myspring-cloud -is-public true -cpu 2 -memory 3 -instance-count 3 
+      text: az spring-cloud app create -n MyApp -s Myspring-cloud --is-public true --cpu 2 --memory 3 --instance-count 3 
 """
 
 helps['spring-cloud app update'] = """
@@ -195,6 +195,37 @@ helps['spring-cloud config-server set'] = """
 helps['spring-cloud config-server clear'] = """
     type: command
     short-summary: Commands to clear config server.
+"""
+
+helps['spring-cloud config-server git'] = """
+    type: group
+    short-summary: Commands to manage config server git property in Azure Spring Cloud Service.
+"""
+
+
+helps['spring-cloud config-server git set'] = """
+    type: command
+    short-summary: Commands to set git property of config server, will totally override the old one.
+"""
+
+helps['spring-cloud config-server git repo add'] = """
+    type: command
+    short-summary: Commands to set add a new repositry of git property of config server.
+"""
+
+helps['spring-cloud config-server git repo remove'] = """
+    type: command
+    short-summary: Commands to remove an existing repositry of git property of config server.
+"""
+
+helps['spring-cloud config-server  git repo update'] = """
+    type: command
+    short-summary: Commands to override an existing repositry of git property of config server, will totally override the old one.
+"""
+
+helps['spring-cloud config-server git repo list'] = """
+    type: command
+    short-summary: Commands to list all repositries of git property of config server.
 """
 
 helps['spring-cloud app binding'] = """
