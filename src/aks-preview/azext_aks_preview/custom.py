@@ -1184,7 +1184,7 @@ def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sa
 
             print("Deploying aks-periscope")
             subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
-                                     temp_yaml_path, "-n","aks-periscope"], stderr=subprocess.STDOUT)
+                                     temp_yaml_path, "-n", "aks-periscope"], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIError(err.output)
     finally:
