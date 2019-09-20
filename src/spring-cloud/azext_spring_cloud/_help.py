@@ -90,6 +90,9 @@ helps['spring-cloud app delete'] = """
 helps['spring-cloud app list'] = """
     type: command
     short-summary: List all apps in the Azure Spring Cloud Service.
+    examples:
+    - name: Query status of persistent storage of all apps
+      text: az asc app list -s Myspring-cloud -o json --query '[].{Name:name, PersistentStorage:properties.persistentDisk}'
 """
 
 helps['spring-cloud app show'] = """
