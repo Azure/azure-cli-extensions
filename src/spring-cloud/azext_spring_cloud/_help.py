@@ -114,11 +114,11 @@ helps['spring-cloud app restart'] = """
 
 helps['spring-cloud app deploy'] = """
     type: command
-    short-summary: Deploy source code or built binary to an app and update related configurations.
+    short-summary: Deploy source code or pre-built binary to an app and update related configurations.
     examples:
     - name: Deploy source code to an app. This will pack current directory, build binary with Pivotal Build Service and then deploy to the app.
       text: az spring-cloud app deploy -n MyApp -s Myspring-cloud
-    - name: Deploy a built jar to an app with jvm options and environment variables.
+    - name: Deploy a pre-built jar to an app with jvm options and environment variables.
       text: az spring-cloud app deploy -n MyApp -s Myspring-cloud --jar-path app.jar --jvm-options "-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
       text: az spring-cloud app deploy -n MyApp -s Myspring-cloud -d green-deployment
@@ -149,7 +149,7 @@ helps['spring-cloud app set-deployment'] = """
 
 helps['spring-cloud app deployment'] = """
     type: group
-    short-summary: Commands to manage deployments of an app in Azure Spring Cloud Service.
+    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Cloud service. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring-cloud app deploy --deployment <staging deployment>
 """
 
 helps['spring-cloud app deployment list'] = """
@@ -169,11 +169,11 @@ helps['spring-cloud app deployment delete'] = """
 
 helps['spring-cloud app deployment create'] = """
     type: command
-    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use: az asz app deploy/update --deployment <staging deployment>.
+    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use: az spring-cloud app deploy/update --deployment <staging deployment>.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud
-    - name: Deploy a built jar to an app with jvm options and environment variables.
+    - name: Deploy a pre-built jar to an app with jvm options and environment variables.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud --jar-path app.jar --jvm-options "-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
