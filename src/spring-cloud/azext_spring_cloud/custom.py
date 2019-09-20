@@ -324,7 +324,6 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       memory=None,
                       instance_count=None,
                       env=None,
-                      tags=None,
                       no_wait=False):
     deployments = _get_all_deployments(client, resource_group, service, app)
     if name in deployments:
@@ -338,7 +337,6 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        memory,
                        instance_count,
                        env,
-                       tags,
                        target_module,
                        no_wait,
                        file_type)

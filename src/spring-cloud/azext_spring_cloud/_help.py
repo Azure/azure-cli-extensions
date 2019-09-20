@@ -78,8 +78,8 @@ helps['spring-cloud app update'] = """
     type: command
     short-summary: Update configurations of an app.
     examples:
-    - name: Create an app with the default configuration.
-      text: az spring-cloud app update --tags foo=bar
+    - name: Add an enviroment variable for the app.
+      text: az spring-cloud app update --env foo=bar
 """
 
 helps['spring-cloud app delete'] = """
