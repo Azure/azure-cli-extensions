@@ -1174,8 +1174,17 @@ def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sa
         temp_yaml_file.flush()
         temp_yaml_file.close()
         try:
+            print("Deleting namespace aks-periscope if existing")
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "ns",
+                                     "aks-periscope", "--ignore-not-found"], stderr=subprocess.STDOUT)
+
+            print("Creating namespace aks-periscope")
+            subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "create", "ns",
+                                     "aks-periscope"], stderr=subprocess.STDOUT)
+
+            print("Deploying aks-periscope")
             subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "apply", "-f",
-                                     temp_yaml_path], stderr=subprocess.STDOUT)
+                                     temp_yaml_path, "-n", "aks-periscope"], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIError(err.output)
     finally:

@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.16
++++++
+* Add support for `az aks kollect`
+* Add support for `az aks upgrade --control-plane-only`
+
 0.4.15
 +++++
 * Set default cluster creation to SLB and VMSS
