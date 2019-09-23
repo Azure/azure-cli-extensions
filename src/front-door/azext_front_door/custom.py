@@ -135,9 +135,9 @@ def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type,
 def create_front_door(cmd, resource_group_name, front_door_name, backend_address,
                       friendly_name=None, tags=None, disabled=None, no_wait=False,
                       backend_host_header=None, frontend_host_name=None,
-                      probe_path='/', probe_protocol='Https', probe_interval=30,
+                      probe_path='/', probe_protocol='Https', probe_interval=30, probe_method='HEAD',
                       accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest',
-                      enforce_certificate_name_check='Enabled'):
+                      enforce_certificate_name_check='Enabled', send_recv_timeout_seconds=None):
     from azext_front_door.vendored_sdks.models import (
         FrontDoor, FrontendEndpoint, BackendPool, Backend, HealthProbeSettingsModel, LoadBalancingSettingsModel,
         RoutingRule, ForwardingConfiguration, BackendPoolsSettings)
@@ -220,18 +220,21 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
                 resource_state='Enabled'
             )
         ],
-        backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check)
+        backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
+                                                   send_recv_timeout_seconds=send_recv_timeout_seconds)
     )
     return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
                        resource_group_name, front_door_name, front_door)
 
 
-def update_front_door(instance, tags=None, enforce_certificate_name_check=None):
+def update_front_door(instance, tags=None, enforce_certificate_name_check=None,
+                      send_recv_timeout_seconds=None):
     from azext_front_door.vendored_sdks.models import (BackendPoolsSettings)
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('backend_pools_settings',
-                       BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check), True)
+                       BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
+                                            send_recv_timeout_seconds=send_recv_timeout_seconds), True)
     return instance
 
 
@@ -285,7 +288,7 @@ def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
-                                                certificate_source='FrontDoor', vault_id=None):
+                                                certificate_source='FrontDoor', vault_id=None, minimum_tls_version='1.2'):
     keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
                       '--secret-name NAME --secret-version VERSION')
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
@@ -298,15 +301,16 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
         return configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name,
-                                                              front_door_name, item_name)
+                                                              front_door_name, item_name, minimum_tls_version)
     if certificate_source == 'AzureKeyVault':
         return configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name,
                                                              item_name, vault_id, secret_name,
-                                                             secret_version)
+                                                             secret_version, minimum_tls_version)
     return None
 
 
-def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name):
+def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, 
+                                                   item_name, minimum_tls_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration
     config = CustomHttpsConfiguration(
         certificate_source="FrontDoor",
@@ -314,7 +318,8 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
         vault=None,
         secret_name=None,
         secret_version=None,
-        certificate_type="Dedicated"
+        certificate_type="Dedicated",
+        minimum_tls_version=minimum_tls_version
     )
     cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
                                                              item_name, config)
@@ -322,7 +327,7 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
 
 
 def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name, item_name,
-                                                  vault_id, secret_name, secret_version):
+                                                  vault_id, secret_name, secret_version, minimum_tls_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
     config = CustomHttpsConfiguration(
         certificate_source="AzureKeyVault",
@@ -330,7 +335,8 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
         vault=SubResource(id=vault_id),
         secret_name=secret_name,
         secret_version=secret_version,
-        certificate_type=None
+        certificate_type=None,
+        minimum_tls_version=minimum_tls_version
     )
     cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
                                                              item_name, config)
@@ -369,7 +375,6 @@ def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settin
                        if load_balancing_settings else None, False)
         c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
     return instance
-
 
 def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, address,
                    http_port=80, https_port=443, disabled=None, priority=1, weight=50,
@@ -424,25 +429,43 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
 
 
 def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, path, interval,
-                                    protocol=None):
+                                    protocol=None, probeMethod='HEAD', enabled='Enabled'):
     from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
     probe = HealthProbeSettingsModel(
         name=item_name,
         path=path,
         protocol=protocol,
         interval_in_seconds=interval,
+        probe_method=probeMethod,
+        enabled_state=enabled
     )
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name,
                                          'health_probe_settings', probe, 'name')
 
+def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, 
+                             probe_path=None, probe_protocol=None, probe_interval=None, 
+                             enabled=None, probe_method=None):
+    from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
+    client = cf_frontdoor(cmd.cli_ctx, None)
+    frontdoor = client.get(resource_group_name, front_door_name)
+    probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == probe_name), None)
+    if not probe_setting:
+        from knack.util import CLIError
+        raise CLIError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
+            probe_name, front_door_name))
+    if probe_method:
+        probe_setting.health_probe_method = probe_method
+    if probe_path:
+        probe_setting.path = probe_path
+    if probe_protocol:
+        probe_setting.protocol = probe_protocol
+    if probe_interval:
+        probe_setting.interval_in_seconds = probe_interval
+    if enabled:
+        probe_setting.enabled_state = enabled
 
-def update_fd_health_probe_settings(instance, path=None, protocol=None, interval=None):
-    with UpdateContext(instance) as c:
-        c.update_param('path', path, False)
-        c.update_param('protocol', protocol, False)
-        c.update_param('interval_in_seconds', interval, False)
-    return instance
-
+    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    return probe_setting
 
 def create_fd_load_balancing_settings(cmd, resource_group_name, front_door_name, item_name, sample_size,
                                       successful_samples_required, additional_latency=None):
