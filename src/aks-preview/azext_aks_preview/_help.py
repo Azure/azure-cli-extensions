@@ -376,9 +376,9 @@ helps['aks nodepool add'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
-        - name: --initial-node-taints
+        - name: --node-taints
           type: string
-          short-summary: The initial node taints for the node pool. You can't change the node tains through CLI.
+          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
         - name: --priority
           type: string
           short-summary: The priority of the node pool. Regular or Low.

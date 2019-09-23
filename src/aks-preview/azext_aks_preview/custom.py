@@ -1703,7 +1703,7 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
-                      initial_node_taints=None,
+                      node_taints=None,
                       priority="Regular",
                       eviction_policy="Delete",
                       no_wait=False):
@@ -1715,17 +1715,17 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
 
     taints_array = []
 
-    if initial_node_taints is not None:
-        for taint in initial_node_taints.split(','):
+    if node_taints is not None:
+        for taint in node_taints.split(','):
             try:
                 taint = taint.strip()
                 taints_array.append(taint)
             except ValueError:
-                raise CLIError('Taint is not well-formed.')
+                raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
 
     if priority is not None and priority == "Low":
         from knack.prompting import prompt_y_n
-        msg = 'Autoscaler is currently required for low-pri, enable it?'
+        msg = 'Cluster Autoscaler is currently required for low-pri, enable it?'
 
         if not prompt_y_n(msg, default="n"):
             return None

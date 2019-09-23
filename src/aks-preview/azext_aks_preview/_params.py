@@ -118,7 +118,7 @@ def load_arguments(self, _):
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
             c.argument('os_type', type=str)
             c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
-            c.argument('initial_node_taints', type=str, validator=validate_taints)
+            c.argument('node_taints', type=str, validator=validate_taints)
             c.argument('priority', type=str, validator=validate_priority)
             c.argument('eviction_policy', type=str, validator=validate_eviction_policy)
 
