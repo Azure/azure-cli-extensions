@@ -1728,7 +1728,7 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         msg = 'Autoscaler is currently required for low-pri, enable it?'
 
         if not prompt_y_n(msg, default="n"):
-            return
+            return None
 
         enable_cluster_autoscaler = True
 

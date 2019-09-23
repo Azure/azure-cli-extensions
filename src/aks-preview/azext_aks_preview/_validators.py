@@ -161,7 +161,7 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
 def validate_taints(namespace):
     """Validates that provided taint is a valid format"""
 
-    regex = re.compile(r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")
+    regex = re.compile(r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$") # pylint: disable=line-too-long
 
     if namespace.initial_node_taints is not None and namespace.initial_node_taints != '':
         for taint in namespace.initial_node_taints.split(','):
