@@ -385,6 +385,9 @@ helps['aks nodepool add'] = """
         - name: --eviction-policy
           type: string
           short-summary: The eviction policy of the low-pri node pool. Delete or Deallocate.
+        - name: --public-ip-per-vm
+          type: bool
+          short-summary: Each node will have a public ip.
 """
 
 helps['aks nodepool scale'] = """

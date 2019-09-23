@@ -1706,6 +1706,7 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
                       node_taints=None,
                       priority="Regular",
                       eviction_policy="Delete",
+                      public_ip_per_vm=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -1761,7 +1762,8 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         availability_zones=node_zones,
         node_taints=taints_array,
         scale_set_priority=priority,
-        scale_set_eviction_policy=eviction_policy
+        scale_set_eviction_policy=eviction_policy,
+        enable_node_public_ip=public_ip_per_vm
     )
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
