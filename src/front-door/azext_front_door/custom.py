@@ -186,6 +186,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
             HealthProbeSettingsModel(
                 name=probe_setting_name,
                 interval_in_seconds=probe_interval,
+                probe_method=probe_method,
                 path=probe_path,
                 protocol=probe_protocol,
                 resource_state='Enabled'
@@ -221,7 +222,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
             )
         ],
         backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
-                                                   send_recv_timeout_seconds=send_recv_timeout_seconds)
+                                                    send_recv_timeout_seconds=send_recv_timeout_seconds)
     )
     return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
                        resource_group_name, front_door_name, front_door)
@@ -229,7 +230,6 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
 
 def update_front_door(instance, tags=None, enforce_certificate_name_check=None,
                       send_recv_timeout_seconds=None):
-    from azext_front_door.vendored_sdks.models import (BackendPoolsSettings)
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
     with UpdateContext(instance.backend_pools_settings) as c:
@@ -288,7 +288,8 @@ def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
-                                                certificate_source='FrontDoor', vault_id=None, minimum_tls_version='1.2'):
+                                                certificate_source='FrontDoor', vault_id=None,
+                                                minimum_tls_version='1.2'):
     keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
                       '--secret-name NAME --secret-version VERSION')
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
@@ -309,7 +310,7 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
     return None
 
 
-def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, 
+def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name,
                                                    item_name, minimum_tls_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration
     config = CustomHttpsConfiguration(
@@ -375,6 +376,7 @@ def update_fd_backend_pools(instance, load_balancing_settings=None, probe_settin
                        if load_balancing_settings else None, False)
         c.update_param('healthProbeSettings', SubResource(id=probe_settings) if probe_settings else None, False)
     return instance
+
 
 def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, address,
                    http_port=80, https_port=443, disabled=None, priority=1, weight=50,
@@ -442,17 +444,17 @@ def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name,
                                          'health_probe_settings', probe, 'name')
 
-def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, 
-                             probe_path=None, probe_protocol=None, probe_interval=None, 
-                             enabled=None, probe_method=None):
-    from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
+
+def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name,
+                                    probe_path=None, probe_protocol=None, probe_interval=None,
+                                    enabled=None, probe_method=None):
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
     probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == item_name), None)
     if not probe_setting:
         from knack.util import CLIError
         raise CLIError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
-            probe_name, front_door_name))
+            item_name, front_door_name))
     if probe_method:
         probe_setting.health_probe_method = probe_method
     if probe_path:
@@ -466,6 +468,7 @@ def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
 
     client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
     return probe_setting
+
 
 def create_fd_load_balancing_settings(cmd, resource_group_name, front_door_name, item_name, sample_size,
                                       successful_samples_required, additional_latency=None):
