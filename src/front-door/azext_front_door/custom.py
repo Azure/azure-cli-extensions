@@ -232,9 +232,9 @@ def update_front_door(instance, tags=None, enforce_certificate_name_check=None,
     from azext_front_door.vendored_sdks.models import (BackendPoolsSettings)
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
-        c.update_param('backend_pools_settings',
-                       BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
-                                            send_recv_timeout_seconds=send_recv_timeout_seconds), True)
+    with UpdateContext(instance.backend_pools_settings) as c:
+        c.update_param('enforce_certificate_name_check', enforce_certificate_name_check, False)
+        c.update_param('send_recv_timeout_seconds', send_recv_timeout_seconds, False)
     return instance
 
 
@@ -428,14 +428,14 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
     client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
 
 
-def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, path, interval,
+def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, probe_path, probe_interval,
                                     protocol=None, probeMethod='HEAD', enabled='Enabled'):
     from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
     probe = HealthProbeSettingsModel(
         name=item_name,
-        path=path,
+        path=probe_path,
         protocol=protocol,
-        interval_in_seconds=interval,
+        interval_in_seconds=probe_interval,
         probe_method=probeMethod,
         enabled_state=enabled
     )
@@ -448,7 +448,7 @@ def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
     from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
-    probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == probe_name), None)
+    probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == item_name), None)
     if not probe_setting:
         from knack.util import CLIError
         raise CLIError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
