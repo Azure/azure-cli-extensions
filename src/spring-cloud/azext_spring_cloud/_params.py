@@ -29,7 +29,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
-        c.argument('name', service_name_type,options_list = ['--name', '-n'], help='Name of Azure Spring Cloud.')
+        c.argument('name', options_list = ['--name', '-n'], help='Name of Azure Spring Cloud.')
 
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -97,6 +97,10 @@ def load_arguments(self, _):
                 'target_module', help='Child module to be deployed, left empty if only have one jar package')
             c.argument(
                 'version', help='Deployment version,  keep unchanged if not set.')
+
+    with self.argument_context('spring-cloud app deployment create') as c:
+        c.argument('skip_clone_settings', help=' By default, when creating new deployment, it will copy settings from production deployment.',
+                   action='store_true')
 
     with self.argument_context('spring-cloud app deployment') as c:
         c.argument('app', app_name_type, help='Name of app.',
