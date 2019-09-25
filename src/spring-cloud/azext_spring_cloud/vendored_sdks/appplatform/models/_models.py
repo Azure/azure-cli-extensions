@@ -318,17 +318,9 @@ class ClusterResourceProperties(Model):
 
     :ivar provisioning_state: Provisioning state of the Service. Possible
      values include: 'Creating', 'Updating', 'Deleting', 'Deleted',
-     'Succeeded', 'Failed'
+     'Succeeded', 'Failed', 'Moving', 'Moved', 'MoveFailed'
     :vartype provisioning_state: str or
      ~azure.mgmt.appplatform.models.ProvisioningState
-    :ivar endpoint: Endpoint of the Service
-    :vartype endpoint: str
-    :ivar ssh_public_key: SSH Public Key of the Service
-    :vartype ssh_public_key: str
-    :param config_server_git_uri: Config server git URI of the Service
-    :type config_server_git_uri: str
-    :param private_git_repo: Private git repo of the Service
-    :type private_git_repo: bool
     :param config_server_properties: Config server git properties of the
      Service
     :type config_server_properties:
@@ -344,18 +336,12 @@ class ClusterResourceProperties(Model):
 
     _validation = {
         'provisioning_state': {'readonly': True},
-        'endpoint': {'readonly': True},
-        'ssh_public_key': {'readonly': True},
         'version': {'readonly': True},
         'service_id': {'readonly': True},
     }
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'endpoint': {'key': 'endpoint', 'type': 'str'},
-        'ssh_public_key': {'key': 'sshPublicKey', 'type': 'str'},
-        'config_server_git_uri': {'key': 'configServerGitUri', 'type': 'str'},
-        'private_git_repo': {'key': 'privateGitRepo', 'type': 'bool'},
         'config_server_properties': {'key': 'configServerProperties', 'type': 'ConfigServerProperties'},
         'trace': {'key': 'trace', 'type': 'TraceProperties'},
         'version': {'key': 'version', 'type': 'int'},
@@ -365,10 +351,6 @@ class ClusterResourceProperties(Model):
     def __init__(self, **kwargs):
         super(ClusterResourceProperties, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.endpoint = None
-        self.ssh_public_key = None
-        self.config_server_git_uri = kwargs.get('config_server_git_uri', None)
-        self.private_git_repo = kwargs.get('private_git_repo', None)
         self.config_server_properties = kwargs.get('config_server_properties', None)
         self.trace = kwargs.get('trace', None)
         self.version = None
@@ -644,7 +626,7 @@ class DeploymentSettings(Model):
 
     _attribute_map = {
         'cpu': {'key': 'cpu', 'type': 'int'},
-        'memory_in_gb': {'key': 'memoryInGb', 'type': 'int'},
+        'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
         'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},

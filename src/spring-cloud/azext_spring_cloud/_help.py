@@ -8,20 +8,20 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['spring-cloud'] = """
     type: group
-    short-summary: Commands to manage Azure Spring Cloud Service.
+    short-summary: Commands to manage Azure Spring Cloud.
 """
 
 helps['spring-cloud create'] = """
     type: command
-    short-summary: Create an Azure Spring Cloud Service.
+    short-summary: Create an Azure Spring Cloud.
     examples:
-    - name: Create a new Azure Spring Cloud Service in westus.
+    - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus      
 """
 
 helps['spring-cloud delete'] = """
     type: command
-    short-summary: Delete an Azure Spring Cloud Service.
+    short-summary: Delete an Azure Spring Cloud.
 """
 
 helps['spring-cloud list'] = """
@@ -31,42 +31,42 @@ helps['spring-cloud list'] = """
 
 helps['spring-cloud show'] = """
     type: command
-    short-summary: Show the details for an Azure Spring Cloud Service.
+    short-summary: Show the details for an Azure Spring Cloud.
 """
 
 helps['spring-cloud test-endpoint'] = """
     type: group
-    short-summary: Commands to manage test-endpoint in Azure Spring Cloud Service.
+    short-summary: Commands to manage test-endpoint in Azure Spring Cloud.
 """
 
 helps['spring-cloud test-endpoint enable'] = """
     type: command
-    short-summary: Enable test endpoint of the Azure Spring Cloud Service.
+    short-summary: Enable test endpoint of the Azure Spring Cloud.
 """
 
 helps['spring-cloud test-endpoint disable'] = """
     type: command
-    short-summary: Disable test endpoint of the Azure Spring Cloud Service.
+    short-summary: Disable test endpoint of the Azure Spring Cloud.
 """
 
 helps['spring-cloud test-endpoint list'] = """
     type: command
-    short-summary: List test endpoint keys of the Azure Spring Cloud Service.
+    short-summary: List test endpoint keys of the Azure Spring Cloud.
 """
 
 helps['spring-cloud test-endpoint renew-key'] = """
     type: command
-    short-summary: Regenerate a test-endpoint key for the Azure Spring Cloud Service.
+    short-summary: Regenerate a test-endpoint key for the Azure Spring Cloud.
 """
 
 helps['spring-cloud app'] = """
     type: group
-    short-summary: Commands to manage apps in Azure Spring Cloud Service.
+    short-summary: Commands to manage apps in Azure Spring Cloud.
 """
 
 helps['spring-cloud app create'] = """
     type: command
-    short-summary: Create a new app with a default deployment in the Azure Spring Cloud Service.
+    short-summary: Create a new app with a default deployment in the Azure Spring Cloud.
     examples:
     - name: Create an app with the default configuration.
       text: az spring-cloud app create -n MyApp -s Myspring-cloud
@@ -84,12 +84,12 @@ helps['spring-cloud app update'] = """
 
 helps['spring-cloud app delete'] = """
     type: command
-    short-summary: Delete an app in the Azure Spring Cloud Service.
+    short-summary: Delete an app in the Azure Spring Cloud.
 """
 
 helps['spring-cloud app list'] = """
     type: command
-    short-summary: List all apps in the Azure Spring Cloud Service.
+    short-summary: List all apps in the Azure Spring Cloud.
     examples:
     - name: Query status of persistent storage of all apps
       text: az asc app list -s Myspring-cloud -o json --query '[].{Name:name, PersistentStorage:properties.persistentDisk}'
@@ -97,7 +97,7 @@ helps['spring-cloud app list'] = """
 
 helps['spring-cloud app show'] = """
     type: command
-    short-summary: Show the details of an app in the Azure Spring Cloud Service.
+    short-summary: Show the details of an app in the Azure Spring Cloud.
 """
 
 helps['spring-cloud app start'] = """
@@ -182,7 +182,7 @@ helps['spring-cloud app deployment create'] = """
 
 helps['spring-cloud config-server'] = """
     type: group
-    short-summary: Commands to manage config server in Azure Spring Cloud Service.
+    short-summary: Commands to manage config server in Azure Spring Cloud.
 """
 
 helps['spring-cloud config-server show'] = """
@@ -202,7 +202,7 @@ helps['spring-cloud config-server clear'] = """
 
 helps['spring-cloud config-server git'] = """
     type: group
-    short-summary: Commands to manage config server git property in Azure Spring Cloud Service.
+    short-summary: Commands to manage config server git property in Azure Spring Cloud.
 """
 
 
@@ -233,7 +233,7 @@ helps['spring-cloud config-server git repo list'] = """
 
 helps['spring-cloud app binding'] = """
     type: group
-    short-summary: Commands to manage service bindings of an app in Azure Spring Cloud Service, and only restart app can make settings take effect.
+    short-summary: Commands to manage service bindings of an app in Azure Spring Cloud, and only restart app can make settings take effect.
 """
 
 helps['spring-cloud app binding cosmos'] = """

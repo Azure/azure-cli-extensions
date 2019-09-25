@@ -20,6 +20,9 @@ class ProvisioningState(str, Enum):
     deleted = "Deleted"
     succeeded = "Succeeded"
     failed = "Failed"
+    moving = "Moving"
+    moved = "Moved"
+    move_failed = "MoveFailed"
 
 
 class ConfigServerState(str, Enum):

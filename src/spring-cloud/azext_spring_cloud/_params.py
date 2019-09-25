@@ -17,7 +17,7 @@ name_type = CLIArgumentType(options_list=[
 env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=[
-                                    '--service', '-s'], help='Azure Spring Cloud Service name, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
+                                    '--service', '-s'], help='Azure Spring Cloud name, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
 app_name_type = CLIArgumentType(help='Application name, you can configure the default application using az configure --defaults spring-cloud-app=<name>.',
                                 validator=validate_app_name, configured_default='spring-cloud-app')
 
@@ -29,7 +29,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)
-        c.argument('name', service_name_type,options_list = ['--name', '-n'], help='Name of Azure Spring Cloud Service.')
+        c.argument('name', service_name_type,options_list = ['--name', '-n'], help='Name of Azure Spring Cloud.')
 
     with self.argument_context('spring-cloud create') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))

@@ -304,7 +304,7 @@ class AppsOperations(object):
             body_content = self._serialize.body(app_resource, 'AppResource')
         else:
             body_content = None
-            
+
         # Construct and send request
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
