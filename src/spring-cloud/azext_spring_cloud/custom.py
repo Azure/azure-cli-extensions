@@ -439,7 +439,9 @@ def config_git_set(cmd, client, resource_group, name, uri,
                              private_key=None,
                              strict_host_key_checking=None):
     resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
+    config_server = resource.properties.config_server_properties.config_server
+    config = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
+
     if search_paths is not None:
         search_paths = search_paths.split(",")
     
@@ -453,8 +455,8 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config.private_key = private_key
     config.strict_host_key_checking = strict_host_key_checking
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server = models.ConfigServerSettings(git_property=config)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server)
     cluster_esource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
     service_resource = models.ServiceResource(properties=cluster_esource_properties)
 
@@ -471,14 +473,19 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     private_key=None,
                     strict_host_key_checking=None):
     resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
+    config_server = resource.properties.config_server_properties.config_server
+    config = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
+
     if search_paths is not None:
         search_paths = search_paths.split(",")
     
-    repos = [repo for repo in config.repositories if repo.name == repo_name]
-    if repos:
-        raise CLIError("Repo {} already exiests.".format(repo_name))
-    
+    if config.repositories:
+        repos = [repo for repo in config.repositories if repo.name == repo_name]
+        if repos:
+            raise CLIError("Repo {} already exiests.".format(repo_name))
+    else:
+        config.repositories = []
+
     repository = models.GitPatternRepository(
         uri=uri,
         name=repo_name,
@@ -501,7 +508,11 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
 
 def config_repo_delete(cmd, client, resource_group, name, repo_name):
     resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
+    config_server = resource.properties.config_server_properties.config_server
+    if not config_server or not not config_server.config or not config_server.config.repositories:
+        raise CLIError("Repo {} not found.".format(repo_name))
+
+    config = config_server.git_property
     repository = [repo for repo in config.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo {} not found.".format(repo_name))
@@ -528,7 +539,10 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
                     private_key=None,
                     strict_host_key_checking=None):
     resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
+    config_server = resource.properties.config_server_properties.config_server
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
+        raise CLIError("Repo {} not found.".format(repo_name))
+    config = config_server.git_property
     repository = [repo for repo in config.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo {} not found.".format(repo_name))
