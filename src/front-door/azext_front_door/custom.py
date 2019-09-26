@@ -137,7 +137,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
                       backend_host_header=None, frontend_host_name=None,
                       probe_path='/', probe_protocol='Https', probe_interval=30, probe_method='HEAD',
                       accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest',
-                      enforce_certificate_name_check='Enabled', send_recv_timeout_seconds=None):
+                      enforce_certificate_name_check='Enabled', send_recv_timeout=None):
     from azext_front_door.vendored_sdks.models import (
         FrontDoor, FrontendEndpoint, BackendPool, Backend, HealthProbeSettingsModel, LoadBalancingSettingsModel,
         RoutingRule, ForwardingConfiguration, BackendPoolsSettings)
@@ -222,19 +222,19 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
             )
         ],
         backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
-                                                    send_recv_timeout_seconds=send_recv_timeout_seconds)
+                                                    send_recv_timeout_seconds=send_recv_timeout)
     )
     return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
                        resource_group_name, front_door_name, front_door)
 
 
 def update_front_door(instance, tags=None, enforce_certificate_name_check=None,
-                      send_recv_timeout_seconds=None):
+                      send_recv_timeout=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
     with UpdateContext(instance.backend_pools_settings) as c:
         c.update_param('enforce_certificate_name_check', enforce_certificate_name_check, False)
-        c.update_param('send_recv_timeout_seconds', send_recv_timeout_seconds, False)
+        c.update_param('send_recv_timeout_seconds', send_recv_timeout, False)
     return instance
 
 

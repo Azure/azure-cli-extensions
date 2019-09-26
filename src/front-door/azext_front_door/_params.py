@@ -69,7 +69,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door', arg_group='BackendPools Settings') as c:
         c.argument('enforce_certificate_name_check', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Whether to disable certificate name check on HTTPS requests to all backend pools. No effect on non-HTTPS requests.')
-        c.argument('send_recv_timeout_seconds', type=int, help='Send and receive timeout on forwarding request to the backend. When timeout is reached, the request fails and returns.')
+        c.argument('send_recv_timeout', type=int, help='Send and receive timeout in seconds on forwarding request to the backend. When timeout is reached, the request fails and returns.')
 
     with self.argument_context('network front-door', arg_group='Backend') as c:
         c.argument('backend_address', help='FQDN of the backend endpoint.')
