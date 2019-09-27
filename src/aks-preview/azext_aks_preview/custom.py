@@ -1703,12 +1703,45 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
+                      node_taints=None,
+                      priority="Regular",
+                      eviction_policy="Delete",
+                      public_ip_per_vm=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
         if agentpool_profile.name == nodepool_name:
             raise CLIError("Node pool {} already exists, please try a different name, "
                            "use 'aks nodepool list' to get current list of node pool".format(nodepool_name))
+
+    taints_array = []
+
+    if node_taints is not None:
+        for taint in node_taints.split(','):
+            try:
+                taint = taint.strip()
+                taints_array.append(taint)
+            except ValueError:
+                raise CLIError('Taint does not match allowed values. Expect value such as "special=true:NoSchedule".')
+
+    if priority is not None and priority == "Low":
+        from knack.prompting import prompt_y_n
+        msg = 'Cluster Autoscaler is currently required for low-pri, enable it?'
+
+        if not prompt_y_n(msg, default="n"):
+            return None
+
+        enable_cluster_autoscaler = True
+
+        if min_count is None:
+            min_count = node_count
+        if max_count is None:
+            max_count = node_count
+
+        # add low pri taint if not already specified
+        low_pri_taint = "pooltype=lowpri:NoSchedule"
+        if low_pri_taint not in taints_array:
+            taints_array.append("pooltype=lowpri:NoSchedule")
 
     if node_vm_size is None:
         if os_type == "Windows":
@@ -1726,7 +1759,11 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
         agent_pool_type="VirtualMachineScaleSets",
         max_pods=int(max_pods) if max_pods else None,
         orchestrator_version=kubernetes_version,
-        availability_zones=node_zones
+        availability_zones=node_zones,
+        node_taints=taints_array,
+        scale_set_priority=priority,
+        scale_set_eviction_policy=eviction_policy,
+        enable_node_public_ip=public_ip_per_vm
     )
 
     _check_cluster_autoscaler_flag(enable_cluster_autoscaler, min_count, max_count, node_count, agent_pool)
