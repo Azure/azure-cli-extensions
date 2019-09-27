@@ -32,7 +32,8 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _handle_command_error,
-    _get_function_param_dict
+    _get_function_param_dict,
+    _fetch_disk_sku
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 from .telemetry import _track_command_telemetry, _track_run_command_telemetry
@@ -100,13 +101,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
             # Copy OS disk command
             disk_sku = source_vm.storage_profile.os_disk.managed_disk.storage_account_type
+            if not disk_sku:
+                # VM is deallocated so fetch disk_sku info from disk itself
+                disk_sku = _fetch_disk_sku(resource_group_name, target_disk_name)
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=source_vm.location)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password])
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
@@ -114,7 +118,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                   .format(g=repair_group_name, repair=repair_vm_name, id=copy_disk_id)
 
             logger.info('Creating repair VM...')
-            _call_az_command(create_repair_vm_command, secure_params=[repair_password])
+            _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
             logger.info('Attaching copied disk to repair VM...')
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
@@ -126,7 +130,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Validate create vm create command to validate parameters before runnning copy disk commands
             validate_create_vm_command = create_repair_vm_command + ' --validate'
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password])
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
 
             # get storage account connection string
             get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
@@ -152,7 +156,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Create new repair VM with copied ummanaged disk command
             create_repair_vm_command = create_repair_vm_command + ' --use-unmanaged-disk'
             logger.info('Creating repair VM while disk copy is in progress...')
-            _call_az_command(create_repair_vm_command, secure_params=[repair_password])
+            _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
 
             logger.info('Checking if disk copy is done...')
             copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
