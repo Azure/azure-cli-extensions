@@ -47,7 +47,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # Hide sensitive data such as passwords from logs
     if secure_params:
         for param in secure_params:
-            command_string = command_string.replace(param, '********')
+            if param:
+                command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
     process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
