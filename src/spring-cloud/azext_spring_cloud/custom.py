@@ -688,7 +688,8 @@ def binding_mysql_update(cmd, client, resource_group, service, app, name,
 
 def binding_redis_add(cmd, client, resource_group, service, app, name,
                       resource_id,
-                      use_ssl=True):
+                      disable_ssl=None):
+    use_ssl = False if disable_ssl else True
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
@@ -713,13 +714,13 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
 
 
 def binding_redis_update(cmd, client, resource_group, service, app, name,
-                         use_ssl=None):
+                         disable_ssl=None):
     binding = client.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
-    if use_ssl is not None:
-        binding_parameters['useSsl'] = use_ssl
+    if disable_ssl is not None:
+        binding_parameters['useSsl'] = False if disable_ssl else True 
 
     primary_key = None
     try:

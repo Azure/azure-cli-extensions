@@ -17,8 +17,8 @@ name_type = CLIArgumentType(options_list=[
 env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=[
-                                    '--service', '-s'], help='Azure Spring Cloud name, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
-app_name_type = CLIArgumentType(help='Application name, you can configure the default application using az configure --defaults spring-cloud-app=<name>.',
+                                    '--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
+app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.',
                                 validator=validate_app_name, configured_default='spring-cloud-app')
 
 
@@ -40,7 +40,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app') as c:
         c.argument('service', service_name_type)
-        c.argument('name', name_type, help='Name of application.')
+        c.argument('name', name_type, help='Name of app.')
 
     with self.argument_context('spring-cloud app create') as c:
         c.argument(
@@ -52,7 +52,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
             c.argument('deployment', options_list=[
-                       '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the in-production deployment if not specified.', validator=validate_deployment_name)
+                       '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
 
     with self.argument_context('spring-cloud app set-deployment') as c:
             c.argument('deployment', options_list=[
@@ -94,12 +94,12 @@ def load_arguments(self, _):
             c.argument(
                 'jar_path', help='If provided, deploy jar, otherwise deploy current folder as tar.')
             c.argument(
-                'target_module', help='Child module to be deployed, left empty if only have one jar package')
+                'target_module', help='Child module to be deployed, required for multiple jar packages built from source code')
             c.argument(
-                'version', help='Deployment version,  keep unchanged if not set.')
+                'version', help='Deployment version, keep unchanged if not set.')
 
     with self.argument_context('spring-cloud app deployment create') as c:
-        c.argument('skip_clone_settings', help=' By default, when creating new deployment, it will copy settings from production deployment.',
+        c.argument('skip_clone_settings', help='Create staging deployment will automatically copy settings from production deployment.',
                    action='store_true')
 
     with self.argument_context('spring-cloud app deployment') as c:
@@ -115,14 +115,14 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding mysql add', 'spring-cloud app binding redis add']:
         with self.argument_context(scope) as c:
             c.argument('resource_id', validator=validate_resource_id,
-                       help='The Azure resource id of the binding service. The format is: /subscriptions/{guid}/resourceGroups/{resource-group-name}/{resource-provider-namespace}/{resource-type}/{resource-name}.')
+                       help='Azure resource ID of the service to bind with.')
 
     for scope in ['spring-cloud app binding cosmos add', 'spring-cloud app binding cosmos update']:
         with self.argument_context(scope) as c:
             c.argument(
                 'database_name', help='Name of database. Required for mongo, sql, gremlin')
-            c.argument('key_space', help='Required for cassandra')
-            c.argument('collection_name', help=' Required for gremlin')
+            c.argument('key_space', help='Cassandra key space. Required for cassandra')
+            c.argument('collection_name', help='Name of collection. Required for gremlin')
 
     with self.argument_context('spring-cloud app binding cosmos add') as c:
         c.argument('api_type', help='Type of API.', arg_type=get_enum_type(
@@ -137,8 +137,8 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app binding redis add', 'spring-cloud app binding redis update']:
         with self.argument_context(scope) as c:
             c.argument('key', help='Api key of the service.')
-            c.argument('use_ssl', action='store_true',
-                       help='If true, use ssl.')
+            c.argument('disable_ssl', action='store_true',
+                       help='Disable SSL.')
 
     with self.argument_context('spring-cloud config-server set') as c:
         c.argument('config_file', 
@@ -164,3 +164,9 @@ def load_arguments(self, _):
     for scope in ['spring-cloud config-server git repo add', 'spring-cloud config-server git repo update']:
         with self.argument_context(scope) as c:
             c.argument('pattern', help='Pattern of the repo, use , as delimiter for multiple patterns')
+    
+    with self.argument_context('spring-cloud test-endpoint list') as c:
+        c.argument('app', app_name_type, help='Name of app.',
+                   validator=validate_app_name)
+        c.argument('deployment', options_list=[
+                '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)

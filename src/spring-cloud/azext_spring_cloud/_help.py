@@ -26,7 +26,7 @@ helps['spring-cloud delete'] = """
 
 helps['spring-cloud list'] = """
     type: command
-    short-summary: List all Azure Spring Cloud Services in the given resource group, otherwise list the subscription's.
+    short-summary: List all Azure Spring Cloud in the given resource group, otherwise list the subscription's.
 """
 
 helps['spring-cloud show'] = """
@@ -36,7 +36,7 @@ helps['spring-cloud show'] = """
 
 helps['spring-cloud test-endpoint'] = """
     type: group
-    short-summary: Commands to manage test-endpoint in Azure Spring Cloud.
+    short-summary: Commands to manage test endpoint in Azure Spring Cloud.
 """
 
 helps['spring-cloud test-endpoint enable'] = """
@@ -70,7 +70,7 @@ helps['spring-cloud app create'] = """
     examples:
     - name: Create an app with the default configuration.
       text: az spring-cloud app create -n MyApp -s Myspring-cloud
-    - name: Create an public accessible app with 3 instance and 2 cpu cores and 3 Gb of memory per instance.
+    - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
       text: az spring-cloud app create -n MyApp -s Myspring-cloud --is-public true --cpu 2 --memory 3 --instance-count 3 
 """
 
@@ -78,7 +78,7 @@ helps['spring-cloud app update'] = """
     type: command
     short-summary: Update configurations of an app.
     examples:
-    - name: Add an enviroment variable for the app.
+    - name: Add an environment variable for the app.
       text: az spring-cloud app update --env foo=bar
 """
 
@@ -122,7 +122,7 @@ helps['spring-cloud app deploy'] = """
     - name: Deploy source code to an app. This will pack current directory, build binary with Pivotal Build Service and then deploy to the app.
       text: az spring-cloud app deploy -n MyApp -s Myspring-cloud
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring-cloud app deploy -n MyApp -s Myspring-cloud --jar-path app.jar --jvm-options "-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring-cloud app deploy -n MyApp -s Myspring-cloud --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
       text: az spring-cloud app deploy -n MyApp -s Myspring-cloud -d green-deployment
 """
@@ -139,7 +139,7 @@ helps['spring-cloud app scale'] = """
 
 helps['spring-cloud app show-deploy-log'] = """
     type: command
-    short-summary: Show a specificed deployment's log of the app, default to production deployment.
+    short-summary: Show build log of the last deploy, only apply to source code deploy, default to production deployment.
 """
 
 helps['spring-cloud app set-deployment'] = """
@@ -152,7 +152,7 @@ helps['spring-cloud app set-deployment'] = """
 
 helps['spring-cloud app deployment'] = """
     type: group
-    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Cloud service. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring-cloud app deploy --deployment <staging deployment>
+    short-summary: Commands to manage life cycle of deployments of an app in Azure Spring Cloud. More operations on deployments can be done on app level with parameter --deployment. e.g. az spring-cloud app deploy --deployment <staging deployment>
 """
 
 helps['spring-cloud app deployment list'] = """
@@ -162,7 +162,7 @@ helps['spring-cloud app deployment list'] = """
 
 helps['spring-cloud app deployment show'] = """
     type: command
-    short-summary: Show the details of a deployment.
+    short-summary: Show details of a deployment.
 """
 
 helps['spring-cloud app deployment delete'] = """
@@ -177,78 +177,78 @@ helps['spring-cloud app deployment create'] = """
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud --jar-path app.jar --jvm-options "-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
 helps['spring-cloud config-server'] = """
     type: group
-    short-summary: Commands to manage config server in Azure Spring Cloud.
+    short-summary: Commands to manage Config Server in Azure Spring Cloud.
 """
 
 helps['spring-cloud config-server show'] = """
     type: command
-    short-summary: Commands to show config server.
+    short-summary: Show Config Server.
 """
 
 helps['spring-cloud config-server set'] = """
     type: command
-    short-summary: Commands to set config server.
+    short-summary: Set Config Server from a yaml file.
 """
 
 helps['spring-cloud config-server clear'] = """
     type: command
-    short-summary: Commands to clear config server.
+    short-summary: Erase all settings in Config Server.
 """
 
 helps['spring-cloud config-server git'] = """
     type: group
-    short-summary: Commands to manage config server git property in Azure Spring Cloud.
+    short-summary: Commands to manage Config Server git property in Azure Spring Cloud.
 """
 
 
 helps['spring-cloud config-server git set'] = """
     type: command
-    short-summary: Commands to set git property of config server, will totally override the old one.
+    short-summary: Set git property of Config Server, will totally override the old one.
 """
 
 helps['spring-cloud config-server git repo add'] = """
     type: command
-    short-summary: Commands to set add a new repositry of git property of config server.
+    short-summary: Set add a new repositry of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo remove'] = """
     type: command
-    short-summary: Commands to remove an existing repositry of git property of config server.
+    short-summary: Remove an existing repositry of git property of Config Server.
 """
 
 helps['spring-cloud config-server  git repo update'] = """
     type: command
-    short-summary: Commands to override an existing repositry of git property of config server, will totally override the old one.
+    short-summary: Override an existing repositry of git property of Config Server, will totally override the old one.
 """
 
 helps['spring-cloud config-server git repo list'] = """
     type: command
-    short-summary: Commands to list all repositries of git property of config server.
+    short-summary: List all repositries of git property of Config Server.
 """
 
 helps['spring-cloud app binding'] = """
     type: group
-    short-summary: Commands to manage service bindings of an app in Azure Spring Cloud, and only restart app can make settings take effect.
+    short-summary: Commands to manage bindings with Azure Data Services, you need to manually restart app to make settings take effect.
 """
 
 helps['spring-cloud app binding cosmos'] = """
     type: group
-    short-summary: Commands to manage cosmosdb bindings.
+    short-summary: Commands to manage Azure Cosmos DB bindings.
 """
 
 helps['spring-cloud app binding mysql'] = """
     type: group
-    short-summary: Commands to manage mysql bindings.
+    short-summary: Commands to manage Azure Database for MySQL bindings.
 """
 
 helps['spring-cloud app binding redis'] = """
     type: group
-    short-summary: Commands to manage redis bindings.
+    short-summary: Commands to manage Azure Cache for Redis bindings.
 """
 helps['spring-cloud app binding list'] = """
     type: command
@@ -259,16 +259,16 @@ helps['spring-cloud app binding show'] = """
     type: command
     short-summary: Show the details of a service binding.
 """
-helps['spring-cloud app binding delete'] = """
+helps['spring-cloud app binding remove'] = """
     type: command
-    short-summary: Delete a service binding of the app.
+    short-summary: Remove a service binding of the app.
 """
 
 helps['spring-cloud app binding cosmos add'] = """
     type: command
-    short-summary: Bind an Azure Cosmos DB service with the app.
+    short-summary: Bind an Azure Cosmos DB with the app.
     examples:
-    - name: Bind an Azure Cosmos DB service.
+    - name: Bind an Azure Cosmos DB.
       text: az spring-cloud app binding cosmos create -n mysqlProduction --app MyApp --resource-id ${COSMOSDB_ID} --api-type mongo --database mymongo
 """
 
@@ -279,20 +279,20 @@ helps['spring-cloud app binding cosmos update'] = """
 
 helps['spring-cloud app binding mysql add'] = """
     type: command
-    short-summary: Bind an Azure DB for MySQL service with the app.
+    short-summary: Bind an Azure Database for MySQL with the app.
 """
 
 helps['spring-cloud app binding mysql update'] = """
     type: command
-    short-summary: Update an Azure DB for MySQL service binding of the app.
+    short-summary: Update an Azure Database for MySQL service binding of the app.
 """
 
 helps['spring-cloud app binding redis add'] = """
     type: command
-    short-summary: Bind an Azure Redis Cache service with the app.
+    short-summary: Bind an Azure Cache for Redis with the app.
 """
 
 helps['spring-cloud app binding redis update'] = """
     type: command
-    short-summary: Update an Azure Redis Cache service binding of the app.
+    short-summary: Update an Azure Cache for Redis service binding of the app.
 """
