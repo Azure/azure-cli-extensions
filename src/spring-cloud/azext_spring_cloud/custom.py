@@ -839,6 +839,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     # upload file
     file_service = FileService(storage_name, sas_token=sas_token)
     file_service.create_file_from_path(share_name, None, relative_path, path)
+    logger.info("Upload file succeed, start to update deployment.")
+
     # create deployment
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
