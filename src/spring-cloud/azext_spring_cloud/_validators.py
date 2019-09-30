@@ -25,6 +25,11 @@ def validate_env(namespace):
             env_dict.update(validate_tag(item))
         namespace.env = env_dict
 
+def validate_location(namespace):
+    if namespace.location:
+        location_slice = namespace.location.split(" ")
+        namespace.location = "".join([piece.lower() for piece in location_slice])
+
 
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
