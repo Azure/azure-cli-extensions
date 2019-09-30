@@ -340,9 +340,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         resource_group, service, app).properties.active_deployment_name
         active_deployment = client.deployments.get(resource_group, service, app, active_deployment_name)
         if active_deployment:
-            cpu = active_deployment.properties.deployment_settings.cpu
-            memory = active_deployment.properties.deployment_settings.memory_in_gb
-            instance_count = active_deployment.properties.deployment_settings.instance_count
+            cpu = cpu or active_deployment.properties.deployment_settings.cpu
+            memory = memory or active_deployment.properties.deployment_settings.memory_in_gb 
+            instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
+            jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
+            env = env or active_deployment.properties.deployment_settings.environment_variables
+
     file_type, file_path = _get_upload_local_file(jar_path)
     return _app_deploy(client, resource_group, service, app, name, version, file_path,
                        runtime_version,

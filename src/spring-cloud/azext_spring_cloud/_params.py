@@ -8,9 +8,11 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azure.cli.core.commands.parameters import (get_resource_name_completion_list, name_type,
                                                 get_location_type, resource_group_name_type)
-from ._validators import (validate_env, validate_key_type, validate_cosmos_type, validate_resource_id,
+from ._validators import (validate_env, validate_cosmos_type, validate_resource_id,
                           validate_name, validate_app_name, validate_deployment_name, validate_nodes_count)
 from ._utils import ApiType
+
+from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
                             '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -35,8 +37,7 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('spring-cloud test-endpoint renew-key') as c:
-        c.argument('type', type=str, help='Type of test-endpoint key, only accepts "Primary" or "Secondary"',
-                   validator=validate_key_type)
+        c.argument('type', type=str, arg_type=get_enum_type(TestKeyType), help='Type of test-endpoint key')
 
     with self.argument_context('spring-cloud app') as c:
         c.argument('service', service_name_type)
@@ -66,7 +67,7 @@ def load_arguments(self, _):
 
     for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy']:
         with self.argument_context(scope) as c:
-            c.argument('runtime_version',
+            c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash prase error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
@@ -152,8 +153,8 @@ def load_arguments(self, _):
             c.argument('search_paths', help='search_paths of the added config, use , as delimiter for multiple paths.')
             c.argument('username', help='Username of the added config.')
             c.argument('password', help='Password of the added config.')
-            c.argument('Host_key', help='Host_key of the added config.')
-            c.argument('Host_key_algorithm', help='Host_key_algorithm of the added config.')
+            c.argument('host_key', help='Host key of the added config.')
+            c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.')
             c.argument('strict_host_key_checking', help='Strict_host_key_checking of the added config.')
     

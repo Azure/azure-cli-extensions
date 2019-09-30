@@ -26,14 +26,6 @@ def validate_env(namespace):
         namespace.env = env_dict
 
 
-def validate_key_type(namespace):
-    key_type = namespace.type.lower()
-    if key_type != 'primary' and key_type != 'secondary':
-        raise CLIError('--type only accepts "Primary" or "Secondary"')
-    key_type = key_type[:1].upper() + key_type[1:]
-    namespace.type = key_type
-
-
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
