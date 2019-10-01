@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.4.17
++++++
+* Add support for public IP per node during node pool creation
+* Add support for taints during node pool creation
+* Add support for low priority node pool
+
 0.4.16
 +++++
 * Add support for `az aks kollect`
