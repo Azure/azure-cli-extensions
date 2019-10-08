@@ -14,9 +14,7 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
-# HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -45,8 +43,8 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='healthcareapis',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Healthcare Extension',
-    # TODO: Update author and email, if applicable
+    description='Microsoft Azure Command-Line Tools HealthCareApis Extension',
+   # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     # TODO: consider pointing directly to your source code instead of the generic repo

@@ -2,6 +2,17 @@
 
 Release History
 ===============
+0.4.17
++++++
+* Add support for public IP per node during node pool creation
+* Add support for taints during node pool creation
+* Add support for low priority node pool
+
+0.4.16
++++++
+* Add support for `az aks kollect`
+* Add support for `az aks upgrade --control-plane-only`
+
 0.4.15
 +++++
 * Set default cluster creation to SLB and VMSS

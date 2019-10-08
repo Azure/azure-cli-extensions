@@ -376,6 +376,18 @@ helps['aks nodepool add'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --node-taints
+          type: string
+          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
+        - name: --priority
+          type: string
+          short-summary: The priority of the node pool. Regular or Low.
+        - name: --eviction-policy
+          type: string
+          short-summary: The eviction policy of the low-pri node pool. Delete or Deallocate.
+        - name: --public-ip-per-vm
+          type: bool
+          short-summary: Each node will have a public ip.
 """
 
 helps['aks nodepool scale'] = """
