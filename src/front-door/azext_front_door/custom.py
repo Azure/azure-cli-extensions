@@ -186,7 +186,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
             HealthProbeSettingsModel(
                 name=probe_setting_name,
                 interval_in_seconds=probe_interval,
-                probe_method=probe_method,
+                health_probe_method=probe_method,
                 path=probe_path,
                 protocol=probe_protocol,
                 resource_state='Enabled'
@@ -431,14 +431,14 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
 
 
 def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, probe_path, probe_interval,
-                                    protocol=None, probeMethod='HEAD', enabled='Enabled'):
+                                    protocol=None, probe_method='HEAD', enabled='Enabled'):
     from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
     probe = HealthProbeSettingsModel(
         name=item_name,
         path=probe_path,
         protocol=protocol,
         interval_in_seconds=probe_interval,
-        probe_method=probeMethod,
+        health_probe_method=probe_method,
         enabled_state=enabled
     )
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name,
