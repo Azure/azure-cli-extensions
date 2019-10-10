@@ -8,30 +8,15 @@ from collections import OrderedDict
 
 
 def transform_query_tables_output(result):
-    tables_output = []
+    table_output = []
 
-    def _transform_query_table_output(table):
-        columns = table['columns']
-        name = table['name']
-        rows = table['rows']
+    for row in result:
+        item = OrderedDict()
+        for key, value in row.items():
+            item[key] = value
+        table_output.append(item)
 
-        column_names = []
-        table_output = []
-        for column in columns:
-            column_names.append(column['name'])
-        for row in rows:
-            item = OrderedDict()
-            item['TableName'] = name
-            for index in range(len(row)):
-                item[column_names[index]] = row[index]
-            table_output.append(item)
-        return table_output
-
-    for table in result['tables']:
-        table_output = _transform_query_table_output(table)
-        tables_output.extend(table_output)
-
-    return tables_output
+    return table_output
 
 def transform_query_output(result):
     tables_output = []
