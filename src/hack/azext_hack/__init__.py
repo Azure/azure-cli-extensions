@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.core import AzCommandsLoader
 from ._validators import validate_name
+from azure.cli.core.commands.parameters import get_location_type
 
 
 class HackExtCommandLoader(AzCommandsLoader):
@@ -42,6 +43,7 @@ class HackExtCommandLoader(AzCommandsLoader):
                        options_list=['--ai', '-ai'],
                        default=None,
                        action='store_true')
+            c.argument(get_location_type(self.cli_ctx))
 
 
 COMMAND_LOADER_CLS = HackExtCommandLoader
