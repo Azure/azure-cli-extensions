@@ -4,12 +4,12 @@
 # # --------------------------------------------------------------------------------------------
 from uuid import uuid4
 
-from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.mgmt.resource.resources.models import ResourceGroup
+from knack.log import get_logger
 
-from ._data_store_utils import DataStore
+from ._database_utils import Database
 from ._website_utils import Website
 from ._cogsvcs_utils import (
     create_cogsvcs_key,
@@ -18,7 +18,8 @@ from ._cogsvcs_utils import (
 
 logger = get_logger(__name__)
 
-def hack_up(cmd, name, runtime, database, location, ai=None):
+
+def create_hack(cmd, name, runtime, database, location, ai=None):
     # TODO: Update this to use a default location, or prompt??
     name = name + str(uuid4())[:5]
     # # Create RG
@@ -30,24 +31,24 @@ def hack_up(cmd, name, runtime, database, location, ai=None):
         create_cogsvcs_key(cmd, name, location)
 
     logger.warning("Starting database creation job...")
-    data_store = DataStore(cmd, database, name, location)
-    data_store_poller = data_store.create()
+    database = Database(cmd, database, name, location)
+    database_poller = database.create()
 
     logger.warning("Starting website creation job...")
     website = Website(cmd, name, location, runtime)
     website.create()
 
     while True:
-        data_store_poller.result(15)
-        if data_store_poller.done():
+        database_poller.result(15)
+        if database_poller.done():
             break
 
     app_settings = {
-        'DATABASE_HOST': data_store.host,
-        'DATABASE_NAME': data_store.name,
-        'DATABASE_PORT': data_store.port,
-        'DATABASE_USER': data_store.admin if data_store.datastore_type != 'mysql' else data_store.admin + '@' + data_store.name,
-        'DATABASE_PASSWORD': data_store.password,
+        'DATABASE_HOST': database.host,
+        'DATABASE_NAME': database.name,
+        'DATABASE_PORT': database.port,
+        'DATABASE_USER': database.admin if database.database_type != 'mysql' else database.admin + '@' + database.name,
+        'DATABASE_PASSWORD': database.password,
     }
 
     if ai:
@@ -67,9 +68,12 @@ def hack_up(cmd, name, runtime, database, location, ai=None):
     }
 
     if website.deployment_user_password:
-        deployment_info.update({'Git password': website.deployment_user_password})
+        deployment_info.update(
+            {'Git password': website.deployment_user_password})
     else:
-        deployment_info.update({'Git password info': 'Cannot retrieve password. To change, use `az webapp deployment user set --user-name {}`'.format(website.deployment_user_name)})
+        password_info = 'Cannot retrieve password. To change, use `az webapp deployment user set --user-name {}`'
+        deployment_info.update(
+            {'Git password info': password_info.format(website.deployment_user_name)})
 
     deployment_steps = {
         '1- Create git repository': 'git init',
@@ -88,6 +92,7 @@ def hack_up(cmd, name, runtime, database, location, ai=None):
     output.update({'Website url': website.host_name})
 
     return output
+
 
 def create_resource_group(cmd, name, location):
     client = get_mgmt_service_client(

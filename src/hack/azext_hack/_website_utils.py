@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# # --------------------------------------------------------------------------------------------
+
 from uuid import uuid4
 from azure.cli.command_modules.appservice._client_factory import (
     web_client_factory
@@ -42,17 +47,18 @@ _RUNTIME_SETTINGS = {
 }
 
 
+# pylint: disable=too-many-instance-attributes
 class Website:
     def __init__(self, cmd, name: str, location: str, runtime: str):
         self.name = name
         self.location = location
         self.runtime = runtime
-        self._deployment_user_name = None
-        self._deployment_user_password = None
-        self._deployment_url = None
-        self._host_name = None
-        self._resource_group = None
-        self._id = None
+        self.deployment_user_name = None
+        self.deployment_user_password = None
+        self.deployment_url = None
+        self.host_name = None
+        self.resource_group = None
+        self.id = None
         self.__cmd = cmd
 
     def create(self):
@@ -68,18 +74,18 @@ class Website:
         app_settings = []
         for key in settings:
             app_settings.append('{}={}'.format(key, settings[key]))
-        update_app_settings(self.__cmd, resource_group_name=self._resource_group,
+        update_app_settings(self.__cmd, resource_group_name=self.resource_group,
                             name=self.name, settings=app_settings)
 
     def finalize_resource_group(self):
-        if self._resource_group.lower() == self.name:
+        if self.resource_group.lower() == self.name:
             return
         # Need to move to correct resource group
         logger.warning('Moving website. This will take a few minutes...')
-        poller = move_resource(self.__cmd, [self._id], self.name)
+        poller = move_resource(self.__cmd, [self.id], self.name)
         while not poller.done():
             poller.result(15)
-        self._resource_group = self.name
+        self.resource_group = self.name
 
     def __get_or_create_app_service_plan(self) -> str:
         plans = list_app_service_plans(self.__cmd)
@@ -88,11 +94,12 @@ class Website:
                 logger.warning('Using existing free plan...')
                 return plan
         # Reached here, no free plan found
-        logger.warning('Creating free App Service plan named free_app_service_plan...')
+        logger.warning(
+            'Creating free App Service plan named free_app_service_plan...')
         default_free_plan_name = 'free_app_service_plan'
         app_service_plan = create_app_service_plan(self.__cmd, resource_group_name=self.name, sku='F1',
-                                       name=default_free_plan_name, is_linux=True, hyper_v=False).result()
-        self._resource_group = app_service_plan.resource_group
+                                                   name=default_free_plan_name, is_linux=True, hyper_v=False).result()
+        self.resource_group = app_service_plan.resource_group
         return app_service_plan
 
     def __create_webapp(self, app_service_plan):
@@ -102,8 +109,8 @@ class Website:
         logger.warning('Creating website...')
         webapp = create_webapp(self.__cmd, resource_group_name=app_service_plan.resource_group, name=self.name,
                                plan=app_service_plan.name, runtime=runtime_setting['name'], deployment_local_git=True)
-        self._resource_group = app_service_plan.resource_group
-        self._id = webapp.id
+        self.resource_group = app_service_plan.resource_group
+        self.id = webapp.id
         return webapp
 
     def __set_deployment_user(self):
@@ -119,77 +126,3 @@ class Website:
             self.deployment_user_name = self.name[:10]
         else:
             self.deployment_user_name = deployment_user.publishing_user_name
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, val: str):
-        if not val:
-            raise "name is required"
-        self._name = val
-
-    @property
-    def location(self) -> str:
-        return self.location
-
-    @location.setter
-    def location(self, val: str):
-        if not val:
-            raise "location is required"
-        self._location = val
-
-    @property
-    def runtime(self) -> str:
-        return self._runtime
-
-    @runtime.setter
-    def runtime(self, val: str):
-        if not val:
-            raise "runtime is required"
-        self._runtime = val
-
-    @property
-    def deployment_user_name(self) -> str:
-        return self._deployment_user_name
-
-    @deployment_user_name.setter
-    def deployment_user_name(self, val: str):
-        if not val:
-            raise "deployment_user_name is required"
-        self._deployment_user_name = val
-
-    @property
-    def deployment_user_password(self) -> str:
-        return self._deployment_user_password
-
-    @deployment_user_password.setter
-    def deployment_user_password(self, val: str):
-        if not val:
-            raise "deployment_user_password is required"
-        self._deployment_user_password = val
-
-    @property
-    def deployment_url(self) -> str:
-        return self._deployment_url
-
-    @deployment_url.setter
-    def deployment_url(self, val: str):
-        if not val:
-            raise "deployment_url is required"
-        self._deployment_url = val
-
-    @property
-    def host_name(self) -> str:
-        return self._host_name
-
-    @host_name.setter
-    def host_name(self, val: str):
-        if not val:
-            raise "host_name is required"
-        self._host_name = val
-
-    @property
-    def resource_group(self) -> str:
-        return self._resource_group
