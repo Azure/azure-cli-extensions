@@ -7,17 +7,6 @@
 from collections import OrderedDict
 
 
-def transform_query_tables_output(result):
-    table_output = []
-
-    for row in result:
-        item = OrderedDict()
-        for key, value in row.items():
-            item[key] = value
-        table_output.append(item)
-
-    return table_output
-
 def transform_query_output(result):
     tables_output = []
 
