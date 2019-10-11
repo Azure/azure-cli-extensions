@@ -1,6 +1,4 @@
 from uuid import uuid4
-from typing import Callable, List
-from msrest.polling import LROPoller
 from knack.log import get_logger
 
 _DATABASES = {
@@ -23,14 +21,14 @@ logger = get_logger(__name__)
 
 # pylint: disable=too-few-public-methods
 class DatabaseCreationStep():
-    def __init__(self, name: str, delegate: Callable[[], LROPoller], params):
+    def __init__(self, name: str, delegate, params):
         self.delegate = delegate
         self.params = params
         self.name = name
 
 
 class DatabaseCreator():
-    def __init__(self, steps: List[DatabaseCreationStep]):
+    def __init__(self, steps):
         if not steps:
             raise 'Steps cannot be empty'
         self.steps = steps
@@ -51,7 +49,7 @@ class DatabaseCreator():
                 return_value = step.delegate(**step.params)
             else:
                 return_value = step.delegate()
-            if isinstance(return_value, LROPoller):
+            if hasattr(return_value, 'add_done_callback'):
                 self.__current_poller = return_value
                 self.__current_poller.add_done_callback(self.__run_step)
             else:
@@ -79,7 +77,7 @@ class Database():
         self.password = str(uuid4())
         self.location = location
 
-    def create(self) -> LROPoller:
+    def create(self):
         if self.database_type == 'mysql':
             steps = self.__get_mysql_steps(
                 self.__cmd, self.name, self.location, self.admin, self.password)
@@ -102,7 +100,7 @@ class Database():
     def port(self) -> str:
         return _DATABASES[self.database_type]['port']
 
-    def __get_cosmosdb_steps(self, cmd, name, location) -> List[DatabaseCreationStep]:
+    def __get_cosmosdb_steps(self, cmd, name, location):
         from azure.mgmt.cosmosdb import CosmosDB
         from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
@@ -158,7 +156,7 @@ class Database():
         return steps
 
     # pylint: disable=no-self-use
-    def __get_mysql_steps(self, cmd, name: str, location: str, admin: str, password: str) -> List[DatabaseCreationStep]:
+    def __get_mysql_steps(self, cmd, name: str, location: str, admin: str, password: str):
         from azure.cli.command_modules.rdbms._client_factory import (
             cf_mysql_servers,
             cf_mysql_db,
@@ -222,7 +220,7 @@ class Database():
         return steps
 
     # pylint: disable=no-self-use
-    def __get_sql_steps(self, cmd, name, location, admin, password) -> List[DatabaseCreationStep]:
+    def __get_sql_steps(self, cmd, name, location, admin, password):
         from azure.cli.command_modules.sql._util import (
             get_sql_management_client
         )
