@@ -16,8 +16,8 @@ helps['hack create'] = """
     type: command
     short-summary: Create resources commonly used for a student hack, including a website, database, and artificial intelligence.
     examples:
-        - name: Create website and MySQL
-          text: az hack create --name samplename --location westus2 --database mysql
-        - name: Create website, SQL and Cognitive Services key
-          text: az hack create --name samplename --location westus2 --database sql --ai
+        - name: Create website using Python and MySQL
+          text: az hack create --name samplename --runtime python --location westus2 --database mysql
+        - name: Create website using Node.js, SQL and Cognitive Services key
+          text: az hack create --name samplename --runtime node --location westus2 --database sql --ai
 """
