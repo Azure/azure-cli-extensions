@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long
 
-from ._format import transform_query_tables_output, transform_query_output
+from ._format import transform_query_output
 
 def load_command_table(self, _):
 
