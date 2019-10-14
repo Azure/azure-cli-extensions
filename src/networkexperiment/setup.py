@@ -56,5 +56,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_networkexperiment profiles': ['azext_metadata.json']},
+    package_data={'azext_networkexperiment': ['azext_metadata.json']},
 )
