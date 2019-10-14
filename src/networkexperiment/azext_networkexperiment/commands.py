@@ -14,7 +14,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_network_experiment_profiles
     networkexperiment_network_experiment_profiles = CliCommandType(
-        operations_tmpl='azext_networkexperiment.vendored_sdks.networkexperiment.operations._network_experiment_profiles_operations#NetworkExperimentProfilesOperations.{}',
+        operations_tmpl='azext_networkexperiment.vendored_sdks.frontdoor.operations._network_experiment_profiles_operations#NetworkExperimentProfilesOperations.{}',
         client_factory=cf_network_experiment_profiles)
     with self.command_group('networkexperiment profiles', networkexperiment_network_experiment_profiles, client_factory=cf_network_experiment_profiles) as g:
         g.custom_command('create', 'create_networkexperiment_profiles')
@@ -25,7 +25,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_experiments
     networkexperiment_experiments = CliCommandType(
-        operations_tmpl='azext_networkexperiment.vendored_sdks.networkexperiment.operations._experiments_operations#ExperimentsOperations.{}',
+        operations_tmpl='azext_networkexperiment.vendored_sdks.frontdoor.operations._experiments_operations#ExperimentsOperations.{}',
         client_factory=cf_experiments)
     with self.command_group('networkexperiment experiment', networkexperiment_experiments, client_factory=cf_experiments) as g:
         g.custom_command('create', 'create_networkexperiment_experiment')
@@ -36,7 +36,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_front_doors
     networkexperiment_front_doors = CliCommandType(
-        operations_tmpl='azext_networkexperiment.vendored_sdks.networkexperiment.operations._front_doors_operations#FrontDoorsOperations.{}',
+        operations_tmpl='azext_networkexperiment.vendored_sdks.frontdoor.operations._front_doors_operations#FrontDoorsOperations.{}',
         client_factory=cf_front_doors)
     with self.command_group('-', networkexperiment_front_doors, client_factory=cf_front_doors) as g:
         g.custom_command('create', 'create__')
@@ -47,7 +47,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_policies
     networkexperiment_policies = CliCommandType(
-        operations_tmpl='azext_networkexperiment.vendored_sdks.networkexperiment.operations._policies_operations#PoliciesOperations.{}',
+        operations_tmpl='azext_networkexperiment.vendored_sdks.frontdoor.operations._policies_operations#PoliciesOperations.{}',
         client_factory=cf_policies)
     with self.command_group('-', networkexperiment_policies, client_factory=cf_policies) as g:
         g.custom_command('create', 'create__')
