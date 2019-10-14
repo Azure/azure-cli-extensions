@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_networkexperiment profiles._help import helps  # pylint: disable=unused-import
+from azext_networkexperiment._help import helps  # pylint: disable=unused-import
 
 
 class FrontDoorCommandsLoader(AzCommandsLoader):
