@@ -9,7 +9,7 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['networkexperiment profiles'] = """
+helps['networkexperiment'] = """
     type: group
     short-summary: Commands to manage network experiment profile.
 """
