@@ -12,10 +12,10 @@ class FrontDoorCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_networkexperiment._client_factory import cf_networkexperiment profiles
+        from azext_networkexperiment._client_factory import cf_networkexperiment
         networkexperiment profiles_custom = CliCommandType(
             operations_tmpl='azext_networkexperiment.custom#{}',
-            client_factory=cf_networkexperiment profiles)
+            client_factory=cf_networkexperiment)
         super( FrontDoorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                        custom_command_type=networkexperiment profiles_custom)
 
