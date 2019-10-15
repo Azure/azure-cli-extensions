@@ -223,7 +223,7 @@ def app_list(cmd, client,
     apps = list(client.apps.list(resource_group, service))
     deployments = list(client.deployments.list_cluster_all_deployments(resource_group, service))
     for app in apps:
-        if app.properties.active_deployment_name is not None:
+        if app.properties.active_deployment_name:
             deployment = next((x for x in deployments if x.name == app.properties.active_deployment_name))
             app.properties.active_deployment = deployment
 
@@ -236,7 +236,7 @@ def app_get(cmd, client,
             name):
     app = client.apps.get(resource_group, service, name)
     deployment_name = app.properties.active_deployment_name
-    if deployment_name is not None:
+    if deployment_name:
          deployment = client.deployments.get(resource_group, service, name, deployment_name)
          app.properties.active_deployment = deployment
 
@@ -454,7 +454,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config_server = resource.properties.config_server_properties.config_server
     config = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
-    if search_paths is not None:
+    if search_paths:
         search_paths = search_paths.split(",")
     
     config.uri = uri
@@ -488,7 +488,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
     config_server = resource.properties.config_server_properties.config_server
     config = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
-    if search_paths is not None:
+    if search_paths:
         search_paths = search_paths.split(",")
     
     if config.repositories:
@@ -559,10 +559,10 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     if not repository:
         raise CLIError("Repo {} not found.".format(repo_name))
     
-    if search_paths is not None:
+    if search_paths:
         search_paths = search_paths.split(",")
     
-    if pattern is not None:
+    if pattern:
         pattern = pattern.split(",")
     
     repository = repository[0]
@@ -731,7 +731,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
-    if disable_ssl is not None:
+    if disable_ssl:
         binding_parameters['useSsl'] = False if disable_ssl else True 
 
     primary_key = None
