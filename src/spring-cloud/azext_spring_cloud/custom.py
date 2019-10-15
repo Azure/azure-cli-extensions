@@ -220,19 +220,26 @@ def app_restart(cmd, client,
 def app_list(cmd, client,
              resource_group,
              service):
-    return client.apps.list(resource_group, service)
+    apps = list(client.apps.list(resource_group, service))
+    deployments = list(client.deployments.list_cluster_all_deployments(resource_group, service))
+    for app in apps:
+        if app.properties.active_deployment_name is not None:
+            deployment = next((x for x in deployments if x.name == app.properties.active_deployment_name))
+            app.properties.active_deployment = deployment
+
+    return apps
 
 
 def app_get(cmd, client,
             resource_group,
             service,
             name):
-    app = client.apps.get(
-        resource_group, service, name)
+    app = client.apps.get(resource_group, service, name)
     deployment_name = app.properties.active_deployment_name
     if deployment_name is not None:
          deployment = client.deployments.get(resource_group, service, name, deployment_name)
          app.properties.active_deployment = deployment
+
     return app
 
 

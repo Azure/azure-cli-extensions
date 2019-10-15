@@ -16,10 +16,8 @@ def transform_dns_zone_table_output(result):
     final_result = []
     for item in result:
         new_item = OrderedDict([
-            ('ZoneName', item['name']),
-            ('ResourceGroup', item['resourceGroup']),
-            ('RecordSets', item['numberOfRecordSets']),
-            ('MaxRecordSets', item['maxNumberOfRecordSets'])
+            ('State', item.properties.State),
+            ('Tags', item.tags),
         ])
         final_result.append(new_item)
 
