@@ -79,11 +79,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
-        # Add username field only for Windows
-        if not is_linux:
-            create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
+        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
+                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
         # fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm)
         if not sku:
