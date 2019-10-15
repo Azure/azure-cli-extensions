@@ -49,8 +49,8 @@ setup(
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Hack Extension',
     # TODO: Update author and email, if applicable
-    author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
+    author='Christopher Harrison',
+    author_email='chrhar@microsoft.com',
     # TODO: consider pointing directly to your source code instead of the generic repo
     url='https://github.com/Azure/azure-cli-extensions',
     long_description=README + '\n\n' + HISTORY,
