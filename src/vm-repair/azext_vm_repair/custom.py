@@ -421,8 +421,8 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             logger.info('\nScript returned with output:\n%s\n', output)
         else:
             script_status = STATUS_ERROR
-            return_status = STATUS_ERROR
-            message = 'Script returned with possible errors.'
+            return_status = STATUS_SUCCESS
+            message = 'Script succesfully run but returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
             logger.error('\nScript returned with error:\n%s\n', output)
 
@@ -457,7 +457,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
     if not command_succeeded:
         script_duration = ''
-        output = 'Script returned with possible errors.'
+        output = 'Repair run failed.'
         script_status = STATUS_ERROR
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
