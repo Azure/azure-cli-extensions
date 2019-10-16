@@ -59,16 +59,20 @@ def create_networkexperiment_experiment(cmd, client,
                                         location=None,
                                         tags=None,
                                         description=None,
-                                        endpoint_a=None,
-                                        endpoint_b=None,
+                                        endpoint_aname=None,
+                                        endpoint_aendpoint=None,
+                                        endpoint_bname=None,
+                                        endpoint_bendpoint=None,
                                         enabled_state=None,
                                         resource_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['description'] = description  # str
-    body['endpoint_a'] = json.loads(endpoint_a) if isinstance(endpoint_a, str) else endpoint_a
-    body['endpoint_b'] = json.loads(endpoint_b) if isinstance(endpoint_b, str) else endpoint_b
+    body.setdefault('endpoint_a', {})['name'] = endpoint_aname  # str
+    body.setdefault('endpoint_a', {})['endpoint'] = endpoint_aendpoint  # str
+    body.setdefault('endpoint_b', {})['name'] = endpoint_bname  # str
+    body.setdefault('endpoint_b', {})['endpoint'] = endpoint_bendpoint  # str
     body['enabled_state'] = enabled_state  # str
     body['resource_state'] = resource_state  # str
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
@@ -81,16 +85,20 @@ def update_networkexperiment_experiment(cmd, client, body,
                                         location=None,
                                         tags=None,
                                         description=None,
-                                        endpoint_a=None,
-                                        endpoint_b=None,
+                                        endpoint_aname=None,
+                                        endpoint_aendpoint=None,
+                                        endpoint_bname=None,
+                                        endpoint_bendpoint=None,
                                         enabled_state=None,
                                         resource_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
     body.description = description  # str
-    body.endpoint_a = json.loads(endpoint_a) if isinstance(endpoint_a, str) else endpoint_a
-    body.endpoint_b = json.loads(endpoint_b) if isinstance(endpoint_b, str) else endpoint_b
+    body.endpoint_a.name = endpoint_aname  # str
+    body.endpoint_a.endpoint = endpoint_aendpoint  # str
+    body.endpoint_b.name = endpoint_bname  # str
+    body.endpoint_b.endpoint = endpoint_bendpoint  # str
     body.enabled_state = enabled_state  # str
     body.resource_state = resource_state  # str
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)

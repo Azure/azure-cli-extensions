@@ -16,8 +16,10 @@ create a networkexperiment experiment.
 |--location|str|Resource location.|/location|/location|
 |--tags|dictionary|Resource tags.|/tags|/tags|
 |--description|str|The description of the details or intents of the Experiment|/description|/properties/description|
-|--endpoint-a|dict|The endpoint A of an experiment|/endpoint_a|/properties/endpointA|
-|--endpoint-b|dict|The endpoint B of an experiment|/endpoint_b|/properties/endpointB|
+|--endpoint-aname|str|The name of the endpoint|/endpoint_a/name|/properties/endpointA/name|
+|--endpoint-aendpoint|str|The endpoint URL|/endpoint_a/endpoint|/properties/endpointA/endpoint|
+|--endpoint-bname|str|The name of the endpoint|/endpoint_b/name|/properties/endpointB/name|
+|--endpoint-bendpoint|str|The endpoint URL|/endpoint_b/endpoint|/properties/endpointB/endpoint|
 |--enabled-state|str|The state of the Experiment|/enabled_state|/properties/enabledState|
 |--resource-state|str|Resource status.|/resource_state|/properties/resourceState|
 
@@ -28,6 +30,10 @@ networkexperiment experiment create --resource-group rg1
         --profile-name Profile1
         --name Experiment1
         --description "this is my first experiment!"
+        --endpoint-aname "endpoint A"
+        --endpoint-aendpoint endpointA.net
+        --endpoint-bname "endpoint B"
+        --endpoint-bendpoint endpointB.net
         --enabled-state Enabled
 ```
 ### networkexperiment experiment update
@@ -42,8 +48,10 @@ update a networkexperiment experiment.
 |--location|str|Resource location.|/location|/location|
 |--tags|dictionary|Resource tags.|/tags|/tags|
 |--description|str|The description of the details or intents of the Experiment|/description|/properties/description|
-|--endpoint-a|dict|The endpoint A of an experiment|/endpoint_a|/properties/endpointA|
-|--endpoint-b|dict|The endpoint B of an experiment|/endpoint_b|/properties/endpointB|
+|--endpoint-aname|str|The name of the endpoint|/endpoint_a/name|/properties/endpointA/name|
+|--endpoint-aendpoint|str|The endpoint URL|/endpoint_a/endpoint|/properties/endpointA/endpoint|
+|--endpoint-bname|str|The name of the endpoint|/endpoint_b/name|/properties/endpointB/name|
+|--endpoint-bendpoint|str|The endpoint URL|/endpoint_b/endpoint|/properties/endpointB/endpoint|
 |--enabled-state|str|The state of the Experiment|/enabled_state|/properties/enabledState|
 |--resource-state|str|Resource status.|/resource_state|/properties/resourceState|
 

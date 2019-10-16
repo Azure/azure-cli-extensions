@@ -9,7 +9,7 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['networkexperiment'] = """
+helps['networkexperiment profiles'] = """
     type: group
     short-summary: Commands to manage network experiment profile.
 """
@@ -20,8 +20,8 @@ helps['networkexperiment profiles create'] = """
     examples:
       - name: Creates an NetworkExperiment Profile in a Resource Group
         text: |-
-               az networkexperiment profiles create --profile-name "Profile1" --name "rg1" \\
-               --enabled-state "Enabled"
+               az networkexperiment profiles create --profile-name "Profile1" --name "rg1" --location \\
+               "WestUs" --enabled-state "Enabled"
 """
 
 helps['networkexperiment profiles update'] = """
@@ -65,8 +65,9 @@ helps['networkexperiment experiment create'] = """
       - name: Creates an Experiment
         text: |-
                az networkexperiment experiment create --resource-group "rg1" --profile-name "Profile1" \\
-               --name "Experiment1" --description "this is my first experiment!" --enabled-state \\
-               "Enabled"
+               --name "Experiment1" --description "this is my first experiment!" --endpoint-aname \\
+               "endpoint A" --endpoint-aendpoint "endpointA.net" --endpoint-bname "endpoint B" \\
+               --endpoint-bendpoint "endpointB.net" --enabled-state "Enabled"
 """
 
 helps['networkexperiment experiment update'] = """
@@ -97,14 +98,4 @@ helps['networkexperiment experiment list'] = """
 helps['networkexperiment experiment show'] = """
     type: command
     short-summary: show experiment.
-"""
-
-helps['-'] = """
-    type: group
-    short-summary: Commands to manage front door.
-"""
-
-helps['-'] = """
-    type: group
-    short-summary: Commands to manage policy.
 """
