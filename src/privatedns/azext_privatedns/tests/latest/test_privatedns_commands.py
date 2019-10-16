@@ -117,7 +117,7 @@ class BaseScenarioTests(ScenarioTest):
             self.exists('etag'),
             self.check('fqdn', '{recordset}.{zone}.'),
             self.check('metadata', None),
-            self.check('isAutoRegistered', None),
+            self.check('isAutoRegistered', False),
             self.check('ttl', 3600)
         ]).get_output_in_json()
         return getattr(self, self._RecordType_To_FunctionName(recordType, 'Create'))(self.kwargs['recordset'], zoneName)
@@ -347,7 +347,7 @@ class PrivateDnsZonesTests(BaseScenarioTests):
     def test_PatchZone_ZoneExistsIfMatchFailure_ExpectError(self, resource_group):
         self._Create_PrivateZone()
         self.kwargs['etag'] = self.create_guid()
-        with self.assertRaisesRegexp(CLIError, 'etag mismatch'):
+        with self.assertRaisesRegexp(CloudError, 'etag mismatch'):
             self.cmd('az network private-dns zone update -g {rg} -n {zone} --if-match {etag}')
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
@@ -484,7 +484,7 @@ class PrivateDnsLinksTests(BaseScenarioTests):
         self._Create_VirtualNetworkLink()
         self.kwargs['etag'] = self.create_guid()
         cmd = "az network private-dns link vnet update -g {rg} -n {link} -z {zone} --if-match '{etag}'"
-        with self.assertRaisesRegexp(CLIError, 'etag mismatch'):
+        with self.assertRaisesRegexp(CloudError, 'etag mismatch'):
             self.cmd(cmd)
 
     @ResourceGroupPreparer(name_prefix='clitest_privatedns')
@@ -680,14 +680,11 @@ class PrivateDnsRecordSetsTests(BaseScenarioTests):
         self.kwargs['retryTime'] = 3
         self.kwargs['refreshTime'] = 4
         self.kwargs['serialNumber'] = 5
-        self.kwargs['host'] = 'clitest.hostmaster.com'
         self.cmd('az network private-dns record-set soa update -g {rg} -z {zone} \
-            -e {email} -x {expireTime} -t {host} -m {minimumTtl} -f {refreshTime} -r {retryTime} -s {serialNumber}', checks=[
+            -e {email} -x {expireTime} -m {minimumTtl} -f {refreshTime} -r {retryTime} -s {serialNumber}', checks=[
             self.check('name', '@'),
             self.check('type', 'Microsoft.Network/privateDnsZones/SOA'),
-            self.check('soaRecord.host', '{host}'),
             self.check('soaRecord.email', '{email}'),
-            self.check('soaRecord.serialNumber', '{serialNumber}'),
             self.check('soaRecord.refreshTime', '{refreshTime}'),
             self.check('soaRecord.retryTime', '{retryTime}'),
             self.check('soaRecord.expireTime', '{expireTime}'),

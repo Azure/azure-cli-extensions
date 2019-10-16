@@ -35,3 +35,36 @@ helps['vm repair restore'] = """
           text: >
             az vm repair restore -g MyResourceGroup -n MyVM --disk-name MyDiskCopy --verbose
 """
+
+helps['vm repair run'] = """
+    type: command
+    short-summary: Run verified scripts from GitHub on a VM. 'az vm repair list-scripts' to view available scripts.
+    examples:
+        - name: Run the script with <run-id> directly on the VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --verbose
+        - name: Run the script with <run-id> on the linked repair VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --run-on-repair --verbose
+        - name: Run a script with parameters on the VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --run-id win-hello-world --parameters hello=hi world=earth --verbose
+        - name: Run a local custom script on the VM.
+          text: >
+            az vm repair run -g MyResourceGroup -n MySourceWinVM --custom-script-file ./file.ps1 --verbose
+"""
+
+helps['vm repair list-scripts'] = """
+    type: command
+    short-summary: List available scripts. Located https://github.com/Azure/repair-script-library
+    examples:
+        - name: List scripts
+          text: >
+            az vm repair list-scripts --verbose
+        - name: List windows scripts only.
+          text: >
+            az vm repair list-scripts --query "[?starts_with(id, 'win')]"
+        - name: List scripts with test in its description.
+          text: >
+            az vm repair list-scripts --query "[?contains(description, 'test')]"
+"""
