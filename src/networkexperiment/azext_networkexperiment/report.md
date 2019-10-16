@@ -98,11 +98,11 @@ show a networkexperiment experiment.
 |**--resource-group**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--profile-name**|str|The Profile identifier associated with the Tenant and Partner|profile_name|profileName|
 |**--name**|str|The Experiment identifier associated with the Experiment|experiment_name|experimentName|
-## networkexperiment profiles
+## networkexperiment profile
 
-### networkexperiment profiles create
+### networkexperiment profile create
 
-create a networkexperiment profiles.
+create a networkexperiment profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -117,14 +117,14 @@ create a networkexperiment profiles.
 **Example: Creates an NetworkExperiment Profile in a Resource Group**
 
 ```
-networkexperiment profiles create --profile-name Profile1
+networkexperiment profile create --profile-name Profile1
         --name rg1
         --location WestUs
         --enabled-state Enabled
 ```
-### networkexperiment profiles update
+### networkexperiment profile update
 
-update a networkexperiment profiles.
+update a networkexperiment profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -139,13 +139,13 @@ update a networkexperiment profiles.
 **Example: Updates an Experiment**
 
 ```
-networkexperiment profiles update --profile-name Profile1
+networkexperiment profile update --profile-name Profile1
         --name rg1
         --enabled-state Enabled
 ```
-### networkexperiment profiles delete
+### networkexperiment profile delete
 
-delete a networkexperiment profiles.
+delete a networkexperiment profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -155,19 +155,19 @@ delete a networkexperiment profiles.
 **Example: Deletes an NetworkExperiment Profile by ProfileName**
 
 ```
-networkexperiment profiles delete --name rg1
+networkexperiment profile delete --name rg1
         --profile-name Profile1
 ```
-### networkexperiment profiles list
+### networkexperiment profile list
 
-list a networkexperiment profiles.
+list a networkexperiment profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--name**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
-### networkexperiment profiles show
+### networkexperiment profile show
 
-show a networkexperiment profiles.
+show a networkexperiment profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|

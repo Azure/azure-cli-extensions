@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'networkexperiment profiles' Extension
+Microsoft Azure CLI 'networkexperiment' Extension
 ==========================================
 
-This package is for the 'networkexperiment profiles' extension.
-i.e. 'az networkexperiment profiles'
+This package is for the 'networkexperiment' extension.
+i.e. 'az networkexperiment'

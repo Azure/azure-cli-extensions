@@ -23,63 +23,63 @@ class ApimgmtScenarioTest(ScenarioTest):
         })
 
 # create_or_update -- create
-        self.cmd('networkexperiment profiles create  --profile-name "Profile1" --name "rg1" --location "WestUs" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment profile create  --profile-name "Profile1" --name "rg1" --location "WestUs" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles create  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment profile create  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles create  --profile-name "Profile1" --name "rg1"', checks=[
+        self.cmd('networkexperiment profile create  --profile-name "Profile1" --name "rg1"', checks=[
         ])
 
 # create_or_update -- update
-        self.cmd('networkexperiment profiles update  --profile-name "Profile1" --name "rg1" --location "WestUs" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment profile update  --profile-name "Profile1" --name "rg1" --location "WestUs" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles update  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment profile update  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles update  --profile-name "Profile1" --name "rg1"', checks=[
+        self.cmd('networkexperiment profile update  --profile-name "Profile1" --name "rg1"', checks=[
         ])
 
 # delete -- delete
-        self.cmd('networkexperiment profiles delete  --name "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('networkexperiment profile delete  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles delete  --name "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('networkexperiment profile delete  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles delete  --name "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('networkexperiment profile delete  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
 # list_by_resource_group -- list
-        self.cmd('networkexperiment profiles list  --name "rg1"', checks=[
+        self.cmd('networkexperiment profile list  --name "rg1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles list  --name "rg1"', checks=[
+        self.cmd('networkexperiment profile list  --name "rg1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles list  --name "rg1"', checks=[
+        self.cmd('networkexperiment profile list  --name "rg1"', checks=[
         ])
 
 # list -- list
-        self.cmd('networkexperiment profiles list  --name "rg1"', checks=[
+        self.cmd('networkexperiment profile list  --name "rg1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles list  --name "rg1"', checks=[
+        self.cmd('networkexperiment profile list  --name "rg1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles list  --name "rg1"', checks=[
+        self.cmd('networkexperiment profile list  --name "rg1"', checks=[
         ])
 
 # get -- show
-        self.cmd('networkexperiment profiles show  --name "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('networkexperiment profile show  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles show  --name "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('networkexperiment profile show  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
-        self.cmd('networkexperiment profiles show  --name "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('networkexperiment profile show  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
 # create_or_update -- create

@@ -9,46 +9,46 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['networkexperiment profiles'] = """
+helps['networkexperiment profile'] = """
     type: group
     short-summary: Commands to manage network experiment profile.
 """
 
-helps['networkexperiment profiles create'] = """
+helps['networkexperiment profile create'] = """
     type: command
     short-summary: create network experiment profile.
     examples:
       - name: Creates an NetworkExperiment Profile in a Resource Group
         text: |-
-               az networkexperiment profiles create --profile-name "Profile1" --name "rg1" --location \\
+               az networkexperiment profile create --profile-name "Profile1" --name "rg1" --location \\
                "WestUs" --enabled-state "Enabled"
 """
 
-helps['networkexperiment profiles update'] = """
+helps['networkexperiment profile update'] = """
     type: command
     short-summary: update network experiment profile.
     examples:
       - name: Updates an Experiment
         text: |-
-               az networkexperiment profiles update --profile-name "Profile1" --name "rg1" \\
+               az networkexperiment profile update --profile-name "Profile1" --name "rg1" \\
                --enabled-state "Enabled"
 """
 
-helps['networkexperiment profiles delete'] = """
+helps['networkexperiment profile delete'] = """
     type: command
     short-summary: delete network experiment profile.
     examples:
       - name: Deletes an NetworkExperiment Profile by ProfileName
         text: |-
-               az networkexperiment profiles delete --name "rg1" --profile-name "Profile1"
+               az networkexperiment profile delete --name "rg1" --profile-name "Profile1"
 """
 
-helps['networkexperiment profiles list'] = """
+helps['networkexperiment profile list'] = """
     type: command
     short-summary: list network experiment profile.
 """
 
-helps['networkexperiment profiles show'] = """
+helps['networkexperiment profile show'] = """
     type: command
     short-summary: show network experiment profile.
 """
@@ -98,4 +98,14 @@ helps['networkexperiment experiment list'] = """
 helps['networkexperiment experiment show'] = """
     type: command
     short-summary: show experiment.
+"""
+
+helps['-'] = """
+    type: group
+    short-summary: Commands to manage front door.
+"""
+
+helps['-'] = """
+    type: group
+    short-summary: Commands to manage policy.
 """

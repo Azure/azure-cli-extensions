@@ -16,11 +16,11 @@ def load_command_table(self, _):
     networkexperiment_network_experiment_profiles = CliCommandType(
         operations_tmpl='azext_networkexperiment.vendored_sdks.frontdoor.operations._network_experiment_profiles_operations#NetworkExperimentProfilesOperations.{}',
         client_factory=cf_network_experiment_profiles)
-    with self.command_group('networkexperiment profiles', networkexperiment_network_experiment_profiles, client_factory=cf_network_experiment_profiles) as g:
-        g.custom_command('create', 'create_networkexperiment_profiles')
-        g.generic_update_command('update', custom_func_name='update_networkexperiment_profiles')
+    with self.command_group('networkexperiment profile', networkexperiment_network_experiment_profiles, client_factory=cf_network_experiment_profiles) as g:
+        g.custom_command('create', 'create_networkexperiment_profile')
+        g.generic_update_command('update', custom_func_name='update_networkexperiment_profile')
         g.command('delete', 'delete')
-        g.custom_command('list', 'list_networkexperiment_profiles')
+        g.custom_command('list', 'list_networkexperiment_profile')
         g.show_command('show', 'get')
 
     from ._client_factory import cf_experiments

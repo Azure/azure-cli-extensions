@@ -11,14 +11,14 @@
 import json
 
 
-def create_networkexperiment_profiles(cmd, client,
-                                      profile_name,
-                                      name,
-                                      location=None,
-                                      tags=None,
-                                      resource_state=None,
-                                      enabled_state=None,
-                                      etag=None):
+def create_networkexperiment_profile(cmd, client,
+                                     profile_name,
+                                     name,
+                                     location=None,
+                                     tags=None,
+                                     resource_state=None,
+                                     enabled_state=None,
+                                     etag=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -28,14 +28,14 @@ def create_networkexperiment_profiles(cmd, client,
     return client.create_or_update(profile_name=profile_name, resource_group_name=name, parameters=body)
 
 
-def update_networkexperiment_profiles(cmd, client, body,
-                                      profile_name,
-                                      name,
-                                      location=None,
-                                      tags=None,
-                                      resource_state=None,
-                                      enabled_state=None,
-                                      etag=None):
+def update_networkexperiment_profile(cmd, client, body,
+                                     profile_name,
+                                     name,
+                                     location=None,
+                                     tags=None,
+                                     resource_state=None,
+                                     enabled_state=None,
+                                     etag=None):
     body = client.get(resource_group_name=name, profile_name=profile_name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
@@ -45,8 +45,8 @@ def update_networkexperiment_profiles(cmd, client, body,
     return client.create_or_update(profile_name=profile_name, resource_group_name=name, parameters=body)
 
 
-def list_networkexperiment_profiles(cmd, client,
-                                    name):
+def list_networkexperiment_profile(cmd, client,
+                                   name):
     if name is not None:
         return client.list_by_resource_group(resource_group_name=name)
     return client.list()
