@@ -83,7 +83,7 @@ class ApimgmtScenarioTest(ScenarioTest):
         ])
 
 # create_or_update -- create
-        self.cmd('networkexperiment experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-aname "endpoint A" --endpoint-aendpoint "endpointA.net" --endpoint-bname "endpoint B" --endpoint-bendpoint "endpointB.net" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
         ])
 
         self.cmd('networkexperiment experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "string" --enabled-state "Enabled"', checks=[
@@ -93,7 +93,7 @@ class ApimgmtScenarioTest(ScenarioTest):
         ])
 
 # create_or_update -- update
-        self.cmd('networkexperiment experiment update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-aname "endpoint A" --endpoint-aendpoint "endpointA.net" --endpoint-bname "endpoint B" --endpoint-bendpoint "endpointB.net" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment experiment update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
         ])
 
         self.cmd('networkexperiment experiment update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "string" --enabled-state "Enabled"', checks=[
