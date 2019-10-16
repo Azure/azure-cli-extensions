@@ -99,7 +99,7 @@ class BaseBlobService(StorageClient):
     The Blob service offers the following three resources: the storage account,
     containers, and blobs. Within your storage account, containers provide a
     way to organize sets of blobs. For more information please see:
-    https://msdn.microsoft.com/en-us/library/azure/ee691964.aspx
+    https://msdn.microsoft.com/library/azure/ee691964.aspx
 
     :ivar int MAX_SINGLE_GET_SIZE:
         The size of the first range get performed by get_blob_to_* methods if
@@ -175,7 +175,7 @@ class BaseBlobService(StorageClient):
         :param str connection_string:
             If specified, this will override all other parameters besides 
             request session. See
-            http://azure.microsoft.com/en-us/documentation/articles/storage-configure-connection-string/
+            http://azure.microsoft.com/documentation/articles/storage-configure-connection-string/
             for the connection string format
         :param int socket_timeout:
             If specified, this will override the default socket timeout. The timeout specified is in seconds.

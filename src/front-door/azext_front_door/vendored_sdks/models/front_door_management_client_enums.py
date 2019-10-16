@@ -51,9 +51,10 @@ class FrontDoorCertificateSource(str, Enum):
     front_door = "FrontDoor"
 
 
-class FrontDoorTlsProtocolType(str, Enum):
+class MinimumTLSVersion(str, Enum):
 
-    server_name_indication = "ServerNameIndication"
+    one_full_stop_zero = "1.0"
+    one_full_stop_two = "1.2"
 
 
 class FrontDoorCertificateType(str, Enum):
@@ -125,6 +126,18 @@ class BackendEnabledState(str, Enum):
     disabled = "Disabled"
 
 
+class FrontDoorHealthProbeMethod(str, Enum):
+
+    get = "GET"
+    head = "HEAD"
+
+
+class HealthProbeEnabled(str, Enum):
+
+    enabled = "Enabled"
+    disabled = "Disabled"
+
+
 class SessionAffinityEnabledState(str, Enum):
 
     enabled = "Enabled"
@@ -184,6 +197,7 @@ class MatchVariable(str, Enum):
     request_header = "RequestHeader"
     request_body = "RequestBody"
     cookies = "Cookies"
+    socket_addr = "SocketAddr"
 
 
 class Operator(str, Enum):
@@ -210,7 +224,6 @@ class TransformType(str, Enum):
     url_decode = "UrlDecode"
     url_encode = "UrlEncode"
     remove_nulls = "RemoveNulls"
-    html_entity_decode = "HtmlEntityDecode"
 
 
 class ActionType(str, Enum):
@@ -235,8 +248,3 @@ class PolicyResourceState(str, Enum):
     disabling = "Disabling"
     disabled = "Disabled"
     deleting = "Deleting"
-
-class RuleGroupOverride(str, Enum):
-
-    sql_injection = "SqlInjection"
-    xss = "XSS"

@@ -177,12 +177,17 @@ helps['network front-door probe list'] = """
 
 helps['network front-door probe show'] = """
     type: command
-    short-summary: Get the details of a Front Door health probe settings bundle.
+    short-summary: Get the details of a Front Door health probe settings.
 """
 
 helps['network front-door probe delete'] = """
     type: command
     short-summary: Delete Front Door health probe settings.
+"""
+
+helps['network front-door probe update'] = """
+    type: command
+    short-summary: Update Front Door health probe settings.
 """
 
 # endregion

@@ -154,7 +154,7 @@ class QueueService(StorageClient):
         :param str connection_string:
             If specified, this will override all other parameters besides 
             request session. See
-            http://azure.microsoft.com/en-us/documentation/articles/storage-configure-connection-string/
+            http://azure.microsoft.com/documentation/articles/storage-configure-connection-string/
             for the connection string format.
         :param int socket_timeout:
             If specified, this will override the default socket timeout. The timeout specified is in seconds.
@@ -376,7 +376,7 @@ class QueueService(StorageClient):
         Azure Storage Analytics. If an element (ex Logging) is left as None, the 
         existing settings on the service for that functionality are preserved. 
         For more information on Azure Storage Analytics, see 
-        https://msdn.microsoft.com/en-us/library/azure/hh343270.aspx.
+        https://msdn.microsoft.com/library/azure/hh343270.aspx.
 
         :param Logging logging:
             The logging settings provide request logs.
@@ -391,7 +391,7 @@ class QueueService(StorageClient):
             list. If an empty list is specified, all CORS rules will be deleted, 
             and CORS will be disabled for the service. For detailed information 
             about CORS rules and evaluation logic, see 
-            https://msdn.microsoft.com/en-us/library/azure/dn535601.aspx.
+            https://msdn.microsoft.com/library/azure/dn535601.aspx.
         :type cors: list(:class:`~azure.storage.common.models.CorsRule`)
         :param int timeout:
             The server timeout, expressed in seconds.

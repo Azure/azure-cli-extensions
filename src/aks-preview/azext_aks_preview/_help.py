@@ -67,18 +67,18 @@ helps['aks create'] = """
           short-summary: User account password to use on windows node VMs.
         - name: --aad-client-app-id
           type: string
-          short-summary: (PREVIEW) The ID of an Azure Active Directory client application of type "Native". This
+          short-summary: The ID of an Azure Active Directory client application of type "Native". This
                          application is for user login via kubectl.
         - name: --aad-server-app-id
           type: string
-          short-summary: (PREVIEW) The ID of an Azure Active Directory server application of type "Web app/API". This
+          short-summary: The ID of an Azure Active Directory server application of type "Web app/API". This
                          application represents the managed cluster's apiserver (Server application).
         - name: --aad-server-app-secret
           type: string
-          short-summary: (PREVIEW) The secret of an Azure Active Directory server application.
+          short-summary: The secret of an Azure Active Directory server application.
         - name: --aad-tenant-id
           type: string
-          short-summary: (PREVIEW) The ID of an Azure Active Directory tenant.
+          short-summary: The ID of an Azure Active Directory tenant.
         - name: --dns-service-ip
           type: string
           short-summary: An IP address assigned to the Kubernetes DNS service.
@@ -91,8 +91,20 @@ helps['aks create'] = """
                         For example, 172.17.0.1/16.
         - name: --load-balancer-sku
           type: string
-          short-summary: Azure Load Balancer SKU selection for your cluster. Basic or Standard.
+          short-summary: Azure Load Balancer SKU selection for your cluster. basic or standard.
           long-summary: Select between Basic or Standard Azure Load Balancer SKU for your AKS cluster.
+        - name: --load-balancer-managed-outbound-ip-count
+          type: int
+          short-summary: Load balancer managed outbound IP count.
+          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ips
+          type: string
+          short-summary: Load balancer outbound IP resource IDs.
+          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ip-prefixes
+          type: string
+          short-summary: Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -151,24 +163,45 @@ helps['aks create'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100].
-        - name: --enable-vmss
-          type: bool
-          short-summary: (PREVIEW) Enable VMSS agent type.
+        - name: --vm-set-type
+          type: string
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --attach-acr
+          type: string
+          short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --enable-private-cluster
+          type: string
+          short-summary: (PREVIEW) Enable private cluster.
+        - name: --enable-managed-identity
+          type: bool
+          short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
         - name: Create a Kubernetes cluster with a specific version.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.11.2
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9
         - name: Create a Kubernetes cluster with a larger node pool.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-count 7
-        - name: Create a kubernetes cluster with preview api version and cluster autosclaler enabled.
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.11.2 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5
+        - name: Create a kubernetes cluster with cluster autosclaler enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5
+        - name: Create a kubernetes cluster with k8s 1.13.9 but use vmas.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --vm-set-type AvailabilitySet
+        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(basic) and default vm set type(AvailabilitySet).
+          text: az aks create -g MyResourceGroup -n MyManagedCluster
+        - name: Create a kubernetes cluster with standard SKU load balancer and two AKS created IPs for the load balancer outbound connection usage.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
+        - name: Create a kubernetes cluster with standard SKU load balancer and use the provided public IPs for the load balancer outbound connection usage.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
+        - name: Create a kubernetes cluster with standard SKU load balancer and use the provided public IP prefixes for the load balancer outbound connection usage.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+        - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -191,6 +224,9 @@ helps['aks upgrade'] = """
           short-summary: Version of Kubernetes to upgrade the cluster to, such as "1.11.12".
           populator-commands:
           - "`az aks get-upgrades`"
+        - name: --control-plane-only
+          type: bool
+          short-summary: Upgrade the cluster control plane only. If not specified, control plane AND all node pools will be upgraded.
 """
 
 helps['aks update'] = """
@@ -215,12 +251,30 @@ helps['aks update'] = """
         - name: --api-server-authorized-ip-ranges
           type: str
           short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
+        - name: --load-balancer-managed-outbound-ip-count
+          type: int
+          short-summary: Load balancer managed outbound IP count.
+          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ips
+          type: string
+          short-summary: Load balancer outbound IP resource IDs.
+          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --load-balancer-outbound-ip-prefixes
+          type: string
+          short-summary: Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Enable pod security policy.
         - name: --disable-pod-security-policy
           type: bool
           short-summary: (PREVIEW) Disable pod security policy.
+        - name: --attach-acr
+          type: string
+          short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --detach-acr
+          type: string
+          short-summary: Disable the 'acrpull' role assignment to the ACR specified by name or resource ID.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -234,6 +288,37 @@ helps['aks update'] = """
         text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Disable pod security policy.
         text: az aks update --disable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
+      - name: Update a kubernetes cluster with standard SKU load balancer to use two AKS created IPs for the load balancer outbound connection usage.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
+      - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IPs for the load balancer outbound connection usage.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
+      - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+"""
+
+helps['aks kollect'] = """
+    type: command
+    short-summary: Collecting diagnostic information for the Kubernetes cluster.
+    long-summary: |-
+        Collect diagnostic information for the Kubernetes cluster and store it in the specified storage account.
+        You can provide the storage account in three ways:
+          storage account name and a shared access signature with write permission.
+          resource Id to a storage account you own.
+          the storagea account in diagnostics settings for your managed cluster.
+    parameters:
+        - name: --storage-account
+          type: string
+          short-summary: Name or ID of the storage account to save the diagnostic information.
+        - name: --sas-token
+          type: string
+          short-summary: The SAS token with writable permission for the storage account.
+    examples:
+      - name: using storage account name and a shared access signature token with write permission
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+      - name: using the resource id of a storagea account resource you own.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account "MyStoreageAccountResourceId"
+      - name: using the storagea account in diagnostics settings for your managed cluster.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster
 """
 
 helps['aks nodepool'] = """
@@ -291,6 +376,18 @@ helps['aks nodepool add'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
+        - name: --node-taints
+          type: string
+          short-summary: The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.
+        - name: --priority
+          type: string
+          short-summary: The priority of the node pool. Regular or Low.
+        - name: --eviction-policy
+          type: string
+          short-summary: The eviction policy of the low-pri node pool. Delete or Deallocate.
+        - name: --public-ip-per-vm
+          type: bool
+          short-summary: Each node will have a public ip.
 """
 
 helps['aks nodepool scale'] = """
