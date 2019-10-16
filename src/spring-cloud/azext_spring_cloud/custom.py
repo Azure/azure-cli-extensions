@@ -27,6 +27,7 @@ logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
 
+
 def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
@@ -71,8 +72,10 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
                 resource_group, name, app).properties.active_deployment_name
         if deployment:
             client.deployments.get(resource_group, name, app, deployment)
-            keys.primary_test_endpoint = "{}/{}/{}/".format(keys.primary_test_endpoint, app, deployment)
-            keys.secondary_test_endpoint = "{}/{}/{}/".format(keys.secondary_test_endpoint, app, deployment)
+            keys.primary_test_endpoint = "{}/{}/{}/".format(
+                keys.primary_test_endpoint, app, deployment)
+            keys.secondary_test_endpoint = "{}/{}/{}/".format(
+                keys.secondary_test_endpoint, app, deployment)
     return keys
 
 
@@ -92,34 +95,42 @@ def app_create(cmd, client, resource_group, service, name,
     logger.info("Creating app " + name)
     properties = models.AppResourceProperties()
     if enable_persistent_storage:
-        properties.persistent_disk = models.PersistentDisk(size_in_gb=50, mount_path="/persistent")
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=50, mount_path="/persistent")
     else:
-        properties.persistent_disk = models.PersistentDisk(size_in_gb=0, mount_path="/persistent")
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=0, mount_path="/persistent")
 
-    properties.temporary_disk = models.TemporaryDisk(size_in_gb=5, mount_path="/tmp")
+    properties.temporary_disk = models.TemporaryDisk(
+        size_in_gb=5, mount_path="/tmp")
     client.apps.create_or_update(resource_group, service, name, properties)
 
     deployment_settings = models.DeploymentSettings(
-                                    cpu=cpu,
-                                    memory_in_gb=memory,
-                                    instance_count=instance_count)
-    user_source_info = models.UserSourceInfo(relative_path='<default>', type='Jar')
+        cpu=cpu,
+        memory_in_gb=memory,
+        instance_count=instance_count)
+    user_source_info = models.UserSourceInfo(
+        relative_path='<default>', type='Jar')
     properties = models.DeploymentResourceProperties(
-                            deployment_settings=deployment_settings,
-                            source=user_source_info)
+        deployment_settings=deployment_settings,
+        source=user_source_info)
 
     # create default deployment
-    logger.info("Creating default deployment with name '" + DEFAULT_DEPLOYMENT_NAME + "'")
-    poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
+    logger.info("Creating default deployment with name '" +
+                DEFAULT_DEPLOYMENT_NAME + "'")
+    poller = client.deployments.create_or_update(
+        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
 
     logger.info("Setting default deployment to production")
-    properties = models.AppResourceProperties(active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+    properties = models.AppResourceProperties(
+        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
     poller.add_done_callback(lambda x: dump(x.resource()))
     logger.info("Waiting for the default deployment completion")
     while poller.done() is False:
         sleep(5)
 
-    active_deployment = client.deployments.get(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
+    active_deployment = client.deployments.get(
+        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
     app = client.apps.update(resource_group, service, name, properties)
     app.active_deployment = active_deployment
     return app
@@ -135,7 +146,8 @@ def app_update(cmd, client, resource_group, service, name,
                no_wait=False):
     properties = models.AppResourceProperties(public=is_public)
     if enable_persistent_storage is True:
-        properties.persistent_disk = models.PersistentDisk(size_in_gb=50, mount_path="/persistent")
+        properties.persistent_disk = models.PersistentDisk(
+            size_in_gb=50, mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
@@ -143,7 +155,7 @@ def app_update(cmd, client, resource_group, service, name,
     app_updated = client.apps.update(
         resource_group, service, name, properties)
     dump(app_updated)
-    
+
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -221,10 +233,12 @@ def app_list(cmd, client,
              resource_group,
              service):
     apps = list(client.apps.list(resource_group, service))
-    deployments = list(client.deployments.list_cluster_all_deployments(resource_group, service))
+    deployments = list(
+        client.deployments.list_cluster_all_deployments(resource_group, service))
     for app in apps:
         if app.properties.active_deployment_name:
-            deployment = next((x for x in deployments if x.name == app.properties.active_deployment_name))
+            deployment = next(
+                (x for x in deployments if x.name == app.properties.active_deployment_name))
             app.properties.active_deployment = deployment
 
     return apps
@@ -237,8 +251,9 @@ def app_get(cmd, client,
     app = client.apps.get(resource_group, service, name)
     deployment_name = app.properties.active_deployment_name
     if deployment_name:
-         deployment = client.deployments.get(resource_group, service, name, deployment_name)
-         app.properties.active_deployment = deployment
+        deployment = client.deployments.get(
+            resource_group, service, name, deployment_name)
+        app.properties.active_deployment = deployment
 
     return app
 
@@ -260,7 +275,7 @@ def app_deploy(cmd, client, resource_group, service, name,
             resource_group, service, name).properties.active_deployment_name
         if deployment is None:
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
-            
+
     client.deployments.get(resource_group, service, name, deployment)
 
     file_type, file_path = _get_upload_local_file(jar_path)
@@ -294,7 +309,7 @@ def app_scale(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)         
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
@@ -310,7 +325,7 @@ def app_get_log(cmd, client, resource_group, service, name, deployment=None):
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
     if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)   
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
@@ -319,10 +334,13 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     active_deployment = client.apps.get(
         resource_group, service, name).properties.active_deployment_name
     if deployment == active_deployment:
-        raise CLIError("Deployment '" + deployment + "' is already the production deployment")
+        raise CLIError("Deployment '" + deployment +
+                       "' is already the production deployment")
     if deployment not in deployments:
-        raise CLIError("Deployment '" + deployment + "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")  
-    properties = models.AppResourceProperties(active_deployment_name=deployment)
+        raise CLIError("Deployment '" + deployment +
+                       "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
+    properties = models.AppResourceProperties(
+        active_deployment_name=deployment)
     return client.apps.update(resource_group, service, name, properties)
 
 
@@ -344,11 +362,12 @@ def deployment_create(cmd, client, resource_group, service, app, name,
 
     if not skip_clone_settings:
         active_deployment_name = client.apps.get(
-        resource_group, service, app).properties.active_deployment_name
-        active_deployment = client.deployments.get(resource_group, service, app, active_deployment_name)
+            resource_group, service, app).properties.active_deployment_name
+        active_deployment = client.deployments.get(
+            resource_group, service, app, active_deployment_name)
         if active_deployment:
             cpu = cpu or active_deployment.properties.deployment_settings.cpu
-            memory = memory or active_deployment.properties.deployment_settings.memory_in_gb 
+            memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
             instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
             jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
             env = env or active_deployment.properties.deployment_settings.environment_variables
@@ -378,8 +397,10 @@ def deployment_delete(cmd, client, resource_group, service, app, name):
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
 
+
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     import json
+
     def standardization(dic):
         new_dic = {}
         for k, v in dic.items():
@@ -388,7 +409,7 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
             k = ''.join(ks)
             k = k[0].lower() + k[1:]
             new_dic[k] = v
-        
+
         if 'pattern' in new_dic and isinstance(new_dic['pattern'], str):
             new_dic['pattern'] = new_dic['pattern'].split(',')
         if 'searchPaths' in new_dic and isinstance(new_dic['searchPaths'], str):
@@ -404,9 +425,9 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         del config_property['default-label']
 
     config_property = standardization(config_property)
-    repositories = []  
+    repositories = []
     if 'repos' in config_property:
-        for k,v in config_property['repos'].items():
+        for k, v in config_property['repos'].items():
             if 'default-label' in v:
                 v['label'] = v['default-label']
                 del v['default-label']
@@ -416,13 +437,18 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         del config_property['repos']
 
     config_property['repositories'] = repositories
-    git_property = client._deserialize('ConfigServerGitProperty', config_property)
-    config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(properties=cluster_esource_properties)
+    git_property = client._deserialize(
+        'ConfigServerGitProperty', config_property)
+    config_server_settings = models.ConfigServerSettings(
+        git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(
+        config_server=config_server_settings)
+    cluster_esource_properties = models.ClusterResourceProperties(
+        config_server_properties=config_server_properties)
+    service_resource = models.ServiceResource(
+        properties=cluster_esource_properties)
     return sdk_no_wait(no_wait, client.update,
-                    resource_group, name, service_resource)
+                       resource_group, name, service_resource)
 
 
 def config_get(cmd, client, resource_group, name):
@@ -434,32 +460,35 @@ def config_get(cmd, client, resource_group, name):
 
 
 def config_delete(cmd, client, resource_group, name):
-    config_server_properties = models.ConfigServerProperties(config_server=models.ConfigServerSettings())
-    properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
+    config_server_properties = models.ConfigServerProperties(
+        config_server=models.ConfigServerSettings())
+    properties = models.ClusterResourceProperties(
+        config_server_properties=config_server_properties)
     appResource = models.ServiceResource(properties=properties)
 
     return client.update(resource_group, name, appResource)
 
 
 def config_git_set(cmd, client, resource_group, name, uri,
-                             label=None,
-                             search_paths=None,
-                             username=None,
-                             password=None,
-                             host_key=None,
-                             host_key_algorithm=None,
-                             private_key=None,
-                             strict_host_key_checking=None):
+                   label=None,
+                   search_paths=None,
+                   username=None,
+                   password=None,
+                   host_key=None,
+                   host_key_algorithm=None,
+                   private_key=None,
+                   strict_host_key_checking=None):
     resource = client.get(resource_group, name)
     config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
+    config = models.ConfigServerGitProperty(
+        uri=uri) if not config_server else config_server.git_property
 
     if search_paths:
         search_paths = search_paths.split(",")
-    
+
     config.uri = uri
     config.label = label
-    config.search_paths =search_paths
+    config.search_paths = search_paths
     config.username = username
     config.password = password
     config.host_key = host_key
@@ -468,12 +497,16 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config.strict_host_key_checking = strict_host_key_checking
 
     config_server = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server)
-    cluster_esource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(properties=cluster_esource_properties)
+    config_server_properties = models.ConfigServerProperties(
+        config_server=config_server)
+    cluster_esource_properties = models.ClusterResourceProperties(
+        config_server_properties=config_server_properties)
+    service_resource = models.ServiceResource(
+        properties=cluster_esource_properties)
 
     return cached_put(cmd, client.update, service_resource, resource_group, name).result()
-    
+
+
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     pattern=None,
                     label=None,
@@ -486,11 +519,12 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     strict_host_key_checking=None):
     resource = client.get(resource_group, name)
     config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
+    config = models.ConfigServerGitProperty(
+        uri=uri) if not config_server else config_server.git_property
 
     if search_paths:
         search_paths = search_paths.split(",")
-    
+
     if config.repositories:
         repos = [repo for repo in config.repositories if repo.name == repo_name]
         if repos:
@@ -509,14 +543,17 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
         host_key_algorithm=host_key_algorithm,
         private_key=private_key,
         strict_host_key_checking=strict_host_key_checking)
-    
+
     config.repositories.append(repository)
     config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
-    cluster_resource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(properties=cluster_resource_properties)
+    config_server_properties = models.ConfigServerProperties(
+        config_server=config_server_settings)
+    cluster_resource_properties = models.ClusterResourceProperties(
+        config_server_properties=config_server_properties)
+    service_resource = models.ServiceResource(
+        properties=cluster_resource_properties)
     return cached_put(cmd, client.update, service_resource, resource_group, name).result()
-    
+
 
 def config_repo_delete(cmd, client, resource_group, name, repo_name):
     resource = client.get(resource_group, name)
@@ -525,52 +562,57 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
         raise CLIError("Repo {} not found.".format(repo_name))
 
     config = config_server.git_property
-    repository = [repo for repo in config.repositories if repo.name == repo_name]
+    repository = [
+        repo for repo in config.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo {} not found.".format(repo_name))
-    
+
     config.repositories.remove(repository[0])
 
     config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(properties=cluster_esource_properties)
+    config_server_properties = models.ConfigServerProperties(
+        config_server=config_server_settings)
+    cluster_esource_properties = models.ClusterResourceProperties(
+        config_server_properties=config_server_properties)
+    service_resource = models.ServiceResource(
+        properties=cluster_esource_properties)
 
     return cached_put(cmd, client.update, service_resource, resource_group, name).result()
 
-    
+
 def config_repo_update(cmd, client, resource_group, name, repo_name,
-                    uri=None,
-                    pattern=None,
-                    label=None,
-                    search_paths=None,
-                    username=None,
-                    password=None,
-                    host_key=None,
-                    host_key_algorithm=None,
-                    private_key=None,
-                    strict_host_key_checking=None):
+                       uri=None,
+                       pattern=None,
+                       label=None,
+                       search_paths=None,
+                       username=None,
+                       password=None,
+                       host_key=None,
+                       host_key_algorithm=None,
+                       private_key=None,
+                       strict_host_key_checking=None):
     resource = client.get(resource_group, name)
     config_server = resource.properties.config_server_properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo {} not found.".format(repo_name))
     config = config_server.git_property
-    repository = [repo for repo in config.repositories if repo.name == repo_name]
+    repository = [
+        repo for repo in config.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo {} not found.".format(repo_name))
-    
+
     if search_paths:
         search_paths = search_paths.split(",")
-    
+
     if pattern:
         pattern = pattern.split(",")
-    
+
     repository = repository[0]
-    repository = models.GitPatternRepository() 
+    repository = models.GitPatternRepository()
     repository.uri = uri or repository.uri
     repository.label = label or repository.label
-    repository.search_paths = search_paths or  repository.search_paths
-    repository.username = username or  repository.username
+    repository.search_paths = search_paths or repository.search_paths
+    repository.username = username or repository.username
     repository.password = password or repository.password
     repository.host_key = host_key or repository.host_key
     repository.host_key_algorithm = host_key_algorithm or repository.host_key_algorithm
@@ -578,9 +620,12 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     repository.strict_host_key_checking = strict_host_key_checking or repository.strict_host_key_checking
 
     config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(properties=cluster_esource_properties)
+    config_server_properties = models.ConfigServerProperties(
+        config_server=config_server_settings)
+    cluster_esource_properties = models.ClusterResourceProperties(
+        config_server_properties=config_server_properties)
+    service_resource = models.ServiceResource(
+        properties=cluster_esource_properties)
 
     return cached_put(cmd, client.update, service_resource, resource_group, name).result()
 
@@ -589,6 +634,7 @@ def config_repo_list(cmd, client, resource_group, name):
     resource = client.get(resource_group, name)
     config = resource.properties.config_server_properties.config_server.git_property
     return config.repositories
+
 
 def binding_list(cmd, client, resource_group, service, app):
     return client.list(resource_group, service, app)
@@ -732,7 +778,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
     resource_name = binding.resource_name
     binding_parameters = {}
     if disable_ssl:
-        binding_parameters['useSsl'] = False if disable_ssl else True 
+        binding_parameters['useSsl'] = False if disable_ssl else True
 
     primary_key = None
     try:
@@ -767,6 +813,7 @@ def _get_cosmosdb_primary_key(client, resource_id):
     keys_dict = literal_eval(keys)
     return keys_dict['primaryMasterKey']
 
+
 def _get_redis_primary_key(client, resource_id):
     url = '{}/listKeys'.format(resource_id)
     operation_config = {}
@@ -785,6 +832,7 @@ def _get_redis_primary_key(client, resource_id):
     keys = response.content.decode("utf-8")
     keys_dict = literal_eval(keys)
     return keys_dict['primaryKey']
+
 
 def _get_all_deployments(client, resource_group, service, app):
     deployments = []

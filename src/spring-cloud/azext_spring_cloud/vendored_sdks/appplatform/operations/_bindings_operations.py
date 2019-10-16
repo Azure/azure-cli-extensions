@@ -76,7 +76,8 @@ class BindingsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -86,7 +87,8 @@ class BindingsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
@@ -152,7 +154,8 @@ class BindingsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -163,16 +166,19 @@ class BindingsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if binding_resource is not None:
-            body_content = self._serialize.body(binding_resource, 'BindingResource')
+            body_content = self._serialize.body(
+                binding_resource, 'BindingResource')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        request = self._client.put(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -189,7 +195,8 @@ class BindingsOperations(object):
             return client_raw_response
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
+    create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
     def delete(
             self, resource_group_name, service_name, app_name, binding_name, custom_headers=None, raw=False, **operation_config):
@@ -227,7 +234,8 @@ class BindingsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -236,7 +244,8 @@ class BindingsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -250,7 +259,8 @@ class BindingsOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
+    delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
     def update(
             self, resource_group_name, service_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, **operation_config):
@@ -296,7 +306,8 @@ class BindingsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -307,16 +318,19 @@ class BindingsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if binding_resource is not None:
-            body_content = self._serialize.body(binding_resource, 'BindingResource')
+            body_content = self._serialize.body(
+                binding_resource, 'BindingResource')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        request = self._client.patch(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
@@ -333,7 +347,8 @@ class BindingsOperations(object):
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
+    update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
     def list(
             self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
@@ -371,7 +386,8 @@ class BindingsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -385,16 +401,19 @@ class BindingsOperations(object):
             if custom_headers:
                 header_parameters.update(custom_headers)
             if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+                header_parameters['accept-language'] = self._serialize.header(
+                    "self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            request = self._client.get(
+                url, query_parameters, header_parameters)
             return request
 
         def internal_paging(next_link=None):
             request = prepare_request(next_link)
 
-            response = self._client.send(request, stream=False, **operation_config)
+            response = self._client.send(
+                request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -407,7 +426,9 @@ class BindingsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.BindingResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.BindingResourcePaged(
+            internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings'}
+    list.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings'}

@@ -25,6 +25,8 @@ class ServiceResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(ServiceResourcePaged, self).__init__(*args, **kwargs)
+
+
 class AppResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`AppResource <azure.mgmt.appplatform.models.AppResource>` object
@@ -38,6 +40,8 @@ class AppResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(AppResourcePaged, self).__init__(*args, **kwargs)
+
+
 class BindingResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`BindingResource <azure.mgmt.appplatform.models.BindingResource>` object
@@ -51,6 +55,8 @@ class BindingResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(BindingResourcePaged, self).__init__(*args, **kwargs)
+
+
 class DeploymentResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`DeploymentResource <azure.mgmt.appplatform.models.DeploymentResource>` object
@@ -64,6 +70,8 @@ class DeploymentResourcePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(DeploymentResourcePaged, self).__init__(*args, **kwargs)
+
+
 class OperationDetailPaged(Paged):
     """
     A paging container for iterating over a list of :class:`OperationDetail <azure.mgmt.appplatform.models.OperationDetail>` object

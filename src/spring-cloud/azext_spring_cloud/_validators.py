@@ -25,10 +25,12 @@ def validate_env(namespace):
             env_dict.update(validate_tag(item))
         namespace.env = env_dict
 
+
 def validate_location(namespace):
     if namespace.location:
         location_slice = namespace.location.split(" ")
-        namespace.location = "".join([piece.lower() for piece in location_slice])
+        namespace.location = "".join([piece.lower()
+                                      for piece in location_slice])
 
 
 def validate_name(namespace):
@@ -53,7 +55,8 @@ def validate_deployment_name(namespace):
         if namespace.deployment is None:
             return
         from re import match
-        matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.deployment)
+        matchObj = match(
+            r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.deployment)
         if matchObj is None:
             raise CLIError(
                 'invalid deployment name, --deployment can only contain numbers and lowercases')
@@ -82,6 +85,7 @@ def validate_cosmos_type(namespace):
         if namespace.key_space is None:
             raise CLIError(
                 "Cosmosdb with type {} should specify collection name".format(type))
+
 
 def validate_nodes_count(namespace):
     """Validate that cpu, memory and instance-count is set in a range"""

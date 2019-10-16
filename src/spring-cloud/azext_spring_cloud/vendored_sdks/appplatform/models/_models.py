@@ -156,7 +156,8 @@ class AppResourceProperties(Model):
         self.public = kwargs.get('public', None)
         self.url = None
         self.provisioning_state = None
-        self.active_deployment_name = kwargs.get('active_deployment_name', None)
+        self.active_deployment_name = kwargs.get(
+            'active_deployment_name', None)
         self.created_time = None
         self.temporary_disk = kwargs.get('temporary_disk', None)
         self.persistent_disk = kwargs.get('persistent_disk', None)
@@ -276,7 +277,8 @@ class CloudErrorException(HttpOperationError):
 
     def __init__(self, deserialize, response, *args):
 
-        super(CloudErrorException, self).__init__(deserialize, response, 'CloudError', *args)
+        super(CloudErrorException, self).__init__(
+            deserialize, response, 'CloudError', *args)
 
 
 class CloudErrorBody(Model):
@@ -351,7 +353,8 @@ class ClusterResourceProperties(Model):
     def __init__(self, **kwargs):
         super(ClusterResourceProperties, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.config_server_properties = kwargs.get('config_server_properties', None)
+        self.config_server_properties = kwargs.get(
+            'config_server_properties', None)
         self.trace = kwargs.get('trace', None)
         self.version = None
         self.service_id = None
@@ -413,7 +416,8 @@ class ConfigServerGitProperty(Model):
         self.host_key = kwargs.get('host_key', None)
         self.host_key_algorithm = kwargs.get('host_key_algorithm', None)
         self.private_key = kwargs.get('private_key', None)
-        self.strict_host_key_checking = kwargs.get('strict_host_key_checking', None)
+        self.strict_host_key_checking = kwargs.get(
+            'strict_host_key_checking', None)
 
 
 class ConfigServerProperties(Model):
@@ -723,7 +727,8 @@ class GitPatternRepository(Model):
         self.host_key = kwargs.get('host_key', None)
         self.host_key_algorithm = kwargs.get('host_key_algorithm', None)
         self.private_key = kwargs.get('private_key', None)
-        self.strict_host_key_checking = kwargs.get('strict_host_key_checking', None)
+        self.strict_host_key_checking = kwargs.get(
+            'strict_host_key_checking', None)
 
 
 class LogFileUrlResponse(Model):
@@ -841,8 +846,10 @@ class MetricSpecification(Model):
         self.unit = kwargs.get('unit', None)
         self.category = kwargs.get('category', None)
         self.aggregation_type = kwargs.get('aggregation_type', None)
-        self.supported_aggregation_types = kwargs.get('supported_aggregation_types', None)
-        self.supported_time_grain_types = kwargs.get('supported_time_grain_types', None)
+        self.supported_aggregation_types = kwargs.get(
+            'supported_aggregation_types', None)
+        self.supported_time_grain_types = kwargs.get(
+            'supported_time_grain_types', None)
         self.fill_gap_with_zero = kwargs.get('fill_gap_with_zero', None)
         self.dimensions = kwargs.get('dimensions', None)
 
@@ -1205,7 +1212,8 @@ class TestKeys(Model):
         self.primary_key = kwargs.get('primary_key', None)
         self.secondary_key = kwargs.get('secondary_key', None)
         self.primary_test_endpoint = kwargs.get('primary_test_endpoint', None)
-        self.secondary_test_endpoint = kwargs.get('secondary_test_endpoint', None)
+        self.secondary_test_endpoint = kwargs.get(
+            'secondary_test_endpoint', None)
         self.enabled = kwargs.get('enabled', None)
 
 
@@ -1243,7 +1251,8 @@ class TraceProperties(Model):
         self.state = None
         self.error = kwargs.get('error', None)
         self.enabled = kwargs.get('enabled', None)
-        self.app_insight_instrumentation_key = kwargs.get('app_insight_instrumentation_key', None)
+        self.app_insight_instrumentation_key = kwargs.get(
+            'app_insight_instrumentation_key', None)
 
 
 class UserSourceInfo(Model):

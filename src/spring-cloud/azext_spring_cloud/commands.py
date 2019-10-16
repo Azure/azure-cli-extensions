@@ -5,15 +5,21 @@
 
 # pylint: disable=line-too-long
 from ._client_factory import (cf_app_services, cf_spring_cloud, cf_bindings)
-from ._transformers import (transform_spring_cloud_table_output, transform_app_table_output, transform_spring_cloud_deployment_output)
+from ._transformers import (transform_spring_cloud_table_output,
+                            transform_app_table_output, transform_spring_cloud_deployment_output)
+
 
 def load_command_table(self, _):
 
     with self.command_group('spring-cloud', client_factory=cf_app_services) as g:
-        g.custom_command('create', 'spring_cloud_create', supports_no_wait=True)
-        g.custom_command('delete', 'spring_cloud_delete', supports_no_wait=True)
-        g.custom_command('list', 'spring_cloud_list', table_transformer=transform_spring_cloud_table_output)
-        g.custom_show_command('show', 'spring_cloud_get', table_transformer=transform_spring_cloud_table_output)
+        g.custom_command('create', 'spring_cloud_create',
+                         supports_no_wait=True)
+        g.custom_command('delete', 'spring_cloud_delete',
+                         supports_no_wait=True)
+        g.custom_command('list', 'spring_cloud_list',
+                         table_transformer=transform_spring_cloud_table_output)
+        g.custom_show_command('show', 'spring_cloud_get',
+                              table_transformer=transform_spring_cloud_table_output)
         #g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
         #g.custom_command('test', 'test')
 
@@ -27,7 +33,7 @@ def load_command_table(self, _):
         g.custom_command('set', 'config_set', supports_no_wait=True)
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')
-    
+
     with self.command_group('spring-cloud config-server git', client_factory=cf_app_services, supports_local_cache=True) as g:
         g.custom_command('set', 'config_git_set')
         g.custom_command('repo add', 'config_repo_add')
@@ -44,16 +50,20 @@ def load_command_table(self, _):
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
         g.custom_command('delete', 'app_delete')
-        g.custom_command('list', 'app_list', table_transformer=transform_app_table_output)
-        g.custom_show_command('show', 'app_get', table_transformer=transform_app_table_output)
+        g.custom_command('list', 'app_list',
+                         table_transformer=transform_app_table_output)
+        g.custom_show_command(
+            'show', 'app_get', table_transformer=transform_app_table_output)
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
 
     with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)
-        g.custom_command('list', 'deployment_list', table_transformer=transform_spring_cloud_deployment_output)
-        g.custom_show_command('show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
+        g.custom_command('list', 'deployment_list',
+                         table_transformer=transform_spring_cloud_deployment_output)
+        g.custom_show_command(
+            'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
         g.custom_command('delete', 'deployment_delete')
 
     with self.command_group('spring-cloud app binding', client_factory=cf_bindings) as g:

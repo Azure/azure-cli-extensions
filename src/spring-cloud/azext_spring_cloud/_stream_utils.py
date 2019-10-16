@@ -2,8 +2,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import time
-import colorama
 from io import BytesIO
 from random import uniform
 from knack.util import CLIError
@@ -12,6 +10,8 @@ from msrestazure.azure_exceptions import CloudError
 from azure.storage.blob import AppendBlobService
 from azure.common import AzureHttpError
 from ._utils import get_blob_info
+import time
+import colorama
 
 logger = get_logger(__name__)
 
@@ -171,7 +171,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
             total_sleep_time = sleep_time + rnd
             consecutive_sleep_in_sec += total_sleep_time
             logger.warning("Base sleep time: %d, random delay: %d, total: %d, consecutive: %d",
-                         sleep_time, rnd, total_sleep_time, consecutive_sleep_in_sec)
+                             sleep_time, rnd, total_sleep_time, consecutive_sleep_in_sec)
             time.sleep(total_sleep_time)
 
     # One final check to see if there's anything in the buffer to flush

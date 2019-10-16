@@ -16,8 +16,7 @@ class spring_cloudCommandsLoader(AzCommandsLoader):
         spring_cloud_custom = CliCommandType(
             operations_tmpl='azext_spring_cloud.custom#{}',
             client_factory=cf_spring_cloud)
-        super(spring_cloudCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                custom_command_type=spring_cloud_custom)
+        super(spring_cloudCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=spring_cloud_custom)
 
     def load_command_table(self, args):
         from azext_spring_cloud.commands import load_command_table

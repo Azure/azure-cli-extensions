@@ -6,6 +6,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from .vendored_sdks.appplatform import AppPlatformManagementClient
 from azure.cli.core.profiles import ResourceType
 
+
 def cf_spring_cloud(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient)
 
@@ -13,7 +14,6 @@ def cf_spring_cloud(cli_ctx, *_):
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups
-
 
 
 def cf_app_services(cli_ctx, *_):

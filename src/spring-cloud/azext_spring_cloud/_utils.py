@@ -179,19 +179,24 @@ class ApiType(Enum):
     gremlin = 'gremlin'
     table = 'table'
 
+
 def dump(obj):
     from json import dumps
     input_dict = todict(obj)
-    json_object = dumps(input_dict, ensure_ascii=False, indent=2, sort_keys=True, separators=(',', ': ')) + '\n'
+    json_object = dumps(input_dict, ensure_ascii=False,
+                        indent=2, sort_keys=True, separators=(',', ': ')) + '\n'
     logger.info(json_object)
+
 
 class deseralize(object):
     def __init__(self, d):
         for a, b in d.items():
             if isinstance(b, (list, tuple)):
-               setattr(self, a, [deseralize(x) if isinstance(x, dict) else x for x in b])
+                setattr(self, a, [deseralize(x) if isinstance(
+                    x, dict) else x for x in b])
             else:
-               setattr(self, a, deseralize(b) if isinstance(b, dict) else b)
+                setattr(self, a, deseralize(b) if isinstance(b, dict) else b)
+
 
 def _get_rg_location(ctx, resource_group_name, subscription_id=None):
     from ._client_factory import cf_resource_groups

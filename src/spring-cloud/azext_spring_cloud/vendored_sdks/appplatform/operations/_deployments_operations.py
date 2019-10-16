@@ -78,7 +78,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -88,7 +89,8 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
@@ -110,12 +112,12 @@ class DeploymentsOperations(object):
         return deserialized
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
-
     def _create_or_update_initial(
             self, resource_group_name, service_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, **operation_config):
         deployment_resource = None
         if properties is not None:
-            deployment_resource = models.DeploymentResource(properties=properties)
+            deployment_resource = models.DeploymentResource(
+                properties=properties)
 
         # Construct URL
         url = self.create_or_update.metadata['url']
@@ -130,7 +132,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -141,16 +144,19 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if deployment_resource is not None:
-            body_content = self._serialize.body(deployment_resource, 'DeploymentResource')
+            body_content = self._serialize.body(
+                deployment_resource, 'DeploymentResource')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        request = self._client.put(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 201]:
@@ -224,11 +230,15 @@ class DeploymentsOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
+    create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
     def delete(
             self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
@@ -266,7 +276,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -275,7 +286,8 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -289,14 +301,15 @@ class DeploymentsOperations(object):
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
-
+    delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
     def _update_initial(
             self, resource_group_name, service_name, app_name, deployment_name, properties=None, custom_headers=None, raw=False, **operation_config):
         deployment_resource = None
         if properties is not None:
-            deployment_resource = models.DeploymentResource(properties=properties)
+            deployment_resource = models.DeploymentResource(
+                properties=properties)
 
         # Construct URL
         url = self.update.metadata['url']
@@ -311,7 +324,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -322,16 +336,19 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
         if deployment_resource is not None:
-            body_content = self._serialize.body(deployment_resource, 'DeploymentResource')
+            body_content = self._serialize.body(
+                deployment_resource, 'DeploymentResource')
         else:
             body_content = None
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        request = self._client.patch(
+            url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 202]:
@@ -405,11 +422,15 @@ class DeploymentsOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
+    update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}'}
 
     def list(
             self, resource_group_name, service_name, app_name, version=None, custom_headers=None, raw=False, **operation_config):
@@ -450,8 +471,10 @@ class DeploymentsOperations(object):
                 # Construct parameters
                 query_parameters = {}
                 if version is not None:
-                    query_parameters['version'] = self._serialize.query("version", version, '[str]', div=',')
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                    query_parameters['version'] = self._serialize.query(
+                        "version", version, '[str]', div=',')
+                query_parameters['api-version'] = self._serialize.query(
+                    "self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -465,16 +488,19 @@ class DeploymentsOperations(object):
             if custom_headers:
                 header_parameters.update(custom_headers)
             if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+                header_parameters['accept-language'] = self._serialize.header(
+                    "self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            request = self._client.get(
+                url, query_parameters, header_parameters)
             return request
 
         def internal_paging(next_link=None):
             request = prepare_request(next_link)
 
-            response = self._client.send(request, stream=False, **operation_config)
+            response = self._client.send(
+                request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -487,10 +513,12 @@ class DeploymentsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.DeploymentResourcePaged(
+            internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments'}
+    list.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments'}
 
     def list_cluster_all_deployments(
             self, resource_group_name, service_name, version=None, custom_headers=None, raw=False, **operation_config):
@@ -528,8 +556,10 @@ class DeploymentsOperations(object):
                 # Construct parameters
                 query_parameters = {}
                 if version is not None:
-                    query_parameters['version'] = self._serialize.query("version", version, '[str]', div=',')
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                    query_parameters['version'] = self._serialize.query(
+                        "version", version, '[str]', div=',')
+                query_parameters['api-version'] = self._serialize.query(
+                    "self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -543,16 +573,19 @@ class DeploymentsOperations(object):
             if custom_headers:
                 header_parameters.update(custom_headers)
             if self.config.accept_language is not None:
-                header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+                header_parameters['accept-language'] = self._serialize.header(
+                    "self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+            request = self._client.get(
+                url, query_parameters, header_parameters)
             return request
 
         def internal_paging(next_link=None):
             request = prepare_request(next_link)
 
-            response = self._client.send(request, stream=False, **operation_config)
+            response = self._client.send(
+                request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -565,11 +598,12 @@ class DeploymentsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.DeploymentResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.DeploymentResourcePaged(
+            internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list_cluster_all_deployments.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/deployments'}
-
+    list_cluster_all_deployments.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/deployments'}
 
     def _start_initial(
             self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
@@ -586,7 +620,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -595,7 +630,8 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -653,12 +689,15 @@ class DeploymentsOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'azure-async-operation'}, **operation_config)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/start'}
-
 
     def _stop_initial(
             self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
@@ -675,7 +714,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -684,7 +724,8 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -742,12 +783,15 @@ class DeploymentsOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'azure-async-operation'}, **operation_config)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/stop'}
-
 
     def _restart_initial(
             self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
@@ -764,7 +808,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -773,7 +818,8 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -831,11 +877,16 @@ class DeploymentsOperations(object):
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
             self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'azure-async-operation'}, **operation_config)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    restart.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/restart'}
+    restart.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/restart'}
 
     def get_log_file_url(
             self, resource_group_name, service_name, app_name, deployment_name, custom_headers=None, raw=False, **operation_config):
@@ -874,7 +925,8 @@ class DeploymentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -884,7 +936,8 @@ class DeploymentsOperations(object):
         if custom_headers:
             header_parameters.update(custom_headers)
         if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
+            header_parameters['accept-language'] = self._serialize.header(
+                "self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
@@ -904,4 +957,5 @@ class DeploymentsOperations(object):
             return client_raw_response
 
         return deserialized
-    get_log_file_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/getLogFileUrl'}
+    get_log_file_url.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/deployments/{deploymentName}/getLogFileUrl'}
