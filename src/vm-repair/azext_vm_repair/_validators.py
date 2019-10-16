@@ -63,13 +63,14 @@ def validate_create(cmd, namespace):
         logger.warning('The source VM\'s OS disk is encrypted.')
 
     # Validate Auth Params
+    # Prompt vm username
     if not namespace.repair_username:
         _prompt_repair_username(namespace)
-    if not namespace.repair_password:
-        _prompt_repair_password(namespace)
-
     # Validate vm username
     validate_vm_username(namespace.repair_username, is_linux)
+    # Prompt vm password
+    if not namespace.repair_password:
+        _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
 
