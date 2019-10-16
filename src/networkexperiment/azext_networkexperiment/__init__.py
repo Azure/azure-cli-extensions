@@ -16,7 +16,7 @@ class FrontDoorCommandsLoader(AzCommandsLoader):
         networkexperiment_custom = CliCommandType(
             operations_tmpl='azext_networkexperiment.custom#{}',
             client_factory=cf_networkexperiment)
-        super( FrontDoorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+        super(FrontDoorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                        custom_command_type=networkexperiment_custom)
 
     def load_command_table(self, args):
@@ -29,4 +29,4 @@ class FrontDoorCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS =  FrontDoorCommandsLoader
+COMMAND_LOADER_CLS = FrontDoorCommandsLoader

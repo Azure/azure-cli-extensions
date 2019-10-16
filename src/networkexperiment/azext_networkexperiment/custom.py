@@ -8,7 +8,6 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
-import json
 
 
 def create_networkexperiment_profile(cmd, client,
