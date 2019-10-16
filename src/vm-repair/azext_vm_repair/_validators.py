@@ -72,7 +72,7 @@ def validate_create(cmd, namespace):
     validate_vm_username(namespace.repair_username, is_linux)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
-    
+
 
 def validate_restore(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
