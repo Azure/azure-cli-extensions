@@ -7,7 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import (
-    cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs, cf_vpn_gateways)
+    cf_virtual_wans, cf_virtual_hubs, cf_vpn_sites, cf_vpn_site_configs, cf_vpn_gateways, cf_virtual_hub_route_table_v2s)
 from ._util import (
     list_network_resource_property, delete_network_resource_property_entry, get_network_resource_property_entry)
 
@@ -16,31 +16,37 @@ from ._util import (
 def load_command_table(self, _):
 
     network_vhub_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.operations.virtual_hubs_operations#VirtualHubsOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.operations#VirtualHubsOperations.{}',
         client_factory=cf_virtual_hubs,
         min_api='2018-08-01'
     )
 
+    network_vhub_route_table_sdk = CliCommandType(
+        operations_tmpl='azext_vwan.vendored_sdks.operations#VirtualHubRouteTableV2sOperations.{}',
+        client_factory=cf_virtual_hub_route_table_v2s,
+        min_api='2019-09-01'
+    )
+
     network_vwan_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.operations.virtual_wans_operations#VirtualWansOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.operations#VirtualWansOperations.{}',
         client_factory=cf_virtual_wans,
         min_api='2018-08-01'
     )
 
     network_vpn_gateway_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.operations.vpn_gateways_operations#VpnGatewaysOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.operations#VpnGatewaysOperations.{}',
         client_factory=cf_vpn_gateways,
         min_api='2018-08-01'
     )
 
     network_vpn_site_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.operations.vpn_sites_operations#VpnSitesOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.operations#VpnSitesOperations.{}',
         client_factory=cf_vpn_sites,
         min_api='2018-08-01'
     )
 
     network_vpn_site_config_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.operations.vpn_sites_configuration_operations#VpnSitesConfigurationOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.operations#VpnSitesConfigurationOperations.{}',
         client_factory=cf_vpn_site_configs,
         min_api='2018-08-01'
     )
@@ -81,6 +87,17 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_hub_route', supports_no_wait=True)
         g.custom_command('list', 'list_hub_routes')
         g.custom_command('remove', 'remove_hub_route', supports_no_wait=True)
+
+    with self.command_group('network vhub route-table', network_vhub_route_table_sdk) as g:
+        g.custom_command('create', 'create_vhub_route_table', supports_no_wait=True)
+        g.show_command('show', 'get')
+        g.command('list', 'list')
+        g.command('delete', 'delete')
+
+    with self.command_group('network vhub routetable route', network_vhub_sdk) as g:
+        g.custom_command('add', 'add_hub_routetable_route', supports_no_wait=True)
+        g.custom_command('list', 'list_hub_routetable_route')
+        g.custom_command('remove', 'remove_hub_routetable_route', supports_no_wait=True)
     # endregion
 
     # region VpnGateways

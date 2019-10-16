@@ -19,6 +19,10 @@ def cf_virtual_hubs(cli_ctx, _):
     return network_client_factory(cli_ctx).virtual_hubs
 
 
+def cf_virtual_hub_route_table_v2s(cli_ctx, _):
+    return network_client_factory(cli_ctx).virtual_hub_route_table_v2s
+
+
 def cf_vpn_sites(cli_ctx, _):
     return network_client_factory(cli_ctx).vpn_sites
 
