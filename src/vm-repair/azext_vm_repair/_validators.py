@@ -282,7 +282,7 @@ def fetch_repair_vm(namespace):
     # One repair VM found
     namespace.repair_vm_id = repair_list[0]['id']
 
-    logger.info('Performing command on repair VM: %s\n', namespace.repair_vm_id)
+    logger.info('Found repair VM: %s\n', namespace.repair_vm_id)
 
 
 def validate_vm_password(password, is_linux):
