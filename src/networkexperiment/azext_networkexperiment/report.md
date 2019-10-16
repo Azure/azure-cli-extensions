@@ -111,6 +111,7 @@ create a networkexperiment profiles.
 ```
 networkexperiment profiles create --profile-name Profile1
         --name rg1
+        --location WestUs
         --enabled-state Enabled
 ```
 ### networkexperiment profiles update
