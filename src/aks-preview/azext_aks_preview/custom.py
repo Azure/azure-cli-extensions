@@ -204,6 +204,7 @@ def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=No
     logger.info('AAD role deletion done')
     return True
 
+
 def _get_default_dns_prefix(name, resource_group_name, subscription_id):
     # Use subscription id to provide uniqueness and prevent DNS name clashes
     name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
