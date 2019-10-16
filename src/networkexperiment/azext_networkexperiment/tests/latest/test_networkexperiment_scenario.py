@@ -23,7 +23,7 @@ class ApimgmtScenarioTest(ScenarioTest):
         })
 
 # create_or_update -- create
-        self.cmd('networkexperiment profiles create  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment profiles create  --profile-name "Profile1" --name "rg1" --location "WestUs" --enabled-state "Enabled"', checks=[
         ])
 
         self.cmd('networkexperiment profiles create  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
@@ -33,7 +33,7 @@ class ApimgmtScenarioTest(ScenarioTest):
         ])
 
 # create_or_update -- update
-        self.cmd('networkexperiment profiles update  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
+        self.cmd('networkexperiment profiles update  --profile-name "Profile1" --name "rg1" --location "WestUs" --enabled-state "Enabled"', checks=[
         ])
 
         self.cmd('networkexperiment profiles update  --profile-name "Profile1" --name "rg1" --enabled-state "Enabled"', checks=[
