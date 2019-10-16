@@ -17,7 +17,7 @@ class FrontDoorCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_networkexperiment.custom#{}',
             client_factory=cf_networkexperiment)
         super(FrontDoorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                       custom_command_type=networkexperiment_custom)
+                                                      custom_command_type=networkexperiment_custom)
 
     def load_command_table(self, args):
         from azext_networkexperiment.commands import load_command_table
