@@ -201,23 +201,41 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
     except AttributeError:
         return
 
-def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name,
-                            attached_connections=None, destination_type=None, destinations=None,
-                            next_hop_type=None, next_hops=None):
-    return
+
+# pylint: disable=inconsistent-return-statements
+def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, location=None,
+                            tags=None, attached_connections=None, destination_type=None, destinations=None,
+                            next_hop_type=None, next_hops=None, no_wait=False):
+    VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
+    client = network_client_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    route = VirtualHubRouteV2(destination_type=destination_type,
+                              destinations=destinations,
+                              next_hop_type=next_hop_type,
+                              next_hops=next_hops)
+    route_table = VirtualHubRouteTableV2(location=location,
+                                         tags=tags,
+                                         attached_connections=attached_connections,
+                                         routes=[route])
+    poller = sdk_no_wait(no_wait, client.create_or_update,
+                         resource_group_name, virtual_hub_name, route_table_name, route_table)
+    try:
+        return poller.result().routes
+    except AttributeError:
+        return
 
 
-def update_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name,
-                            attached_connections=None, destination_type=None, destinations=None,
-                            next_hop_type=None, next_hops=None):
-    return
+def update_vhub_route_table(cmd, instance, attached_connections=None, tags=None):
+    with UpdateContext(instance) as c:
+        c.update_param('tags', tags, True)
+        c.update_param('attached_connections', attached_connections, False)
+    return instance
 
 
 # pylint: disable=inconsistent-return-statements
 def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name,
                              destination_type=None, destinations=None,
                              next_hop_type=None, next_hops=None, no_wait=False):
-    VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
+    VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteV2')
     client = network_client_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
     route = VirtualHubRouteV2(destination_type=destination_type,
@@ -245,7 +263,6 @@ def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, rout
     route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
     try:
         route_table.routes.pop(index - 1)
-        route_table.attached_connections.pop(index - 1)
     except IndexError:
         raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(route_table.routes)))
     poller = sdk_no_wait(no_wait, client.create_or_update,

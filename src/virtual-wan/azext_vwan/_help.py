@@ -81,6 +81,56 @@ helps['network vhub route remove'] = """
     type: command
     short-summary: Remove a route from the virtual hub route table.
 """
+
+helps['network vhub route-table'] = """
+    type: group
+    short-summary: Manage route table in the virtual hub.
+"""
+
+helps['network vhub route-table create'] = """
+    type: command
+    short-summary: Create a route table in the virtual hub.
+    examples:
+    - name: Create a route table in the virtual hub.
+      text: |
+          az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --attachments All_Vnets --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
+"""
+
+helps['network vhub route-table update'] = """
+    type: command
+    short-summary: Update a route table in the virtual hub.
+    examples:
+    - name: Create a route table in the virtual hub.
+      text: |
+          az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --attachments All_Vnets All_Branches
+"""
+
+helps['network vhub route-table route'] = """
+    type: group
+    short-summary: Manage routes of route table in the virtual hub.
+"""
+
+helps['network vhub route-table route add'] = """
+    type: command
+    short-summary: Add a route into route table of the virtual hub.
+    examples:
+      - name: Add a route with CIDR destination into route table of the virtual hub.
+        text: |
+            az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
+      - name: Add a route with Service destination into route table of the virtual hub.
+        text: |
+            az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type Service --destinations Skype Sharepoint --next-hop-type IPAddress --next-hops "10.0.0.68"
+"""
+
+helps['network vhub route-table list'] = """
+    type: command
+    short-summary: List routes in the virtual hub route table.
+"""
+
+helps['network vhub route-table remove'] = """
+    type: command
+    short-summary: Remove a route from route table of the virtual hub.
+"""
 # endregion
 
 # region VirtualWAN
