@@ -8,7 +8,7 @@ from knack.log import get_logger
 
 from azure.cli.core.util import sdk_no_wait
 
-from ._client_factory import network_client_factory
+from ._client_factory import network_client_factory, network_client_route_table_factory
 from ._util import _get_property
 
 
@@ -207,7 +207,7 @@ def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
                             tags=None, attached_connections=None, destination_type=None, destinations=None,
                             next_hop_type=None, next_hops=None, no_wait=False):
     VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
-    client = network_client_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route = VirtualHubRouteV2(destination_type=destination_type,
                               destinations=destinations,
                               next_hop_type=next_hop_type,
@@ -236,7 +236,7 @@ def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_t
                              destination_type=None, destinations=None,
                              next_hop_type=None, next_hops=None, no_wait=False):
     VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteV2')
-    client = network_client_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
     route = VirtualHubRouteV2(destination_type=destination_type,
                               destinations=destinations,
@@ -252,14 +252,14 @@ def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_t
 
 
 def list_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name):
-    client = network_client_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
     return route_table.routes
 
 
 # pylint: disable=inconsistent-return-statements
 def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name, index, no_wait=False):
-    client = network_client_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
+    client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)
     try:
         route_table.routes.pop(index - 1)

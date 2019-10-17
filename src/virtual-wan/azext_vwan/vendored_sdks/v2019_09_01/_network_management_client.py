@@ -12,470 +12,4738 @@
 from msrest.service_client import SDKClient
 from msrest import Serializer, Deserializer
 
+from azure.profiles import KnownProfiles, ProfileDefinition
+from azure.profiles.multiapiclient import MultiApiClientMixin
 from ._configuration import NetworkManagementClientConfiguration
-from .operations import NetworkManagementClientOperationsMixin
-from .operations import ApplicationGatewaysOperations
-from .operations import ApplicationSecurityGroupsOperations
-from .operations import AvailableDelegationsOperations
-from .operations import AvailableResourceGroupDelegationsOperations
-from .operations import AvailableServiceAliasesOperations
-from .operations import AzureFirewallsOperations
-from .operations import AzureFirewallFqdnTagsOperations
-from .operations import BastionHostsOperations
-from .operations import DdosCustomPoliciesOperations
-from .operations import DdosProtectionPlansOperations
-from .operations import AvailableEndpointServicesOperations
-from .operations import ExpressRouteCircuitAuthorizationsOperations
-from .operations import ExpressRouteCircuitPeeringsOperations
-from .operations import ExpressRouteCircuitConnectionsOperations
-from .operations import PeerExpressRouteCircuitConnectionsOperations
-from .operations import ExpressRouteCircuitsOperations
-from .operations import ExpressRouteServiceProvidersOperations
-from .operations import ExpressRouteCrossConnectionsOperations
-from .operations import ExpressRouteCrossConnectionPeeringsOperations
-from .operations import ExpressRouteGatewaysOperations
-from .operations import ExpressRouteConnectionsOperations
-from .operations import ExpressRoutePortsLocationsOperations
-from .operations import ExpressRoutePortsOperations
-from .operations import ExpressRouteLinksOperations
-from .operations import FirewallPoliciesOperations
-from .operations import FirewallPolicyRuleGroupsOperations
-from .operations import LoadBalancersOperations
-from .operations import LoadBalancerBackendAddressPoolsOperations
-from .operations import LoadBalancerFrontendIPConfigurationsOperations
-from .operations import InboundNatRulesOperations
-from .operations import LoadBalancerLoadBalancingRulesOperations
-from .operations import LoadBalancerOutboundRulesOperations
-from .operations import LoadBalancerNetworkInterfacesOperations
-from .operations import LoadBalancerProbesOperations
-from .operations import NatGatewaysOperations
-from .operations import NetworkInterfacesOperations
-from .operations import NetworkInterfaceIPConfigurationsOperations
-from .operations import NetworkInterfaceLoadBalancersOperations
-from .operations import NetworkInterfaceTapConfigurationsOperations
-from .operations import NetworkProfilesOperations
-from .operations import NetworkSecurityGroupsOperations
-from .operations import SecurityRulesOperations
-from .operations import DefaultSecurityRulesOperations
-from .operations import NetworkWatchersOperations
-from .operations import PacketCapturesOperations
-from .operations import ConnectionMonitorsOperations
-from .operations import Operations
-from .operations import PrivateEndpointsOperations
-from .operations import AvailablePrivateEndpointTypesOperations
-from .operations import PrivateLinkServicesOperations
-from .operations import PublicIPAddressesOperations
-from .operations import PublicIPPrefixesOperations
-from .operations import RouteFiltersOperations
-from .operations import RouteFilterRulesOperations
-from .operations import RouteTablesOperations
-from .operations import RoutesOperations
-from .operations import BgpServiceCommunitiesOperations
-from .operations import ServiceEndpointPoliciesOperations
-from .operations import ServiceEndpointPolicyDefinitionsOperations
-from .operations import ServiceTagsOperations
-from .operations import UsagesOperations
-from .operations import VirtualNetworksOperations
-from .operations import SubnetsOperations
-from .operations import ResourceNavigationLinksOperations
-from .operations import ServiceAssociationLinksOperations
-from .operations import VirtualNetworkPeeringsOperations
-from .operations import VirtualNetworkGatewaysOperations
-from .operations import VirtualNetworkGatewayConnectionsOperations
-from .operations import LocalNetworkGatewaysOperations
-from .operations import VirtualNetworkTapsOperations
-from .operations import VirtualRoutersOperations
-from .operations import VirtualRouterPeeringsOperations
-from .operations import VirtualWansOperations
-from .operations import VpnSitesOperations
-from .operations import VpnSiteLinksOperations
-from .operations import VpnSitesConfigurationOperations
-from .operations import VpnServerConfigurationsOperations
-from .operations import VirtualHubsOperations
-from .operations import HubVirtualNetworkConnectionsOperations
-from .operations import VpnGatewaysOperations
-from .operations import VpnConnectionsOperations
-from .operations import VpnSiteLinkConnectionsOperations
-from .operations import VpnLinkConnectionsOperations
-from .operations import P2sVpnGatewaysOperations
-from .operations import VpnServerConfigurationsAssociatedWithVirtualWanOperations
-from .operations import VirtualHubRouteTableV2sOperations
-from .operations import WebApplicationFirewallPoliciesOperations
-from . import models
+from ._operations_mixin import NetworkManagementClientOperationsMixin
 
 
-class NetworkManagementClient(NetworkManagementClientOperationsMixin, SDKClient):
+class NetworkManagementClient(NetworkManagementClientOperationsMixin, MultiApiClientMixin, SDKClient):
     """Network Client
+
+    This ready contains multiple API versions, to help you deal with all Azure clouds
+    (Azure Stack, Azure Government, Azure China, etc.).
+    By default, uses latest API version available on public Azure.
+    For production, you should stick a particular api-version and/or profile.
+    The profile sets a mapping between the operation group and an API version.
+    The api-version parameter sets the default API version if the operation
+    group is not described in the profile.
 
     :ivar config: Configuration for client.
     :vartype config: NetworkManagementClientConfiguration
 
-    :ivar application_gateways: ApplicationGateways operations
-    :vartype application_gateways: azure.mgmt.network.v2019_09_01.operations.ApplicationGatewaysOperations
-    :ivar application_security_groups: ApplicationSecurityGroups operations
-    :vartype application_security_groups: azure.mgmt.network.v2019_09_01.operations.ApplicationSecurityGroupsOperations
-    :ivar available_delegations: AvailableDelegations operations
-    :vartype available_delegations: azure.mgmt.network.v2019_09_01.operations.AvailableDelegationsOperations
-    :ivar available_resource_group_delegations: AvailableResourceGroupDelegations operations
-    :vartype available_resource_group_delegations: azure.mgmt.network.v2019_09_01.operations.AvailableResourceGroupDelegationsOperations
-    :ivar available_service_aliases: AvailableServiceAliases operations
-    :vartype available_service_aliases: azure.mgmt.network.v2019_09_01.operations.AvailableServiceAliasesOperations
-    :ivar azure_firewalls: AzureFirewalls operations
-    :vartype azure_firewalls: azure.mgmt.network.v2019_09_01.operations.AzureFirewallsOperations
-    :ivar azure_firewall_fqdn_tags: AzureFirewallFqdnTags operations
-    :vartype azure_firewall_fqdn_tags: azure.mgmt.network.v2019_09_01.operations.AzureFirewallFqdnTagsOperations
-    :ivar bastion_hosts: BastionHosts operations
-    :vartype bastion_hosts: azure.mgmt.network.v2019_09_01.operations.BastionHostsOperations
-    :ivar ddos_custom_policies: DdosCustomPolicies operations
-    :vartype ddos_custom_policies: azure.mgmt.network.v2019_09_01.operations.DdosCustomPoliciesOperations
-    :ivar ddos_protection_plans: DdosProtectionPlans operations
-    :vartype ddos_protection_plans: azure.mgmt.network.v2019_09_01.operations.DdosProtectionPlansOperations
-    :ivar available_endpoint_services: AvailableEndpointServices operations
-    :vartype available_endpoint_services: azure.mgmt.network.v2019_09_01.operations.AvailableEndpointServicesOperations
-    :ivar express_route_circuit_authorizations: ExpressRouteCircuitAuthorizations operations
-    :vartype express_route_circuit_authorizations: azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitAuthorizationsOperations
-    :ivar express_route_circuit_peerings: ExpressRouteCircuitPeerings operations
-    :vartype express_route_circuit_peerings: azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitPeeringsOperations
-    :ivar express_route_circuit_connections: ExpressRouteCircuitConnections operations
-    :vartype express_route_circuit_connections: azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitConnectionsOperations
-    :ivar peer_express_route_circuit_connections: PeerExpressRouteCircuitConnections operations
-    :vartype peer_express_route_circuit_connections: azure.mgmt.network.v2019_09_01.operations.PeerExpressRouteCircuitConnectionsOperations
-    :ivar express_route_circuits: ExpressRouteCircuits operations
-    :vartype express_route_circuits: azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitsOperations
-    :ivar express_route_service_providers: ExpressRouteServiceProviders operations
-    :vartype express_route_service_providers: azure.mgmt.network.v2019_09_01.operations.ExpressRouteServiceProvidersOperations
-    :ivar express_route_cross_connections: ExpressRouteCrossConnections operations
-    :vartype express_route_cross_connections: azure.mgmt.network.v2019_09_01.operations.ExpressRouteCrossConnectionsOperations
-    :ivar express_route_cross_connection_peerings: ExpressRouteCrossConnectionPeerings operations
-    :vartype express_route_cross_connection_peerings: azure.mgmt.network.v2019_09_01.operations.ExpressRouteCrossConnectionPeeringsOperations
-    :ivar express_route_gateways: ExpressRouteGateways operations
-    :vartype express_route_gateways: azure.mgmt.network.v2019_09_01.operations.ExpressRouteGatewaysOperations
-    :ivar express_route_connections: ExpressRouteConnections operations
-    :vartype express_route_connections: azure.mgmt.network.v2019_09_01.operations.ExpressRouteConnectionsOperations
-    :ivar express_route_ports_locations: ExpressRoutePortsLocations operations
-    :vartype express_route_ports_locations: azure.mgmt.network.v2019_09_01.operations.ExpressRoutePortsLocationsOperations
-    :ivar express_route_ports: ExpressRoutePorts operations
-    :vartype express_route_ports: azure.mgmt.network.v2019_09_01.operations.ExpressRoutePortsOperations
-    :ivar express_route_links: ExpressRouteLinks operations
-    :vartype express_route_links: azure.mgmt.network.v2019_09_01.operations.ExpressRouteLinksOperations
-    :ivar firewall_policies: FirewallPolicies operations
-    :vartype firewall_policies: azure.mgmt.network.v2019_09_01.operations.FirewallPoliciesOperations
-    :ivar firewall_policy_rule_groups: FirewallPolicyRuleGroups operations
-    :vartype firewall_policy_rule_groups: azure.mgmt.network.v2019_09_01.operations.FirewallPolicyRuleGroupsOperations
-    :ivar load_balancers: LoadBalancers operations
-    :vartype load_balancers: azure.mgmt.network.v2019_09_01.operations.LoadBalancersOperations
-    :ivar load_balancer_backend_address_pools: LoadBalancerBackendAddressPools operations
-    :vartype load_balancer_backend_address_pools: azure.mgmt.network.v2019_09_01.operations.LoadBalancerBackendAddressPoolsOperations
-    :ivar load_balancer_frontend_ip_configurations: LoadBalancerFrontendIPConfigurations operations
-    :vartype load_balancer_frontend_ip_configurations: azure.mgmt.network.v2019_09_01.operations.LoadBalancerFrontendIPConfigurationsOperations
-    :ivar inbound_nat_rules: InboundNatRules operations
-    :vartype inbound_nat_rules: azure.mgmt.network.v2019_09_01.operations.InboundNatRulesOperations
-    :ivar load_balancer_load_balancing_rules: LoadBalancerLoadBalancingRules operations
-    :vartype load_balancer_load_balancing_rules: azure.mgmt.network.v2019_09_01.operations.LoadBalancerLoadBalancingRulesOperations
-    :ivar load_balancer_outbound_rules: LoadBalancerOutboundRules operations
-    :vartype load_balancer_outbound_rules: azure.mgmt.network.v2019_09_01.operations.LoadBalancerOutboundRulesOperations
-    :ivar load_balancer_network_interfaces: LoadBalancerNetworkInterfaces operations
-    :vartype load_balancer_network_interfaces: azure.mgmt.network.v2019_09_01.operations.LoadBalancerNetworkInterfacesOperations
-    :ivar load_balancer_probes: LoadBalancerProbes operations
-    :vartype load_balancer_probes: azure.mgmt.network.v2019_09_01.operations.LoadBalancerProbesOperations
-    :ivar nat_gateways: NatGateways operations
-    :vartype nat_gateways: azure.mgmt.network.v2019_09_01.operations.NatGatewaysOperations
-    :ivar network_interfaces: NetworkInterfaces operations
-    :vartype network_interfaces: azure.mgmt.network.v2019_09_01.operations.NetworkInterfacesOperations
-    :ivar network_interface_ip_configurations: NetworkInterfaceIPConfigurations operations
-    :vartype network_interface_ip_configurations: azure.mgmt.network.v2019_09_01.operations.NetworkInterfaceIPConfigurationsOperations
-    :ivar network_interface_load_balancers: NetworkInterfaceLoadBalancers operations
-    :vartype network_interface_load_balancers: azure.mgmt.network.v2019_09_01.operations.NetworkInterfaceLoadBalancersOperations
-    :ivar network_interface_tap_configurations: NetworkInterfaceTapConfigurations operations
-    :vartype network_interface_tap_configurations: azure.mgmt.network.v2019_09_01.operations.NetworkInterfaceTapConfigurationsOperations
-    :ivar network_profiles: NetworkProfiles operations
-    :vartype network_profiles: azure.mgmt.network.v2019_09_01.operations.NetworkProfilesOperations
-    :ivar network_security_groups: NetworkSecurityGroups operations
-    :vartype network_security_groups: azure.mgmt.network.v2019_09_01.operations.NetworkSecurityGroupsOperations
-    :ivar security_rules: SecurityRules operations
-    :vartype security_rules: azure.mgmt.network.v2019_09_01.operations.SecurityRulesOperations
-    :ivar default_security_rules: DefaultSecurityRules operations
-    :vartype default_security_rules: azure.mgmt.network.v2019_09_01.operations.DefaultSecurityRulesOperations
-    :ivar network_watchers: NetworkWatchers operations
-    :vartype network_watchers: azure.mgmt.network.v2019_09_01.operations.NetworkWatchersOperations
-    :ivar packet_captures: PacketCaptures operations
-    :vartype packet_captures: azure.mgmt.network.v2019_09_01.operations.PacketCapturesOperations
-    :ivar connection_monitors: ConnectionMonitors operations
-    :vartype connection_monitors: azure.mgmt.network.v2019_09_01.operations.ConnectionMonitorsOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.network.v2019_09_01.operations.Operations
-    :ivar private_endpoints: PrivateEndpoints operations
-    :vartype private_endpoints: azure.mgmt.network.v2019_09_01.operations.PrivateEndpointsOperations
-    :ivar available_private_endpoint_types: AvailablePrivateEndpointTypes operations
-    :vartype available_private_endpoint_types: azure.mgmt.network.v2019_09_01.operations.AvailablePrivateEndpointTypesOperations
-    :ivar private_link_services: PrivateLinkServices operations
-    :vartype private_link_services: azure.mgmt.network.v2019_09_01.operations.PrivateLinkServicesOperations
-    :ivar public_ip_addresses: PublicIPAddresses operations
-    :vartype public_ip_addresses: azure.mgmt.network.v2019_09_01.operations.PublicIPAddressesOperations
-    :ivar public_ip_prefixes: PublicIPPrefixes operations
-    :vartype public_ip_prefixes: azure.mgmt.network.v2019_09_01.operations.PublicIPPrefixesOperations
-    :ivar route_filters: RouteFilters operations
-    :vartype route_filters: azure.mgmt.network.v2019_09_01.operations.RouteFiltersOperations
-    :ivar route_filter_rules: RouteFilterRules operations
-    :vartype route_filter_rules: azure.mgmt.network.v2019_09_01.operations.RouteFilterRulesOperations
-    :ivar route_tables: RouteTables operations
-    :vartype route_tables: azure.mgmt.network.v2019_09_01.operations.RouteTablesOperations
-    :ivar routes: Routes operations
-    :vartype routes: azure.mgmt.network.v2019_09_01.operations.RoutesOperations
-    :ivar bgp_service_communities: BgpServiceCommunities operations
-    :vartype bgp_service_communities: azure.mgmt.network.v2019_09_01.operations.BgpServiceCommunitiesOperations
-    :ivar service_endpoint_policies: ServiceEndpointPolicies operations
-    :vartype service_endpoint_policies: azure.mgmt.network.v2019_09_01.operations.ServiceEndpointPoliciesOperations
-    :ivar service_endpoint_policy_definitions: ServiceEndpointPolicyDefinitions operations
-    :vartype service_endpoint_policy_definitions: azure.mgmt.network.v2019_09_01.operations.ServiceEndpointPolicyDefinitionsOperations
-    :ivar service_tags: ServiceTags operations
-    :vartype service_tags: azure.mgmt.network.v2019_09_01.operations.ServiceTagsOperations
-    :ivar usages: Usages operations
-    :vartype usages: azure.mgmt.network.v2019_09_01.operations.UsagesOperations
-    :ivar virtual_networks: VirtualNetworks operations
-    :vartype virtual_networks: azure.mgmt.network.v2019_09_01.operations.VirtualNetworksOperations
-    :ivar subnets: Subnets operations
-    :vartype subnets: azure.mgmt.network.v2019_09_01.operations.SubnetsOperations
-    :ivar resource_navigation_links: ResourceNavigationLinks operations
-    :vartype resource_navigation_links: azure.mgmt.network.v2019_09_01.operations.ResourceNavigationLinksOperations
-    :ivar service_association_links: ServiceAssociationLinks operations
-    :vartype service_association_links: azure.mgmt.network.v2019_09_01.operations.ServiceAssociationLinksOperations
-    :ivar virtual_network_peerings: VirtualNetworkPeerings operations
-    :vartype virtual_network_peerings: azure.mgmt.network.v2019_09_01.operations.VirtualNetworkPeeringsOperations
-    :ivar virtual_network_gateways: VirtualNetworkGateways operations
-    :vartype virtual_network_gateways: azure.mgmt.network.v2019_09_01.operations.VirtualNetworkGatewaysOperations
-    :ivar virtual_network_gateway_connections: VirtualNetworkGatewayConnections operations
-    :vartype virtual_network_gateway_connections: azure.mgmt.network.v2019_09_01.operations.VirtualNetworkGatewayConnectionsOperations
-    :ivar local_network_gateways: LocalNetworkGateways operations
-    :vartype local_network_gateways: azure.mgmt.network.v2019_09_01.operations.LocalNetworkGatewaysOperations
-    :ivar virtual_network_taps: VirtualNetworkTaps operations
-    :vartype virtual_network_taps: azure.mgmt.network.v2019_09_01.operations.VirtualNetworkTapsOperations
-    :ivar virtual_routers: VirtualRouters operations
-    :vartype virtual_routers: azure.mgmt.network.v2019_09_01.operations.VirtualRoutersOperations
-    :ivar virtual_router_peerings: VirtualRouterPeerings operations
-    :vartype virtual_router_peerings: azure.mgmt.network.v2019_09_01.operations.VirtualRouterPeeringsOperations
-    :ivar virtual_wans: VirtualWans operations
-    :vartype virtual_wans: azure.mgmt.network.v2019_09_01.operations.VirtualWansOperations
-    :ivar vpn_sites: VpnSites operations
-    :vartype vpn_sites: azure.mgmt.network.v2019_09_01.operations.VpnSitesOperations
-    :ivar vpn_site_links: VpnSiteLinks operations
-    :vartype vpn_site_links: azure.mgmt.network.v2019_09_01.operations.VpnSiteLinksOperations
-    :ivar vpn_sites_configuration: VpnSitesConfiguration operations
-    :vartype vpn_sites_configuration: azure.mgmt.network.v2019_09_01.operations.VpnSitesConfigurationOperations
-    :ivar vpn_server_configurations: VpnServerConfigurations operations
-    :vartype vpn_server_configurations: azure.mgmt.network.v2019_09_01.operations.VpnServerConfigurationsOperations
-    :ivar virtual_hubs: VirtualHubs operations
-    :vartype virtual_hubs: azure.mgmt.network.v2019_09_01.operations.VirtualHubsOperations
-    :ivar hub_virtual_network_connections: HubVirtualNetworkConnections operations
-    :vartype hub_virtual_network_connections: azure.mgmt.network.v2019_09_01.operations.HubVirtualNetworkConnectionsOperations
-    :ivar vpn_gateways: VpnGateways operations
-    :vartype vpn_gateways: azure.mgmt.network.v2019_09_01.operations.VpnGatewaysOperations
-    :ivar vpn_connections: VpnConnections operations
-    :vartype vpn_connections: azure.mgmt.network.v2019_09_01.operations.VpnConnectionsOperations
-    :ivar vpn_site_link_connections: VpnSiteLinkConnections operations
-    :vartype vpn_site_link_connections: azure.mgmt.network.v2019_09_01.operations.VpnSiteLinkConnectionsOperations
-    :ivar vpn_link_connections: VpnLinkConnections operations
-    :vartype vpn_link_connections: azure.mgmt.network.v2019_09_01.operations.VpnLinkConnectionsOperations
-    :ivar p2s_vpn_gateways: P2sVpnGateways operations
-    :vartype p2s_vpn_gateways: azure.mgmt.network.v2019_09_01.operations.P2sVpnGatewaysOperations
-    :ivar vpn_server_configurations_associated_with_virtual_wan: VpnServerConfigurationsAssociatedWithVirtualWan operations
-    :vartype vpn_server_configurations_associated_with_virtual_wan: azure.mgmt.network.v2019_09_01.operations.VpnServerConfigurationsAssociatedWithVirtualWanOperations
-    :ivar virtual_hub_route_table_v2s: VirtualHubRouteTableV2s operations
-    :vartype virtual_hub_route_table_v2s: azure.mgmt.network.v2019_09_01.operations.VirtualHubRouteTableV2sOperations
-    :ivar web_application_firewall_policies: WebApplicationFirewallPolicies operations
-    :vartype web_application_firewall_policies: azure.mgmt.network.v2019_09_01.operations.WebApplicationFirewallPoliciesOperations
-
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
      object<msrestazure.azure_active_directory>`
-    :param subscription_id: The subscription credentials which uniquely
-     identify the Microsoft Azure subscription. The subscription ID forms part
-     of the URI for every service call.
+    :param subscription_id: Subscription credentials which uniquely identify
+     Microsoft Azure subscription. The subscription ID forms part of the URI
+     for every service call.
     :type subscription_id: str
+    :param str api_version: API version to use if no profile is provided, or if
+     missing in profile.
     :param str base_url: Service URL
+    :param profile: A profile definition, from KnownProfiles to dict.
+    :type profile: azure.profiles.KnownProfiles
     """
 
-    def __init__(
-            self, credentials, subscription_id, base_url=None):
+    DEFAULT_API_VERSION = '2019-09-01'
+    _PROFILE_TAG = "azure.mgmt.network.NetworkManagementClient"
+    LATEST_PROFILE = ProfileDefinition({
+        _PROFILE_TAG: {
+            None: DEFAULT_API_VERSION,
+            'interface_endpoints': '2019-02-01',
+            'virtual_wa_ns': '2018-07-01',
+        }},
+        _PROFILE_TAG + " latest"
+    )
 
+    def __init__(self, credentials, subscription_id, api_version=None, base_url=None, profile=KnownProfiles.default):
         self.config = NetworkManagementClientConfiguration(credentials, subscription_id, base_url)
-        super(NetworkManagementClient, self).__init__(self.config.credentials, self.config)
+        super(NetworkManagementClient, self).__init__(
+            credentials,
+            self.config,
+            api_version=api_version,
+            profile=profile
+        )
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self._serialize = Serializer(client_models)
-        self._deserialize = Deserializer(client_models)
+    @classmethod
+    def _models_dict(cls, api_version):
+        return {k: v for k, v in cls.models(api_version).__dict__.items() if isinstance(v, type)}
 
-        self.application_gateways = ApplicationGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.application_security_groups = ApplicationSecurityGroupsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.available_delegations = AvailableDelegationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.available_resource_group_delegations = AvailableResourceGroupDelegationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.available_service_aliases = AvailableServiceAliasesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.azure_firewalls = AzureFirewallsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.azure_firewall_fqdn_tags = AzureFirewallFqdnTagsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.bastion_hosts = BastionHostsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.ddos_custom_policies = DdosCustomPoliciesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.ddos_protection_plans = DdosProtectionPlansOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.available_endpoint_services = AvailableEndpointServicesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_circuit_authorizations = ExpressRouteCircuitAuthorizationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_circuit_peerings = ExpressRouteCircuitPeeringsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_circuit_connections = ExpressRouteCircuitConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.peer_express_route_circuit_connections = PeerExpressRouteCircuitConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_circuits = ExpressRouteCircuitsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_service_providers = ExpressRouteServiceProvidersOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_cross_connections = ExpressRouteCrossConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_cross_connection_peerings = ExpressRouteCrossConnectionPeeringsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_gateways = ExpressRouteGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_connections = ExpressRouteConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_ports_locations = ExpressRoutePortsLocationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_ports = ExpressRoutePortsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.express_route_links = ExpressRouteLinksOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.firewall_policies = FirewallPoliciesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.firewall_policy_rule_groups = FirewallPolicyRuleGroupsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancers = LoadBalancersOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancer_backend_address_pools = LoadBalancerBackendAddressPoolsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancer_frontend_ip_configurations = LoadBalancerFrontendIPConfigurationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.inbound_nat_rules = InboundNatRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancer_load_balancing_rules = LoadBalancerLoadBalancingRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancer_outbound_rules = LoadBalancerOutboundRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancer_network_interfaces = LoadBalancerNetworkInterfacesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancer_probes = LoadBalancerProbesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.nat_gateways = NatGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_interfaces = NetworkInterfacesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_interface_ip_configurations = NetworkInterfaceIPConfigurationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_interface_load_balancers = NetworkInterfaceLoadBalancersOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_interface_tap_configurations = NetworkInterfaceTapConfigurationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_profiles = NetworkProfilesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_security_groups = NetworkSecurityGroupsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.security_rules = SecurityRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.default_security_rules = DefaultSecurityRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.network_watchers = NetworkWatchersOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.packet_captures = PacketCapturesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.connection_monitors = ConnectionMonitorsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.operations = Operations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.private_endpoints = PrivateEndpointsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.available_private_endpoint_types = AvailablePrivateEndpointTypesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.private_link_services = PrivateLinkServicesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.public_ip_addresses = PublicIPAddressesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.public_ip_prefixes = PublicIPPrefixesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.route_filters = RouteFiltersOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.route_filter_rules = RouteFilterRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.route_tables = RouteTablesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.routes = RoutesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.bgp_service_communities = BgpServiceCommunitiesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.service_endpoint_policies = ServiceEndpointPoliciesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.service_endpoint_policy_definitions = ServiceEndpointPolicyDefinitionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.service_tags = ServiceTagsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.usages = UsagesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_networks = VirtualNetworksOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.subnets = SubnetsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.resource_navigation_links = ResourceNavigationLinksOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.service_association_links = ServiceAssociationLinksOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_network_peerings = VirtualNetworkPeeringsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_network_gateways = VirtualNetworkGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_network_gateway_connections = VirtualNetworkGatewayConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.local_network_gateways = LocalNetworkGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_network_taps = VirtualNetworkTapsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_routers = VirtualRoutersOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_router_peerings = VirtualRouterPeeringsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_wans = VirtualWansOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_sites = VpnSitesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_site_links = VpnSiteLinksOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_sites_configuration = VpnSitesConfigurationOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_server_configurations = VpnServerConfigurationsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_hubs = VirtualHubsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.hub_virtual_network_connections = HubVirtualNetworkConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_gateways = VpnGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_connections = VpnConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_site_link_connections = VpnSiteLinkConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_link_connections = VpnLinkConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.p2s_vpn_gateways = P2sVpnGatewaysOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.vpn_server_configurations_associated_with_virtual_wan = VpnServerConfigurationsAssociatedWithVirtualWanOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.virtual_hub_route_table_v2s = VirtualHubRouteTableV2sOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.web_application_firewall_policies = WebApplicationFirewallPoliciesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
+    @classmethod
+    def models(cls, api_version=DEFAULT_API_VERSION):
+        """Module depends on the API version:
+
+           * 2015-06-15: :mod:`v2015_06_15.models<azure.mgmt.network.v2015_06_15.models>`
+           * 2016-09-01: :mod:`v2016_09_01.models<azure.mgmt.network.v2016_09_01.models>`
+           * 2016-12-01: :mod:`v2016_12_01.models<azure.mgmt.network.v2016_12_01.models>`
+           * 2017-03-01: :mod:`v2017_03_01.models<azure.mgmt.network.v2017_03_01.models>`
+           * 2017-06-01: :mod:`v2017_06_01.models<azure.mgmt.network.v2017_06_01.models>`
+           * 2017-08-01: :mod:`v2017_08_01.models<azure.mgmt.network.v2017_08_01.models>`
+           * 2017-09-01: :mod:`v2017_09_01.models<azure.mgmt.network.v2017_09_01.models>`
+           * 2017-10-01: :mod:`v2017_10_01.models<azure.mgmt.network.v2017_10_01.models>`
+           * 2017-11-01: :mod:`v2017_11_01.models<azure.mgmt.network.v2017_11_01.models>`
+           * 2018-01-01: :mod:`v2018_01_01.models<azure.mgmt.network.v2018_01_01.models>`
+           * 2018-02-01: :mod:`v2018_02_01.models<azure.mgmt.network.v2018_02_01.models>`
+           * 2018-04-01: :mod:`v2018_04_01.models<azure.mgmt.network.v2018_04_01.models>`
+           * 2018-06-01: :mod:`v2018_06_01.models<azure.mgmt.network.v2018_06_01.models>`
+           * 2018-07-01: :mod:`v2018_07_01.models<azure.mgmt.network.v2018_07_01.models>`
+           * 2018-08-01: :mod:`v2018_08_01.models<azure.mgmt.network.v2018_08_01.models>`
+           * 2018-10-01: :mod:`v2018_10_01.models<azure.mgmt.network.v2018_10_01.models>`
+           * 2018-11-01: :mod:`v2018_11_01.models<azure.mgmt.network.v2018_11_01.models>`
+           * 2018-12-01: :mod:`v2018_12_01.models<azure.mgmt.network.v2018_12_01.models>`
+           * 2019-02-01: :mod:`v2019_02_01.models<azure.mgmt.network.v2019_02_01.models>`
+           * 2019-04-01: :mod:`v2019_04_01.models<azure.mgmt.network.v2019_04_01.models>`
+           * 2019-06-01: :mod:`v2019_06_01.models<azure.mgmt.network.v2019_06_01.models>`
+           * 2019-07-01: :mod:`v2019_07_01.models<azure.mgmt.network.v2019_07_01.models>`
+           * 2019-08-01: :mod:`v2019_08_01.models<azure.mgmt.network.v2019_08_01.models>`
+           * 2019-09-01: :mod:`v2019_09_01.models<azure.mgmt.network.v2019_09_01.models>`
+        """
+        if api_version == '2015-06-15':
+            from .v2015_06_15 import models
+            return models
+        elif api_version == '2016-09-01':
+            from .v2016_09_01 import models
+            return models
+        elif api_version == '2016-12-01':
+            from .v2016_12_01 import models
+            return models
+        elif api_version == '2017-03-01':
+            from .v2017_03_01 import models
+            return models
+        elif api_version == '2017-06-01':
+            from .v2017_06_01 import models
+            return models
+        elif api_version == '2017-08-01':
+            from .v2017_08_01 import models
+            return models
+        elif api_version == '2017-09-01':
+            from .v2017_09_01 import models
+            return models
+        elif api_version == '2017-10-01':
+            from .v2017_10_01 import models
+            return models
+        elif api_version == '2017-11-01':
+            from .v2017_11_01 import models
+            return models
+        elif api_version == '2018-01-01':
+            from .v2018_01_01 import models
+            return models
+        elif api_version == '2018-02-01':
+            from .v2018_02_01 import models
+            return models
+        elif api_version == '2018-04-01':
+            from .v2018_04_01 import models
+            return models
+        elif api_version == '2018-06-01':
+            from .v2018_06_01 import models
+            return models
+        elif api_version == '2018-07-01':
+            from .v2018_07_01 import models
+            return models
+        elif api_version == '2018-08-01':
+            from .v2018_08_01 import models
+            return models
+        elif api_version == '2018-10-01':
+            from .v2018_10_01 import models
+            return models
+        elif api_version == '2018-11-01':
+            from .v2018_11_01 import models
+            return models
+        elif api_version == '2018-12-01':
+            from .v2018_12_01 import models
+            return models
+        elif api_version == '2019-02-01':
+            from .v2019_02_01 import models
+            return models
+        elif api_version == '2019-04-01':
+            from .v2019_04_01 import models
+            return models
+        elif api_version == '2019-06-01':
+            from .v2019_06_01 import models
+            return models
+        elif api_version == '2019-07-01':
+            from .v2019_07_01 import models
+            return models
+        elif api_version == '2019-08-01':
+            from .v2019_08_01 import models
+            return models
+        elif api_version == '2019-09-01':
+            from .v2019_09_01 import models
+            return models
+        raise NotImplementedError("APIVersion {} is not available".format(api_version))
+
+    @property
+    def application_gateways(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2015_06_15.operations.ApplicationGatewaysOperations>`
+           * 2016-09-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2016_09_01.operations.ApplicationGatewaysOperations>`
+           * 2016-12-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2016_12_01.operations.ApplicationGatewaysOperations>`
+           * 2017-03-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2017_03_01.operations.ApplicationGatewaysOperations>`
+           * 2017-06-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2017_06_01.operations.ApplicationGatewaysOperations>`
+           * 2017-08-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2017_08_01.operations.ApplicationGatewaysOperations>`
+           * 2017-09-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2017_09_01.operations.ApplicationGatewaysOperations>`
+           * 2017-10-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2017_10_01.operations.ApplicationGatewaysOperations>`
+           * 2017-11-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2017_11_01.operations.ApplicationGatewaysOperations>`
+           * 2018-01-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_01_01.operations.ApplicationGatewaysOperations>`
+           * 2018-02-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_02_01.operations.ApplicationGatewaysOperations>`
+           * 2018-04-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_04_01.operations.ApplicationGatewaysOperations>`
+           * 2018-06-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_06_01.operations.ApplicationGatewaysOperations>`
+           * 2018-07-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_07_01.operations.ApplicationGatewaysOperations>`
+           * 2018-08-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_08_01.operations.ApplicationGatewaysOperations>`
+           * 2018-10-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_10_01.operations.ApplicationGatewaysOperations>`
+           * 2018-11-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_11_01.operations.ApplicationGatewaysOperations>`
+           * 2018-12-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2018_12_01.operations.ApplicationGatewaysOperations>`
+           * 2019-02-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2019_02_01.operations.ApplicationGatewaysOperations>`
+           * 2019-04-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2019_04_01.operations.ApplicationGatewaysOperations>`
+           * 2019-06-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2019_06_01.operations.ApplicationGatewaysOperations>`
+           * 2019-07-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2019_07_01.operations.ApplicationGatewaysOperations>`
+           * 2019-08-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2019_08_01.operations.ApplicationGatewaysOperations>`
+           * 2019-09-01: :class:`ApplicationGatewaysOperations<azure.mgmt.network.v2019_09_01.operations.ApplicationGatewaysOperations>`
+        """
+        api_version = self._get_api_version('application_gateways')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ApplicationGatewaysOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ApplicationGatewaysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def application_security_groups(self):
+        """Instance depends on the API version:
+
+           * 2017-09-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2017_09_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2017-10-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2017_10_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2017-11-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2017_11_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-01-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_01_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-02-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_02_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-04-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_04_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-06-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_06_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-07-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_07_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-08-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_08_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-10-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_10_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-11-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_11_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2018-12-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2018_12_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2019-02-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2019_02_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2019-04-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2019_04_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2019-06-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2019_06_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2019-07-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2019_07_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2019-08-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2019_08_01.operations.ApplicationSecurityGroupsOperations>`
+           * 2019-09-01: :class:`ApplicationSecurityGroupsOperations<azure.mgmt.network.v2019_09_01.operations.ApplicationSecurityGroupsOperations>`
+        """
+        api_version = self._get_api_version('application_security_groups')
+        if api_version == '2017-09-01':
+            from .v2017_09_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ApplicationSecurityGroupsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def available_delegations(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2018_08_01.operations.AvailableDelegationsOperations>`
+           * 2018-10-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2018_10_01.operations.AvailableDelegationsOperations>`
+           * 2018-11-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2018_11_01.operations.AvailableDelegationsOperations>`
+           * 2018-12-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2018_12_01.operations.AvailableDelegationsOperations>`
+           * 2019-02-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2019_02_01.operations.AvailableDelegationsOperations>`
+           * 2019-04-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2019_04_01.operations.AvailableDelegationsOperations>`
+           * 2019-06-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2019_06_01.operations.AvailableDelegationsOperations>`
+           * 2019-07-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2019_07_01.operations.AvailableDelegationsOperations>`
+           * 2019-08-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2019_08_01.operations.AvailableDelegationsOperations>`
+           * 2019-09-01: :class:`AvailableDelegationsOperations<azure.mgmt.network.v2019_09_01.operations.AvailableDelegationsOperations>`
+        """
+        api_version = self._get_api_version('available_delegations')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import AvailableDelegationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AvailableDelegationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def available_endpoint_services(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2017_06_01.operations.AvailableEndpointServicesOperations>`
+           * 2017-08-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2017_08_01.operations.AvailableEndpointServicesOperations>`
+           * 2017-09-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2017_09_01.operations.AvailableEndpointServicesOperations>`
+           * 2017-10-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2017_10_01.operations.AvailableEndpointServicesOperations>`
+           * 2017-11-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2017_11_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-01-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_01_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-02-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_02_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-04-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_04_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-06-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_06_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-07-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_07_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-08-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_08_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-10-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_10_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-11-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_11_01.operations.AvailableEndpointServicesOperations>`
+           * 2018-12-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2018_12_01.operations.AvailableEndpointServicesOperations>`
+           * 2019-02-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2019_02_01.operations.AvailableEndpointServicesOperations>`
+           * 2019-04-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2019_04_01.operations.AvailableEndpointServicesOperations>`
+           * 2019-06-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2019_06_01.operations.AvailableEndpointServicesOperations>`
+           * 2019-07-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2019_07_01.operations.AvailableEndpointServicesOperations>`
+           * 2019-08-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2019_08_01.operations.AvailableEndpointServicesOperations>`
+           * 2019-09-01: :class:`AvailableEndpointServicesOperations<azure.mgmt.network.v2019_09_01.operations.AvailableEndpointServicesOperations>`
+        """
+        api_version = self._get_api_version('available_endpoint_services')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import AvailableEndpointServicesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AvailableEndpointServicesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def available_private_endpoint_types(self):
+        """Instance depends on the API version:
+
+           * 2019-04-01: :class:`AvailablePrivateEndpointTypesOperations<azure.mgmt.network.v2019_04_01.operations.AvailablePrivateEndpointTypesOperations>`
+           * 2019-06-01: :class:`AvailablePrivateEndpointTypesOperations<azure.mgmt.network.v2019_06_01.operations.AvailablePrivateEndpointTypesOperations>`
+           * 2019-07-01: :class:`AvailablePrivateEndpointTypesOperations<azure.mgmt.network.v2019_07_01.operations.AvailablePrivateEndpointTypesOperations>`
+           * 2019-08-01: :class:`AvailablePrivateEndpointTypesOperations<azure.mgmt.network.v2019_08_01.operations.AvailablePrivateEndpointTypesOperations>`
+           * 2019-09-01: :class:`AvailablePrivateEndpointTypesOperations<azure.mgmt.network.v2019_09_01.operations.AvailablePrivateEndpointTypesOperations>`
+        """
+        api_version = self._get_api_version('available_private_endpoint_types')
+        if api_version == '2019-04-01':
+            from .v2019_04_01.operations import AvailablePrivateEndpointTypesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AvailablePrivateEndpointTypesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import AvailablePrivateEndpointTypesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import AvailablePrivateEndpointTypesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AvailablePrivateEndpointTypesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def available_resource_group_delegations(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2018_08_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2018-10-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2018_10_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2018-11-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2018_11_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2018-12-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2018_12_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2019-02-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2019_02_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2019-04-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2019_04_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2019-06-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2019_06_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2019-07-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2019_07_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2019-08-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2019_08_01.operations.AvailableResourceGroupDelegationsOperations>`
+           * 2019-09-01: :class:`AvailableResourceGroupDelegationsOperations<azure.mgmt.network.v2019_09_01.operations.AvailableResourceGroupDelegationsOperations>`
+        """
+        api_version = self._get_api_version('available_resource_group_delegations')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AvailableResourceGroupDelegationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def available_service_aliases(self):
+        """Instance depends on the API version:
+
+           * 2019-08-01: :class:`AvailableServiceAliasesOperations<azure.mgmt.network.v2019_08_01.operations.AvailableServiceAliasesOperations>`
+           * 2019-09-01: :class:`AvailableServiceAliasesOperations<azure.mgmt.network.v2019_09_01.operations.AvailableServiceAliasesOperations>`
+        """
+        api_version = self._get_api_version('available_service_aliases')
+        if api_version == '2019-08-01':
+            from .v2019_08_01.operations import AvailableServiceAliasesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AvailableServiceAliasesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def azure_firewall_fqdn_tags(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2018_08_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2018-10-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2018_10_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2018-11-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2018_11_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2018-12-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2018_12_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2019-02-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2019_02_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2019-04-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2019_04_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2019-06-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2019_06_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2019-07-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2019_07_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2019-08-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2019_08_01.operations.AzureFirewallFqdnTagsOperations>`
+           * 2019-09-01: :class:`AzureFirewallFqdnTagsOperations<azure.mgmt.network.v2019_09_01.operations.AzureFirewallFqdnTagsOperations>`
+        """
+        api_version = self._get_api_version('azure_firewall_fqdn_tags')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AzureFirewallFqdnTagsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def azure_firewalls(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_04_01.operations.AzureFirewallsOperations>`
+           * 2018-06-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_06_01.operations.AzureFirewallsOperations>`
+           * 2018-07-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_07_01.operations.AzureFirewallsOperations>`
+           * 2018-08-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_08_01.operations.AzureFirewallsOperations>`
+           * 2018-10-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_10_01.operations.AzureFirewallsOperations>`
+           * 2018-11-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_11_01.operations.AzureFirewallsOperations>`
+           * 2018-12-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2018_12_01.operations.AzureFirewallsOperations>`
+           * 2019-02-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2019_02_01.operations.AzureFirewallsOperations>`
+           * 2019-04-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2019_04_01.operations.AzureFirewallsOperations>`
+           * 2019-06-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2019_06_01.operations.AzureFirewallsOperations>`
+           * 2019-07-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2019_07_01.operations.AzureFirewallsOperations>`
+           * 2019-08-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2019_08_01.operations.AzureFirewallsOperations>`
+           * 2019-09-01: :class:`AzureFirewallsOperations<azure.mgmt.network.v2019_09_01.operations.AzureFirewallsOperations>`
+        """
+        api_version = self._get_api_version('azure_firewalls')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import AzureFirewallsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import AzureFirewallsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def bastion_hosts(self):
+        """Instance depends on the API version:
+
+           * 2019-04-01: :class:`BastionHostsOperations<azure.mgmt.network.v2019_04_01.operations.BastionHostsOperations>`
+           * 2019-06-01: :class:`BastionHostsOperations<azure.mgmt.network.v2019_06_01.operations.BastionHostsOperations>`
+           * 2019-07-01: :class:`BastionHostsOperations<azure.mgmt.network.v2019_07_01.operations.BastionHostsOperations>`
+           * 2019-08-01: :class:`BastionHostsOperations<azure.mgmt.network.v2019_08_01.operations.BastionHostsOperations>`
+           * 2019-09-01: :class:`BastionHostsOperations<azure.mgmt.network.v2019_09_01.operations.BastionHostsOperations>`
+        """
+        api_version = self._get_api_version('bastion_hosts')
+        if api_version == '2019-04-01':
+            from .v2019_04_01.operations import BastionHostsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import BastionHostsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import BastionHostsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import BastionHostsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import BastionHostsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def bgp_service_communities(self):
+        """Instance depends on the API version:
+
+           * 2016-12-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2016_12_01.operations.BgpServiceCommunitiesOperations>`
+           * 2017-03-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2017_03_01.operations.BgpServiceCommunitiesOperations>`
+           * 2017-06-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2017_06_01.operations.BgpServiceCommunitiesOperations>`
+           * 2017-08-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2017_08_01.operations.BgpServiceCommunitiesOperations>`
+           * 2017-09-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2017_09_01.operations.BgpServiceCommunitiesOperations>`
+           * 2017-10-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2017_10_01.operations.BgpServiceCommunitiesOperations>`
+           * 2017-11-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2017_11_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-01-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_01_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-02-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_02_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-04-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_04_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-06-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_06_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-07-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_07_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-08-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_08_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-10-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_10_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-11-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_11_01.operations.BgpServiceCommunitiesOperations>`
+           * 2018-12-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2018_12_01.operations.BgpServiceCommunitiesOperations>`
+           * 2019-02-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2019_02_01.operations.BgpServiceCommunitiesOperations>`
+           * 2019-04-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2019_04_01.operations.BgpServiceCommunitiesOperations>`
+           * 2019-06-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2019_06_01.operations.BgpServiceCommunitiesOperations>`
+           * 2019-07-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2019_07_01.operations.BgpServiceCommunitiesOperations>`
+           * 2019-08-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2019_08_01.operations.BgpServiceCommunitiesOperations>`
+           * 2019-09-01: :class:`BgpServiceCommunitiesOperations<azure.mgmt.network.v2019_09_01.operations.BgpServiceCommunitiesOperations>`
+        """
+        api_version = self._get_api_version('bgp_service_communities')
+        if api_version == '2016-12-01':
+            from .v2016_12_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import BgpServiceCommunitiesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def connection_monitors(self):
+        """Instance depends on the API version:
+
+           * 2017-10-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2017_10_01.operations.ConnectionMonitorsOperations>`
+           * 2017-11-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2017_11_01.operations.ConnectionMonitorsOperations>`
+           * 2018-01-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_01_01.operations.ConnectionMonitorsOperations>`
+           * 2018-02-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_02_01.operations.ConnectionMonitorsOperations>`
+           * 2018-04-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_04_01.operations.ConnectionMonitorsOperations>`
+           * 2018-06-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_06_01.operations.ConnectionMonitorsOperations>`
+           * 2018-07-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_07_01.operations.ConnectionMonitorsOperations>`
+           * 2018-08-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_08_01.operations.ConnectionMonitorsOperations>`
+           * 2018-10-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_10_01.operations.ConnectionMonitorsOperations>`
+           * 2018-11-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_11_01.operations.ConnectionMonitorsOperations>`
+           * 2018-12-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2018_12_01.operations.ConnectionMonitorsOperations>`
+           * 2019-02-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2019_02_01.operations.ConnectionMonitorsOperations>`
+           * 2019-04-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2019_04_01.operations.ConnectionMonitorsOperations>`
+           * 2019-06-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2019_06_01.operations.ConnectionMonitorsOperations>`
+           * 2019-07-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2019_07_01.operations.ConnectionMonitorsOperations>`
+           * 2019-08-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2019_08_01.operations.ConnectionMonitorsOperations>`
+           * 2019-09-01: :class:`ConnectionMonitorsOperations<azure.mgmt.network.v2019_09_01.operations.ConnectionMonitorsOperations>`
+        """
+        api_version = self._get_api_version('connection_monitors')
+        if api_version == '2017-10-01':
+            from .v2017_10_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ConnectionMonitorsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ConnectionMonitorsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def ddos_custom_policies(self):
+        """Instance depends on the API version:
+
+           * 2018-11-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2018_11_01.operations.DdosCustomPoliciesOperations>`
+           * 2018-12-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2018_12_01.operations.DdosCustomPoliciesOperations>`
+           * 2019-02-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2019_02_01.operations.DdosCustomPoliciesOperations>`
+           * 2019-04-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2019_04_01.operations.DdosCustomPoliciesOperations>`
+           * 2019-06-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2019_06_01.operations.DdosCustomPoliciesOperations>`
+           * 2019-07-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2019_07_01.operations.DdosCustomPoliciesOperations>`
+           * 2019-08-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2019_08_01.operations.DdosCustomPoliciesOperations>`
+           * 2019-09-01: :class:`DdosCustomPoliciesOperations<azure.mgmt.network.v2019_09_01.operations.DdosCustomPoliciesOperations>`
+        """
+        api_version = self._get_api_version('ddos_custom_policies')
+        if api_version == '2018-11-01':
+            from .v2018_11_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import DdosCustomPoliciesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import DdosCustomPoliciesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def ddos_protection_plans(self):
+        """Instance depends on the API version:
+
+           * 2018-02-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_02_01.operations.DdosProtectionPlansOperations>`
+           * 2018-04-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_04_01.operations.DdosProtectionPlansOperations>`
+           * 2018-06-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_06_01.operations.DdosProtectionPlansOperations>`
+           * 2018-07-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_07_01.operations.DdosProtectionPlansOperations>`
+           * 2018-08-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_08_01.operations.DdosProtectionPlansOperations>`
+           * 2018-10-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_10_01.operations.DdosProtectionPlansOperations>`
+           * 2018-11-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_11_01.operations.DdosProtectionPlansOperations>`
+           * 2018-12-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2018_12_01.operations.DdosProtectionPlansOperations>`
+           * 2019-02-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2019_02_01.operations.DdosProtectionPlansOperations>`
+           * 2019-04-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2019_04_01.operations.DdosProtectionPlansOperations>`
+           * 2019-06-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2019_06_01.operations.DdosProtectionPlansOperations>`
+           * 2019-07-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2019_07_01.operations.DdosProtectionPlansOperations>`
+           * 2019-08-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2019_08_01.operations.DdosProtectionPlansOperations>`
+           * 2019-09-01: :class:`DdosProtectionPlansOperations<azure.mgmt.network.v2019_09_01.operations.DdosProtectionPlansOperations>`
+        """
+        api_version = self._get_api_version('ddos_protection_plans')
+        if api_version == '2018-02-01':
+            from .v2018_02_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import DdosProtectionPlansOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import DdosProtectionPlansOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def default_security_rules(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2017_06_01.operations.DefaultSecurityRulesOperations>`
+           * 2017-08-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2017_08_01.operations.DefaultSecurityRulesOperations>`
+           * 2017-09-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2017_09_01.operations.DefaultSecurityRulesOperations>`
+           * 2017-10-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2017_10_01.operations.DefaultSecurityRulesOperations>`
+           * 2017-11-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2017_11_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-01-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_01_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-02-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_02_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-04-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_04_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-06-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_06_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-07-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_07_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-08-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_08_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-10-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_10_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-11-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_11_01.operations.DefaultSecurityRulesOperations>`
+           * 2018-12-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2018_12_01.operations.DefaultSecurityRulesOperations>`
+           * 2019-02-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2019_02_01.operations.DefaultSecurityRulesOperations>`
+           * 2019-04-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2019_04_01.operations.DefaultSecurityRulesOperations>`
+           * 2019-06-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2019_06_01.operations.DefaultSecurityRulesOperations>`
+           * 2019-07-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2019_07_01.operations.DefaultSecurityRulesOperations>`
+           * 2019-08-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2019_08_01.operations.DefaultSecurityRulesOperations>`
+           * 2019-09-01: :class:`DefaultSecurityRulesOperations<azure.mgmt.network.v2019_09_01.operations.DefaultSecurityRulesOperations>`
+        """
+        api_version = self._get_api_version('default_security_rules')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import DefaultSecurityRulesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import DefaultSecurityRulesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_circuit_authorizations(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2015_06_15.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2016-09-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2016_09_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2016-12-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2016_12_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2017-03-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2017_03_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2017-06-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2017_06_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2017-08-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2017_08_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2017-09-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2017_09_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2017-10-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2017_10_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2017-11-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2017_11_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-01-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_01_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-02-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-04-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-06-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-07-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-08-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-10-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-11-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2018-12-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2019-02-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2019-04-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2019-06-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2019-07-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2019-08-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+           * 2019-09-01: :class:`ExpressRouteCircuitAuthorizationsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitAuthorizationsOperations>`
+        """
+        api_version = self._get_api_version('express_route_circuit_authorizations')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteCircuitAuthorizationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_circuit_connections(self):
+        """Instance depends on the API version:
+
+           * 2018-02-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-04-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-06-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-07-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-08-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-10-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-11-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2018-12-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2019-02-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2019-04-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2019-06-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2019-07-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2019-08-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteCircuitConnectionsOperations>`
+           * 2019-09-01: :class:`ExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitConnectionsOperations>`
+        """
+        api_version = self._get_api_version('express_route_circuit_connections')
+        if api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteCircuitConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_circuit_peerings(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2015_06_15.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2016-09-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2016_09_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2016-12-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2016_12_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2017-03-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2017_03_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2017-06-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2017_06_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2017-08-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2017_08_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2017-09-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2017_09_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2017-10-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2017_10_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2017-11-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2017_11_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-01-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_01_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-02-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-04-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-06-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-07-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-08-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-10-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-11-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2018-12-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2019-02-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2019-04-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2019-06-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2019-07-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2019-08-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteCircuitPeeringsOperations>`
+           * 2019-09-01: :class:`ExpressRouteCircuitPeeringsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitPeeringsOperations>`
+        """
+        api_version = self._get_api_version('express_route_circuit_peerings')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteCircuitPeeringsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_circuits(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2015_06_15.operations.ExpressRouteCircuitsOperations>`
+           * 2016-09-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2016_09_01.operations.ExpressRouteCircuitsOperations>`
+           * 2016-12-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2016_12_01.operations.ExpressRouteCircuitsOperations>`
+           * 2017-03-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2017_03_01.operations.ExpressRouteCircuitsOperations>`
+           * 2017-06-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2017_06_01.operations.ExpressRouteCircuitsOperations>`
+           * 2017-08-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2017_08_01.operations.ExpressRouteCircuitsOperations>`
+           * 2017-09-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2017_09_01.operations.ExpressRouteCircuitsOperations>`
+           * 2017-10-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2017_10_01.operations.ExpressRouteCircuitsOperations>`
+           * 2017-11-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2017_11_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-01-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_01_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-02-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-04-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-06-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-07-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-08-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-10-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-11-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteCircuitsOperations>`
+           * 2018-12-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteCircuitsOperations>`
+           * 2019-02-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteCircuitsOperations>`
+           * 2019-04-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteCircuitsOperations>`
+           * 2019-06-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteCircuitsOperations>`
+           * 2019-07-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteCircuitsOperations>`
+           * 2019-08-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteCircuitsOperations>`
+           * 2019-09-01: :class:`ExpressRouteCircuitsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteCircuitsOperations>`
+        """
+        api_version = self._get_api_version('express_route_circuits')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteCircuitsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_connections(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteConnectionsOperations>`
+           * 2018-10-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteConnectionsOperations>`
+           * 2018-11-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteConnectionsOperations>`
+           * 2018-12-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteConnectionsOperations>`
+           * 2019-02-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteConnectionsOperations>`
+           * 2019-04-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteConnectionsOperations>`
+           * 2019-06-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteConnectionsOperations>`
+           * 2019-07-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteConnectionsOperations>`
+           * 2019-08-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteConnectionsOperations>`
+           * 2019-09-01: :class:`ExpressRouteConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteConnectionsOperations>`
+        """
+        api_version = self._get_api_version('express_route_connections')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_cross_connection_peerings(self):
+        """Instance depends on the API version:
+
+           * 2018-02-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-04-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-06-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-07-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-08-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-10-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-11-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2018-12-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2019-02-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2019-04-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2019-06-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2019-07-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2019-08-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+           * 2019-09-01: :class:`ExpressRouteCrossConnectionPeeringsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteCrossConnectionPeeringsOperations>`
+        """
+        api_version = self._get_api_version('express_route_cross_connection_peerings')
+        if api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteCrossConnectionPeeringsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_cross_connections(self):
+        """Instance depends on the API version:
+
+           * 2018-02-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-04-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-06-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-07-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-08-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-10-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-11-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2018-12-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2019-02-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2019-04-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2019-06-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2019-07-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2019-08-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteCrossConnectionsOperations>`
+           * 2019-09-01: :class:`ExpressRouteCrossConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteCrossConnectionsOperations>`
+        """
+        api_version = self._get_api_version('express_route_cross_connections')
+        if api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteCrossConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_gateways(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteGatewaysOperations>`
+           * 2018-10-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteGatewaysOperations>`
+           * 2018-11-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteGatewaysOperations>`
+           * 2018-12-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteGatewaysOperations>`
+           * 2019-02-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteGatewaysOperations>`
+           * 2019-04-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteGatewaysOperations>`
+           * 2019-06-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteGatewaysOperations>`
+           * 2019-07-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteGatewaysOperations>`
+           * 2019-08-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteGatewaysOperations>`
+           * 2019-09-01: :class:`ExpressRouteGatewaysOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteGatewaysOperations>`
+        """
+        api_version = self._get_api_version('express_route_gateways')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteGatewaysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_links(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteLinksOperations>`
+           * 2018-10-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteLinksOperations>`
+           * 2018-11-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteLinksOperations>`
+           * 2018-12-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteLinksOperations>`
+           * 2019-02-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteLinksOperations>`
+           * 2019-04-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteLinksOperations>`
+           * 2019-06-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteLinksOperations>`
+           * 2019-07-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteLinksOperations>`
+           * 2019-08-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteLinksOperations>`
+           * 2019-09-01: :class:`ExpressRouteLinksOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteLinksOperations>`
+        """
+        api_version = self._get_api_version('express_route_links')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteLinksOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteLinksOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_ports(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRoutePortsOperations>`
+           * 2018-10-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRoutePortsOperations>`
+           * 2018-11-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRoutePortsOperations>`
+           * 2018-12-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRoutePortsOperations>`
+           * 2019-02-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRoutePortsOperations>`
+           * 2019-04-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRoutePortsOperations>`
+           * 2019-06-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRoutePortsOperations>`
+           * 2019-07-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRoutePortsOperations>`
+           * 2019-08-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRoutePortsOperations>`
+           * 2019-09-01: :class:`ExpressRoutePortsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRoutePortsOperations>`
+        """
+        api_version = self._get_api_version('express_route_ports')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRoutePortsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRoutePortsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_ports_locations(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2018-10-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2018-11-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2018-12-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2019-02-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2019-04-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2019-06-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2019-07-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2019-08-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRoutePortsLocationsOperations>`
+           * 2019-09-01: :class:`ExpressRoutePortsLocationsOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRoutePortsLocationsOperations>`
+        """
+        api_version = self._get_api_version('express_route_ports_locations')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRoutePortsLocationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def express_route_service_providers(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2015_06_15.operations.ExpressRouteServiceProvidersOperations>`
+           * 2016-09-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2016_09_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2016-12-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2016_12_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2017-03-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2017_03_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2017-06-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2017_06_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2017-08-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2017_08_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2017-09-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2017_09_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2017-10-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2017_10_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2017-11-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2017_11_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-01-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_01_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-02-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_02_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-04-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_04_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-06-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_06_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-07-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_07_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-08-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_08_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-10-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_10_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-11-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_11_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2018-12-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2018_12_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2019-02-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2019_02_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2019-04-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2019_04_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2019-06-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2019_06_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2019-07-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2019_07_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2019-08-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2019_08_01.operations.ExpressRouteServiceProvidersOperations>`
+           * 2019-09-01: :class:`ExpressRouteServiceProvidersOperations<azure.mgmt.network.v2019_09_01.operations.ExpressRouteServiceProvidersOperations>`
+        """
+        api_version = self._get_api_version('express_route_service_providers')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ExpressRouteServiceProvidersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def firewall_policies(self):
+        """Instance depends on the API version:
+
+           * 2019-06-01: :class:`FirewallPoliciesOperations<azure.mgmt.network.v2019_06_01.operations.FirewallPoliciesOperations>`
+           * 2019-07-01: :class:`FirewallPoliciesOperations<azure.mgmt.network.v2019_07_01.operations.FirewallPoliciesOperations>`
+           * 2019-08-01: :class:`FirewallPoliciesOperations<azure.mgmt.network.v2019_08_01.operations.FirewallPoliciesOperations>`
+           * 2019-09-01: :class:`FirewallPoliciesOperations<azure.mgmt.network.v2019_09_01.operations.FirewallPoliciesOperations>`
+        """
+        api_version = self._get_api_version('firewall_policies')
+        if api_version == '2019-06-01':
+            from .v2019_06_01.operations import FirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import FirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import FirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import FirewallPoliciesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def firewall_policy_rule_groups(self):
+        """Instance depends on the API version:
+
+           * 2019-06-01: :class:`FirewallPolicyRuleGroupsOperations<azure.mgmt.network.v2019_06_01.operations.FirewallPolicyRuleGroupsOperations>`
+           * 2019-07-01: :class:`FirewallPolicyRuleGroupsOperations<azure.mgmt.network.v2019_07_01.operations.FirewallPolicyRuleGroupsOperations>`
+           * 2019-08-01: :class:`FirewallPolicyRuleGroupsOperations<azure.mgmt.network.v2019_08_01.operations.FirewallPolicyRuleGroupsOperations>`
+           * 2019-09-01: :class:`FirewallPolicyRuleGroupsOperations<azure.mgmt.network.v2019_09_01.operations.FirewallPolicyRuleGroupsOperations>`
+        """
+        api_version = self._get_api_version('firewall_policy_rule_groups')
+        if api_version == '2019-06-01':
+            from .v2019_06_01.operations import FirewallPolicyRuleGroupsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import FirewallPolicyRuleGroupsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import FirewallPolicyRuleGroupsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import FirewallPolicyRuleGroupsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def hub_virtual_network_connections(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_04_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2018-06-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_06_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2018-07-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_07_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2018-08-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_08_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2018-10-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_10_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2018-11-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_11_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2018-12-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2019-02-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2019-04-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2019-06-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2019-07-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2019-08-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.HubVirtualNetworkConnectionsOperations>`
+           * 2019-09-01: :class:`HubVirtualNetworkConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.HubVirtualNetworkConnectionsOperations>`
+        """
+        api_version = self._get_api_version('hub_virtual_network_connections')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import HubVirtualNetworkConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def inbound_nat_rules(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2017_06_01.operations.InboundNatRulesOperations>`
+           * 2017-08-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2017_08_01.operations.InboundNatRulesOperations>`
+           * 2017-09-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2017_09_01.operations.InboundNatRulesOperations>`
+           * 2017-10-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2017_10_01.operations.InboundNatRulesOperations>`
+           * 2017-11-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2017_11_01.operations.InboundNatRulesOperations>`
+           * 2018-01-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_01_01.operations.InboundNatRulesOperations>`
+           * 2018-02-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_02_01.operations.InboundNatRulesOperations>`
+           * 2018-04-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_04_01.operations.InboundNatRulesOperations>`
+           * 2018-06-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_06_01.operations.InboundNatRulesOperations>`
+           * 2018-07-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_07_01.operations.InboundNatRulesOperations>`
+           * 2018-08-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_08_01.operations.InboundNatRulesOperations>`
+           * 2018-10-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_10_01.operations.InboundNatRulesOperations>`
+           * 2018-11-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_11_01.operations.InboundNatRulesOperations>`
+           * 2018-12-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2018_12_01.operations.InboundNatRulesOperations>`
+           * 2019-02-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2019_02_01.operations.InboundNatRulesOperations>`
+           * 2019-04-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2019_04_01.operations.InboundNatRulesOperations>`
+           * 2019-06-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2019_06_01.operations.InboundNatRulesOperations>`
+           * 2019-07-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2019_07_01.operations.InboundNatRulesOperations>`
+           * 2019-08-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2019_08_01.operations.InboundNatRulesOperations>`
+           * 2019-09-01: :class:`InboundNatRulesOperations<azure.mgmt.network.v2019_09_01.operations.InboundNatRulesOperations>`
+        """
+        api_version = self._get_api_version('inbound_nat_rules')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import InboundNatRulesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import InboundNatRulesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def interface_endpoints(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`InterfaceEndpointsOperations<azure.mgmt.network.v2018_08_01.operations.InterfaceEndpointsOperations>`
+           * 2018-10-01: :class:`InterfaceEndpointsOperations<azure.mgmt.network.v2018_10_01.operations.InterfaceEndpointsOperations>`
+           * 2018-11-01: :class:`InterfaceEndpointsOperations<azure.mgmt.network.v2018_11_01.operations.InterfaceEndpointsOperations>`
+           * 2018-12-01: :class:`InterfaceEndpointsOperations<azure.mgmt.network.v2018_12_01.operations.InterfaceEndpointsOperations>`
+           * 2019-02-01: :class:`InterfaceEndpointsOperations<azure.mgmt.network.v2019_02_01.operations.InterfaceEndpointsOperations>`
+        """
+        api_version = self._get_api_version('interface_endpoints')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import InterfaceEndpointsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import InterfaceEndpointsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import InterfaceEndpointsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import InterfaceEndpointsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import InterfaceEndpointsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancer_backend_address_pools(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2017_06_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2017-08-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2017_08_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2017-09-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2017_09_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2017-10-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2017_10_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2017-11-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2017_11_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-01-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_01_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-02-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_02_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-04-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_04_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-06-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_06_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-07-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_07_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-08-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-10-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-11-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2018-12-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2019-02-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2019-04-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2019-06-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2019-07-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2019-08-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+           * 2019-09-01: :class:`LoadBalancerBackendAddressPoolsOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancerBackendAddressPoolsOperations>`
+        """
+        api_version = self._get_api_version('load_balancer_backend_address_pools')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancerBackendAddressPoolsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancer_frontend_ip_configurations(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2017_06_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2017-08-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2017_08_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2017-09-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2017_09_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2017-10-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2017_10_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2017-11-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2017_11_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-01-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_01_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-02-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_02_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-04-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_04_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-06-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_06_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-07-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_07_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-08-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-10-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-11-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2018-12-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2019-02-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2019-04-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2019-06-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2019-07-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2019-08-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+           * 2019-09-01: :class:`LoadBalancerFrontendIPConfigurationsOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancerFrontendIPConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('load_balancer_frontend_ip_configurations')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancerFrontendIPConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancer_load_balancing_rules(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2017_06_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2017-08-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2017_08_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2017-09-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2017_09_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2017-10-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2017_10_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2017-11-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2017_11_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-01-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_01_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-02-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_02_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-04-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_04_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-06-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_06_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-07-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_07_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-08-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-10-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-11-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2018-12-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2019-02-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2019-04-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2019-06-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2019-07-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2019-08-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+           * 2019-09-01: :class:`LoadBalancerLoadBalancingRulesOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancerLoadBalancingRulesOperations>`
+        """
+        api_version = self._get_api_version('load_balancer_load_balancing_rules')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancerLoadBalancingRulesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancer_network_interfaces(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2017_06_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2017-08-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2017_08_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2017-09-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2017_09_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2017-10-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2017_10_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2017-11-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2017_11_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-01-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_01_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-02-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_02_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-04-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_04_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-06-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_06_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-07-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_07_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-08-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-10-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-11-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2018-12-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2019-02-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2019-04-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2019-06-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2019-07-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2019-08-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancerNetworkInterfacesOperations>`
+           * 2019-09-01: :class:`LoadBalancerNetworkInterfacesOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancerNetworkInterfacesOperations>`
+        """
+        api_version = self._get_api_version('load_balancer_network_interfaces')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancerNetworkInterfacesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancer_outbound_rules(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2018-10-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2018-11-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2018-12-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2019-02-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2019-04-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2019-06-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2019-07-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2019-08-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancerOutboundRulesOperations>`
+           * 2019-09-01: :class:`LoadBalancerOutboundRulesOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancerOutboundRulesOperations>`
+        """
+        api_version = self._get_api_version('load_balancer_outbound_rules')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancerOutboundRulesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancer_probes(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2017_06_01.operations.LoadBalancerProbesOperations>`
+           * 2017-08-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2017_08_01.operations.LoadBalancerProbesOperations>`
+           * 2017-09-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2017_09_01.operations.LoadBalancerProbesOperations>`
+           * 2017-10-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2017_10_01.operations.LoadBalancerProbesOperations>`
+           * 2017-11-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2017_11_01.operations.LoadBalancerProbesOperations>`
+           * 2018-01-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_01_01.operations.LoadBalancerProbesOperations>`
+           * 2018-02-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_02_01.operations.LoadBalancerProbesOperations>`
+           * 2018-04-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_04_01.operations.LoadBalancerProbesOperations>`
+           * 2018-06-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_06_01.operations.LoadBalancerProbesOperations>`
+           * 2018-07-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_07_01.operations.LoadBalancerProbesOperations>`
+           * 2018-08-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancerProbesOperations>`
+           * 2018-10-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancerProbesOperations>`
+           * 2018-11-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancerProbesOperations>`
+           * 2018-12-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancerProbesOperations>`
+           * 2019-02-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancerProbesOperations>`
+           * 2019-04-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancerProbesOperations>`
+           * 2019-06-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancerProbesOperations>`
+           * 2019-07-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancerProbesOperations>`
+           * 2019-08-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancerProbesOperations>`
+           * 2019-09-01: :class:`LoadBalancerProbesOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancerProbesOperations>`
+        """
+        api_version = self._get_api_version('load_balancer_probes')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancerProbesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancerProbesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def load_balancers(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`LoadBalancersOperations<azure.mgmt.network.v2015_06_15.operations.LoadBalancersOperations>`
+           * 2016-09-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2016_09_01.operations.LoadBalancersOperations>`
+           * 2016-12-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2016_12_01.operations.LoadBalancersOperations>`
+           * 2017-03-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2017_03_01.operations.LoadBalancersOperations>`
+           * 2017-06-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2017_06_01.operations.LoadBalancersOperations>`
+           * 2017-08-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2017_08_01.operations.LoadBalancersOperations>`
+           * 2017-09-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2017_09_01.operations.LoadBalancersOperations>`
+           * 2017-10-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2017_10_01.operations.LoadBalancersOperations>`
+           * 2017-11-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2017_11_01.operations.LoadBalancersOperations>`
+           * 2018-01-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_01_01.operations.LoadBalancersOperations>`
+           * 2018-02-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_02_01.operations.LoadBalancersOperations>`
+           * 2018-04-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_04_01.operations.LoadBalancersOperations>`
+           * 2018-06-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_06_01.operations.LoadBalancersOperations>`
+           * 2018-07-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_07_01.operations.LoadBalancersOperations>`
+           * 2018-08-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_08_01.operations.LoadBalancersOperations>`
+           * 2018-10-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_10_01.operations.LoadBalancersOperations>`
+           * 2018-11-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_11_01.operations.LoadBalancersOperations>`
+           * 2018-12-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2018_12_01.operations.LoadBalancersOperations>`
+           * 2019-02-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2019_02_01.operations.LoadBalancersOperations>`
+           * 2019-04-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2019_04_01.operations.LoadBalancersOperations>`
+           * 2019-06-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2019_06_01.operations.LoadBalancersOperations>`
+           * 2019-07-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2019_07_01.operations.LoadBalancersOperations>`
+           * 2019-08-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2019_08_01.operations.LoadBalancersOperations>`
+           * 2019-09-01: :class:`LoadBalancersOperations<azure.mgmt.network.v2019_09_01.operations.LoadBalancersOperations>`
+        """
+        api_version = self._get_api_version('load_balancers')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LoadBalancersOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LoadBalancersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def local_network_gateways(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2015_06_15.operations.LocalNetworkGatewaysOperations>`
+           * 2016-09-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2016_09_01.operations.LocalNetworkGatewaysOperations>`
+           * 2016-12-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2016_12_01.operations.LocalNetworkGatewaysOperations>`
+           * 2017-03-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2017_03_01.operations.LocalNetworkGatewaysOperations>`
+           * 2017-06-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2017_06_01.operations.LocalNetworkGatewaysOperations>`
+           * 2017-08-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2017_08_01.operations.LocalNetworkGatewaysOperations>`
+           * 2017-09-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2017_09_01.operations.LocalNetworkGatewaysOperations>`
+           * 2017-10-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2017_10_01.operations.LocalNetworkGatewaysOperations>`
+           * 2017-11-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2017_11_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-01-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_01_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-02-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_02_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-04-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_04_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-06-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_06_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-07-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_07_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-08-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_08_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-10-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_10_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-11-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_11_01.operations.LocalNetworkGatewaysOperations>`
+           * 2018-12-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2018_12_01.operations.LocalNetworkGatewaysOperations>`
+           * 2019-02-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2019_02_01.operations.LocalNetworkGatewaysOperations>`
+           * 2019-04-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2019_04_01.operations.LocalNetworkGatewaysOperations>`
+           * 2019-06-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2019_06_01.operations.LocalNetworkGatewaysOperations>`
+           * 2019-07-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2019_07_01.operations.LocalNetworkGatewaysOperations>`
+           * 2019-08-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2019_08_01.operations.LocalNetworkGatewaysOperations>`
+           * 2019-09-01: :class:`LocalNetworkGatewaysOperations<azure.mgmt.network.v2019_09_01.operations.LocalNetworkGatewaysOperations>`
+        """
+        api_version = self._get_api_version('local_network_gateways')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import LocalNetworkGatewaysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def nat_gateways(self):
+        """Instance depends on the API version:
+
+           * 2019-02-01: :class:`NatGatewaysOperations<azure.mgmt.network.v2019_02_01.operations.NatGatewaysOperations>`
+           * 2019-04-01: :class:`NatGatewaysOperations<azure.mgmt.network.v2019_04_01.operations.NatGatewaysOperations>`
+           * 2019-06-01: :class:`NatGatewaysOperations<azure.mgmt.network.v2019_06_01.operations.NatGatewaysOperations>`
+           * 2019-07-01: :class:`NatGatewaysOperations<azure.mgmt.network.v2019_07_01.operations.NatGatewaysOperations>`
+           * 2019-08-01: :class:`NatGatewaysOperations<azure.mgmt.network.v2019_08_01.operations.NatGatewaysOperations>`
+           * 2019-09-01: :class:`NatGatewaysOperations<azure.mgmt.network.v2019_09_01.operations.NatGatewaysOperations>`
+        """
+        api_version = self._get_api_version('nat_gateways')
+        if api_version == '2019-02-01':
+            from .v2019_02_01.operations import NatGatewaysOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NatGatewaysOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NatGatewaysOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NatGatewaysOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NatGatewaysOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NatGatewaysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_interface_ip_configurations(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2017_06_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2017-08-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2017_08_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2017-09-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2017_09_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2017-10-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2017_10_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2017-11-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2017_11_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-01-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_01_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-02-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_02_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-04-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_04_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-06-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_06_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-07-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_07_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-08-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_08_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-10-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_10_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-11-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_11_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2018-12-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2018_12_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2019-02-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2019_02_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2019-04-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2019_04_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2019-06-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2019_06_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2019-07-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2019_07_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2019-08-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2019_08_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+           * 2019-09-01: :class:`NetworkInterfaceIPConfigurationsOperations<azure.mgmt.network.v2019_09_01.operations.NetworkInterfaceIPConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('network_interface_ip_configurations')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkInterfaceIPConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_interface_load_balancers(self):
+        """Instance depends on the API version:
+
+           * 2017-06-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2017_06_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2017-08-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2017_08_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2017-09-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2017_09_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2017-10-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2017_10_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2017-11-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2017_11_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-01-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_01_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-02-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_02_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-04-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_04_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-06-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_06_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-07-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_07_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-08-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_08_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-10-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_10_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-11-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_11_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2018-12-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2018_12_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2019-02-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2019_02_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2019-04-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2019_04_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2019-06-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2019_06_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2019-07-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2019_07_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2019-08-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2019_08_01.operations.NetworkInterfaceLoadBalancersOperations>`
+           * 2019-09-01: :class:`NetworkInterfaceLoadBalancersOperations<azure.mgmt.network.v2019_09_01.operations.NetworkInterfaceLoadBalancersOperations>`
+        """
+        api_version = self._get_api_version('network_interface_load_balancers')
+        if api_version == '2017-06-01':
+            from .v2017_06_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkInterfaceLoadBalancersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_interface_tap_configurations(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2018_08_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2018-10-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2018_10_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2018-11-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2018_11_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2018-12-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2018_12_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2019-02-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2019_02_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2019-04-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2019_04_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2019-06-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2019_06_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2019-07-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2019_07_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2019-08-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2019_08_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+           * 2019-09-01: :class:`NetworkInterfaceTapConfigurationsOperations<azure.mgmt.network.v2019_09_01.operations.NetworkInterfaceTapConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('network_interface_tap_configurations')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkInterfaceTapConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_interfaces(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2015_06_15.operations.NetworkInterfacesOperations>`
+           * 2016-09-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2016_09_01.operations.NetworkInterfacesOperations>`
+           * 2016-12-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2016_12_01.operations.NetworkInterfacesOperations>`
+           * 2017-03-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2017_03_01.operations.NetworkInterfacesOperations>`
+           * 2017-06-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2017_06_01.operations.NetworkInterfacesOperations>`
+           * 2017-08-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2017_08_01.operations.NetworkInterfacesOperations>`
+           * 2017-09-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2017_09_01.operations.NetworkInterfacesOperations>`
+           * 2017-10-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2017_10_01.operations.NetworkInterfacesOperations>`
+           * 2017-11-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2017_11_01.operations.NetworkInterfacesOperations>`
+           * 2018-01-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_01_01.operations.NetworkInterfacesOperations>`
+           * 2018-02-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_02_01.operations.NetworkInterfacesOperations>`
+           * 2018-04-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_04_01.operations.NetworkInterfacesOperations>`
+           * 2018-06-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_06_01.operations.NetworkInterfacesOperations>`
+           * 2018-07-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_07_01.operations.NetworkInterfacesOperations>`
+           * 2018-08-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_08_01.operations.NetworkInterfacesOperations>`
+           * 2018-10-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_10_01.operations.NetworkInterfacesOperations>`
+           * 2018-11-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_11_01.operations.NetworkInterfacesOperations>`
+           * 2018-12-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2018_12_01.operations.NetworkInterfacesOperations>`
+           * 2019-02-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2019_02_01.operations.NetworkInterfacesOperations>`
+           * 2019-04-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2019_04_01.operations.NetworkInterfacesOperations>`
+           * 2019-06-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2019_06_01.operations.NetworkInterfacesOperations>`
+           * 2019-07-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2019_07_01.operations.NetworkInterfacesOperations>`
+           * 2019-08-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2019_08_01.operations.NetworkInterfacesOperations>`
+           * 2019-09-01: :class:`NetworkInterfacesOperations<azure.mgmt.network.v2019_09_01.operations.NetworkInterfacesOperations>`
+        """
+        api_version = self._get_api_version('network_interfaces')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkInterfacesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkInterfacesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_profiles(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2018_08_01.operations.NetworkProfilesOperations>`
+           * 2018-10-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2018_10_01.operations.NetworkProfilesOperations>`
+           * 2018-11-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2018_11_01.operations.NetworkProfilesOperations>`
+           * 2018-12-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2018_12_01.operations.NetworkProfilesOperations>`
+           * 2019-02-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2019_02_01.operations.NetworkProfilesOperations>`
+           * 2019-04-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2019_04_01.operations.NetworkProfilesOperations>`
+           * 2019-06-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2019_06_01.operations.NetworkProfilesOperations>`
+           * 2019-07-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2019_07_01.operations.NetworkProfilesOperations>`
+           * 2019-08-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2019_08_01.operations.NetworkProfilesOperations>`
+           * 2019-09-01: :class:`NetworkProfilesOperations<azure.mgmt.network.v2019_09_01.operations.NetworkProfilesOperations>`
+        """
+        api_version = self._get_api_version('network_profiles')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkProfilesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkProfilesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_security_groups(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2015_06_15.operations.NetworkSecurityGroupsOperations>`
+           * 2016-09-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2016_09_01.operations.NetworkSecurityGroupsOperations>`
+           * 2016-12-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2016_12_01.operations.NetworkSecurityGroupsOperations>`
+           * 2017-03-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2017_03_01.operations.NetworkSecurityGroupsOperations>`
+           * 2017-06-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2017_06_01.operations.NetworkSecurityGroupsOperations>`
+           * 2017-08-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2017_08_01.operations.NetworkSecurityGroupsOperations>`
+           * 2017-09-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2017_09_01.operations.NetworkSecurityGroupsOperations>`
+           * 2017-10-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2017_10_01.operations.NetworkSecurityGroupsOperations>`
+           * 2017-11-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2017_11_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-01-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_01_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-02-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_02_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-04-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_04_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-06-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_06_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-07-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_07_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-08-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_08_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-10-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_10_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-11-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_11_01.operations.NetworkSecurityGroupsOperations>`
+           * 2018-12-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2018_12_01.operations.NetworkSecurityGroupsOperations>`
+           * 2019-02-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2019_02_01.operations.NetworkSecurityGroupsOperations>`
+           * 2019-04-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2019_04_01.operations.NetworkSecurityGroupsOperations>`
+           * 2019-06-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2019_06_01.operations.NetworkSecurityGroupsOperations>`
+           * 2019-07-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2019_07_01.operations.NetworkSecurityGroupsOperations>`
+           * 2019-08-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2019_08_01.operations.NetworkSecurityGroupsOperations>`
+           * 2019-09-01: :class:`NetworkSecurityGroupsOperations<azure.mgmt.network.v2019_09_01.operations.NetworkSecurityGroupsOperations>`
+        """
+        api_version = self._get_api_version('network_security_groups')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkSecurityGroupsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def network_watchers(self):
+        """Instance depends on the API version:
+
+           * 2016-09-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2016_09_01.operations.NetworkWatchersOperations>`
+           * 2016-12-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2016_12_01.operations.NetworkWatchersOperations>`
+           * 2017-03-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2017_03_01.operations.NetworkWatchersOperations>`
+           * 2017-06-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2017_06_01.operations.NetworkWatchersOperations>`
+           * 2017-08-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2017_08_01.operations.NetworkWatchersOperations>`
+           * 2017-09-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2017_09_01.operations.NetworkWatchersOperations>`
+           * 2017-10-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2017_10_01.operations.NetworkWatchersOperations>`
+           * 2017-11-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2017_11_01.operations.NetworkWatchersOperations>`
+           * 2018-01-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_01_01.operations.NetworkWatchersOperations>`
+           * 2018-02-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_02_01.operations.NetworkWatchersOperations>`
+           * 2018-04-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_04_01.operations.NetworkWatchersOperations>`
+           * 2018-06-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_06_01.operations.NetworkWatchersOperations>`
+           * 2018-07-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_07_01.operations.NetworkWatchersOperations>`
+           * 2018-08-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_08_01.operations.NetworkWatchersOperations>`
+           * 2018-10-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_10_01.operations.NetworkWatchersOperations>`
+           * 2018-11-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_11_01.operations.NetworkWatchersOperations>`
+           * 2018-12-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2018_12_01.operations.NetworkWatchersOperations>`
+           * 2019-02-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2019_02_01.operations.NetworkWatchersOperations>`
+           * 2019-04-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2019_04_01.operations.NetworkWatchersOperations>`
+           * 2019-06-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2019_06_01.operations.NetworkWatchersOperations>`
+           * 2019-07-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2019_07_01.operations.NetworkWatchersOperations>`
+           * 2019-08-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2019_08_01.operations.NetworkWatchersOperations>`
+           * 2019-09-01: :class:`NetworkWatchersOperations<azure.mgmt.network.v2019_09_01.operations.NetworkWatchersOperations>`
+        """
+        api_version = self._get_api_version('network_watchers')
+        if api_version == '2016-09-01':
+            from .v2016_09_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import NetworkWatchersOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import NetworkWatchersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def operations(self):
+        """Instance depends on the API version:
+
+           * 2017-09-01: :class:`Operations<azure.mgmt.network.v2017_09_01.operations.Operations>`
+           * 2017-10-01: :class:`Operations<azure.mgmt.network.v2017_10_01.operations.Operations>`
+           * 2017-11-01: :class:`Operations<azure.mgmt.network.v2017_11_01.operations.Operations>`
+           * 2018-01-01: :class:`Operations<azure.mgmt.network.v2018_01_01.operations.Operations>`
+           * 2018-02-01: :class:`Operations<azure.mgmt.network.v2018_02_01.operations.Operations>`
+           * 2018-04-01: :class:`Operations<azure.mgmt.network.v2018_04_01.operations.Operations>`
+           * 2018-06-01: :class:`Operations<azure.mgmt.network.v2018_06_01.operations.Operations>`
+           * 2018-07-01: :class:`Operations<azure.mgmt.network.v2018_07_01.operations.Operations>`
+           * 2018-08-01: :class:`Operations<azure.mgmt.network.v2018_08_01.operations.Operations>`
+           * 2018-10-01: :class:`Operations<azure.mgmt.network.v2018_10_01.operations.Operations>`
+           * 2018-11-01: :class:`Operations<azure.mgmt.network.v2018_11_01.operations.Operations>`
+           * 2018-12-01: :class:`Operations<azure.mgmt.network.v2018_12_01.operations.Operations>`
+           * 2019-02-01: :class:`Operations<azure.mgmt.network.v2019_02_01.operations.Operations>`
+           * 2019-04-01: :class:`Operations<azure.mgmt.network.v2019_04_01.operations.Operations>`
+           * 2019-06-01: :class:`Operations<azure.mgmt.network.v2019_06_01.operations.Operations>`
+           * 2019-07-01: :class:`Operations<azure.mgmt.network.v2019_07_01.operations.Operations>`
+           * 2019-08-01: :class:`Operations<azure.mgmt.network.v2019_08_01.operations.Operations>`
+           * 2019-09-01: :class:`Operations<azure.mgmt.network.v2019_09_01.operations.Operations>`
+        """
+        api_version = self._get_api_version('operations')
+        if api_version == '2017-09-01':
+            from .v2017_09_01.operations import Operations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import Operations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import Operations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import Operations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import Operations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import Operations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import Operations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import Operations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import Operations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import Operations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import Operations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import Operations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import Operations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import Operations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import Operations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import Operations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import Operations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import Operations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def packet_captures(self):
+        """Instance depends on the API version:
+
+           * 2016-09-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2016_09_01.operations.PacketCapturesOperations>`
+           * 2016-12-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2016_12_01.operations.PacketCapturesOperations>`
+           * 2017-03-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2017_03_01.operations.PacketCapturesOperations>`
+           * 2017-06-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2017_06_01.operations.PacketCapturesOperations>`
+           * 2017-08-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2017_08_01.operations.PacketCapturesOperations>`
+           * 2017-09-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2017_09_01.operations.PacketCapturesOperations>`
+           * 2017-10-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2017_10_01.operations.PacketCapturesOperations>`
+           * 2017-11-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2017_11_01.operations.PacketCapturesOperations>`
+           * 2018-01-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_01_01.operations.PacketCapturesOperations>`
+           * 2018-02-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_02_01.operations.PacketCapturesOperations>`
+           * 2018-04-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_04_01.operations.PacketCapturesOperations>`
+           * 2018-06-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_06_01.operations.PacketCapturesOperations>`
+           * 2018-07-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_07_01.operations.PacketCapturesOperations>`
+           * 2018-08-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_08_01.operations.PacketCapturesOperations>`
+           * 2018-10-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_10_01.operations.PacketCapturesOperations>`
+           * 2018-11-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_11_01.operations.PacketCapturesOperations>`
+           * 2018-12-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2018_12_01.operations.PacketCapturesOperations>`
+           * 2019-02-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2019_02_01.operations.PacketCapturesOperations>`
+           * 2019-04-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2019_04_01.operations.PacketCapturesOperations>`
+           * 2019-06-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2019_06_01.operations.PacketCapturesOperations>`
+           * 2019-07-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2019_07_01.operations.PacketCapturesOperations>`
+           * 2019-08-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2019_08_01.operations.PacketCapturesOperations>`
+           * 2019-09-01: :class:`PacketCapturesOperations<azure.mgmt.network.v2019_09_01.operations.PacketCapturesOperations>`
+        """
+        api_version = self._get_api_version('packet_captures')
+        if api_version == '2016-09-01':
+            from .v2016_09_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import PacketCapturesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import PacketCapturesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def peer_express_route_circuit_connections(self):
+        """Instance depends on the API version:
+
+           * 2018-12-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+           * 2019-02-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+           * 2019-04-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+           * 2019-06-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+           * 2019-07-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+           * 2019-08-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+           * 2019-09-01: :class:`PeerExpressRouteCircuitConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.PeerExpressRouteCircuitConnectionsOperations>`
+        """
+        api_version = self._get_api_version('peer_express_route_circuit_connections')
+        if api_version == '2018-12-01':
+            from .v2018_12_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import PeerExpressRouteCircuitConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def private_endpoints(self):
+        """Instance depends on the API version:
+
+           * 2019-04-01: :class:`PrivateEndpointsOperations<azure.mgmt.network.v2019_04_01.operations.PrivateEndpointsOperations>`
+           * 2019-06-01: :class:`PrivateEndpointsOperations<azure.mgmt.network.v2019_06_01.operations.PrivateEndpointsOperations>`
+           * 2019-07-01: :class:`PrivateEndpointsOperations<azure.mgmt.network.v2019_07_01.operations.PrivateEndpointsOperations>`
+           * 2019-08-01: :class:`PrivateEndpointsOperations<azure.mgmt.network.v2019_08_01.operations.PrivateEndpointsOperations>`
+           * 2019-09-01: :class:`PrivateEndpointsOperations<azure.mgmt.network.v2019_09_01.operations.PrivateEndpointsOperations>`
+        """
+        api_version = self._get_api_version('private_endpoints')
+        if api_version == '2019-04-01':
+            from .v2019_04_01.operations import PrivateEndpointsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import PrivateEndpointsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import PrivateEndpointsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import PrivateEndpointsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import PrivateEndpointsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def private_link_services(self):
+        """Instance depends on the API version:
+
+           * 2019-04-01: :class:`PrivateLinkServicesOperations<azure.mgmt.network.v2019_04_01.operations.PrivateLinkServicesOperations>`
+           * 2019-06-01: :class:`PrivateLinkServicesOperations<azure.mgmt.network.v2019_06_01.operations.PrivateLinkServicesOperations>`
+           * 2019-07-01: :class:`PrivateLinkServicesOperations<azure.mgmt.network.v2019_07_01.operations.PrivateLinkServicesOperations>`
+           * 2019-08-01: :class:`PrivateLinkServicesOperations<azure.mgmt.network.v2019_08_01.operations.PrivateLinkServicesOperations>`
+           * 2019-09-01: :class:`PrivateLinkServicesOperations<azure.mgmt.network.v2019_09_01.operations.PrivateLinkServicesOperations>`
+        """
+        api_version = self._get_api_version('private_link_services')
+        if api_version == '2019-04-01':
+            from .v2019_04_01.operations import PrivateLinkServicesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import PrivateLinkServicesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import PrivateLinkServicesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import PrivateLinkServicesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import PrivateLinkServicesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def public_ip_addresses(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2015_06_15.operations.PublicIPAddressesOperations>`
+           * 2016-09-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2016_09_01.operations.PublicIPAddressesOperations>`
+           * 2016-12-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2016_12_01.operations.PublicIPAddressesOperations>`
+           * 2017-03-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2017_03_01.operations.PublicIPAddressesOperations>`
+           * 2017-06-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2017_06_01.operations.PublicIPAddressesOperations>`
+           * 2017-08-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2017_08_01.operations.PublicIPAddressesOperations>`
+           * 2017-09-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2017_09_01.operations.PublicIPAddressesOperations>`
+           * 2017-10-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2017_10_01.operations.PublicIPAddressesOperations>`
+           * 2017-11-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2017_11_01.operations.PublicIPAddressesOperations>`
+           * 2018-01-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_01_01.operations.PublicIPAddressesOperations>`
+           * 2018-02-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_02_01.operations.PublicIPAddressesOperations>`
+           * 2018-04-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_04_01.operations.PublicIPAddressesOperations>`
+           * 2018-06-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_06_01.operations.PublicIPAddressesOperations>`
+           * 2018-07-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_07_01.operations.PublicIPAddressesOperations>`
+           * 2018-08-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_08_01.operations.PublicIPAddressesOperations>`
+           * 2018-10-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_10_01.operations.PublicIPAddressesOperations>`
+           * 2018-11-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_11_01.operations.PublicIPAddressesOperations>`
+           * 2018-12-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2018_12_01.operations.PublicIPAddressesOperations>`
+           * 2019-02-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2019_02_01.operations.PublicIPAddressesOperations>`
+           * 2019-04-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2019_04_01.operations.PublicIPAddressesOperations>`
+           * 2019-06-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2019_06_01.operations.PublicIPAddressesOperations>`
+           * 2019-07-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2019_07_01.operations.PublicIPAddressesOperations>`
+           * 2019-08-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2019_08_01.operations.PublicIPAddressesOperations>`
+           * 2019-09-01: :class:`PublicIPAddressesOperations<azure.mgmt.network.v2019_09_01.operations.PublicIPAddressesOperations>`
+        """
+        api_version = self._get_api_version('public_ip_addresses')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import PublicIPAddressesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import PublicIPAddressesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def public_ip_prefixes(self):
+        """Instance depends on the API version:
+
+           * 2018-07-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2018_07_01.operations.PublicIPPrefixesOperations>`
+           * 2018-08-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2018_08_01.operations.PublicIPPrefixesOperations>`
+           * 2018-10-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2018_10_01.operations.PublicIPPrefixesOperations>`
+           * 2018-11-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2018_11_01.operations.PublicIPPrefixesOperations>`
+           * 2018-12-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2018_12_01.operations.PublicIPPrefixesOperations>`
+           * 2019-02-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2019_02_01.operations.PublicIPPrefixesOperations>`
+           * 2019-04-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2019_04_01.operations.PublicIPPrefixesOperations>`
+           * 2019-06-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2019_06_01.operations.PublicIPPrefixesOperations>`
+           * 2019-07-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2019_07_01.operations.PublicIPPrefixesOperations>`
+           * 2019-08-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2019_08_01.operations.PublicIPPrefixesOperations>`
+           * 2019-09-01: :class:`PublicIPPrefixesOperations<azure.mgmt.network.v2019_09_01.operations.PublicIPPrefixesOperations>`
+        """
+        api_version = self._get_api_version('public_ip_prefixes')
+        if api_version == '2018-07-01':
+            from .v2018_07_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import PublicIPPrefixesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import PublicIPPrefixesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def resource_navigation_links(self):
+        """Instance depends on the API version:
+
+           * 2019-02-01: :class:`ResourceNavigationLinksOperations<azure.mgmt.network.v2019_02_01.operations.ResourceNavigationLinksOperations>`
+           * 2019-04-01: :class:`ResourceNavigationLinksOperations<azure.mgmt.network.v2019_04_01.operations.ResourceNavigationLinksOperations>`
+           * 2019-06-01: :class:`ResourceNavigationLinksOperations<azure.mgmt.network.v2019_06_01.operations.ResourceNavigationLinksOperations>`
+           * 2019-07-01: :class:`ResourceNavigationLinksOperations<azure.mgmt.network.v2019_07_01.operations.ResourceNavigationLinksOperations>`
+           * 2019-08-01: :class:`ResourceNavigationLinksOperations<azure.mgmt.network.v2019_08_01.operations.ResourceNavigationLinksOperations>`
+           * 2019-09-01: :class:`ResourceNavigationLinksOperations<azure.mgmt.network.v2019_09_01.operations.ResourceNavigationLinksOperations>`
+        """
+        api_version = self._get_api_version('resource_navigation_links')
+        if api_version == '2019-02-01':
+            from .v2019_02_01.operations import ResourceNavigationLinksOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ResourceNavigationLinksOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ResourceNavigationLinksOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ResourceNavigationLinksOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ResourceNavigationLinksOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ResourceNavigationLinksOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def route_filter_rules(self):
+        """Instance depends on the API version:
+
+           * 2016-12-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2016_12_01.operations.RouteFilterRulesOperations>`
+           * 2017-03-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2017_03_01.operations.RouteFilterRulesOperations>`
+           * 2017-06-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2017_06_01.operations.RouteFilterRulesOperations>`
+           * 2017-08-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2017_08_01.operations.RouteFilterRulesOperations>`
+           * 2017-09-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2017_09_01.operations.RouteFilterRulesOperations>`
+           * 2017-10-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2017_10_01.operations.RouteFilterRulesOperations>`
+           * 2017-11-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2017_11_01.operations.RouteFilterRulesOperations>`
+           * 2018-01-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_01_01.operations.RouteFilterRulesOperations>`
+           * 2018-02-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_02_01.operations.RouteFilterRulesOperations>`
+           * 2018-04-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_04_01.operations.RouteFilterRulesOperations>`
+           * 2018-06-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_06_01.operations.RouteFilterRulesOperations>`
+           * 2018-07-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_07_01.operations.RouteFilterRulesOperations>`
+           * 2018-08-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_08_01.operations.RouteFilterRulesOperations>`
+           * 2018-10-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_10_01.operations.RouteFilterRulesOperations>`
+           * 2018-11-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_11_01.operations.RouteFilterRulesOperations>`
+           * 2018-12-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2018_12_01.operations.RouteFilterRulesOperations>`
+           * 2019-02-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2019_02_01.operations.RouteFilterRulesOperations>`
+           * 2019-04-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2019_04_01.operations.RouteFilterRulesOperations>`
+           * 2019-06-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2019_06_01.operations.RouteFilterRulesOperations>`
+           * 2019-07-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2019_07_01.operations.RouteFilterRulesOperations>`
+           * 2019-08-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2019_08_01.operations.RouteFilterRulesOperations>`
+           * 2019-09-01: :class:`RouteFilterRulesOperations<azure.mgmt.network.v2019_09_01.operations.RouteFilterRulesOperations>`
+        """
+        api_version = self._get_api_version('route_filter_rules')
+        if api_version == '2016-12-01':
+            from .v2016_12_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import RouteFilterRulesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import RouteFilterRulesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def route_filters(self):
+        """Instance depends on the API version:
+
+           * 2016-12-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2016_12_01.operations.RouteFiltersOperations>`
+           * 2017-03-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2017_03_01.operations.RouteFiltersOperations>`
+           * 2017-06-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2017_06_01.operations.RouteFiltersOperations>`
+           * 2017-08-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2017_08_01.operations.RouteFiltersOperations>`
+           * 2017-09-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2017_09_01.operations.RouteFiltersOperations>`
+           * 2017-10-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2017_10_01.operations.RouteFiltersOperations>`
+           * 2017-11-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2017_11_01.operations.RouteFiltersOperations>`
+           * 2018-01-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_01_01.operations.RouteFiltersOperations>`
+           * 2018-02-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_02_01.operations.RouteFiltersOperations>`
+           * 2018-04-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_04_01.operations.RouteFiltersOperations>`
+           * 2018-06-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_06_01.operations.RouteFiltersOperations>`
+           * 2018-07-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_07_01.operations.RouteFiltersOperations>`
+           * 2018-08-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_08_01.operations.RouteFiltersOperations>`
+           * 2018-10-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_10_01.operations.RouteFiltersOperations>`
+           * 2018-11-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_11_01.operations.RouteFiltersOperations>`
+           * 2018-12-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2018_12_01.operations.RouteFiltersOperations>`
+           * 2019-02-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2019_02_01.operations.RouteFiltersOperations>`
+           * 2019-04-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2019_04_01.operations.RouteFiltersOperations>`
+           * 2019-06-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2019_06_01.operations.RouteFiltersOperations>`
+           * 2019-07-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2019_07_01.operations.RouteFiltersOperations>`
+           * 2019-08-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2019_08_01.operations.RouteFiltersOperations>`
+           * 2019-09-01: :class:`RouteFiltersOperations<azure.mgmt.network.v2019_09_01.operations.RouteFiltersOperations>`
+        """
+        api_version = self._get_api_version('route_filters')
+        if api_version == '2016-12-01':
+            from .v2016_12_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import RouteFiltersOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import RouteFiltersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def route_tables(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`RouteTablesOperations<azure.mgmt.network.v2015_06_15.operations.RouteTablesOperations>`
+           * 2016-09-01: :class:`RouteTablesOperations<azure.mgmt.network.v2016_09_01.operations.RouteTablesOperations>`
+           * 2016-12-01: :class:`RouteTablesOperations<azure.mgmt.network.v2016_12_01.operations.RouteTablesOperations>`
+           * 2017-03-01: :class:`RouteTablesOperations<azure.mgmt.network.v2017_03_01.operations.RouteTablesOperations>`
+           * 2017-06-01: :class:`RouteTablesOperations<azure.mgmt.network.v2017_06_01.operations.RouteTablesOperations>`
+           * 2017-08-01: :class:`RouteTablesOperations<azure.mgmt.network.v2017_08_01.operations.RouteTablesOperations>`
+           * 2017-09-01: :class:`RouteTablesOperations<azure.mgmt.network.v2017_09_01.operations.RouteTablesOperations>`
+           * 2017-10-01: :class:`RouteTablesOperations<azure.mgmt.network.v2017_10_01.operations.RouteTablesOperations>`
+           * 2017-11-01: :class:`RouteTablesOperations<azure.mgmt.network.v2017_11_01.operations.RouteTablesOperations>`
+           * 2018-01-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_01_01.operations.RouteTablesOperations>`
+           * 2018-02-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_02_01.operations.RouteTablesOperations>`
+           * 2018-04-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_04_01.operations.RouteTablesOperations>`
+           * 2018-06-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_06_01.operations.RouteTablesOperations>`
+           * 2018-07-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_07_01.operations.RouteTablesOperations>`
+           * 2018-08-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_08_01.operations.RouteTablesOperations>`
+           * 2018-10-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_10_01.operations.RouteTablesOperations>`
+           * 2018-11-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_11_01.operations.RouteTablesOperations>`
+           * 2018-12-01: :class:`RouteTablesOperations<azure.mgmt.network.v2018_12_01.operations.RouteTablesOperations>`
+           * 2019-02-01: :class:`RouteTablesOperations<azure.mgmt.network.v2019_02_01.operations.RouteTablesOperations>`
+           * 2019-04-01: :class:`RouteTablesOperations<azure.mgmt.network.v2019_04_01.operations.RouteTablesOperations>`
+           * 2019-06-01: :class:`RouteTablesOperations<azure.mgmt.network.v2019_06_01.operations.RouteTablesOperations>`
+           * 2019-07-01: :class:`RouteTablesOperations<azure.mgmt.network.v2019_07_01.operations.RouteTablesOperations>`
+           * 2019-08-01: :class:`RouteTablesOperations<azure.mgmt.network.v2019_08_01.operations.RouteTablesOperations>`
+           * 2019-09-01: :class:`RouteTablesOperations<azure.mgmt.network.v2019_09_01.operations.RouteTablesOperations>`
+        """
+        api_version = self._get_api_version('route_tables')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import RouteTablesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import RouteTablesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def routes(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`RoutesOperations<azure.mgmt.network.v2015_06_15.operations.RoutesOperations>`
+           * 2016-09-01: :class:`RoutesOperations<azure.mgmt.network.v2016_09_01.operations.RoutesOperations>`
+           * 2016-12-01: :class:`RoutesOperations<azure.mgmt.network.v2016_12_01.operations.RoutesOperations>`
+           * 2017-03-01: :class:`RoutesOperations<azure.mgmt.network.v2017_03_01.operations.RoutesOperations>`
+           * 2017-06-01: :class:`RoutesOperations<azure.mgmt.network.v2017_06_01.operations.RoutesOperations>`
+           * 2017-08-01: :class:`RoutesOperations<azure.mgmt.network.v2017_08_01.operations.RoutesOperations>`
+           * 2017-09-01: :class:`RoutesOperations<azure.mgmt.network.v2017_09_01.operations.RoutesOperations>`
+           * 2017-10-01: :class:`RoutesOperations<azure.mgmt.network.v2017_10_01.operations.RoutesOperations>`
+           * 2017-11-01: :class:`RoutesOperations<azure.mgmt.network.v2017_11_01.operations.RoutesOperations>`
+           * 2018-01-01: :class:`RoutesOperations<azure.mgmt.network.v2018_01_01.operations.RoutesOperations>`
+           * 2018-02-01: :class:`RoutesOperations<azure.mgmt.network.v2018_02_01.operations.RoutesOperations>`
+           * 2018-04-01: :class:`RoutesOperations<azure.mgmt.network.v2018_04_01.operations.RoutesOperations>`
+           * 2018-06-01: :class:`RoutesOperations<azure.mgmt.network.v2018_06_01.operations.RoutesOperations>`
+           * 2018-07-01: :class:`RoutesOperations<azure.mgmt.network.v2018_07_01.operations.RoutesOperations>`
+           * 2018-08-01: :class:`RoutesOperations<azure.mgmt.network.v2018_08_01.operations.RoutesOperations>`
+           * 2018-10-01: :class:`RoutesOperations<azure.mgmt.network.v2018_10_01.operations.RoutesOperations>`
+           * 2018-11-01: :class:`RoutesOperations<azure.mgmt.network.v2018_11_01.operations.RoutesOperations>`
+           * 2018-12-01: :class:`RoutesOperations<azure.mgmt.network.v2018_12_01.operations.RoutesOperations>`
+           * 2019-02-01: :class:`RoutesOperations<azure.mgmt.network.v2019_02_01.operations.RoutesOperations>`
+           * 2019-04-01: :class:`RoutesOperations<azure.mgmt.network.v2019_04_01.operations.RoutesOperations>`
+           * 2019-06-01: :class:`RoutesOperations<azure.mgmt.network.v2019_06_01.operations.RoutesOperations>`
+           * 2019-07-01: :class:`RoutesOperations<azure.mgmt.network.v2019_07_01.operations.RoutesOperations>`
+           * 2019-08-01: :class:`RoutesOperations<azure.mgmt.network.v2019_08_01.operations.RoutesOperations>`
+           * 2019-09-01: :class:`RoutesOperations<azure.mgmt.network.v2019_09_01.operations.RoutesOperations>`
+        """
+        api_version = self._get_api_version('routes')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import RoutesOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import RoutesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import RoutesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def security_rules(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`SecurityRulesOperations<azure.mgmt.network.v2015_06_15.operations.SecurityRulesOperations>`
+           * 2016-09-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2016_09_01.operations.SecurityRulesOperations>`
+           * 2016-12-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2016_12_01.operations.SecurityRulesOperations>`
+           * 2017-03-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2017_03_01.operations.SecurityRulesOperations>`
+           * 2017-06-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2017_06_01.operations.SecurityRulesOperations>`
+           * 2017-08-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2017_08_01.operations.SecurityRulesOperations>`
+           * 2017-09-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2017_09_01.operations.SecurityRulesOperations>`
+           * 2017-10-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2017_10_01.operations.SecurityRulesOperations>`
+           * 2017-11-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2017_11_01.operations.SecurityRulesOperations>`
+           * 2018-01-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_01_01.operations.SecurityRulesOperations>`
+           * 2018-02-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_02_01.operations.SecurityRulesOperations>`
+           * 2018-04-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_04_01.operations.SecurityRulesOperations>`
+           * 2018-06-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_06_01.operations.SecurityRulesOperations>`
+           * 2018-07-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_07_01.operations.SecurityRulesOperations>`
+           * 2018-08-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_08_01.operations.SecurityRulesOperations>`
+           * 2018-10-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_10_01.operations.SecurityRulesOperations>`
+           * 2018-11-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_11_01.operations.SecurityRulesOperations>`
+           * 2018-12-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2018_12_01.operations.SecurityRulesOperations>`
+           * 2019-02-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2019_02_01.operations.SecurityRulesOperations>`
+           * 2019-04-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2019_04_01.operations.SecurityRulesOperations>`
+           * 2019-06-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2019_06_01.operations.SecurityRulesOperations>`
+           * 2019-07-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2019_07_01.operations.SecurityRulesOperations>`
+           * 2019-08-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2019_08_01.operations.SecurityRulesOperations>`
+           * 2019-09-01: :class:`SecurityRulesOperations<azure.mgmt.network.v2019_09_01.operations.SecurityRulesOperations>`
+        """
+        api_version = self._get_api_version('security_rules')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import SecurityRulesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import SecurityRulesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def service_association_links(self):
+        """Instance depends on the API version:
+
+           * 2019-02-01: :class:`ServiceAssociationLinksOperations<azure.mgmt.network.v2019_02_01.operations.ServiceAssociationLinksOperations>`
+           * 2019-04-01: :class:`ServiceAssociationLinksOperations<azure.mgmt.network.v2019_04_01.operations.ServiceAssociationLinksOperations>`
+           * 2019-06-01: :class:`ServiceAssociationLinksOperations<azure.mgmt.network.v2019_06_01.operations.ServiceAssociationLinksOperations>`
+           * 2019-07-01: :class:`ServiceAssociationLinksOperations<azure.mgmt.network.v2019_07_01.operations.ServiceAssociationLinksOperations>`
+           * 2019-08-01: :class:`ServiceAssociationLinksOperations<azure.mgmt.network.v2019_08_01.operations.ServiceAssociationLinksOperations>`
+           * 2019-09-01: :class:`ServiceAssociationLinksOperations<azure.mgmt.network.v2019_09_01.operations.ServiceAssociationLinksOperations>`
+        """
+        api_version = self._get_api_version('service_association_links')
+        if api_version == '2019-02-01':
+            from .v2019_02_01.operations import ServiceAssociationLinksOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ServiceAssociationLinksOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ServiceAssociationLinksOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ServiceAssociationLinksOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ServiceAssociationLinksOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ServiceAssociationLinksOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def service_endpoint_policies(self):
+        """Instance depends on the API version:
+
+           * 2018-07-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2018_07_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2018-08-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2018_08_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2018-10-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2018_10_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2018-11-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2018_11_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2018-12-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2018_12_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2019-02-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2019_02_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2019-04-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2019_04_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2019-06-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2019_06_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2019-07-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2019_07_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2019-08-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2019_08_01.operations.ServiceEndpointPoliciesOperations>`
+           * 2019-09-01: :class:`ServiceEndpointPoliciesOperations<azure.mgmt.network.v2019_09_01.operations.ServiceEndpointPoliciesOperations>`
+        """
+        api_version = self._get_api_version('service_endpoint_policies')
+        if api_version == '2018-07-01':
+            from .v2018_07_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ServiceEndpointPoliciesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def service_endpoint_policy_definitions(self):
+        """Instance depends on the API version:
+
+           * 2018-07-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2018_07_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2018-08-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2018_08_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2018-10-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2018_10_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2018-11-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2018_11_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2018-12-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2018_12_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2019-02-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2019_02_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2019-04-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2019_04_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2019-06-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2019_06_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2019-07-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2019_07_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2019-08-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2019_08_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+           * 2019-09-01: :class:`ServiceEndpointPolicyDefinitionsOperations<azure.mgmt.network.v2019_09_01.operations.ServiceEndpointPolicyDefinitionsOperations>`
+        """
+        api_version = self._get_api_version('service_endpoint_policy_definitions')
+        if api_version == '2018-07-01':
+            from .v2018_07_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ServiceEndpointPolicyDefinitionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def service_tags(self):
+        """Instance depends on the API version:
+
+           * 2019-04-01: :class:`ServiceTagsOperations<azure.mgmt.network.v2019_04_01.operations.ServiceTagsOperations>`
+           * 2019-06-01: :class:`ServiceTagsOperations<azure.mgmt.network.v2019_06_01.operations.ServiceTagsOperations>`
+           * 2019-07-01: :class:`ServiceTagsOperations<azure.mgmt.network.v2019_07_01.operations.ServiceTagsOperations>`
+           * 2019-08-01: :class:`ServiceTagsOperations<azure.mgmt.network.v2019_08_01.operations.ServiceTagsOperations>`
+           * 2019-09-01: :class:`ServiceTagsOperations<azure.mgmt.network.v2019_09_01.operations.ServiceTagsOperations>`
+        """
+        api_version = self._get_api_version('service_tags')
+        if api_version == '2019-04-01':
+            from .v2019_04_01.operations import ServiceTagsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import ServiceTagsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import ServiceTagsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import ServiceTagsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import ServiceTagsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def subnets(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`SubnetsOperations<azure.mgmt.network.v2015_06_15.operations.SubnetsOperations>`
+           * 2016-09-01: :class:`SubnetsOperations<azure.mgmt.network.v2016_09_01.operations.SubnetsOperations>`
+           * 2016-12-01: :class:`SubnetsOperations<azure.mgmt.network.v2016_12_01.operations.SubnetsOperations>`
+           * 2017-03-01: :class:`SubnetsOperations<azure.mgmt.network.v2017_03_01.operations.SubnetsOperations>`
+           * 2017-06-01: :class:`SubnetsOperations<azure.mgmt.network.v2017_06_01.operations.SubnetsOperations>`
+           * 2017-08-01: :class:`SubnetsOperations<azure.mgmt.network.v2017_08_01.operations.SubnetsOperations>`
+           * 2017-09-01: :class:`SubnetsOperations<azure.mgmt.network.v2017_09_01.operations.SubnetsOperations>`
+           * 2017-10-01: :class:`SubnetsOperations<azure.mgmt.network.v2017_10_01.operations.SubnetsOperations>`
+           * 2017-11-01: :class:`SubnetsOperations<azure.mgmt.network.v2017_11_01.operations.SubnetsOperations>`
+           * 2018-01-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_01_01.operations.SubnetsOperations>`
+           * 2018-02-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_02_01.operations.SubnetsOperations>`
+           * 2018-04-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_04_01.operations.SubnetsOperations>`
+           * 2018-06-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_06_01.operations.SubnetsOperations>`
+           * 2018-07-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_07_01.operations.SubnetsOperations>`
+           * 2018-08-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_08_01.operations.SubnetsOperations>`
+           * 2018-10-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_10_01.operations.SubnetsOperations>`
+           * 2018-11-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_11_01.operations.SubnetsOperations>`
+           * 2018-12-01: :class:`SubnetsOperations<azure.mgmt.network.v2018_12_01.operations.SubnetsOperations>`
+           * 2019-02-01: :class:`SubnetsOperations<azure.mgmt.network.v2019_02_01.operations.SubnetsOperations>`
+           * 2019-04-01: :class:`SubnetsOperations<azure.mgmt.network.v2019_04_01.operations.SubnetsOperations>`
+           * 2019-06-01: :class:`SubnetsOperations<azure.mgmt.network.v2019_06_01.operations.SubnetsOperations>`
+           * 2019-07-01: :class:`SubnetsOperations<azure.mgmt.network.v2019_07_01.operations.SubnetsOperations>`
+           * 2019-08-01: :class:`SubnetsOperations<azure.mgmt.network.v2019_08_01.operations.SubnetsOperations>`
+           * 2019-09-01: :class:`SubnetsOperations<azure.mgmt.network.v2019_09_01.operations.SubnetsOperations>`
+        """
+        api_version = self._get_api_version('subnets')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import SubnetsOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import SubnetsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import SubnetsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def usages(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`UsagesOperations<azure.mgmt.network.v2015_06_15.operations.UsagesOperations>`
+           * 2016-09-01: :class:`UsagesOperations<azure.mgmt.network.v2016_09_01.operations.UsagesOperations>`
+           * 2016-12-01: :class:`UsagesOperations<azure.mgmt.network.v2016_12_01.operations.UsagesOperations>`
+           * 2017-03-01: :class:`UsagesOperations<azure.mgmt.network.v2017_03_01.operations.UsagesOperations>`
+           * 2017-06-01: :class:`UsagesOperations<azure.mgmt.network.v2017_06_01.operations.UsagesOperations>`
+           * 2017-08-01: :class:`UsagesOperations<azure.mgmt.network.v2017_08_01.operations.UsagesOperations>`
+           * 2017-09-01: :class:`UsagesOperations<azure.mgmt.network.v2017_09_01.operations.UsagesOperations>`
+           * 2017-10-01: :class:`UsagesOperations<azure.mgmt.network.v2017_10_01.operations.UsagesOperations>`
+           * 2017-11-01: :class:`UsagesOperations<azure.mgmt.network.v2017_11_01.operations.UsagesOperations>`
+           * 2018-01-01: :class:`UsagesOperations<azure.mgmt.network.v2018_01_01.operations.UsagesOperations>`
+           * 2018-02-01: :class:`UsagesOperations<azure.mgmt.network.v2018_02_01.operations.UsagesOperations>`
+           * 2018-04-01: :class:`UsagesOperations<azure.mgmt.network.v2018_04_01.operations.UsagesOperations>`
+           * 2018-06-01: :class:`UsagesOperations<azure.mgmt.network.v2018_06_01.operations.UsagesOperations>`
+           * 2018-07-01: :class:`UsagesOperations<azure.mgmt.network.v2018_07_01.operations.UsagesOperations>`
+           * 2018-08-01: :class:`UsagesOperations<azure.mgmt.network.v2018_08_01.operations.UsagesOperations>`
+           * 2018-10-01: :class:`UsagesOperations<azure.mgmt.network.v2018_10_01.operations.UsagesOperations>`
+           * 2018-11-01: :class:`UsagesOperations<azure.mgmt.network.v2018_11_01.operations.UsagesOperations>`
+           * 2018-12-01: :class:`UsagesOperations<azure.mgmt.network.v2018_12_01.operations.UsagesOperations>`
+           * 2019-02-01: :class:`UsagesOperations<azure.mgmt.network.v2019_02_01.operations.UsagesOperations>`
+           * 2019-04-01: :class:`UsagesOperations<azure.mgmt.network.v2019_04_01.operations.UsagesOperations>`
+           * 2019-06-01: :class:`UsagesOperations<azure.mgmt.network.v2019_06_01.operations.UsagesOperations>`
+           * 2019-07-01: :class:`UsagesOperations<azure.mgmt.network.v2019_07_01.operations.UsagesOperations>`
+           * 2019-08-01: :class:`UsagesOperations<azure.mgmt.network.v2019_08_01.operations.UsagesOperations>`
+           * 2019-09-01: :class:`UsagesOperations<azure.mgmt.network.v2019_09_01.operations.UsagesOperations>`
+        """
+        api_version = self._get_api_version('usages')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import UsagesOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import UsagesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import UsagesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_hubs(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_04_01.operations.VirtualHubsOperations>`
+           * 2018-06-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_06_01.operations.VirtualHubsOperations>`
+           * 2018-07-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_07_01.operations.VirtualHubsOperations>`
+           * 2018-08-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_08_01.operations.VirtualHubsOperations>`
+           * 2018-10-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_10_01.operations.VirtualHubsOperations>`
+           * 2018-11-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_11_01.operations.VirtualHubsOperations>`
+           * 2018-12-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2018_12_01.operations.VirtualHubsOperations>`
+           * 2019-02-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2019_02_01.operations.VirtualHubsOperations>`
+           * 2019-04-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2019_04_01.operations.VirtualHubsOperations>`
+           * 2019-06-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2019_06_01.operations.VirtualHubsOperations>`
+           * 2019-07-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2019_07_01.operations.VirtualHubsOperations>`
+           * 2019-08-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2019_08_01.operations.VirtualHubsOperations>`
+           * 2019-09-01: :class:`VirtualHubsOperations<azure.mgmt.network.v2019_09_01.operations.VirtualHubsOperations>`
+        """
+        api_version = self._get_api_version('virtual_hubs')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualHubsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualHubsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_network_gateway_connections(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2015_06_15.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2016-09-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2016_09_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2016-12-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2016_12_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2017-03-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2017_03_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2017-06-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2017_06_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2017-08-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2017_08_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2017-09-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2017_09_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2017-10-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2017_10_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2017-11-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2017_11_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-01-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_01_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-02-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_02_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-04-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_04_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-06-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_06_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-07-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_07_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-08-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_08_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-10-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_10_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-11-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_11_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2018-12-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2019-02-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2019-04-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2019-06-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2019-07-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2019-08-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+           * 2019-09-01: :class:`VirtualNetworkGatewayConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.VirtualNetworkGatewayConnectionsOperations>`
+        """
+        api_version = self._get_api_version('virtual_network_gateway_connections')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualNetworkGatewayConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_network_gateways(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2015_06_15.operations.VirtualNetworkGatewaysOperations>`
+           * 2016-09-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2016_09_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2016-12-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2016_12_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2017-03-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2017_03_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2017-06-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2017_06_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2017-08-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2017_08_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2017-09-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2017_09_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2017-10-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2017_10_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2017-11-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2017_11_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-01-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_01_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-02-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_02_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-04-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_04_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-06-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_06_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-07-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_07_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-08-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_08_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-10-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_10_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-11-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_11_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2018-12-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2018_12_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2019-02-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2019_02_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2019-04-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2019_04_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2019-06-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2019_06_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2019-07-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2019_07_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2019-08-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2019_08_01.operations.VirtualNetworkGatewaysOperations>`
+           * 2019-09-01: :class:`VirtualNetworkGatewaysOperations<azure.mgmt.network.v2019_09_01.operations.VirtualNetworkGatewaysOperations>`
+        """
+        api_version = self._get_api_version('virtual_network_gateways')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualNetworkGatewaysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_network_peerings(self):
+        """Instance depends on the API version:
+
+           * 2016-09-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2016_09_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2016-12-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2016_12_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2017-03-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2017_03_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2017-06-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2017_06_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2017-08-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2017_08_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2017-09-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2017_09_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2017-10-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2017_10_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2017-11-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2017_11_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-01-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_01_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-02-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_02_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-04-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_04_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-06-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_06_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-07-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_07_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-08-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_08_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-10-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_10_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-11-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_11_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2018-12-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2018_12_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2019-02-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2019_02_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2019-04-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2019_04_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2019-06-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2019_06_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2019-07-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2019_07_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2019-08-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2019_08_01.operations.VirtualNetworkPeeringsOperations>`
+           * 2019-09-01: :class:`VirtualNetworkPeeringsOperations<azure.mgmt.network.v2019_09_01.operations.VirtualNetworkPeeringsOperations>`
+        """
+        api_version = self._get_api_version('virtual_network_peerings')
+        if api_version == '2016-09-01':
+            from .v2016_09_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualNetworkPeeringsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_network_taps(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2018_08_01.operations.VirtualNetworkTapsOperations>`
+           * 2018-10-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2018_10_01.operations.VirtualNetworkTapsOperations>`
+           * 2018-11-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2018_11_01.operations.VirtualNetworkTapsOperations>`
+           * 2018-12-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2018_12_01.operations.VirtualNetworkTapsOperations>`
+           * 2019-02-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2019_02_01.operations.VirtualNetworkTapsOperations>`
+           * 2019-04-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2019_04_01.operations.VirtualNetworkTapsOperations>`
+           * 2019-06-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2019_06_01.operations.VirtualNetworkTapsOperations>`
+           * 2019-07-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2019_07_01.operations.VirtualNetworkTapsOperations>`
+           * 2019-08-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2019_08_01.operations.VirtualNetworkTapsOperations>`
+           * 2019-09-01: :class:`VirtualNetworkTapsOperations<azure.mgmt.network.v2019_09_01.operations.VirtualNetworkTapsOperations>`
+        """
+        api_version = self._get_api_version('virtual_network_taps')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualNetworkTapsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualNetworkTapsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_networks(self):
+        """Instance depends on the API version:
+
+           * 2015-06-15: :class:`VirtualNetworksOperations<azure.mgmt.network.v2015_06_15.operations.VirtualNetworksOperations>`
+           * 2016-09-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2016_09_01.operations.VirtualNetworksOperations>`
+           * 2016-12-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2016_12_01.operations.VirtualNetworksOperations>`
+           * 2017-03-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2017_03_01.operations.VirtualNetworksOperations>`
+           * 2017-06-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2017_06_01.operations.VirtualNetworksOperations>`
+           * 2017-08-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2017_08_01.operations.VirtualNetworksOperations>`
+           * 2017-09-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2017_09_01.operations.VirtualNetworksOperations>`
+           * 2017-10-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2017_10_01.operations.VirtualNetworksOperations>`
+           * 2017-11-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2017_11_01.operations.VirtualNetworksOperations>`
+           * 2018-01-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_01_01.operations.VirtualNetworksOperations>`
+           * 2018-02-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_02_01.operations.VirtualNetworksOperations>`
+           * 2018-04-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_04_01.operations.VirtualNetworksOperations>`
+           * 2018-06-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_06_01.operations.VirtualNetworksOperations>`
+           * 2018-07-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_07_01.operations.VirtualNetworksOperations>`
+           * 2018-08-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_08_01.operations.VirtualNetworksOperations>`
+           * 2018-10-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_10_01.operations.VirtualNetworksOperations>`
+           * 2018-11-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_11_01.operations.VirtualNetworksOperations>`
+           * 2018-12-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2018_12_01.operations.VirtualNetworksOperations>`
+           * 2019-02-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2019_02_01.operations.VirtualNetworksOperations>`
+           * 2019-04-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2019_04_01.operations.VirtualNetworksOperations>`
+           * 2019-06-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2019_06_01.operations.VirtualNetworksOperations>`
+           * 2019-07-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2019_07_01.operations.VirtualNetworksOperations>`
+           * 2019-08-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2019_08_01.operations.VirtualNetworksOperations>`
+           * 2019-09-01: :class:`VirtualNetworksOperations<azure.mgmt.network.v2019_09_01.operations.VirtualNetworksOperations>`
+        """
+        api_version = self._get_api_version('virtual_networks')
+        if api_version == '2015-06-15':
+            from .v2015_06_15.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2016-09-01':
+            from .v2016_09_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2016-12-01':
+            from .v2016_12_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2017-03-01':
+            from .v2017_03_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2017-06-01':
+            from .v2017_06_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2017-08-01':
+            from .v2017_08_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2017-09-01':
+            from .v2017_09_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2017-10-01':
+            from .v2017_10_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2017-11-01':
+            from .v2017_11_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-01-01':
+            from .v2018_01_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-02-01':
+            from .v2018_02_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-04-01':
+            from .v2018_04_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualNetworksOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualNetworksOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_router_peerings(self):
+        """Instance depends on the API version:
+
+           * 2019-07-01: :class:`VirtualRouterPeeringsOperations<azure.mgmt.network.v2019_07_01.operations.VirtualRouterPeeringsOperations>`
+           * 2019-08-01: :class:`VirtualRouterPeeringsOperations<azure.mgmt.network.v2019_08_01.operations.VirtualRouterPeeringsOperations>`
+           * 2019-09-01: :class:`VirtualRouterPeeringsOperations<azure.mgmt.network.v2019_09_01.operations.VirtualRouterPeeringsOperations>`
+        """
+        api_version = self._get_api_version('virtual_router_peerings')
+        if api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualRouterPeeringsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualRouterPeeringsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualRouterPeeringsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_routers(self):
+        """Instance depends on the API version:
+
+           * 2019-07-01: :class:`VirtualRoutersOperations<azure.mgmt.network.v2019_07_01.operations.VirtualRoutersOperations>`
+           * 2019-08-01: :class:`VirtualRoutersOperations<azure.mgmt.network.v2019_08_01.operations.VirtualRoutersOperations>`
+           * 2019-09-01: :class:`VirtualRoutersOperations<azure.mgmt.network.v2019_09_01.operations.VirtualRoutersOperations>`
+        """
+        api_version = self._get_api_version('virtual_routers')
+        if api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualRoutersOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualRoutersOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualRoutersOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_wa_ns(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`VirtualWANsOperations<azure.mgmt.network.v2018_04_01.operations.VirtualWANsOperations>`
+           * 2018-06-01: :class:`VirtualWANsOperations<azure.mgmt.network.v2018_06_01.operations.VirtualWANsOperations>`
+           * 2018-07-01: :class:`VirtualWANsOperations<azure.mgmt.network.v2018_07_01.operations.VirtualWANsOperations>`
+        """
+        api_version = self._get_api_version('virtual_wa_ns')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import VirtualWANsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VirtualWANsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VirtualWANsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def virtual_wans(self):
+        """Instance depends on the API version:
+
+           * 2018-08-01: :class:`VirtualWansOperations<azure.mgmt.network.v2018_08_01.operations.VirtualWansOperations>`
+           * 2018-10-01: :class:`VirtualWansOperations<azure.mgmt.network.v2018_10_01.operations.VirtualWansOperations>`
+           * 2018-11-01: :class:`VirtualWansOperations<azure.mgmt.network.v2018_11_01.operations.VirtualWansOperations>`
+           * 2018-12-01: :class:`VirtualWansOperations<azure.mgmt.network.v2018_12_01.operations.VirtualWansOperations>`
+           * 2019-02-01: :class:`VirtualWansOperations<azure.mgmt.network.v2019_02_01.operations.VirtualWansOperations>`
+           * 2019-04-01: :class:`VirtualWansOperations<azure.mgmt.network.v2019_04_01.operations.VirtualWansOperations>`
+           * 2019-06-01: :class:`VirtualWansOperations<azure.mgmt.network.v2019_06_01.operations.VirtualWansOperations>`
+           * 2019-07-01: :class:`VirtualWansOperations<azure.mgmt.network.v2019_07_01.operations.VirtualWansOperations>`
+           * 2019-08-01: :class:`VirtualWansOperations<azure.mgmt.network.v2019_08_01.operations.VirtualWansOperations>`
+           * 2019-09-01: :class:`VirtualWansOperations<azure.mgmt.network.v2019_09_01.operations.VirtualWansOperations>`
+        """
+        api_version = self._get_api_version('virtual_wans')
+        if api_version == '2018-08-01':
+            from .v2018_08_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VirtualWansOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VirtualWansOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_connections(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_04_01.operations.VpnConnectionsOperations>`
+           * 2018-06-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_06_01.operations.VpnConnectionsOperations>`
+           * 2018-07-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_07_01.operations.VpnConnectionsOperations>`
+           * 2018-08-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_08_01.operations.VpnConnectionsOperations>`
+           * 2018-10-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_10_01.operations.VpnConnectionsOperations>`
+           * 2018-11-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_11_01.operations.VpnConnectionsOperations>`
+           * 2018-12-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2018_12_01.operations.VpnConnectionsOperations>`
+           * 2019-02-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2019_02_01.operations.VpnConnectionsOperations>`
+           * 2019-04-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2019_04_01.operations.VpnConnectionsOperations>`
+           * 2019-06-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.VpnConnectionsOperations>`
+           * 2019-07-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.VpnConnectionsOperations>`
+           * 2019-08-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.VpnConnectionsOperations>`
+           * 2019-09-01: :class:`VpnConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.VpnConnectionsOperations>`
+        """
+        api_version = self._get_api_version('vpn_connections')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_gateways(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_04_01.operations.VpnGatewaysOperations>`
+           * 2018-06-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_06_01.operations.VpnGatewaysOperations>`
+           * 2018-07-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_07_01.operations.VpnGatewaysOperations>`
+           * 2018-08-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_08_01.operations.VpnGatewaysOperations>`
+           * 2018-10-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_10_01.operations.VpnGatewaysOperations>`
+           * 2018-11-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_11_01.operations.VpnGatewaysOperations>`
+           * 2018-12-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2018_12_01.operations.VpnGatewaysOperations>`
+           * 2019-02-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2019_02_01.operations.VpnGatewaysOperations>`
+           * 2019-04-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2019_04_01.operations.VpnGatewaysOperations>`
+           * 2019-06-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2019_06_01.operations.VpnGatewaysOperations>`
+           * 2019-07-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2019_07_01.operations.VpnGatewaysOperations>`
+           * 2019-08-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2019_08_01.operations.VpnGatewaysOperations>`
+           * 2019-09-01: :class:`VpnGatewaysOperations<azure.mgmt.network.v2019_09_01.operations.VpnGatewaysOperations>`
+        """
+        api_version = self._get_api_version('vpn_gateways')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnGatewaysOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnGatewaysOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_link_connections(self):
+        """Instance depends on the API version:
+
+           * 2019-06-01: :class:`VpnLinkConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.VpnLinkConnectionsOperations>`
+           * 2019-07-01: :class:`VpnLinkConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.VpnLinkConnectionsOperations>`
+           * 2019-08-01: :class:`VpnLinkConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.VpnLinkConnectionsOperations>`
+           * 2019-09-01: :class:`VpnLinkConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.VpnLinkConnectionsOperations>`
+        """
+        api_version = self._get_api_version('vpn_link_connections')
+        if api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnLinkConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnLinkConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnLinkConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnLinkConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_server_configurations(self):
+        """Instance depends on the API version:
+
+           * 2019-08-01: :class:`VpnServerConfigurationsOperations<azure.mgmt.network.v2019_08_01.operations.VpnServerConfigurationsOperations>`
+           * 2019-09-01: :class:`VpnServerConfigurationsOperations<azure.mgmt.network.v2019_09_01.operations.VpnServerConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('vpn_server_configurations')
+        if api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnServerConfigurationsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnServerConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_server_configurations_associated_with_virtual_wan(self):
+        """Instance depends on the API version:
+
+           * 2019-08-01: :class:`VpnServerConfigurationsAssociatedWithVirtualWanOperations<azure.mgmt.network.v2019_08_01.operations.VpnServerConfigurationsAssociatedWithVirtualWanOperations>`
+           * 2019-09-01: :class:`VpnServerConfigurationsAssociatedWithVirtualWanOperations<azure.mgmt.network.v2019_09_01.operations.VpnServerConfigurationsAssociatedWithVirtualWanOperations>`
+        """
+        api_version = self._get_api_version('vpn_server_configurations_associated_with_virtual_wan')
+        if api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnServerConfigurationsAssociatedWithVirtualWanOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnServerConfigurationsAssociatedWithVirtualWanOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_site_link_connections(self):
+        """Instance depends on the API version:
+
+           * 2019-06-01: :class:`VpnSiteLinkConnectionsOperations<azure.mgmt.network.v2019_06_01.operations.VpnSiteLinkConnectionsOperations>`
+           * 2019-07-01: :class:`VpnSiteLinkConnectionsOperations<azure.mgmt.network.v2019_07_01.operations.VpnSiteLinkConnectionsOperations>`
+           * 2019-08-01: :class:`VpnSiteLinkConnectionsOperations<azure.mgmt.network.v2019_08_01.operations.VpnSiteLinkConnectionsOperations>`
+           * 2019-09-01: :class:`VpnSiteLinkConnectionsOperations<azure.mgmt.network.v2019_09_01.operations.VpnSiteLinkConnectionsOperations>`
+        """
+        api_version = self._get_api_version('vpn_site_link_connections')
+        if api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnSiteLinkConnectionsOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnSiteLinkConnectionsOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnSiteLinkConnectionsOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnSiteLinkConnectionsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_site_links(self):
+        """Instance depends on the API version:
+
+           * 2019-06-01: :class:`VpnSiteLinksOperations<azure.mgmt.network.v2019_06_01.operations.VpnSiteLinksOperations>`
+           * 2019-07-01: :class:`VpnSiteLinksOperations<azure.mgmt.network.v2019_07_01.operations.VpnSiteLinksOperations>`
+           * 2019-08-01: :class:`VpnSiteLinksOperations<azure.mgmt.network.v2019_08_01.operations.VpnSiteLinksOperations>`
+           * 2019-09-01: :class:`VpnSiteLinksOperations<azure.mgmt.network.v2019_09_01.operations.VpnSiteLinksOperations>`
+        """
+        api_version = self._get_api_version('vpn_site_links')
+        if api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnSiteLinksOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnSiteLinksOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnSiteLinksOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnSiteLinksOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_sites(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_04_01.operations.VpnSitesOperations>`
+           * 2018-06-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_06_01.operations.VpnSitesOperations>`
+           * 2018-07-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_07_01.operations.VpnSitesOperations>`
+           * 2018-08-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_08_01.operations.VpnSitesOperations>`
+           * 2018-10-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_10_01.operations.VpnSitesOperations>`
+           * 2018-11-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_11_01.operations.VpnSitesOperations>`
+           * 2018-12-01: :class:`VpnSitesOperations<azure.mgmt.network.v2018_12_01.operations.VpnSitesOperations>`
+           * 2019-02-01: :class:`VpnSitesOperations<azure.mgmt.network.v2019_02_01.operations.VpnSitesOperations>`
+           * 2019-04-01: :class:`VpnSitesOperations<azure.mgmt.network.v2019_04_01.operations.VpnSitesOperations>`
+           * 2019-06-01: :class:`VpnSitesOperations<azure.mgmt.network.v2019_06_01.operations.VpnSitesOperations>`
+           * 2019-07-01: :class:`VpnSitesOperations<azure.mgmt.network.v2019_07_01.operations.VpnSitesOperations>`
+           * 2019-08-01: :class:`VpnSitesOperations<azure.mgmt.network.v2019_08_01.operations.VpnSitesOperations>`
+           * 2019-09-01: :class:`VpnSitesOperations<azure.mgmt.network.v2019_09_01.operations.VpnSitesOperations>`
+        """
+        api_version = self._get_api_version('vpn_sites')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnSitesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnSitesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def vpn_sites_configuration(self):
+        """Instance depends on the API version:
+
+           * 2018-04-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_04_01.operations.VpnSitesConfigurationOperations>`
+           * 2018-06-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_06_01.operations.VpnSitesConfigurationOperations>`
+           * 2018-07-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_07_01.operations.VpnSitesConfigurationOperations>`
+           * 2018-08-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_08_01.operations.VpnSitesConfigurationOperations>`
+           * 2018-10-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_10_01.operations.VpnSitesConfigurationOperations>`
+           * 2018-11-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_11_01.operations.VpnSitesConfigurationOperations>`
+           * 2018-12-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2018_12_01.operations.VpnSitesConfigurationOperations>`
+           * 2019-02-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2019_02_01.operations.VpnSitesConfigurationOperations>`
+           * 2019-04-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2019_04_01.operations.VpnSitesConfigurationOperations>`
+           * 2019-06-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2019_06_01.operations.VpnSitesConfigurationOperations>`
+           * 2019-07-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2019_07_01.operations.VpnSitesConfigurationOperations>`
+           * 2019-08-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2019_08_01.operations.VpnSitesConfigurationOperations>`
+           * 2019-09-01: :class:`VpnSitesConfigurationOperations<azure.mgmt.network.v2019_09_01.operations.VpnSitesConfigurationOperations>`
+        """
+        api_version = self._get_api_version('vpn_sites_configuration')
+        if api_version == '2018-04-01':
+            from .v2018_04_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2018-06-01':
+            from .v2018_06_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2018-07-01':
+            from .v2018_07_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2018-08-01':
+            from .v2018_08_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2018-10-01':
+            from .v2018_10_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2018-11-01':
+            from .v2018_11_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2018-12-01':
+            from .v2018_12_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import VpnSitesConfigurationOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import VpnSitesConfigurationOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
+    def web_application_firewall_policies(self):
+        """Instance depends on the API version:
+
+           * 2018-12-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2018_12_01.operations.WebApplicationFirewallPoliciesOperations>`
+           * 2019-02-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2019_02_01.operations.WebApplicationFirewallPoliciesOperations>`
+           * 2019-04-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2019_04_01.operations.WebApplicationFirewallPoliciesOperations>`
+           * 2019-06-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2019_06_01.operations.WebApplicationFirewallPoliciesOperations>`
+           * 2019-07-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2019_07_01.operations.WebApplicationFirewallPoliciesOperations>`
+           * 2019-08-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2019_08_01.operations.WebApplicationFirewallPoliciesOperations>`
+           * 2019-09-01: :class:`WebApplicationFirewallPoliciesOperations<azure.mgmt.network.v2019_09_01.operations.WebApplicationFirewallPoliciesOperations>`
+        """
+        api_version = self._get_api_version('web_application_firewall_policies')
+        if api_version == '2018-12-01':
+            from .v2018_12_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-02-01':
+            from .v2019_02_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-04-01':
+            from .v2019_04_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-06-01':
+            from .v2019_06_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-07-01':
+            from .v2019_07_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-08-01':
+            from .v2019_08_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        elif api_version == '2019-09-01':
+            from .v2019_09_01.operations import WebApplicationFirewallPoliciesOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
