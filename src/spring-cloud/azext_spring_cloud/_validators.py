@@ -5,11 +5,10 @@
 
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
-
+from re import match
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
-from re import match
 from ._utils import ApiType
 
 

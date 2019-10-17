@@ -3,7 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from dateutil import parser
+
+# pylint: disable=wrong-import-order
+
+from dateutil import parser    # pylint: disable=import-error
 
 try:
     from xml.etree import cElementTree as ETree

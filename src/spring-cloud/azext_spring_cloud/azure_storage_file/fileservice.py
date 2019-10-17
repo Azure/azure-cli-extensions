@@ -62,10 +62,10 @@ from azure.storage.common.models import (
     ListGenerator,
     _OperationContext,
 )
+from azure.storage.common.storageclient import StorageClient
 from .sharedaccesssignature import (
     FileSharedAccessSignature,
 )
-from azure.storage.common.storageclient import StorageClient
 from ._deserialization import (
     _convert_xml_to_shares,
     _convert_xml_to_directories_and_files,

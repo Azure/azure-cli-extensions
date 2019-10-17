@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import time
+import colorama   # pylint: disable=import-error
 from io import BytesIO
 from random import uniform
 from knack.util import CLIError
@@ -10,8 +12,6 @@ from msrestazure.azure_exceptions import CloudError
 from azure.storage.blob import AppendBlobService
 from azure.common import AzureHttpError
 from ._utils import get_blob_info
-import time
-import colorama
 
 logger = get_logger(__name__)
 

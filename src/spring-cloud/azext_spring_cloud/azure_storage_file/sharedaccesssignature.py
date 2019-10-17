@@ -197,7 +197,7 @@ class FileSharedAccessSignature(SharedAccessSignature):
         return sas.get_token()
 
 
-# pylint: disable=useless-super-delegation
+# pylint: disable=useless-super-delegation, too-few-public-methods
 class _FileSharedAccessHelper(_SharedAccessHelper):
     def __init__(self):
         super(_FileSharedAccessHelper, self).__init__()

@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=unused-argument, logging-format-interpolation, protected-access
+# pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order
 
-import yaml
+import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
