@@ -165,6 +165,7 @@ def _convert_xml_to_shares(response):
     return shares
 
 
+# pylint: disable=line-too-long
 def _convert_xml_to_directories_and_files(response):
     '''
     <?xml version="1.0" encoding="utf-8"?>
@@ -307,11 +308,11 @@ def _convert_xml_to_ranges(response):
 
     for range_element in ranges_element.findall('Range'):
         # Parse range
-        range = FileRange(int(range_element.findtext('Start')),
-                          int(range_element.findtext('End')))
+        rangeObj = FileRange(int(range_element.findtext('Start')),
+                             int(range_element.findtext('End')))
 
         # Add range to list
-        ranges.append(range)
+        ranges.append(rangeObj)
 
     return ranges
 

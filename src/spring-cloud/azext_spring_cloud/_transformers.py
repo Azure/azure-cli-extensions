@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from collections import OrderedDict
+
+# pylint: disable=line-too-long
 
 
 def transform_spring_cloud_table_output(result):

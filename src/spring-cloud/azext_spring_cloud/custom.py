@@ -2,10 +2,10 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-import os
+
+# pylint: disable=unused-argument, logging-format-interpolation, protected-access
+
 import yaml
-import urllib.request
-import tempfile
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
@@ -13,18 +13,18 @@ from msrestazure.tools import parse_resource_id
 from ._utils import _get_upload_local_file, dump
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
-from ._client_factory import cf_spring_cloud
 from knack.log import get_logger
-from urllib.request import urlretrieve
 from urllib.parse import urlparse
 from .azure_storage_file import FileService
 from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
-from azure.cli.core.commands import cached_get, cached_put
+from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
+
+# pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
 
 
@@ -46,8 +46,7 @@ def spring_cloud_delete(cmd, client, resource_group, name, no_wait=False):
 def spring_cloud_list(cmd, client, resource_group=None):
     if resource_group is None:
         return client.list_by_subscription()
-    else:
-        return client.list(resource_group)
+    return client.list(resource_group)
 
 
 def spring_cloud_get(cmd, client, resource_group, name):
@@ -79,6 +78,7 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
     return keys
 
 
+# pylint: disable=redefined-builtin
 def regenerate_keys(cmd, client, resource_group, name, type):
     return client.services.regenerate_test_key(resource_group, name, type)
 
@@ -91,8 +91,8 @@ def app_create(cmd, client, resource_group, service, name,
                enable_persistent_storage=None):
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
-        raise CLIError("App " + name + " already exists.")
-    logger.info("Creating app " + name)
+        raise CLIError("App {} already exists.".format(name))
+    logger.info("Creating app {}".format(name))
     properties = models.AppResourceProperties()
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -116,8 +116,7 @@ def app_create(cmd, client, resource_group, service, name,
         source=user_source_info)
 
     # create default deployment
-    logger.info("Creating default deployment with name '" +
-                DEFAULT_DEPLOYMENT_NAME + "'")
+    logger.info("Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
     poller = client.deployments.create_or_update(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
 
@@ -151,7 +150,7 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    logger.info("updating app " + name)
+    logger.info("updating app {}".format(name))
     app_updated = client.apps.update(
         resource_group, service, name, properties)
     dump(app_updated)
@@ -160,9 +159,9 @@ def app_update(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if deployment is None:
-            return
+            return app_updated
 
-    logger.info("Updating deployment " + deployment)
+    logger.info("Updating deployment {}".format(deployment))
     deployment_settings = models.DeploymentSettings(
         cpu=None,
         memory_in_gb=None,
@@ -399,8 +398,6 @@ def deployment_delete(cmd, client, resource_group, service, app, name):
 
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
-    import json
-
     def standardization(dic):
         new_dic = {}
         for k, v in dic.items():
@@ -558,7 +555,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
 def config_repo_delete(cmd, client, resource_group, name, repo_name):
     resource = client.get(resource_group, name)
     config_server = resource.properties.config_server_properties.config_server
-    if not config_server or not not config_server.config or not config_server.config.repositories:
+    if not config_server or not config_server.config or not config_server.config.repositories:
         raise CLIError("Repo {} not found.".format(repo_name))
 
     config = config_server.git_property
@@ -747,7 +744,7 @@ def binding_mysql_update(cmd, client, resource_group, service, app, name,
 def binding_redis_add(cmd, client, resource_group, service, app, name,
                       resource_id,
                       disable_ssl=None):
-    use_ssl = False if disable_ssl else True
+    use_ssl = not disable_ssl
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
@@ -778,7 +775,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
     resource_name = binding.resource_name
     binding_parameters = {}
     if disable_ssl:
-        binding_parameters['useSsl'] = False if disable_ssl else True
+        binding_parameters['useSsl'] = not disable_ssl
 
     primary_key = None
     try:
@@ -851,6 +848,7 @@ def _get_all_apps(client, resource_group, service):
     return apps
 
 
+# pylint: disable=too-many-locals
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
@@ -905,13 +903,6 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
                            resource_group, service, app, name, properties)
-    else:
-        return sdk_no_wait(no_wait, client.deployments.create_or_update,
-                           resource_group, service, app, name, properties)
 
-
-def test(cmd, client, resource_group, name=None, app=None, deployment=None):
-    #file_content = ""
-    rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
-    print(rg_location)
-    return None
+    return sdk_no_wait(no_wait, client.deployments.create_or_update,
+                       resource_group, service, app, name, properties)

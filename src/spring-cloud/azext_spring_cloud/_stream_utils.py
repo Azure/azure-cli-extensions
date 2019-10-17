@@ -171,7 +171,7 @@ def _stream_logs(no_format,  # pylint: disable=too-many-locals, too-many-stateme
             total_sleep_time = sleep_time + rnd
             consecutive_sleep_in_sec += total_sleep_time
             logger.warning("Base sleep time: %d, random delay: %d, total: %d, consecutive: %d",
-                             sleep_time, rnd, total_sleep_time, consecutive_sleep_in_sec)
+                           sleep_time, rnd, total_sleep_time, consecutive_sleep_in_sec)
             time.sleep(total_sleep_time)
 
     # One final check to see if there's anything in the buffer to flush

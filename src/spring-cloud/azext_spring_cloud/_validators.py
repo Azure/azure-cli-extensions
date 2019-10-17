@@ -3,18 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
+
+
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
 from re import match
 from ._utils import ApiType
-
-
-def example_name_or_id_validator(cmd, namespace):
-    # Example of a storage account name or ID validator.
-    # See: https://github.com/Azure/azure-cli/blob/dev/doc/authoring_command_modules/authoring_commands.md#supporting-name-or-id-parameters
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
 
 
 def validate_env(namespace):
@@ -54,7 +50,7 @@ def validate_deployment_name(namespace):
         namespace.deployment = namespace.deployment.lower()
         if namespace.deployment is None:
             return
-        from re import match
+
         matchObj = match(
             r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.deployment)
         if matchObj is None:
@@ -64,14 +60,14 @@ def validate_deployment_name(namespace):
 
 def validate_resource_id(namespace):
     if not is_valid_resource_id(namespace.resource_id):
-        raise CLIError("Invalid resource id %s", namespace.resource_id)
+        raise CLIError("Invalid resource id {}".format(namespace.resource_id))
 
 
 def validate_cosmos_type(namespace):
     if namespace.api_type is None:
         return
     type = ApiType(namespace.api_type)
-    if type == ApiType.mongo or type == ApiType.sql or type == ApiType.gremlin:
+    if type in (ApiType.mongo, ApiType.sql, ApiType.gremlin):
         if namespace.database_name is None:
             raise CLIError(
                 "Cosmosdb with type {} should specify database name".format(type))

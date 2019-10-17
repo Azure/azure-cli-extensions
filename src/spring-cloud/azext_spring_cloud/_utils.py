@@ -10,11 +10,9 @@ import tarfile
 import tempfile
 import uuid
 from io import open
+from re import (search, match)
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from re import (search, match)
-from codecs import BOM_UTF8
-from knack.output import _ComplexEncoder
 
 logger = get_logger(__name__)
 
@@ -157,13 +155,13 @@ def _archive_file_recursively(tar, name, arcname, parent_ignored, parent_matchin
 
 
 def get_blob_info(blob_sas_url):
-    match = search((r"http(s)?://(?P<account_name>.*?)\.blob\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/"
-                    r"(?P<blob_name>.*?)\?(?P<sas_token>.*)"), blob_sas_url)
-    account_name = match.group('account_name')
-    endpoint_suffix = match.group('endpoint_suffix')
-    container_name = match.group('container_name')
-    blob_name = match.group('blob_name')
-    sas_token = match.group('sas_token')
+    matchObj = search((r"http(s)?://(?P<account_name>.*?)\.blob\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/"
+                       r"(?P<blob_name>.*?)\?(?P<sas_token>.*)"), blob_sas_url)
+    account_name = matchObj.group('account_name')
+    endpoint_suffix = matchObj.group('endpoint_suffix')
+    container_name = matchObj.group('container_name')
+    blob_name = matchObj.group('blob_name')
+    sas_token = matchObj.group('sas_token')
 
     if not account_name or not container_name or not blob_name or not sas_token:
         raise CLIError(
@@ -186,16 +184,6 @@ def dump(obj):
     json_object = dumps(input_dict, ensure_ascii=False,
                         indent=2, sort_keys=True, separators=(',', ': ')) + '\n'
     logger.info(json_object)
-
-
-class deseralize(object):
-    def __init__(self, d):
-        for a, b in d.items():
-            if isinstance(b, (list, tuple)):
-                setattr(self, a, [deseralize(x) if isinstance(
-                    x, dict) else x for x in b])
-            else:
-                setattr(self, a, deseralize(b) if isinstance(b, dict) else b)
 
 
 def _get_rg_location(ctx, resource_group_name, subscription_id=None):

@@ -5,6 +5,9 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
+
+# pylint: disable=too-many-lines, import-error, redefined-builtin, protected-access, too-many-public-methods
+
 import sys
 from datetime import datetime
 
@@ -482,18 +485,18 @@ class FileService(StorageClient):
                                     cors=None, timeout=None):
         '''
         Sets the properties of a storage account's File service, including
-        Azure Storage Analytics. If an element (ex HourMetrics) is left as None, the 
+        Azure Storage Analytics. If an element (ex HourMetrics) is left as None, the
         existing settings on the service for that functionality are preserved.
 
         :param Metrics hour_metrics:
-            The hour metrics settings provide a summary of request 
+            The hour metrics settings provide a summary of request
             statistics grouped by API in hourly aggregates for files.
         :param Metrics minute_metrics:
-            The minute metrics settings provide request statistics 
+            The minute metrics settings provide request statistics
             for each minute for files.
         :param cors:
-            You can include up to five CorsRule elements in the 
-            list. If an empty list is specified, all CORS rules will be deleted, 
+            You can include up to five CorsRule elements in the
+            list. If an empty list is specified, all CORS rules will be deleted,
             and CORS will be disabled for the service.
         :type cors: list(:class:`~azure.storage.common.models.CorsRule`)
         :param int timeout:
@@ -541,12 +544,12 @@ class FileService(StorageClient):
         '''
         Returns a generator to list the shares under the specified account.
         The generator will lazily follow the continuation tokens returned by
-        the service and stop when all shares have been returned or num_results 
+        the service and stop when all shares have been returned or num_results
         is reached.
 
-        If num_results is specified and the account has more than that number of 
-        shares, the generator will have a populated next_marker field once it 
-        finishes. This marker can be used to create a new generator if more 
+        If num_results is specified and the account has more than that number of
+        shares, the generator will have a populated next_marker field once it
+        finishes. This marker can be used to create a new generator if more
         results are desired.
 
         :param str prefix:
@@ -557,10 +560,10 @@ class FileService(StorageClient):
         :param bool include_metadata:
             Specifies that share metadata be returned in the response.
         :param str marker:
-            An opaque continuation token. This value can be retrieved from the 
-            next_marker field of a previous generator object if num_results was 
-            specified and that generator has finished enumerating results. If 
-            specified, this generator will begin returning results from the point 
+            An opaque continuation token. This value can be retrieved from the
+            next_marker field of a previous generator object if num_results was
+            specified and that generator has finished enumerating results. If
+            specified, this generator will begin returning results from the point
             where the previous generator stopped.
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -637,7 +640,7 @@ class FileService(StorageClient):
             share as metadata. Example:{'Category':'test'}
         :type metadata: dict(str, str)
         :param int quota:
-            Specifies the maximum size of the share, in gigabytes. Must be 
+            Specifies the maximum size of the share, in gigabytes. Must be
             greater than 0, and less than or equal to 5TB (5120).
         :param bool fail_on_exist:
             Specify whether to throw an exception when the share exists.
@@ -663,8 +666,7 @@ class FileService(StorageClient):
 
         if not fail_on_exist:
             try:
-                self._perform_request(request, expected_errors=[
-                                      _SHARE_ALREADY_EXISTS_ERROR_CODE])
+                self._perform_request(request, expected_errors=[_SHARE_ALREADY_EXISTS_ERROR_CODE])
                 return True
             except AzureHttpError as ex:
                 _dont_fail_on_exist(ex)
@@ -743,7 +745,7 @@ class FileService(StorageClient):
         :param str share_name:
             Name of existing share.
         :param int quota:
-            Specifies the maximum size of the share, in gigabytes. Must be 
+            Specifies the maximum size of the share, in gigabytes. Must be
             greater than 0, and less than or equal to 5 TB (5120 GB).
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -803,7 +805,7 @@ class FileService(StorageClient):
         :param str share_name:
             Name of existing share.
         :param metadata:
-            A dict containing name-value pairs to associate with the share as 
+            A dict containing name-value pairs to associate with the share as
             metadata. Example: {'category':'test'}
         :type metadata: dict(str, str)
         :param int timeout:
@@ -849,15 +851,15 @@ class FileService(StorageClient):
 
     def set_share_acl(self, share_name, signed_identifiers=None, timeout=None):
         '''
-        Sets the permissions for the specified share or stored access 
+        Sets the permissions for the specified share or stored access
         policies that may be used with Shared Access Signatures.
 
         :param str share_name:
             Name of existing share.
         :param signed_identifiers:
-            A dictionary of access policies to associate with the share. The 
-            dictionary may contain up to 5 elements. An empty dictionary 
-            will clear the access policies set on the service. 
+            A dictionary of access policies to associate with the share. The
+            dictionary may contain up to 5 elements. An empty dictionary
+            will clear the access policies set on the service.
         :type signed_identifiers: dict(str, :class:`~azure.storage.common.models.AccessPolicy`)
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -937,7 +939,7 @@ class FileService(StorageClient):
     def delete_share(self, share_name, fail_not_exist=False, timeout=None, snapshot=None, delete_snapshots=None):
         '''
         Marks the specified share for deletion. If the share
-        does not exist, the operation fails on the service. By 
+        does not exist, the operation fails on the service. By
         default, the exception is swallowed by the client.
         To expose the exception, specify True for fail_not_exist.
 
@@ -973,8 +975,7 @@ class FileService(StorageClient):
 
         if not fail_not_exist:
             try:
-                self._perform_request(request, expected_errors=[
-                                      _SHARE_NOT_FOUND_ERROR_CODE])
+                self._perform_request(request, expected_errors=[_SHARE_NOT_FOUND_ERROR_CODE])
                 return True
             except AzureHttpError as ex:
                 _dont_fail_not_exist(ex)
@@ -986,7 +987,7 @@ class FileService(StorageClient):
     def create_directory(self, share_name, directory_name, metadata=None,
                          fail_on_exist=False, timeout=None, file_permission=None, smb_properties=SMBProperties()):
         '''
-        Creates a new directory under the specified share or parent directory. 
+        Creates a new directory under the specified share or parent directory.
         If the directory with the same name already exists, the operation fails
         on the service. By default, the exception is swallowed by the client.
         To expose the exception, specify True for fail_on_exists.
@@ -994,7 +995,7 @@ class FileService(StorageClient):
         :param str share_name:
             Name of existing share.
         :param str directory_name:
-            Name of directory to create, including the path to the parent 
+            Name of directory to create, including the path to the parent
             directory.
         :param metadata:
             A dict with name_value pairs to associate with the
@@ -1076,7 +1077,7 @@ class FileService(StorageClient):
                          fail_not_exist=False, timeout=None):
         '''
         Deletes the specified empty directory. Note that the directory must
-        be empty before it can be deleted. Attempting to delete directories 
+        be empty before it can be deleted. Attempting to delete directories
         that are not empty will fail.
 
         If the directory does not exist, the operation fails on the
@@ -1086,7 +1087,7 @@ class FileService(StorageClient):
         :param str share_name:
             Name of existing share.
         :param str directory_name:
-            Name of directory to delete, including the path to the parent 
+            Name of directory to delete, including the path to the parent
             directory.
         :param bool fail_not_exist:
             Specify whether to throw an exception when the directory doesn't
@@ -1109,8 +1110,7 @@ class FileService(StorageClient):
 
         if not fail_not_exist:
             try:
-                self._perform_request(request, expected_errors=[
-                                      _RESOURCE_NOT_FOUND_ERROR_CODE])
+                self._perform_request(request, expected_errors=[_RESOURCE_NOT_FOUND_ERROR_CODE])
                 return True
             except AzureHttpError as ex:
                 _dont_fail_not_exist(ex)
@@ -1223,9 +1223,9 @@ class FileService(StorageClient):
         the service and stop when all directories and files have been returned or
         num_results is reached.
 
-        If num_results is specified and the share has more than that number of 
-        files and directories, the generator will have a populated next_marker 
-        field once it finishes. This marker can be used to create a new generator 
+        If num_results is specified and the share has more than that number of
+        files and directories, the generator will have a populated next_marker
+        field once it finishes. This marker can be used to create a new generator
         if more results are desired.
 
         :param str share_name:
@@ -1239,10 +1239,10 @@ class FileService(StorageClient):
             return up to 5,000 items. Setting num_results to a value less than
             or equal to zero results in error response code 400 (Bad Request).
         :param str marker:
-            An opaque continuation token. This value can be retrieved from the 
-            next_marker field of a previous generator object if num_results was 
-            specified and that generator has finished enumerating results. If 
-            specified, this generator will begin returning results from the point 
+            An opaque continuation token. This value can be retrieved from the
+            next_marker field of a previous generator object if num_results was
+            specified and that generator has finished enumerating results. If
+            specified, this generator will begin returning results from the point
             where the previous generator stopped.
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -1720,11 +1720,11 @@ class FileService(StorageClient):
     def copy_file(self, share_name, directory_name, file_name, copy_source,
                   metadata=None, timeout=None):
         '''
-        Copies a file asynchronously. This operation returns a copy operation 
-        properties object, including a copy ID you can use to check or abort the 
+        Copies a file asynchronously. This operation returns a copy operation
+        properties object, including a copy ID you can use to check or abort the
         copy operation. The File service copies files on a best-effort basis.
 
-        If the destination file exists, it will be overwritten. The destination 
+        If the destination file exists, it will be overwritten. The destination
         file cannot be modified while the copy operation is in progress.
 
         :param str share_name:
@@ -1732,23 +1732,23 @@ class FileService(StorageClient):
         :param str directory_name:
             Name of the destination directory. The directory must exist.
         :param str file_name:
-            Name of the destination file. If the destination file exists, it will 
+            Name of the destination file. If the destination file exists, it will
             be overwritten. Otherwise, it will be created.
         :param str copy_source:
-            A URL of up to 2 KB in length that specifies an Azure file or blob. 
-            The value should be URL-encoded as it would appear in a request URI. 
-            If the source is in another account, the source must either be public 
-            or must be authenticated via a shared access signature. If the source 
+            A URL of up to 2 KB in length that specifies an Azure file or blob.
+            The value should be URL-encoded as it would appear in a request URI.
+            If the source is in another account, the source must either be public
+            or must be authenticated via a shared access signature. If the source
             is public, no authentication is required.
             Examples:
             https://myaccount.file.core.windows.net/myshare/mydir/myfile
             https://otheraccount.file.core.windows.net/myshare/mydir/myfile?sastoken
         :param metadata:
-            Name-value pairs associated with the file as metadata. If no name-value 
-            pairs are specified, the operation will copy the metadata from the 
-            source blob or file to the destination file. If one or more name-value 
-            pairs are specified, the destination file is created with the specified 
-            metadata, and the metadata is not copied from the source blob or file. 
+            Name-value pairs associated with the file as metadata. If no name-value
+            pairs are specified, the operation will copy the metadata from the
+            source blob or file to the destination file. If one or more name-value
+            pairs are specified, the destination file is created with the specified
+            metadata, and the metadata is not copied from the source blob or file.
         :type metadata: dict(str, str).
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -1913,11 +1913,11 @@ class FileService(StorageClient):
             Name-value pairs associated with the file as metadata.
         :type metadata: dict(str, str)
         :param bool validate_content:
-            If true, calculates an MD5 hash for each range of the file. The storage 
-            service checks the hash of the content that has arrived with the hash 
-            that was sent. This is primarily valuable for detecting bitflips on 
-            the wire if using http instead of https as https (the default) will 
-            already validate. Note that this MD5 hash is not stored with the 
+            If true, calculates an MD5 hash for each range of the file. The storage
+            service checks the hash of the content that has arrived with the hash
+            that was sent. This is primarily valuable for detecting bitflips on
+            the wire if using http instead of https as https (the default) will
+            already validate. Note that this MD5 hash is not stored with the
             file.
         :param progress_callback:
             Callback for progress with signature function(current, total) where
@@ -1931,8 +1931,8 @@ class FileService(StorageClient):
         :param ~azure.storage.file.models.SMBProperties smb_properties:
             Sets the SMB related file properties
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         '''
         _validate_not_none('share_name', share_name)
@@ -1970,19 +1970,19 @@ class FileService(StorageClient):
             Name-value pairs associated with the file as metadata.
         :type metadata: dict(str, str)
         :param bool validate_content:
-            If true, calculates an MD5 hash for each range of the file. The storage 
-            service checks the hash of the content that has arrived with the hash 
-            that was sent. This is primarily valuable for detecting bitflips on 
-            the wire if using http instead of https as https (the default) will 
-            already validate. Note that this MD5 hash is not stored with the 
+            If true, calculates an MD5 hash for each range of the file. The storage
+            service checks the hash of the content that has arrived with the hash
+            that was sent. This is primarily valuable for detecting bitflips on
+            the wire if using http instead of https as https (the default) will
+            already validate. Note that this MD5 hash is not stored with the
             file.
         :param str file_permission:
             File permission, a portable SDDL
         :param ~azure.storage.file.models.SMBProperties smb_properties:
             Sets the SMB related file properties
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         '''
         _validate_not_none('share_name', share_name)
@@ -2028,11 +2028,11 @@ class FileService(StorageClient):
             Name-value pairs associated with the file as metadata.
         :type metadata: dict(str, str)
         :param bool validate_content:
-            If true, calculates an MD5 hash for each range of the file. The storage 
-            service checks the hash of the content that has arrived with the hash 
-            that was sent. This is primarily valuable for detecting bitflips on 
-            the wire if using http instead of https as https (the default) will 
-            already validate. Note that this MD5 hash is not stored with the 
+            If true, calculates an MD5 hash for each range of the file. The storage
+            service checks the hash of the content that has arrived with the hash
+            that was sent. This is primarily valuable for detecting bitflips on
+            the wire if using http instead of https as https (the default) will
+            already validate. Note that this MD5 hash is not stored with the
             file.
         :param progress_callback:
             Callback for progress with signature function(current, total) where
@@ -2046,8 +2046,8 @@ class FileService(StorageClient):
         :param ~azure.storage.file.models.SMBProperties smb_properties:
             Sets the SMB related file properties
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         '''
         _validate_not_none('share_name', share_name)
@@ -2095,11 +2095,11 @@ class FileService(StorageClient):
             Name-value pairs associated with the file as metadata.
         :type metadata: dict(str, str)
         :param bool validate_content:
-            If true, calculates an MD5 hash for each range of the file. The storage 
-            service checks the hash of the content that has arrived with the hash 
-            that was sent. This is primarily valuable for detecting bitflips on 
-            the wire if using http instead of https as https (the default) will 
-            already validate. Note that this MD5 hash is not stored with the 
+            If true, calculates an MD5 hash for each range of the file. The storage
+            service checks the hash of the content that has arrived with the hash
+            that was sent. This is primarily valuable for detecting bitflips on
+            the wire if using http instead of https as https (the default) will
+            already validate. Note that this MD5 hash is not stored with the
             file.
         :param progress_callback:
             Callback for progress with signature function(current, total) where
@@ -2107,15 +2107,15 @@ class FileService(StorageClient):
             size of the file, or None if the total size is unknown.
         :type progress_callback: func(current, total)
         :param int max_connections:
-            Maximum number of parallel connections to use. Note that parallel upload 
+            Maximum number of parallel connections to use. Note that parallel upload
             requires the stream to be seekable.
         :param str file_permission:
             File permission, a portable SDDL
         :param ~azure.storage.file.models.SMBProperties smb_properties:
             Sets the SMB related file properties
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         '''
         _validate_not_none('share_name', share_name)
@@ -2180,8 +2180,8 @@ class FileService(StorageClient):
             The start_range and end_range params are inclusive.
             Ex: start_range=0, end_range=511 will download first 512 bytes of file.
         :param bool validate_content:
-            When this is set to True and specified together with the Range header, 
-            the service returns the MD5 hash for the range, as long as the range 
+            When this is set to True and specified together with the Range header,
+            the service returns the MD5 hash for the range, as long as the range
             is less than or equal to 4 MB in size.
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -2227,8 +2227,8 @@ class FileService(StorageClient):
         :param str file_path:
             Path of file to write to.
         :param str open_mode:
-            Mode to use when opening the file. Note that specifying append only 
-            open_mode prevents parallel download. So, max_connections must be set 
+            Mode to use when opening the file. Note that specifying append only
+            open_mode prevents parallel download. So, max_connections must be set
             to 1 if this open_mode is used.
         :param int start_range:
             Start of byte range to use for downloading a section of the file.
@@ -2241,37 +2241,37 @@ class FileService(StorageClient):
             The start_range and end_range params are inclusive.
             Ex: start_range=0, end_range=511 will download first 512 bytes of file.
         :param bool validate_content:
-            If set to true, validates an MD5 hash for each retrieved portion of 
-            the file. This is primarily valuable for detecting bitflips on the wire 
-            if using http instead of https as https (the default) will already 
-            validate. Note that the service will only return transactional MD5s 
-            for chunks 4MB or less so the first get request will be of size 
-            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If 
-            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be 
-            thrown. As computing the MD5 takes processing time and more requests 
-            will need to be done due to the reduced chunk size there may be some 
+            If set to true, validates an MD5 hash for each retrieved portion of
+            the file. This is primarily valuable for detecting bitflips on the wire
+            if using http instead of https as https (the default) will already
+            validate. Note that the service will only return transactional MD5s
+            for chunks 4MB or less so the first get request will be of size
+            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If
+            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be
+            thrown. As computing the MD5 takes processing time and more requests
+            will need to be done due to the reduced chunk size there may be some
             increase in latency.
         :param progress_callback:
-            Callback for progress with signature function(current, total) 
-            where current is the number of bytes transfered so far, and total is 
+            Callback for progress with signature function(current, total)
+            where current is the number of bytes transfered so far, and total is
             the size of the file if known.
         :type progress_callback: func(current, total)
         :param int max_connections:
-            If set to 2 or greater, an initial get will be done for the first 
-            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file, 
-            the method returns at this point. If it is not, it will download the 
-            remaining data parallel using the number of threads equal to 
+            If set to 2 or greater, an initial get will be done for the first
+            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file,
+            the method returns at this point. If it is not, it will download the
+            remaining data parallel using the number of threads equal to
             max_connections. Each chunk will be of size self.MAX_CHUNK_GET_SIZE.
-            If set to 1, a single large get request will be done. This is not 
-            generally recommended but available if very few threads should be 
-            used, network requests are very expensive, or a non-seekable stream 
-            prevents parallel download. This may also be valuable if the file is 
-            being concurrently modified to enforce atomicity or if many files are 
-            expected to be empty as an extra request is required for empty files 
+            If set to 1, a single large get request will be done. This is not
+            generally recommended but available if very few threads should be
+            used, network requests are very expensive, or a non-seekable stream
+            prevents parallel download. This may also be valuable if the file is
+            being concurrently modified to enforce atomicity or if many files are
+            expected to be empty as an extra request is required for empty files
             if max_connections is greater than 1.
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         :param str snapshot:
             A string that represents the snapshot version, if applicable.
@@ -2322,37 +2322,37 @@ class FileService(StorageClient):
             The start_range and end_range params are inclusive.
             Ex: start_range=0, end_range=511 will download first 512 bytes of file.
         :param bool validate_content:
-            If set to true, validates an MD5 hash for each retrieved portion of 
-            the file. This is primarily valuable for detecting bitflips on the wire 
-            if using http instead of https as https (the default) will already 
-            validate. Note that the service will only return transactional MD5s 
-            for chunks 4MB or less so the first get request will be of size 
-            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If 
-            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be 
-            thrown. As computing the MD5 takes processing time and more requests 
-            will need to be done due to the reduced chunk size there may be some 
+            If set to true, validates an MD5 hash for each retrieved portion of
+            the file. This is primarily valuable for detecting bitflips on the wire
+            if using http instead of https as https (the default) will already
+            validate. Note that the service will only return transactional MD5s
+            for chunks 4MB or less so the first get request will be of size
+            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If
+            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be
+            thrown. As computing the MD5 takes processing time and more requests
+            will need to be done due to the reduced chunk size there may be some
             increase in latency.
         :param progress_callback:
-            Callback for progress with signature function(current, total) 
-            where current is the number of bytes transfered so far, and total is 
+            Callback for progress with signature function(current, total)
+            where current is the number of bytes transfered so far, and total is
             the size of the file if known.
         :type progress_callback: func(current, total)
         :param int max_connections:
-            If set to 2 or greater, an initial get will be done for the first 
-            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file, 
-            the method returns at this point. If it is not, it will download the 
-            remaining data parallel using the number of threads equal to 
+            If set to 2 or greater, an initial get will be done for the first
+            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file,
+            the method returns at this point. If it is not, it will download the
+            remaining data parallel using the number of threads equal to
             max_connections. Each chunk will be of size self.MAX_CHUNK_GET_SIZE.
-            If set to 1, a single large get request will be done. This is not 
-            generally recommended but available if very few threads should be 
-            used, network requests are very expensive, or a non-seekable stream 
-            prevents parallel download. This may also be valuable if the file is 
-            being concurrently modified to enforce atomicity or if many files are 
-            expected to be empty as an extra request is required for empty files 
+            If set to 1, a single large get request will be done. This is not
+            generally recommended but available if very few threads should be
+            used, network requests are very expensive, or a non-seekable stream
+            prevents parallel download. This may also be valuable if the file is
+            being concurrently modified to enforce atomicity or if many files are
+            expected to be empty as an extra request is required for empty files
             if max_connections is greater than 1.
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         :param str snapshot:
             A string that represents the snapshot version, if applicable.
@@ -2370,11 +2370,10 @@ class FileService(StorageClient):
         if max_connections > 1:
             if sys.version_info >= (3,) and not stream.seekable():
                 raise ValueError(_ERROR_PARALLEL_NOT_SEEKABLE)
-            else:
-                try:
-                    stream.seek(stream.tell())
-                except (NotImplementedError, AttributeError):
-                    raise ValueError(_ERROR_PARALLEL_NOT_SEEKABLE)
+            try:
+                stream.seek(stream.tell())
+            except (NotImplementedError, AttributeError):
+                raise ValueError(_ERROR_PARALLEL_NOT_SEEKABLE)
 
         # The service only provides transactional MD5s for chunks under 4MB.
         # If validate_content is on, get only self.MAX_CHUNK_GET_SIZE for the first
@@ -2511,37 +2510,37 @@ class FileService(StorageClient):
             The start_range and end_range params are inclusive.
             Ex: start_range=0, end_range=511 will download first 512 bytes of file.
         :param bool validate_content:
-            If set to true, validates an MD5 hash for each retrieved portion of 
-            the file. This is primarily valuable for detecting bitflips on the wire 
-            if using http instead of https as https (the default) will already 
-            validate. Note that the service will only return transactional MD5s 
-            for chunks 4MB or less so the first get request will be of size 
-            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If 
-            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be 
-            thrown. As computing the MD5 takes processing time and more requests 
-            will need to be done due to the reduced chunk size there may be some 
+            If set to true, validates an MD5 hash for each retrieved portion of
+            the file. This is primarily valuable for detecting bitflips on the wire
+            if using http instead of https as https (the default) will already
+            validate. Note that the service will only return transactional MD5s
+            for chunks 4MB or less so the first get request will be of size
+            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If
+            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be
+            thrown. As computing the MD5 takes processing time and more requests
+            will need to be done due to the reduced chunk size there may be some
             increase in latency.
         :param progress_callback:
-            Callback for progress with signature function(current, total) 
-            where current is the number of bytes transfered so far, and total is 
+            Callback for progress with signature function(current, total)
+            where current is the number of bytes transfered so far, and total is
             the size of the file if known.
         :type progress_callback: func(current, total)
         :param int max_connections:
-            If set to 2 or greater, an initial get will be done for the first 
-            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file, 
-            the method returns at this point. If it is not, it will download the 
-            remaining data parallel using the number of threads equal to 
+            If set to 2 or greater, an initial get will be done for the first
+            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file,
+            the method returns at this point. If it is not, it will download the
+            remaining data parallel using the number of threads equal to
             max_connections. Each chunk will be of size self.MAX_CHUNK_GET_SIZE.
-            If set to 1, a single large get request will be done. This is not 
-            generally recommended but available if very few threads should be 
-            used, network requests are very expensive, or a non-seekable stream 
-            prevents parallel download. This may also be valuable if the file is 
-            being concurrently modified to enforce atomicity or if many files are 
-            expected to be empty as an extra request is required for empty files 
+            If set to 1, a single large get request will be done. This is not
+            generally recommended but available if very few threads should be
+            used, network requests are very expensive, or a non-seekable stream
+            prevents parallel download. This may also be valuable if the file is
+            being concurrently modified to enforce atomicity or if many files are
+            expected to be empty as an extra request is required for empty files
             if max_connections is greater than 1.
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         :param str snapshot:
             A string that represents the snapshot version, if applicable.
@@ -2596,37 +2595,37 @@ class FileService(StorageClient):
             The start_range and end_range params are inclusive.
             Ex: start_range=0, end_range=511 will download first 512 bytes of file.
         :param bool validate_content:
-            If set to true, validates an MD5 hash for each retrieved portion of 
-            the file. This is primarily valuable for detecting bitflips on the wire 
-            if using http instead of https as https (the default) will already 
-            validate. Note that the service will only return transactional MD5s 
-            for chunks 4MB or less so the first get request will be of size 
-            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If 
-            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be 
-            thrown. As computing the MD5 takes processing time and more requests 
-            will need to be done due to the reduced chunk size there may be some 
+            If set to true, validates an MD5 hash for each retrieved portion of
+            the file. This is primarily valuable for detecting bitflips on the wire
+            if using http instead of https as https (the default) will already
+            validate. Note that the service will only return transactional MD5s
+            for chunks 4MB or less so the first get request will be of size
+            self.MAX_CHUNK_GET_SIZE instead of self.MAX_SINGLE_GET_SIZE. If
+            self.MAX_CHUNK_GET_SIZE was set to greater than 4MB an error will be
+            thrown. As computing the MD5 takes processing time and more requests
+            will need to be done due to the reduced chunk size there may be some
             increase in latency.
         :param progress_callback:
-            Callback for progress with signature function(current, total) 
-            where current is the number of bytes transfered so far, and total is 
+            Callback for progress with signature function(current, total)
+            where current is the number of bytes transfered so far, and total is
             the size of the file if known.
         :type progress_callback: func(current, total)
         :param int max_connections:
-            If set to 2 or greater, an initial get will be done for the first 
-            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file, 
-            the method returns at this point. If it is not, it will download the 
-            remaining data parallel using the number of threads equal to 
+            If set to 2 or greater, an initial get will be done for the first
+            self.MAX_SINGLE_GET_SIZE bytes of the file. If this is the entire file,
+            the method returns at this point. If it is not, it will download the
+            remaining data parallel using the number of threads equal to
             max_connections. Each chunk will be of size self.MAX_CHUNK_GET_SIZE.
-            If set to 1, a single large get request will be done. This is not 
-            generally recommended but available if very few threads should be 
-            used, network requests are very expensive, or a non-seekable stream 
-            prevents parallel download. This may also be valuable if the file is 
-            being concurrently modified to enforce atomicity or if many files are 
-            expected to be empty as an extra request is required for empty files 
+            If set to 1, a single large get request will be done. This is not
+            generally recommended but available if very few threads should be
+            used, network requests are very expensive, or a non-seekable stream
+            prevents parallel download. This may also be valuable if the file is
+            being concurrently modified to enforce atomicity or if many files are
+            expected to be empty as an extra request is required for empty files
             if max_connections is greater than 1.
         :param int timeout:
-            The timeout parameter is expressed in seconds. This method may make 
-            multiple calls to the Azure service and the timeout will apply to 
+            The timeout parameter is expressed in seconds. This method may make
+            multiple calls to the Azure service and the timeout will apply to
             each call individually.
         :param str snapshot:
             A string that represents the snapshot version, if applicable.
@@ -2676,11 +2675,11 @@ class FileService(StorageClient):
             The start_range and end_range params are inclusive.
             Ex: start_range=0, end_range=511 will download first 512 bytes of file.
         :param bool validate_content:
-            If true, calculates an MD5 hash of the page content. The storage 
+            If true, calculates an MD5 hash of the page content. The storage
             service checks the hash of the content that has arrived
-            with the hash that was sent. This is primarily valuable for detecting 
-            bitflips on the wire if using http instead of https as https (the default) 
-            will already validate. Note that this MD5 hash is not stored with the 
+            with the hash that was sent. This is primarily valuable for detecting
+            bitflips on the wire if using http instead of https as https (the default)
+            will already validate. Note that this MD5 hash is not stored with the
             file.
         :param int timeout:
             The timeout parameter is expressed in seconds.
@@ -2745,7 +2744,7 @@ class FileService(StorageClient):
         _validate_and_format_range_headers(request,
                                            source_start_range,
                                            source_start_range +
-                                           (end_range-start_range),
+                                           (end_range - start_range),
                                            is_source=True)
 
         request.headers.update({
@@ -2775,7 +2774,7 @@ class FileService(StorageClient):
     def clear_range(self, share_name, directory_name, file_name, start_range,
                     end_range, timeout=None):
         '''
-        Clears the specified range and releases the space used in storage for 
+        Clears the specified range and releases the space used in storage for
         that range.
 
         :param str share_name:

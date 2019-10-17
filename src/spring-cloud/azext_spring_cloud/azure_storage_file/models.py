@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
+
+# pylint: disable=too-few-public-methods, too-many-instance-attributes
+
 from azure.storage.common._common_conversion import _to_str
 
 
@@ -16,8 +19,8 @@ class Share(object):
         System properties for the share.
     :ivar metadata:
         A dict containing name-value pairs associated with the share as metadata.
-        This var is set to None unless the include=metadata param was included 
-        for the list shares operation. If this parameter was specified but the 
+        This var is set to None unless the include=metadata param was included
+        for the list shares operation. If this parameter was specified but the
         share has no metadata, metadata will be set to an empty dictionary.
     :vartype metadata: dict(str, str)
     :ivar str snapshot:
@@ -62,8 +65,8 @@ class Directory(object):
         System properties for the directory.
     :ivar metadata:
         A dict containing name-value pairs associated with the directory as metadata.
-        This var is set to None unless the include=metadata param was included 
-        for the list directory operation. If this parameter was specified but the 
+        This var is set to None unless the include=metadata param was included
+        for the list directory operation. If this parameter was specified but the
         directory has no metadata, metadata will be set to an empty dictionary.
     :vartype metadata: dict(str, str)
     '''
@@ -109,8 +112,8 @@ class File(object):
         System properties for the file.
     :ivar metadata:
         A dict containing name-value pairs associated with the file as metadata.
-        This var is set to None unless the include=metadata param was included 
-        for the list file operation. If this parameter was specified but the 
+        This var is set to None unless the include=metadata param was included
+        for the list file operation. If this parameter was specified but the
         file has no metadata, metadata will be set to an empty dictionary.
     :vartype metadata: dict(str, str)
     '''
@@ -132,11 +135,11 @@ class FileProperties(object):
         The ETag contains a value that you can use to perform operations
         conditionally.
     :ivar int content_length:
-        The length of the content returned. If the entire blob was requested, 
-        the length of blob in bytes. If a subset of the blob was requested, the 
+        The length of the content returned. If the entire blob was requested,
+        the length of blob in bytes. If a subset of the blob was requested, the
         length of the returned subset.
     :ivar str content_range:
-        Indicates the range of bytes returned in the event that the client 
+        Indicates the range of bytes returned in the event that the client
         requested a subset of the blob.
     :ivar ~azure.storage.file.models.ContentSettings content_settings:
         Stores all the content settings for the file.
@@ -272,7 +275,7 @@ class ContentSettings(object):
 
     :ivar str content_type:
         The content type specified for the file. If no content type was
-        specified, the default content type is application/octet-stream. 
+        specified, the default content type is application/octet-stream.
     :ivar str content_encoding:
         If content_encoding has previously been set
         for the file, that value is stored.
@@ -335,7 +338,7 @@ class CopyProperties(object):
         State of the copy operation identified by Copy ID, with these values:
             success:
                 Copy completed successfully.
-            pending: 
+            pending:
                 Copy is in progress. Check copy_status_description if intermittent,
                 non-fatal errors impede copy progress but don't cause failure.
             aborted:
@@ -352,7 +355,7 @@ class CopyProperties(object):
         failed copy attempt.
     :ivar str status_description:
         Only appears when x-ms-copy-status is failed or pending. Describes cause of fatal
-        or non-fatal copy operation failure. 
+        or non-fatal copy operation failure.
     '''
 
     def __init__(self):
@@ -392,18 +395,18 @@ class DeleteSnapshot(object):
 
 class FilePermissions(object):
     '''
-    FilePermissions class to be used with 
+    FilePermissions class to be used with
     :func:`~azure.storage.file.fileservice.FileService.generate_file_shared_access_signature` API.
 
     :ivar FilePermissions FilePermissions.CREATE:
         Create a new file or copy a file to a new file.
-    :ivar FilePermissions FilePermissions.DELETE: 
+    :ivar FilePermissions FilePermissions.DELETE:
         Delete the file.
     :ivar FilePermissions FilePermissions.READ:
-        Read the content, properties, metadata. Use the file as the source of a copy 
+        Read the content, properties, metadata. Use the file as the source of a copy
         operation.
-    :ivar FilePermissions FilePermissions.WRITE: 
-        Create or write content, properties, metadata. Resize the file. Use the file 
+    :ivar FilePermissions FilePermissions.WRITE:
+        Create or write content, properties, metadata. Resize the file. Use the file
         as the destination of a copy operation within the same account.
     '''
 
@@ -411,16 +414,16 @@ class FilePermissions(object):
                  _str=None):
         '''
         :param bool read:
-            Read the content, properties, metadata. Use the file as the source of a copy 
+            Read the content, properties, metadata. Use the file as the source of a copy
             operation.
         :param bool create:
             Create a new file or copy a file to a new file.
-        :param bool write: 
-            Create or write content, properties, metadata. Resize the file. Use the file 
+        :param bool write:
+            Create or write content, properties, metadata. Resize the file. Use the file
             as the destination of a copy operation within the same account.
-        :param bool delete: 
+        :param bool delete:
             Delete the file.
-        :param str _str: 
+        :param str _str:
             A string representing the permissions.
         '''
 
@@ -453,44 +456,45 @@ FilePermissions.WRITE = FilePermissions(write=True)
 class SharePermissions(object):
     '''
     SharePermissions class to be used with `azure.storage.file.FileService.generate_share_shared_access_signature`
-    method and for the AccessPolicies used with `azure.storage.file.FileService.set_share_acl`. 
+    method and for the AccessPolicies used with `azure.storage.file.FileService.set_share_acl`.
 
-    :ivar SharePermissions FilePermissions.DELETE: 
+    :ivar SharePermissions FilePermissions.DELETE:
         Delete any file in the share.
-        Note: You cannot grant permissions to delete a share with a service SAS. Use 
+        Note: You cannot grant permissions to delete a share with a service SAS. Use
         an account SAS instead.
-    :ivar SharePermissions FilePermissions.LIST: 
+    :ivar SharePermissions FilePermissions.LIST:
         List files and directories in the share.
     :ivar SharePermissions FilePermissions.READ:
-        Read the content, properties or metadata of any file in the share. Use any 
+        Read the content, properties or metadata of any file in the share. Use any
         file in the share as the source of a copy operation.
-    :ivar SharePermissions FilePermissions.WRITE: 
-        For any file in the share, create or write content, properties or metadata. 
-        Resize the file. Use the file as the destination of a copy operation within 
+    :ivar SharePermissions FilePermissions.WRITE:
+        For any file in the share, create or write content, properties or metadata.
+        Resize the file. Use the file as the destination of a copy operation within
         the same account.
-        Note: You cannot grant permissions to read or write share properties or 
+        Note: You cannot grant permissions to read or write share properties or
         metadata with a service SAS. Use an account SAS instead.
     '''
 
+    # pylint: disable=redefined-builtin
     def __init__(self, read=False, write=False, delete=False, list=False,
                  _str=None):
         '''
         :param bool read:
-            Read the content, properties or metadata of any file in the share. Use any 
+            Read the content, properties or metadata of any file in the share. Use any
             file in the share as the source of a copy operation.
-        :param bool write: 
-            For any file in the share, create or write content, properties or metadata. 
-            Resize the file. Use the file as the destination of a copy operation within 
+        :param bool write:
+            For any file in the share, create or write content, properties or metadata.
+            Resize the file. Use the file as the destination of a copy operation within
             the same account.
-            Note: You cannot grant permissions to read or write share properties or 
+            Note: You cannot grant permissions to read or write share properties or
             metadata with a service SAS. Use an account SAS instead.
-        :param bool delete: 
+        :param bool delete:
             Delete any file in the share.
-            Note: You cannot grant permissions to delete a share with a service SAS. Use 
+            Note: You cannot grant permissions to delete a share with a service SAS. Use
             an account SAS instead.
-        :param bool list: 
+        :param bool list:
             List files and directories in the share.
-        :param str _str: 
+        :param str _str:
             A string representing the permissions
         '''
 

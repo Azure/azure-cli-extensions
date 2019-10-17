@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
+
+# pylint: disable=unused-import
+
 from .fileservice import FileService
 from .models import (
     Share,

@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from sys import getsizeof
 
 from azure.storage.common._common_conversion import _str
 from azure.storage.common._error import (
@@ -32,18 +31,18 @@ def _get_path(share_name=None, directory_name=None, file_name=None):
             _str(share_name),
             _str(directory_name),
             _str(file_name))
-    elif share_name and directory_name:
+    if share_name and directory_name:
         return '/{0}/{1}'.format(
             _str(share_name),
             _str(directory_name))
-    elif share_name and file_name:
+    if share_name and file_name:
         return '/{0}/{1}'.format(
             _str(share_name),
             _str(file_name))
-    elif share_name:
+    if share_name:
         return '/{0}'.format(_str(share_name))
-    else:
-        return '/'
+
+    return '/'
 
 
 def _validate_and_format_range_headers(request, start_range, end_range, start_range_required=True,
@@ -89,8 +88,7 @@ def _validate_and_return_file_permission(file_permission, file_permission_key, d
     if empty_file_permission:
         if empty_file_permission_key:
             return default_permission
-        else:
-            return None
+        return None
 
     if empty_file_permission_key:
         return file_permission

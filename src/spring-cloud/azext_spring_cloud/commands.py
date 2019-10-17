@@ -9,6 +9,7 @@ from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output, transform_spring_cloud_deployment_output)
 
 
+# pylint: disable=too-many-statements
 def load_command_table(self, _):
 
     with self.command_group('spring-cloud', client_factory=cf_app_services) as g:
@@ -20,8 +21,6 @@ def load_command_table(self, _):
                          table_transformer=transform_spring_cloud_table_output)
         g.custom_show_command('show', 'spring_cloud_get',
                               table_transformer=transform_spring_cloud_table_output)
-        #g.custom_command('update', 'spring_cloud_update', supports_no_wait=True)
-        #g.custom_command('test', 'test')
 
     with self.command_group('spring-cloud test-endpoint', client_factory=cf_spring_cloud) as g:
         g.custom_command('enable ', 'enable_test_endpoint')

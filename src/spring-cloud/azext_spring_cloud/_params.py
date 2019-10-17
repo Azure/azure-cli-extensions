@@ -6,8 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
-from azure.cli.core.commands.parameters import (get_resource_name_completion_list, name_type,
-                                                get_location_type, resource_group_name_type)
+from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
                           validate_name, validate_app_name, validate_deployment_name, validate_nodes_count)
 from ._utils import ApiType
@@ -18,16 +17,12 @@ name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
 env_type = CLIArgumentType(
     validator=validate_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
-service_name_type = CLIArgumentType(options_list=[
-    '--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
-app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.',
-    validator=validate_app_name, configured_default='spring-cloud-app')
+service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='Name of Azure Spring Cloud, you can configure the default service using az configure --defaults spring-cloud=<name>.', configured_default='spring-cloud')
+app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-cloud-app')
 
 
+# pylint: disable=too-many-statements
 def load_arguments(self, _):
-
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     with self.argument_context('spring-cloud') as c:
         c.argument('resource_group', arg_type=resource_group_name_type)

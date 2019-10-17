@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
+
+# pylint: disable=too-few-public-methods, too-many-instance-attributes
+
 import threading
 
 
@@ -95,6 +98,7 @@ class _FileChunkDownloader(object):
     def _write_to_stream(self, chunk_data, chunk_start):
         pass
 
+    # pylint: disable=protected-access
     def _download_chunk(self, chunk_start, chunk_end):
         return self.file_service._get_file(
             self.share_name,
@@ -141,6 +145,7 @@ class _ParallelFileChunkDownloader(_FileChunkDownloader):
             self.stream.write(chunk_data)
 
 
+# pylint: disable=useless-super-delegation
 class _SequentialFileChunkDownloader(_FileChunkDownloader):
     def __init__(self, file_service, share_name, directory_name, file_name, download_size, chunk_size, progress,
                  start_range, end_range, stream, progress_callback, validate_content, timeout, operation_context,

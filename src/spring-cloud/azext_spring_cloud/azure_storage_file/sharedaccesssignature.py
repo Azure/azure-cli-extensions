@@ -34,6 +34,7 @@ class FileSharedAccessSignature(SharedAccessSignature):
         super(FileSharedAccessSignature, self).__init__(
             account_name, account_key, x_ms_version=X_MS_VERSION)
 
+    # pylint: disable=redefined-builtin
     def generate_file(self, share_name, directory_name=None, file_name=None,
                       permission=None, expiry=None, start=None, id=None,
                       ip=None, protocol=None, cache_control=None,
@@ -119,6 +120,7 @@ class FileSharedAccessSignature(SharedAccessSignature):
 
         return sas.get_token()
 
+    # pylint: disable=redefined-builtin
     def generate_share(self, share_name, permission=None, expiry=None,
                        start=None, id=None, ip=None, protocol=None,
                        cache_control=None, content_disposition=None,
@@ -195,6 +197,7 @@ class FileSharedAccessSignature(SharedAccessSignature):
         return sas.get_token()
 
 
+# pylint: disable=useless-super-delegation
 class _FileSharedAccessHelper(_SharedAccessHelper):
     def __init__(self):
         super(_FileSharedAccessHelper, self).__init__()

@@ -16,7 +16,7 @@ helps['spring-cloud create'] = """
     short-summary: Create an Azure Spring Cloud.
     examples:
     - name: Create a new Azure Spring Cloud in westus.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus      
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
 """
 
 helps['spring-cloud delete'] = """
@@ -71,7 +71,7 @@ helps['spring-cloud app create'] = """
     - name: Create an app with the default configuration.
       text: az spring-cloud app create -n MyApp -s Myspring-cloud
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
-      text: az spring-cloud app create -n MyApp -s Myspring-cloud --is-public true --cpu 2 --memory 3 --instance-count 3 
+      text: az spring-cloud app create -n MyApp -s Myspring-cloud --is-public true --cpu 2 --memory 3 --instance-count 3
 """
 
 helps['spring-cloud app update'] = """
