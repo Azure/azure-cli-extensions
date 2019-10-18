@@ -2186,26 +2186,15 @@
                 "downloadUrl": "https://github.com/Azure/az-vmware-cli/releases/download/v0.1.0/vmware_cs-0.1.0-py2.py3-none-any.whl",
                 "filename": "vmware_cs-0.1.0-py2.py3-none-any.whl",
                 "metadata": {
+                    "azext.isPreview": true,
+                    "azext.maxCliCoreVersion": "2.1.0",
                     "azext.minCliCoreVersion": "2.0.67",
-                    "classifiers": [
-                        "Development Status :: 4 - Beta",
-                        "Intended Audience :: Developers",
-                        "Intended Audience :: System Administrators",
-                        "Programming Language :: Python",
-                        "Programming Language :: Python :: 2",
-                        "Programming Language :: Python :: 2.7",
-                        "Programming Language :: Python :: 3",
-                        "Programming Language :: Python :: 3.4",
-                        "Programming Language :: Python :: 3.5",
-                        "Programming Language :: Python :: 3.6",
-                        "License :: OSI Approved :: MIT License"
-                    ],
                     "extensions": {
                         "python.details": {
                             "contacts": [
                                 {
                                     "email": "shimitta@microsoft.com",
-                                    "name": "Shivam Mittal",
+                                    "name": "Microsoft Corporation",
                                     "role": "author"
                                 }
                             ],
@@ -2217,10 +2206,18 @@
                             }
                         }
                     },
+                    "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "vmware-cs",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "azure-cli-core"
+                            ]
+                        }
+                    ],
                     "summary": "Manage Azure VMware Solution.",
                     "version": "0.1.0"
                 },
