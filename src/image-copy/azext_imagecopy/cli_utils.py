@@ -25,9 +25,18 @@ def run_cli_command(cmd, return_as_json=False):
             if cmd_output:
                 # temp cleanup to deal with new warning string  - issue #979
                 # Related to: https://github.com/Azure/azure-cli/issues/10687
-                warn_string = "WARNING: The default kind for created storage account will change to 'StorageV2' from 'Storage' in future"
-                cmd_output = cmd_output.replace(warn_string, "")
+                if not ((cmd_output.startswith('{')) or (cmd_output.startswith('['))):
+
+                    temp_output = cmd_output.split('{', 1)
+
+                    if(temp_output[0].startswith('[\n')):
+                        cmd_output = '[\n{\n' + temp_output[1]
+                    else:
+                        cmd_output = '{' + temp_output[1]
+                    
+                    logger.debug('JSON Cleanup Executed: resulting command output: %s', cmd_output)
                 # end of temp cleanup
+
                 json_output = json.loads(cmd_output)
                 return json_output
 
