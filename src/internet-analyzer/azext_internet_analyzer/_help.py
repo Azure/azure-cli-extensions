@@ -20,7 +20,7 @@ helps['internet-analyzer profile create'] = """
     examples:
       - name: Creates an NetworkExperiment Profile in a Resource Group
         text: |-
-               az internet-analyzer profile create --profile-name "Profile1" --name "rg1" --location \\
+               az internet-analyzer profile create --resource-group "rg1" --name "Profile1" --location \\
                "WestUs" --enabled-state "Enabled"
 """
 
@@ -30,7 +30,7 @@ helps['internet-analyzer profile update'] = """
     examples:
       - name: Updates an Experiment
         text: |-
-               az internet-analyzer profile update --profile-name "Profile1" --name "rg1" \\
+               az internet-analyzer profile update --resource-group "rg1" --name "Profile1" \\
                --enabled-state "Enabled"
 """
 
@@ -40,7 +40,7 @@ helps['internet-analyzer profile delete'] = """
     examples:
       - name: Deletes an NetworkExperiment Profile by ProfileName
         text: |-
-               az internet-analyzer profile delete --name "rg1" --profile-name "Profile1"
+               az internet-analyzer profile delete --resource-group "rg1" --name "Profile1"
 """
 
 helps['internet-analyzer profile list'] = """
