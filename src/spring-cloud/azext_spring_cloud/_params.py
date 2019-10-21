@@ -63,12 +63,12 @@ def load_arguments(self, _):
             c.argument('enable_persistent_storage', arg_type=get_three_state_flag(),
                        help='If true, mount a 50G disk with default path.')
 
-    for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy']:
+    for scope in ['spring-cloud app update', 'spring-cloud app deployment create', 'spring-cloud app deploy', 'spring-cloud app create']:
         with self.argument_context(scope) as c:
             c.argument('runtime_version', arg_type=get_enum_type(RuntimeVersion),
                        help='Runtime version of used language')
             c.argument('jvm_options', type=str,
-                       help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash prase error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
+                       help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
 
     for scope in ['spring-cloud app create', 'spring-cloud app deployment create']:

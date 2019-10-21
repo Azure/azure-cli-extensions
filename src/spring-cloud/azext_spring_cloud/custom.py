@@ -88,6 +88,9 @@ def app_create(cmd, client, resource_group, service, name,
                cpu=None,
                memory=None,
                instance_count=None,
+               runtime_version=None,
+               jvm_options=None,
+               env=None,
                enable_persistent_storage=None):
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
@@ -108,7 +111,10 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
-        instance_count=instance_count)
+        instance_count=instance_count,
+        environment_variables=env,
+        jvm_options=jvm_options,
+        runtime_version=runtime_version,)
     user_source_info = models.UserSourceInfo(
         relative_path='<default>', type='Jar')
     properties = models.DeploymentResourceProperties(

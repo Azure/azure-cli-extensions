@@ -32,7 +32,7 @@ def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
     if matchObj is None:
-        raise CLIError('--name can only contain numbers and lowercases')
+        raise CLIError('--name should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
 def validate_app_name(namespace):
@@ -41,7 +41,7 @@ def validate_app_name(namespace):
         matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.app)
         if matchObj is None:
             raise CLIError(
-                'invalid app name, --app can only contain numbers and lowercases')
+                '--app should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
 def validate_deployment_name(namespace):
@@ -54,7 +54,7 @@ def validate_deployment_name(namespace):
             r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.deployment)
         if matchObj is None:
             raise CLIError(
-                'invalid deployment name, --deployment can only contain numbers and lowercases')
+                '--deployment should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
 def validate_resource_id(namespace):
