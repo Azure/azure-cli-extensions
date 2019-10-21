@@ -53,6 +53,16 @@ helps['internet-analyzer profile show'] = """
     short-summary: show network experiment profile.
 """
 
+helps['internet-analyzer preconfigured-endpoint'] = """
+    type: group
+    short-summary: Commands to manage preconfigured endpoint.
+"""
+
+helps['internet-analyzer preconfigured-endpoint list'] = """
+    type: command
+    short-summary: list preconfigured endpoint.
+"""
+
 helps['internet-analyzer experiment'] = """
     type: group
     short-summary: Commands to manage experiment.
@@ -100,12 +110,8 @@ helps['internet-analyzer experiment show'] = """
     short-summary: show experiment.
 """
 
-helps['-'] = """
+helps['internet-analyzer profile experiment timeseries'] = """
     type: group
-    short-summary: Commands to manage front door.
+    short-summary: Commands to manage report.
 """
 
-helps['-'] = """
-    type: group
-    short-summary: Commands to manage policy.
-"""

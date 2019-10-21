@@ -14,8 +14,16 @@ def cf_network_experiment_profiles(cli_ctx, *_):
     return cf_internet_analyzer(cli_ctx).network_experiment_profiles
 
 
+def cf_preconfigured_endpoints(cli_ctx, *_):
+    return cf_internet_analyzer(cli_ctx).preconfigured_endpoints
+
+
 def cf_experiments(cli_ctx, *_):
     return cf_internet_analyzer(cli_ctx).experiments
+
+
+def cf_reports(cli_ctx, *_):
+    return cf_internet_analyzer(cli_ctx).reports
 
 
 def cf_front_doors(cli_ctx, *_):

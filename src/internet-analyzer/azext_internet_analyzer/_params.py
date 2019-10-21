@@ -45,6 +45,10 @@ def load_arguments(self, _):
         c.argument('name', id_part=None, help='Name of the Resource group within the Azure subscription.')
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
 
+    with self.argument_context('internet-analyzer preconfigured-endpoint list') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+
     with self.argument_context('internet-analyzer experiment create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')

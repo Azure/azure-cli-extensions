@@ -98,6 +98,16 @@ show a internet-analyzer experiment.
 |**--resource-group**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--profile-name**|str|The Profile identifier associated with the Tenant and Partner|profile_name|profileName|
 |**--name**|str|The Experiment identifier associated with the Experiment|experiment_name|experimentName|
+## internet-analyzer preconfigured-endpoint
+
+### internet-analyzer preconfigured-endpoint list
+
+list a internet-analyzer preconfigured-endpoint.
+
+|Option|Type|Description|Path (SDK)|Path (swagger)|
+|------|----|-----------|----------|--------------|
+|**--resource-group**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
+|**--name**|str|The Profile identifier associated with the Tenant and Partner|profile_name|profileName|
 ## internet-analyzer profile
 
 ### internet-analyzer profile create
@@ -173,3 +183,4 @@ show a internet-analyzer profile.
 |------|----|-----------|----------|--------------|
 |**--name**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--profile-name**|str|The Profile identifier associated with the Tenant and Partner|profile_name|profileName|
+## internet-analyzer profile experiment timeseries

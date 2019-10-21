@@ -82,6 +82,7 @@ class ApimgmtScenarioTest(ScenarioTest):
         self.cmd('internet-analyzer profile show  --name "rg1" --profile-name "Profile1"', checks=[
         ])
 
+# list -- list
 # create_or_update -- create
         self.cmd('internet-analyzer experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
         ])
