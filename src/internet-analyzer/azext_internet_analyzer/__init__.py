@@ -13,9 +13,9 @@ class FrontDoorCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         from azext_internet_analyzer._client_factory import cf_internet_analyzer
-        internet-analyzer_custom = CliCommandType(
-            operations_tmpl='azext_internet-analyzer.custom#{}',
-            client_factory=cf_internet-analyzer)
+        internet_analyzer_custom = CliCommandType(
+            operations_tmpl='azext_internet_analyzer.custom#{}',
+            client_factory=cf_internet_analyzer)
         super(FrontDoorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                       custom_command_type=internet_analyzer_custom)
 
