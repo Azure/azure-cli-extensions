@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='networkexperiment',
+    name='internet-analyzer',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools FrontDoor Extension',
    # TODO: Update author and email, if applicable
@@ -56,5 +56,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_networkexperiment': ['azext_metadata.json']},
+    package_data={'azext_internet-analyzer': ['azext_metadata.json']},
 )

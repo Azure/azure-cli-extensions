@@ -9,7 +9,7 @@
 # pylint: disable=unused-argument
 
 
-def create_networkexperiment_profile(cmd, client,
+def create_internet_analyzer_profile(cmd, client,
                                      profile_name,
                                      name,
                                      location=None,
@@ -26,7 +26,7 @@ def create_networkexperiment_profile(cmd, client,
     return client.create_or_update(profile_name=profile_name, resource_group_name=name, parameters=body)
 
 
-def update_networkexperiment_profile(cmd, client, body,
+def update_internet_analyzer_profile(cmd, client, body,
                                      profile_name,
                                      name,
                                      location=None,
@@ -43,14 +43,14 @@ def update_networkexperiment_profile(cmd, client, body,
     return client.create_or_update(profile_name=profile_name, resource_group_name=name, parameters=body)
 
 
-def list_networkexperiment_profile(cmd, client,
+def list_internet_analyzer_profile(cmd, client,
                                    name):
     if name is not None:
         return client.list_by_resource_group(resource_group_name=name)
     return client.list()
 
 
-def create_networkexperiment_experiment(cmd, client,
+def create_internet_analyzer_experiment(cmd, client,
                                         resource_group,
                                         profile_name,
                                         name,
@@ -76,7 +76,7 @@ def create_networkexperiment_experiment(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def update_networkexperiment_experiment(cmd, client, body,
+def update_internet_analyzer_experiment(cmd, client, body,
                                         resource_group,
                                         profile_name,
                                         name,
@@ -102,7 +102,7 @@ def update_networkexperiment_experiment(cmd, client, body,
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def list_networkexperiment_experiment(cmd, client,
+def list_internet_analyzer_experiment(cmd, client,
                                       resource_group,
                                       profile_name):
     return client.list_by_profile(resource_group_name=resource_group, profile_name=profile_name)

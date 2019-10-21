@@ -2,11 +2,11 @@
 
 ## -
 
-## networkexperiment experiment
+## internet-analyzer experiment
 
-### networkexperiment experiment create
+### internet-analyzer experiment create
 
-create a networkexperiment experiment.
+create a internet-analyzer experiment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -26,7 +26,7 @@ create a networkexperiment experiment.
 **Example: Creates an Experiment**
 
 ```
-networkexperiment experiment create --resource-group rg1
+internet-analyzer experiment create --resource-group rg1
         --profile-name Profile1
         --name Experiment1
         --description "this is my first experiment!"
@@ -36,9 +36,9 @@ networkexperiment experiment create --resource-group rg1
         --endpoint-b-endpoint endpointB.net
         --enabled-state Enabled
 ```
-### networkexperiment experiment update
+### internet-analyzer experiment update
 
-update a networkexperiment experiment.
+update a internet-analyzer experiment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -58,15 +58,15 @@ update a networkexperiment experiment.
 **Example: Updates an Experiment**
 
 ```
-networkexperiment experiment update --resource-group rg1
+internet-analyzer experiment update --resource-group rg1
         --profile-name Profile1
         --name Experiment1
         --description string
         --enabled-state Enabled
 ```
-### networkexperiment experiment delete
+### internet-analyzer experiment delete
 
-delete a networkexperiment experiment.
+delete a internet-analyzer experiment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -77,32 +77,32 @@ delete a networkexperiment experiment.
 **Example: Deletes an Experiment**
 
 ```
-networkexperiment experiment delete --resource-group rg1
+internet-analyzer experiment delete --resource-group rg1
         --profile-name Profile1
         --name Experiment1
 ```
-### networkexperiment experiment list
+### internet-analyzer experiment list
 
-list a networkexperiment experiment.
+list a internet-analyzer experiment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--profile-name**|str|The Profile identifier associated with the Tenant and Partner|profile_name|profileName|
-### networkexperiment experiment show
+### internet-analyzer experiment show
 
-show a networkexperiment experiment.
+show a internet-analyzer experiment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
 |**--profile-name**|str|The Profile identifier associated with the Tenant and Partner|profile_name|profileName|
 |**--name**|str|The Experiment identifier associated with the Experiment|experiment_name|experimentName|
-## networkexperiment profile
+## internet-analyzer profile
 
-### networkexperiment profile create
+### internet-analyzer profile create
 
-create a networkexperiment profile.
+create a internet-analyzer profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -117,14 +117,14 @@ create a networkexperiment profile.
 **Example: Creates an NetworkExperiment Profile in a Resource Group**
 
 ```
-networkexperiment profile create --profile-name Profile1
+internet-analyzer profile create --profile-name Profile1
         --name rg1
         --location WestUs
         --enabled-state Enabled
 ```
-### networkexperiment profile update
+### internet-analyzer profile update
 
-update a networkexperiment profile.
+update a internet-analyzer profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -139,13 +139,13 @@ update a networkexperiment profile.
 **Example: Updates an Experiment**
 
 ```
-networkexperiment profile update --profile-name Profile1
+internet-analyzer profile update --profile-name Profile1
         --name rg1
         --enabled-state Enabled
 ```
-### networkexperiment profile delete
+### internet-analyzer profile delete
 
-delete a networkexperiment profile.
+delete a internet-analyzer profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -155,19 +155,19 @@ delete a networkexperiment profile.
 **Example: Deletes an NetworkExperiment Profile by ProfileName**
 
 ```
-networkexperiment profile delete --name rg1
+internet-analyzer profile delete --name rg1
         --profile-name Profile1
 ```
-### networkexperiment profile list
+### internet-analyzer profile list
 
-list a networkexperiment profile.
+list a internet-analyzer profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--name**|str|Name of the Resource group within the Azure subscription.|resource_group_name|resourceGroupName|
-### networkexperiment profile show
+### internet-analyzer profile show
 
-show a networkexperiment profile.
+show a internet-analyzer profile.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|

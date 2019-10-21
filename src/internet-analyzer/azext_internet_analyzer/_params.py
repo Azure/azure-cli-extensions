@@ -16,7 +16,7 @@ from azure.cli.core.commands.parameters import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('networkexperiment profile create') as c:
+    with self.argument_context('internet-analyzer profile create') as c:
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='Name of the Resource group within the Azure subscription.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -25,7 +25,7 @@ def load_arguments(self, _):
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
         c.argument('etag', id_part=None, help='Gets a unique read-only string that changes whenever the resource is updated.')
 
-    with self.argument_context('networkexperiment profile update') as c:
+    with self.argument_context('internet-analyzer profile update') as c:
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='Name of the Resource group within the Azure subscription.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -34,18 +34,18 @@ def load_arguments(self, _):
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
         c.argument('etag', id_part=None, help='Gets a unique read-only string that changes whenever the resource is updated.')
 
-    with self.argument_context('networkexperiment profile delete') as c:
+    with self.argument_context('internet-analyzer profile delete') as c:
         c.argument('name', id_part=None, help='Name of the Resource group within the Azure subscription.')
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
 
-    with self.argument_context('networkexperiment profile list') as c:
+    with self.argument_context('internet-analyzer profile list') as c:
         c.argument('name', id_part=None, help='Name of the Resource group within the Azure subscription.')
 
-    with self.argument_context('networkexperiment profile show') as c:
+    with self.argument_context('internet-analyzer profile show') as c:
         c.argument('name', id_part=None, help='Name of the Resource group within the Azure subscription.')
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
 
-    with self.argument_context('networkexperiment experiment create') as c:
+    with self.argument_context('internet-analyzer experiment create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
@@ -59,7 +59,7 @@ def load_arguments(self, _):
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
         c.argument('resource_state', arg_type=get_enum_type(['Creating', 'Enabling', 'Enabled', 'Disabling', 'Disabled', 'Deleting']), id_part=None, help='Resource status.')
 
-    with self.argument_context('networkexperiment experiment update') as c:
+    with self.argument_context('internet-analyzer experiment update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
@@ -73,16 +73,16 @@ def load_arguments(self, _):
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
         c.argument('resource_state', arg_type=get_enum_type(['Creating', 'Enabling', 'Enabled', 'Disabling', 'Disabled', 'Deleting']), id_part=None, help='Resource status.')
 
-    with self.argument_context('networkexperiment experiment delete') as c:
+    with self.argument_context('internet-analyzer experiment delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
 
-    with self.argument_context('networkexperiment experiment list') as c:
+    with self.argument_context('internet-analyzer experiment list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
 
-    with self.argument_context('networkexperiment experiment show') as c:
+    with self.argument_context('internet-analyzer experiment show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
