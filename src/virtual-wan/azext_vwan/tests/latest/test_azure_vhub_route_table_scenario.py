@@ -10,19 +10,17 @@ class AzureVWanRouteTableScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_route_table')
     def test_azure_vwan_route_table(self, resource_group):
-
+        import time
         self.kwargs.update({
-            'vwan': 'vwan',
-            'vhub': 'vhub',
-            'routetable': 'routetable',
+            'vwan': 'testvwan',
+            'vhub': 'testvhub',
+            'routetable': 'testrtable',
             'rg': resource_group
         })
-        self.cmd('network vwan -n {vwan} -g {rg}')
+        self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24')
-        self.cmd('network vhub route-table create -n {routetable} -g {rg} --vhub-name {vhub}',
-                 ' --attachments All_Vnets --destination-type CIDR',
-                 ' --destinations 10.4.0.0/16 10.6.0.0/16 --next-hop-type IPAddress',
-                 ' --next-hops 10.0.0.68', checks=[
+        time.sleep(120)
+        self.cmd('network vhub route-table create -n {routetable} -g {rg} --vhub-name {vhub} --attachments All_Vnets --destination-type CIDR --destinations 10.4.0.0/16 10.6.0.0/16 --next-hop-type IPAddress --next-hops 10.0.0.68', checks=[
                 self.check('name', self.kwargs['routetable'])
             ])
         self.cmd('network vhub route-table show -n {routetable} -g {rg} --vhub-name {vhub}', checks=[
@@ -37,9 +35,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
             self.check('attachedConnections[0]', 'All_Branches')
         ])
 
-        self.cmd('network vhub route-table route add -n {routetable} -g {rg} --vhub-name {vhub}',
-                 ' --destination-type Service --destinations Skype Sharepoint',
-                 ' --next-hop-type IPAddress --next-hops "10.0.0.68"', checks=[
+        self.cmd('network vhub route-table route add -n {routetable} -g {rg} --vhub-name {vhub} --destination-type Service --destinations Skype Sharepoint --next-hop-type IPAddress --next-hops "10.0.0.68"', checks=[
                 self.check('length(@)', 2)
             ])
 
