@@ -12,52 +12,37 @@
 from .event_subscription_destination import EventSubscriptionDestination
 
 
-class WebHookEventSubscriptionDestination(EventSubscriptionDestination):
-    """Information about the webhook destination for an event subscription.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
+class AzureFunctionEventSubscriptionDestination(EventSubscriptionDestination):
+    """Information about the azure function destination for an event subscription.
 
     All required parameters must be populated in order to send to Azure.
 
     :param endpoint_type: Required. Constant filled by server.
     :type endpoint_type: str
-    :param endpoint_url: The URL that represents the endpoint of the
-     destination of an event subscription.
-    :type endpoint_url: str
-    :ivar endpoint_base_url: The base URL that represents the endpoint of the
-     destination of an event subscription.
-    :vartype endpoint_base_url: str
+    :param resource_id: The Azure Resource Id that represents the endpoint of
+     the Azure Function destination of an event subscription.
+    :type resource_id: str
     :param max_events_per_batch: Maximum number of events per batch.
     :type max_events_per_batch: int
     :param preferred_batch_size_in_kilobytes: Preferred batch size in
      Kilobytes.
     :type preferred_batch_size_in_kilobytes: int
-    :param azure_active_directory_application_object_id: The active directory
-     application id to get access token that is included as the bearer token in
-     delivery requests.
-    :type azure_active_directory_application_object_id: str
     """
 
     _validation = {
         'endpoint_type': {'required': True},
-        'endpoint_base_url': {'readonly': True},
     }
 
     _attribute_map = {
         'endpoint_type': {'key': 'endpointType', 'type': 'str'},
-        'endpoint_url': {'key': 'properties.endpointUrl', 'type': 'str'},
-        'endpoint_base_url': {'key': 'properties.endpointBaseUrl', 'type': 'str'},
+        'resource_id': {'key': 'properties.resourceId', 'type': 'str'},
         'max_events_per_batch': {'key': 'properties.maxEventsPerBatch', 'type': 'int'},
         'preferred_batch_size_in_kilobytes': {'key': 'properties.preferredBatchSizeInKilobytes', 'type': 'int'},
-        'azure_active_directory_application_object_id': {'key': 'properties.azureActiveDirectoryApplicationObjectId', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
-        super(WebHookEventSubscriptionDestination, self).__init__(**kwargs)
-        self.endpoint_url = kwargs.get('endpoint_url', None)
-        self.endpoint_base_url = None
+        super(AzureFunctionEventSubscriptionDestination, self).__init__(**kwargs)
+        self.resource_id = kwargs.get('resource_id', None)
         self.max_events_per_batch = kwargs.get('max_events_per_batch', None)
         self.preferred_batch_size_in_kilobytes = kwargs.get('preferred_batch_size_in_kilobytes', None)
-        self.azure_active_directory_application_object_id = kwargs.get('azure_active_directory_application_object_id', None)
-        self.endpoint_type = 'WebHook'
+        self.endpoint_type = 'AzureFunction'

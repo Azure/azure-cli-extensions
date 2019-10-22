@@ -28,6 +28,15 @@ class WebHookEventSubscriptionDestination(EventSubscriptionDestination):
     :ivar endpoint_base_url: The base URL that represents the endpoint of the
      destination of an event subscription.
     :vartype endpoint_base_url: str
+    :param max_events_per_batch: Maximum number of events per batch.
+    :type max_events_per_batch: int
+    :param preferred_batch_size_in_kilobytes: Preferred batch size in
+     Kilobytes.
+    :type preferred_batch_size_in_kilobytes: int
+    :param azure_active_directory_application_object_id: The active directory
+     application id to get access token that is included as the bearer token in
+     delivery requests.
+    :type azure_active_directory_application_object_id: str
     """
 
     _validation = {
@@ -39,10 +48,16 @@ class WebHookEventSubscriptionDestination(EventSubscriptionDestination):
         'endpoint_type': {'key': 'endpointType', 'type': 'str'},
         'endpoint_url': {'key': 'properties.endpointUrl', 'type': 'str'},
         'endpoint_base_url': {'key': 'properties.endpointBaseUrl', 'type': 'str'},
+        'max_events_per_batch': {'key': 'properties.maxEventsPerBatch', 'type': 'int'},
+        'preferred_batch_size_in_kilobytes': {'key': 'properties.preferredBatchSizeInKilobytes', 'type': 'int'},
+        'azure_active_directory_application_object_id': {'key': 'properties.azureActiveDirectoryApplicationObjectId', 'type': 'str'},
     }
 
-    def __init__(self, *, endpoint_url: str=None, **kwargs) -> None:
+    def __init__(self, *, endpoint_url: str=None, max_events_per_batch: int=None, preferred_batch_size_in_kilobytes: int=None, azure_active_directory_application_object_id: str=None, **kwargs) -> None:
         super(WebHookEventSubscriptionDestination, self).__init__(**kwargs)
         self.endpoint_url = endpoint_url
         self.endpoint_base_url = None
+        self.max_events_per_batch = max_events_per_batch
+        self.preferred_batch_size_in_kilobytes = preferred_batch_size_in_kilobytes
+        self.azure_active_directory_application_object_id = azure_active_directory_application_object_id
         self.endpoint_type = 'WebHook'
