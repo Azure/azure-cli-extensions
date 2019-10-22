@@ -39,7 +39,7 @@ class Topic(TrackedResource):
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the topic. Possible values
-     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventV01Schema'.
+     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventSchemaV1_0'.
      Default value: "EventGridSchema" .
     :type input_schema: str or ~azure.mgmt.eventgrid.models.InputSchema
     :param input_schema_mapping: This enables publishing using custom event
@@ -48,6 +48,8 @@ class Topic(TrackedResource):
      schema.
     :type input_schema_mapping:
      ~azure.mgmt.eventgrid.models.InputSchemaMapping
+    :ivar metric_resource_id: Metric resource id for the topic.
+    :vartype metric_resource_id: str
     """
 
     _validation = {
@@ -57,6 +59,7 @@ class Topic(TrackedResource):
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
         'endpoint': {'readonly': True},
+        'metric_resource_id': {'readonly': True},
     }
 
     _attribute_map = {
@@ -69,6 +72,7 @@ class Topic(TrackedResource):
         'endpoint': {'key': 'properties.endpoint', 'type': 'str'},
         'input_schema': {'key': 'properties.inputSchema', 'type': 'str'},
         'input_schema_mapping': {'key': 'properties.inputSchemaMapping', 'type': 'InputSchemaMapping'},
+        'metric_resource_id': {'key': 'properties.metricResourceId', 'type': 'str'},
     }
 
     def __init__(self, *, location: str, tags=None, input_schema="EventGridSchema", input_schema_mapping=None, **kwargs) -> None:
@@ -77,3 +81,4 @@ class Topic(TrackedResource):
         self.endpoint = None
         self.input_schema = input_schema
         self.input_schema_mapping = input_schema_mapping
+        self.metric_resource_id = None

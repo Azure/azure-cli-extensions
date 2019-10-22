@@ -25,7 +25,7 @@ class EventSubscriptionsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2019-02-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-01-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class EventSubscriptionsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-02-01-preview"
+        self.api_version = "2020-01-01-preview"
 
         self.config = config
 
@@ -82,7 +82,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -91,8 +91,8 @@ class EventSubscriptionsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.get(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
+        request = self._client.get(url, query_parameters)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)
@@ -128,7 +128,6 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -141,8 +140,9 @@ class EventSubscriptionsOperations(object):
         body_content = self._serialize.body(event_subscription_info, 'EventSubscription')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
-        response = self._client.send(request, stream=False, **operation_config)
+        request = self._client.put(url, query_parameters)
+        response = self._client.send(
+            request, header_parameters, body_content, stream=False, **operation_config)
 
         if response.status_code not in [201]:
             exp = CloudError(response)
@@ -244,6 +244,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -252,8 +253,8 @@ class EventSubscriptionsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.delete(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
+        request = self._client.delete(url, query_parameters)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200, 202, 204]:
             exp = CloudError(response)
@@ -333,7 +334,6 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -346,8 +346,9 @@ class EventSubscriptionsOperations(object):
         body_content = self._serialize.body(event_subscription_update_parameters, 'EventSubscriptionUpdateParameters')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters, header_parameters, body_content)
-        response = self._client.send(request, stream=False, **operation_config)
+        request = self._client.patch(url, query_parameters)
+        response = self._client.send(
+            request, header_parameters, body_content, stream=False, **operation_config)
 
         if response.status_code not in [201]:
             exp = CloudError(response)
@@ -472,7 +473,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -481,8 +482,8 @@ class EventSubscriptionsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
+        request = self._client.post(url, query_parameters)
+        response = self._client.send(request, header_parameters, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)
@@ -502,20 +503,27 @@ class EventSubscriptionsOperations(object):
     get_full_url.metadata = {'url': '/{scope}/providers/Microsoft.EventGrid/eventSubscriptions/{eventSubscriptionName}/getFullUrl'}
 
     def list_global_by_subscription(
-            self, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """Get an aggregated list of all global event subscriptions under an Azure
         subscription.
 
         List all aggregated global event subscriptions under a specific Azure
         subscription.
 
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -543,8 +551,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -552,7 +558,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -561,8 +567,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -583,7 +590,7 @@ class EventSubscriptionsOperations(object):
     list_global_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/eventSubscriptions'}
 
     def list_global_by_subscription_for_topic_type(
-            self, topic_type_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, topic_type_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all global event subscriptions for a topic type.
 
         List all global event subscriptions under an Azure subscription for a
@@ -591,13 +598,20 @@ class EventSubscriptionsOperations(object):
 
         :param topic_type_name: Name of the topic type
         :type topic_type_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -626,8 +640,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -635,7 +647,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -644,8 +656,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -666,7 +679,7 @@ class EventSubscriptionsOperations(object):
     list_global_by_subscription_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_global_by_resource_group(
-            self, resource_group_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all global event subscriptions under an Azure subscription and
         resource group.
 
@@ -676,13 +689,20 @@ class EventSubscriptionsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -711,8 +731,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -720,7 +738,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -729,8 +747,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -751,7 +770,7 @@ class EventSubscriptionsOperations(object):
     list_global_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/eventSubscriptions'}
 
     def list_global_by_resource_group_for_topic_type(
-            self, resource_group_name, topic_type_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, topic_type_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all global event subscriptions under a resource group for a topic
         type.
 
@@ -763,13 +782,20 @@ class EventSubscriptionsOperations(object):
         :type resource_group_name: str
         :param topic_type_name: Name of the topic type
         :type topic_type_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -799,8 +825,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -808,7 +832,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -817,8 +841,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -839,7 +864,7 @@ class EventSubscriptionsOperations(object):
     list_global_by_resource_group_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_regional_by_subscription(
-            self, location, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, location, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all regional event subscriptions under an Azure subscription.
 
         List all event subscriptions from the given location under a specific
@@ -847,13 +872,20 @@ class EventSubscriptionsOperations(object):
 
         :param location: Name of the location
         :type location: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -882,8 +914,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -891,7 +921,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -900,8 +930,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -922,7 +953,7 @@ class EventSubscriptionsOperations(object):
     list_regional_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/locations/{location}/eventSubscriptions'}
 
     def list_regional_by_resource_group(
-            self, resource_group_name, location, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, location, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all regional event subscriptions under an Azure subscription and
         resource group.
 
@@ -934,13 +965,20 @@ class EventSubscriptionsOperations(object):
         :type resource_group_name: str
         :param location: Name of the location
         :type location: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -970,8 +1008,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -979,7 +1015,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -988,8 +1024,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1010,7 +1047,7 @@ class EventSubscriptionsOperations(object):
     list_regional_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/locations/{location}/eventSubscriptions'}
 
     def list_regional_by_subscription_for_topic_type(
-            self, location, topic_type_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, location, topic_type_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all regional event subscriptions under an Azure subscription for a
         topic type.
 
@@ -1021,13 +1058,20 @@ class EventSubscriptionsOperations(object):
         :type location: str
         :param topic_type_name: Name of the topic type
         :type topic_type_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -1057,8 +1101,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -1066,7 +1108,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1075,8 +1117,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1097,7 +1140,7 @@ class EventSubscriptionsOperations(object):
     list_regional_by_subscription_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.EventGrid/locations/{location}/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_regional_by_resource_group_for_topic_type(
-            self, resource_group_name, location, topic_type_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, location, topic_type_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all regional event subscriptions under an Azure subscription and
         resource group for a topic type.
 
@@ -1111,13 +1154,20 @@ class EventSubscriptionsOperations(object):
         :type location: str
         :param topic_type_name: Name of the topic type
         :type topic_type_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -1148,8 +1198,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -1157,7 +1205,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1166,8 +1214,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1188,7 +1237,7 @@ class EventSubscriptionsOperations(object):
     list_regional_by_resource_group_for_topic_type.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/locations/{location}/topicTypes/{topicTypeName}/eventSubscriptions'}
 
     def list_by_resource(
-            self, resource_group_name, provider_namespace, resource_type_name, resource_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, provider_namespace, resource_type_name, resource_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all event subscriptions for a specific topic.
 
         List all event subscriptions that have been created for a specific
@@ -1203,13 +1252,20 @@ class EventSubscriptionsOperations(object):
         :type resource_type_name: str
         :param resource_name: Name of the resource
         :type resource_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -1241,8 +1297,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -1250,7 +1304,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1259,8 +1313,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1281,7 +1336,7 @@ class EventSubscriptionsOperations(object):
     list_by_resource.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerNamespace}/{resourceTypeName}/{resourceName}/providers/Microsoft.EventGrid/eventSubscriptions'}
 
     def list_by_domain_topic(
-            self, resource_group_name, domain_name, topic_name, filter=None, top=None, label=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, domain_name, topic_name, filter=None, top=None, custom_headers=None, raw=False, **operation_config):
         """List all event subscriptions for a specific domain topic.
 
         List all event subscriptions that have been created for a specific
@@ -1294,13 +1349,20 @@ class EventSubscriptionsOperations(object):
         :type domain_name: str
         :param topic_name: Name of the domain topic
         :type topic_name: str
-        :param filter: Filter the results using OData syntax.
+        :param filter: The query used to filter the search results using OData
+         syntax. Filtering is permitted on the 'name' property only and with
+         limited number of OData operations. These operations are: the
+         'contains' function as well as the following logical operations: not,
+         and, or, eq (for equal), and ne (for not equal). No arithmetic
+         operations are supported. The following is a valid filter example:
+         $filter=contains(namE, 'PATTERN') and name ne 'PATTERN-1'. The
+         following is not a valid filter example: $filter=location eq 'westus'.
         :type filter: str
-        :param top: The number of results to return.
+        :param top: The number of results to return per page for the list
+         operation. Valid range for top parameter is 1 to 100. If not
+         specified, the default number of results to be returned is 20 items
+         per page.
         :type top: int
-        :param label: The label used to filter the results for event
-         subscriptions list.
-        :type label: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -1331,8 +1393,6 @@ class EventSubscriptionsOperations(object):
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
                 if top is not None:
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
-                if label is not None:
-                    query_parameters['label'] = self._serialize.query("label", label, 'str')
 
             else:
                 url = next_link
@@ -1340,7 +1400,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1349,8 +1409,9 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
-            response = self._client.send(request, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters)
+            response = self._client.send(
+                request, header_parameters, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)

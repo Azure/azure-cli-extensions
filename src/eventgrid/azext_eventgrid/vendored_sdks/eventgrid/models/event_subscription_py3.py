@@ -43,7 +43,7 @@ class EventSubscription(Resource):
     :type expiration_time_utc: datetime
     :param event_delivery_schema: The event delivery schema for the event
      subscription. Possible values include: 'EventGridSchema',
-     'CloudEventV01Schema', 'CustomInputSchema'
+     'CustomInputSchema', 'CloudEventSchemaV1_0'
     :type event_delivery_schema: str or
      ~azure.mgmt.eventgrid.models.EventDeliverySchema
     :param retry_policy: The retry policy for events. This can be used to
