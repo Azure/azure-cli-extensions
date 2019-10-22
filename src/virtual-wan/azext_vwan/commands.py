@@ -89,14 +89,14 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_hub_routes')
         g.custom_command('remove', 'remove_hub_route', supports_no_wait=True)
 
-    with self.command_group('network vhub route-table', network_vhub_route_table_sdk) as g:
+    with self.command_group('network vhub route-table', network_vhub_route_table_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
         g.custom_command('create', 'create_vhub_route_table', supports_no_wait=True)
         g.generic_update_command('update', custom_func_name='update_vhub_route_table',setter_arg_name='virtual_hub_route_table_v2_parameters', supports_no_wait=True)
         g.show_command('show', 'get')
         g.command('list', 'list')
         g.command('delete', 'delete')
 
-    with self.command_group('network vhub route-table route', network_vhub_route_table_sdk) as g:
+    with self.command_group('network vhub route-table route', network_vhub_route_table_sdk, resource_type=CUSTOM_VHUB_ROUTE_TABLE) as g:
         g.custom_command('add', 'add_hub_routetable_route', supports_no_wait=True)
         g.custom_command('list', 'list_hub_routetable_route')
         g.custom_command('remove', 'remove_hub_routetable_route', supports_no_wait=True)

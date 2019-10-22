@@ -122,12 +122,12 @@ helps['network vhub route-table route add'] = """
             az network vhub route-table route add -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --destination-type Service --destinations Skype Sharepoint --next-hop-type IPAddress --next-hops "10.0.0.68"
 """
 
-helps['network vhub route-table list'] = """
+helps['network vhub route-table route list'] = """
     type: command
     short-summary: List routes in the virtual hub route table.
 """
 
-helps['network vhub route-table remove'] = """
+helps['network vhub route-table route remove'] = """
     type: command
     short-summary: Remove a route from route table of the virtual hub.
 """

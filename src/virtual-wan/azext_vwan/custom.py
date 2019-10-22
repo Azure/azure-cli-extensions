@@ -219,7 +219,7 @@ def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
     poller = sdk_no_wait(no_wait, client.create_or_update,
                          resource_group_name, virtual_hub_name, route_table_name, route_table)
     try:
-        return poller.result().routes
+        return poller.result()
     except AttributeError:
         return
 
