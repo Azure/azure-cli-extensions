@@ -871,6 +871,7 @@ class WebApplicationFirewallOperator(str, Enum):
     begins_with = "BeginsWith"
     ends_with = "EndsWith"
     regex = "Regex"
+    geo_match = "GeoMatch"
 
 
 class WebApplicationFirewallTransform(str, Enum):

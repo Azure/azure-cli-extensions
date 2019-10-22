@@ -192,6 +192,7 @@ try:
     from ._models_py3 import IPAddressAvailabilityResult
     from ._models_py3 import IPConfiguration
     from ._models_py3 import IPConfigurationProfile
+    from ._models_py3 import IpGroup
     from ._models_py3 import IpsecPolicy
     from ._models_py3 import IpTag
     from ._models_py3 import Ipv6ExpressRouteCircuitPeeringConfig
@@ -550,6 +551,7 @@ except (SyntaxError, ImportError):
     from ._models import IPAddressAvailabilityResult
     from ._models import IPConfiguration
     from ._models import IPConfigurationProfile
+    from ._models import IpGroup
     from ._models import IpsecPolicy
     from ._models import IpTag
     from ._models import Ipv6ExpressRouteCircuitPeeringConfig
@@ -755,6 +757,7 @@ from ._paged_models import FirewallPolicyRuleGroupPaged
 from ._paged_models import FrontendIPConfigurationPaged
 from ._paged_models import HubVirtualNetworkConnectionPaged
 from ._paged_models import InboundNatRulePaged
+from ._paged_models import IpGroupPaged
 from ._paged_models import LoadBalancerPaged
 from ._paged_models import LoadBalancingRulePaged
 from ._paged_models import LocalNetworkGatewayPaged
@@ -770,6 +773,7 @@ from ._paged_models import OutboundRulePaged
 from ._paged_models import P2SVpnGatewayPaged
 from ._paged_models import PacketCaptureResultPaged
 from ._paged_models import PeerExpressRouteCircuitConnectionPaged
+from ._paged_models import PrivateEndpointConnectionPaged
 from ._paged_models import PrivateEndpointPaged
 from ._paged_models import PrivateLinkServicePaged
 from ._paged_models import ProbePaged
@@ -785,6 +789,7 @@ from ._paged_models import ServiceEndpointPolicyPaged
 from ._paged_models import SubnetPaged
 from ._paged_models import UsagePaged
 from ._paged_models import VirtualHubPaged
+from ._paged_models import VirtualHubRouteTableV2Paged
 from ._paged_models import VirtualNetworkGatewayConnectionListEntityPaged
 from ._paged_models import VirtualNetworkGatewayConnectionPaged
 from ._paged_models import VirtualNetworkGatewayPaged
@@ -1105,6 +1110,7 @@ __all__ = [
     'IPAddressAvailabilityResult',
     'IPConfiguration',
     'IPConfigurationProfile',
+    'IpGroup',
     'IpsecPolicy',
     'IpTag',
     'Ipv6ExpressRouteCircuitPeeringConfig',
@@ -1303,6 +1309,7 @@ __all__ = [
     'ExpressRouteLinkPaged',
     'FirewallPolicyPaged',
     'FirewallPolicyRuleGroupPaged',
+    'IpGroupPaged',
     'LoadBalancerPaged',
     'BackendAddressPoolPaged',
     'FrontendIPConfigurationPaged',
@@ -1324,6 +1331,7 @@ __all__ = [
     'PrivateEndpointPaged',
     'AvailablePrivateEndpointTypePaged',
     'PrivateLinkServicePaged',
+    'PrivateEndpointConnectionPaged',
     'AutoApprovedPrivateLinkServicePaged',
     'PublicIPAddressPaged',
     'PublicIPPrefixPaged',
@@ -1356,6 +1364,7 @@ __all__ = [
     'VpnConnectionPaged',
     'VpnSiteLinkConnectionPaged',
     'P2SVpnGatewayPaged',
+    'VirtualHubRouteTableV2Paged',
     'WebApplicationFirewallPolicyPaged',
     'ApplicationGatewayProtocol',
     'ProvisioningState',

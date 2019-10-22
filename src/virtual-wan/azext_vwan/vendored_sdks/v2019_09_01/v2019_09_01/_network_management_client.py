@@ -40,6 +40,7 @@ from .operations import ExpressRoutePortsOperations
 from .operations import ExpressRouteLinksOperations
 from .operations import FirewallPoliciesOperations
 from .operations import FirewallPolicyRuleGroupsOperations
+from .operations import IpGroupsOperations
 from .operations import LoadBalancersOperations
 from .operations import LoadBalancerBackendAddressPoolsOperations
 from .operations import LoadBalancerFrontendIPConfigurationsOperations
@@ -162,6 +163,8 @@ class NetworkManagementClient(NetworkManagementClientOperationsMixin, SDKClient)
     :vartype firewall_policies: azure.mgmt.network.v2019_09_01.operations.FirewallPoliciesOperations
     :ivar firewall_policy_rule_groups: FirewallPolicyRuleGroups operations
     :vartype firewall_policy_rule_groups: azure.mgmt.network.v2019_09_01.operations.FirewallPolicyRuleGroupsOperations
+    :ivar ip_groups: IpGroups operations
+    :vartype ip_groups: azure.mgmt.network.v2019_09_01.operations.IpGroupsOperations
     :ivar load_balancers: LoadBalancers operations
     :vartype load_balancers: azure.mgmt.network.v2019_09_01.operations.LoadBalancersOperations
     :ivar load_balancer_backend_address_pools: LoadBalancerBackendAddressPools operations
@@ -356,6 +359,8 @@ class NetworkManagementClient(NetworkManagementClientOperationsMixin, SDKClient)
         self.firewall_policies = FirewallPoliciesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.firewall_policy_rule_groups = FirewallPolicyRuleGroupsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.ip_groups = IpGroupsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.load_balancers = LoadBalancersOperations(
             self._client, self.config, self._serialize, self._deserialize)

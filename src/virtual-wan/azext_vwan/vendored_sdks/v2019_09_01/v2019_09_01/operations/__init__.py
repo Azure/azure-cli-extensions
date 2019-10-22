@@ -35,6 +35,7 @@ from ._express_route_ports_operations import ExpressRoutePortsOperations
 from ._express_route_links_operations import ExpressRouteLinksOperations
 from ._firewall_policies_operations import FirewallPoliciesOperations
 from ._firewall_policy_rule_groups_operations import FirewallPolicyRuleGroupsOperations
+from ._ip_groups_operations import IpGroupsOperations
 from ._load_balancers_operations import LoadBalancersOperations
 from ._load_balancer_backend_address_pools_operations import LoadBalancerBackendAddressPoolsOperations
 from ._load_balancer_frontend_ip_configurations_operations import LoadBalancerFrontendIPConfigurationsOperations
@@ -125,6 +126,7 @@ __all__ = [
     'ExpressRouteLinksOperations',
     'FirewallPoliciesOperations',
     'FirewallPolicyRuleGroupsOperations',
+    'IpGroupsOperations',
     'LoadBalancersOperations',
     'LoadBalancerBackendAddressPoolsOperations',
     'LoadBalancerFrontendIPConfigurationsOperations',

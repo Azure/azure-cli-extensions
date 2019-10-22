@@ -311,6 +311,19 @@ class FirewallPolicyRuleGroupPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(FirewallPolicyRuleGroupPaged, self).__init__(*args, **kwargs)
+class IpGroupPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`IpGroup <azure.mgmt.network.v2019_09_01.models.IpGroup>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[IpGroup]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(IpGroupPaged, self).__init__(*args, **kwargs)
 class LoadBalancerPaged(Paged):
     """
     A paging container for iterating over a list of :class:`LoadBalancer <azure.mgmt.network.v2019_09_01.models.LoadBalancer>` object
@@ -584,6 +597,19 @@ class PrivateLinkServicePaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(PrivateLinkServicePaged, self).__init__(*args, **kwargs)
+class PrivateEndpointConnectionPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`PrivateEndpointConnection <azure.mgmt.network.v2019_09_01.models.PrivateEndpointConnection>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[PrivateEndpointConnection]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(PrivateEndpointConnectionPaged, self).__init__(*args, **kwargs)
 class AutoApprovedPrivateLinkServicePaged(Paged):
     """
     A paging container for iterating over a list of :class:`AutoApprovedPrivateLinkService <azure.mgmt.network.v2019_09_01.models.AutoApprovedPrivateLinkService>` object
@@ -1000,6 +1026,19 @@ class P2SVpnGatewayPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(P2SVpnGatewayPaged, self).__init__(*args, **kwargs)
+class VirtualHubRouteTableV2Paged(Paged):
+    """
+    A paging container for iterating over a list of :class:`VirtualHubRouteTableV2 <azure.mgmt.network.v2019_09_01.models.VirtualHubRouteTableV2>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[VirtualHubRouteTableV2]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(VirtualHubRouteTableV2Paged, self).__init__(*args, **kwargs)
 class WebApplicationFirewallPolicyPaged(Paged):
     """
     A paging container for iterating over a list of :class:`WebApplicationFirewallPolicy <azure.mgmt.network.v2019_09_01.models.WebApplicationFirewallPolicy>` object
