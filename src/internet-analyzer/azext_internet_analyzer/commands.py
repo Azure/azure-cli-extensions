@@ -77,3 +77,11 @@ def load_command_table(self, _):
         client_factory=cf_managed_rule_sets)
     with self.command_group('-', internet_analyzer_managed_rule_sets, client_factory=cf_managed_rule_sets) as g:
         g.custom_command('list', 'list__')
+
+    from ._client_factory import cf_reports
+    internet_analyzer_reports = CliCommandType(
+        operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._reports_operations#ReportsOperations.{}',
+        client_factory=cf_reports)
+    with self.command_group('internet-analyzer scorecard', internet_analyzer_reports, client_factory=cf_reports) as g:
+        g.show_command('show-latency', 'get_latency')
+        g.show_command('show-timeseries', 'get_timeseries')

@@ -89,3 +89,13 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
+
+    with self.argument_context('internet-analyzer scorecard show-latency') as c:
+        c.argument('resource_group', resource_group_name_type)
+        #c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        #c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
+
+    with self.argument_context('internet-analyzer scorecard show-timeseries') as c:
+        c.argument('resource_group', resource_group_name_type)
+        #c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        #c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
