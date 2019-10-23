@@ -40,7 +40,7 @@ def update_internet_analyzer_profile(cmd, client, body,
 
 
 def list_internet_analyzer_profile(cmd, client,
-                                   name):
+                                   resource_group):
     if name is not None:
         return client.list_by_resource_group(resource_group_name=name)
     return client.list()
