@@ -110,17 +110,12 @@ helps['internet-analyzer test show'] = """
     short-summary: show experiment.
 """
 
-helps['internet-analyzer scorecard'] = """
-    type: group
-    short-summary: Commands to retrieve reports.
-"""
-
-helps['internet-analyzer scorecard show-latency'] = """
+helps['internet-analyzer show-scorecard'] = """
     type: command
     short-summary: Show latency scorecard.
 """
 
-helps['internet-analyzer scorecard show-timeseries'] = """
+helps['internet-analyzer show-timeseries'] = """
     type: command
-    short-summary: Show timeseries scorecard.
+    short-summary: Show timeseries.
 """

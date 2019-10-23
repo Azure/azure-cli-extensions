@@ -82,6 +82,6 @@ def load_command_table(self, _):
     internet_analyzer_reports = CliCommandType(
         operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._reports_operations#ReportsOperations.{}',
         client_factory=cf_reports)
-    with self.command_group('internet-analyzer scorecard', internet_analyzer_reports, client_factory=cf_reports) as g:
-        g.show_command('show-latency', 'get_latency_scorecards')
+    with self.command_group('internet-analyzer', internet_analyzer_reports, client_factory=cf_reports) as g:
+        g.show_command('show-scorecard', 'get_latency_scorecards')
         g.show_command('show-timeseries', 'get_timeseries')
