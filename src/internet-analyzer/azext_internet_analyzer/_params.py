@@ -49,7 +49,7 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
 
-    with self.argument_context('internet-analyzer experiment create') as c:
+    with self.argument_context('internet-analyzer test create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
@@ -62,7 +62,7 @@ def load_arguments(self, _):
         c.argument('endpoint_b_endpoint', id_part=None, help='The endpoint URL')
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
 
-    with self.argument_context('internet-analyzer experiment update') as c:
+    with self.argument_context('internet-analyzer test update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
@@ -76,16 +76,16 @@ def load_arguments(self, _):
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
         c.argument('resource_state', arg_type=get_enum_type(['Creating', 'Enabling', 'Enabled', 'Disabling', 'Disabled', 'Deleting']), id_part=None, help='Resource status.')
 
-    with self.argument_context('internet-analyzer experiment delete') as c:
+    with self.argument_context('internet-analyzer test delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
 
-    with self.argument_context('internet-analyzer experiment list') as c:
+    with self.argument_context('internet-analyzer test list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
 
-    with self.argument_context('internet-analyzer experiment show') as c:
+    with self.argument_context('internet-analyzer test show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')

@@ -52,18 +52,19 @@ def list_internet_analyzer_preconfigured_endpoint(cmd, client,
     return client.list(resource_group_name=resource_group, profile_name=name)
 
 
-def create_internet_analyzer_experiment(cmd, client,
-                                        resource_group,
-                                        profile_name,
-                                        name,
-                                        location=None,
-                                        tags=None,
-                                        description=None,
-                                        endpoint_a_name=None,
-                                        endpoint_a_endpoint=None,
-                                        endpoint_b_name=None,
-                                        endpoint_b_endpoint=None,
-                                        enabled_state=None):
+def create_internet_analyzer_test(cmd, client,
+                                  resource_group,
+                                  profile_name,
+                                  name,
+                                  location=None,
+                                  tags=None,
+                                  description=None,
+                                  endpoint_a_name=None,
+                                  endpoint_a_endpoint=None,
+                                  endpoint_b_name=None,
+                                  endpoint_b_endpoint=None,
+                                  enabled_state=None,
+                                  resource_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -76,18 +77,19 @@ def create_internet_analyzer_experiment(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def update_internet_analyzer_experiment(cmd, client, body,
-                                        resource_group,
-                                        profile_name,
-                                        name,
-                                        location=None,
-                                        tags=None,
-                                        description=None,
-                                        endpoint_a_name=None,
-                                        endpoint_a_endpoint=None,
-                                        endpoint_b_name=None,
-                                        endpoint_b_endpoint=None,
-                                        enabled_state=None):
+def update_internet_analyzer_test(cmd, client, body,
+                                  resource_group,
+                                  profile_name,
+                                  name,
+                                  location=None,
+                                  tags=None,
+                                  description=None,
+                                  endpoint_a_name=None,
+                                  endpoint_a_endpoint=None,
+                                  endpoint_b_name=None,
+                                  endpoint_b_endpoint=None,
+                                  enabled_state=None,
+                                  resource_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
@@ -100,7 +102,7 @@ def update_internet_analyzer_experiment(cmd, client, body,
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def list_internet_analyzer_experiment(cmd, client,
-                                      resource_group,
-                                      profile_name):
+def list_internet_analyzer_test(cmd, client,
+                                resource_group,
+                                profile_name):
     return client.list_by_profile(resource_group_name=resource_group, profile_name=profile_name)

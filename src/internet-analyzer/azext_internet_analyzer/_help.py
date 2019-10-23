@@ -63,54 +63,54 @@ helps['internet-analyzer preconfigured-endpoint list'] = """
     short-summary: list preconfigured endpoint.
 """
 
-helps['internet-analyzer experiment'] = """
+helps['internet-analyzer test'] = """
     type: group
     short-summary: Commands to manage experiment.
 """
 
-helps['internet-analyzer experiment create'] = """
+helps['internet-analyzer test create'] = """
     type: command
     short-summary: create experiment.
     examples:
       - name: Creates an Experiment
         text: |-
-               az internet-analyzer experiment create --resource-group "rg1" --profile-name "Profile1" \\
-               --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name \\
-               "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" \\
+               az internet-analyzer test create --resource-group "rg1" --profile-name "Profile1" --name \\
+               "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" \\
+               --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" \\
                --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"
 """
 
-helps['internet-analyzer experiment update'] = """
+helps['internet-analyzer test update'] = """
     type: command
     short-summary: update experiment.
     examples:
       - name: Updates an Experiment
         text: |-
-               az internet-analyzer experiment update --resource-group "rg1" --profile-name "Profile1" \\
-               --name "Experiment1" --description "string" --enabled-state "Enabled"
+               az internet-analyzer test update --resource-group "rg1" --profile-name "Profile1" --name \\
+               "Experiment1" --description "string" --enabled-state "Enabled"
 """
 
-helps['internet-analyzer experiment delete'] = """
+helps['internet-analyzer test delete'] = """
     type: command
     short-summary: delete experiment.
     examples:
       - name: Deletes an Experiment
         text: |-
-               az internet-analyzer experiment delete --resource-group "rg1" --profile-name "Profile1" \\
-               --name "Experiment1"
+               az internet-analyzer test delete --resource-group "rg1" --profile-name "Profile1" --name \\
+               "Experiment1"
 """
 
-helps['internet-analyzer experiment list'] = """
+helps['internet-analyzer test list'] = """
     type: command
     short-summary: list experiment.
 """
 
-helps['internet-analyzer experiment show'] = """
+helps['internet-analyzer test show'] = """
     type: command
     short-summary: show experiment.
 """
 
-helps['internet-analyzer profile experiment timeseries'] = """
+helps['internet-analyzer scorecard timeseries'] = """
     type: group
     short-summary: Commands to manage report.
 """

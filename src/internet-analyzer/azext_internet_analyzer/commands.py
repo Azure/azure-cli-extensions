@@ -34,11 +34,11 @@ def load_command_table(self, _):
     internet_analyzer_experiments = CliCommandType(
         operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._experiments_operations#ExperimentsOperations.{}',
         client_factory=cf_experiments)
-    with self.command_group('internet-analyzer experiment', internet_analyzer_experiments, client_factory=cf_experiments) as g:
-        g.custom_command('create', 'create_internet_analyzer_experiment')
-        g.generic_update_command('update', custom_func_name='update_internet_analyzer_experiment')
+    with self.command_group('internet-analyzer test', internet_analyzer_experiments, client_factory=cf_experiments) as g:
+        g.custom_command('create', 'create_internet_analyzer_test')
+        g.generic_update_command('update', custom_func_name='update_internet_analyzer_test')
         g.command('delete', 'delete')
-        g.custom_command('list', 'list_internet_analyzer_experiment')
+        g.custom_command('list', 'list_internet_analyzer_test')
         g.show_command('show', 'get')
 
     from ._client_factory import cf_front_doors
@@ -52,6 +52,14 @@ def load_command_table(self, _):
         g.custom_command('list', 'list__')
         g.show_command('show', 'get')
 
+    from ._client_factory import cf_frontend_endpoints
+    internet_analyzer_frontend_endpoints = CliCommandType(
+        operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._frontend_endpoints_operations#FrontendEndpointsOperations.{}',
+        client_factory=cf_frontend_endpoints)
+    with self.command_group('-', internet_analyzer_frontend_endpoints, client_factory=cf_frontend_endpoints) as g:
+        g.custom_command('list', 'list__')
+        g.show_command('show', 'get')
+
     from ._client_factory import cf_policies
     internet_analyzer_policies = CliCommandType(
         operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._policies_operations#PoliciesOperations.{}',
@@ -62,3 +70,10 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list__')
         g.show_command('show', 'get')
+
+    from ._client_factory import cf_managed_rule_sets
+    internet_analyzer_managed_rule_sets = CliCommandType(
+        operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._managed_rule_sets_operations#ManagedRuleSetsOperations.{}',
+        client_factory=cf_managed_rule_sets)
+    with self.command_group('-', internet_analyzer_managed_rule_sets, client_factory=cf_managed_rule_sets) as g:
+        g.custom_command('list', 'list__')

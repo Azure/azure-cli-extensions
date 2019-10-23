@@ -84,51 +84,51 @@ class ApimgmtScenarioTest(ScenarioTest):
 
 # list -- list
 # create_or_update -- create
-        self.cmd('internet-analyzer experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
+        self.cmd('internet-analyzer test create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "string" --enabled-state "Enabled"', checks=[
+        self.cmd('internet-analyzer test create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "string" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test create  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
 # create_or_update -- update
-        self.cmd('internet-analyzer experiment update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
+        self.cmd('internet-analyzer test update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "string" --enabled-state "Enabled"', checks=[
+        self.cmd('internet-analyzer test update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1" --description "string" --enabled-state "Enabled"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test update  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
 # delete -- delete
-        self.cmd('internet-analyzer experiment delete  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test delete  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment delete  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test delete  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment delete  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test delete  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
 # list_by_profile -- list
-        self.cmd('internet-analyzer experiment list  --resource-group "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('internet-analyzer test list  --resource-group "rg1" --profile-name "Profile1"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment list  --resource-group "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('internet-analyzer test list  --resource-group "rg1" --profile-name "Profile1"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment list  --resource-group "rg1" --profile-name "Profile1"', checks=[
+        self.cmd('internet-analyzer test list  --resource-group "rg1" --profile-name "Profile1"', checks=[
         ])
 
 # get -- show
-        self.cmd('internet-analyzer experiment show  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test show  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment show  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test show  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])
 
-        self.cmd('internet-analyzer experiment show  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
+        self.cmd('internet-analyzer test show  --resource-group "rg1" --profile-name "Profile1" --name "Experiment1"', checks=[
         ])

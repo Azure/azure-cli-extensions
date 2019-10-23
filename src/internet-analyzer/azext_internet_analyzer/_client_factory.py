@@ -30,5 +30,13 @@ def cf_front_doors(cli_ctx, *_):
     return cf_internet_analyzer(cli_ctx).front_doors
 
 
+def cf_frontend_endpoints(cli_ctx, *_):
+    return cf_internet_analyzer(cli_ctx).frontend_endpoints
+
+
 def cf_policies(cli_ctx, *_):
     return cf_internet_analyzer(cli_ctx).policies
+
+
+def cf_managed_rule_sets(cli_ctx, *_):
+    return cf_internet_analyzer(cli_ctx).managed_rule_sets
