@@ -10,6 +10,7 @@ def network_client_factory(cli_ctx, aux_subscriptions=None, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_VWAN, aux_subscriptions=aux_subscriptions,
                                    api_version='2018-08-01')
 
+
 def network_client_route_table_factory(cli_ctx, aux_subscriptions=None, **_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .profiles import CUSTOM_VHUB_ROUTE_TABLE

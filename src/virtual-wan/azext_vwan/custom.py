@@ -45,8 +45,7 @@ def _get_property(items, name):
     result = next((x for x in items if x.name.lower() == name.lower()), None)
     if not result:
         raise CLIError("Property '{}' does not exist".format(name))
-    else:
-        return result
+    return result
 
 
 def _upsert(parent, collection_name, obj_to_add, key_name, warn=True):
@@ -224,7 +223,7 @@ def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
         return
 
 
-def update_vhub_route_table(cmd, instance, attached_connections=None, tags=None):
+def update_vhub_route_table(instance, attached_connections=None, tags=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
         c.update_param('attached_connections', attached_connections, False)
