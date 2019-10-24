@@ -43,7 +43,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer profile show') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('name', id_part=None, help='The name of the Internet Analyzer profile to show')
 
     with self.argument_context('internet-analyzer preconfigured-endpoint list') as c:
         c.argument('resource_group', resource_group_name_type)
