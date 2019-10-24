@@ -68,7 +68,7 @@ def load_arguments(self, _):
         c.argument('name', id_part=None, help='The name of the Internet Analyzer test to be updated')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
-        c.argument('description', id_part=None, help='The description of the details or intents of the Experiment')
+        c.argument('description', id_part=None, help='The description of the details or intents of the test')
         c.argument('endpoint_a_name', id_part=None, help='The name of the endpoint')
         c.argument('endpoint_a_endpoint', id_part=None, help='The endpoint URL')
         c.argument('endpoint_b_name', id_part=None, help='The name of the endpoint')
