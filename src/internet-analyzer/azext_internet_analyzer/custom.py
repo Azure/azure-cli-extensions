@@ -36,7 +36,7 @@ def update_internet_analyzer_profile(cmd, client, body,
     body.tags = tags  # dictionary
     body.enabled_state = enabled_state  # str
     body.etag = etag  # str
-    return client.create_or_update(profile_name=profile_name, resource_group_name=name, parameters=body)
+    return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
 def list_internet_analyzer_profile(cmd, client,
