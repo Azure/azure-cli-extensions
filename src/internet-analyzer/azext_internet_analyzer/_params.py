@@ -79,7 +79,7 @@ def load_arguments(self, _):
     with self.argument_context('internet-analyzer test delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
-        c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
+        c.argument('name', id_part=None, help='The name of the Internet Analyzer test to delete')
 
     with self.argument_context('internet-analyzer test list') as c:
         c.argument('resource_group', resource_group_name_type)
