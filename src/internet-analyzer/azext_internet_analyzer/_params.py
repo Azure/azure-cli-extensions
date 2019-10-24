@@ -36,7 +36,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer profile delete') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('name', id_part=None, help='The name of the Internet Analyzer profile to be deleted')
 
     with self.argument_context('internet-analyzer profile list') as c:
         c.argument('resource_group', resource_group_name_type)
