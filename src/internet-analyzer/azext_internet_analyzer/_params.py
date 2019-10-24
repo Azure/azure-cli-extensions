@@ -51,7 +51,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer test create') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile under which the new test should be created')
         c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
