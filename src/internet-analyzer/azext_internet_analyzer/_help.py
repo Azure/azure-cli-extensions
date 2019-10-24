@@ -107,7 +107,7 @@ helps['internet-analyzer test list'] = """
 
 helps['internet-analyzer test show'] = """
     type: command
-    short-summary: show experiment.
+    short-summary: show test
 """
 
 helps['internet-analyzer show-scorecard'] = """
