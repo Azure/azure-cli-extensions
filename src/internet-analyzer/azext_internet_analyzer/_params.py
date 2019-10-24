@@ -83,7 +83,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer test list') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile for which to list tests')
 
     with self.argument_context('internet-analyzer test show') as c:
         c.argument('resource_group', resource_group_name_type)
