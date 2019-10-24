@@ -70,7 +70,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('description', id_part=None, help='The description of the details or intents of the test')
         c.argument('endpoint_a_name', id_part=None, help='The name of the endpoint')
-        c.argument('endpoint_a_endpoint', id_part=None, help='The endpoint URL')
+        c.argument('endpoint_a_endpoint', id_part=None, help='The URL of the control endpoint in <hostname>[/<custom-path>] format (e.g., www.contoso.com or www.contoso.com/some/path/to/trans.gif). Must support HTTPS. If an object path isn't specified explicitly, Internet Analyzer will use "/apc/trans.gif" as the object path by default, which is where the preconfigured endpoints are hosting the one-pixel image.')
         c.argument('endpoint_b_name', id_part=None, help='The name of the endpoint')
         c.argument('endpoint_b_endpoint', id_part=None, help='The endpoint URL')
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
