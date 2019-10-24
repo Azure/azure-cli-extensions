@@ -202,9 +202,10 @@ def remove_hub_route(cmd, resource_group_name, virtual_hub_name, index, no_wait=
 
 
 # pylint: disable=inconsistent-return-statements
-def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, location=None,
-                            tags=None, attached_connections=None, destination_type=None, destinations=None,
-                            next_hop_type=None, next_hops=None, no_wait=False):
+def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name,
+                            attached_connections, destination_type, destinations,
+                            next_hop_type, next_hops,
+                            tags=None, no_wait=False, location=None):
     VirtualHubRouteTableV2, VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteTableV2', 'VirtualHubRouteV2')
     client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route = VirtualHubRouteV2(destination_type=destination_type,
@@ -232,8 +233,8 @@ def update_vhub_route_table(instance, attached_connections=None, tags=None):
 
 # pylint: disable=inconsistent-return-statements
 def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_table_name,
-                             destination_type=None, destinations=None,
-                             next_hop_type=None, next_hops=None, no_wait=False):
+                             destination_type, destinations,
+                             next_hop_type, next_hops, no_wait=False):
     VirtualHubRouteV2 = cmd.get_models('VirtualHubRouteV2')
     client = network_client_route_table_factory(cmd.cli_ctx).virtual_hub_route_table_v2s
     route_table = client.get(resource_group_name, virtual_hub_name, route_table_name)

@@ -93,7 +93,7 @@ helps['network vhub route-table create'] = """
     examples:
     - name: Create a route table in the virtual hub.
       text: |
-          az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --attachments All_Vnets --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
+          az network vhub route-table create -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --connections All_Vnets --destination-type CIDR --destinations "10.4.0.0/16" "10.6.0.0/16" --next-hop-type IPAddress --next-hops "10.0.0.68"
 """
 
 helps['network vhub route-table update'] = """
@@ -102,7 +102,22 @@ helps['network vhub route-table update'] = """
     examples:
     - name: Create a route table in the virtual hub.
       text: |
-          az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --attachments All_Vnets All_Branches
+          az network vhub route-table update -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub --connections All_Vnets All_Branches
+"""
+
+helps['network vhub route-table delete'] = """
+    type: command
+    short-summary: Delete a route table in the virtual hub.
+"""
+
+helps['network vhub route-table show'] = """
+    type: command
+    short-summary: Show a route table in the virtual hub.
+"""
+
+helps['network vhub route-table list'] = """
+    type: command
+    short-summary: List all route tables in the virtual hub.
 """
 
 helps['network vhub route-table route'] = """

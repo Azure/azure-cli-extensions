@@ -23,7 +23,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l SouthCentralUS')
         '''
 
-        self.cmd('network vhub route-table create -n {routetable} -g {rg} --vhub-name {vhub} --attachments All_Vnets --destination-type CIDR --destinations 10.4.0.0/16 10.6.0.0/16 --next-hop-type IPAddress --next-hops 10.0.0.68', checks=[
+        self.cmd('network vhub route-table create -n {routetable} -g {rg} --vhub-name {vhub} --connections All_Vnets --destination-type CIDR --destinations 10.4.0.0/16 10.6.0.0/16 --next-hop-type IPAddress --next-hops 10.0.0.68', checks=[
             self.check('name', self.kwargs['routetable'])
         ])
         self.cmd('network vhub route-table show -n {routetable} -g {rg} --vhub-name {vhub}', checks=[
@@ -34,7 +34,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
             self.check('length(@)', 1)
         ])
 
-        self.cmd('network vhub route-table update -n {routetable} -g {rg} --vhub-name {vhub} --attachments All_Branches', checks=[
+        self.cmd('network vhub route-table update -n {routetable} -g {rg} --vhub-name {vhub} --connections All_Branches', checks=[
             self.check('attachedConnections[0]', 'All_Branches')
         ])
 

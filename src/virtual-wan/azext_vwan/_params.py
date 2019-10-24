@@ -74,7 +74,7 @@ def load_arguments(self, _):
     with self.argument_context('network vhub route-table') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
-        c.argument('attached_connections', options_list='--attachments', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table')
+        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table')
         c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR']), help='The type of destinations')
         c.argument('destinations', nargs='+', help='Space-separated list of all destinations.')
         c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress']), help='The type of next hops. Currently it only supports IP Address.')
