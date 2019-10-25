@@ -9,7 +9,9 @@ import uuid
 
 from knack.util import CLIError
 import os
+from knack.log import get_logger
 
+logger = get_logger(__name__)
 
 def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,
                            index_document=None, error_document_404_path=None):
@@ -168,20 +170,7 @@ def upload_blob(cmd, client, container_name, blob_name, file_path, blob_type=Non
     return type_func[blob_type]()
 
 
-def rename_directory(client, container_name, destination_path, source_path):
 
-    marker = client.rename_path(container_name, destination_path, source_path)
-
-    # if HNS is enabled, the rename operation is atomic and no marker is returned
-    # if HNS is not enabled, and there are too more files/subdirectories in the directories to be renamed
-    # in a single call, the service returns a marker, so that we can follow it and finish renaming
-    # the rest of the files/subdirectories
-    count = 1
-    while marker is not None:
-        marker = client.rename_path(container_name, destination_path, source_path, marker=marker)
-        count += 1
-
-    print("Took {} call(s) to finish renaming.".format(count))
 
 
 def delete_directory(client, container_name, directory_name):
@@ -197,8 +186,65 @@ def delete_directory(client, container_name, directory_name):
         deleted, marker = client.delete_directory(container_name, directory_name,
                                                         marker=marker, recursive=True)
         count += 1
+    logger.info("Took {} call(s) to finish moving.".format(count))
 
-    print("Took {} calls(s) to finish deleting.".format(count))
+
+def list_blobs(client, container_name, prefix=None, num_results=None, include='mc',
+               delimiter=None, marker=None, timeout=None):
+    client.list_blobs(container_name, prefix, num_results, include,
+                      delimiter, marker, timeout)
+
+
+def list_directory(client, container_name, directory_path, prefix=None, num_results=None, include='mc',
+                   delimiter=None, marker=None, timeout=None):
+    '''
+    :param str container_name:
+        Name of existing container.
+    :param str prefix:
+        Filters the results to return only blobs whose names
+        begin with the specified prefix.
+    :param int num_results:
+        Specifies the maximum number of blobs to return,
+        including all :class:`BlobPrefix` elements. If the request does not specify
+        num_results or specifies a value greater than 5,000, the server will
+        return up to 5,000 items. Setting num_results to a value less than
+        or equal to zero results in error response code 400 (Bad Request).
+    :param ~azure.storage.blob.models.Include include:
+        Specifies one or more additional datasets to include in the response.
+    :param str delimiter:
+        When the request includes this parameter, the operation
+        returns a :class:`~azure.storage.blob.models.BlobPrefix` element in the
+        result list that acts as a placeholder for all blobs whose names begin
+        with the same substring up to the appearance of the delimiter character.
+        The delimiter may be a single character or a string.
+    :param str marker:
+        An opaque continuation token. This value can be retrieved from the
+        next_marker field of a previous generator object if num_results was
+        specified and that generator has finished enumerating results. If
+        specified, this generator will begin returning results from the point
+        where the previous generator stopped.
+    :param int timeout:
+        The timeout parameter is expressed in seconds.
+    '''
+    directory_prefix = directory_path + '/' + prefix if prefix else directory_path + '/'
+    return client.list_blobs(container_name, directory_prefix, num_results, include,
+                             delimiter, marker, timeout)
+
+
+def rename_directory(client, container_name, destination_path, source_path):
+
+    marker = client.rename_path(container_name, destination_path, source_path)
+
+    # if HNS is enabled, the rename operation is atomic and no marker is returned
+    # if HNS is not enabled, and there are too more files/subdirectories in the directories to be renamed
+    # in a single call, the service returns a marker, so that we can follow it and finish renaming
+    # the rest of the files/subdirectories
+
+    count = 1
+    while marker is not None:
+        marker = client.rename_path(container_name, destination_path, source_path, marker=marker)
+        count += 1
+    logger.info("Took {} call(s) to finish moving.".format(count))
 
 
 def _create_blobs(client, container_name, destination_path,
@@ -220,10 +266,6 @@ def _create_blobs(client, container_name, destination_path,
         print("Created {} blobs under the directory: {}".format(num_of_blobs, destination_path))
 
 
-def list_blobs(client, container_name, prefix=None, num_results=None, include='mc',
-               delimiter=None, marker=None, timeout=None):
-    client.list_blobs(container_name, prefix, num_results, include,
-               delimiter, marker, timeout)
 
 
 def set_entry(client, container_name, path, acl, lease_id=None, if_modified_since=None, if_unmodified_since=None,

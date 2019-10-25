@@ -115,6 +115,36 @@ helps['storage azcopy run-command'] = """
 helps['storage blob directory'] = """
     type: group
     short-summary: Manage blob directories in storage account container.
+    long-summary: To use the directory commands, please make sure your storage account type is StorageV2.
+"""
+
+helps['storage blob directory access'] = """
+    type: group
+    short-summary: Manage the access control properties of a directory when Hierarchical Namespace is enabled
+"""
+
+helps['storage blob directory access set'] = """
+    type: command
+    short-summary: Set the access control properties of a directory.
+    examples:
+        - name: Set the access control properties of a directory.
+          text: az storage blob directory access set -a "user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask=rwx" --path MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob directory access show'] = """
+    type: command
+    short-summary: Show the access control properties of a directory.
+    examples:
+        - name: Show the access control properties of a directory.
+          text: az storage blob directory access show --path MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob directory access update'] = """
+    type: command
+    short-summary: Update the access control properties of a directory.
+    examples:
+        - name: Update the access control properties of a directory.
+          text: az storage blob directory access update --permission --path MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory create'] = """
@@ -123,18 +153,61 @@ helps['storage blob directory create'] = """
     long-summary: Create a storage blob directory which can contain other directories or blobs in a storage container.
     examples:
         - name: Create a storage blob directory in a storage container.
-          text: az storage blob create -c MyContainer -d yDirectoryPath --account-name MyStorageAccount
+          text: az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+"""
+
+helps['storage blob directory delete'] = """
+    type: command
+    short-summary: Delete a storage blob directory in a storage container.
+    long-summary: >
+        This operation's behavior is different depending on whether Hierarchical Namespace
+        is enabled; if yes, then the delete operation can be atomic and instantaneous;
+        if not, the operation is performed in batches and a continuation token could be returned.
+    examples:
+        - name: Delete a storage blob directory in a storage container.
+          text: az storage blob directory delete -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+"""
+
+helps['storage blob directory exists'] = """
+    type: command
+    short-summary: Check for the existence of a blob directory in a storage container.
+    examples:
+        - name: Check for the existence of a blob directory in a storage container.
+          text: az storage blob directory exists -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+"""
+
+helps['storage blob directory metadata'] = """
+    type: group
+    short-summary: Manage directory metadata.
+"""
+
+helps['storage blob directory metadata show'] = """
+    type: command
+    short-summary: Show all user-defined metadata for the specified blob directory.
+    examples:
+        - name: Show all user-defined metadata for the specified blob directory.
+          text: az storage blob directory metadata show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+"""
+
+helps['storage blob directory metadata update'] = """
+    type: command
+    short-summary: Set user-defined metadata for the specified blob directory as one or more name-value pairs.
+    examples:
+        - name: Set user-defined metadata for the specified blob directory as one or more name-value pairs.
+          text: az storage blob directory metadata update --metadata tag1=value1 -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
 """
 
 helps['storage blob directory move'] = """
-type: command
-short-summary: Move a storage directory to another storage blob directory in a storage container.
-long-summary: >
-    Move a storage directory and all its content (which can contain other directories or blobs) to another storage 
-    blob directory in a storage container.
-examples:
-    - name: Move a storage directory to another storage blob directory in a storage container.
-      text: az storage blob move -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+    type: command
+    short-summary: Move a storage directory to another storage blob directory in a storage container.
+    long-summary: >
+        Move a storage directory and all its content (which can contain other directories or blobs) to another storage
+        blob directory in a storage container. This operation's behavior is different depending on whether Hierarchical
+        Namespace is enabled; if yes, the move operation is atomic and no marker is returned; if not, the operation is
+        performed in batches and a continuation token could be returned.
+    examples:
+        - name: Move a storage directory to another storage blob directory in a storage container.
+          text: az storage blob directory move -c MyContainer -d DestinationDirectoryPath -s SourceDirectoryPath --account-name MyStorageAccount
 """
 
 helps['storage blob directory show'] = """
