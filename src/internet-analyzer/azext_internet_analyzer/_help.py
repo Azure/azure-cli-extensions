@@ -118,4 +118,4 @@ helps['internet-analyzer show-scorecard'] = """
 helps['internet-analyzer show-timeseries'] = """
     type: command
     short-summary: Show timeseries for a test.
-"""
+    """
