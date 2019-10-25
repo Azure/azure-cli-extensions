@@ -111,3 +111,36 @@ helps['storage azcopy run-command'] = """
     type: command
     short-summary: Run a command directly using the AzCopy CLI. Please use SAS tokens for authentication.
 """
+
+helps['storage blob directory'] = """
+    type: group
+    short-summary: Manage blob directories in storage account container.
+"""
+
+helps['storage blob directory create'] = """
+    type: command
+    short-summary: Create a storage blob directory in a storage container.
+    long-summary: Create a storage blob directory which can contain other directories or blobs in a storage container.
+    examples:
+        - name: Create a storage blob directory in a storage container.
+          text: az storage blob create -c MyContainer -d yDirectoryPath --account-name MyStorageAccount
+"""
+
+helps['storage blob directory move'] = """
+type: command
+short-summary: Move a storage directory to another storage blob directory in a storage container.
+long-summary: >
+    Move a storage directory and all its content (which can contain other directories or blobs) to another storage 
+    blob directory in a storage container.
+examples:
+    - name: Move a storage directory to another storage blob directory in a storage container.
+      text: az storage blob move -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+"""
+
+helps['storage blob directory show'] = """
+    type: command
+    short-summary: Show a storage blob directory properties in a storage container.
+    examples:
+        - name: Show a storage blob directory properties in a storage container.
+          text: az storage blob show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+"""
