@@ -148,14 +148,16 @@ The secondary cluster will become the primary cluster after failover. Please und
         #g.storage_command_oauth('download', 'get_blob_to_path', table_transformer=transform_blob_output)
         g.storage_custom_command_oauth('show', 'show_directory', table_transformer=transform_blob_output,
                                        exception_handler=show_exception_handler)
-        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
-                                table_transformer=transform_blob_output)
+        g.storage_custom_command_oauth('list', 'list_directory', transform=transform_storage_list_output,
+                                       table_transformer=transform_blob_output)
         g.storage_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
-
+        g.storage_command_oauth(
+            'metadata show', 'get_blob_metadata', exception_handler=show_exception_handler)
+        g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
     with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        g.storage_custom_command_oauth('set', 'rename_directory')
-        g.storage_custom_command_oauth('update', 'show_blob')
-        g.storage_custom_command_oauth('show', 'show_blob')
+        g.storage_command_oauth('set', 'set_path_access_control')
+        g.storage_command_oauth('update', 'set_path_access_control')
+        g.storage_command_oauth('show', 'get_path_access_control')

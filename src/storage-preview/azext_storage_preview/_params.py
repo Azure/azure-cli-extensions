@@ -215,20 +215,44 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('directory_path', directory_path_type)
         c.argument('container_name', container_name_type)
 
+    with self.argument_context('storage blob directory access set') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'], required=True,
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.ignore('owner', 'group', 'permissions')
+
+    with self.argument_context('storage blob directory access update') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'],
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('owner', help='The owning user for the directory.')
+        c.argument('group', help='The owning group for the directory.')
+        c.argument('permissions', help='The POSIX access permissions for the file owner,'
+                   'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
+                   'octal notation (e.g. 0766) are supported.')
+
+    with self.argument_context('storage blob directory exists') as c:
+        c.argument('blob_name', directory_path_type, required=True)
+
+    with self.argument_context('storage blob directory list') as c:
+        c.argument('include', validator=validate_included_datasets, default='mc')
+
+    with self.argument_context('storage blob directory metadata') as c:
+        c.argument('blob_name', directory_path_type)
+
     with self.argument_context('storage blob directory move') as c:
         c.argument('destination_path', options_list=['--destination-path', '-d'],
                    help='The destination blob directory path.')
         c.argument('source_path', options_list=['--source-path', '-s'],
                    help='The source blob directory path.')
 
-    with self.argument_context('storage blob directory list') as c:
-        c.argument('include', validator=validate_included_datasets, default='mc')
-        c.argument('container_name', options_list=['--container-name', '-c'])
-
     with self.argument_context('storage blob directory show') as c:
-        c.argument('directory_path', directory_path_type)
+        c.argument('directory_name', directory_path_type)
         c.argument('container_name', container_name_type)
         # c.argument('snapshot', help='The snapshot parameter is an opaque DateTime value that, '
         #                            'when present, specifies the directory snapshot to retrieve.')
         c.ignore('snapshot')
         c.argument('lease-id', help='Required if the blob has an active lease.')
+
