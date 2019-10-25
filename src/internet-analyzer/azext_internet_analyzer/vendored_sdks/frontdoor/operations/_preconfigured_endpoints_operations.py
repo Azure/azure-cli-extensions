@@ -93,13 +93,17 @@ class PreconfiguredEndpointsOperations(object):
             return request
 
         def internal_paging(next_link=None):
+            # hack for paging problem -- to be removed
+            if next_link is non None:
+                raise StopIteration("End of paging")
+
             request = prepare_request(next_link)
 
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 raise models.ErrorResponseException(self._deserialize, response)
-
+        
             return response
 
         # Deserialize response
