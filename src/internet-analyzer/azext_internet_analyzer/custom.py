@@ -63,8 +63,7 @@ def create_internet_analyzer_test(cmd, client,
                                   endpoint_a_endpoint=None,
                                   endpoint_b_name=None,
                                   endpoint_b_endpoint=None,
-                                  enabled_state=None,
-                                  resource_state=None):
+                                  enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -88,8 +87,7 @@ def update_internet_analyzer_test(cmd, client,
                                   endpoint_a_endpoint=None,
                                   endpoint_b_name=None,
                                   endpoint_b_endpoint=None,
-                                  enabled_state=None,
-                                  resource_state=None):
+                                  enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
