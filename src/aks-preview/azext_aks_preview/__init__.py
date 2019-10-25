@@ -16,7 +16,7 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_MGMT_AKS_PREVIEW, '2019-08-01')
+        register_resource_type('latest', CUSTOM_MGMT_AKS_PREVIEW, '2019-10-01')
 
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
         super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
