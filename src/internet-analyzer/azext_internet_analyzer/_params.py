@@ -18,7 +18,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer profile create') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('name', id_part=None, help='The name of the Internet Analyzer profile to be created')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
@@ -26,7 +26,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer profile update') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('name', id_part=None, help='The name of the Internet Analyzer profile to be updated')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
@@ -50,7 +50,7 @@ def load_arguments(self, _):
     with self.argument_context('internet-analyzer test create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile under which the new test should be created')
-        c.argument('name', id_part=None, help='The Experiment identifier associated with the Experiment')
+        c.argument('name', id_part=None, help='The name of the Internet Analyzer test to be created')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('description', id_part=None, help='The description of the details or intents of the test')
@@ -62,7 +62,7 @@ def load_arguments(self, _):
 
     with self.argument_context('internet-analyzer test update') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('profile_name', id_part=None, help='The Profile identifier associated with the Tenant and Partner')
+        c.argument('profile_name', id_part=None, help='The name of the Internet Analyzer profile under which the test exists')
         c.argument('name', id_part=None, help='The name of the Internet Analyzer test to be updated')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)

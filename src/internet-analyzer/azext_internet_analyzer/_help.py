@@ -18,7 +18,7 @@ helps['internet-analyzer profile create'] = """
     type: command
     short-summary: create internet analyzer profile.
     examples:
-      - name: Creates an NetworkExperiment Profile in a Resource Group
+      - name: Creates an Internet Analyzer Profile in a Resource Group
         text: |-
                az internet-analyzer profile create --resource-group "rg1" --name "Profile1" --location \\
                "WestUs" --enabled-state "Enabled"
@@ -26,9 +26,9 @@ helps['internet-analyzer profile create'] = """
 
 helps['internet-analyzer profile update'] = """
     type: command
-    short-summary: update network experiment profile.
+    short-summary: update internet analyzer profile.
     examples:
-      - name: Updates an Experiment
+      - name: Updates an Internet Analyzer Profile in a Resource Group
         text: |-
                az internet-analyzer profile update --resource-group "rg1" --name "Profile1" \\
                --enabled-state "Enabled"
@@ -36,43 +36,43 @@ helps['internet-analyzer profile update'] = """
 
 helps['internet-analyzer profile delete'] = """
     type: command
-    short-summary: delete network experiment profile.
+    short-summary: delete internet analyzer profile.
     examples:
-      - name: Deletes an NetworkExperiment Profile by ProfileName
+      - name: Deletes an Internet Analyzer Profile in a Resource Group
         text: |-
                az internet-analyzer profile delete --resource-group "rg1" --name "Profile1"
 """
 
 helps['internet-analyzer profile list'] = """
     type: command
-    short-summary: list network experiment profile.
+    short-summary: list internet analyzer profiles.
 """
 
 helps['internet-analyzer profile show'] = """
     type: command
-    short-summary: show network experiment profile.
+    short-summary: show internet analyzer profile.
 """
 
 helps['internet-analyzer preconfigured-endpoint'] = """
     type: group
-    short-summary: Commands to manage preconfigured endpoint.
+    short-summary: Commands to manage preconfigured endpoints.
 """
 
 helps['internet-analyzer preconfigured-endpoint list'] = """
     type: command
-    short-summary: list preconfigured endpoint.
+    short-summary: list preconfigured endpoints.
 """
 
 helps['internet-analyzer test'] = """
     type: group
-    short-summary: Commands to manage experiment.
+    short-summary: Commands to manage tests.
 """
 
 helps['internet-analyzer test create'] = """
     type: command
-    short-summary: create experiment.
+    short-summary: create test.
     examples:
-      - name: Creates an Experiment
+      - name: Creates a test
         text: |-
                az internet-analyzer test create --resource-group "rg1" --profile-name "Profile1" --name \\
                "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" \\
@@ -82,9 +82,9 @@ helps['internet-analyzer test create'] = """
 
 helps['internet-analyzer test update'] = """
     type: command
-    short-summary: update experiment.
+    short-summary: update test.
     examples:
-      - name: Updates an Experiment
+      - name: Updates a test
         text: |-
                az internet-analyzer test update --resource-group "rg1" --profile-name "Profile1" --name \\
                "Experiment1" --description "string" --enabled-state "Enabled"
@@ -92,9 +92,9 @@ helps['internet-analyzer test update'] = """
 
 helps['internet-analyzer test delete'] = """
     type: command
-    short-summary: delete experiment.
+    short-summary: delete test.
     examples:
-      - name: Deletes an Experiment
+      - name: Deletes a test
         text: |-
                az internet-analyzer test delete --resource-group "rg1" --profile-name "Profile1" --name \\
                "Experiment1"
@@ -102,7 +102,7 @@ helps['internet-analyzer test delete'] = """
 
 helps['internet-analyzer test list'] = """
     type: command
-    short-summary: list experiment.
+    short-summary: list tests.
 """
 
 helps['internet-analyzer test show'] = """
@@ -112,10 +112,10 @@ helps['internet-analyzer test show'] = """
 
 helps['internet-analyzer show-scorecard'] = """
     type: command
-    short-summary: Show latency scorecard.
+    short-summary: Show latency scorecard for a test.
 """
 
 helps['internet-analyzer show-timeseries'] = """
     type: command
-    short-summary: Show timeseries.
+    short-summary: Show timeseries for a test.
 """
