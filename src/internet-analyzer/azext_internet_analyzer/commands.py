@@ -19,7 +19,7 @@ def load_command_table(self, _):
     with self.command_group('internet-analyzer profile', internet_analyzer_network_experiment_profiles, client_factory=cf_network_experiment_profiles) as g:
         g.custom_command('create', 'create_internet_analyzer_profile')
         g.custom_command('update', 'update_internet_analyzer_profile')
-        g.command('delete', 'delete')
+        g.custom_command('delete', 'delete_internet_analyzer_profile')
         g.custom_command('list', 'list_internet_analyzer_profile')
         g.show_command('show', 'get')
 
@@ -37,7 +37,7 @@ def load_command_table(self, _):
     with self.command_group('internet-analyzer test', internet_analyzer_experiments, client_factory=cf_experiments) as g:
         g.custom_command('create', 'create_internet_analyzer_test')
         g.custom_command('update', 'update_internet_analyzer_test')
-        g.command('delete', 'delete')
+        g.custom_command('delete', 'delete_internet_analyzer_test')
         g.custom_command('list', 'list_internet_analyzer_test')
         g.show_command('show', 'get')
 

@@ -24,6 +24,12 @@ def create_internet_analyzer_profile(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
+def delete_internet_analyzer_profile(cmd, client,
+                                     resource_group,
+                                     name):
+    return client.delete(resource_group_name=resource_group, profile_name=name)
+
+
 def update_internet_analyzer_profile(cmd, client,
                                      resource_group,
                                      name,
@@ -63,8 +69,7 @@ def create_internet_analyzer_test(cmd, client,
                                   endpoint_a_endpoint=None,
                                   endpoint_b_name=None,
                                   endpoint_b_endpoint=None,
-                                  enabled_state=None,
-                                  resource_state=None):
+                                  enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -75,6 +80,13 @@ def create_internet_analyzer_test(cmd, client,
     body.setdefault('endpoint_b', {})['endpoint'] = endpoint_b_endpoint  # str
     body['enabled_state'] = enabled_state  # str
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
+
+
+def delete_internet_analyzer_test(cmd, client,
+                                  resource_group,
+                                  profile_name,
+                                  name):
+    return client.delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
 
 
 def update_internet_analyzer_test(cmd, client,
@@ -88,8 +100,7 @@ def update_internet_analyzer_test(cmd, client,
                                   endpoint_a_endpoint=None,
                                   endpoint_b_name=None,
                                   endpoint_b_endpoint=None,
-                                  enabled_state=None,
-                                  resource_state=None):
+                                  enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
