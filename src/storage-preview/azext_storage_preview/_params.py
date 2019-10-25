@@ -10,7 +10,7 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
-                          validate_azcopy_target_url)
+                          validate_azcopy_target_url, validate_included_datasets)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -23,6 +23,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
 
+    t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
 
@@ -31,6 +32,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                      completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
     container_name_type = CLIArgumentType(options_list=['--container-name', '-c'], help='The container name.',
                                           completer=get_container_name_completions)
+    directory_path_type = CLIArgumentType(options_list=['--directory-path', '-d'], help='The directory path name.',
+                                          parent='container_name')
+    blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
+                                     completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
+                                                                                parent='container_name'))
+
     directory_type = CLIArgumentType(options_list=['--directory-name', '-d'], help='The directory name.',
                                      completer=get_storage_name_completion_list(t_file_service,
                                                                                 'list_directories_and_files',
@@ -42,7 +49,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
-        c.argument('directory_name', directory_type)
         c.argument('share_name', share_name_type)
         c.argument('table_name', table_name_type)
         c.argument('retry_wait', options_list=('--retry-interval',))
@@ -203,3 +209,26 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
+
+    # New commands parameters for ADLS Gen2
+    with self.argument_context('storage blob directory') as c:
+        c.argument('directory_path', directory_path_type)
+        c.argument('container_name', container_name_type)
+
+    with self.argument_context('storage blob directory move') as c:
+        c.argument('destination_path', options_list=['--destination-path', '-d'],
+                   help='The destination blob directory path.')
+        c.argument('source_path', options_list=['--source-path', '-s'],
+                   help='The source blob directory path.')
+
+    with self.argument_context('storage blob directory list') as c:
+        c.argument('include', validator=validate_included_datasets, default='mc')
+        c.argument('container_name', options_list=['--container-name', '-c'])
+
+    with self.argument_context('storage blob directory show') as c:
+        c.argument('directory_path', directory_path_type)
+        c.argument('container_name', container_name_type)
+        # c.argument('snapshot', help='The snapshot parameter is an opaque DateTime value that, '
+        #                            'when present, specifies the directory snapshot to retrieve.')
+        c.ignore('snapshot')
+        c.argument('lease-id', help='Required if the blob has an active lease.')

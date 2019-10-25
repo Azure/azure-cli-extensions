@@ -6,8 +6,8 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_sa_preview, cf_blob_data_gen_update,
-                              blob_data_service_factory)
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE
+                              blob_data_service_factory, adls_blob_data_service_factory)
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -107,3 +107,55 @@ The secondary cluster will become the primary cluster after failover. Please und
 
     with self.command_group('storage azcopy', custom_command_type=get_custom_sdk('azcopy', None)) as g:
         g.custom_command('run-command', 'storage_run_command', validator=lambda namespace: None)
+
+    adls_base_blob_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_adls_storage_preview.blob.baseblobservice#BaseBlobService.{}',
+        client_factory=adls_blob_data_service_factory,
+        resource_type=CUSTOM_DATA_STORAGE_ADLS)
+
+    # New commands for ADLS Gen2
+    # Blob Pipeline
+    with self.command_group('storage blob', command_type=adls_base_blob_sdk,
+                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
+        from ._format import transform_boolean_for_table, transform_blob_output
+        from ._transformers import (transform_storage_list_output, transform_url,
+                                    create_boolean_result_output_transformer)
+        g.storage_custom_command_oauth('move', 'rename_directory')
+        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
+                                table_transformer=transform_blob_output)
+        g.storage_custom_command_oauth('show', 'show_blob')
+
+    with self.command_group('storage blob access', command_type=adls_base_blob_sdk,
+                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
+        from ._format import transform_blob_output
+        from ._transformers import transform_storage_list_output
+        g.storage_custom_command_oauth('set', 'rename_directory')
+        g.storage_custom_command_oauth('update', 'show_blob')
+
+    # Blob directory Pipeline
+    with self.command_group('storage blob directory', command_type=adls_base_blob_sdk,
+                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
+        from ._format import transform_boolean_for_table, transform_blob_output
+        from ._transformers import (transform_storage_list_output, transform_url,
+                                    create_boolean_result_output_transformer)
+        g.storage_command_oauth('create', 'create_directory')
+        g.storage_command_oauth('delete', 'delete_directory')
+        g.storage_custom_command_oauth('move', 'rename_directory')
+        #g.storage_command_oauth('upload', 'create_directory')
+        #g.storage_command_oauth('download', 'get_blob_to_path', table_transformer=transform_blob_output)
+        g.storage_custom_command_oauth('show', 'show_directory', table_transformer=transform_blob_output,
+                                       exception_handler=show_exception_handler)
+        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
+                                table_transformer=transform_blob_output)
+        g.storage_command_oauth('exists', 'exists', transform=create_boolean_result_output_transformer('exists'))
+
+
+    with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk,
+                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
+        g.storage_custom_command_oauth('set', 'rename_directory')
+        g.storage_custom_command_oauth('update', 'show_blob')
+        g.storage_custom_command_oauth('show', 'show_blob')
