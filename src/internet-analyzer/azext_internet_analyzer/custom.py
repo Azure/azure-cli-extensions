@@ -24,7 +24,7 @@ def create_internet_analyzer_profile(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
-def update_internet_analyzer_profile(cmd, client, body,
+def update_internet_analyzer_profile(cmd, client,
                                      resource_group,
                                      name,
                                      location=None,
@@ -77,7 +77,7 @@ def create_internet_analyzer_test(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def update_internet_analyzer_test(cmd, client, body,
+def update_internet_analyzer_test(cmd, client,
                                   resource_group,
                                   profile_name,
                                   name,
