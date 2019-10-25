@@ -16,7 +16,7 @@ helps['internet-analyzer profile'] = """
 
 helps['internet-analyzer profile create'] = """
     type: command
-    short-summary: create network experiment profile.
+    short-summary: create internet analyzer profile.
     examples:
       - name: Creates an NetworkExperiment Profile in a Resource Group
         text: |-
