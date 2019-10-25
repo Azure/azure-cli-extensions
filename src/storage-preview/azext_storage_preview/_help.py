@@ -128,7 +128,7 @@ helps['storage blob directory access set'] = """
     short-summary: Set the access control properties of a directory.
     examples:
         - name: Set the access control properties of a directory.
-          text: az storage blob directory access set -a "user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask=rwx" --path MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+          text: az storage blob directory access set -a "user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask=rwx" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory access show'] = """
@@ -136,7 +136,7 @@ helps['storage blob directory access show'] = """
     short-summary: Show the access control properties of a directory.
     examples:
         - name: Show the access control properties of a directory.
-          text: az storage blob directory access show --path MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+          text: az storage blob directory access show -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory access update'] = """
@@ -144,7 +144,7 @@ helps['storage blob directory access update'] = """
     short-summary: Update the access control properties of a directory.
     examples:
         - name: Update the access control properties of a directory.
-          text: az storage blob directory access update --permission --path MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+          text: az storage blob directory access update --permissions "rwxrwxrwx" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory create'] = """
