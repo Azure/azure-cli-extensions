@@ -3,6 +3,6 @@
 Release History
 ===============
 
-0.1.0
+0.1.0rc1
 ++++++
-* Initial release.
+* Initial release - release candidate 1
