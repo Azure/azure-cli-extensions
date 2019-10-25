@@ -26,7 +26,6 @@ def create_internet_analyzer_profile(cmd, client,
 
 def delete_internet_analyzer_profile(cmd, client,
                                      resource_group,
-                                     profile_name,
                                      name):
     return client.delete(resource_group_name=resource_group, profile_name=name)
 

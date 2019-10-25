@@ -9,6 +9,11 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
+helps['internet-analyzer'] = """
+    type: group
+    short-summary: Commands to manage internet analyzer.
+"""
+
 helps['internet-analyzer profile'] = """
     type: group
     short-summary: Commands to manage internet analyzer profile.
