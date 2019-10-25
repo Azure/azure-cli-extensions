@@ -48,8 +48,8 @@ def list_internet_analyzer_profile(cmd, client,
 
 def list_internet_analyzer_preconfigured_endpoint(cmd, client,
                                                   resource_group,
-                                                  name):
-    return client.list(resource_group_name=resource_group, profile_name=name)
+                                                  profile_name):
+    return client.list(resource_group_name=resource_group, profile_name=profile_name)
 
 
 def create_internet_analyzer_test(cmd, client,
