@@ -94,7 +94,7 @@ class PreconfiguredEndpointsOperations(object):
 
         def internal_paging(next_link=None):
             # hack for paging problem -- to be removed
-            if next_link is non None:
+            if next_link is not None:
                 raise StopIteration("End of paging")
 
             request = prepare_request(next_link)
