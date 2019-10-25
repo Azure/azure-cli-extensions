@@ -11,7 +11,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['internet-analyzer profile'] = """
     type: group
-    short-summary: Commands to manage network experiment profile.
+    short-summary: Commands to manage internet analyzer profile.
 """
 
 helps['internet-analyzer profile create'] = """
