@@ -176,6 +176,14 @@ helps['storage blob directory exists'] = """
           text: az storage blob directory exists -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
 """
 
+helps['storage blob directory list'] = """
+    type: command
+    short-summary: List blobs and blob subdirectories in a storage directory.
+    examples:
+        - name: List blobs and blob subdirectories in a storage directory.
+          text: az storage blob directory list -c MyContainer -d DestinationDirectoryPath --account-name MyStorageAccount
+"""
+
 helps['storage blob directory metadata'] = """
     type: group
     short-summary: Manage directory metadata.
