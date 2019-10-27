@@ -155,6 +155,7 @@ The secondary cluster will become the primary cluster after failover. Please und
             'metadata show', 'get_blob_metadata', exception_handler=show_exception_handler)
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
+
     with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:

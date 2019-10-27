@@ -55,8 +55,18 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 0))
 
-        #TODO: Storage blob directory access control
+        # TODO: Storage blob directory access control
+        acl = "user::rwx,group::r--,other::---,mask=rwx"
+        self.storage_cmd('storage blob directory access set -c {} -d {} -a "{}"', account_info, container, des_directory, acl)
+        self.storage_cmd('storage blob directory access show -c {} -d {}', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('acl', acl))
+        self.storage_cmd('storage blob directory access update -c {} -d {} --permissions "rwxrwxrwx"', account_info,
+                         container, des_directory, acl).assert_with_checks(JMESPathCheck('permissions', "rwxrwxrwx"))
 
+        # Storage blob directory metadata
+        self.storage_cmd('storage blob directory metadata update -c {} -d {} --metadata "tag1=value1"', account_info, container, des_directory)
+        self.storage_cmd('storage blob directory metadata show -c {} -d {} ', account_info, container,des_directory) \
+            .assert_with_checks(JMESPathCheck('tag1', "value1"))
 
         # Remove blob directory
         self.storage_cmd('storage blob directory delete -c {} -d {}', account_info,

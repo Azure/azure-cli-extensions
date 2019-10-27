@@ -128,7 +128,7 @@ helps['storage blob directory access set'] = """
     short-summary: Set the access control properties of a directory.
     examples:
         - name: Set the access control properties of a directory.
-          text: az storage blob directory access set -a "user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask=rwx" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+          text: az storage blob directory access set -a "user::rwx,group::r--,other::---" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory access show'] = """
