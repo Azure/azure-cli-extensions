@@ -100,18 +100,18 @@ def create_peering(cmd, client,
 def update_peering(cmd, client,
                    resource_group,
                    name,
-                   kind=None,
-                   location=None,
                    sku_name=None,
                    sku_tier=None,
                    sku_family=None,
                    sku_size=None,
+                   kind=None,
                    direct_connections=None,
                    direct_peer_asn=None,
                    direct_direct_peering_type=None,
                    exchange_connections=None,
                    exchange_peer_asn=None,
                    peering_location=None,
+                   location=None,
                    tags=None):
     body = client.get(resource_group_name=resource_group, peering_name=name).as_dict()
     body.sku.name = sku_name  # str
@@ -198,9 +198,9 @@ def create_peering_service(cmd, client,
 def update_peering_service(cmd, client,
                            resource_group,
                            name,
-                           location=None,
                            peering_service_location=None,
                            peering_service_provider=None,
+                           location=None,
                            tags=None):
     body = client.get(resource_group_name=resource_group, peering_service_name=name).as_dict()
     body.peering_service_location = peering_service_location  # str
