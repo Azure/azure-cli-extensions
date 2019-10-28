@@ -131,6 +131,10 @@ def create_managednetwork_managed_network_group(cmd, client,
                                                 kind=None):
     body = {}
     body['location'] = location  # str
+    body['management_groups'] = []
+    body['subscriptions'] = []
+    body['virtual_networks'] = []
+    body['subnets'] = []
     if management_groups:
         body['management_groups'] = [{'id': i} for i in management_groups]
     if subscriptions:
