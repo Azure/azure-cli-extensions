@@ -28,4 +28,4 @@ class ManagedNetworkScenarioTest(ScenarioTest):
 
         # self.cmd('az managednetwork group delete --resource-group "{rg}" --managed-network-name "MyManagedNetwork" --name "MyManagedNetworkGroup"')
 
-        self.cmd('az managednetwork group delete --resource-group "{rg}" --name "MyManagedNetwork"')
+        self.cmd('az managednetwork delete --resource-group "{rg}" --name "MyManagedNetwork"')
