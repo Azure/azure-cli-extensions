@@ -23,12 +23,12 @@ def create_managednetwork(cmd, client,
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body.setdefault('scope', {})['management_groups'] = scope_management_groups
-    body.setdefault('scope', {})['subscriptions'] = scope_subscriptions
-    body.setdefault('scope', {})['virtual_networks'] = scope_virtual_networks
-    body.setdefault('scope', {})['subnets'] = scope_subnets
-    body.setdefault('connectivity', {})['groups'] = connectivity_groups
-    body.setdefault('connectivity', {})['peerings'] = connectivity_peerings
+    body.setdefault('scope', {})['management_groups'] = [{'id': i} for i in scope_management_groups]
+    body.setdefault('scope', {})['subscriptions'] = [{'id': i} for i in scope_subscriptions]
+    body.setdefault('scope', {})['virtual_networks'] = [{'id': i} for i in scope_virtual_networks]
+    body.setdefault('scope', {})['subnets'] = [{'id': i} for i in scope_subnets]
+    body.setdefault('connectivity', {})['groups'] = [{'id': i} for i in connectivity_groups]
+    body.setdefault('connectivity', {})['peerings'] = [{'id': i} for i in connectivity_peerings]
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=name, managed_network=body)
 
 
@@ -46,12 +46,12 @@ def update_managednetwork(cmd, client,
     body = client.get(resource_group_name=resource_group, managed_network_name=name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
-    body.scope.management_groups = scope_management_groups
-    body.scope.subscriptions = scope_subscriptions
-    body.scope.virtual_networks = scope_virtual_networks
-    body.scope.subnets = scope_subnets
-    body.connectivity.groups = connectivity_groups
-    body.connectivity.peerings = connectivity_peerings
+    body.scope.management_groups = [{'id': i} for i in scope_management_groups]
+    body.scope.subscriptions = [{'id': i} for i in scope_subscriptions]
+    body.scope.virtual_networks = [{'id': i} for i in scope_virtual_networks]
+    body.scope.subnets = [{'id': i} for i in scope_subnets]
+    body.connectivity.groups = [{'id': i} for i in connectivity_groups]
+    body.connectivity.peerings = [{'id': i} for i in connectivity_peerings]
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=name, managed_network=body)
 
 
@@ -113,10 +113,10 @@ def create_managednetwork_managed_network_group(cmd, client,
                                                 kind=None):
     body = {}
     body['location'] = location  # str
-    body['management_groups'] = management_groups
-    body['subscriptions'] = subscriptions
-    body['virtual_networks'] = virtual_networks
-    body['subnets'] = subnets
+    body['management_groups'] = [{'id': i} for i in management_groups]
+    body['subscriptions'] = [{'id': i} for i in subscriptions]
+    body['virtual_networks'] = [{'id': i} for i in virtual_networks]
+    body['subnets'] = [{'id': i} for i in subnets]
     body['kind'] = kind  # str
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name, managed_network_group=body)
 
@@ -133,10 +133,10 @@ def update_managednetwork_managed_network_group(cmd, client,
                                                 kind=None):
     body = client.get(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name).as_dict()
     body.location = location  # str
-    body.management_groups = management_groups
-    body.subscriptions = subscriptions
-    body.virtual_networks = virtual_networks
-    body.subnets = subnets
+    body.management_groups = [{'id': i} for i in management_groups]
+    body.subscriptions = [{'id': i} for i in subscriptions]
+    body.virtual_networks = [{'id': i} for i in virtual_networks]
+    body.subnets = [{'id': i} for i in subnets]
     body.kind = kind  # str
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name, managed_network_group=body)
 
@@ -167,7 +167,7 @@ def create_managednetwork_managed_network_peering_policy(cmd, client,
     body['location'] = location  # str
     body['type'] = _type  # str
     body.setdefault('hub', {})['id'] = hub_id  # str
-    body['spokes'] = spokes
+    body['spokes'] = [{'id': i} for i in spokes]
     body['mesh'] = mesh
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name, managed_network_policy=body)
 
@@ -185,7 +185,7 @@ def update_managednetwork_managed_network_peering_policy(cmd, client,
     body.location = location  # str
     body.type = _type  # str
     body.hub.id = hub_id  # str
-    body.spokes = spokes
+    body.spokes = [{'id': i} for i in spokes]
     body.mesh = mesh
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name, managed_network_policy=body)
 
