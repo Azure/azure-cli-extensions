@@ -108,6 +108,10 @@ helps['network vhub route-table update'] = """
 helps['network vhub route-table delete'] = """
     type: command
     short-summary: Delete a route table in the virtual hub.
+    examples:
+    - name: Delete a route table in the virtual hub.
+      text: |
+          az network vhub route-table delete -n MyRouteTable -g MyResourceGroup --vhub-name MyVhub
 """
 
 helps['network vhub route-table show'] = """
