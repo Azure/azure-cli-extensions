@@ -23,6 +23,12 @@ def create_managednetwork(cmd, client,
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
+    body.setdefault('scope', {})['management_groups'] = []
+    body.setdefault('scope', {})['subscriptions'] = []
+    body.setdefault('scope', {})['virtual_networks'] = []
+    body.setdefault('scope', {})['subnets'] = []
+    body.setdefault('connectivity', {})['groups'] = []
+    body.setdefault('connectivity', {})['peerings'] = []
     if scope_management_groups:
         body.setdefault('scope', {})['management_groups'] = [{'id': i} for i in scope_management_groups]
     if scope_subscriptions:
