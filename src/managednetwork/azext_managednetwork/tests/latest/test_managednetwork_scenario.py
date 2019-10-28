@@ -24,8 +24,8 @@ class ManagedNetworkScenarioTest(ScenarioTest):
 
         self.cmd('az managednetwork create --resource-group "{rg}" --name "MyManagedNetwork" --location "westus"')
 
-        self.cmd('az managednetwork group create --resource-group "{rg}" --managed-network-name "MyManagedNetwork" --name "MyManagedNetworkGroup" --kind Connectivity') # --location "westus" --virtual-networks /subscriptions/{sub}/resourceGroups/fengtest/providers/Microsoft.Network/virtualNetworks/fengtest-vnet')
+        # self.cmd('az managednetwork group create --resource-group "{rg}" --managed-network-name "MyManagedNetwork" --name "MyManagedNetworkGroup" --kind Connectivity') # --location "westus" --virtual-networks /subscriptions/{sub}/resourceGroups/fengtest/providers/Microsoft.Network/virtualNetworks/fengtest-vnet')
 
-        self.cmd('az managednetwork group delete --resource-group "{rg}" --managed-network-name "MyManagedNetwork" --name "MyManagedNetworkGroup"')
+        # self.cmd('az managednetwork group delete --resource-group "{rg}" --managed-network-name "MyManagedNetwork" --name "MyManagedNetworkGroup"')
 
         self.cmd('az managednetwork group delete --resource-group "{rg}" --name "MyManagedNetwork"')
