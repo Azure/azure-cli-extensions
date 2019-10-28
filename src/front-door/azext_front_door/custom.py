@@ -861,7 +861,7 @@ def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_
                 selector = variable_parts[1]
 
             rule.match_conditions.append(MatchCondition(
-                match_variable=match_variable,
+                match_variable=match_variable，
                 selector=selector,
                 operator=operator,
                 negate_condition=negate,
