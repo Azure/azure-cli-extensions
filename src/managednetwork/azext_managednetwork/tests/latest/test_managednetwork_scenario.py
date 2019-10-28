@@ -22,7 +22,7 @@ class ManagedNetworkScenarioTest(ScenarioTest):
             'sub': self.get_subscription_id()
         })
 
-        self.cmd('az managednetwork create --resource-group "{rg}" --name "MyManagedNetwork" --location "eastus"')
+        self.cmd('az managednetwork create --resource-group "{rg}" --name "MyManagedNetwork" --location "westus"')
 
         self.cmd('az managednetwork group create --resource-group "{rg}" --managed-network-name "MyManagedNetwork" --name "MyManagedNetworkGroup" --location "eastus" --scope-virtual-networks /subscriptions/{sub}/resourceGroups/fengtest/providers/Microsoft.Network/virtualNetworks/fengtest-vnet')
 
