@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.18
++++++
+* Update to use 2019-10-01 api-version
+
 0.4.17
 +++++
 * Add support for public IP per node during node pool creation
