@@ -23,3 +23,5 @@ class ManagedNetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('az managednetwork create --resource-group "{rg}" --name "myManagedNetwork" --location "eastus" --scope-subscriptions {sub}')
+
+        self.cmd('az managednetwork delete --resource-group "{rg}" --name "myManagedNetwork"')
