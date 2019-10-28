@@ -19,8 +19,7 @@ class ManagedNetworkScenarioTest(ScenarioTest):
     def test_managednetwork(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'sub': self.get_subscription_id()
         })
 
-        # EXAMPLE NOT FOUND: Create or Update a service with all parameters
-        self.cmd('az managednetwork create --resource-group "{rg}" --name "myManagedNetwork" --location "eastus"')
+        self.cmd('az managednetwork create --resource-group "{rg}" --name "myManagedNetwork" --location "eastus" --scope-subscriptions {sub}')
