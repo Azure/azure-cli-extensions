@@ -23,3 +23,4 @@ class ManagedNetworkScenarioTest(ScenarioTest):
         })
 
         # EXAMPLE NOT FOUND: Create or Update a service with all parameters
+        self.cmd('az managednetwork create --resource-group "{rg}" --name "myManagedNetwork" --location "eastus"')
