@@ -931,10 +931,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes"')
 
-    # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
-    if update_flags > 0 and instance.max_agent_pools > 1:
-        raise CLIError('Please use "az aks nodepool command to update per node pool auto scaler settings"')
+    if update_flags > 0 and len(instance.agent_pool_profiles) > 1:
+        raise CLIError('There are more than one node pool in the cluster. Please use "az aks nodepool" command '
+                       'to update per node pool auto scaler settings')
 
     node_count = instance.agent_pool_profiles[0].count
 
@@ -1198,7 +1198,10 @@ def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sa
 
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.get(resource_group_name, name)
-    # TODO: change this approach when we support multiple agent pools.
+
+    if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
+        raise CLIError('There are more than one node pool in the cluster. Please specify nodepool name or use az aks nodepool command to scale node pool')
+
     if node_count == 0:
         raise CLIError("Can't scale down to 0 nodes.")
     for agent_profile in instance.agent_pool_profiles:
