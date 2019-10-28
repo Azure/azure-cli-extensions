@@ -1,6 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "eastus"}'
+    body: '{"location": "westus", "properties": {"scope": {"managementGroups": [],
+      "subscriptions": [], "virtualNetworks": [], "subnets": []}}}'
     headers:
       Accept:
       - application/json
@@ -11,7 +12,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '22'
+      - '132'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -26,29 +27,81 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_managednetwork000001/providers/Microsoft.ManagedNetwork/managedNetworks/MyManagedNetwork?api-version=2019-06-01-preview
   response:
     body:
-      string: '{"error":{"code":"LocationNotAvailableForResourceType","message":"The
-        provided location ''eastus'' is not available for resource type ''Microsoft.ManagedNetwork/managedNetworks''.
-        List of available regions for the resource type is ''eastus2,westus,westus2,centralus,eastus2stage''."}}'
+      string: '{"id":"subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/cli_test_managednetwork000001/providers/Microsoft.ManagedNetwork/managedNetworks/MyManagedNetwork","name":"MyManagedNetwork","type":"Microsoft.ManagedNetwork/managedNetworks","location":"westus","apiVersion":"","tags":{},"resourceGuid":"","provisioningState":0,"properties":{"scope":{"virtualNetworks":[],"managementGroups":[],"subscriptions":[],"subNets":[]},"connectivity":{"peerings":[],"groups":[]}}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '278'
+      - '523'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 28 Oct 2019 04:07:33 GMT
+      - Mon, 28 Oct 2019 04:35:27 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managednetwork delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-managednetwork/2019-06-01-preview Azure-SDK-For-Python
+        AZURECLI/2.0.73
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_managednetwork000001/providers/Microsoft.ManagedNetwork/managedNetworks/MyManagedNetwork?api-version=2019-06-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 28 Oct 2019 04:35:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-failure-cause:
-      - gateway
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
     status:
-      code: 400
-      message: Bad Request
+      code: 200
+      message: OK
 version: 1
