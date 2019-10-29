@@ -16,6 +16,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('ip_groups_name', options_list=['--name', '-n'], help='Name of the IpGroup')
 
-    with self.argument_context('network ip-group create', min_api='2019-09-01') as c:
-        c.argument('ip_addresses', nargs='+', help='Space-separated list of IpAddress or IpAddressPrefix.')
+    for verb in ['create', 'update']:
+        with self.argument_context('network ip-group {}'.format(verb), min_api='2019-09-01') as c:
+            c.argument('ip_addresses', nargs='+', help='Space-separated list of IpAddress or IpAddressPrefix.')
     # endregion

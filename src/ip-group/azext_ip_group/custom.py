@@ -25,8 +25,12 @@ def list_ip_groups(cmd, resource_group_name=None):
     return client.list()
 
 
-def update_ip_groups(cmd, instance, tags=None):
+def update_ip_groups(cmd, instance, ip_addresses=None, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
+
+        if ip_addresses is not None:
+            c.set_param('ip_addresses', ip_addresses)
+
     return instance
 # endregion
