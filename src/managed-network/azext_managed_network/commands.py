@@ -55,10 +55,3 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_managed_network_managed_network_peering_policy')
         g.custom_command('list', 'list_managed_network_managed_network_peering_policy')
         g.show_command('show', 'get')
-
-    from ._client_factory import cf_operations
-    managed_network_operations = CliCommandType(
-        operations_tmpl='azext_managed_network.vendored_sdks.managednetwork.operations._operations_operations#OperationsOperations.{}',
-        client_factory=cf_operations)
-    with self.command_group('managed-network', managed_network_operations, client_factory=cf_operations) as g:
-        g.custom_command('list', 'list_managed_network')
