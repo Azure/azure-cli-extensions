@@ -2,6 +2,25 @@
 
 Release History
 ===============
+0.4.18
++++++
+* Update to use 2019-10-01 api-version
+
+0.4.17
++++++
+* Add support for public IP per node during node pool creation
+* Add support for taints during node pool creation
+* Add support for low priority node pool
+
+0.4.16
++++++
+* Add support for `az aks kollect`
+* Add support for `az aks upgrade --control-plane-only`
+
+0.4.15
++++++
+* Set default cluster creation to SLB and VMSS
+
 0.4.14
 +++++
 * Add support for using managed identity to manage cluster resource group

@@ -42,10 +42,10 @@ def create_healthcareapis(cmd, client,
     service_description['properties']['cors_configuration']['allow_credentials'] = cors_allow_credentials
     service_description['properties']['cosmos_db_configuration'] = {}
     service_description['properties']['cosmos_db_configuration']['offer_throughput'] = cosmos_db_offer_throughput
-    service_description['authentication_configuration'] = {}
-    service_description['authentication_configuration']['authority'] = authentication_authority
-    service_description['authentication_configuration']['audience'] = authentication_audience
-    service_description['authentication_configuration']['smart_proxy_enabled'] = authentication_smart_proxy_enabled
+    service_description['properties']['authentication_configuration'] = {}
+    service_description['properties']['authentication_configuration']['authority'] = authentication_authority
+    service_description['properties']['authentication_configuration']['audience'] = authentication_audience
+    service_description['properties']['authentication_configuration']['smart_proxy_enabled'] = authentication_smart_proxy_enabled
 
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
@@ -76,8 +76,7 @@ def update_healthcareapis(cmd, client,
         service_description['properties']['access_policies'] = []
         for policy in access_policies_object_id.split(','):
             service_description['properties']['access_policies'].append({'object_id': policy})
-    if service_description['properties'].get('cors_configuration') is None:
-        service_description['properties']['cors_configuration'] = {}
+    service_description['properties'].setdefault('cors_configuration', {})
     if cors_origins is not None:
         service_description['properties']['cors_configuration']['origins'] = None if cors_origins is None else cors_origins.split(',')
     if cors_headers is not None:
@@ -88,18 +87,16 @@ def update_healthcareapis(cmd, client,
         service_description['properties']['cors_configuration']['max_age'] = cors_max_age
     if cors_allow_credentials is not None:
         service_description['properties']['cors_configuration']['allow_credentials'] = cors_allow_credentials
-    if service_description['properties'].get('cosmos_db_configuration') is None:
-        service_description['properties']['cosmos_db_configuration'] = {}
+    service_description['properties'].setdefault('cosmod_db_configuration', {})
     if cosmos_db_offer_throughput is not None:
         service_description['properties']['cosmos_db_configuration']['offer_throughput'] = cosmos_db_offer_throughput
-    if service_description['properties'].get('authentication_configuration') is None:
-        service_description['authentication_configuration'] = {}
+    service_description['properties'].setdefault('authentication_configuration', {})
     if authentication_authority is not None:
-        service_description['authentication_configuration']['authority'] = authentication_authority
+        service_description['properties']['authentication_configuration']['authority'] = authentication_authority
     if authentication_audience is not None:
-        service_description['authentication_configuration']['audience'] = authentication_audience
+        service_description['properties']['authentication_configuration']['audience'] = authentication_audience
     if authentication_smart_proxy_enabled is not None:
-        service_description['authentication_configuration']['smart_proxy_enabled'] = authentication_smart_proxy_enabled
+        service_description['properties']['authentication_configuration']['smart_proxy_enabled'] = authentication_smart_proxy_enabled
     return client.create_or_update(resource_group_name=resource_group, resource_name=name, service_description=service_description)
 
 

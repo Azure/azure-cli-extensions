@@ -27,10 +27,13 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MongoDbFinishCommand,
                                                           MongoDbFinishCommandInput,
                                                           MongoDbRestartCommand,
-                                                          ValidateMongoDbTaskProperties)
+                                                          ValidateMongoDbTaskProperties,
+                                                          OracleConnectionInfo,
+                                                          MigrateOracleAzureDbForPostgreSqlSyncTaskProperties)
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                        get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
-                                       get_mongo_to_mongo_input)
+                                       get_mongo_to_mongo_input,
+                                       get_migrate_oracle_to_azuredbforpostgresql_sync_input)
 
 logger = get_logger(__name__)
 
@@ -224,12 +227,18 @@ def cutover_sync_task(
                                                              resource_group_name=resource_group_name)
     st = get_scenario_type(source_platform, target_platform, "onlinemigration")
 
-    if st in [ScenarioType.mysql_azuremysql_online, ScenarioType.postgres_azurepostgres_online]:
+    if st in [ScenarioType.mysql_azuremysql_online,
+              ScenarioType.postgres_azurepostgres_online,
+              ScenarioType.oracle_azurepostgres_online]:
+        if object_name is None:
+            raise CLIError("The argument 'object_name' must be present for this task type.")
         command_input = MigrateSyncCompleteCommandInput(database_name=object_name)
         command_properties_model = MigrateSyncCompleteCommandProperties
     elif st == ScenarioType.mongo_mongo_online:
         command_input = MongoDbFinishCommandInput(object_name=object_name, immediate=immediate)
         command_properties_model = MongoDbFinishCommand
+    else:
+        raise CLIError("The supplied project's source and target do not support cutting over the migration.")
 
     run_command(client,
                 command_input,
@@ -329,7 +338,9 @@ def extension_handles_scenario(
         ScenarioType.mysql_azuremysql_online,
         ScenarioType.postgres_azurepostgres_online,
         ScenarioType.mongo_mongo_offline,
-        ScenarioType.mongo_mongo_online]
+        ScenarioType.mongo_mongo_online,
+        ScenarioType.oracle_azurepostgres_offline,
+        ScenarioType.oracle_azurepostgres_online]
     return get_scenario_type(source_platform, target_platform, task_type) in ExtensionScenarioTypes
 
 
@@ -398,6 +409,11 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
         return MongoDbConnectionInfo(connection_string=connection_string,
                                      user_name=user_name,
                                      password=password)
+    elif "oracle" in typeOfInfo:
+        data_source = connection_info_json['dataSource']
+        return OracleConnectionInfo(user_name=user_name,
+                                    password=password,
+                                    data_source=data_source)
     else:
         # If no match, Pass the connection info through
         return connection_info_json
@@ -420,6 +436,9 @@ def get_task_migration_properties(
     elif "mongo_mongo" in st.name:
         TaskProperties = MigrateMongoDbTaskProperties
         GetInput = get_mongo_to_mongo_input
+    elif "oracle_azurepostgres" in st.name:
+        TaskProperties = MigrateOracleAzureDbForPostgreSqlSyncTaskProperties
+        GetInput = get_migrate_oracle_to_azuredbforpostgresql_sync_input
     else:
         raise CLIError("The supplied source, target, and task type is not supported for migration.")
 
@@ -497,6 +516,9 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
     elif source_platform == "mongodb" and target_platform == "mongodb":
         scenario_type = ScenarioType.mongo_mongo_validation if "validation" in task_type else \
             ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline
+    elif source_platform == "oracle" and target_platform == "azuredbforpostgresql":
+        scenario_type = ScenarioType.oracle_azurepostgres_online if "online" in task_type else \
+            ScenarioType.oracle_azurepostgres_offline
     else:
         scenario_type = ScenarioType.unknown
 
@@ -523,12 +545,15 @@ class ScenarioType(Enum):
     # MySQL to Azure for MySQL
     mysql_azuremysql_offline = 20
     mysql_azuremysql_online = 21
-    # PostgresSQL to Azure for PostgresSQL
+    # PostgresSQL to Azure for PostgreSQL
     postgres_azurepostgres_offline = 30
     postgres_azurepostgres_online = 31
     # MongoDB to MongoDB (including Cosmos DB using MongoDB API)
     mongo_mongo_offline = 40
     mongo_mongo_online = 41
     mongo_mongo_validation = 42
+    # Oracle to Azure for PostgreSQL
+    oracle_azurepostgres_offline = 43
+    oracle_azurepostgres_online = 44
 
 # endregion

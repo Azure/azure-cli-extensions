@@ -156,3 +156,37 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
         ip_prefix_id_list = [x.strip() for x in namespace.load_balancer_outbound_ip_prefixes.split(',')]
         if not all(ip_prefix_id_list):
             raise CLIError("--load-balancer-outbound-ip-prefixes cannot contain whitespace")
+
+
+def validate_taints(namespace):
+    """Validates that provided taint is a valid format"""
+
+    regex = re.compile(r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
+
+    if namespace.node_taints is not None and namespace.node_taints != '':
+        for taint in namespace.node_taints.split(','):
+            if taint == "":
+                continue
+            found = regex.findall(taint)
+            if not found:
+                raise CLIError('Invalid node taint: %s' % taint)
+
+
+def validate_priority(namespace):
+    """Validates the node pool priority string."""
+    if namespace.priority is not None:
+        if namespace.priority == '':
+            return
+        if namespace.priority != "Low" and \
+                namespace.priority != "Regular":
+            raise CLIError("--priority can only be Low or Regular")
+
+
+def validate_eviction_policy(namespace):
+    """Validates the node pool priority string."""
+    if namespace.eviction_policy is not None:
+        if namespace.eviction_policy == '':
+            return
+        if namespace.eviction_policy != "Delete" and \
+                namespace.eviction_policy != "Deallocate":
+            raise CLIError("--eviction-policy can only be Delete or Deallocate")

@@ -47,7 +47,8 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
     # Hide sensitive data such as passwords from logs
     if secure_params:
         for param in secure_params:
-            command_string = command_string.replace(param, '********')
+            if param:
+                command_string = command_string.replace(param, '********')
     logger.debug("Calling: %s", command_string)
     process = subprocess.Popen(tokenized_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
 
@@ -153,6 +154,12 @@ def _fetch_compatible_sku(source_vm):
         return sku_list[0]
 
     return None
+
+
+def _fetch_disk_sku(resource_group_name, disk_name):
+    show_disk_command = 'az disk show -g {g} -n {name}'.format(g=resource_group_name, name=disk_name)
+    disk_sku = loads(_call_az_command(show_disk_command))['sku']['name']
+    return disk_sku
 
 
 def _get_repair_resource_tag(resource_group_name, source_vm_name):
@@ -318,6 +325,8 @@ def _get_function_param_dict(frame):
     _, _, _, values = inspect.getargvalues(frame)
     if 'cmd' in values:
         del values['cmd']
-    if 'repair_password' in values:
-        values['repair_password'] = '********'
+    secure_params = ['repair_password', 'repair_username']
+    for param in secure_params:
+        if param in values:
+            values[param] = '********'
     return values
