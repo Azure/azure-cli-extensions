@@ -39,6 +39,23 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
 
         # TODO: Upload to the directory
+        # Upload a single blob to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
+                         os.path.join(test_dir, 'readme'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+        # Upload a local directory to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'apple'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 12))
+
+        # Upload files in a local directory to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'butter/file_*'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 22))
 
         # TODO: Download from the directory
 
@@ -53,7 +70,7 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
-            .assert_with_checks(JMESPathCheck('length(@)', 0))
+            .assert_with_checks(JMESPathCheck('length(@)', 22))
 
         # Storage blob directory access control
         acl = "user::rwx,group::r--,other::---"
@@ -71,9 +88,9 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('tag1', "value1"))
 
         # Remove blob directory
-        self.storage_cmd('storage blob directory delete -c {} -d {}', account_info,
+        self.storage_cmd('storage blob directory delete -c {} -d {} --recursive', account_info,
                          container, des_directory, directory)
-        self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, des_directory) \
+        self.storage_cmd('storage blob directory exists -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('exists', False))
 
 
