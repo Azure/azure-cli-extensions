@@ -102,10 +102,7 @@ def update_managed_network_scope_assignment(cmd, client,
                                             scope=None,
                                             location=None,
                                             assigned_managed_network=None):
-    body = client.get(scope=scope, scope_assignment_name=name).as_dict()
-    body.location = location  # str
-    body.assigned_managed_network = assigned_managed_network  # str
-    return client.create_or_update(scope=scope, scope_assignment_name=name, parameters=body)
+    return client.create_or_update(scope=scope, scope_assignment_name=name, assigned_managed_network=assigned_managed_network)
 
 
 def delete_managed_network_scope_assignment(cmd, client,
