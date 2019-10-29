@@ -1,18 +1,18 @@
 # Azure CLI Module Creation Report
 
-## managednetwork
+## managed-network
 
-### managednetwork list
+### managed-network list
 
-list a managednetwork.
+list a managed-network.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
-## managednetwork group
+## managed-network managed-network-group
 
-### managednetwork group create
+### managed-network managed-network-group create
 
-create a managednetwork group.
+create a managed-network managed-network-group.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -29,13 +29,13 @@ create a managednetwork group.
 **Example: ManagementNetworkGroupsPut**
 
 ```
-managednetwork group create --resource-group myResourceGroup
+managed-network managed-network-group create --resource-group myResourceGroup
         --managed-network-name myManagedNetwork
         --name myManagedNetworkGroup1
 ```
-### managednetwork group update
+### managed-network managed-network-group update
 
-update a managednetwork group.
+update a managed-network managed-network-group.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -48,9 +48,9 @@ update a managednetwork group.
 |--virtual-networks|dict|The collection of virtual nets covered by the Managed Network|//virtual_networks|//virtualNetworks|
 |--subnets|dict|The collection of  subnets covered by the Managed Network|//subnets|//subnets|
 |--kind|str|Responsibility role under which this Managed Network Group will be created|/kind|/kind|
-### managednetwork group delete
+### managed-network managed-network-group delete
 
-delete a managednetwork group.
+delete a managed-network managed-network-group.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -61,32 +61,32 @@ delete a managednetwork group.
 **Example: ManagementNetworkGroupsDelete**
 
 ```
-managednetwork group delete --resource-group myResourceGroup
+managed-network managed-network-group delete --resource-group myResourceGroup
         --managed-network-name myManagedNetwork
         --name myManagedNetworkGroup1
 ```
-### managednetwork group list
+### managed-network managed-network-group list
 
-list a managednetwork group.
+list a managed-network managed-network-group.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group**|str|The name of the resource group.|resource_group_name|resourceGroupName|
 |**--managed-network-name**|str|The name of the Managed Network.|managed_network_name|managedNetworkName|
-### managednetwork group show
+### managed-network managed-network-group show
 
-show a managednetwork group.
+show a managed-network managed-network-group.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group**|str|The name of the resource group.|resource_group_name|resourceGroupName|
 |**--managed-network-name**|str|The name of the Managed Network.|managed_network_name|managedNetworkName|
 |**--name**|str|The name of the Managed Network Group.|managed_network_group_name|managedNetworkGroupName|
-## managednetwork peering-policy
+## managed-network managed-network-peering-policy
 
-### managednetwork peering-policy create
+### managed-network managed-network-peering-policy create
 
-create a managednetwork peering-policy.
+create a managed-network managed-network-peering-policy.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -102,13 +102,13 @@ create a managednetwork peering-policy.
 **Example: ManagedNetworkPeeringPoliciesPut**
 
 ```
-managednetwork peering-policy create --resource-group myResourceGroup
+managed-network managed-network-peering-policy create --resource-group myResourceGroup
         --managed-network-name myManagedNetwork
         --name myHubAndSpoke
 ```
-### managednetwork peering-policy update
+### managed-network managed-network-peering-policy update
 
-update a managednetwork peering-policy.
+update a managed-network managed-network-peering-policy.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -120,9 +120,9 @@ update a managednetwork peering-policy.
 |--hub-id|str|Resource Id|//hub/id|//hub/id|
 |--spokes|dict|Gets or sets the spokes group IDs|//spokes|//spokes|
 |--mesh|dict|Gets or sets the mesh group IDs|//mesh|//mesh|
-### managednetwork peering-policy delete
+### managed-network managed-network-peering-policy delete
 
-delete a managednetwork peering-policy.
+delete a managed-network managed-network-peering-policy.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -133,32 +133,32 @@ delete a managednetwork peering-policy.
 **Example: ManagedNetworkPeeringPoliciesDelete**
 
 ```
-managednetwork peering-policy delete --resource-group myResourceGroup
+managed-network managed-network-peering-policy delete --resource-group myResourceGroup
         --managed-network-name myManagedNetwork
         --name myHubAndSpoke
 ```
-### managednetwork peering-policy list
+### managed-network managed-network-peering-policy list
 
-list a managednetwork peering-policy.
+list a managed-network managed-network-peering-policy.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group**|str|The name of the resource group.|resource_group_name|resourceGroupName|
 |**--managed-network-name**|str|The name of the Managed Network.|managed_network_name|managedNetworkName|
-### managednetwork peering-policy show
+### managed-network managed-network-peering-policy show
 
-show a managednetwork peering-policy.
+show a managed-network managed-network-peering-policy.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |**--resource-group**|str|The name of the resource group.|resource_group_name|resourceGroupName|
 |**--managed-network-name**|str|The name of the Managed Network.|managed_network_name|managedNetworkName|
 |**--name**|str|The name of the Managed Network Peering Policy.|managed_network_peering_policy_name|managedNetworkPeeringPolicyName|
-## managednetwork scope-assignment
+## managed-network scope-assignment
 
-### managednetwork scope-assignment create
+### managed-network scope-assignment create
 
-create a managednetwork scope-assignment.
+create a managed-network scope-assignment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -170,12 +170,12 @@ create a managednetwork scope-assignment.
 **Example: ScopeAssignmentsPut**
 
 ```
-managednetwork scope-assignment create --scope "/subscriptions/{{ subscription_id }}"
+managed-network scope-assignment create --scope "/subscriptions/{{ subscription_id }}"
         --name subscriptionCAssignment
 ```
-### managednetwork scope-assignment update
+### managed-network scope-assignment update
 
-update a managednetwork scope-assignment.
+update a managed-network scope-assignment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -183,9 +183,9 @@ update a managednetwork scope-assignment.
 |--scope|str|The base resource of the scope assignment to create. The scope can be any REST resource instance. For example, use '/subscriptions/{subscription-id}/' for a subscription, '/subscriptions/{subscription-id}/resourceGroups/{resource-group-name}' for a resource group, and '/subscriptions/{subscription-id}/resourceGroups/{resource-group-name}/providers/{resource-provider}/{resource-type}/{resource-name}' for a resource.|scope|scope|
 |--location|str|The geo-location where the resource lives|/location|/location|
 |--assigned-managed-network|str|The managed network ID with scope will be assigned to.|//assigned_managed_network|//assignedManagedNetwork|
-### managednetwork scope-assignment delete
+### managed-network scope-assignment delete
 
-delete a managednetwork scope-assignment.
+delete a managed-network scope-assignment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
@@ -195,19 +195,19 @@ delete a managednetwork scope-assignment.
 **Example: ScopeAssignmentsDelete**
 
 ```
-managednetwork scope-assignment delete --scope "/subscriptions/{{ subscription_id }}"
+managed-network scope-assignment delete --scope "/subscriptions/{{ subscription_id }}"
         --name subscriptionCAssignment
 ```
-### managednetwork scope-assignment list
+### managed-network scope-assignment list
 
-list a managednetwork scope-assignment.
+list a managed-network scope-assignment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|
 |--scope|str|The base resource of the scope assignment to create. The scope can be any REST resource instance. For example, use '/subscriptions/{subscription-id}/' for a subscription, '/subscriptions/{subscription-id}/resourceGroups/{resource-group-name}' for a resource group, and '/subscriptions/{subscription-id}/resourceGroups/{resource-group-name}/providers/{resource-provider}/{resource-type}/{resource-name}' for a resource.|scope|scope|
-### managednetwork scope-assignment show
+### managed-network scope-assignment show
 
-show a managednetwork scope-assignment.
+show a managed-network scope-assignment.
 
 |Option|Type|Description|Path (SDK)|Path (swagger)|
 |------|----|-----------|----------|--------------|

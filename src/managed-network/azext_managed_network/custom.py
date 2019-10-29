@@ -9,17 +9,17 @@
 # pylint: disable=unused-argument
 
 
-def create_managednetwork(cmd, client,
-                          resource_group,
-                          name,
-                          location=None,
-                          tags=None,
-                          scope_management_groups=None,
-                          scope_subscriptions=None,
-                          scope_virtual_networks=None,
-                          scope_subnets=None,
-                          connectivity_groups=None,
-                          connectivity_peerings=None):
+def create_managed_network(cmd, client,
+                           resource_group,
+                           name,
+                           location=None,
+                           tags=None,
+                           scope_management_groups=None,
+                           scope_subscriptions=None,
+                           scope_virtual_networks=None,
+                           scope_subnets=None,
+                           connectivity_groups=None,
+                           connectivity_peerings=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -44,17 +44,17 @@ def create_managednetwork(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=name, managed_network=body)
 
 
-def update_managednetwork(cmd, client,
-                          resource_group,
-                          name,
-                          location=None,
-                          tags=None,
-                          scope_management_groups=None,
-                          scope_subscriptions=None,
-                          scope_virtual_networks=None,
-                          scope_subnets=None,
-                          connectivity_groups=None,
-                          connectivity_peerings=None):
+def update_managed_network(cmd, client,
+                           resource_group,
+                           name,
+                           location=None,
+                           tags=None,
+                           scope_management_groups=None,
+                           scope_subscriptions=None,
+                           scope_virtual_networks=None,
+                           scope_subnets=None,
+                           connectivity_groups=None,
+                           connectivity_peerings=None):
     body = client.get(resource_group_name=resource_group, managed_network_name=name).as_dict()
     body.location = location  # str
     body.tags = tags  # dictionary
@@ -73,62 +73,62 @@ def update_managednetwork(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=name, managed_network=body)
 
 
-def delete_managednetwork(cmd, client,
-                          resource_group,
-                          name):
+def delete_managed_network(cmd, client,
+                           resource_group,
+                           name):
     return client.delete(resource_group_name=resource_group, managed_network_name=name)
 
 
-def list_managednetwork(cmd, client,
-                        resource_group):
+def list_managed_network(cmd, client,
+                         resource_group):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list_by_subscription()
 
 
-def create_managednetwork_scope_assignment(cmd, client,
-                                           name,
-                                           scope=None,
-                                           location=None,
-                                           assigned_managed_network=None):
+def create_managed_network_scope_assignment(cmd, client,
+                                            name,
+                                            scope=None,
+                                            location=None,
+                                            assigned_managed_network=None):
     body = {}
     body['location'] = location  # str
     body['assigned_managed_network'] = assigned_managed_network  # str
     return client.create_or_update(scope=scope, scope_assignment_name=name, parameters=body)
 
 
-def update_managednetwork_scope_assignment(cmd, client,
-                                           name,
-                                           scope=None,
-                                           location=None,
-                                           assigned_managed_network=None):
+def update_managed_network_scope_assignment(cmd, client,
+                                            name,
+                                            scope=None,
+                                            location=None,
+                                            assigned_managed_network=None):
     body = client.get(scope=scope, scope_assignment_name=name).as_dict()
     body.location = location  # str
     body.assigned_managed_network = assigned_managed_network  # str
     return client.create_or_update(scope=scope, scope_assignment_name=name, parameters=body)
 
 
-def delete_managednetwork_scope_assignment(cmd, client,
-                                           name,
-                                           scope=None):
+def delete_managed_network_scope_assignment(cmd, client,
+                                            name,
+                                            scope=None):
     return client.delete(scope=scope, scope_assignment_name=name)
 
 
-def list_managednetwork_scope_assignment(cmd, client,
-                                         scope=None):
+def list_managed_network_scope_assignment(cmd, client,
+                                          scope=None):
     return client.list(scope=scope)
 
 
-def create_managednetwork_managed_network_group(cmd, client,
-                                                resource_group,
-                                                managed_network_name,
-                                                name,
-                                                location=None,
-                                                management_groups=None,
-                                                subscriptions=None,
-                                                virtual_networks=None,
-                                                subnets=None,
-                                                kind=None):
+def create_managed_network_managed_network_group(cmd, client,
+                                                 resource_group,
+                                                 managed_network_name,
+                                                 name,
+                                                 location=None,
+                                                 management_groups=None,
+                                                 subscriptions=None,
+                                                 virtual_networks=None,
+                                                 subnets=None,
+                                                 kind=None):
     body = {}
     body['location'] = location  # str
     body['management_groups'] = []
@@ -147,16 +147,16 @@ def create_managednetwork_managed_network_group(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name, managed_network_group=body)
 
 
-def update_managednetwork_managed_network_group(cmd, client,
-                                                resource_group,
-                                                managed_network_name,
-                                                name,
-                                                location=None,
-                                                management_groups=None,
-                                                subscriptions=None,
-                                                virtual_networks=None,
-                                                subnets=None,
-                                                kind=None):
+def update_managed_network_managed_network_group(cmd, client,
+                                                 resource_group,
+                                                 managed_network_name,
+                                                 name,
+                                                 location=None,
+                                                 management_groups=None,
+                                                 subscriptions=None,
+                                                 virtual_networks=None,
+                                                 subnets=None,
+                                                 kind=None):
     body = client.get(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name).as_dict()
     body.location = location  # str
     if management_groups:
@@ -171,28 +171,28 @@ def update_managednetwork_managed_network_group(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name, managed_network_group=body)
 
 
-def delete_managednetwork_managed_network_group(cmd, client,
-                                                resource_group,
-                                                managed_network_name,
-                                                name):
+def delete_managed_network_managed_network_group(cmd, client,
+                                                 resource_group,
+                                                 managed_network_name,
+                                                 name):
     return client.delete(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name)
 
 
-def list_managednetwork_managed_network_group(cmd, client,
-                                              resource_group,
-                                              managed_network_name):
+def list_managed_network_managed_network_group(cmd, client,
+                                               resource_group,
+                                               managed_network_name):
     return client.list_by_managed_network(resource_group_name=resource_group, managed_network_name=managed_network_name)
 
 
-def create_managednetwork_managed_network_peering_policy(cmd, client,
-                                                         resource_group,
-                                                         managed_network_name,
-                                                         name,
-                                                         _type,
-                                                         location=None,
-                                                         hub_id=None,
-                                                         spokes=None,
-                                                         mesh=None):
+def create_managed_network_managed_network_peering_policy(cmd, client,
+                                                          resource_group,
+                                                          managed_network_name,
+                                                          name,
+                                                          _type,
+                                                          location=None,
+                                                          hub_id=None,
+                                                          spokes=None,
+                                                          mesh=None):
     body = {}
     body['location'] = location  # str
     body['type'] = _type  # str
@@ -203,15 +203,15 @@ def create_managednetwork_managed_network_peering_policy(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name, managed_network_policy=body)
 
 
-def update_managednetwork_managed_network_peering_policy(cmd, client,
-                                                         resource_group,
-                                                         managed_network_name,
-                                                         name,
-                                                         location=None,
-                                                         _type=None,
-                                                         hub_id=None,
-                                                         spokes=None,
-                                                         mesh=None):
+def update_managed_network_managed_network_peering_policy(cmd, client,
+                                                          resource_group,
+                                                          managed_network_name,
+                                                          name,
+                                                          location=None,
+                                                          _type=None,
+                                                          hub_id=None,
+                                                          spokes=None,
+                                                          mesh=None):
     body = client.get(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name).as_dict()
     body.location = location  # str
     body.type = _type  # str
@@ -222,14 +222,14 @@ def update_managednetwork_managed_network_peering_policy(cmd, client,
     return client.create_or_update(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name, managed_network_policy=body)
 
 
-def delete_managednetwork_managed_network_peering_policy(cmd, client,
-                                                         resource_group,
-                                                         managed_network_name,
-                                                         name):
+def delete_managed_network_managed_network_peering_policy(cmd, client,
+                                                          resource_group,
+                                                          managed_network_name,
+                                                          name):
     return client.delete(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name)
 
 
-def list_managednetwork_managed_network_peering_policy(cmd, client,
-                                                       resource_group,
-                                                       managed_network_name):
+def list_managed_network_managed_network_peering_policy(cmd, client,
+                                                        resource_group,
+                                                        managed_network_name):
     return client.list_by_managed_network(resource_group_name=resource_group, managed_network_name=managed_network_name)

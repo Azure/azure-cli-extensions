@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='managednetwork',
+    name='managed_network',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools ManagedNetwork Extension',
    # TODO: Update author and email, if applicable

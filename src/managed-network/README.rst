@@ -1,5 +1,5 @@
-Microsoft Azure CLI 'managednetwork' Extension
+Microsoft Azure CLI 'managed-network' Extension
 ==========================================
 
-This package is for the 'managednetwork' extension.
+This package is for the 'managed-network' extension.
 i.e. 'az managed-network'
