@@ -91,10 +91,7 @@ def create_managed_network_scope_assignment(cmd, client,
                                             scope=None,
                                             location=None,
                                             assigned_managed_network=None):
-    body = {}
-    body['location'] = location  # str
-    body['assigned_managed_network'] = assigned_managed_network  # str
-    return client.create_or_update(scope=scope, scope_assignment_name=name, parameters=body)
+    return client.create_or_update(scope=scope, scope_assignment_name=name, assigned_managed_network=assigned_managed_network)
 
 
 def update_managed_network_scope_assignment(cmd, client,
