@@ -26,7 +26,7 @@ class ManagedNetworkPeeringPoliciesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client Api Version. Constant value: "2019-06-01".
+    :ivar api_version: Client Api Version. Constant value: "2019-06-01-preview".
     """
 
     models = models
@@ -36,7 +36,7 @@ class ManagedNetworkPeeringPoliciesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-06-01"
+        self.api_version = "2019-06-01-preview"
 
         self.config = config
 
