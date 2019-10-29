@@ -143,6 +143,3 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('managed_network_name', id_part=None, help='The name of the Managed Network.')
         c.argument('name', id_part=None, help='The name of the Managed Network Peering Policy.')
-
-    with self.argument_context('managed-network list') as c:
-        pass
