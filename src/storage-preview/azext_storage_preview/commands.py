@@ -153,7 +153,7 @@ The secondary cluster will become the primary cluster after failover. Please und
             'metadata show', 'get_blob_metadata', exception_handler=show_exception_handler)
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
-    with self.command_group('storage blob directory', custom_command_type = get_custom_sdk('azcopy', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS)) as g:
+    with self.command_group('storage blob directory', custom_command_type=get_custom_sdk('azcopy', blob_data_service_factory)) as g:
         g.storage_custom_command_oauth('upload', 'storage_blob_upload')
         g.storage_custom_command_oauth('download', 'storage_blob_download')
 
