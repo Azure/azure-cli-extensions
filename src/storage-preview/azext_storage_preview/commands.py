@@ -144,8 +144,6 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.storage_command_oauth('create', 'create_directory')
         g.storage_command_oauth('delete', 'delete_directory')
         g.storage_custom_command_oauth('move', 'rename_directory')
-        #g.storage_command_oauth('upload', 'create_directory')
-        #g.storage_command_oauth('download', 'get_blob_to_path', table_transformer=transform_blob_output)
         g.storage_custom_command_oauth('show', 'show_directory', table_transformer=transform_blob_output,
                                        exception_handler=show_exception_handler)
         g.storage_custom_command_oauth('list', 'list_directory', transform=transform_storage_list_output,
@@ -155,6 +153,9 @@ The secondary cluster will become the primary cluster after failover. Please und
             'metadata show', 'get_blob_metadata', exception_handler=show_exception_handler)
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
+    with self.command_group('storage blob directory', custom_command_type = get_custom_sdk('azcopy', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS)) as g:
+        g.storage_custom_command_oauth('upload', 'storage_blob_upload')
+        g.storage_custom_command_oauth('download', 'storage_blob_download')
 
     with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory, CUSTOM_DATA_STORAGE_ADLS),

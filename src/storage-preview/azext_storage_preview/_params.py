@@ -10,7 +10,8 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
-                          validate_azcopy_target_url, validate_included_datasets)
+                          validate_azcopy_target_url, validate_included_datasets,
+                          validate_blob_directory_upload_destination_url)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -258,4 +259,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         #                            'when present, specifies the directory snapshot to retrieve.')
         c.ignore('snapshot')
         c.argument('lease-id', help='Required if the blob has an active lease.')
+
+    with self.argument_context('storage blob directory upload') as c:
+        c.extra('destination_container', options_list=['--container', '-c'], required=True,
+                help='The upload destination container.')
+        c.extra('destination_path', options_list=['--directory-path', '-d'], required=True,
+                validator=validate_blob_directory_upload_destination_url,
+                help='The upload destination directory path.')
+        c.argument('source', options_list=['--source', '-s'],
+                   help='The source file path to upload from.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
+                        ' be uploaded.')
+        c.ignore('destination')
 

@@ -162,6 +162,17 @@ def validate_azcopy_upload_destination_url(cmd, namespace):
     del namespace.destination_path
 
 
+def validate_blob_directory_upload_destination_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    destination_path = namespace.destination_path
+    url = client.make_blob_url(namespace.destination_container, destination_path)
+    namespace.destination = url+'/'
+    del namespace.destination_container
+    del namespace.destination_path
+
+
+
 def validate_azcopy_download_source_url(cmd, namespace):
     client = blob_data_service_factory(cmd.cli_ctx, {
         'account_name': namespace.account_name})
