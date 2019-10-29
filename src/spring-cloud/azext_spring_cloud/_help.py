@@ -69,9 +69,9 @@ helps['spring-cloud app create'] = """
     short-summary: Create a new app with a default deployment in the Azure Spring Cloud.
     examples:
     - name: Create an app with the default configuration.
-      text: az spring-cloud app create -n MyApp -s Myspring-cloud
+      text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
-      text: az spring-cloud app create -n MyApp -s Myspring-cloud --is-public true --cpu 2 --memory 3 --instance-count 3
+      text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --is-public true --cpu 2 --memory 3 --instance-count 3
 """
 
 helps['spring-cloud app update'] = """
@@ -79,7 +79,7 @@ helps['spring-cloud app update'] = """
     short-summary: Update configurations of an app.
     examples:
     - name: Add an environment variable for the app.
-      text: az spring-cloud app update --env foo=bar
+      text: az spring-cloud app update -n MyApp -s MyCluster -g MyResourceGroup --env foo=bar
 """
 
 helps['spring-cloud app delete'] = """
@@ -92,7 +92,7 @@ helps['spring-cloud app list'] = """
     short-summary: List all apps in the Azure Spring Cloud.
     examples:
     - name: Query status of persistent storage of all apps
-      text: az asc app list -s Myspring-cloud -o json --query '[].{Name:name, PersistentStorage:properties.persistentDisk}'
+      text: az spring-cloud app list -s MyCluster -g MyResourceGroup -o json --query '[].{Name:name, PersistentStorage:properties.persistentDisk}'
 """
 
 helps['spring-cloud app show'] = """
@@ -120,11 +120,11 @@ helps['spring-cloud app deploy'] = """
     short-summary: Deploy source code or pre-built binary to an app and update related configurations.
     examples:
     - name: Deploy source code to an app. This will pack current directory, build binary with Pivotal Build Service and then deploy to the app.
-      text: az spring-cloud app deploy -n MyApp -s Myspring-cloud
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring-cloud app deploy -n MyApp -s Myspring-cloud --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
     - name: Deploy source code to a specific deployment of an app.
-      text: az spring-cloud app deploy -n MyApp -s Myspring-cloud -d green-deployment
+      text: az spring-cloud app deploy -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment
 """
 
 helps['spring-cloud app scale'] = """
@@ -132,9 +132,9 @@ helps['spring-cloud app scale'] = """
     short-summary: Manually scale an app or its deployments.
     examples:
     - name: Scale up an app to 4 cpu cores and 8 Gb of memory per instance.
-      text: az spring-cloud app scale -n MyApp -s Myspring-cloud --cpu 3 --memory 8
+      text: az spring-cloud app scale -n MyApp -s MyCluster -g MyResourceGroup --cpu 3 --memory 8
     - name: Scale out a deployment of the app to 5 instances.
-      text: az spring-cloud app scale -n MyApp -s Myspring-cloud -d green-deployment --instance-count 5
+      text: az spring-cloud app scale -n MyApp -s MyCluster -g MyResourceGroup -d green-deployment --instance-count 5
 """
 
 helps['spring-cloud app show-deploy-log'] = """
@@ -147,7 +147,7 @@ helps['spring-cloud app set-deployment'] = """
     short-summary: Set production deployment of an app.
     examples:
     - name: Swap a staging deployment of an app to production.
-      text: az spring-cloud app set-deployment -d green-deployment -n MyApp -s Myspring-cloud
+      text: az spring-cloud app set-deployment -d green-deployment -n MyApp -s MyCluster -g MyResourceGroup
 """
 
 helps['spring-cloud app deployment'] = """
@@ -175,9 +175,9 @@ helps['spring-cloud app deployment create'] = """
     short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use az spring-cloud app deploy/update --deployment <staging deployment>.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
-      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud
+      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup
     - name: Deploy a pre-built jar to an app with jvm options and environment variables.
-      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s Myspring-cloud --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
+      text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup --jar-path app.jar --jvm-options="-XX:+UseG1GC -XX:+UseStringDeduplication" --env foo=bar
 """
 
 helps['spring-cloud config-server'] = """
@@ -205,6 +205,10 @@ helps['spring-cloud config-server git'] = """
     short-summary: Commands to manage Config Server git property in Azure Spring Cloud.
 """
 
+helps['spring-cloud config-server git repo'] = """
+    type: group
+    short-summary: Commands to manage Config Server git repository in Azure Spring Cloud.
+"""
 
 helps['spring-cloud config-server git set'] = """
     type: command
@@ -221,7 +225,7 @@ helps['spring-cloud config-server git repo remove'] = """
     short-summary: Remove an existing repositry of git property of Config Server.
 """
 
-helps['spring-cloud config-server  git repo update'] = """
+helps['spring-cloud config-server git repo update'] = """
     type: command
     short-summary: Override an existing repositry of git property of Config Server, will totally override the old one.
 """
@@ -269,7 +273,7 @@ helps['spring-cloud app binding cosmos add'] = """
     short-summary: Bind an Azure Cosmos DB with the app.
     examples:
     - name: Bind an Azure Cosmos DB.
-      text: az spring-cloud app binding cosmos create -n mysqlProduction --app MyApp --resource-id ${COSMOSDB_ID} --api-type mongo --database mymongo
+      text: az spring-cloud app binding cosmos add -n cosmosProduction --app MyApp --resource-id ${COSMOSDB_ID} --api-type mongo --database mymongo
 """
 
 helps['spring-cloud app binding cosmos update'] = """
