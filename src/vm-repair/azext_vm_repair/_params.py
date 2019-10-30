@@ -33,3 +33,10 @@ def load_arguments(self, _):
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
         c.argument('yes', help='Deletes the repair resources without confirmation.')
+
+    with self.argument_context('vm repair run') as c:
+        c.argument('repair_vm_id', help='Repair VM resource id.')
+        c.argument('run_id', help='Unique run id for run scripts.')
+        c.argument('custom_script_file', help='Custom script file to run on VM. Script should be PowerShell for windows, Bash for Linux.')
+        c.argument('parameters', nargs='+', help="Space-separated parameters in the format of '[name=]value'. Positional for bash scripts.")
+        c.argument('run_on_repair', help="Script will be run on the linked repair VM.")

@@ -19,10 +19,6 @@ from msrest.polling import LROPoller, NoPolling
 from msrestazure.polling.arm_polling import ARMPolling
 import uuid
 from .operations.front_doors_operations import FrontDoorsOperations
-from .operations.routing_rules_operations import RoutingRulesOperations
-from .operations.health_probe_settings_operations import HealthProbeSettingsOperations
-from .operations.load_balancing_settings_operations import LoadBalancingSettingsOperations
-from .operations.backend_pools_operations import BackendPoolsOperations
 from .operations.frontend_endpoints_operations import FrontendEndpointsOperations
 from .operations.endpoints_operations import EndpointsOperations
 from .operations.policies_operations import PoliciesOperations
@@ -72,14 +68,6 @@ class FrontDoorManagementClient(SDKClient):
 
     :ivar front_doors: FrontDoors operations
     :vartype front_doors: azure.mgmt.frontdoor.operations.FrontDoorsOperations
-    :ivar routing_rules: RoutingRules operations
-    :vartype routing_rules: azure.mgmt.frontdoor.operations.RoutingRulesOperations
-    :ivar health_probe_settings: HealthProbeSettings operations
-    :vartype health_probe_settings: azure.mgmt.frontdoor.operations.HealthProbeSettingsOperations
-    :ivar load_balancing_settings: LoadBalancingSettings operations
-    :vartype load_balancing_settings: azure.mgmt.frontdoor.operations.LoadBalancingSettingsOperations
-    :ivar backend_pools: BackendPools operations
-    :vartype backend_pools: azure.mgmt.frontdoor.operations.BackendPoolsOperations
     :ivar frontend_endpoints: FrontendEndpoints operations
     :vartype frontend_endpoints: azure.mgmt.frontdoor.operations.FrontendEndpointsOperations
     :ivar endpoints: Endpoints operations
@@ -110,14 +98,6 @@ class FrontDoorManagementClient(SDKClient):
         self._deserialize = Deserializer(client_models)
 
         self.front_doors = FrontDoorsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.routing_rules = RoutingRulesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.health_probe_settings = HealthProbeSettingsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.load_balancing_settings = LoadBalancingSettingsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.backend_pools = BackendPoolsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.frontend_endpoints = FrontendEndpointsOperations(
             self._client, self.config, self._serialize, self._deserialize)
@@ -151,7 +131,7 @@ class FrontDoorManagementClient(SDKClient):
         """
         check_front_door_name_availability_input = models.CheckNameAvailabilityInput(name=name, type=type)
 
-        api_version = "2019-04-01"
+        api_version = "2019-05-01"
 
         # Construct URL
         url = self.check_front_door_name_availability.metadata['url']
@@ -216,7 +196,7 @@ class FrontDoorManagementClient(SDKClient):
         """
         check_front_door_name_availability_input = models.CheckNameAvailabilityInput(name=name, type=type)
 
-        api_version = "2019-04-01"
+        api_version = "2019-05-01"
 
         # Construct URL
         url = self.check_front_door_name_availability_with_subscription.metadata['url']

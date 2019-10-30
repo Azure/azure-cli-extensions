@@ -4,6 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 from collections import OrderedDict
+# pylint: disable=import-error
+from jmespath import compile as compile_jmes, Options
+# pylint: disable=import-error
+from jmespath import functions
 
 
 def aks_agentpool_show_table_format(result):
@@ -12,9 +16,6 @@ def aks_agentpool_show_table_format(result):
 
 
 def _aks_agentpool_table_format(result):
-    # pylint: disable=import-error
-    from jmespath import compile as compile_jmes, Options
-
     parsed = compile_jmes("""{
         name: name,
         osType: osType,
@@ -45,9 +46,6 @@ def aks_show_table_format(result):
 
 
 def _aks_table_format(result):
-    # pylint: disable=import-error
-    from jmespath import compile as compile_jmes, Options
-
     parsed = compile_jmes("""{
         name: name,
         location: location,
@@ -62,16 +60,16 @@ def _aks_table_format(result):
 
 def aks_upgrades_table_format(result):
     """Format get-upgrades results as a summary for display with "-o table"."""
-    # pylint: disable=import-error
-    from jmespath import compile as compile_jmes, Options
 
-    preview = []
-    for i, j in result.items():
-        if i == "controlPlaneProfile":
-            # the reason why we choose "upgrades" obejct, since only it has the isPreview boolean.
-            for item in j["upgrades"]:
-                if item["isPreview"]:
-                    preview.append(item["kubernetesVersion"])
+    preview = {}
+
+    def find_preview_versions(versions_bag):
+        for upgrade in versions_bag.get('upgrades', []):
+            if upgrade.get('isPreview', False):
+                preview[upgrade['kubernetesVersion']] = True
+    find_preview_versions(result.get('controlPlaneProfile', {}))
+    find_preview_versions(result.get('agentPoolProfiles', [{}])[0])
+
     # This expression assumes there is one node pool, and that the master and nodes upgrade in lockstep.
     parsed = compile_jmes("""{
         name: name,
@@ -86,16 +84,15 @@ def aks_upgrades_table_format(result):
 
 def aks_versions_table_format(result):
     """Format get-versions results as a summary for display with "-o table"."""
-    # pylint: disable=import-error
-    from jmespath import compile as compile_jmes, Options
 
     # get preview orchestrator version
-    preview = []
-    for key, value in result.items():
-        if key == "orchestrators":
-            for i in value:
-                if i["isPreview"]:
-                    preview.append(i["orchestratorVersion"])
+    preview = {}
+
+    def find_preview_versions():
+        for orchestrator in result.get('orchestrators', []):
+            if orchestrator.get('isPreview', False):
+                preview[orchestrator['orchestratorVersion']] = True
+    find_preview_versions()
 
     parsed = compile_jmes("""orchestrators[].{
         kubernetesVersion: orchestratorVersion | set_preview(@),
@@ -106,54 +103,42 @@ def aks_versions_table_format(result):
     return sorted(results, key=lambda x: version_to_tuple(x.get('kubernetesVersion')), reverse=True)
 
 
-def version_to_tuple(v):
-    """Quick-and-dirty sort function to handle simple semantic versions like 1.7.12 or 1.8.7."""
-    if v.endswith('(preview)'):
-        return tuple(map(int, (v[:-9].split('.'))))
-    return tuple(map(int, (v.split('.'))))
+def version_to_tuple(version):
+    """Removes preview suffix"""
+    if version.endswith('(preview)'):
+        version = version[:-len('(preview)')]
+    return tuple(map(int, (version.split('.'))))
 
 
 def _custom_functions(preview_versions):
-    # pylint: disable=import-error
-    from jmespath import functions
-
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
 
         @functions.signature({'types': ['array']})
-        def _func_sort_versions(self, s):  # pylint: disable=no-self-use
-            """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions."""
+        def _func_sort_versions(self, versions):  # pylint: disable=no-self-use
+            """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions"""
             try:
-                return sorted(s, key=version_to_tuple)
+                return sorted(versions, key=version_to_tuple)
             except (TypeError, ValueError):  # if it wasn't sortable, return the input so the pipeline continues
-                return s
+                return versions
 
         @functions.signature({'types': ['array']})
-        def _func_set_preview_array(self, s):  # pylint: disable=no-self-use
+        def _func_set_preview_array(self, versions):
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
-                res = []
-                for version in s:
-                    preview = False
-                    for i in preview_versions:
-                        if version == i:
-                            res.append(version + "(preview)")
-                            preview = True
-                            break
-                    if not preview:
-                        res.append(version)
-                return res
+                for i, _ in enumerate(versions):
+                    versions[i] = self._func_set_preview(versions[i])
+                return versions
             except(TypeError, ValueError):
-                return s
+                return versions
 
         @functions.signature({'types': ['string']})
-        def _func_set_preview(self, s):  # pylint: disable=no-self-use
+        def _func_set_preview(self, version):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
-                for i in preview_versions:
-                    if s == i:
-                        return s + "(preview)"
-                return s
+                if preview_versions.get(version, False):
+                    return version + '(preview)'
+                return version
             except(TypeError, ValueError):
-                return s
+                return version
 
     return CustomFunctions()

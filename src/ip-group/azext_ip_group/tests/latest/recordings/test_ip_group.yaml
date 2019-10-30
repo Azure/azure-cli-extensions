@@ -1,0 +1,570 @@
+interactions:
+- request:
+    body: '{"location": "westus", "tags": {"foo": "doo"}, "properties": {"ipAddresses":
+      ["10.0.0.1", "10.0.0.2"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '103'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --tags --ip-addresses --location
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"referenceResources\": [],\r\n    \"ipAddresses\":
+        [\r\n      \"10.0.0.1\",\r\n      \"10.0.0.2\"\r\n    ],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1\",\r\n
+        \ \"name\": \"test1\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"eTag\": \"7cb8832d-33c9-4b39-ba3a-bb73d9de7e72\",\r\n  \"location\": \"westus\",\r\n
+        \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/ac9ce108-3ce0-476c-913a-9b07c2c0f1a1?api-version=2019-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --ip-addresses --location
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/ac9ce108-3ce0-476c-913a-9b07c2c0f1a1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --ip-addresses --location
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"referenceResources\": [],\r\n    \"ipAddresses\":
+        [\r\n      \"10.0.0.1\",\r\n      \"10.0.0.2\"\r\n    ],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1\",\r\n
+        \ \"name\": \"test1\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"eTag\": \"7cb8832d-33c9-4b39-ba3a-bb73d9de7e72\",\r\n  \"location\": \"westus\",\r\n
+        \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --ip-addresses
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"referenceResources\": [],\r\n    \"ipAddresses\":
+        [\r\n      \"10.0.0.1\",\r\n      \"10.0.0.2\"\r\n    ],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1\",\r\n
+        \ \"name\": \"test1\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"eTag\": \"7cb8832d-33c9-4b39-ba3a-bb73d9de7e72\",\r\n  \"location\": \"westus\",\r\n
+        \ \"tags\": {\r\n    \"foo\": \"doo\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: 'b''{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1",
+      "location": "westus", "tags": {"foo": "boo"}, "properties": {"ipAddresses":
+      ["10.0.1.0"]}}'''
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '286'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --tags --ip-addresses
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"referenceResources\": [],\r\n    \"ipAddresses\":
+        [\r\n      \"10.0.1.0\"\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1\",\r\n
+        \ \"name\": \"test1\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"eTag\": \"c8ecadec-3e03-45d7-b9a6-68da9b63f501\",\r\n  \"location\": \"westus\",\r\n
+        \ \"tags\": {\r\n    \"foo\": \"boo\"\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/098c82d5-1941-4aca-b324-b19480f61506?api-version=2019-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '516'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --ip-addresses
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/098c82d5-1941-4aca-b324-b19480f61506?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --ip-addresses
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"referenceResources\": [],\r\n    \"ipAddresses\":
+        [\r\n      \"10.0.1.0\"\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1\",\r\n
+        \ \"name\": \"test1\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"eTag\": \"c8ecadec-3e03-45d7-b9a6-68da9b63f501\",\r\n  \"location\": \"westus\",\r\n
+        \ \"tags\": {\r\n    \"foo\": \"boo\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '517'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/ipGroups?api-version=2019-09-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"referenceResources":[],"ipAddresses":["10.0.0.1","10.0.0.2"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-rsg-01/providers/Microsoft.Network/ipGroups/harold-ip-groups-01","name":"harold-ip-groups-01","type":"Microsoft.Network/IpGroups","eTag":"10e3e5cd-bfc5-4ab6-a142-282823763fe8","location":"westus"},{"properties":{"referenceResources":[],"ipAddresses":["10.0.0.4","10.0.0.6","10.0.0.5"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-rsg-01/providers/Microsoft.Network/ipGroups/harold-ip-groups-02","name":"harold-ip-groups-02","type":"Microsoft.Network/IpGroups","eTag":"a2c0de80-71fe-4cfe-9264-f6c7c380dc79","location":"westus"},{"properties":{"referenceResources":[],"ipAddresses":["10.0.0.4","10.0.0.6","10.0.1.0"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-rsg-01/providers/Microsoft.Network/ipGroups/harold-ip-groups-04","name":"harold-ip-groups-04","type":"Microsoft.Network/IpGroups","eTag":"07d935e2-2cf0-4692-a8e9-7ca74df649ca","location":"westus","tags":{"foo":"doo"}},{"properties":{"referenceResources":[],"ipAddresses":["10.0.1.0"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1","name":"test1","type":"Microsoft.Network/IpGroups","eTag":"c8ecadec-3e03-45d7-b9a6-68da9b63f501","location":"westus","tags":{"foo":"boo"}},{"properties":{"firewalls":[],"ipAddresses":["10.0.0.1","10.0.0.2"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/1025/providers/Microsoft.Network/ipGroups/myipgroup","name":"myipgroup","type":"Microsoft.Network/IpGroups","eTag":"4da1ffb4-f3f6-4568-a1a6-819b025420b0","location":"westcentralus"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2002'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"referenceResources\": [],\r\n    \"ipAddresses\":
+        [\r\n      \"10.0.1.0\"\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1\",\r\n
+        \ \"name\": \"test1\",\r\n  \"type\": \"Microsoft.Network/IpGroups\",\r\n
+        \ \"eTag\": \"c8ecadec-3e03-45d7-b9a6-68da9b63f501\",\r\n  \"location\": \"westus\",\r\n
+        \ \"tags\": {\r\n    \"foo\": \"boo\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '517'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_ip_group000001/providers/Microsoft.Network/ipGroups/test1?api-version=2019-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 29 Oct 2019 10:10:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network ip-group list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/7.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/ipGroups?api-version=2019-09-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"referenceResources":[],"ipAddresses":["10.0.0.1","10.0.0.2"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-rsg-01/providers/Microsoft.Network/ipGroups/harold-ip-groups-01","name":"harold-ip-groups-01","type":"Microsoft.Network/IpGroups","eTag":"10e3e5cd-bfc5-4ab6-a142-282823763fe8","location":"westus"},{"properties":{"referenceResources":[],"ipAddresses":["10.0.0.4","10.0.0.6","10.0.0.5"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-rsg-01/providers/Microsoft.Network/ipGroups/harold-ip-groups-02","name":"harold-ip-groups-02","type":"Microsoft.Network/IpGroups","eTag":"a2c0de80-71fe-4cfe-9264-f6c7c380dc79","location":"westus"},{"properties":{"referenceResources":[],"ipAddresses":["10.0.0.4","10.0.0.6","10.0.1.0"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold-rsg-01/providers/Microsoft.Network/ipGroups/harold-ip-groups-04","name":"harold-ip-groups-04","type":"Microsoft.Network/IpGroups","eTag":"07d935e2-2cf0-4692-a8e9-7ca74df649ca","location":"westus","tags":{"foo":"doo"}},{"properties":{"firewalls":[],"ipAddresses":["10.0.0.1","10.0.0.2"],"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/1025/providers/Microsoft.Network/ipGroups/myipgroup","name":"myipgroup","type":"Microsoft.Network/IpGroups","eTag":"4da1ffb4-f3f6-4568-a1a6-819b025420b0","location":"westcentralus"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1571'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 29 Oct 2019 10:10:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
+    status:
+      code: 200
+      message: OK
+version: 1

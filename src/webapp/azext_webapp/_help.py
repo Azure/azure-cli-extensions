@@ -39,3 +39,23 @@ helps['webapp scan list-result'] = """
     type: command
     short-summary: Get details of all scans conducted on webapp, upto max scan limit set on the webapp This will get you the scan log results in addition to the scan status of each scan conducted on the webapp.
 """
+
+helps['webapp scan stop'] = """
+    type: command
+    short-summary: Stops the current executing scan. Does nothing if no scan is executing.
+"""
+
+helps['webapp container'] = """
+    type: group
+    short-summary: Group of commands related to webapp container operations
+"""
+
+helps['webapp container up'] = """
+    type: command
+    short-summary: Experimental command to create and deploy a container webapp.
+    examples:
+        - name: Deploy a container using an image from DockerHub. This example uses nginx.
+          text: az webapp container up -n AppName -i nginx
+        - name: Upload files from the current directory to an Azure Container Registry, then build a container image and deploy it to a web app. The Azure Container Registry must already exist.
+          text: az webapp container up -n AppName --registry-rg ContainerRegistryResourceGroup --registry-name ContainerRegistryName
+"""
