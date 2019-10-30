@@ -273,7 +273,7 @@ helps['spring-cloud app binding cosmos add'] = """
     short-summary: Bind an Azure Cosmos DB with the app.
     examples:
     - name: Bind an Azure Cosmos DB.
-      text: az spring-cloud app binding cosmos add -n cosmosProduction --app MyApp --resource-id ${COSMOSDB_ID} --api-type mongo --database mymongo
+      text: az spring-cloud app binding cosmos add -n cosmosProduction --app MyApp --resource-id ${COSMOSDB_ID} --api-type mongo --database mymongo -g MyResourceGroup -s MyService
 """
 
 helps['spring-cloud app binding cosmos update'] = """
