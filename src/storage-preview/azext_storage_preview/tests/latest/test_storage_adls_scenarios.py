@@ -38,7 +38,6 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory show -c {} -d {} ', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
 
-        # TODO: Upload to the directory
         # Upload a single blob to the blob directory
         self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
                          os.path.join(test_dir, 'readme'))
@@ -58,6 +57,23 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 22))
 
         # TODO: Download from the directory
+        local_folder = self.create_temp_dir()
+        # Download a single file
+        self.storage_cmd('storage blob directory download -c {} -s "{}" -d "{}" --recursive', account_info, container,
+                         os.path.join(directory,  'readme'), local_folder)
+        self.assertEqual(1, sum(len(f) for r, d, f in os.walk(local_folder)))
+
+        # Download entire directory
+        self.storage_cmd('storage blob directory download -c {} -s {} -d "{}" --recursive', account_info, container,
+                         directory, local_folder)
+        self.assertEqual(2, sum(len(d) for r, d, f in os.walk(local_folder)))
+        self.assertEqual(22, sum(len(f) for r, d, f in os.walk(local_folder)))
+
+        # Download an entire subdirectory of a storage blob directory.
+        self.storage_cmd('storage blob directory download -c {} -s {} -d "{}" --recursive', account_info, container,
+                         '/'.join([directory, 'apple']), local_folder)
+        self.assertEqual(3, sum(len(d) for r, d, f in os.walk(local_folder)))
+        self.assertEqual(32, sum(len(f) for r, d, f in os.walk(local_folder)))
 
         # Move the blob directory to another directory
         des_directory = 'desdirectory'

@@ -11,7 +11,7 @@ from ._validators import (get_datetime_type, validate_metadata, validate_custom_
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
-                          validate_blob_directory_upload_destination_url)
+                          validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -237,6 +237,19 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
                    'octal notation (e.g. 0766) are supported.')
 
+    with self.argument_context('storage blob directory download') as c:
+        c.extra('source_container', options_list=['--container', '-c'], required=True,
+                help='The download source container.')
+        c.extra('source_path', options_list=['--source-directory', '-s'], required=True,
+                validator=validate_blob_directory_download_source_url,
+                help='The download source directory path.')
+        c.argument('destination', options_list=['--destination-path', '-d'],
+                   help='The destination directory path to download.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively download blobs. If enabled, all the blobs including the blobs in subdirectories '
+                        'will be downloaded.')
+        c.ignore('source')
+
     with self.argument_context('storage blob directory exists') as c:
         c.argument('blob_name', directory_path_type, required=True)
 
@@ -263,7 +276,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob directory upload') as c:
         c.extra('destination_container', options_list=['--container', '-c'], required=True,
                 help='The upload destination container.')
-        c.extra('destination_path', options_list=['--directory-path', '-d'], required=True,
+        c.extra('destination_path', options_list=['--destination-directory', '-d'], required=True,
                 validator=validate_blob_directory_upload_destination_url,
                 help='The upload destination directory path.')
         c.argument('source', options_list=['--source', '-s'],
