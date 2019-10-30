@@ -5,13 +5,12 @@
 
 from __future__ import print_function
 
-import uuid
-
 from knack.util import CLIError
 import os
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
 
 def set_service_properties(client, parameters, delete_retention=None, days_retained=None, static_website=None,
                            index_document=None, error_document_404_path=None):
@@ -54,6 +53,7 @@ def show_directory(client, container_name, directory_name, snapshot=None, lease_
 
     return directory
 
+
 def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=None,
               if_modified_since=None, if_unmodified_since=None, if_match=None,
               if_none_match=None, timeout=None):
@@ -71,6 +71,7 @@ def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=No
     blob.properties.page_ranges = page_ranges
 
     return blob
+
 
 def guess_content_type(file_path, original, settings_class):
     if original.content_encoding or original.content_type:
@@ -170,9 +171,7 @@ def upload_blob(cmd, client, container_name, blob_name, file_path, blob_type=Non
     return type_func[blob_type]()
 
 
-
-
-
+# pylint: disable=unused-variable,logging-format-interpolation
 def delete_directory(client, container_name, directory_name):
 
     deleted, marker = client.delete_directory(container_name, directory_name, recursive=True)
@@ -183,8 +182,7 @@ def delete_directory(client, container_name, directory_name):
     # the rest of the files/subdirectories
     count = 1
     while marker is not None:
-        deleted, marker = client.delete_directory(container_name, directory_name,
-                                                        marker=marker, recursive=True)
+        deleted, marker = client.delete_directory(container_name, directory_name, marker=marker, recursive=True)
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
 
@@ -245,32 +243,3 @@ def rename_directory(client, container_name, destination_path, source_path):
         marker = client.rename_path(container_name, destination_path, source_path, marker=marker)
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
-
-
-def _create_blobs(client, container_name, destination_path,
-        source_path, num_of_blobs):
-    import concurrent.futures
-    import itertools
-    # Use a thread pool because it is too slow otherwise
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        def create_blob(blob_name):
-            # generate a random name
-
-
-            # create a blob under the directory
-            # blob_service.create_blob_from_bytes(container_name, blob_name, b"test")
-            client.create_directory(container_name, blob_name)
-
-        futures = {executor.submit(create_blob) for _ in itertools.repeat(None, num_of_blobs)}
-        concurrent.futures.wait(futures)
-        print("Created {} blobs under the directory: {}".format(num_of_blobs, destination_path))
-
-
-
-
-def set_entry(client, container_name, path, acl, lease_id=None, if_modified_since=None, if_unmodified_since=None,
-              if_match=None, if_none_match=None, timeout=None):
-    acl_list = client.get_path_access_control(container_name, path)
-
-    client.set_path_access_control(container_name, path, acl_list.owner, acl_list.group, acl_list.permissions, acl,
-                                   lease_id, if_modified_since, if_unmodified_since, if_match, if_none_match, timeout)

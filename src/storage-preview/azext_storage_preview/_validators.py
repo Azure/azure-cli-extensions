@@ -177,7 +177,7 @@ def validate_blob_directory_upload_destination_url(cmd, namespace):
         'account_name': namespace.account_name})
     destination_path = namespace.destination_path
     url = client.make_blob_url(namespace.destination_container, destination_path)
-    namespace.destination = url+'/'
+    namespace.destination = url + '/'
     del namespace.destination_container
     del namespace.destination_path
 
@@ -377,7 +377,6 @@ def validate_subnet(cmd, namespace):
             child_type_1='subnets',
             child_name_1=subnet)
     else:
-        from knack.util import CLIError
         raise CLIError('incorrect usage: [--subnet ID | --subnet NAME --vnet-name NAME]')
 
 
