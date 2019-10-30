@@ -335,12 +335,12 @@ helps['network firewall policy rule-collection-group collection add-filter-colle
           text: az network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}
                 --name filter_collection --action Allow --rule-name network_rule --rule-type NetworkRule
                 --description "test" --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" --destination-ports 12003 12004
-                --ip-protocols TCP UDP --collection-priority 11002 
+                --ip-protocols TCP UDP --collection-priority 11002
         - name: Add a filter collection with Application rule into the rule collection group
           text: az network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}
                 --name filter_collection --action Allow --rule-name application_rule --rule-type ApplicationRule --description "test"
-                --destination-addresses "202.120.36.15" "202.120.36.16" --source-addresses "202.120.36.13" "202.120.36.14" --protocols Http=12800 Https=12801
-                --fqdn-tags AzureBackup HDInsight --collection-priority 11100 
+                --destination-addresses "202.120.36.15" "202.120.36.16" --source-addresses "202.120.36.13" "202.120.36.14"
+                --protocols Http=12800 Https=12801 --fqdn-tags AzureBackup HDInsight --collection-priority 11100
 """
 
 helps['network firewall policy rule-collection-group collection add-nat-collection'] = """

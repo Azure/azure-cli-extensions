@@ -323,7 +323,7 @@ def add_azure_firewall_policy_nat_rule(cmd, resource_group_name, firewall_policy
 
 # pylint: disable=too-many-locals
 def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_policy_name, rule_group_name, rule_name,
-                                          rule_priority=None, filter_action=None, condition_name=None,
+                                          rule_priority, filter_action=None, condition_name=None,
                                           condition_type=None, description=None, ip_protocols=None,
                                           source_addresses=None, destination_addresses=None, destination_ports=None,
                                           protocols=None, fqdn_tags=None, target_fqdns=None):
