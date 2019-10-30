@@ -5,9 +5,9 @@
 
 
 def network_client_factory(cli_ctx, **kwargs):
-    from azure.cli.core.profiles import ResourceType
+    from .profiles import CUSTOM_IP_GROUPS
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_NETWORK, **kwargs)
+    return get_mgmt_service_client(cli_ctx, CUSTOM_IP_GROUPS, **kwargs)
 
 
 def cf_ip_groups(cli_ctx, _):
