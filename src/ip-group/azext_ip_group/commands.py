@@ -10,7 +10,7 @@ from ._client_factory import cf_ip_groups
 def load_command_table(self, _):
 
     network_ip_groups_sdk = CliCommandType(
-        operations_tmpl='azure.mgmt.network.operations#IpGroupsOperations.{}',
+        operations_tmpl='azext_ip_group.vendored_sdks.operations#IpGroupsOperations.{}',
         client_factory=cf_ip_groups,
         min_api='2019-09-01'
     )
