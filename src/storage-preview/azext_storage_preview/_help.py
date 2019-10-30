@@ -168,6 +168,18 @@ helps['storage blob directory delete'] = """
           text: az storage blob directory delete -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
 """
 
+helps['storage blob directory download'] = """
+    type: command
+    short-summary: Download blobs to a local file path.
+    examples:
+        - name: Download a single blob in a storage blob directory.
+          text: az storage blob directory download -c MyContainer --account-name MyStorageAccount -s "path/to/blob" -d "<local-path>"
+        - name: Download the entire directory in a storage container.
+          text: az storage blob directory download -c MyContainer --account-name MyStorageAccount -s SourceDirectoryPath -d "<local-path>" --recursive
+        - name: Download an entire subdirectory of a storage blob directory.
+          text: az storage blob directory download -c MyContainer --account-name MyStorageAccount -s "path/to/subdirectory" -d "<local-path>" --recursive
+"""
+
 helps['storage blob directory exists'] = """
     type: command
     short-summary: Check for the existence of a blob directory in a storage container.
@@ -229,11 +241,11 @@ helps['storage blob directory show'] = """
 helps['storage blob directory upload'] = """
     type: command
     short-summary: Upload blobs to a storage blob directory.
-    examples:
+    examples: >
         - name: Upload a single blob to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d directory
         - name: Upload a directory to a container.
-          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory" --recursive
+          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory" -d directory --recursive
         - name: Upload the contents of a directory to a container.
-          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory/*" --recursive
+          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory/*" -d directory--recursive
 """
