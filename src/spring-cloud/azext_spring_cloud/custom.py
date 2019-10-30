@@ -136,7 +136,12 @@ def app_create(cmd, client, resource_group, service, name,
 
     active_deployment = client.deployments.get(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
-    app = client.apps.update(resource_group, service, name, properties)
+    poller = client.apps.update(resource_group, service, name, properties)
+    logger.info("Waiting for the app update completion")
+    while poller.done() is False:
+        sleep(5)
+
+    app = client.apps.get(resource_group, service, name)
     app.active_deployment = active_deployment
     return app
 

@@ -2,9 +2,13 @@
 
 Release History
 ===============
+0.4.20
+* Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
+
 0.4.19
 +++++
-* Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
+* Refactor and remove a custom way of getting subscriptions
+
 0.4.18
 +++++
 * Update to use 2019-10-01 api-version
