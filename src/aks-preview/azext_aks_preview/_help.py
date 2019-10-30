@@ -361,6 +361,9 @@ helps['aks nodepool add'] = """
         - name: --node-zones
           type: string array
           short-summary: (PREVIEW) Availability zones where agent nodes will be placed.
+        - name: --zones -z
+          type: string array
+          short-summary: Availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.

@@ -108,6 +108,12 @@ az aks create \
     -n MyManagedCluster \
     --vm-set-type VirtualMachineScaleSets \
     --node-zones 1 2 3
+
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --vm-set-type VirtualMachineScaleSets \
+    --zones 1 2 3
 ```
 
 #### Enable pod security policy for new cluster
