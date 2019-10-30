@@ -34,7 +34,7 @@ def transform_app_table_output(result):
         item['Persistent Storage'] = "{}/{} Gb".format(
             persistentStorage['usedInGb'], persistentStorage['sizeInGb']) if persistentStorage['sizeInGb'] else "-"
 
-        if item['properties']['activeDeployment']:
+        if 'activeDeployment' in item['properties']:
             instances = item['properties']['activeDeployment']['properties']['instances']
             up_number = len(
                 [x for x in instances if x['discoveryStatus'] == 'UP'])
