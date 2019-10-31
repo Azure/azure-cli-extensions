@@ -109,6 +109,7 @@ def adls_blob_data_service_factory(cli_ctx, kwargs):
                                         socket_timeout=kwargs.pop('socket_timeout', None),
                                         token_credential=kwargs.pop('token_credential', None))
 
+
 def cloud_storage_account_service_factory(cli_ctx, kwargs):
     t_cloud_storage_account = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#CloudStorageAccount')
     account_name = kwargs.pop('account_name', None)
