@@ -5,11 +5,8 @@
 
 from __future__ import print_function
 
-import os
 from knack.util import CLIError
 from knack.log import get_logger
-
-logger = get_logger(__name__)
 
 logger = get_logger(__name__)
 

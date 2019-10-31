@@ -5,7 +5,6 @@
 
 import base64
 from knack.log import get_logger
-from .url_quote_util import encode_url_path
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 logger = get_logger(__name__)
