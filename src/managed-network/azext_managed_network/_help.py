@@ -63,8 +63,8 @@ helps['managed-network scope-assignment create'] = """
     examples:
       - name: ScopeAssignmentsPut
         text: |-
-               az managed-network scope-assignment create --scope "/subscriptions/{{ subscription_id }}" \\
-               --name "subscriptionCAssignment"
+               az managed-network scope-assignment create --scope "subscriptions/subscriptionC" --name \\
+               "subscriptionCAssignment"
 """
 
 helps['managed-network scope-assignment update'] = """
@@ -78,8 +78,8 @@ helps['managed-network scope-assignment delete'] = """
     examples:
       - name: ScopeAssignmentsDelete
         text: |-
-               az managed-network scope-assignment delete --scope "/subscriptions/{{ subscription_id }}" \\
-               --name "subscriptionCAssignment"
+               az managed-network scope-assignment delete --scope "subscriptions/subscriptionC" --name \\
+               "subscriptionCAssignment"
 """
 
 helps['managed-network scope-assignment list'] = """
@@ -103,8 +103,8 @@ helps['managed-network group create'] = """
     examples:
       - name: ManagementNetworkGroupsPut
         text: |-
-               az managed-network group create --resource-group "myResourceGroup" \\
-               --managed-network-name "myManagedNetwork" --name "myManagedNetworkGroup1"
+               az managed-network group create --resource-group "myResourceGroup" --managed-network-name \\
+               "myManagedNetwork" --name "myManagedNetworkGroup1"
 """
 
 helps['managed-network group update'] = """
@@ -118,8 +118,8 @@ helps['managed-network group delete'] = """
     examples:
       - name: ManagementNetworkGroupsDelete
         text: |-
-               az managed-network group delete --resource-group "myResourceGroup" \\
-               --managed-network-name "myManagedNetwork" --name "myManagedNetworkGroup1"
+               az managed-network group delete --resource-group "myResourceGroup" --managed-network-name \\
+               "myManagedNetwork" --name "myManagedNetworkGroup1"
 """
 
 helps['managed-network group list'] = """
@@ -143,8 +143,8 @@ helps['managed-network peering-policy create'] = """
     examples:
       - name: ManagedNetworkPeeringPoliciesPut
         text: |-
-               az managed-network peering-policy create --resource-group \\
-               "myResourceGroup" --managed-network-name "myManagedNetwork" --name "myHubAndSpoke" \\
+               az managed-network peering-policy create --resource-group "myResourceGroup" \\
+               --managed-network-name "myManagedNetwork" --name "myHubAndSpoke" \\
                --type XXX
 """
 
@@ -159,8 +159,8 @@ helps['managed-network peering-policy delete'] = """
     examples:
       - name: ManagedNetworkPeeringPoliciesDelete
         text: |-
-               az managed-network peering-policy delete --resource-group \\
-               "myResourceGroup" --managed-network-name "myManagedNetwork" --name "myHubAndSpoke"
+               az managed-network peering-policy delete --resource-group "myResourceGroup" \\
+               --managed-network-name "myManagedNetwork" --name "myHubAndSpoke"
 """
 
 helps['managed-network peering-policy list'] = """

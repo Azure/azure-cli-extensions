@@ -38,20 +38,20 @@ def load_command_table(self, _):
     managed_network_managed_network_groups = CliCommandType(
         operations_tmpl='azext_managed_network.vendored_sdks.managednetwork.operations._managed_network_groups_operations#ManagedNetworkGroupsOperations.{}',
         client_factory=cf_managed_network_groups)
-    with self.command_group('managed-network managed-network-group', managed_network_managed_network_groups, client_factory=cf_managed_network_groups) as g:
-        g.custom_command('create', 'create_managed_network_managed_network_group')
-        g.custom_command('update', 'update_managed_network_managed_network_group')
-        g.custom_command('delete', 'delete_managed_network_managed_network_group')
-        g.custom_command('list', 'list_managed_network_managed_network_group')
+    with self.command_group('managed-network group', managed_network_managed_network_groups, client_factory=cf_managed_network_groups) as g:
+        g.custom_command('create', 'create_managed_network_group')
+        g.custom_command('update', 'update_managed_network_group')
+        g.custom_command('delete', 'delete_managed_network_group')
+        g.custom_command('list', 'list_managed_network_group')
         g.show_command('show', 'get')
 
     from ._client_factory import cf_managed_network_peering_policies
     managed_network_managed_network_peering_policies = CliCommandType(
         operations_tmpl='azext_managed_network.vendored_sdks.managednetwork.operations._managed_network_peering_policies_operations#ManagedNetworkPeeringPoliciesOperations.{}',
         client_factory=cf_managed_network_peering_policies)
-    with self.command_group('managed-network managed-network-peering-policy', managed_network_managed_network_peering_policies, client_factory=cf_managed_network_peering_policies) as g:
-        g.custom_command('create', 'create_managed_network_managed_network_peering_policy')
-        g.custom_command('update', 'update_managed_network_managed_network_peering_policy')
-        g.custom_command('delete', 'delete_managed_network_managed_network_peering_policy')
-        g.custom_command('list', 'list_managed_network_managed_network_peering_policy')
+    with self.command_group('managed-network peering-policy', managed_network_managed_network_peering_policies, client_factory=cf_managed_network_peering_policies) as g:
+        g.custom_command('create', 'create_managed_network_peering_policy')
+        g.custom_command('update', 'update_managed_network_peering_policy')
+        g.custom_command('delete', 'delete_managed_network_peering_policy')
+        g.custom_command('list', 'list_managed_network_peering_policy')
         g.show_command('show', 'get')
