@@ -241,11 +241,19 @@ helps['storage blob directory show'] = """
 helps['storage blob directory upload'] = """
     type: command
     short-summary: Upload blobs to a storage blob directory.
+<<<<<<< HEAD
     examples: 
+=======
+    examples:
+>>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
         - name: Upload a single blob to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d directory
         - name: Upload a directory to a container.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory" -d directory --recursive
         - name: Upload the contents of a directory to a container.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory/*" -d directory--recursive
+<<<<<<< HEAD
 """
+=======
+"""
+>>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
