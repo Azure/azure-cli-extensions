@@ -99,14 +99,9 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
                          des_directory).assert_with_checks(JMESPathCheck('permissions', "rwxrwxrwx"))
 
         # Storage blob directory metadata
-<<<<<<< HEAD
-        self.storage_cmd('storage blob directory metadata update -c {} -d {} --metadata "tag1=value1"', account_info, container, des_directory)
-        self.storage_cmd('storage blob directory metadata show -c {} -d {} ', account_info, container,des_directory) \
-=======
         self.storage_cmd('storage blob directory metadata update -c {} -d {} --metadata "tag1=value1"', account_info,
                          container, des_directory)
         self.storage_cmd('storage blob directory metadata show -c {} -d {} ', account_info, container, des_directory) \
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
             .assert_with_checks(JMESPathCheck('tag1', "value1"))
 
         # Remove blob directory
