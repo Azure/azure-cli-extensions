@@ -112,6 +112,39 @@ helps['storage azcopy run-command'] = """
     short-summary: Run a command directly using the AzCopy CLI. Please use SAS tokens for authentication.
 """
 
+helps['storage blob access'] = """
+    type: group
+    short-summary: Manage the access control properties of a blob when Hierarchical Namespace is enabled
+"""
+
+helps['storage blob access set'] = """
+    type: command
+    short-summary: Set the access control properties of a blob.
+    examples:
+        - name: Set the access control properties of a blob.
+          text: az storage blob access set -a "user::rwx,group::r--,other::---" -b MyBlob -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob access show'] = """
+    type: command
+    short-summary: Show the access control properties of a blob.
+    examples:
+        - name: Show the access control properties of a blob.
+          text: az storage blob access show -b MyBlob -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob access update'] = """
+    type: command
+    short-summary: Update the access control properties of a blob.
+    examples:
+        - name: Update the access permissions of a blob.
+          text: az storage blob access update --permissions "rwxrwxrwx" -b MyBlob -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning user of a blob.
+          text: az storage blob access update --owner [entity id or UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning group of a blob.
+          text: az storage blob access update --group [entity id or UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
+"""
+
 helps['storage blob move'] = """
     type: command
     short-summary: Move a blob in a storage container.
