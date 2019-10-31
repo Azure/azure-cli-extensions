@@ -87,6 +87,25 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 22))
 
+        blob = 'readme'
+        # Move a blob in a container
+        self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
+                         container, blob, '/'.join([des_directory, 'readme']))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 21))
+        self.storage_cmd('storage blob exists -c {} -n {} ', account_info, container, blob) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+
+        # Storage blob access control
+        acl = "user::rwx,group::r--,other::---"
+        self.storage_cmd('storage blob access set -c {} -b {} -a "{}"', account_info, container, blob, acl)
+        self.storage_cmd('storage blob access show -c {} -b {}', account_info, container, blob) \
+            .assert_with_checks(JMESPathCheck('acl', acl))
+        self.storage_cmd('storage blob access update -c {} -b {} --permissions "rwxrwxrwx"', account_info,
+                         container, blob, acl)
+        self.storage_cmd('storage blob access show -c {} -b {}', account_info, container, blob)\
+            .assert_with_checks(JMESPathCheck('permissions', "rwxrwxrwx"))
+
         # Storage blob directory access control
         acl = "user::rwx,group::r--,other::---"
         self.storage_cmd('storage blob directory access set -c {} -d {} -a "{}"', account_info, container, des_directory, acl)
