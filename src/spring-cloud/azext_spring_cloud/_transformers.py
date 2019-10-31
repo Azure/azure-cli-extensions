@@ -59,6 +59,8 @@ def transform_spring_cloud_deployment_output(result):
         item['App Name'] = item['properties']["appName"]
         item['State'] = item['properties']['provisioningState']
         instances = item['properties']['instances']
+        if instances is None:
+            instances = []
         up_number = len([x for x in instances if x['discoveryStatus'] == 'UP'])
         item['Discovery Status'] = "UP( {} ), DOWN( {} )".format(
             up_number, len(instances) - up_number)
