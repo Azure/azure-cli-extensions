@@ -54,10 +54,7 @@ def show_directory(client, container_name, directory_name, snapshot=None, lease_
 
     return directory
 
-<<<<<<< HEAD
-=======
 
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
 def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=None,
               if_modified_since=None, if_unmodified_since=None, if_match=None,
               if_none_match=None, timeout=None):
@@ -76,10 +73,7 @@ def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=No
 
     return blob
 
-<<<<<<< HEAD
-=======
 
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
 def guess_content_type(file_path, original, settings_class):
     if original.content_encoding or original.content_type:
         return original
@@ -178,13 +172,7 @@ def upload_blob(cmd, client, container_name, blob_name, file_path, blob_type=Non
     return type_func[blob_type]()
 
 
-<<<<<<< HEAD
-
-
-
-=======
 # pylint: disable=unused-variable,logging-format-interpolation
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
 def delete_directory(client, container_name, directory_name):
 
     deleted, marker = client.delete_directory(container_name, directory_name, recursive=True)
@@ -195,12 +183,7 @@ def delete_directory(client, container_name, directory_name):
     # the rest of the files/subdirectories
     count = 1
     while marker is not None:
-<<<<<<< HEAD
-        deleted, marker = client.delete_directory(container_name, directory_name,
-                                                        marker=marker, recursive=True)
-=======
         deleted, marker = client.delete_directory(container_name, directory_name, marker=marker, recursive=True)
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
 
@@ -261,7 +244,6 @@ def rename_directory(client, container_name, destination_path, source_path):
         marker = client.rename_path(container_name, destination_path, source_path, marker=marker)
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
-<<<<<<< HEAD
 
 
 def _create_blobs(client, container_name, destination_path,
@@ -291,5 +273,3 @@ def set_entry(client, container_name, path, acl, lease_id=None, if_modified_sinc
 
     client.set_path_access_control(container_name, path, acl_list.owner, acl_list.group, acl_list.permissions, acl,
                                    lease_id, if_modified_since, if_unmodified_since, if_match, if_none_match, timeout)
-=======
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
