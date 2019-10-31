@@ -23,6 +23,8 @@ from ._utils import _get_rg_location
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
+DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL=5
+APP__CREATE_OR_UPDATE_SLEEP_INTERVAL=2
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
@@ -110,7 +112,7 @@ def app_create(cmd, client, resource_group, service, name,
     poller = client.apps.create_or_update(resource_group, service, name, properties)
     logger.info("Waiting for the app {} create completion".format(name))
     while poller.done() is False:
-        sleep(2)
+        sleep(APP__CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
@@ -133,17 +135,14 @@ def app_create(cmd, client, resource_group, service, name,
     logger.info("Setting default deployment to production")
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
-    logger.info("Waiting for the deployment {} create completion".format(DEFAULT_DEPLOYMENT_NAME))
-    while poller.done() is False:
-        sleep(5)
+
+    app_poller = client.apps.update(resource_group, service, name, properties)
+    logger.info("Waiting for the deployment {} create and app {} update completion".format(DEFAULT_DEPLOYMENT_NAME, name))
+    while poller.done() == False or app_poller.done() == False:
+        sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     active_deployment = client.deployments.get(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
-    poller = client.apps.update(resource_group, service, name, properties)
-    logger.info("Waiting for the app {} update completion".format(name))
-    while poller.done() is False:
-        sleep(2)
-
     app = client.apps.get(resource_group, service, name)
     app.active_deployment = active_deployment
     return app
@@ -168,7 +167,7 @@ def app_update(cmd, client, resource_group, service, name,
         resource_group, service, name, properties)
     logger.info("Waiting for the app {} update completion".format(name))
     while poller.done() is False:
-        sleep(2)
+        sleep(APP__CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     app_updated = client.apps.get(resource_group, service, name)
 
@@ -191,7 +190,7 @@ def app_update(cmd, client, resource_group, service, name,
     poller = client.deployments.update(resource_group, service, name, deployment, properties)
     logger.info("Waiting for the deployment {} update completion".format(deployment))
     while poller.done() is False:
-        sleep(5)
+        sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     deployment = client.deployments.get(resource_group, service, name, deployment)
     app_updated.active_deployment = deployment
