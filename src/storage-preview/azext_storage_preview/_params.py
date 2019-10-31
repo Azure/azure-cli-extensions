@@ -10,7 +10,8 @@ from azure.cli.core.commands.parameters import (tags_type, file_type, get_locati
 from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
-                          validate_azcopy_target_url)
+                          validate_azcopy_target_url, validate_included_datasets,
+                          validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -31,10 +32,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                      completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
     container_name_type = CLIArgumentType(options_list=['--container-name', '-c'], help='The container name.',
                                           completer=get_container_name_completions)
-    directory_type = CLIArgumentType(options_list=['--directory-name', '-d'], help='The directory name.',
-                                     completer=get_storage_name_completion_list(t_file_service,
-                                                                                'list_directories_and_files',
-                                                                                parent='share_name'))
+    directory_path_type = CLIArgumentType(options_list=['--directory-path', '-d'], help='The directory path name.',
+                                          parent='container_name')
     share_name_type = CLIArgumentType(options_list=['--share-name', '-s'], help='The file share name.',
                                       completer=get_storage_name_completion_list(t_file_service, 'list_shares'))
     table_name_type = CLIArgumentType(options_list=['--table-name', '-t'],
@@ -42,7 +41,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
-        c.argument('directory_name', directory_type)
         c.argument('share_name', share_name_type)
         c.argument('table_name', table_name_type)
         c.argument('retry_wait', options_list=('--retry-interval',))
@@ -203,3 +201,78 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
+
+    # New commands parameters for ADLS Gen2
+    with self.argument_context('storage blob directory') as c:
+        c.argument('directory_path', directory_path_type)
+        c.argument('container_name', container_name_type)
+
+    with self.argument_context('storage blob directory access') as c:
+        c.argument('path', directory_path_type)
+
+    with self.argument_context('storage blob directory access set') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'], required=True,
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.ignore('owner', 'group', 'permissions')
+
+    with self.argument_context('storage blob directory access update') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'],
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('owner', help='The owning user for the directory.')
+        c.argument('group', help='The owning group for the directory.')
+        c.argument('permissions', help='The POSIX access permissions for the file owner,'
+                   'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
+                   'octal notation (e.g. 0766) are supported.')
+
+    with self.argument_context('storage blob directory download') as c:
+        c.extra('source_container', options_list=['--container', '-c'], required=True,
+                help='The download source container.')
+        c.extra('source_path', options_list=['--source-directory', '-s'], required=True,
+                validator=validate_blob_directory_download_source_url,
+                help='The download source directory path.')
+        c.argument('destination', options_list=['--destination-path', '-d'],
+                   help='The destination directory path to download.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively download blobs. If enabled, all the blobs including the blobs in subdirectories '
+                        'will be downloaded.')
+        c.ignore('source')
+
+    with self.argument_context('storage blob directory exists') as c:
+        c.argument('blob_name', directory_path_type, required=True)
+
+    with self.argument_context('storage blob directory list') as c:
+        c.argument('include', validator=validate_included_datasets, default='mc')
+
+    with self.argument_context('storage blob directory metadata') as c:
+        c.argument('blob_name', directory_path_type)
+
+    with self.argument_context('storage blob directory move') as c:
+        c.argument('destination_path', options_list=['--destination-path', '-d'],
+                   help='The destination blob directory path.')
+        c.argument('source_path', options_list=['--source-path', '-s'],
+                   help='The source blob directory path.')
+
+    with self.argument_context('storage blob directory show') as c:
+        c.argument('directory_name', directory_path_type)
+        c.argument('container_name', container_name_type)
+        # c.argument('snapshot', help='The snapshot parameter is an opaque DateTime value that, '
+        #                            'when present, specifies the directory snapshot to retrieve.')
+        c.ignore('snapshot')
+        c.argument('lease-id', help='Required if the blob has an active lease.')
+
+    with self.argument_context('storage blob directory upload') as c:
+        c.extra('destination_container', options_list=['--container', '-c'], required=True,
+                help='The upload destination container.')
+        c.extra('destination_path', options_list=['--destination-directory', '-d'], required=True,
+                validator=validate_blob_directory_upload_destination_url,
+                help='The upload destination directory path.')
+        c.argument('source', options_list=['--source', '-s'],
+                   help='The source file path to upload from.')
+        c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
+                   help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
+                        ' be uploaded.')
+        c.ignore('destination')
