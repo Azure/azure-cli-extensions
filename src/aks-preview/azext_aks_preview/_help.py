@@ -360,7 +360,10 @@ helps['aks nodepool add'] = """
           long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
         - name: --node-zones
           type: string array
-          short-summary: (PREVIEW) Availability zones where agent nodes will be placed.
+          short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
+        - name: --zones -z
+          type: string array
+          short-summary: Availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
