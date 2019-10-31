@@ -24,12 +24,16 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
 
+    t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
                                      completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
+    blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
+                                     completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
+                                                                                parent='container_name'))
     container_name_type = CLIArgumentType(options_list=['--container-name', '-c'], help='The container name.',
                                           completer=get_container_name_completions)
     directory_path_type = CLIArgumentType(options_list=['--directory-path', '-d'], help='The directory path name.',
@@ -202,7 +206,16 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
 
-    # New commands parameters for ADLS Gen2
+    with self.argument_context('storage blob move') as c:
+        c.argument('source_path', options_list=['--source-blob', '-s'],
+                   help="The source blob name. It should be an absolute path under the container. e.g."
+                        "'topdir1/dirsubfoo'.")
+        c.argument('new_path', options_list=['--destination-blob', '-d'],
+                   help="The source blob name. It should be an absolute path under the container. e.g."
+                        "'topdir1/dirbar'.")
+        c.argument('container_name', container_name_type)
+        c.ignore('marker')
+
     with self.argument_context('storage blob directory') as c:
         c.argument('directory_path', directory_path_type)
         c.argument('container_name', container_name_type)

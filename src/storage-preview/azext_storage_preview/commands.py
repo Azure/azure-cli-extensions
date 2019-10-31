@@ -114,27 +114,14 @@ The secondary cluster will become the primary cluster after failover. Please und
         client_factory=adls_blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
-    # New commands for ADLS Gen2
-    # Blob Pipeline
+    # Blob directory Commands Group
     with self.command_group('storage blob', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        from ._format import transform_blob_output
-        from ._transformers import transform_storage_list_output
-        g.storage_custom_command_oauth('move', 'rename_directory')
-        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
-                                table_transformer=transform_blob_output)
-        g.storage_custom_command_oauth('show', 'show_blob')
+        g.storage_command_oauth('move', 'rename_path')
 
-    with self.command_group('storage blob access', command_type=adls_base_blob_sdk,
-                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
-                                                               CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        g.storage_custom_command_oauth('set', 'rename_directory')
-        g.storage_custom_command_oauth('update', 'show_blob')
-
-    # Blob directory Pipeline
+    # Blob directory Commands Group
     with self.command_group('storage blob directory', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
