@@ -134,7 +134,7 @@ def load_arguments(self, _):
         with self.argument_context(scope) as c:
             c.argument('key', help='API key of the service.')
             c.argument('username', help='Username of the database')
-            c.argument('database_name')
+            c.argument('database_name', help='Database name')
 
     for scope in ['spring-cloud app binding redis add', 'spring-cloud app binding redis update']:
         with self.argument_context(scope) as c:
