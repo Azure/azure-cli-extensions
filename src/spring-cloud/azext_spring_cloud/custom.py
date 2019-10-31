@@ -10,7 +10,7 @@ from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id
-from ._utils import _get_upload_local_file, dump
+from ._utils import _get_upload_local_file
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
 from knack.log import get_logger
@@ -23,6 +23,8 @@ from ._utils import _get_rg_location
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
+DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL = 5
+APP__CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
@@ -95,7 +97,7 @@ def app_create(cmd, client, resource_group, service, name,
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App {} already exists.".format(name))
-    logger.info("Creating app {}".format(name))
+    logger.info("Creating app with name {}".format(name))
     properties = models.AppResourceProperties()
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -106,7 +108,11 @@ def app_create(cmd, client, resource_group, service, name,
 
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-    client.apps.create_or_update(resource_group, service, name, properties)
+
+    poller = client.apps.create_or_update(resource_group, service, name, properties)
+    logger.info("Waiting for the app {} create completion".format(name))
+    while poller.done() is False:
+        sleep(APP__CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
@@ -122,25 +128,21 @@ def app_create(cmd, client, resource_group, service, name,
         source=user_source_info)
 
     # create default deployment
-    logger.info("Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
+    logger.info("Creating default deployment with name {}".format(DEFAULT_DEPLOYMENT_NAME))
     poller = client.deployments.create_or_update(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
 
     logger.info("Setting default deployment to production")
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
-    poller.add_done_callback(lambda x: dump(x.resource()))
-    logger.info("Waiting for the default deployment completion")
-    while poller.done() is False:
-        sleep(5)
+
+    app_poller = client.apps.update(resource_group, service, name, properties)
+    logger.info("Waiting for the deployment {} create and app {} update completion".format(DEFAULT_DEPLOYMENT_NAME, name))
+    while not poller.done() or not app_poller.done():
+        sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     active_deployment = client.deployments.get(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
-    poller = client.apps.update(resource_group, service, name, properties)
-    logger.info("Waiting for the app update completion")
-    while poller.done() is False:
-        sleep(5)
-
     app = client.apps.get(resource_group, service, name)
     app.active_deployment = active_deployment
     return app
@@ -152,8 +154,7 @@ def app_update(cmd, client, resource_group, service, name,
                runtime_version=None,
                jvm_options=None,
                env=None,
-               enable_persistent_storage=None,
-               no_wait=False):
+               enable_persistent_storage=None):
     properties = models.AppResourceProperties(public=is_public)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
@@ -162,9 +163,13 @@ def app_update(cmd, client, resource_group, service, name,
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
     logger.info("updating app {}".format(name))
-    app_updated = client.apps.update(
+    poller = client.apps.update(
         resource_group, service, name, properties)
-    dump(app_updated)
+    logger.info("Waiting for the app {} update completion".format(name))
+    while poller.done() is False:
+        sleep(APP__CREATE_OR_UPDATE_SLEEP_INTERVAL)
+
+    app_updated = client.apps.get(resource_group, service, name)
 
     if deployment is None:
         deployment = client.apps.get(
@@ -182,8 +187,14 @@ def app_update(cmd, client, resource_group, service, name,
         runtime_version=runtime_version,)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    return sdk_no_wait(no_wait, client.deployments.update,
-                       resource_group, service, name, deployment, properties)
+    poller = client.deployments.update(resource_group, service, name, deployment, properties)
+    logger.info("Waiting for the deployment {} update completion".format(deployment))
+    while poller.done() is False:
+        sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
+
+    deployment = client.deployments.get(resource_group, service, name, deployment)
+    app_updated.active_deployment = deployment
+    return app_updated
 
 
 def app_delete(cmd, client,
