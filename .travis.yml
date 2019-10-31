@@ -46,7 +46,7 @@ jobs:
           -e DOC_REPO_SLUG='MicrosoftDocs/azure-docs-cli' \
           -e REPO_LOCATION=/repo \
           -v $PWD:/repo \
-          sttramer/az-ext-list-publisher:0.3.0
+          mcr.microsoft.com/azure-cli-ext/ext-list-publisher:0.3.0
       env: PURPOSE='SyncAvailableExtensionsDoc'
       if: repo = Azure/azure-cli-extensions and branch = master and type = cron
   fast_finish: true
