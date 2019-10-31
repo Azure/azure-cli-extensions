@@ -213,12 +213,17 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
             import requests
 
             import time
-            time.sleep(480)
+            elapsed_seconds = 0
+            while elapsed_seconds < 900:
+                r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
+                if(r.status_code == 403): break
+                time.sleep(10)
+                elapsed_seconds += 10
+            self.assertEqual(r.status_code, 403)
+
             r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
             self.assertEqual(r.status_code, 200)
 
-            r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
-            self.assertEqual(r.status_code, 403)
 
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_managed_rules(self, resource_group):
