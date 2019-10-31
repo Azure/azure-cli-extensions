@@ -56,7 +56,6 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 22))
 
-        # TODO: Download from the directory
         local_folder = self.create_temp_dir()
         # Download a single file
         self.storage_cmd('storage blob directory download -c {} -s "{}" -d "{}" --recursive', account_info, container,
