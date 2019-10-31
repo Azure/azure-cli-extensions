@@ -140,9 +140,9 @@ helps['storage blob access update'] = """
         - name: Update the access permissions of a blob.
           text: az storage blob access update --permissions "rwxrwxrwx" -b MyBlob -c MyContainer --account-name MyStorageAccount
         - name: Update the owning user of a blob.
-          text: az storage blob access update --owner [entity id or UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
+          text: az storage blob access update --owner [entityId/UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
         - name: Update the owning group of a blob.
-          text: az storage blob access update --group [entity id or UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
+          text: az storage blob access update --group [entityId/UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob move'] = """
@@ -187,9 +187,9 @@ helps['storage blob directory access update'] = """
         - name: Update the access permissions of a directory.
           text: az storage blob directory access update --permissions "rwxrwxrwx" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
         - name: Update the owning user of a directory.
-          text: az storage blob directory access update --owner [entity id or UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+          text: az storage blob directory access update --owner [entityId/UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
         - name: Update the owning group of a directory.
-          text: az storage blob directory access update --group [entity id or UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+          text: az storage blob directory access update --group [entityId/UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory create'] = """
