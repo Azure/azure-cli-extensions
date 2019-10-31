@@ -82,3 +82,47 @@ def get_subnet_validator():
                 child_name_1=namespace.subnet)
 
     return simple_validator
+
+
+def validate_firewall_policy(cmd, namespace):
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    if namespace.base_policy is None:
+        return
+
+    if not is_valid_resource_id(namespace.base_policy):
+        namespace.base_policy = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=namespace.resource_group_name,
+            namespace='Microsoft.Network',
+            type='firewallPolicies',
+            name=namespace.base_policy)
+
+
+def validate_af_network_rule(namespace):
+    from knack.util import CLIError
+    if namespace.destination_addresses is None and namespace.destination_fqdns is None:
+        raise CLIError('usage error: --destination-addresses | --destination-fqdns')
+    if namespace.destination_addresses is not None and namespace.destination_fqdns is not None:
+        raise CLIError('usage error: --destination-addresses | --destination-fqdns')
+    return namespace
+
+
+def validate_af_nat_rule(namespace):
+    from knack.util import CLIError
+    if namespace.translated_address is None and namespace.translated_fqdn is None:
+        raise CLIError('usage error: --translated-address | --translated-fqdn')
+    if namespace.translated_address is not None and namespace.translated_fqdn is not None:
+        raise CLIError('usage error: --translated-address | --translated-fqdn')
+    return namespace
+
+
+def validate_af_application_rule(namespace):
+    return namespace
+
+
+def validate_rule_group_collection(namespace):
+    from knack.util import CLIError
+    if namespace.target_fqdns is not None and namespace.fqdn_tags is not None:
+        raise CLIError('usage error: --target-fqdns | --fqdn-tags')
+    return namespace

@@ -21,6 +21,7 @@ try:
     from .backend_pools_settings_py3 import BackendPoolsSettings
     from .front_door_update_parameters_py3 import FrontDoorUpdateParameters
     from .purge_parameters_py3 import PurgeParameters
+    from .routing_rule_list_result_py3 import RoutingRuleListResult
     from .sub_resource_py3 import SubResource
     from .route_configuration_py3 import RouteConfiguration
     from .routing_rule_update_parameters_py3 import RoutingRuleUpdateParameters
@@ -28,9 +29,12 @@ try:
     from .forwarding_configuration_py3 import ForwardingConfiguration
     from .redirect_configuration_py3 import RedirectConfiguration
     from .backend_py3 import Backend
+    from .load_balancing_settings_list_result_py3 import LoadBalancingSettingsListResult
     from .load_balancing_settings_update_parameters_py3 import LoadBalancingSettingsUpdateParameters
+    from .health_probe_settings_list_result_py3 import HealthProbeSettingsListResult
     from .health_probe_settings_update_parameters_py3 import HealthProbeSettingsUpdateParameters
     from .backend_pool_update_parameters_py3 import BackendPoolUpdateParameters
+    from .backend_pool_list_result_py3 import BackendPoolListResult
     from .frontend_endpoint_update_parameters_web_application_firewall_policy_link_py3 import FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink
     from .frontend_endpoint_update_parameters_py3 import FrontendEndpointUpdateParameters
     from .validate_custom_domain_input_py3 import ValidateCustomDomainInput
@@ -44,14 +48,18 @@ try:
     from .azure_async_operation_result_py3 import AzureAsyncOperationResult
     from .tags_object_py3 import TagsObject
     from .policy_settings_py3 import PolicySettings
-    from .match_condition1_py3 import MatchCondition1
+    from .match_condition_py3 import MatchCondition
     from .custom_rule_py3 import CustomRule
-    from .custom_rules_py3 import CustomRules
+    from .custom_rule_list_py3 import CustomRuleList
+    from .managed_rule_override_py3 import ManagedRuleOverride
+    from .managed_rule_group_override_py3 import ManagedRuleGroupOverride
     from .managed_rule_set_py3 import ManagedRuleSet
-    from .managed_rule_sets_py3 import ManagedRuleSets
-    from .web_application_firewall_policy1_py3 import WebApplicationFirewallPolicy1
-    from .azure_managed_override_rule_group_py3 import AzureManagedOverrideRuleGroup
-    from .azure_managed_rule_set_py3 import AzureManagedRuleSet
+    from .managed_rule_set_list_py3 import ManagedRuleSetList
+    from .frontend_endpoint_link_py3 import FrontendEndpointLink
+    from .web_application_firewall_policy_py3 import WebApplicationFirewallPolicy
+    from .managed_rule_definition_py3 import ManagedRuleDefinition
+    from .managed_rule_group_definition_py3 import ManagedRuleGroupDefinition
+    from .managed_rule_set_definition_py3 import ManagedRuleSetDefinition
 except (SyntaxError, ImportError):
     from .front_door import FrontDoor
     from .routing_rule import RoutingRule
@@ -64,6 +72,7 @@ except (SyntaxError, ImportError):
     from .backend_pools_settings import BackendPoolsSettings
     from .front_door_update_parameters import FrontDoorUpdateParameters
     from .purge_parameters import PurgeParameters
+    from .routing_rule_list_result import RoutingRuleListResult
     from .sub_resource import SubResource
     from .route_configuration import RouteConfiguration
     from .routing_rule_update_parameters import RoutingRuleUpdateParameters
@@ -71,9 +80,12 @@ except (SyntaxError, ImportError):
     from .forwarding_configuration import ForwardingConfiguration
     from .redirect_configuration import RedirectConfiguration
     from .backend import Backend
+    from .load_balancing_settings_list_result import LoadBalancingSettingsListResult
     from .load_balancing_settings_update_parameters import LoadBalancingSettingsUpdateParameters
+    from .health_probe_settings_list_result import HealthProbeSettingsListResult
     from .health_probe_settings_update_parameters import HealthProbeSettingsUpdateParameters
     from .backend_pool_update_parameters import BackendPoolUpdateParameters
+    from .backend_pool_list_result import BackendPoolListResult
     from .frontend_endpoint_update_parameters_web_application_firewall_policy_link import FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink
     from .frontend_endpoint_update_parameters import FrontendEndpointUpdateParameters
     from .validate_custom_domain_input import ValidateCustomDomainInput
@@ -87,27 +99,28 @@ except (SyntaxError, ImportError):
     from .azure_async_operation_result import AzureAsyncOperationResult
     from .tags_object import TagsObject
     from .policy_settings import PolicySettings
-    from .match_condition1 import MatchCondition1
+    from .match_condition import MatchCondition
     from .custom_rule import CustomRule
-    from .custom_rules import CustomRules
+    from .custom_rule_list import CustomRuleList
+    from .managed_rule_override import ManagedRuleOverride
+    from .managed_rule_group_override import ManagedRuleGroupOverride
     from .managed_rule_set import ManagedRuleSet
-    from .managed_rule_sets import ManagedRuleSets
-    from .web_application_firewall_policy1 import WebApplicationFirewallPolicy1
-    from .azure_managed_override_rule_group import AzureManagedOverrideRuleGroup
-    from .azure_managed_rule_set import AzureManagedRuleSet
+    from .managed_rule_set_list import ManagedRuleSetList
+    from .frontend_endpoint_link import FrontendEndpointLink
+    from .web_application_firewall_policy import WebApplicationFirewallPolicy
+    from .managed_rule_definition import ManagedRuleDefinition
+    from .managed_rule_group_definition import ManagedRuleGroupDefinition
+    from .managed_rule_set_definition import ManagedRuleSetDefinition
 from .front_door_paged import FrontDoorPaged
-from .routing_rule_paged import RoutingRulePaged
-from .health_probe_settings_model_paged import HealthProbeSettingsModelPaged
-from .load_balancing_settings_model_paged import LoadBalancingSettingsModelPaged
-from .backend_pool_paged import BackendPoolPaged
 from .frontend_endpoint_paged import FrontendEndpointPaged
-from .web_application_firewall_policy1_paged import WebApplicationFirewallPolicy1Paged
+from .web_application_firewall_policy_paged import WebApplicationFirewallPolicyPaged
+from .managed_rule_set_definition_paged import ManagedRuleSetDefinitionPaged
 from .front_door_management_client_enums import (
     FrontDoorResourceState,
     CustomHttpsProvisioningState,
     CustomHttpsProvisioningSubstate,
     FrontDoorCertificateSource,
-    FrontDoorTlsProtocolType,
+    MinimumTLSVersion,
     FrontDoorCertificateType,
     EnforceCertificateNameCheckEnabledState,
     FrontDoorEnabledState,
@@ -119,19 +132,22 @@ from .front_door_management_client_enums import (
     FrontDoorRedirectType,
     FrontDoorRedirectProtocol,
     BackendEnabledState,
+    FrontDoorHealthProbeMethod,
+    HealthProbeEnabled,
     SessionAffinityEnabledState,
     ResourceType,
     Availability,
     NetworkOperationStatus,
-    EnabledState,
-    Mode,
+    PolicyEnabledState,
+    PolicyMode,
+    CustomRuleEnabledState,
     RuleType,
-    MatchCondition,
+    MatchVariable,
     Operator,
-    Action,
-    Transform,
-    WebApplicationFirewallPolicy,
-    RuleGroupOverride,
+    TransformType,
+    ActionType,
+    ManagedRuleEnabledState,
+    PolicyResourceState,
 )
 
 __all__ = [
@@ -146,6 +162,7 @@ __all__ = [
     'BackendPoolsSettings',
     'FrontDoorUpdateParameters',
     'PurgeParameters',
+    'RoutingRuleListResult',
     'SubResource',
     'RouteConfiguration',
     'RoutingRuleUpdateParameters',
@@ -153,9 +170,12 @@ __all__ = [
     'ForwardingConfiguration',
     'RedirectConfiguration',
     'Backend',
+    'LoadBalancingSettingsListResult',
     'LoadBalancingSettingsUpdateParameters',
+    'HealthProbeSettingsListResult',
     'HealthProbeSettingsUpdateParameters',
     'BackendPoolUpdateParameters',
+    'BackendPoolListResult',
     'FrontendEndpointUpdateParametersWebApplicationFirewallPolicyLink',
     'FrontendEndpointUpdateParameters',
     'ValidateCustomDomainInput',
@@ -169,26 +189,27 @@ __all__ = [
     'AzureAsyncOperationResult',
     'TagsObject',
     'PolicySettings',
-    'MatchCondition1',
+    'MatchCondition',
     'CustomRule',
-    'CustomRules',
+    'CustomRuleList',
+    'ManagedRuleOverride',
+    'ManagedRuleGroupOverride',
     'ManagedRuleSet',
-    'ManagedRuleSets',
-    'WebApplicationFirewallPolicy1',
-    'AzureManagedOverrideRuleGroup',
-    'AzureManagedRuleSet',
+    'ManagedRuleSetList',
+    'FrontendEndpointLink',
+    'WebApplicationFirewallPolicy',
+    'ManagedRuleDefinition',
+    'ManagedRuleGroupDefinition',
+    'ManagedRuleSetDefinition',
     'FrontDoorPaged',
-    'RoutingRulePaged',
-    'HealthProbeSettingsModelPaged',
-    'LoadBalancingSettingsModelPaged',
-    'BackendPoolPaged',
     'FrontendEndpointPaged',
-    'WebApplicationFirewallPolicy1Paged',
+    'WebApplicationFirewallPolicyPaged',
+    'ManagedRuleSetDefinitionPaged',
     'FrontDoorResourceState',
     'CustomHttpsProvisioningState',
     'CustomHttpsProvisioningSubstate',
     'FrontDoorCertificateSource',
-    'FrontDoorTlsProtocolType',
+    'MinimumTLSVersion',
     'FrontDoorCertificateType',
     'EnforceCertificateNameCheckEnabledState',
     'FrontDoorEnabledState',
@@ -200,17 +221,20 @@ __all__ = [
     'FrontDoorRedirectType',
     'FrontDoorRedirectProtocol',
     'BackendEnabledState',
+    'FrontDoorHealthProbeMethod',
+    'HealthProbeEnabled',
     'SessionAffinityEnabledState',
     'ResourceType',
     'Availability',
     'NetworkOperationStatus',
-    'EnabledState',
-    'Mode',
+    'PolicyEnabledState',
+    'PolicyMode',
+    'CustomRuleEnabledState',
     'RuleType',
-    'MatchCondition',
+    'MatchVariable',
     'Operator',
-    'Action',
-    'Transform',
-    'WebApplicationFirewallPolicy',
-    'RuleGroupOverride',
+    'TransformType',
+    'ActionType',
+    'ManagedRuleEnabledState',
+    'PolicyResourceState',
 ]

@@ -10,6 +10,7 @@ from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
 from ._format import aks_agentpool_show_table_format
+from ._format import aks_agentpool_list_table_format
 from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
 
@@ -18,7 +19,7 @@ def load_command_table(self, _):
 
     managed_clusters_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.managed_clusters_operations#ManagedClustersOperations.{}',
+                        'operations._managed_clusters_operations#ManagedClustersOperations.{}',
         client_factory=cf_managed_clusters
     )
 
@@ -30,12 +31,13 @@ def load_command_table(self, _):
 
     agent_pools_sdk = CliCommandType(
         operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
-                        'operations.agent_pools_operations#AgentPoolsOperations.{}',
+                        'operations._agent_pools_operations#AgentPoolsOperations.{}',
         client_factory=cf_managed_clusters
     )
 
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('kollect', 'aks_kollect')
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
@@ -56,7 +58,7 @@ def load_command_table(self, _):
 
     # AKS agent pool commands
     with self.command_group('aks nodepool', agent_pools_sdk, client_factory=cf_agent_pools) as g:
-        g.custom_command('list', 'aks_agentpool_list')
+        g.custom_command('list', 'aks_agentpool_list', table_transformer=aks_agentpool_list_table_format)
         g.custom_show_command('show', 'aks_agentpool_show', table_transformer=aks_agentpool_show_table_format)
         g.custom_command('add', 'aks_agentpool_add', supports_no_wait=True)
         g.custom_command('scale', 'aks_agentpool_scale', supports_no_wait=True)

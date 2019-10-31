@@ -11,7 +11,7 @@ helps['network cross-connection'] = """
     short-summary: Manage customers' ExpressRoute circuits.
     long-summary: >
         To learn more about ExpressRoute circuits visit
-        https://docs.microsoft.com/en-us/azure/expressroute/howto-circuit-cli
+        https://docs.microsoft.com/azure/expressroute/howto-circuit-cli
 """
 
 helps['network cross-connection list'] = """
