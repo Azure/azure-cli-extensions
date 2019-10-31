@@ -206,6 +206,27 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
 
+    with self.argument_context('storage blob access') as c:
+        c.argument('path', blob_name_type)
+
+    with self.argument_context('storage blob access set') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'], required=True,
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.ignore('owner', 'group', 'permissions')
+
+    with self.argument_context('storage blob access update') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'],
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('owner', help='The owning user for the directory.')
+        c.argument('group', help='The owning group for the directory.')
+        c.argument('permissions', help='The POSIX access permissions for the file owner,'
+                   'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
+                   'octal notation (e.g. 0766) are supported.')
+
     with self.argument_context('storage blob move') as c:
         c.argument('source_path', options_list=['--source-blob', '-s'],
                    help="The source blob name. It should be an absolute path under the container. e.g."

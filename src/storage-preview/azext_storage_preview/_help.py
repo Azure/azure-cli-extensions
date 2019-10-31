@@ -112,6 +112,14 @@ helps['storage azcopy run-command'] = """
     short-summary: Run a command directly using the AzCopy CLI. Please use SAS tokens for authentication.
 """
 
+helps['storage blob move'] = """
+    type: command
+    short-summary: Move a blob in a storage container.
+    examples:
+        - name: Move a blob in a storage container.
+          text: az storage blob move -c MyContainer -d DestinationBlobPath -s SourceBlobPath --account-name MyStorageAccount
+"""
+
 helps['storage blob directory'] = """
     type: group
     short-summary: Manage blob directories in storage account container.

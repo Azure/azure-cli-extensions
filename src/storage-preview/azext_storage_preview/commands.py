@@ -121,6 +121,14 @@ The secondary cluster will become the primary cluster after failover. Please und
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
         g.storage_command_oauth('move', 'rename_path')
 
+    with self.command_group('storage blob access', command_type=adls_base_blob_sdk,
+                            custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
+                                                               CUSTOM_DATA_STORAGE_ADLS),
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
+        g.storage_command_oauth('set', 'set_path_access_control')
+        g.storage_command_oauth('update', 'set_path_access_control')
+        g.storage_command_oauth('show', 'get_path_access_control')
+
     # Blob directory Commands Group
     with self.command_group('storage blob directory', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
