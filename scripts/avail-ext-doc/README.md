@@ -5,7 +5,7 @@ Automatically create PR to update the document listing the available CLI extensi
 To build locally:
 
 ```bash
-docker build . -t sttramer/az-ext-list-publisher:0.2.0
+docker build . -t mcr.microsoft.com/azure-cli-ext/ext-list-publisher:0.3.0
 ```
 
 To run locally:
@@ -20,7 +20,7 @@ docker run \
     -e DOC_REPO_SLUG=$DOC_REPO_SLUG \
     -e REPO_LOCATION=/repo \
     -v $PWD:/repo \
-    sttramer/az-ext-list-publisher:0.2.0
+    mcr.microsoft.com/azure-cli-ext/ext-list-publisher:0.3.0
 ```
 
 For example:
@@ -35,5 +35,5 @@ docker run \
     -e DOC_REPO_SLUG='azure/azure-docs-cli-python' \
     -e REPO_LOCATION=/repo \
     -v /Repos/azure-cli-extensions:/repo \
-    sttramer/az-ext-list-publisher:0.2.0
+    mcr.microsoft.com/azure-cli-ext/ext-list-publisher:0.3.0
 ```
