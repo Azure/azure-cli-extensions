@@ -6,7 +6,7 @@
 from knack.util import CLIError
 from knack.log import get_logger
 
-from ._client_factory import network_client_factory
+from ._client_factory import network_client_factory, network_client_policy_factory
 
 logger = get_logger(__name__)
 
@@ -173,8 +173,8 @@ def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_na
 
 
 def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
-                           source_addresses, destination_addresses, destination_ports, protocols,
-                           description=None, priority=None, action=None):
+                           source_addresses, destination_ports, protocols, destination_fqdns=None,
+                           destination_addresses=None, description=None, priority=None, action=None):
     AzureFirewallNetworkRule, AzureFirewallNetworkRuleCollection = cmd.get_models(
         'AzureFirewallNetworkRule', 'AzureFirewallNetworkRuleCollection')
     params = {
@@ -183,6 +183,7 @@ def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collec
         'source_addresses': source_addresses,
         'destination_addresses': destination_addresses,
         'destination_ports': destination_ports,
+        'destination_fqdns': destination_fqdns,
         'protocols': protocols
     }
     collection_params = {
@@ -196,8 +197,8 @@ def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collec
 
 
 def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
-                       source_addresses, destination_addresses, destination_ports, protocols,
-                       translated_address, translated_port, description=None, priority=None, action=None):
+                       source_addresses, destination_addresses, destination_ports, protocols, translated_port,
+                       translated_address=None, translated_fqdn=None, description=None, priority=None, action=None):
     AzureFirewallNatRule, AzureFirewallNatRuleCollection = cmd.get_models(
         'AzureFirewallNatRule', 'AzureFirewallNatRuleCollection')
     params = {
@@ -208,7 +209,8 @@ def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection
         'destination_ports': destination_ports,
         'protocols': protocols,
         'translated_address': translated_address,
-        'translated_port': translated_port
+        'translated_port': translated_port,
+        'translated_fqdn': translated_fqdn
     }
     collection_params = {
         'name': collection_name,
@@ -241,4 +243,208 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
     return _upsert_af_rule(cmd, resource_group_name, azure_firewall_name,
                            'application_rule_collections', AzureFirewallApplicationRuleCollection,
                            AzureFirewallApplicationRule, item_name, params, collection_params)
+# endregion
+
+
+# region AzureFirewallPolicies
+def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
+                                   threat_intel_mode=None, location=None, tags=None):
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
+    FirewallPolicy, SubResource = cmd.get_models('FirewallPolicy', 'SubResource')
+    fire_wall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
+                                      threat_intel_mode=threat_intel_mode,
+                                      location=location,
+                                      tags=tags)
+    return client.create_or_update(resource_group_name, firewall_policy_name, fire_wall_policy)
+
+
+def update_azure_firewall_policies(instance, tags=None, threat_intel_mode=None):
+    if tags is not None:
+        instance.tags = tags
+    if threat_intel_mode is not None:
+        instance.threat_intel_mode = threat_intel_mode
+    return instance
+
+
+def list_azure_firewall_policies(cmd, resource_group_name=None):
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policies
+    if resource_group_name is not None:
+        return client.list(resource_group_name)
+    return client.list_all()
+
+
+def create_azure_firewall_policy_rule_group(cmd, resource_group_name, firewall_policy_name, rule_group_name,
+                                            priority, location=None, tags=None):
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    FirewallPolicyRuleGroup = cmd.get_models('FirewallPolicyRuleGroup')
+    rule_group = FirewallPolicyRuleGroup(priority=priority,
+                                         location=location,
+                                         tags=tags,
+                                         name=rule_group_name)
+    return client.create_or_update(resource_group_name, firewall_policy_name, rule_group_name, rule_group)
+
+
+def update_azure_firewall_policy_rule_group(instance, priority=None, tags=None):
+    if tags is not None:
+        instance.tags = tags
+    if priority is not None:
+        instance.priority = priority
+    return instance
+
+
+def add_azure_firewall_policy_nat_rule(cmd, resource_group_name, firewall_policy_name, rule_group_name, rule_name,
+                                       rule_priority, translated_address=None, translated_port=None, nat_action=None,
+                                       condition_name=None, description=None, ip_protocols=None, source_addresses=None,
+                                       destination_addresses=None, destination_ports=None):
+    FirewallPolicyNatRule, FirewallPolicyNatRuleAction, \
+        NetworkRuleCondition, FirewallPolicyRuleConditionNetworkProtocol = \
+        cmd.get_models('FirewallPolicyNatRule', 'FirewallPolicyNatRuleAction',
+                       'NetworkRuleCondition', 'FirewallPolicyRuleConditionNetworkProtocol')
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    rule_group = client.get(resource_group_name, firewall_policy_name, rule_group_name)
+    ip_protocols = list(map(FirewallPolicyRuleConditionNetworkProtocol, ip_protocols))
+    rule_condition = NetworkRuleCondition(name=condition_name,
+                                          description=description,
+                                          rule_condition_type="NetworkRuleCondition",
+                                          ip_protocols=ip_protocols,
+                                          source_addresses=source_addresses,
+                                          destination_addresses=destination_addresses,
+                                          destination_ports=destination_ports)
+    nat_rule = FirewallPolicyNatRule(name=rule_name,
+                                     priority=rule_priority,
+                                     rule_type="FirewallPolicyNatRule",
+                                     translated_address=translated_address,
+                                     translated_port=translated_port,
+                                     action=FirewallPolicyNatRuleAction(type=nat_action),
+                                     rule_condition=rule_condition)
+    rule_group.rules.append(nat_rule)
+    return client.create_or_update(resource_group_name, firewall_policy_name, rule_group_name, rule_group)
+
+
+# pylint: disable=too-many-locals
+def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_policy_name, rule_group_name, rule_name,
+                                          rule_priority, filter_action=None, condition_name=None,
+                                          condition_type=None, description=None, ip_protocols=None,
+                                          source_addresses=None, destination_addresses=None, destination_ports=None,
+                                          protocols=None, fqdn_tags=None, target_fqdns=None):
+    NetworkRuleCondition, FirewallPolicyRuleConditionApplicationProtocol,\
+        ApplicationRuleCondition, FirewallPolicyFilterRuleAction, FirewallPolicyFilterRule =\
+        cmd.get_models('NetworkRuleCondition', 'FirewallPolicyRuleConditionApplicationProtocol',
+                       'ApplicationRuleCondition', 'FirewallPolicyFilterRuleAction', 'FirewallPolicyFilterRule')
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    rule_group = client.get(resource_group_name, firewall_policy_name, rule_group_name)
+    rule_condition = None
+    if condition_type == "NetworkRule":
+        rule_condition = NetworkRuleCondition(name=condition_name,
+                                              description=description,
+                                              rule_condition_type=condition_type,
+                                              ip_protocols=ip_protocols,
+                                              source_addresses=source_addresses,
+                                              destination_addresses=destination_addresses,
+                                              destination_ports=destination_ports)
+    else:
+        def map_application_condition_protocol(item):
+            return FirewallPolicyRuleConditionApplicationProtocol(protocol_type=item['protocol_type'],
+                                                                  port=int(item['port']))
+        protocols = list(map(map_application_condition_protocol, protocols))
+        rule_condition = ApplicationRuleCondition(name=condition_name,
+                                                  description=description,
+                                                  rule_condition_type=condition_type,
+                                                  source_addresses=source_addresses,
+                                                  protocols=protocols,
+                                                  destination_addresses=destination_addresses,
+                                                  destination_ports=destination_ports,
+                                                  fqdn_tags=fqdn_tags,
+                                                  target_fqdns=target_fqdns)
+    filter_rule = FirewallPolicyFilterRule(name=rule_name,
+                                           priority=rule_priority,
+                                           rule_type="FirewallPolicyFilterRule",
+                                           action=FirewallPolicyFilterRuleAction(type=filter_action),
+                                           rule_conditions=[rule_condition])
+    rule_group.rules.append(filter_rule)
+    return client.create_or_update(resource_group_name, firewall_policy_name, rule_group_name, rule_group)
+
+
+def remove_azure_firewall_policy_rule(cmd, resource_group_name, firewall_policy_name, rule_group_name, rule_name):
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    rule_group = client.get(resource_group_name, firewall_policy_name, rule_group_name)
+    for rule in rule_group.rules:
+        if rule.name == rule_name:
+            rule_group.rules.remove(rule)
+    return client.create_or_update(resource_group_name, firewall_policy_name, rule_group_name, rule_group)
+
+
+def list_azure_firewall_policy_rule(cmd, resource_group_name, firewall_policy_name, rule_group_name):
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    rule_group = client.get(resource_group_name, firewall_policy_name, rule_group_name)
+    return rule_group.rules
+
+
+# pylint: disable=too-many-locals
+def add_azure_firewall_policy_filter_rule_condition(cmd, resource_group_name, firewall_policy_name, rule_group_name,
+                                                    rule_name, condition_name, condition_type,
+                                                    description=None, ip_protocols=None, source_addresses=None,
+                                                    destination_addresses=None, destination_ports=None,
+                                                    protocols=None, fqdn_tags=None, target_fqdns=None):
+    NetworkRuleCondition, FirewallPolicyRuleConditionApplicationProtocol, ApplicationRuleCondition = \
+        cmd.get_models('NetworkRuleCondition', 'FirewallPolicyRuleConditionApplicationProtocol',
+                       'ApplicationRuleCondition')
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    rule_group = client.get(resource_group_name, firewall_policy_name, rule_group_name)
+    target_rule = None
+    for rule in rule_group.rules:
+        if rule.name == rule_name:
+            target_rule = rule
+
+    if target_rule is None:
+        raise CLIError("Cannot find corresponding rule.")
+
+    if target_rule.rule_type == "FirewallPolicyNatRule":
+        raise CLIError("Only FirewallPolicyFilterRule can support multiple conditions.")
+    rule_condition = None
+    if condition_type == "NetworkRule":
+        rule_condition = NetworkRuleCondition(name=condition_name,
+                                              description=description,
+                                              rule_condition_type=condition_type,
+                                              ip_protocols=ip_protocols,
+                                              source_addresses=source_addresses,
+                                              destination_addresses=destination_addresses,
+                                              destination_ports=destination_ports)
+    else:
+        def map_application_condition_protocol(item):
+            return FirewallPolicyRuleConditionApplicationProtocol(protocol_type=item['protocol_type'],
+                                                                  port=int(item['port']))
+
+        protocols = list(map(map_application_condition_protocol, protocols))
+        rule_condition = ApplicationRuleCondition(name=condition_name,
+                                                  description=description,
+                                                  rule_condition_type=condition_type,
+                                                  source_addresses=source_addresses,
+                                                  protocols=protocols,
+                                                  destination_addresses=destination_addresses,
+                                                  destination_ports=destination_ports,
+                                                  fqdn_tags=fqdn_tags,
+                                                  target_fqdns=target_fqdns)
+    target_rule.rule_conditions.append(rule_condition)
+    return client.create_or_update(resource_group_name, firewall_policy_name, rule_group_name, rule_group)
+
+
+def remove_azure_firewall_policy_filter_rule_condition(cmd, resource_group_name, firewall_policy_name, rule_group_name,
+                                                       rule_name, condition_name):
+    client = network_client_policy_factory(cmd.cli_ctx).firewall_policy_rule_groups
+    rule_group = client.get(resource_group_name, firewall_policy_name, rule_group_name)
+    target_rule = None
+    for rule in rule_group.rules:
+        if rule.name == rule_name:
+            target_rule = rule
+
+    if target_rule is None:
+        raise CLIError("Cannot find corresponding rule.")
+
+    if target_rule.rule_type == "FirewallPolicyNatRule":
+        raise CLIError("Only FirewallPolicyFilterRule can support multiple conditions")
+    for condition in target_rule.rule_conditions:
+        if condition.name == condition_name:
+            target_rule.rule_conditions.remove(condition)
+    return client.create_or_update(resource_group_name, firewall_policy_name, rule_group_name, rule_group)
 # endregion
