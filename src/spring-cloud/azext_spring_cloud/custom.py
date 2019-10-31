@@ -256,7 +256,6 @@ def app_list(cmd, client,
     apps = list(client.apps.list(resource_group, service))
     deployments = list(
         client.deployments.list_cluster_all_deployments(resource_group, service))
-
     for app in apps:
         if app.properties.active_deployment_name:
             deployment = next(
