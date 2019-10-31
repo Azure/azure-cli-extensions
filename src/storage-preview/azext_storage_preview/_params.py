@@ -35,17 +35,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                           completer=get_container_name_completions)
     directory_path_type = CLIArgumentType(options_list=['--directory-path', '-d'], help='The directory path name.',
                                           parent='container_name')
-<<<<<<< HEAD
-    blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
-                                     completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
-                                                                                parent='container_name'))
-
-    directory_type = CLIArgumentType(options_list=['--directory-name', '-d'], help='The directory name.',
-                                     completer=get_storage_name_completion_list(t_file_service,
-                                                                                'list_directories_and_files',
-                                                                                parent='share_name'))
-=======
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
     share_name_type = CLIArgumentType(options_list=['--share-name', '-s'], help='The file share name.',
                                       completer=get_storage_name_completion_list(t_file_service, 'list_shares'))
     table_name_type = CLIArgumentType(options_list=['--table-name', '-t'],
@@ -288,7 +277,4 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
                         ' be uploaded.')
         c.ignore('destination')
-<<<<<<< HEAD
 
-=======
->>>>>>> e2dee22ca570f958020f9c6892d728f56d2d928a
