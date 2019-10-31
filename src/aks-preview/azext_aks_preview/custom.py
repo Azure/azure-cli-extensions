@@ -38,8 +38,7 @@ from dateutil.parser import parser  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 
 from azure.cli.core.api import get_config_dir
-from azure.cli.core._profile import Profile
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
 from azure.cli.core.util import in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.graphrbac.models import (ApplicationCreateParameters,
@@ -47,25 +46,25 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ResourceReference
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_08_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -204,11 +203,6 @@ def _delete_role_assignments(cli_ctx, role, service_principal, delay=2, scope=No
     hook.add(message='AAD role deletion done', value=1.0, total_val=1.0)
     logger.info('AAD role deletion done')
     return True
-
-
-def _get_subscription_id(cli_ctx):
-    _, sub_id, _ = Profile(cli_ctx=cli_ctx).get_login_credentials(subscription_id=None)
-    return sub_id
 
 
 def _get_default_dns_prefix(name, resource_group_name, subscription_id):
@@ -692,7 +686,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             shortened_key = truncate_text(ssh_key_value)
             raise CLIError('Provided ssh key ({}) is invalid or non-existent'.format(shortened_key))
 
-    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    subscription_id = get_subscription_id(cmd.cli_ctx)
     if not dns_name_prefix:
         dns_name_prefix = _get_default_dns_prefix(name, resource_group_name, subscription_id)
 
@@ -931,10 +925,10 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes"')
 
-    # TODO: change this approach when we support multiple agent pools.
     instance = client.get(resource_group_name, name)
-    if update_flags > 0 and instance.max_agent_pools > 1:
-        raise CLIError('Please use "az aks nodepool command to update per node pool auto scaler settings"')
+    if update_flags > 0 and len(instance.agent_pool_profiles) > 1:
+        raise CLIError('There are more than one node pool in the cluster. Please use "az aks nodepool" command '
+                       'to update per node pool auto scaler settings')
 
     node_count = instance.agent_pool_profiles[0].count
 
@@ -1006,7 +1000,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
-    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    subscription_id = get_subscription_id(cmd.cli_ctx)
     client_id = instance.service_principal_profile.client_id
     if not client_id:
         raise CLIError('Cannot get the AKS cluster\'s service principal.')
@@ -1103,7 +1097,7 @@ def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sa
     if storage_account_id is None:
         if not is_valid_resource_id(storage_account):
             storage_account_id = resource_id(
-                subscription=_get_subscription_id(cmd.cli_ctx),
+                subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace='Microsoft.Storage', type='storageAccounts',
                 name=storage_account
@@ -1198,7 +1192,10 @@ def aks_kollect(cmd, client, resource_group_name, name, storage_account=None, sa
 
 def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
     instance = client.get(resource_group_name, name)
-    # TODO: change this approach when we support multiple agent pools.
+
+    if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
+        raise CLIError('There are more than one node pool in the cluster. Please specify nodepool name or use az aks nodepool command to scale node pool')
+
     if node_count == 0:
         raise CLIError("Can't scale down to 0 nodes.")
     for agent_profile in instance.agent_pool_profiles:
@@ -1872,7 +1869,7 @@ def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
 
 def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=False):
     instance = client.get(resource_group_name, name)
-    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    subscription_id = get_subscription_id(cmd.cli_ctx)
 
     instance = _update_addons(
         cmd,
@@ -1891,7 +1888,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, no_wait=False):
     instance = client.get(resource_group_name, name)
-    subscription_id = _get_subscription_id(cmd.cli_ctx)
+    subscription_id = get_subscription_id(cmd.cli_ctx)
     service_principal_client_id = instance.service_principal_profile.client_id
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name, no_wait=no_wait)
@@ -2161,7 +2158,7 @@ def cloud_storage_account_service_factory(cli_ctx, kwargs):
 def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
     from azure.mgmt.monitor import MonitorManagementClient
     diag_settings_client = get_mgmt_service_client(cli_ctx, MonitorManagementClient).diagnostic_settings
-    subscription_id = _get_subscription_id(cli_ctx)
+    subscription_id = get_subscription_id(cli_ctx)
     aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
         '/managedClusters/{2}'.format(subscription_id, resource_group_name, name)
     diag_settings = diag_settings_client.list(aks_resource_id)
