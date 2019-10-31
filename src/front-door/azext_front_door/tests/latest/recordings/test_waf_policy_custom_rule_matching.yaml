@@ -1,55 +1,5 @@
 interactions:
 - request:
-    body: '{"location": "westus", "tags": {"product": "azurecli", "cause": "automation",
-      "date": "2019-06-21T18:55:33Z"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - group create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '110'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - --location --name --tag
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 resourcemanagementclient/2.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-06-21T18:55:33Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '384'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 21 Jun 2019 18:55:38 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 201
-      message: Created
-- request:
     body: '{"location": "global", "properties": {"policySettings": {"enabledState":
       "Enabled"}, "customRules": {"rules": []}, "managedRules": {}}}'
     headers:
@@ -68,8 +18,8 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
@@ -90,7 +40,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:42 GMT
+      - Thu, 31 Oct 2019 16:43:08 GMT
       expires:
       - '-1'
       odata-version:
@@ -106,7 +56,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1196'
       x-powered-by:
       - ASP.NET
     status:
@@ -126,8 +76,8 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority --rule-type --action --defer
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: GET
@@ -148,7 +98,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:44 GMT
+      - Thu, 31 Oct 2019 16:43:09 GMT
       expires:
       - '-1'
       odata-version:
@@ -173,12 +123,11 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''{"location": "Global", "tags": {}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Prevention"}, "customRules": {"rules":
-      [{"name": "cli000003", "priority": 6, "enabledState": "Enabled", "ruleType":
-      "MatchRule", "matchConditions": [{"matchVariable": "RequestBody", "operator":
-      "RegEx", "matchValue": ["something"]}], "action": "Block"}]}, "managedRules":
-      {"managedRuleSets": []}}}'''
+    body: '{"location": "Global", "tags": {}, "properties": {"policySettings": {"enabledState":
+      "Enabled", "mode": "Prevention"}, "customRules": {"rules": [{"name": "cli000003",
+      "priority": 6, "enabledState": "Enabled", "ruleType": "MatchRule", "matchConditions":
+      [{"matchVariable": "RequestBody", "operator": "RegEx", "matchValue": ["something"]}],
+      "action": "Block"}]}, "managedRules": {"managedRuleSets": []}}}'
     headers:
       Accept:
       - application/json
@@ -195,8 +144,8 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --match-variable --operator --values
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
@@ -206,7 +155,7 @@ interactions:
       string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
         \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
         \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"enabledState\":\"Enabled\",\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":0,\"rateLimitThreshold\":0,\"matchConditions\":[\r\n
+        \   },\"customRules\":{\r\n      \"rules\":[\r\n        {\r\n          \"name\":\"cli000003\",\"enabledState\":\"Enabled\",\"priority\":6,\"ruleType\":\"MatchRule\",\"rateLimitDurationInMinutes\":null,\"rateLimitThreshold\":null,\"matchConditions\":[\r\n
         \           {\r\n              \"matchVariable\":\"RequestBody\",\"selector\":null,\"operator\":\"RegEx\",\"negateCondition\":false,\"matchValue\":[\r\n
         \               \"something\"\r\n              ],\"transforms\":[\r\n                \r\n
         \             ]\r\n            }\r\n          ],\"action\":\"Block\"\r\n        }\r\n
@@ -216,11 +165,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1276'
+      - '1282'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:45 GMT
+      - Thu, 31 Oct 2019 16:43:12 GMT
       expires:
       - '-1'
       odata-version:
@@ -240,15 +189,15 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
       code: 200
       message: OK
 - request:
-    body: 'b''b\''{"location": "global", "properties": {"friendlyName": "cli000004",
-      "routingRules": [{"properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
+    body: 'b''{"location": "global", "properties": {"friendlyName": "cli000004", "routingRules":
+      [{"properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
       "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
       "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
       "forwardingProtocol": "MatchRequest", "backendPool": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},
@@ -256,16 +205,17 @@ interactions:
       [{"properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
       0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
       [{"properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30,
-      "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}], "backendPools":
-      [{"properties": {"backends": [{"address": "www.example.com", "httpPort": 80,
-      "httpsPort": 443, "enabledState": "Enabled", "priority": 1, "weight": 50, "backendHostHeader":
-      "www.example.com"}], "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
+      "healthProbeMethod": "HEAD", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
+      "backendPools": [{"properties": {"backends": [{"address": "www.example.com",
+      "httpPort": 80, "httpsPort": 443, "enabledState": "Enabled", "priority": 1,
+      "weight": 50, "backendHostHeader": "www.example.com"}], "loadBalancingSettings":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
       "healthProbeSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},
       "resourceState": "Enabled"}, "name": "DefaultBackendPool"}], "frontendEndpoints":
       [{"properties": {"hostName": "cli000004.azurefd.net", "sessionAffinityEnabledState":
       "Disabled", "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}],
       "backendPoolsSettings": {"enforceCertificateNameCheck": "Enabled"}, "enabledState":
-      "Enabled"}}\'''''
+      "Enabled"}}'''
     headers:
       Accept:
       - application/json
@@ -276,18 +226,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2456'
+      - '2485'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -298,7 +248,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Creating\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Creating\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Creating\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Creating\"\r\n
         \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
@@ -310,19 +260,20 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/edbb5f32-c2d1-4d78-a6aa-895a8e3e844a?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/3ca7efc1-b8da-4019-85f4-0d651f12314d?api-version=2019-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5126'
+      - '5206'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:55:50 GMT
+      - Thu, 31 Oct 2019 16:43:21 GMT
       expires:
       - '-1'
       odata-version:
@@ -338,7 +289,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1193'
       x-powered-by:
       - ASP.NET
     status:
@@ -358,22 +309,23 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/edbb5f32-c2d1-4d78-a6aa-895a8e3e844a?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/3ca7efc1-b8da-4019-85f4-0d651f12314d?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '50'
+      - '78'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:01 GMT
+      - Thu, 31 Oct 2019 16:43:32 GMT
       expires:
       - '-1'
       odata-version:
@@ -411,22 +363,23 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/edbb5f32-c2d1-4d78-a6aa-895a8e3e844a?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/3ca7efc1-b8da-4019-85f4-0d651f12314d?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '49'
+      - '77'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:31 GMT
+      - Thu, 31 Oct 2019 16:44:03 GMT
       expires:
       - '-1'
       odata-version:
@@ -464,10 +417,10 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -478,7 +431,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
         \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
@@ -490,17 +443,18 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5121'
+      - '5201'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:33 GMT
+      - Thu, 31 Oct 2019 16:44:04 GMT
       expires:
       - '-1'
       odata-version:
@@ -538,12 +492,12 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -554,7 +508,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":null,\"customHttpsProvisioningState\":null,\"customHttpsProvisioningSubstate\":null,\"customHttpsConfiguration\":null,\"resourceState\":\"Enabled\"\r\n
         \       }\r\n      }\r\n    ],\"loadBalancingSettings\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings\",\"name\":\"DefaultLoadBalancingSettings\",\"type\":\"Microsoft.Network/Frontdoors/LoadBalancingSettings\",\"properties\":{\r\n
@@ -566,17 +520,18 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5121'
+      - '5201'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:34 GMT
+      - Thu, 31 Oct 2019 16:44:06 GMT
       expires:
       - '-1'
       odata-version:
@@ -601,8 +556,8 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: 'b''b\''b\\\''{"location": "Global", "tags": {}, "properties": {"friendlyName":
-      "cli000004", "routingRules": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule",
+    body: 'b''{"location": "Global", "tags": {}, "properties": {"friendlyName": "cli000004",
+      "routingRules": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule",
       "properties": {"frontendEndpoints": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],
       "acceptedProtocols": ["Http"], "patternsToMatch": ["/*"], "enabledState": "Enabled",
       "routeConfiguration": {"@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
@@ -612,8 +567,9 @@ interactions:
       "properties": {"sampleSize": 4, "successfulSamplesRequired": 2, "additionalLatencyMilliseconds":
       0, "resourceState": "Enabled"}, "name": "DefaultLoadBalancingSettings"}], "healthProbeSettings":
       [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings",
-      "properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30, "resourceState":
-      "Enabled"}, "name": "DefaultProbeSettings"}], "backendPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool",
+      "properties": {"path": "/", "protocol": "Https", "intervalInSeconds": 30, "healthProbeMethod":
+      "Head", "enabledState": "Enabled", "resourceState": "Enabled"}, "name": "DefaultProbeSettings"}],
+      "backendPools": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool",
       "properties": {"backends": [{"address": "www.example.com", "httpPort": 80, "httpsPort":
       443, "enabledState": "Enabled", "priority": 1, "weight": 50, "backendHostHeader":
       "www.example.com"}], "loadBalancingSettings": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"},
@@ -624,7 +580,8 @@ interactions:
       "Disabled", "sessionAffinityTtlSeconds": 0, "webApplicationFirewallPolicyLink":
       {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},
       "resourceState": "Enabled"}, "name": "DefaultFrontendEndpoint"}], "backendPoolsSettings":
-      {}, "enabledState": "Enabled", "resourceState": "Enabled"}}\\\''\'''''
+      {"enforceCertificateNameCheck": "Enabled", "sendRecvTimeoutSeconds": 30}, "enabledState":
+      "Enabled", "resourceState": "Enabled"}}'''
     headers:
       Accept:
       - application/json
@@ -635,18 +592,18 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '4049'
+      - '4175'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -657,7 +614,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":{\r\n
         \           \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\r\n
@@ -671,23 +628,24 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/4ea1d80f-1fc4-49a8-a575-657c1f00498d?api-version=2019-05-01
       cache-control:
       - no-cache
       content-length:
-      - '5387'
+      - '5467'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:36 GMT
+      - Thu, 31 Oct 2019 16:44:09 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b/frontdoorresults/cli000004?api-version=2019-04-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/4ea1d80f-1fc4-49a8-a575-657c1f00498d/frontdoorresults/cli000004?api-version=2019-05-01
       odata-version:
       - '4.0'
       pragma:
@@ -701,7 +659,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1195'
       x-powered-by:
       - ASP.NET
     status:
@@ -721,22 +679,23 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/4ea1d80f-1fc4-49a8-a575-657c1f00498d?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '50'
+      - '78'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:56:47 GMT
+      - Thu, 31 Oct 2019 16:44:20 GMT
       expires:
       - '-1'
       odata-version:
@@ -774,22 +733,23 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/988f1fa1-d9e9-4675-98df-7fc2dce0e84b?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/4ea1d80f-1fc4-49a8-a575-657c1f00498d?api-version=2019-05-01
   response:
     body:
-      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \r\n  }\r\n}"
+      string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
+        \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '49'
+      - '77'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:57:19 GMT
+      - Thu, 31 Oct 2019 16:44:51 GMT
       expires:
       - '-1'
       odata-version:
@@ -827,10 +787,10 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
+      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+        Azure-SDK-For-Python AZURECLI/2.0.68
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2019-05-01
   response:
     body:
       string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004\",\"type\":\"Microsoft.Network/frontdoors\",\"tags\":{\r\n
@@ -841,7 +801,7 @@ interactions:
         \         },\"loadBalancingSettings\":{\r\n            \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings\"\r\n
         \         },\"resourceState\":\"Enabled\"\r\n        }\r\n      }\r\n    ],\"healthProbeSettings\":[\r\n
         \     {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings\",\"name\":\"DefaultProbeSettings\",\"type\":\"Microsoft.Network/Frontdoors/HealthProbeSettings\",\"properties\":{\r\n
-        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\"\r\n
+        \         \"intervalInSeconds\":30,\"path\":\"/\",\"protocol\":\"Https\",\"resourceState\":\"Enabled\",\"enabledState\":\"Enabled\",\"healthProbeMethod\":\"Head\"\r\n
         \       }\r\n      }\r\n    ],\"frontendEndpoints\":[\r\n      {\r\n        \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint\",\"name\":\"DefaultFrontendEndpoint\",\"type\":\"Microsoft.Network/Frontdoors/FrontendEndpoints\",\"properties\":{\r\n
         \         \"hostName\":\"cli000004.azurefd.net\",\"sessionAffinityEnabledState\":\"Disabled\",\"sessionAffinityTtlSeconds\":0,\"webApplicationFirewallPolicyLink\":{\r\n
         \           \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\r\n
@@ -855,17 +815,18 @@ interactions:
         \           \"@odata.type\":\"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration\",\"customForwardingPath\":null,\"forwardingProtocol\":\"MatchRequest\",\"cacheConfiguration\":null,\"backendPool\":{\r\n
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          }\r\n        }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n
-        \     \"enforceCertificateNameCheck\":\"Enabled\"\r\n    },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
+        \     \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"cli000004.azurefd.net\",\"friendlyName\":\"cli000004\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5387'
+      - '5467'
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Fri, 21 Jun 2019 18:57:19 GMT
+      - Thu, 31 Oct 2019 16:44:51 GMT
       expires:
       - '-1'
       odata-version:
@@ -910,18 +871,18 @@ interactions:
         \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
         charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
         initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: \"Open
-        Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n        \n    }\n
-        \   div {\n        width: 600px;\n        margin: 5em auto;\n        padding:
-        50px;\n        background-color: #fff;\n        border-radius: 1em;\n    }\n
-        \   a:link, a:visited {\n        color: #38488f;\n        text-decoration:
-        none;\n    }\n    @media (max-width: 700px) {\n        body {\n            background-color:
-        #fff;\n        }\n        div {\n            width: auto;\n            margin:
-        0 auto;\n            border-radius: 0;\n            padding: 1em;\n        }\n
-        \   }\n    </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is established to be used for illustrative examples in
-        documents. You may use this\n    domain in examples without prior coordination
-        or asking for permission.</p>\n    <p><a href=\"http://www.iana.org/domains/example\">More
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
         information...</a></p>\n</div>\n</body>\n</html>\n"
     headers:
       accept-ranges:
@@ -929,23 +890,23 @@ interactions:
       cache-control:
       - max-age=604800
       content-length:
-      - '1270'
+      - '1256'
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Fri, 21 Jun 2019 19:05:20 GMT
+      - Thu, 31 Oct 2019 16:52:52 GMT
       etag:
-      - '"1541025663+gzip"'
+      - '"3147526947+gzip"'
       expires:
-      - Fri, 28 Jun 2019 19:05:20 GMT
+      - Thu, 07 Nov 2019 16:52:52 GMT
       last-modified:
-      - Fri, 09 Aug 2013 23:54:35 GMT
+      - Thu, 17 Oct 2019 07:18:26 GMT
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 0cCoNXQAAAAB2EN5RdaCfRo5Ntgf+pBcTV1NURURHRTA2MTkAZTU2ODMyNWItNjhjNS00ZDY3LWFiOGYtYzZhZmM1YTU2OWZi
+      - 0ZBG7XQAAAABZMGMqd6LaTrqugAV19jPxV1NURURHRTA2MTYAYzVkNmRhYTktYjNiMC00MDQ4LWEyMjgtYjE4ODdlNjA2OTdj
     status:
       code: 200
       message: OK
@@ -966,70 +927,47 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
-        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
-        http-equiv=''content-type''/><style type=''text/css''>body { font-family:Arial;
-        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
-        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
-        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
-        7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
-        41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0cCoNXQAAAAD8TZjXczlDRL9/HOy5qqsMV1NURURHRTA2MTIAZTU2ODMyNWItNjhjNS00ZDY3LWFiOGYtYzZhZmM1YTU2OWZi</span></div></div></body></html>'
+      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
+        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
+        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
+        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
+        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
+        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
+        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
+        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
+        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
+        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
+        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
+        \   <p>This domain is for use in illustrative examples in documents. You may
+        use this\n    domain in literature without prior coordination or asking for
+        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
+        information...</a></p>\n</div>\n</body>\n</html>\n"
     headers:
+      accept-ranges:
+      - bytes
+      cache-control:
+      - max-age=604800
+      content-length:
+      - '1256'
+      content-type:
+      - text/html; charset=UTF-8
       date:
-      - Fri, 21 Jun 2019 19:05:20 GMT
+      - Thu, 31 Oct 2019 16:52:51 GMT
+      etag:
+      - '"3147526947+gzip"'
+      expires:
+      - Thu, 07 Nov 2019 16:52:52 GMT
+      last-modified:
+      - Thu, 17 Oct 2019 07:18:26 GMT
       transfer-encoding:
       - chunked
+      vary:
+      - Accept-Encoding
       x-azure-ref:
-      - 0cCoNXQAAAAD8TZjXczlDRL9/HOy5qqsMV1NURURHRTA2MTIAZTU2ODMyNWItNjhjNS00ZDY3LWFiOGYtYzZhZmM1YTU2OWZi
+      - 0ZBG7XQAAAAA1KCEjVmfzSoGpmek4WdS4V1NURURHRTA2MjIAYzVkNmRhYTktYjNiMC00MDQ4LWEyMjgtYjE4ODdlNjA2OTdj
     status:
-      code: 403
-      message: Forbidden
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - group delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --name --yes --no-wait
-      User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.6 msrest_azure/0.6.1 resourcemanagementclient/2.1.0
-        Azure-SDK-For-Python AZURECLI/2.0.66
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2018-05-01
-  response:
-    body:
-      string: ''
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '0'
-      date:
-      - Fri, 21 Jun 2019 19:05:22 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/operationresults/eyJqb2JJZCI6IlJFU09VUkNFR1JPVVBERUxFVElPTkpPQi1DTElURVNUOjJFUkdWSlVHQ0JaRTJQTkJWRUxTWUhKUkFQUVBMS1lOS1dVVUFSRXxCRTA3NjNDMjAyRTY2NUY1LVdFU1RVUyIsImpvYkxvY2F0aW9uIjoid2VzdHVzIn0?api-version=2018-05-01
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-    status:
-      code: 202
-      message: Accepted
+      code: 200
+      message: OK
 version: 1
