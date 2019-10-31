@@ -121,13 +121,3 @@ def transform_storage_list_output(result):
         logger.warning('Next Marker:')
         logger.warning(result.next_marker)
     return list(result)
-
-
-def transform_url(result):
-    """ Ensures the resulting URL string does not contain extra / characters """
-    import re
-    result = re.sub('//', '/', result)
-    result = re.sub('/', '//', result, count=1)
-    return encode_url_path(result)
-
-# endregion
