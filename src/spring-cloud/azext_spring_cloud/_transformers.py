@@ -36,7 +36,7 @@ def transform_app_table_output(result):
 
         if 'activeDeployment' in item['properties']:
             instances = item['properties']['activeDeployment']['properties']['instances']
-            if not instances:
+            if instances is None:
                 instances = []
             up_number = len(
                 [x for x in instances if x['discoveryStatus'] == 'UP'])
