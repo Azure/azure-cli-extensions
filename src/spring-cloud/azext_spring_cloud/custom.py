@@ -23,8 +23,8 @@ from ._utils import _get_rg_location
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
-DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL=5
-APP__CREATE_OR_UPDATE_SLEEP_INTERVAL=2
+DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL = 5
+APP__CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
@@ -138,7 +138,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     app_poller = client.apps.update(resource_group, service, name, properties)
     logger.info("Waiting for the deployment {} create and app {} update completion".format(DEFAULT_DEPLOYMENT_NAME, name))
-    while poller.done() == False or app_poller.done() == False:
+    while not poller.done() or not app_poller.done():
         sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     active_deployment = client.deployments.get(
