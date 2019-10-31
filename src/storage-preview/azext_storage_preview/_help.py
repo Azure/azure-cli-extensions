@@ -143,8 +143,12 @@ helps['storage blob directory access update'] = """
     type: command
     short-summary: Update the access control properties of a directory.
     examples:
-        - name: Update the access control properties of a directory.
+        - name: Update the access permissions of a directory.
           text: az storage blob directory access update --permissions "rwxrwxrwx" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning user of a directory.
+          text: az storage blob directory access update --owner [entity id or UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning group of a directory.
+          text: az storage blob directory access update --group [entity id or UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory create'] = """
@@ -235,7 +239,7 @@ helps['storage blob directory show'] = """
     short-summary: Show a storage blob directory properties in a storage container.
     examples:
         - name: Show a storage blob directory properties in a storage container.
-          text: az storage blob show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+          text: az storage blob directory show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
 """
 
 helps['storage blob directory upload'] = """
@@ -244,8 +248,8 @@ helps['storage blob directory upload'] = """
     examples:
         - name: Upload a single blob to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d directory
-        - name: Upload a directory to a container.
+        - name: Upload a local directory to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory" -d directory --recursive
-        - name: Upload the contents of a directory to a container.
-          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory/*" -d directory --recursive
+        - name: Upload a set of files in a local directory to a storage blob directory.
+          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file*" -d directory --recursive
 """
