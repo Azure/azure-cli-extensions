@@ -296,7 +296,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         # c.argument('snapshot', help='The snapshot parameter is an opaque DateTime value that, '
         #                            'when present, specifies the directory snapshot to retrieve.')
         c.ignore('snapshot')
-        c.argument('lease-id', help='Required if the blob has an active lease.')
+        c.argument('lease_id', help='Required if the blob has an active lease.')
+        c.argument('if_match', help="An ETag value, or the wildcard character (*). Specify this header to perform the"
+                   "operation only if the resource's ETag matches the value specified")
+        c.argument('if_none_match', help="An ETag value, or the wildcard character (*). Specify this header to perform" 
+                   "the operation only if the resource's ETag does not match the value specified. Specify the wildcard"
+                   "character (*) to perform the operation only if the resource does not exist, and fail the operation" 
+                   "if it does exist.")
 
     with self.argument_context('storage blob directory upload') as c:
         c.extra('destination_container', options_list=['--container', '-c'], required=True,
