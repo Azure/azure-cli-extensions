@@ -52,6 +52,12 @@ def list_internet_analyzer_profile(cmd, client,
     return client.list()
 
 
+def get_internet_analyzer_profile(cmd, client,
+                                  resource_group,
+                                  name):
+    return client.get(resource_group, name)
+
+
 def list_internet_analyzer_preconfigured_endpoint(cmd, client,
                                                   resource_group,
                                                   profile_name):
@@ -117,3 +123,33 @@ def list_internet_analyzer_test(cmd, client,
                                 resource_group,
                                 profile_name):
     return client.list_by_profile(resource_group_name=resource_group, profile_name=profile_name)
+
+
+def get_internet_analyzer_test(cmd, client,
+                               resource_group,
+                               profile_name,
+                               name):
+    return client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
+
+
+def get_timeseries(cmd, client,
+                   resource_group,
+                   profile_name,
+                   test_name,
+                   aggregation_interval,
+                   start_date_time_utc,
+                   end_date_time_utc,
+                   timeseries_type,
+                   country=None,
+                   endpoint=None):
+    return client.get_latency_scorecard(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, start_date_time_utc=start_date_time_utc, end_date_time_utc=end_date_time_utc, timeseries_type=timeseries_type, country=country, endpoint=endpoint)
+
+
+def get_latency_scorecard(cmd, client,
+                          resource_group,
+                          profile_name,
+                          test_name,
+                          aggregation_interval,
+                          country=None,
+                          end_date_time_utc=None):
+    return client.get_latency_scorecard(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, country=country, end_date_time_utc=end_date_time_utc)
