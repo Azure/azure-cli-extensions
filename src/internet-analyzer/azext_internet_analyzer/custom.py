@@ -140,8 +140,8 @@ def get_timeseries(cmd, client,
                    start_date_time_utc,
                    end_date_time_utc,
                    timeseries_type,
-                   country=None,
-                   endpoint=None):
+                   endpoint,
+                   country=None):
     return client.get_timeseries(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, start_date_time_utc=start_date_time_utc, end_date_time_utc=end_date_time_utc, timeseries_type=timeseries_type, country=country, endpoint=endpoint)
 
 
