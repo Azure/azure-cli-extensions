@@ -3,6 +3,8 @@
 Release History
 ===============
 0.4.20
++++++
+* Add commands '--zones' and '-z' for availability zones in aks
 * Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
 
 0.4.19

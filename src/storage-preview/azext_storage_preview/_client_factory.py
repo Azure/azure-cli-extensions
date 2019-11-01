@@ -97,6 +97,19 @@ def blob_data_service_factory(cli_ctx, kwargs):
                                         token_credential=kwargs.pop('token_credential', None))
 
 
+def adls_blob_data_service_factory(cli_ctx, kwargs):
+    from .sdkutil import get_adls_blob_service_by_type
+    blob_type = kwargs.get('blob_type')
+    blob_service = get_adls_blob_service_by_type(cli_ctx, blob_type) or get_adls_blob_service_by_type(cli_ctx, 'block')
+
+    return generic_data_service_factory(cli_ctx, blob_service, kwargs.pop('account_name', None),
+                                        kwargs.pop('account_key', None),
+                                        connection_string=kwargs.pop('connection_string', None),
+                                        sas_token=kwargs.pop('sas_token', None),
+                                        socket_timeout=kwargs.pop('socket_timeout', None),
+                                        token_credential=kwargs.pop('token_credential', None))
+
+
 def cloud_storage_account_service_factory(cli_ctx, kwargs):
     t_cloud_storage_account = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE, 'common#CloudStorageAccount')
     account_name = kwargs.pop('account_name', None)
