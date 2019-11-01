@@ -18,10 +18,10 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-05-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"northeurope","tags":{"product":"azurecli","cause":"automation","date":"2019-11-01T06:38:48Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"northeurope","tags":{"product":"azurecli","cause":"automation","date":"2019-11-01T16:31:37Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Nov 2019 06:38:55 GMT
+      - Fri, 01 Nov 2019 16:31:43 GMT
       expires:
       - '-1'
       pragma:
@@ -80,11 +80,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 01 Nov 2019 06:38:58 GMT
+      - Fri, 01 Nov 2019 16:31:47 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/b5e69ba5-8573-4565-a009-1a8db4147f8f?monitor=true&api-version=2018-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/ac3cf3dd-93a5-4415-850b-0c3fffe9e149?monitor=true&api-version=2018-07-01
       pragma:
       - no-cache
       server:
@@ -94,7 +94,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -115,10 +115,10 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/b5e69ba5-8573-4565-a009-1a8db4147f8f?monitor=true&api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/ac3cf3dd-93a5-4415-850b-0c3fffe9e149?monitor=true&api-version=2018-07-01
   response:
     body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"BlockBlobStorage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000002","name":"cli000002","type":"Microsoft.Storage/storageAccounts","location":"northeurope","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-01T06:38:59.2406430Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-01T06:38:59.2406430Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-11-01T06:38:59.1780980Z","primaryEndpoints":{"dfs":"https://cli000002.dfs.core.windows.net/","web":"https://cli000002.z16.web.core.windows.net/","blob":"https://cli000002.blob.core.windows.net/"},"primaryLocation":"northeurope","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"BlockBlobStorage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000002","name":"cli000002","type":"Microsoft.Storage/storageAccounts","location":"northeurope","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-01T16:31:47.5720321Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-01T16:31:47.5720321Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-11-01T16:31:47.4939049Z","primaryEndpoints":{"dfs":"https://cli000002.dfs.core.windows.net/","web":"https://cli000002.z16.web.core.windows.net/","blob":"https://cli000002.blob.core.windows.net/"},"primaryLocation":"northeurope","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
@@ -127,7 +127,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 01 Nov 2019 06:39:16 GMT
+      - Fri, 01 Nov 2019 16:32:06 GMT
       expires:
       - '-1'
       pragma:
@@ -181,7 +181,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 01 Nov 2019 06:39:18 GMT
+      - Fri, 01 Nov 2019 16:32:08 GMT
       expires:
       - '-1'
       pragma:
@@ -218,10 +218,10 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-05-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-07-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"northeurope","tags":{"product":"azurecli","cause":"automation","date":"2019-11-01T06:38:48Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"northeurope","tags":{"product":"azurecli","cause":"automation","date":"2019-11-01T16:31:37Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -230,7 +230,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 01 Nov 2019 06:39:19 GMT
+      - Fri, 01 Nov 2019 16:32:08 GMT
       expires:
       - '-1'
       pragma:
@@ -279,11 +279,11 @@ interactions:
       content-type:
       - text/plain; charset=utf-8
       date:
-      - Fri, 01 Nov 2019 06:39:23 GMT
+      - Fri, 01 Nov 2019 16:32:13 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/57e51f37-db4d-4b49-9e9b-435a8f7f4253?monitor=true&api-version=2018-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/a6584adb-56d0-4c48-beac-29ba022c7900?monitor=true&api-version=2018-07-01
       pragma:
       - no-cache
       server:
@@ -293,7 +293,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 202
       message: Accepted
@@ -314,10 +314,10 @@ interactions:
       - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
         azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/57e51f37-db4d-4b49-9e9b-435a8f7f4253?monitor=true&api-version=2018-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/northeurope/asyncoperations/a6584adb-56d0-4c48-beac-29ba022c7900?monitor=true&api-version=2018-07-01
   response:
     body:
-      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"FileStorage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts","location":"northeurope","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-01T06:39:23.6493195Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-01T06:39:23.6493195Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-11-01T06:39:23.5868191Z","primaryEndpoints":{"file":"https://cli000003.file.core.windows.net/"},"primaryLocation":"northeurope","statusOfPrimary":"available"}}'
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"FileStorage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts","location":"northeurope","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-01T16:32:12.8130180Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-01T16:32:12.8130180Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-11-01T16:32:12.7504902Z","primaryEndpoints":{"file":"https://cli000003.file.core.windows.net/"},"primaryLocation":"northeurope","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
@@ -326,7 +326,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 01 Nov 2019 06:39:42 GMT
+      - Fri, 01 Nov 2019 16:32:31 GMT
       expires:
       - '-1'
       pragma:
@@ -380,7 +380,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 01 Nov 2019 06:39:44 GMT
+      - Fri, 01 Nov 2019 16:32:33 GMT
       expires:
       - '-1'
       pragma:

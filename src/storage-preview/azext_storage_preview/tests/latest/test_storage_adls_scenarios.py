@@ -5,14 +5,14 @@
 
 import os
 import unittest
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, api_version_constraint)
 
 from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
 from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
+class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
