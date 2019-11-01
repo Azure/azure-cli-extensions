@@ -13,10 +13,11 @@ from ...profiles import CUSTOM_MGMT_STORAGE
 
 
 @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
-class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
+class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer(location='westcentralus')
-    def test_storage_blob_directory(self, resource_group, test_dir):
+    def test_storage_adls_blob(self, resource_group, test_dir):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
         self.kwargs.update({
             'sc': storage_account,
