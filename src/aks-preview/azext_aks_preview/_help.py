@@ -368,12 +368,9 @@ helps['aks nodepool add'] = """
           type: int
           short-summary: The maximum number of pods deployable to a node.
           long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
-        - name: --node-zones
+        - name: --node-zones --zones -z
           type: string array
           short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
-        - name: --zones -z
-          type: string array
-          short-summary: Availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
