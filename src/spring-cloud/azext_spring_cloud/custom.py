@@ -144,7 +144,7 @@ def app_create(cmd, client, resource_group, service, name,
     active_deployment = client.deployments.get(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
     app = client.apps.get(resource_group, service, name)
-    app.active_deployment = active_deployment
+    app.properties.active_deployment = active_deployment
     return app
 
 
@@ -193,7 +193,7 @@ def app_update(cmd, client, resource_group, service, name,
         sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     deployment = client.deployments.get(resource_group, service, name, deployment)
-    app_updated.active_deployment = deployment
+    app_updated.properties.active_deployment = deployment
     return app_updated
 
 
@@ -259,7 +259,7 @@ def app_list(cmd, client,
     for app in apps:
         if app.properties.active_deployment_name:
             deployment = next(
-                (x for x in deployments if x.name == app.properties.active_deployment_name))
+                (x for x in deployments if x.properties.app_name == app.name))
             app.properties.active_deployment = deployment
 
     return apps
