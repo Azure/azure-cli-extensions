@@ -12,11 +12,10 @@ from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
 from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
 class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
-    @ResourceGroupPreparer(location='westcentralus')
+    @ResourceGroupPreparer()
     def test_storage_adls_blob(self, resource_group, test_dir):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
         self.kwargs.update({

@@ -18,6 +18,14 @@ helps['storage account create'] = """
           text: az storage account create -n MyStorageAccount -g MyResourceGroup -l westus --sku Standard_LRS
 """
 
+helps['storage account keys list'] = """
+type: command
+short-summary: List the access keys or Kerberos keys (if active directory enabled) for a storage account.
+examples:
+  - name: List the access keys for a storage account.
+    text: az storage account keys list -g MyResourceGroup -n MyStorageAccount
+"""
+
 helps['storage account update'] = """
     type: command
     short-summary: Update the properties of a storage account.
