@@ -278,7 +278,7 @@ helps['aks update'] = """
         - name: --detach-acr
           type: string
           short-summary: Disable the 'acrpull' role assignment to the ACR specified by name or resource ID.
-       - name: --api-server-authorized-ip-ranges
+        - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
     examples:
