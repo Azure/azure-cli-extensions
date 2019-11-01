@@ -142,7 +142,7 @@ def get_timeseries(cmd, client,
                    timeseries_type,
                    country=None,
                    endpoint=None):
-    return client.get_latency_scorecard(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, start_date_time_utc=start_date_time_utc, end_date_time_utc=end_date_time_utc, timeseries_type=timeseries_type, country=country, endpoint=endpoint)
+    return client.get_timeseries(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, start_date_time_utc=start_date_time_utc, end_date_time_utc=end_date_time_utc, timeseries_type=timeseries_type, country=country, endpoint=endpoint)
 
 
 def get_latency_scorecards(cmd, client,
@@ -152,4 +152,4 @@ def get_latency_scorecards(cmd, client,
                            aggregation_interval,
                            country=None,
                            end_date_time_utc=None):
-    return client.get_latency_scorecard(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, country=country, end_date_time_utc=end_date_time_utc)
+    return client.get_latency_scorecards(resource_group_name=resource_group, profile_name=profile_name, experiment_name=test_name, aggregation_interval=aggregation_interval, country=country, end_date_time_utc=end_date_time_utc)
