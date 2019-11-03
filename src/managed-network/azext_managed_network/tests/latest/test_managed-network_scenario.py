@@ -24,24 +24,24 @@ class ManagedNetworkScenarioTest(ScenarioTest):
 
         self.cmd('az managed-network create '
                  '--resource-group {rg} '
-                 '--name "myManagedNetwork"',
+                 '--name "MyManagedNetwork"',
                  checks=[])
 
         self.cmd('az managed-network group create '
                  '--resource-group {rg} '
-                 '--managed-network-name "myManagedNetwork" '
-                 '--name "myManagedNetworkGroup1"',
+                 '--managed-network-name "MyManagedNetwork" '
+                 '--name "MyManagedNetworkGroup"',
                   checks=[])
 
         self.cmd('az managed-network scope-assignment create '
-                 '--scope "subscriptions/subscriptionC" '
-                 '--name "subscriptionCAssignment"',
+                 '--scope "subscriptions/{sub}" '
+                 '--name "MyScopeAssignment"',
                  checks=[])
 
         self.cmd('az managed-network peering-policy create '
                  '--resource-group {rg} '
-                 '--managed-network-name "myManagedNetwork" '
-                 '--name "myHubAndSpoke"',
+                 '--managed-network-name "MyManagedNetwork" '
+                 '--name "MyHubAndSpoke"',
                  checks=[])
 
         # EXAMPLE NOT FOUND: ManagedNetworksGet
@@ -55,22 +55,22 @@ class ManagedNetworkScenarioTest(ScenarioTest):
         # EXAMPLE NOT FOUND: ManagedNetworkPeeringPoliciesListByManagedNetwork
         self.cmd('az managed-network peering-policy delete '
                  '--resource-group {rg} '
-                 '--managed-network-name "myManagedNetwork" '
+                 '--managed-network-name "MyManagedNetwork" '
                  '--name "myHubAndSpoke"',
                  checks=[])
 
         self.cmd('az managed-network scope-assignment delete '
-                 '--scope "subscriptions/subscriptionC" '
-                 '--name "subscriptionCAssignment"',
+                 '--scope "subscriptions/{sub}" '
+                 '--name "MyScopeAssignment"',
                  checks=[])
 
         self.cmd('az managed-network group delete '
                  '--resource-group {rg} '
-                 '--managed-network-name "myManagedNetwork" '
-                 '--name "myManagedNetworkGroup1"',
+                 '--managed-network-name "MyManagedNetwork" '
+                 '--name "MyManagedNetworkGroup"',
                  checks=[])
 
         self.cmd('az managed-network delete '
                  '--resource-group {rg} '
-                 '--name "myManagedNetwork"',
+                 '--name "MyManagedNetwork"',
                  checks=[])
