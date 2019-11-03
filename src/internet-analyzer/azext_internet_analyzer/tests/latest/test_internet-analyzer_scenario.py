@@ -61,7 +61,7 @@ class FrontDoorScenarioTest(ScenarioTest):
                  '--profile-name "MyProfile"',
                  checks=[])
 
-        self.cmd('az internet-analyzer precongfigured-endpoint list '
+        self.cmd('az internet-analyzer preconfigured-endpoint list '
                  '--resource-group {rg} '
                  '--profile-name "MyProfile"',
                  checks=[])
