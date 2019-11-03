@@ -23,8 +23,8 @@ class FrontDoorScenarioTest(ScenarioTest):
         })
 
         self.cmd('az internet-analyzer profile create '
-                 '--name "MyResourceGroup" '
-                 '--profile-name "MyProfile" '
+                 '--resource-group {rg} '
+                 '--name "MyProfile" '
                  '--enabled-state "Enabled" '
                  '--location "WestUs"',
                  checks=[])
