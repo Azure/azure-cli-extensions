@@ -33,7 +33,7 @@ class FrontDoorScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--profile-name "MyProfile" '
                  '--name "MyExperiment"'
-                 '--description "this is my first experiment!" '
+                 '--description \'this is my first experiment!\' '
                  '--endpoint-a-name "endpoint A" '
                  '--endpoint-a-endpoint "endpointA.net" '
                  '--endpoint-b-name "endpoint B" '
