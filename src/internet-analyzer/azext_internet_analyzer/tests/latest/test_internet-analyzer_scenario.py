@@ -69,14 +69,14 @@ class FrontDoorScenarioTest(ScenarioTest):
         self.cmd('az internet-analyzer show-scorecard '
                  '--resource-group {rg} '
                  '--profile-name "MyProfile" '
-                 '--name "MyExperiment" '
+                 '--test-name "MyExperiment" '
                  '--aggregation-interval "Daily"',
                  checks=[])
 
         self.cmd('az internet-analyzer show-timeseries '
                  '--resource-group {rg} '
                  '--profile-name "MyProfile" '
-                 '--name "MyExperiment" '
+                 '--test-name "MyExperiment" '
                  '--aggregation-interval "Hourly" '
                  '--start-date-time-utc "2019-07-21T17:32:28Z" '
                  '--end-date-time-utc "2019-09-21T17:32:28Z" '
