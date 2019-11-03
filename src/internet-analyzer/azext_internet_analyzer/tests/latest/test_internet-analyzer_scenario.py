@@ -66,9 +66,23 @@ class FrontDoorScenarioTest(ScenarioTest):
                  '--profile-name "MyProfile"',
                  checks=[])
 
-        # EXAMPLE NOT FOUND: Gets a Latency Scorecard for a given Experiment
+        self.cmd('az internet-analyzer show-scorecard '
+                 '--resource-group {rg} '
+                 '--profile-name "MyProfile" '
+                 '--name "MyExperiment"'
+                 '--aggregation-interval Daily',
+                 checks=[])
 
-        # EXAMPLE NOT FOUND: Gets a Timeseries for a given Experiment
+        self.cmd('az internet-analyzer show-timeseries '
+                 '--resource-group {rg} '
+                 '--profile-name "MyProfile" '
+                 '--name "MyExperiment"'
+                 '--aggregation-interval "Hourly" '
+                 '--start-date-time-utc "2019-07-21T17:32:28Z"'
+                 '--end-date-time-utc "2019-09-21T17:32:28Z"'
+                 '--timeseries-type "MeasurementCounts"'
+                 '--endpoint "endpoint1.net"'
+                 checks=[])
 
         self.cmd('az internet-analyzer test delete '
                  '--resource-group {rg} '
