@@ -70,8 +70,8 @@ class FrontDoorScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--profile-name "MyProfile" '
                  '--test-name "MyExperiment" '
-                 '--aggregation-interval "Daily"',
-                 '--end-date-time-utc "2019-09-21T17:32:28Z" '
+                 '--aggregation-interval "Daily"'
+                 '--end-date-time-utc "2019-09-21T17:32:28Z" ',
                  checks=[])
 
         self.cmd('az internet-analyzer show-timeseries '
