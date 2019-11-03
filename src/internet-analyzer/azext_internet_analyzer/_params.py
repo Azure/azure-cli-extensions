@@ -22,7 +22,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
-        c.argument('etag', id_part=None, help='Gets a unique read-only string that changes whenever the resource is updated.')
 
     with self.argument_context('internet-analyzer profile update') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -30,7 +29,6 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('enabled_state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The state of the Experiment')
-        c.argument('etag', id_part=None, help='Gets a unique read-only string that changes whenever the resource is updated.')
 
     with self.argument_context('internet-analyzer profile delete') as c:
         c.argument('resource_group', resource_group_name_type)

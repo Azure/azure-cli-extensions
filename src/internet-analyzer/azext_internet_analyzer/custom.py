@@ -14,13 +14,11 @@ def create_internet_analyzer_profile(cmd, client,
                                      name,
                                      location=None,
                                      tags=None,
-                                     enabled_state=None,
-                                     etag=None):
+                                     enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['enabled_state'] = enabled_state  # str
-    body['etag'] = etag  # str
     return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
@@ -35,13 +33,14 @@ def update_internet_analyzer_profile(cmd, client,
                                      name,
                                      location=None,
                                      tags=None,
-                                     enabled_state=None,
-                                     etag=None):
+                                     enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=name).as_dict()
-    body.location = location  # str
-    body.tags = tags  # dictionary
-    body.enabled_state = enabled_state  # str
-    body.etag = etag  # str
+    if location is not None:
+        body['location'] = location  # str
+    if tags is not None:
+        body['tags'] = tags  # dictionary
+    if enabled_state is not None:
+        body['enabled_state'] = enabled_state  # str
     return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
@@ -108,14 +107,22 @@ def update_internet_analyzer_test(cmd, client,
                                   endpoint_b_endpoint=None,
                                   enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
-    body.location = location  # str
-    body.tags = tags  # dictionary
-    body.description = description  # str
-    body.endpoint_a.name = endpoint_a_name  # str
-    body.endpoint_a.endpoint = endpoint_a_endpoint  # str
-    body.endpoint_b.name = endpoint_b_name  # str
-    body.endpoint_b.endpoint = endpoint_b_endpoint  # str
-    body.enabled_state = enabled_state  # str
+    if location is not None:
+        body['location'] = location  # str
+    if tags is not None:
+        body['tags'] = tags  # dictionary
+    if description is not None:
+        body['description'] = description  # str
+    if endpoint_a_name is not None:
+        body.setdefault('endpoint_a', {})['name'] = endpoint_a_name  # str
+    if endpoint_a_endpoint is not None: 
+        body.setdefault('endpoint_a', {})['endpoint'] = endpoint_a_endpoint  # str
+    if endpoint_b_name is not None:
+        body.setdefault('endpoint_b', {})['name'] = endpoint_b_name  # str
+    if endpoint_b_endpoint is not None: 
+        body.setdefault('endpoint_b', {})['endpoint'] = endpoint_b_endpoint  # str
+    if enabled_state is not None: 
+        body['enabled_state'] = enabled_state  # str
     return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
