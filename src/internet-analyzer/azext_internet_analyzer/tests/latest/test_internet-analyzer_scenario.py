@@ -41,27 +41,42 @@ class FrontDoorScenarioTest(ScenarioTest):
                  '--enabled-state "Enabled"',
                  checks=[])
 
-        # EXAMPLE NOT FOUND: List NetworkExperiment Profiles in a Resource Group
+        self.cmd('az internet-analyzer profile list '
+                 '--resource-group {rg}',
+                 checks=[])
 
-        # EXAMPLE NOT FOUND: Gets an NetworkExperiment Profile by Profile Id
+        self.cmd('az internet-analyzer profile show '
+                 '--resource-group {rg} '
+                 '--profile-name "MyProfile"',
+                 checks=[])
 
-        # EXAMPLE NOT FOUND: Gets an Experiment by ExperimentName
+        self.cmd('az internet-analyzer test list '
+                 '--resource-group {rg} '
+                 '--profile-name "MyProfile" '
+                 '--name "MyExperiment"'
+                 checks=[])
 
-        # EXAMPLE NOT FOUND: Gets a list of Preconfigured Endpoints
+        self.cmd('az internet-analyzer test list '
+                 '--resource-group {rg} '
+                 '--profile-name "MyProfile"',
+                 checks=[])
 
-        # EXAMPLE NOT FOUND: Gets a list of Experiments
+        self.cmd('az internet-analyzer precongfigured-endpoint list '
+                 '--resource-group {rg} '
+                 '--profile-name "MyProfile"',
+                 checks=[])
 
         # EXAMPLE NOT FOUND: Gets a Latency Scorecard for a given Experiment
 
         # EXAMPLE NOT FOUND: Gets a Timeseries for a given Experiment
 
-        self.cmd('az internet-analyzer profile delete '
-                 '--name "MyResourceGroup" '
-                 '--profile-name "MyProfile"',
-                 checks=[])
-
         self.cmd('az internet-analyzer test delete '
                  '--resource-group {rg} '
                  '--profile-name "MyProfile" '
                  '--name "MyExperiment"',
+                 checks=[])
+
+        self.cmd('az internet-analyzer profile delete '
+                 '--resource-group {rg} '
+                 '--name "MyProfile"',
                  checks=[])
