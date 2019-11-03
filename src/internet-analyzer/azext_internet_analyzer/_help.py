@@ -25,8 +25,8 @@ helps['internet-analyzer profile create'] = """
     examples:
       - name: Creates an Internet Analyzer Profile in a Resource Group
         text: |-
-               az internet-analyzer profile create --resource-group "rg1" --name "Profile1" --location \\
-               "WestUs" --enabled-state "Enabled"
+               az internet-analyzer profile create --resource-group "MyResourceGroup" --name "MyProfile" \\
+               --location "WestUs" --enabled-state "Enabled"
 """
 
 helps['internet-analyzer profile update'] = """
@@ -35,7 +35,7 @@ helps['internet-analyzer profile update'] = """
     examples:
       - name: Updates an Internet Analyzer Profile in a Resource Group
         text: |-
-               az internet-analyzer profile update --resource-group "rg1" --name "Profile1" \\
+               az internet-analyzer profile update --resource-group "MyResourceGroup" --name "MyProfile" \\
                --enabled-state "Enabled"
 """
 
@@ -45,17 +45,25 @@ helps['internet-analyzer profile delete'] = """
     examples:
       - name: Deletes an Internet Analyzer Profile in a Resource Group
         text: |-
-               az internet-analyzer profile delete --resource-group "rg1" --name "Profile1"
+               az internet-analyzer profile delete --resource-group "MyResourceGroup" --name "MyProfile"
 """
 
 helps['internet-analyzer profile list'] = """
     type: command
     short-summary: list internet analyzer profiles.
+    examples:
+      - name: List Internet Analyzer Profiles in a Resource Group
+        text: |-
+               az internet-analyzer profile list --resource-group "MyResourceGroup"
 """
 
 helps['internet-analyzer profile show'] = """
     type: command
     short-summary: show internet analyzer profile.
+    examples:
+      - name: Gets an Internet Analyzer Profile by Profile Id
+        text: |-
+               az internet-analyzer profile show --resource-group "MyResourceGroup" --name "MyProfile"
 """
 
 helps['internet-analyzer preconfigured-endpoint'] = """
@@ -66,6 +74,11 @@ helps['internet-analyzer preconfigured-endpoint'] = """
 helps['internet-analyzer preconfigured-endpoint list'] = """
     type: command
     short-summary: list preconfigured endpoints.
+    examples:
+      - name: Gets a list of Preconfigured Endpoints
+        text: |-
+               az internet-analyzer preconfigured-endpoint list --resource-group "MyResourceGroup" \\
+               --profile-name "MyProfile"
 """
 
 helps['internet-analyzer test'] = """
@@ -79,10 +92,10 @@ helps['internet-analyzer test create'] = """
     examples:
       - name: Creates a test
         text: |-
-               az internet-analyzer test create --resource-group "rg1" --profile-name "Profile1" --name \\
-               "Experiment1" --description "this is my first experiment!" --endpoint-a-name "endpoint A" \\
-               --endpoint-a-endpoint "endpointA.net" --endpoint-b-name "endpoint B" \\
-               --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"
+               az internet-analyzer test create --resource-group "MyResourceGroup" --profile-name \\
+               "MyProfile" --name "MyExperiment" --description "this is my first experiment!" \\
+               --endpoint-a-name "endpoint A" --endpoint-a-endpoint "endpointA.net" --endpoint-b-name \\
+               "endpoint B" --endpoint-b-endpoint "endpointB.net" --enabled-state "Enabled"
 """
 
 helps['internet-analyzer test update'] = """
@@ -91,8 +104,8 @@ helps['internet-analyzer test update'] = """
     examples:
       - name: Updates a test
         text: |-
-               az internet-analyzer test update --resource-group "rg1" --profile-name "Profile1" --name \\
-               "Experiment1" --description "string" --enabled-state "Enabled"
+               az internet-analyzer test update --resource-group "MyResourceGroup" --profile-name \\
+               "MyProfile" --name "MyExperiment" --description "string" --enabled-state "Enabled"
 """
 
 helps['internet-analyzer test delete'] = """
@@ -101,18 +114,28 @@ helps['internet-analyzer test delete'] = """
     examples:
       - name: Deletes a test
         text: |-
-               az internet-analyzer test delete --resource-group "rg1" --profile-name "Profile1" --name \\
-               "Experiment1"
+               az internet-analyzer test delete --resource-group "MyResourceGroup" --profile-name \\
+               "MyProfile" --name "MyExperiment"
 """
 
 helps['internet-analyzer test list'] = """
     type: command
     short-summary: list tests.
+    examples:
+      - name: Gets a list of tests
+        text: |-
+               az internet-analyzer test list --resource-group "MyResourceGroup" --profile-name \\
+               "MyProfile"
 """
 
 helps['internet-analyzer test show'] = """
     type: command
     short-summary: show test
+    examples:
+      - name: Gets a test by name
+        text: |-
+               az internet-analyzer test show --resource-group "MyResourceGroup" --profile-name \\
+               "MyProfile" --name "MyExperiment"
 """
 
 helps['internet-analyzer show-scorecard'] = """
