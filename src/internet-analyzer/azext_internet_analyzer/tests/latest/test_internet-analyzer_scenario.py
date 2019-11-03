@@ -53,7 +53,7 @@ class FrontDoorScenarioTest(ScenarioTest):
         self.cmd('az internet-analyzer test list '
                  '--resource-group {rg} '
                  '--profile-name "MyProfile" '
-                 '--name "MyExperiment"'
+                 '--name "MyExperiment"',
                  checks=[])
 
         self.cmd('az internet-analyzer test list '
