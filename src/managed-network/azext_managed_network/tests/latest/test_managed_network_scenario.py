@@ -24,7 +24,8 @@ class ManagedNetworkScenarioTest(ScenarioTest):
 
         self.cmd('az managed-network create '
                  '--resource-group {rg} '
-                 '--name "MyManagedNetwork"',
+                 '--name "MyManagedNetwork" '
+                 '--location westus',
                  checks=[])
 
         self.cmd('az managed-network group create '
