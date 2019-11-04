@@ -22,8 +22,8 @@ def transform_query_output(result):
         for row in rows:
             item = OrderedDict()
             item['TableName'] = name
-            for index in range(len(row)):
-                item[column_names[index]] = str(row[index])
+            for index, value in enumerate(row):
+                item[column_names[index]] = str(value)
             table_output.append(item)
         return table_output
 
