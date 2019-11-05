@@ -19,7 +19,7 @@ class HealthcareApisScenarioTest(ScenarioTest):
     def test_healthcareapis(self, resource_group):
 
         self.kwargs.update({
-            'name': 'hcservicernd645'
+            'name': 'hcservicernd644'
         })
 
         self.cmd('az healthcareapis create '
