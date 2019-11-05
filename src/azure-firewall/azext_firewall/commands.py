@@ -7,10 +7,13 @@
 from azure.cli.core.commands import CliCommandType
 
 from .custom import build_af_rule_list, build_af_rule_show, build_af_rule_delete
+from .profiles import CUSTOM_FIREWALL_POLICY
 
-from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags
+from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags, cf_firewall_policies, cf_firewall_policy_rule_groups
 from ._util import (
     list_network_resource_property, get_network_resource_property_entry, delete_network_resource_property_entry)
+
+from ._validators import validate_af_network_rule, validate_af_nat_rule, validate_af_application_rule
 
 
 # pylint: disable=too-many-locals, too-many-statements
@@ -22,15 +25,29 @@ def load_command_table(self, _):
     )
 
     network_firewall_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.operations#AzureFirewallsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_09_01.operations#AzureFirewallsOperations.{}',
         client_factory=cf_firewalls,
         min_api='2018-08-01'
     )
 
     network_firewall_fqdn_tags_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.operations#AzureFirewallFqdnTagsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_09_01.operations#AzureFirewallFqdnTagsOperations.{}',
         client_factory=cf_firewall_fqdn_tags,
         min_api='2018-08-01'
+    )
+
+    network_firewall_policies_sdk = CliCommandType(
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_07_01.operations#FirewallPoliciesOperations.{}',
+        client_factory=cf_firewall_policies,
+        resource_type=CUSTOM_FIREWALL_POLICY,
+        min_api='2019-07-01'
+    )
+
+    network_firewall_policy_rule_groups = CliCommandType(
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_07_01.operations#FirewallPolicyRuleGroupsOperations.{}',
+        client_factory=cf_firewall_policy_rule_groups,
+        resource_type=CUSTOM_FIREWALL_POLICY,
+        min_api='2019-07-01'
     )
 
     # region AzureFirewalls
@@ -48,13 +65,14 @@ def load_command_table(self, _):
         g.command('delete', delete_network_resource_property_entry('azure_firewalls', 'ip_configurations'))
 
     af_rules = {
-        'network_rule': 'network-rule',
-        'nat_rule': 'nat-rule',
-        'application_rule': 'application-rule'
+        'network_rule': {'scope': 'network-rule', 'validator': validate_af_network_rule},
+        'nat_rule': {'scope': 'nat-rule', 'validator': validate_af_nat_rule},
+        'application_rule': {'scope': 'application-rule', 'validator': validate_af_application_rule}
     }
-    for rule_type, scope in af_rules.items():
-        with self.command_group('network firewall {}'.format(scope), network_firewall_sdk) as g:
-            g.custom_command('create', 'create_af_{}'.format(rule_type))
+
+    for rule_type, af_rule in af_rules.items():
+        with self.command_group('network firewall {}'.format(af_rule['scope']), network_firewall_sdk) as g:
+            g.custom_command('create', 'create_af_{}'.format(rule_type), validator=af_rule['validator'])
             g.custom_command('list', build_af_rule_list(rule_type, '{}_collections'.format(rule_type)))
             g.custom_command('show', build_af_rule_show(rule_type, '{}_collections'.format(rule_type)))
             g.custom_command('delete', build_af_rule_delete(rule_type, '{}_collections'.format(rule_type)))
@@ -72,4 +90,30 @@ def load_command_table(self, _):
 
     with self.command_group('network firewall', network_firewall_fqdn_tags_sdk) as g:
         g.command('list-fqdn-tags', 'list_all')
+    # endregion
+
+    # region AzureFirewallPolicies
+    with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL_POLICY, is_preview=True, min_api='2019-07-01') as g:
+        g.custom_command('create', 'create_azure_firewall_policies')
+        g.command('delete', 'delete')
+        g.custom_command('list', 'list_azure_firewall_policies')
+        g.show_command('show')
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies')
+
+    with self.command_group('network firewall policy rule-collection-group', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL_POLICY, is_preview=True) as g:
+        g.custom_command('create', 'create_azure_firewall_policy_rule_group')
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_rule_group')
+        g.command('delete', 'delete')
+        g.show_command('show')
+        g.command('list', 'list')
+
+    with self.command_group('network firewall policy rule-collection-group collection', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL_POLICY, is_preview=True) as g:
+        g.custom_command('add-nat-collection', 'add_azure_firewall_policy_nat_rule')
+        g.custom_command('add-filter-collection', 'add_azure_firewall_policy_filter_rule')
+        g.custom_command('remove', 'remove_azure_firewall_policy_rule')
+        g.custom_command('list', 'list_azure_firewall_policy_rule')
+
+    with self.command_group('network firewall policy rule-collection-group collection rule', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL_POLICY, is_preview=True) as g:
+        g.custom_command('add', 'add_azure_firewall_policy_filter_rule_condition')
+        g.custom_command('remove', 'remove_azure_firewall_policy_filter_rule_condition')
     # endregion

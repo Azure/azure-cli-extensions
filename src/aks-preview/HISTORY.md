@@ -2,6 +2,18 @@
 
 Release History
 ===============
+0.4.20
++++++
+* Add commands '--zones' and '-z' for availability zones in aks
+
+0.4.19
++++++
+* Refactor and remove a custom way of getting subscriptions
+
+0.4.18
++++++
+* Update to use 2019-10-01 api-version
+
 0.4.17
 +++++
 * Add support for public IP per node during node pool creation
