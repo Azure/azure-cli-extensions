@@ -20,7 +20,7 @@ class HealthcareApisScenarioTest(ScenarioTest):
 
         self.cmd('az healthcareapis create '
                  '--resource-group {rg} '
-                 '--name hcservicernd650 '
+                 '--name hcservicernd652 '
                  '--kind "fhir-R4" '
                  '--location "westus2" '
                  '--access-policies-object-id "c487e7d1-3210-41a3-8ccc-e9372b78da47,5b307da8-43d4-492b-8b66-b0294ade872f" '
@@ -37,12 +37,12 @@ class HealthcareApisScenarioTest(ScenarioTest):
 
         self.cmd('az healthcareapis delete '
                  '--resource-group {rg} '
-                 '--name hcservicernd650',
+                 '--name hcservicernd652',
                  checks=[])
 
         self.cmd('az healthcareapis create '
                  '--resource-group {rg} '
-                 '--name hcservicernd651 '
+                 '--name hcservicernd653 '
                  '--kind "fhir-R4" '
                  '--location "westus2" '
                  '--access-policies-object-id "c487e7d1-3210-41a3-8ccc-e9372b78da47"',
@@ -50,7 +50,7 @@ class HealthcareApisScenarioTest(ScenarioTest):
 
         self.cmd('az healthcareapis show '
                  '--resource-group {rg} '
-                 '--name hcservicernd651',
+                 '--name hcservicernd653',
                  checks=[])
 
         self.cmd('az healthcareapis list',
@@ -62,5 +62,5 @@ class HealthcareApisScenarioTest(ScenarioTest):
 
         self.cmd('az healthcareapis delete '
                  '--resource-group {rg} '
-                 '--name {name}',
+                 '--name hcservicernd653',
                  checks=[])
