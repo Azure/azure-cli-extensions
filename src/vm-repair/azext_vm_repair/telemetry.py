@@ -22,7 +22,7 @@ def _track_command_telemetry(command_name, parameters, status, message, error_me
         'parameters': json.dumps(parameters),
         'command_status': status,
         'message': message,
-        'error_messsage': error_message,
+        'error_message': error_message,
         'subscription_id': subscription_id,
         'result_json': json.dumps(result_json)
     }
@@ -37,7 +37,7 @@ def _track_run_command_telemetry(command_name, parameters, status, message, erro
         'parameters': json.dumps(parameters),
         'command_status': status,
         'message': message,
-        'error_messsage': error_message,
+        'error_message': error_message,
         'subscription_id': subscription_id,
         'result_json': json.dumps(result_json),
         'script_run_id': script_run_id,
