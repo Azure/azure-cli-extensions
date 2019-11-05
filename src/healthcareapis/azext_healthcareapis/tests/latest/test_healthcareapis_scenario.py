@@ -18,13 +18,9 @@ class HealthcareApisScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_healthcareapis')
     def test_healthcareapis(self, resource_group):
 
-        self.kwargs.update({
-            'name': 'hcservicernd649'
-        })
-
         self.cmd('az healthcareapis create '
                  '--resource-group {rg} '
-                 '--name {name} '
+                 '--name hcservicernd650 '
                  '--kind "fhir-R4" '
                  '--location "westus2" '
                  '--access-policies-object-id "c487e7d1-3210-41a3-8ccc-e9372b78da47,5b307da8-43d4-492b-8b66-b0294ade872f" '
@@ -41,18 +37,22 @@ class HealthcareApisScenarioTest(ScenarioTest):
 
         self.cmd('az healthcareapis delete '
                  '--resource-group {rg} '
-                 '--name {name}',
+                 '--name hcservicernd650',
                  checks=[])
 
         self.cmd('az healthcareapis create '
                  '--resource-group {rg} '
-                 '--name {name} '
+                 '--name hcservicernd651 '
                  '--kind "fhir-R4" '
                  '--location "westus2" '
                  '--access-policies-object-id "c487e7d1-3210-41a3-8ccc-e9372b78da47"',
                  checks=[])
 
-        # EXAMPLE NOT FOUND: Get the metadata of a service instance.
+        self.cmd('az healthcareapis show '
+                 '--resource-group {rg} '
+                 '--name hcservicernd651',
+                 checks=[])
+
         self.cmd('az healthcareapis list',
                  checks=[])
 
