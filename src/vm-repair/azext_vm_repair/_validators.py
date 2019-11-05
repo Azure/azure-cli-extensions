@@ -5,7 +5,7 @@
 
 from datetime import datetime
 from json import loads
-from re import match, search
+from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
 
@@ -63,12 +63,16 @@ def validate_create(cmd, namespace):
         logger.warning('The source VM\'s OS disk is encrypted.')
 
     # Validate Auth Params
-    if is_linux and namespace.repair_username:
-        logger.warning("Setting admin username property is not allowed for Linux VMs. Ignoring the given repair-username parameter.")
-    if not is_linux and not namespace.repair_username:
+    # Prompt vm username
+    if not namespace.repair_username:
         _prompt_repair_username(namespace)
+    # Validate vm username
+    validate_vm_username(namespace.repair_username, is_linux)
+    # Prompt vm password
     if not namespace.repair_password:
         _prompt_repair_password(namespace)
+    # Validate vm password
+    validate_vm_password(namespace.repair_password, is_linux)
 
 
 def validate_restore(cmd, namespace):
@@ -272,10 +276,54 @@ def fetch_repair_vm(namespace):
         message = 'More than one repair VM found:\n'
         for vm in repair_list:
             message += vm['id'] + '\n'
-        message += '\nPlease specify the --repair-vm-id to restore the disk-swap with.'
+        message += '\nPlease specify the repair VM id using the parameter --repair-vm-id'
         raise CLIError(message)
 
     # One repair VM found
     namespace.repair_vm_id = repair_list[0]['id']
 
-    logger.info('Performing command on repair VM: %s\n', namespace.repair_vm_id)
+    logger.info('Found repair VM: %s\n', namespace.repair_vm_id)
+
+
+def validate_vm_password(password, is_linux):
+    """Sourced from src/azure-cli/azure/cli/command_modules/vm/_validators.py  _validate_admin_password()"""
+    max_length = 72 if is_linux else 123
+    min_length = 12
+    if len(password) not in range(min_length, max_length + 1):
+        raise CLIError('Password length must be between {} and {}'.format(min_length, max_length))
+
+    contains_lower = findall('[a-z]+', password)
+    contains_upper = findall('[A-Z]+', password)
+    contains_digit = findall('[0-9]+', password)
+    contains_special_char = findall(r'[ `~!@#$%^&*()=+_\[\]{}\|;:.\/\'\",<>?]+', password)
+    count = len([x for x in [contains_lower, contains_upper, contains_digit, contains_special_char] if x])
+
+    if count < 3:
+        raise CLIError('Password must have the 3 of the following: 1 lower case character, 1 upper case character, 1 number and 1 special character')
+
+
+def validate_vm_username(username, is_linux):
+    """Sourced from src/azure-cli/azure/cli/command_modules/vm/_validators.py _validate_admin_username()"""
+    pattern = (r'[\\\/"\[\]:|<>+=;,?*@#()!A-Z]+' if is_linux else r'[\\\/"\[\]:|<>+=;,?*@]+')
+    linux_err = r'VM username cannot contain upper case character A-Z, special characters \/"[]:|<>+=;,?*@#()! or start with $ or -'
+    win_err = r'VM username cannot contain special characters \/"[]:|<>+=;,?*@# or ends with .'
+
+    if findall(pattern, username):
+        raise CLIError(linux_err if is_linux else win_err)
+
+    if is_linux and findall(r'^[$-]+', username):
+        raise CLIError(linux_err)
+
+    if not is_linux and username.endswith('.'):
+        raise CLIError(win_err)
+
+    # Sourced from vm module also
+    disallowed_user_names = [
+        "administrator", "admin", "user", "user1", "test", "user2",
+        "test1", "user3", "admin1", "1", "123", "a", "actuser", "adm",
+        "admin2", "aspnet", "backup", "console", "guest",
+        "owner", "root", "server", "sql", "support", "support_388945a0",
+        "sys", "test2", "test3", "user4", "user5"]
+
+    if username.lower() in disallowed_user_names:
+        raise CLIError("This username '{}' meets the general requirements, but is specifically disallowed. Please try a different value.".format(username))

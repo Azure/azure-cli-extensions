@@ -5,18 +5,18 @@
 
 import os
 import unittest
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, api_version_constraint)
 
 from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
 from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
-class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
+class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
-    @ResourceGroupPreparer(location='westcentralus')
-    def test_storage_blob_directory(self, resource_group, test_dir):
+    @ResourceGroupPreparer()
+    def test_storage_adls_blob(self, resource_group, test_dir):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
         self.kwargs.update({
             'sc': storage_account,
@@ -86,6 +86,25 @@ class StorageBlobDirectoryTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 22))
+
+        blob = 'readme'
+        # Move a blob in a container
+        self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
+                         container, blob, '/'.join([des_directory, 'readme']))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 21))
+        self.storage_cmd('storage blob exists -c {} -n {} ', account_info, container, blob) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+
+        # Storage blob access control
+        acl = "user::rwx,group::r--,other::---"
+        self.storage_cmd('storage blob access set -c {} -b {} -a "{}"', account_info, container, blob, acl)
+        self.storage_cmd('storage blob access show -c {} -b {}', account_info, container, blob) \
+            .assert_with_checks(JMESPathCheck('acl', acl))
+        self.storage_cmd('storage blob access update -c {} -b {} --permissions "rwxrwxrwx"', account_info,
+                         container, blob, acl)
+        self.storage_cmd('storage blob access show -c {} -b {}', account_info, container, blob)\
+            .assert_with_checks(JMESPathCheck('permissions', "rwxrwxrwx"))
 
         # Storage blob directory access control
         acl = "user::rwx,group::r--,other::---"

@@ -24,12 +24,16 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
 
+    t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
                                      completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
+    blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
+                                     completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
+                                                                                parent='container_name'))
     container_name_type = CLIArgumentType(options_list=['--container-name', '-c'], help='The container name.',
                                           completer=get_container_name_completions)
     directory_path_type = CLIArgumentType(options_list=['--directory-path', '-d'], help='The directory path name.',
@@ -202,7 +206,37 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage azcopy run-command') as c:
         c.positional('command_args', help='Command to run using azcopy. Please start commands with "azcopy ".')
 
-    # New commands parameters for ADLS Gen2
+    with self.argument_context('storage blob access') as c:
+        c.argument('path', blob_name_type)
+
+    with self.argument_context('storage blob access set') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'], required=True,
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.ignore('owner', 'group', 'permissions')
+
+    with self.argument_context('storage blob access update') as c:
+        c.argument('acl', options_list=['--acl-spec', '-a'],
+                   help='The ACL specification to set on the path in the format '
+                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
+                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('owner', help='The owning user for the directory.')
+        c.argument('group', help='The owning group for the directory.')
+        c.argument('permissions', help='The POSIX access permissions for the file owner,'
+                   'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
+                   'octal notation (e.g. 0766) are supported.')
+
+    with self.argument_context('storage blob move') as c:
+        c.argument('source_path', options_list=['--source-blob', '-s'],
+                   help="The source blob name. It should be an absolute path under the container. e.g."
+                        "'topdir1/dirsubfoo'.")
+        c.argument('new_path', options_list=['--destination-blob', '-d'],
+                   help="The source blob name. It should be an absolute path under the container. e.g."
+                        "'topdir1/dirbar'.")
+        c.argument('container_name', container_name_type)
+        c.ignore('marker')
+
     with self.argument_context('storage blob directory') as c:
         c.argument('directory_path', directory_path_type)
         c.argument('container_name', container_name_type)
@@ -262,7 +296,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         # c.argument('snapshot', help='The snapshot parameter is an opaque DateTime value that, '
         #                            'when present, specifies the directory snapshot to retrieve.')
         c.ignore('snapshot')
-        c.argument('lease-id', help='Required if the blob has an active lease.')
+        c.argument('lease_id', help='Required if the blob has an active lease.')
+        c.argument('if_match', help="An ETag value, or the wildcard character (*). Specify this header to perform the"
+                   "operation only if the resource's ETag matches the value specified")
+        c.argument('if_none_match', help="An ETag value, or the wildcard character (*). Specify this header to perform"
+                   "the operation only if the resource's ETag does not match the value specified. Specify the wildcard"
+                   "character (*) to perform the operation only if the resource does not exist, and fail the operation"
+                   "if it does exist.")
 
     with self.argument_context('storage blob directory upload') as c:
         c.extra('destination_container', options_list=['--container', '-c'], required=True,

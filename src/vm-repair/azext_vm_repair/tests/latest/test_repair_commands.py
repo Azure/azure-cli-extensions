@@ -9,7 +9,7 @@ from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_create_restore(self, resource_group):
+    def test_vmrepair_WinManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -42,7 +42,7 @@ class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
 class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_create_restore(self, resource_group):
+    def test_vmrepair_WinUnmanagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -75,19 +75,19 @@ class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
 class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_create_restore(self, resource_group):
+    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password !Passw0rd2018')
+        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018')
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repair_resouce_group'])).get_output_in_json()
@@ -108,19 +108,19 @@ class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
 class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_create_restore(self, resource_group):
+    def test_vmrepair_LinuxUnmanagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-password !Passw0rd2018 --use-unmanaged-disk')
+        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --use-unmanaged-disk')
         vms = self.cmd('vm list -g {rg}').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-password !Passw0rd2018').get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
         repair_vms = self.cmd('vm list -g {}'.format(result['repair_resouce_group'])).get_output_in_json()
@@ -141,7 +141,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
 class WindowsRunHelloWorldTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_win_hello_world(self, resource_group):
+    def test_vmrepair_WinRunHelloWorld(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -162,7 +162,7 @@ class WindowsRunHelloWorldTest(ScenarioTest):
 class LinuxRunHelloWorldTest(ScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_linux_hello_world(self, resource_group):
+    def test_vmrepair_LinuxRunHelloWorld(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
