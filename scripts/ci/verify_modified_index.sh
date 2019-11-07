@@ -4,8 +4,13 @@ set -ex
 # Install CLI & Dev Tools
 echo "Installing azure-cli-dev-tools and azure-cli..."
 git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
+
 python ../azure-cli/scripts/dev_setup.py
-pip install -e "git+https://github.com/Azure/azure-cli@dev#egg=azure-cli-dev-tools&subdirectory=tools" -q
+
+pip install --force-reinstall azure-nspkg==3.0.2
+pip install --force-reinstall azure-mgmt-nspkg==3.0.2
+pip install six==1.12.0
+
 echo "Installed."
 az --version
 set +x
