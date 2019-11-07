@@ -5,11 +5,8 @@ set -ex
 echo "Installing azure-cli-dev-tools and azure-cli..."
 git clone --single-branch -b dev https://github.com/Azure/azure-cli.git ../azure-cli
 
-python ../azure-cli/scripts/dev_setup.py
-
-pip install --force-reinstall azure-nspkg==3.0.2
-pip install --force-reinstall azure-mgmt-nspkg==3.0.2
-pip install six==1.12.0
+pip install azdev
+azdev setup -c ../azure-cli
 
 echo "Installed."
 az --version
@@ -31,17 +28,19 @@ while read line; do
     echo
     echo "New index entries detected for extension:" $ext
     echo "Adding latest entry from source:" $source
-    set +e
+
     az extension add -s $source -y
-    if [ $? != 0 ]; then
-        continue
-    fi
-    set -e
-    echo "Load all commands"
-    azdev verify load-all
-    echo "Running linter"
-    azdev cli-lint --ci --extensions $ext
+
+    # TODO migrate to public azdev
+    echo "Load all commands..."
+#    azdev verify load-all
+
+    # TODO migrate to public azdev
+    echo "Running linter..."
+#    azdev cli-lint --ci --extensions $ext
+
     az extension remove -n $ext
+
     echo $ext "extension has been removed."
 done <<< "$modified_extensions"
 
