@@ -28,6 +28,19 @@ class WebHookEventSubscriptionDestination(EventSubscriptionDestination):
     :ivar endpoint_base_url: The base URL that represents the endpoint of the
      destination of an event subscription.
     :vartype endpoint_base_url: str
+    :param max_events_per_batch: Maximum number of events per batch.
+    :type max_events_per_batch: int
+    :param preferred_batch_size_in_kilobytes: Preferred batch size in
+     Kilobytes.
+    :type preferred_batch_size_in_kilobytes: int
+    :param azure_active_directory_tenant_id: The Azure Active Directory Tenant
+     ID to get the access token that will be included as the bearer token in
+     delivery requests.
+    :type azure_active_directory_tenant_id: str
+    :param azure_active_directory_application_id_or_uri: The Azure Active
+     Directory Application ID or URI to get the access token that will be
+     included as the bearer token in delivery requests.
+    :type azure_active_directory_application_id_or_uri: str
     """
 
     _validation = {
@@ -39,10 +52,18 @@ class WebHookEventSubscriptionDestination(EventSubscriptionDestination):
         'endpoint_type': {'key': 'endpointType', 'type': 'str'},
         'endpoint_url': {'key': 'properties.endpointUrl', 'type': 'str'},
         'endpoint_base_url': {'key': 'properties.endpointBaseUrl', 'type': 'str'},
+        'max_events_per_batch': {'key': 'properties.maxEventsPerBatch', 'type': 'int'},
+        'preferred_batch_size_in_kilobytes': {'key': 'properties.preferredBatchSizeInKilobytes', 'type': 'int'},
+        'azure_active_directory_tenant_id': {'key': 'properties.azureActiveDirectoryTenantId', 'type': 'str'},
+        'azure_active_directory_application_id_or_uri': {'key': 'properties.azureActiveDirectoryApplicationIdOrUri', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(WebHookEventSubscriptionDestination, self).__init__(**kwargs)
         self.endpoint_url = kwargs.get('endpoint_url', None)
         self.endpoint_base_url = None
+        self.max_events_per_batch = kwargs.get('max_events_per_batch', None)
+        self.preferred_batch_size_in_kilobytes = kwargs.get('preferred_batch_size_in_kilobytes', None)
+        self.azure_active_directory_tenant_id = kwargs.get('azure_active_directory_tenant_id', None)
+        self.azure_active_directory_application_id_or_uri = kwargs.get('azure_active_directory_application_id_or_uri', None)
         self.endpoint_type = 'WebHook'
