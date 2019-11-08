@@ -22,14 +22,28 @@ class PeeringScenarioTest(ScenarioTest):
             'name': 'test1'
         })
 
-        self.cmd('az peering service create --resource-group {rg} --name "MyPeeringService" --location eastus --peering-service-location "California" --peering-service-provider "Kordia Limited"', checks=[
-        ])
+        self.cmd('az peering service create '
+                 '--resource-group {rg} '
+                 '--name "MyPeeringService" '
+                 '--peering-service-location "state1" '
+                 '--peering-service-provider "serviceProvider1" '
+                 '--location "eastus"',
+                 checks=[])
 
-        self.cmd('az peering service prefix create --resource-group {rg} --peering-service-name "MyPeeringService" --name "MyPeeringServicePrefix" --prefix "192.168.1.0/24"', checks=[
-        ])
+        self.cmd('az peering service prefix create '
+                 '--resource-group {rg} '
+                 '--peering-service-name "MyPeeringService" '
+                 '--name "MyPeeringServicePrefix" '
+                 '--prefix "192.168.1.0/24"',
+                 checks=[])
 
-        self.cmd('az peering service prefix delete --resource-group {rg} --peering-service-name "MyPeeringService" --name "MyPeeringServicePrefix"', checks=[
-        ])
+        self.cmd('az peering service prefix delete '
+                 '--resource-group {rg} '
+                 '--peering-service-name "MyPeeringService" '
+                 '--name "MyPeeringServicePrefix"',
+                 checks=[])
 
-        self.cmd('az peering service delete --resource-group {rg} --name "MyPeeringService"', checks=[
-        ])
+        self.cmd('az peering service delete '
+                 '--resource-group {rg} '
+                 '--name "MyPeeringService"',
+                 checks=[])
