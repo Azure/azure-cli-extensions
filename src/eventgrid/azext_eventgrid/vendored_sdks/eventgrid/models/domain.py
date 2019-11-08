@@ -34,18 +34,21 @@ class Domain(TrackedResource):
      values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.eventgrid.models.DomainProvisioningState
+     ~microsoft.azure.management.eventgrid.models.DomainProvisioningState
     :ivar endpoint: Endpoint for the domain.
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the domain. Possible values
-     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventV01Schema'.
+     include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventSchemaV1_0'.
      Default value: "EventGridSchema" .
-    :type input_schema: str or ~azure.mgmt.eventgrid.models.InputSchema
+    :type input_schema: str or
+     ~microsoft.azure.management.eventgrid.models.InputSchema
     :param input_schema_mapping: Information about the InputSchemaMapping
      which specified the info about mapping event payload.
     :type input_schema_mapping:
-     ~azure.mgmt.eventgrid.models.InputSchemaMapping
+     ~microsoft.azure.management.eventgrid.models.InputSchemaMapping
+    :ivar metric_resource_id: Metric resource id for the domain.
+    :vartype metric_resource_id: str
     """
 
     _validation = {
@@ -55,6 +58,7 @@ class Domain(TrackedResource):
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
         'endpoint': {'readonly': True},
+        'metric_resource_id': {'readonly': True},
     }
 
     _attribute_map = {
@@ -67,6 +71,7 @@ class Domain(TrackedResource):
         'endpoint': {'key': 'properties.endpoint', 'type': 'str'},
         'input_schema': {'key': 'properties.inputSchema', 'type': 'str'},
         'input_schema_mapping': {'key': 'properties.inputSchemaMapping', 'type': 'InputSchemaMapping'},
+        'metric_resource_id': {'key': 'properties.metricResourceId', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -75,3 +80,4 @@ class Domain(TrackedResource):
         self.endpoint = None
         self.input_schema = kwargs.get('input_schema', "EventGridSchema")
         self.input_schema_mapping = kwargs.get('input_schema_mapping', None)
+        self.metric_resource_id = None

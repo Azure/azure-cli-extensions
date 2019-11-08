@@ -23,22 +23,25 @@ class JsonInputSchemaMapping(InputSchemaMapping):
     :type input_schema_mapping_type: str
     :param id: The mapping information for the Id property of the Event Grid
      Event.
-    :type id: ~azure.mgmt.eventgrid.models.JsonField
+    :type id: ~microsoft.azure.management.eventgrid.models.JsonField
     :param topic: The mapping information for the Topic property of the Event
      Grid Event.
-    :type topic: ~azure.mgmt.eventgrid.models.JsonField
+    :type topic: ~microsoft.azure.management.eventgrid.models.JsonField
     :param event_time: The mapping information for the EventTime property of
      the Event Grid Event.
-    :type event_time: ~azure.mgmt.eventgrid.models.JsonField
+    :type event_time: ~microsoft.azure.management.eventgrid.models.JsonField
     :param event_type: The mapping information for the EventType property of
      the Event Grid Event.
-    :type event_type: ~azure.mgmt.eventgrid.models.JsonFieldWithDefault
+    :type event_type:
+     ~microsoft.azure.management.eventgrid.models.JsonFieldWithDefault
     :param subject: The mapping information for the Subject property of the
      Event Grid Event.
-    :type subject: ~azure.mgmt.eventgrid.models.JsonFieldWithDefault
+    :type subject:
+     ~microsoft.azure.management.eventgrid.models.JsonFieldWithDefault
     :param data_version: The mapping information for the DataVersion property
      of the Event Grid Event.
-    :type data_version: ~azure.mgmt.eventgrid.models.JsonFieldWithDefault
+    :type data_version:
+     ~microsoft.azure.management.eventgrid.models.JsonFieldWithDefault
     """
 
     _validation = {

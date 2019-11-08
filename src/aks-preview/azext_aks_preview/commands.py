@@ -38,6 +38,7 @@ def load_command_table(self, _):
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('kollect', 'aks_kollect')
+        g.custom_command('kanalyze', 'aks_kanalyze')
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
