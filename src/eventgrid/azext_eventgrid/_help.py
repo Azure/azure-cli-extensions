@@ -266,6 +266,7 @@ examples:
         az eventgrid event-subscription create --name es1 \\
             --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
             --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname}
+
 """
 
 helps['eventgrid event-subscription delete'] = """
