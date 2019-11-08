@@ -35,9 +35,8 @@ while read line; do
     echo "Load all commands..."
 #    azdev verify load-all
 
-    # TODO migrate to public azdev
     echo "Running linter..."
-#    azdev cli-lint --ci --extensions $ext
+    azdev linter --include-whl-extensions ${ext}
 
     az extension remove -n $ext
 
