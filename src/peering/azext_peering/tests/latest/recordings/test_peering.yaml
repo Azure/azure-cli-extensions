@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"properties": {"peeringServiceLocation": "California", "peeringServiceProvider":
-      "Kordia Limited"}, "location": "eastus"}'
+    body: '{"properties": {"peeringServiceLocation": "state1", "peeringServiceProvider":
+      "serviceProvider1"}, "location": "eastus"}'
     headers:
       Accept:
       - application/json
@@ -12,34 +12,35 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '122'
+      - '120'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --location --peering-service-location --peering-service-provider
+      - --resource-group --name --peering-service-location --peering-service-provider
+        --location
       User-Agent:
       - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
-        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.73
+        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.76
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_peering000001/providers/Microsoft.Peering/peeringServices/MyPeeringService?api-version=2019-09-01-preview
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"peeringServiceLocation\": \"California\"\
-        ,\r\n    \"peeringServiceProvider\": \"Kordia Limited\",\r\n    \"provisioningState\"\
-        : \"Succeeded\"\r\n  },\r\n  \"location\": \"eastus\",\r\n  \"eTag\": \"5e4db9b6-d321-4371-9bb5-6bd4f448a49c\"\
+      string: "{\r\n  \"properties\": {\r\n    \"peeringServiceLocation\": \"state1\"\
+        ,\r\n    \"peeringServiceProvider\": \"serviceProvider1\",\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"location\": \"eastus\",\r\n  \"eTag\": \"4b580abd-dd9f-4575-a6fd-62e40ef30fa2\"\
         ,\r\n  \"name\": \"MyPeeringService\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_peering000001/providers/Microsoft.Peering/peeringServices/MyPeeringService\"\
         ,\r\n  \"type\": \"Microsoft.Peering/peeringServices\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '531'
+      - '529'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 25 Oct 2019 09:22:30 GMT
+      - Fri, 08 Nov 2019 09:12:16 GMT
       expires:
       - '-1'
       pragma:
@@ -72,7 +73,7 @@ interactions:
       - --resource-group --peering-service-name --name --prefix
       User-Agent:
       - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
-        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.73
+        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.76
       accept-language:
       - en-US
     method: PUT
@@ -81,18 +82,18 @@ interactions:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"prefix\": \"192.168.1.0/24\",\r\n\
         \    \"prefixValidationState\": \"Pending\",\r\n    \"learnedType\": \"None\"\
-        ,\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"name\": \"MyPeeringServicePrefix\"\
-        ,\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_peering000001/providers/Microsoft.Peering/peeringServices/MyPeeringService/prefixes/MyPeeringServicePrefix\"\
+        ,\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"eTag\": \"900b6eda-a289-4f24-899d-ec2b88b9218e\"\
+        ,\r\n  \"name\": \"MyPeeringServicePrefix\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_peering000001/providers/Microsoft.Peering/peeringServices/MyPeeringService/prefixes/MyPeeringServicePrefix\"\
         ,\r\n  \"type\": \"Microsoft.Peering/peeringServices/prefixes\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '510'
+      - '561'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 25 Oct 2019 09:22:32 GMT
+      - Fri, 08 Nov 2019 09:12:18 GMT
       expires:
       - '-1'
       pragma:
@@ -102,7 +103,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -123,7 +124,7 @@ interactions:
       - --resource-group --peering-service-name --name
       User-Agent:
       - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
-        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.73
+        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.76
       accept-language:
       - en-US
     method: DELETE
@@ -137,7 +138,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 25 Oct 2019 09:22:34 GMT
+      - Fri, 08 Nov 2019 09:12:20 GMT
       expires:
       - '-1'
       pragma:
@@ -168,7 +169,7 @@ interactions:
       - --resource-group --name
       User-Agent:
       - python/3.6.8 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
-        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.73
+        msrest_azure/0.6.2 azure-mgmt-peering/0.1.0rc1 Azure-SDK-For-Python AZURECLI/2.0.76
       accept-language:
       - en-US
     method: DELETE
@@ -182,7 +183,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 25 Oct 2019 09:22:37 GMT
+      - Fri, 08 Nov 2019 09:12:23 GMT
       expires:
       - '-1'
       pragma:
@@ -192,7 +193,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 200
       message: OK
