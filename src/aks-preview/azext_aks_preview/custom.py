@@ -1978,6 +1978,10 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
+def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):
+    return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
+
+
 def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable, workspace_resource_id=None,
                    subnet_name=None, no_wait=False):
     # parse the comma-separated addons argument
