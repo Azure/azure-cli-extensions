@@ -50,5 +50,3 @@ jobs:
       env: PURPOSE='SyncAvailableExtensionsDoc'
       if: repo = Azure/azure-cli-extensions and branch = master and type = cron
   fast_finish: true
-  allow_failures:
-    - env: PURPOSE='SourceTests'
