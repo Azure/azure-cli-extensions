@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class EventTypePaged(Paged):
     """
-    A paging container for iterating over a list of :class:`EventType <azure.mgmt.eventgrid.models.EventType>` object
+    A paging container for iterating over a list of :class:`EventType <microsoft.azure.management.eventgrid.models.EventType>` object
     """
 
     _attribute_map = {
