@@ -122,6 +122,8 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
         c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
         c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
+        c.argument('azure_active_directory_tenant_id', help="The Azure Active Directory Tenant Id to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
+        c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
 
     with self.argument_context('eventgrid event-subscription create') as c:
         c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)

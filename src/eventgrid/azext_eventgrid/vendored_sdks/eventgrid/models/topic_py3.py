@@ -34,20 +34,21 @@ class Topic(TrackedResource):
      include: 'Creating', 'Updating', 'Deleting', 'Succeeded', 'Canceled',
      'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.eventgrid.models.TopicProvisioningState
+     ~microsoft.azure.management.eventgrid.models.TopicProvisioningState
     :ivar endpoint: Endpoint for the topic.
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the topic. Possible values
      include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventSchemaV1_0'.
      Default value: "EventGridSchema" .
-    :type input_schema: str or ~azure.mgmt.eventgrid.models.InputSchema
+    :type input_schema: str or
+     ~microsoft.azure.management.eventgrid.models.InputSchema
     :param input_schema_mapping: This enables publishing using custom event
      schemas. An InputSchemaMapping can be specified to map various properties
      of a source schema to various required properties of the EventGridEvent
      schema.
     :type input_schema_mapping:
-     ~azure.mgmt.eventgrid.models.InputSchemaMapping
+     ~microsoft.azure.management.eventgrid.models.InputSchemaMapping
     :ivar metric_resource_id: Metric resource id for the topic.
     :vartype metric_resource_id: str
     """

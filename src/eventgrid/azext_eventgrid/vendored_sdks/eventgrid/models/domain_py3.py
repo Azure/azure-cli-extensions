@@ -34,18 +34,19 @@ class Domain(TrackedResource):
      values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.eventgrid.models.DomainProvisioningState
+     ~microsoft.azure.management.eventgrid.models.DomainProvisioningState
     :ivar endpoint: Endpoint for the domain.
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the domain. Possible values
      include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventSchemaV1_0'.
      Default value: "EventGridSchema" .
-    :type input_schema: str or ~azure.mgmt.eventgrid.models.InputSchema
+    :type input_schema: str or
+     ~microsoft.azure.management.eventgrid.models.InputSchema
     :param input_schema_mapping: Information about the InputSchemaMapping
      which specified the info about mapping event payload.
     :type input_schema_mapping:
-     ~azure.mgmt.eventgrid.models.InputSchemaMapping
+     ~microsoft.azure.management.eventgrid.models.InputSchemaMapping
     :ivar metric_resource_id: Metric resource id for the domain.
     :vartype metric_resource_id: str
     """

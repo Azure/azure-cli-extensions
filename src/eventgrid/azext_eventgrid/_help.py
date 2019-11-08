@@ -254,6 +254,18 @@ examples:
             --source-resource-id "/subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Storage/storageaccounts/sa1" \\
             --endpoint https://contoso.azurewebsites.net/api/f1?code=code
             --expiration-date "2018-10-31"
+  - name: Create a new event subscription for an Event Grid topic, using Azure Active Directory enabled Webhook as a destination .
+    text: |
+        az eventgrid event-subscription create --name es1 \\
+            --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
+            --endpoint https://contoso.azurewebsites.net/api/f1?code=code
+            --azure_active_directory_tenant_id azureactivedirectorytenantid
+            --azure_active_directory_application_id_or_uri azureactivedirectoryapplicationidoruri
+  - name: Create a new event subscription for an Event Grid topic, using Azure Functions as destination.
+    text: |
+        az eventgrid event-subscription create --name es1 \\
+            --source-resource-id /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.EventGrid/topics/topic1 \\
+            --endpoint /subscriptions/{SubID}/resourceGroups/{RG}/providers/Microsoft.Web/sites/{functionappname}/functions/{functionname}
 """
 
 helps['eventgrid event-subscription delete'] = """

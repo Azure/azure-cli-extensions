@@ -907,19 +907,29 @@ class EventGridTests(ScenarioTest):
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name3}')
         self.cmd('az storage account delete -y -g {rg} -n {sa}')
 
-    @ResourceGroupPreparer()
+    @ResourceGroupPreparer(name_prefix='clieventgridrg', location='centraluseuap')
     @StorageAccountPreparer(name_prefix='clieventgrid', location='centraluseuap')
     def test_create_event_subscriptions_with_20200101_features(self, resource_group):
         event_subscription_name1 = 'CliTestEventsubscription1'
         event_subscription_name2 = 'CliTestEventsubscription2'
+        event_subscription_name3 = 'CliTestEventsubscription3'
         servicebustopic_endpoint_id = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.ServiceBus/namespaces/devexpservicebus/topics/devexptopic1'
-        azurefunction_endpoint_id_cloudevent = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/cloudeventfunc'
+        azurefunction_endpoint_id_cloudevent = '/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/resourceGroups/DevExpRg/providers/Microsoft.Web/sites/eventgridclitestapp/functions/EventGridTrigger1'
+        endpoint_url = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid?functionName=EventGridTrigger1&code=<HIDDEN>'
+        endpoint_baseurl = 'https://devexpfuncappdestination.azurewebsites.net/runtime/webhooks/EventGrid'
+        azure_active_directory_tenant_id = '00000000-0000-0000-0000-000000000000'
+        azure_active_directory_application_id_or_uri = '00000000-0000-0000-0000-000000000000'
 
         self.kwargs.update({
             'event_subscription_name1': event_subscription_name1,
             'event_subscription_name2': event_subscription_name2,
+            'event_subscription_name3': event_subscription_name3,
             'servicebustopic_endpoint_id': servicebustopic_endpoint_id,
             'azurefunction_endpoint_id_cloudevent': azurefunction_endpoint_id_cloudevent,
+            'endpoint_url': endpoint_url,
+            'endpoint_baseurl': endpoint_baseurl,
+            'azure_active_directory_tenant_id': azure_active_directory_tenant_id,
+            'azure_active_directory_application_id_or_uri': azure_active_directory_application_id_or_uri,
             'location': 'centraluseuap',
         })
 
@@ -929,8 +939,11 @@ class EventGridTests(ScenarioTest):
         # Create a servicebustopic destination based event subscription with CloudEvent 1.0 as the delivery schema
         self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name1} --endpoint-type SErvIcEBusTOPic --endpoint {servicebustopic_endpoint_id} --subject-begins-with SomeRandomText1 --event-delivery-schema CloudEVENTSchemaV1_0')
 
-        # Create an AzureFunction destination based event subscription with CloudEvent 1.0 as the delivery schema and additional batching parameters
-        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type azUREFunction --endpoint {azurefunction_endpoint_id_cloudevent} --subject-begins-with SomeRandomText1 --event-delivery-schema CloudEVENTSchemaV1_0 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128')
+        # Create an AzureFunction destination based event subscription with additional batching parameters
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name2} --endpoint-type azUREFunction --endpoint {azurefunction_endpoint_id_cloudevent} --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128')
+
+        # Create an Webhook destination based event subscription with azure active directory settings
+        self.cmd('az eventgrid event-subscription create --source-resource-id {source_resource_id} --name {event_subscription_name3} --endpoint-type webhook --endpoint \"{endpoint_url}\" --subject-begins-with SomeRandomText1 --max-events-per-batch 10 --preferred-batch-size-in-kilobytes 128 --azure-active-directory-tenant-id \"{azure_active_directory_tenant_id}\" --azure-active-directory-application-id-or-uri \"{azure_active_directory_application_id_or_uri}\"')
 
         self.cmd('az eventgrid event-subscription show  --source-resource-id {source_resource_id} --name {event_subscription_name1}', checks=[
             self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
@@ -942,8 +955,13 @@ class EventGridTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
         ])
 
+        self.cmd('az eventgrid event-subscription show  --source-resource-id {source_resource_id} --name {event_subscription_name3}', checks=[
+            self.check('type', 'Microsoft.EventGrid/eventSubscriptions'),
+            self.check('provisioningState', 'Succeeded'),
+        ])
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name1}')
         self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name2}')
+        self.cmd('az eventgrid event-subscription delete  --source-resource-id {source_resource_id} --name {event_subscription_name3}')
         self.cmd('az storage account delete -y -g {rg} -n {sa}')
 
     @ResourceGroupPreparer()
