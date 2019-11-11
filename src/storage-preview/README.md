@@ -151,6 +151,7 @@ This storage-preview extension ***2.0.9*** is published with ADLS Gen2 filesyste
 Note: Please make sure storage-preview version >= 2.0.9 with azure cli >= 2.0.67. If not, please install upgrade azure-cli version and use `az extension update -n storage-preview` to upgrade storage-preview extension. 
 
 You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
+
 |                      ADLS Gen1                 |                         ADLS Gen2                    |
 |:----------------------------------------------:|:----------------------------------------------------:|
 | az dls fs                                      | az storage blob directory                            |
@@ -175,16 +176,18 @@ You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
 | az dls fs test                                 | az storage blob directory exists                     | 
 | az dls fs upload                               | az storage blob directory upload                     |
 | NO                                             | az storage blob directory metadata show              |
-| NO                                             | az storage blob directory metadata update            |                                                 	                    	            
+| NO                                             | az storage blob directory metadata update            |
+
+
 # New commands for existing blob command group
 * az storage blob move
 * az storage blob access
 * az storage blob access set
 * az storage blob access update
 * az storage blob access show
-	    
-*Examples:*
 
+
+*Examples:*
 ###### Create a storage blob directory in a storage container:
 ```
 az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
