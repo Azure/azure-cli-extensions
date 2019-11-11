@@ -207,7 +207,7 @@ az storage blob directory create -c my-file-system -d my-directory --account-nam
 ```
 az storage blob directory show -c my-file-system -d my-directory --account-name mystorageaccount
 ```
-###### Move a storage directory to another storage blob directory in a storage container.
+###### Rename or move a directory 
 This operation's behavior is different depending on whether *Hierarchical
 Namespace* is enabled; if yes, the move operation is atomic and no marker is returned; if not, the operation is
 performed in batches and a continuation token could be returned.
@@ -215,14 +215,14 @@ performed in batches and a continuation token could be returned.
 ```
 az storage blob directory move -c my-file-system -d my-new-directory -s my-directory --account-name mystorageaccount
 ```
-###### Delete a storage blob directory in a storage container:
+###### Delete a directory
 This operation's behavior is different depending on whether Hierarchical Namespace
 is enabled; if yes, then the delete operation can be atomic and instantaneous;
 if not, the operation is performed in batches and a continuation token could be returned.
 ```
  az storage blob directory delete -c my-file-system -d my-directory --account-name mystorageaccount 
 ```
-###### Check for the existence of a blob directory in a storage container.
+###### Check if a directory exists
 Determine if a specific directory exists in the file system
 ```
 az storage blob directory exists -c my-file-system -d my-directory --account-name mystorageaccount
