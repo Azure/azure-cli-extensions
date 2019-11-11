@@ -146,10 +146,13 @@ az storage azcopy blob sync \
 ```
 
 #### ADLS Gen2 Support:
-This storage-preview extension ***2.0.9*** is published with ADLS Gen2 filesystem operations support. It can help you create and manage directories, files, and permissions in storage accounts that have a hierarchical namespace. Besides extending existing blob commands, it will provide support in blob directory level. In addition, you can use existing storage blob commands.
+This storage-preview extension ***2.0.9*** is published with ADLS Gen2 filesystem operations support. It can help you create and manage directories, files, and permissions in storage accounts that have a hierarchical namespace. To utilize features in ADLS Gen2, you have to use a storage account with kind `StorageV2` and enable hierarchical namespace to set ACL permissions. 
+
+With new command group `az storage blob directory`, azure cli can provide support in storage blob directory level. In addition,existing storage blob command group will be extended with new features and you can use existing storage blob commands to manage your ADLS Gen2 account.
 
 Note: Please make sure storage-preview version >= 2.0.9 with azure cli >= 2.0.67. If not, please install upgrade azure-cli version and use `az extension update -n storage-preview` to upgrade storage-preview extension. 
 
+##### Mapping from ADLS Gen1 to ADLS Gen2
 You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
 
 |                      ADLS Gen1                 |                         ADLS Gen2                    |
@@ -179,7 +182,7 @@ You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
 | NO                                             | az storage blob directory metadata update            |
 
 
-# New commands for existing blob command group
+##### New commands for existing blob command group
 * az storage blob move
 * az storage blob access
 * az storage blob access set
@@ -188,34 +191,45 @@ You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
 
 
 *Examples:*
-###### Create a storage blob directory in a storage container:
+###### Create a storage account with kind StorageV2 and enable hierarchical namespace
 ```
-az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+az storage account create -n mystorageaccount -g myresourcegroup --kind StorageV2 --hierarchical-namespace true
 ```
-###### Show a storage blob directory properties in a storage container.
+###### Create a file system in storage account
 ```
-az storage blob directory show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+az storage container create -n my-file-system --account-name mystorageaccount
+```
+###### Create a directory
+```
+az storage blob directory create -c my-file-system -d my-directory --account-name mystorageaccount
+```
+###### Show directory properties
+```
+az storage blob directory show -c my-file-system -d my-directory --account-name mystorageaccount
 ```
 ###### Move a storage directory to another storage blob directory in a storage container.
-    Move a storage directory and all its content (which can contain other directories or blobs) to another storage
-    blob directory in a storage container. This operation's behavior is different depending on whether Hierarchical
-    Namespace is enabled; if yes, the move operation is atomic and no marker is returned; if not, the operation is
-    performed in batches and a continuation token could be returned.
+This operation's behavior is different depending on whether *Hierarchical
+Namespace* is enabled; if yes, the move operation is atomic and no marker is returned; if not, the operation is
+performed in batches and a continuation token could be returned.
+
 ```
-az storage blob directory move -c MyContainer -d DestinationDirectoryPath -s SourceDirectoryPath --account-name MyStorageAccount
+az storage blob directory move -c my-file-system -d my-new-directory -s my-directory --account-name mystorageaccount
 ```
 ###### Delete a storage blob directory in a storage container:
-    This operation's behavior is different depending on whether Hierarchical Namespace
-    is enabled; if yes, then the delete operation can be atomic and instantaneous;
-    if not, the operation is performed in batches and a continuation token could be returned.
+This operation's behavior is different depending on whether Hierarchical Namespace
+is enabled; if yes, then the delete operation can be atomic and instantaneous;
+if not, the operation is performed in batches and a continuation token could be returned.
 ```
- az storage blob directory delete -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+ az storage blob directory delete -c my-file-system -d my-directory --account-name mystorageaccount 
 ```
 ###### Check for the existence of a blob directory in a storage container.
+Determine if a specific directory exists in the file system
 ```
-az storage blob directory exists -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+az storage blob directory exists -c my-file-system -d my-directory --account-name mystorageaccount
 ```
 ###### Upload to a directory
+Upload files to a directory by using the `az storage blob directory upload` command.
+
 - Upload a file named `upload.txt` to a directory named `my-directory`.
 ```
 az storage blob directory upload -c my-file-system --account-name mystorageaccount -s "C:\mylocaldirectory\upload.txt" -d my-directory
@@ -225,7 +239,7 @@ az storage blob directory upload -c my-file-system --account-name mystorageaccou
 az storage blob directory upload -c my-file-system --account-name mystorageaccount -s "C:\mylocaldirectory\" -d my-directory --recursive
 ```
 ###### Download from a directory
-Download a file from a directory by using the `az storage blob directory download` command.
+Download files from a directory by using the `az storage blob directory download` command.
 
 - Download a file named `upload.txt` from a directory named `my-directory`.
 ```
