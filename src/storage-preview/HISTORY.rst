@@ -3,6 +3,12 @@
  Release History
 ===============
 
+0.2.9 (2019-10-31)
+++++++++++++++++
+* Integrate Azcopy v10.3.1
+* Add `az storage blob directory` command group
+* Add blob move command and blob access command group
+
 0.2.8 (2019-7-5)
 ++++++++++++++++
 * Remove file-add command argument

@@ -25,6 +25,8 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     StorageQueueEventSubscriptionDestination,
     HybridConnectionEventSubscriptionDestination,
     ServiceBusQueueEventSubscriptionDestination,
+    ServiceBusTopicEventSubscriptionDestination,
+    AzureFunctionEventSubscriptionDestination,
     StorageBlobDeadLetterDestination,
     EventSubscriptionFilter)
 
@@ -42,14 +44,17 @@ EVENTHUB_DESTINATION = "eventhub"
 STORAGEQUEUE_DESTINATION = "storagequeue"
 HYBRIDCONNECTION_DESTINATION = "hybridconnection"
 SERVICEBUSQUEUE_DESTINATION = "servicebusqueue"
+SERVICEBUSTOPIC_DESTINATION = "servicebustopic"
+AZUREFUNCTION_DESTINATION = "azurefunction"
 EVENTGRID_SCHEMA = "EventGridSchema"
-CLOUDEVENTV01_SCHEMA = "CloudEventV01Schema"
+CLOUDEVENTV1_0_SCHEMA = "CloudEventSchemaV1_0"
 CUSTOM_EVENT_SCHEMA = "CustomEventSchema"
 CUSTOM_INPUT_SCHEMA = "CustomInputSchema"
 GLOBAL = "global"
 
-# Deprecated event delivery schema value (starting 2018-09-15-preview)
+# Deprecated event delivery schema values
 INPUT_EVENT_SCHEMA = "InputEventSchema"
+CLOUDEVENTV01SCHEMA = "CloudEventV01Schema"
 
 # Constants for the target field names of the mapping
 TOPIC = "topic"
@@ -91,12 +96,10 @@ def cli_topic_create_or_update(
         input_schema=final_input_schema,
         input_schema_mapping=input_schema_mapping)
 
-    async_topic_create = client.create_or_update(
+    return client.create_or_update(
         resource_group_name,
         topic_name,
         topic_info)
-    created_topic = async_topic_create.result()
-    return created_topic
 
 
 def cli_domain_list(
@@ -129,12 +132,10 @@ def cli_domain_create_or_update(
         input_schema=final_input_schema,
         input_schema_mapping=input_schema_mapping)
 
-    async_domain_create = client.create_or_update(
+    return client.create_or_update(
         resource_group_name,
         domain_name,
         domain_info)
-    created_domain = async_domain_create.result()
-    return created_domain
 
 
 def cli_domain_topic_create_or_update(
@@ -142,11 +143,10 @@ def cli_domain_topic_create_or_update(
         resource_group_name,
         domain_name,
         domain_topic_name):
-    async_domain_topic_create = client.create_or_update(
+    return client.create_or_update(
         resource_group_name,
         domain_name,
         domain_topic_name)
-    return async_domain_topic_create.result()
 
 
 def cli_domain_topic_delete(
@@ -154,11 +154,10 @@ def cli_domain_topic_delete(
         resource_group_name,
         domain_name,
         domain_topic_name):
-    async_domain_topic_delete = client.delete(
+    return client.delete(
         resource_group_name,
         domain_name,
         domain_topic_name)
-    return async_domain_topic_delete.result()
 
 
 def cli_domain_topic_list(
@@ -185,11 +184,15 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
         is_subject_case_sensitive=False,
         max_delivery_attempts=30,
         event_ttl=1440,
+        max_events_per_batch=None,
+        preferred_batch_size_in_kilobytes=None,
         event_delivery_schema=None,
         deadletter_endpoint=None,
         labels=None,
         expiration_date=None,
-        advanced_filter=None):
+        advanced_filter=None,
+        azure_active_directory_tenant_id=None,
+        azure_active_directory_application_id_or_uri=None):
 
     if included_event_types is not None and len(included_event_types) == 1 and included_event_types[0].lower() == 'all':
         logger.warning('The usage of \"All\" for --included-event-types is not allowed starting from Azure Event Grid'
@@ -212,7 +215,46 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
     _validate_retry_policy(max_delivery_attempts, event_ttl)
     retry_policy = RetryPolicy(max_delivery_attempts=max_delivery_attempts, event_time_to_live_in_minutes=event_ttl)
 
-    destination = _get_endpoint_destination(endpoint_type, endpoint)
+    if max_events_per_batch is not None:
+        if endpoint_type not in (WEBHOOK_DESTINATION, AZUREFUNCTION_DESTINATION):
+            raise CLIError('usage error: max-events-per-batch is applicable only for '
+                           'endpoint types WebHook and AzureFunction.')
+        max_events_per_batch = int(max_events_per_batch)
+        if max_events_per_batch > 5000:
+            raise CLIError('usage error: max-events-per-batch must be a number between 1 and 5000.')
+
+    if preferred_batch_size_in_kilobytes is not None:
+        if endpoint_type not in (WEBHOOK_DESTINATION, AZUREFUNCTION_DESTINATION):
+            raise CLIError('usage error: preferred-batch-size-in-kilobytes is applicable only for '
+                           'endpoint types WebHook and AzureFunction.')
+        preferred_batch_size_in_kilobytes = int(preferred_batch_size_in_kilobytes)
+        if preferred_batch_size_in_kilobytes > 1024:
+            raise CLIError('usage error: preferred-batch-size-in-kilobytes must be a number '
+                           'between 1 and 1024.')
+
+    if azure_active_directory_tenant_id is not None:
+        if endpoint_type is not WEBHOOK_DESTINATION:
+            raise CLIError('usage error: azure-active-directory-tenant-id is applicable only for '
+                           'endpoint types WebHook.')
+        if azure_active_directory_application_id_or_uri is None:
+            raise CLIError('usage error: azure-active-directory-application-id-or-uri is missing. '
+                           'It should include an Azure Active Directory Application Id or Uri.')
+
+    if azure_active_directory_application_id_or_uri is not None:
+        if endpoint_type is not WEBHOOK_DESTINATION:
+            raise CLIError('usage error: azure-active-directory-application-id-or-uri is applicable only for '
+                           'endpoint types WebHook.')
+        if azure_active_directory_tenant_id is None:
+            raise CLIError('usage error: azure-active-directory-tenant-id is missing. '
+                           'It should include an Azure Active Directory Tenant Id.')
+
+    destination = _get_endpoint_destination(
+        endpoint_type,
+        endpoint,
+        max_events_per_batch,
+        preferred_batch_size_in_kilobytes,
+        azure_active_directory_tenant_id,
+        azure_active_directory_application_id_or_uri)
 
     event_subscription_filter = EventSubscriptionFilter(
         subject_begins_with=subject_begins_with,
@@ -242,7 +284,7 @@ def cli_eventgrid_event_subscription_create(   # pylint: disable=too-many-locals
     return client.create_or_update(
         scope,
         event_subscription_name,
-        event_subscription_info).result()
+        event_subscription_info)
 
 
 def cli_eventgrid_event_subscription_delete(
@@ -259,10 +301,9 @@ def cli_eventgrid_event_subscription_delete(
         resource_id=resource_id,
         topic_name=topic_name,
         resource_group_name=resource_group_name)
-    async_event_subscription_delete = client.delete(
+    return client.delete(
         scope,
         event_subscription_name)
-    return async_event_subscription_delete.result()
 
 
 def event_subscription_setter(
@@ -281,12 +322,10 @@ def event_subscription_setter(
         topic_name=topic_name,
         resource_group_name=resource_group_name)
 
-    async_event_subscription_update = client.update(
+    return client.update(
         scope,
         event_subscription_name,
         parameters)
-    updated_event_subscription = async_event_subscription_update.result()
-    return updated_event_subscription
 
 
 def cli_eventgrid_event_subscription_get(
@@ -554,12 +593,11 @@ def update_event_subscription(
         included_event_types=None,
         labels=None,
         deadletter_endpoint=None):
-    event_subscription_destination = None
+    event_subscription_destination = instance.destination
     deadletter_destination = None
     event_subscription_labels = instance.labels
     event_subscription_filter = instance.filter
 
-    # TODO: These are not currently updatable, make them updatable.
     event_delivery_schema = instance.event_delivery_schema
     retry_policy = instance.retry_policy
 
@@ -567,7 +605,13 @@ def update_event_subscription(
         raise CLIError('Invalid usage: Since --endpoint-type is specified, a valid endpoint must also be specified.')
 
     if endpoint is not None:
-        event_subscription_destination = _get_endpoint_destination(endpoint_type, endpoint)
+        event_subscription_destination = _get_endpoint_destination(
+            endpoint_type,
+            endpoint,
+            event_subscription_destination.max_events_per_batch,
+            event_subscription_destination.preferred_batch_size_in_kilobytes,
+            event_subscription_destination.azure_active_directory_tenant_id,
+            event_subscription_destination.azure_active_directory_application_id_or_uri)
 
     if deadletter_endpoint is not None:
         deadletter_destination = _get_deadletter_destination(deadletter_endpoint)
@@ -596,9 +640,20 @@ def update_event_subscription(
     return params
 
 
-def _get_endpoint_destination(endpoint_type, endpoint):
+def _get_endpoint_destination(
+        endpoint_type,
+        endpoint,
+        max_events_per_batch,
+        preferred_batch_size_in_kilobytes,
+        azure_active_directory_tenant_id,
+        azure_active_directory_application_id_or_uri):
     if endpoint_type.lower() == WEBHOOK_DESTINATION.lower():
-        destination = WebHookEventSubscriptionDestination(endpoint_url=endpoint)
+        destination = WebHookEventSubscriptionDestination(
+            endpoint_url=endpoint,
+            max_events_per_batch=max_events_per_batch,
+            preferred_batch_size_in_kilobytes=preferred_batch_size_in_kilobytes,
+            azure_active_directory_tenant_id=azure_active_directory_tenant_id,
+            azure_active_directory_application_id_or_uri=azure_active_directory_application_id_or_uri)
     elif endpoint_type.lower() == EVENTHUB_DESTINATION.lower():
         destination = EventHubEventSubscriptionDestination(resource_id=endpoint)
     elif endpoint_type.lower() == HYBRIDCONNECTION_DESTINATION.lower():
@@ -607,7 +662,13 @@ def _get_endpoint_destination(endpoint_type, endpoint):
         destination = _get_storage_queue_destination(endpoint)
     elif endpoint_type.lower() == SERVICEBUSQUEUE_DESTINATION.lower():
         destination = ServiceBusQueueEventSubscriptionDestination(resource_id=endpoint)
-
+    elif endpoint_type.lower() == SERVICEBUSTOPIC_DESTINATION.lower():
+        destination = ServiceBusTopicEventSubscriptionDestination(resource_id=endpoint)
+    elif endpoint_type.lower() == AZUREFUNCTION_DESTINATION.lower():
+        destination = AzureFunctionEventSubscriptionDestination(
+            resource_id=endpoint,
+            max_events_per_batch=max_events_per_batch,
+            preferred_batch_size_in_kilobytes=preferred_batch_size_in_kilobytes)
     return destination
 
 
@@ -639,10 +700,7 @@ def _get_deadletter_destination(deadletter_endpoint):
                        '/subscriptions/id/resourceGroups/rg/providers/Microsoft.Storage/' +
                        'storageAccounts/sa1/blobServices/default/containers/containerName')
 
-    deadletter_destination = StorageBlobDeadLetterDestination(
-        resource_id=blob_items[0], blob_container_name=blob_items[1])
-
-    return deadletter_destination
+    return StorageBlobDeadLetterDestination(resource_id=blob_items[0], blob_container_name=blob_items[1])
 
 
 def _validate_retry_policy(max_delivery_attempts, event_ttl):
@@ -660,18 +718,12 @@ def _get_event_delivery_schema(event_delivery_schema):
         event_delivery_schema = EVENTGRID_SCHEMA
     elif event_delivery_schema.lower() == CUSTOM_INPUT_SCHEMA.lower():
         event_delivery_schema = CUSTOM_INPUT_SCHEMA
-    elif event_delivery_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
-        event_delivery_schema = CLOUDEVENTV01_SCHEMA
-    # NO LONGER SUPPORTED
-    elif event_delivery_schema.lower() == INPUT_EVENT_SCHEMA.lower():
-        raise CLIError('usage error: InputEventSchema is not supported anymore. '
-                       '--event-delivery-schema supported values are'
-                       ':' + EVENTGRID_SCHEMA + ',' + CUSTOM_INPUT_SCHEMA +
-                       ',' + CLOUDEVENTV01_SCHEMA)
+    elif event_delivery_schema.lower() == CLOUDEVENTV1_0_SCHEMA.lower():
+        event_delivery_schema = CLOUDEVENTV1_0_SCHEMA
     else:
         raise CLIError('usage error: --event-delivery-schema supported values are'
                        ' :' + EVENTGRID_SCHEMA + ',' + CUSTOM_INPUT_SCHEMA +
-                       ',' + CLOUDEVENTV01_SCHEMA)
+                       ',' + CLOUDEVENTV1_0_SCHEMA)
 
     return event_delivery_schema
 
@@ -685,11 +737,11 @@ def _warn_if_manual_handshake_needed(endpoint_type, endpoint):
        "azure-automation" not in endpoint.lower() and \
        "eventgridextension" not in endpoint.lower() and \
        "logic.azure" not in endpoint.lower():
-        logger.warning("If the provided endpoint doesn't support subscription validation " +
-                       "handshake, navigate to the validation URL that you receive in the " +
-                       "subscription validation event, in order to complete the event " +
-                       "subscription creation or update. For more details, " +
-                       "please visit http://aka.ms/esvalidation")
+        logger.warning('If the provided endpoint does not support subscription validation '
+                       'handshake, navigate to the validation URL that you receive in the '
+                       'subscription validation event, in order to complete the event '
+                       'subscription creation or update. For more details, '
+                       'please visit http://aka.ms/esvalidation')
 
 
 def _get_input_schema_and_mapping(
@@ -700,16 +752,22 @@ def _get_input_schema_and_mapping(
         input_schema = EVENTGRID_SCHEMA
     elif input_schema.lower() == CUSTOM_EVENT_SCHEMA.lower():
         input_schema = CUSTOM_EVENT_SCHEMA
-    elif input_schema.lower() == CLOUDEVENTV01_SCHEMA.lower():
-        input_schema = CLOUDEVENTV01_SCHEMA
+    elif input_schema.lower() == CLOUDEVENTV1_0_SCHEMA.lower():
+        input_schema = CLOUDEVENTV1_0_SCHEMA
     else:
         raise CLIError('The provided --input-schema is not valid. The supported values are: ' +
-                       EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV01_SCHEMA)
+                       EVENTGRID_SCHEMA + ',' + CUSTOM_EVENT_SCHEMA + ',' + CLOUDEVENTV1_0_SCHEMA)
 
-    if input_schema in (EVENTGRID_SCHEMA, CLOUDEVENTV01_SCHEMA):
+    if input_schema == EVENTGRID_SCHEMA:
         # Ensure that custom input mappings are not specified
         if input_mapping_fields is not None or input_mapping_default_values is not None:
-            raise CLIError('--input-mapping-default-values and --input-mapping-fields should be ' +
+            raise CLIError('--input-mapping-default-values and --input-mapping-fields should not be ' +
+                           'specified when --input-schema is set to eventgridschema.')
+
+    if input_schema == CLOUDEVENTV1_0_SCHEMA:
+        # Ensure that input_mapping_default_values is not specified.
+        if input_mapping_default_values is not None:
+            raise CLIError('--input-mapping-default-values should be ' +
                            'specified only when --input-schema is set to customeventschema.')
 
     if input_schema == CUSTOM_EVENT_SCHEMA:
