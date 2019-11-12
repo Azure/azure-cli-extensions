@@ -26,7 +26,7 @@ class InputSchema(str, Enum):
 
     event_grid_schema = "EventGridSchema"
     custom_event_schema = "CustomEventSchema"
-    cloud_event_v01_schema = "CloudEventV01Schema"
+    cloud_event_schema_v1_0 = "CloudEventSchemaV1_0"
 
 
 class DomainTopicProvisioningState(str, Enum):
@@ -53,8 +53,8 @@ class EventSubscriptionProvisioningState(str, Enum):
 class EventDeliverySchema(str, Enum):
 
     event_grid_schema = "EventGridSchema"
-    cloud_event_v01_schema = "CloudEventV01Schema"
     custom_input_schema = "CustomInputSchema"
+    cloud_event_schema_v1_0 = "CloudEventSchemaV1_0"
 
 
 class TopicProvisioningState(str, Enum):

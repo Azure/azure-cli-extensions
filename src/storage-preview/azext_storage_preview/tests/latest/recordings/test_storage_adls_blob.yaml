@@ -1,0 +1,1726 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --hierarchical-namespace
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/4.0.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-11-01T16:11:13Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 01 Nov 2019 16:11:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_RAGRS"}, "kind": "StorageV2", "location": "westus",
+      "properties": {"isHnsEnabled": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '116'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n -g --kind --hierarchical-namespace
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002?api-version=2018-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Fri, 01 Nov 2019 16:11:30 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/b801b21b-ce06-4b18-aca9-6a79e250c8ab?monitor=true&api-version=2018-07-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --hierarchical-namespace
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/b801b21b-ce06-4b18-aca9-6a79e250c8ab?monitor=true&api-version=2018-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002","name":"clitestaldsaccount000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-01T16:11:30.2400812Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-01T16:11:30.2400812Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-01T16:11:30.1463394Z","primaryEndpoints":{"dfs":"https://clitestaldsaccount000002.dfs.core.windows.net/","web":"https://clitestaldsaccount000002.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002.blob.core.windows.net/","queue":"https://clitestaldsaccount000002.queue.core.windows.net/","table":"https://clitestaldsaccount000002.table.core.windows.net/","file":"https://clitestaldsaccount000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccount000002-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccount000002-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccount000002-secondary.queue.core.windows.net/","table":"https://clitestaldsaccount000002-secondary.table.core.windows.net/"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1805'
+      content-type:
+      - application/json
+      date:
+      - Fri, 01 Nov 2019 16:11:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account keys list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --query -o
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.75
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002/listKeys?api-version=2018-07-01
+  response:
+    body:
+      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '288'
+      content-type:
+      - application/json
+      date:
+      - Fri, 01 Nov 2019 16:11:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:11:51 GMT
+      x-ms-version:
+      - '2018-11-09'
+    method: PUT
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:11:52 GMT
+      etag:
+      - '"0x8D75EE6350D0B12"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:52 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2018-11-09'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:11:53 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/testdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:11:55 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:11:55 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/testdirectory?resource=directory
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/testdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 01 Nov 2019 16:12:01 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:12:02 GMT
+      x-ms-version:
+      - '2018-11-09'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&maxresults=5000
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><MaxResults>5000</MaxResults><Blobs><Blob><Name>testdirectory</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:11:57 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:11:57
+        GMT</Last-Modified><Etag>0x8D75EE6380ECFE3</Etag><Content-Length>0</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
+        /><Content-Language /><Content-MD5 /><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties></Blob></Blobs><NextMarker
+        /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Fri, 01 Nov 2019 16:12:02 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2018-11-09'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:12:04 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/testdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 01 Nov 2019 16:12:05 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:12:10 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=testdirectory%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>testdirectory/</Prefix><Blobs><Blob><Name>testdirectory/readme</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:08 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:08
+        GMT</Last-Modified><Etag>0x8D75EE63EF0E449</Etag><Content-Length>87</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>sYGKK8OX+WLKH+2bAe4tSQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Fri, 01 Nov 2019 16:12:10 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:12:38 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=testdirectory%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>testdirectory/</Prefix><Blobs><Blob><Name>testdirectory/apple</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419008C0</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>testdirectory/apple/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE6420FB9AE</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>y8ylNhtYECZ4tm1cNOi0lw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419088FB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0K4XkWOxSAnaEu7VFisEeg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641923F66</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>/BpmFLYHvDGwVphT24M/Ww==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641BA35EB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kYEU/qlXr90CbxmqaBeTZw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:21 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:21
+        GMT</Last-Modified><Etag>0x8D75EE64648C78E</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>64QvSiJwOnq47RCeo+zC2A==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE64217AC73</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>48mKsZUjcyPro5r/Tk/PQQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE64190A957</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5SXtcdjl0/rYJgCdGKjTxQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:30 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:30
+        GMT</Last-Modified><Etag>0x8D75EE64BF6D1E0</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kbZs47U++8F2TcVuQRwX2g==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641CC09D4</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>WzcUljskLgAp8DrrJZNERA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641C365C9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0uWGv15PDLqdwQibBM6gHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/readme</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:08 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:08
+        GMT</Last-Modified><Etag>0x8D75EE63EF0E449</Etag><Content-Length>87</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>sYGKK8OX+WLKH+2bAe4tSQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Fri, 01 Nov 2019 16:12:47 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:13:11 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=testdirectory%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>testdirectory/</Prefix><Blobs><Blob><Name>testdirectory/apple</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419008C0</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>testdirectory/apple/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE6420FB9AE</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>y8ylNhtYECZ4tm1cNOi0lw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419088FB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0K4XkWOxSAnaEu7VFisEeg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641923F66</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>/BpmFLYHvDGwVphT24M/Ww==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641BA35EB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kYEU/qlXr90CbxmqaBeTZw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:21 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:21
+        GMT</Last-Modified><Etag>0x8D75EE64648C78E</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>64QvSiJwOnq47RCeo+zC2A==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE64217AC73</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>48mKsZUjcyPro5r/Tk/PQQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE64190A957</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5SXtcdjl0/rYJgCdGKjTxQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:30 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:30
+        GMT</Last-Modified><Etag>0x8D75EE64BF6D1E0</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kbZs47U++8F2TcVuQRwX2g==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641CC09D4</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>WzcUljskLgAp8DrrJZNERA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/apple/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641C365C9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0uWGv15PDLqdwQibBM6gHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:51 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:51
+        GMT</Last-Modified><Etag>0x8D75EE658369E07</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>Y4olQ4PqZ1uB5mvKdGIgeQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:56 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:56
+        GMT</Last-Modified><Etag>0x8D75EE65B83B22B</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>X9z04O+8YsJ4lM0UZVtxTQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:06 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:06
+        GMT</Last-Modified><Etag>0x8D75EE6614A9CC2</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>mUtkd0QpjkdVUrMRlwmsWA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:05 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:05
+        GMT</Last-Modified><Etag>0x8D75EE660B45469</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>fxvYrq0OsEk5u3tM0JDKZg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE6579DBC63</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>Nl/VyRlQfa1j7BRpd3/N6Q==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:10 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:10
+        GMT</Last-Modified><Etag>0x8D75EE663840378</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>uxFh7WN4NCiYXOZaVE/Ugw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657DF55B3</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>ZdC1G3L6u+tPgPxHbhBuKA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657E503CE</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>dA4lzNai5H9ckCqhhprq9Q==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657D1731D</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>6Z86flfTAzGY5Swr33u6bQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:51 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:51
+        GMT</Last-Modified><Etag>0x8D75EE6587D0301</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>avQwNfb/x74WogV+DU2prQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>testdirectory/readme</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:08 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:08
+        GMT</Last-Modified><Etag>0x8D75EE63EF0E449</Etag><Content-Length>87</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>sYGKK8OX+WLKH+2bAe4tSQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Fri, 01 Nov 2019 16:13:11 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:23 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/desdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:14:25 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:26 GMT
+      x-ms-rename-source:
+      - /contxsslhdvzkbji2bt25zue/testdirectory
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/desdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:14:26 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:28 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/testdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:14:29 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:30 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/desdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 01 Nov 2019 16:14:38 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:39 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=desdirectory%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>desdirectory/</Prefix><Blobs><Blob><Name>desdirectory/apple</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419008C0</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>desdirectory/apple/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE6420FB9AE</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>y8ylNhtYECZ4tm1cNOi0lw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419088FB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0K4XkWOxSAnaEu7VFisEeg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641923F66</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>/BpmFLYHvDGwVphT24M/Ww==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641BA35EB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kYEU/qlXr90CbxmqaBeTZw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:21 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:21
+        GMT</Last-Modified><Etag>0x8D75EE64648C78E</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>64QvSiJwOnq47RCeo+zC2A==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE64217AC73</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>48mKsZUjcyPro5r/Tk/PQQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE64190A957</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5SXtcdjl0/rYJgCdGKjTxQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:30 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:30
+        GMT</Last-Modified><Etag>0x8D75EE64BF6D1E0</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kbZs47U++8F2TcVuQRwX2g==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641CC09D4</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>WzcUljskLgAp8DrrJZNERA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641C365C9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0uWGv15PDLqdwQibBM6gHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:51 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:51
+        GMT</Last-Modified><Etag>0x8D75EE658369E07</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>Y4olQ4PqZ1uB5mvKdGIgeQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:56 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:56
+        GMT</Last-Modified><Etag>0x8D75EE65B83B22B</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>X9z04O+8YsJ4lM0UZVtxTQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:06 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:06
+        GMT</Last-Modified><Etag>0x8D75EE6614A9CC2</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>mUtkd0QpjkdVUrMRlwmsWA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:05 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:05
+        GMT</Last-Modified><Etag>0x8D75EE660B45469</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>fxvYrq0OsEk5u3tM0JDKZg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE6579DBC63</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>Nl/VyRlQfa1j7BRpd3/N6Q==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:10 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:10
+        GMT</Last-Modified><Etag>0x8D75EE663840378</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>uxFh7WN4NCiYXOZaVE/Ugw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657DF55B3</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>ZdC1G3L6u+tPgPxHbhBuKA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657E503CE</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>dA4lzNai5H9ckCqhhprq9Q==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657D1731D</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>6Z86flfTAzGY5Swr33u6bQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:51 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:51
+        GMT</Last-Modified><Etag>0x8D75EE6587D0301</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>avQwNfb/x74WogV+DU2prQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/readme</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:08 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:08
+        GMT</Last-Modified><Etag>0x8D75EE63EF0E449</Etag><Content-Length>87</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>sYGKK8OX+WLKH+2bAe4tSQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Fri, 01 Nov 2019 16:14:50 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:51 GMT
+      x-ms-rename-source:
+      - /contxsslhdvzkbji2bt25zue/desdirectory/readme
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/readme
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:14:51 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:14:53 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=desdirectory%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>desdirectory/</Prefix><Blobs><Blob><Name>desdirectory/apple</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419008C0</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>desdirectory/apple/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE6420FB9AE</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>y8ylNhtYECZ4tm1cNOi0lw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE6419088FB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0K4XkWOxSAnaEu7VFisEeg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641923F66</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>/BpmFLYHvDGwVphT24M/Ww==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641BA35EB</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kYEU/qlXr90CbxmqaBeTZw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:21 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:21
+        GMT</Last-Modified><Etag>0x8D75EE64648C78E</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>64QvSiJwOnq47RCeo+zC2A==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:14 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:14
+        GMT</Last-Modified><Etag>0x8D75EE64217AC73</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>48mKsZUjcyPro5r/Tk/PQQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE64190A957</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5SXtcdjl0/rYJgCdGKjTxQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:30 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:30
+        GMT</Last-Modified><Etag>0x8D75EE64BF6D1E0</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>kbZs47U++8F2TcVuQRwX2g==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641CC09D4</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>WzcUljskLgAp8DrrJZNERA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/apple/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:13 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:13
+        GMT</Last-Modified><Etag>0x8D75EE641C365C9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0uWGv15PDLqdwQibBM6gHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_0</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:51 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:51
+        GMT</Last-Modified><Etag>0x8D75EE658369E07</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>Y4olQ4PqZ1uB5mvKdGIgeQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_1</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:56 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:56
+        GMT</Last-Modified><Etag>0x8D75EE65B83B22B</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>X9z04O+8YsJ4lM0UZVtxTQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_2</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:06 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:06
+        GMT</Last-Modified><Etag>0x8D75EE6614A9CC2</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>mUtkd0QpjkdVUrMRlwmsWA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_3</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:05 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:05
+        GMT</Last-Modified><Etag>0x8D75EE660B45469</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>fxvYrq0OsEk5u3tM0JDKZg==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_4</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE6579DBC63</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>Nl/VyRlQfa1j7BRpd3/N6Q==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_5</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:13:10 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:13:10
+        GMT</Last-Modified><Etag>0x8D75EE663840378</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>uxFh7WN4NCiYXOZaVE/Ugw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_6</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657DF55B3</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>ZdC1G3L6u+tPgPxHbhBuKA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_7</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657E503CE</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>dA4lzNai5H9ckCqhhprq9Q==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_8</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:50 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:50
+        GMT</Last-Modified><Etag>0x8D75EE657D1731D</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>6Z86flfTAzGY5Swr33u6bQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>desdirectory/file_9</Name><Properties><Creation-Time>Fri,
+        01 Nov 2019 16:12:51 GMT</Creation-Time><Last-Modified>Fri, 01 Nov 2019 16:12:51
+        GMT</Last-Modified><Etag>0x8D75EE6587D0301</Etag><Content-Length>129</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>avQwNfb/x74WogV+DU2prQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Fri, 01 Nov 2019 16:15:11 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:12 GMT
+      x-ms-version:
+      - '2018-11-09'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/readme
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '87'
+      content-md5:
+      - sYGKK8OX+WLKH+2bAe4tSQ==
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Fri, 01 Nov 2019 16:15:14 GMT
+      etag:
+      - '"0x8D75EE63EF0E449"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:12:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Fri, 01 Nov 2019 16:12:08 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2018-11-09'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-acl:
+      - user::rwx,group::r--,other::---
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:15 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: PATCH
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/readme?action=setAccessControl
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:15 GMT
+      etag:
+      - '"0x8D75EE63EF0E449"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:12:08 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-namespace-enabled:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:17 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/readme?action=getAccessControl&upn=False
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:15:18 GMT
+      etag:
+      - '"0x8D75EE63EF0E449"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:12:08 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-acl:
+      - user::rwx,group::r--,other::---
+      x-ms-group:
+      - $superuser
+      x-ms-owner:
+      - $superuser
+      x-ms-permissions:
+      - rwxr-----
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:19 GMT
+      x-ms-permissions:
+      - rwxrwxrwx
+      x-ms-version:
+      - '2019-02-02'
+    method: PATCH
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/readme?action=setAccessControl
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:20 GMT
+      etag:
+      - '"0x8D75EE63EF0E449"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:12:08 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-namespace-enabled:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:21 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/readme?action=getAccessControl&upn=False
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:15:21 GMT
+      etag:
+      - '"0x8D75EE63EF0E449"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:12:08 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-acl:
+      - user::rwx,group::rwx,other::rwx
+      x-ms-group:
+      - $superuser
+      x-ms-owner:
+      - $superuser
+      x-ms-permissions:
+      - rwxrwxrwx
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-acl:
+      - user::rwx,group::r--,other::---
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:23 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: PATCH
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/desdirectory?action=setAccessControl
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:23 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-namespace-enabled:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:25 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/desdirectory?action=getAccessControl&upn=False
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:15:25 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-acl:
+      - user::rwx,group::r--,other::---
+      x-ms-group:
+      - $superuser
+      x-ms-owner:
+      - $superuser
+      x-ms-permissions:
+      - rwxr-----
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:26 GMT
+      x-ms-permissions:
+      - rwxrwxrwx
+      x-ms-version:
+      - '2019-02-02'
+    method: PATCH
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/desdirectory?action=setAccessControl
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:27 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-namespace-enabled:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:29 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/desdirectory?action=getAccessControl&upn=False
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:15:29 GMT
+      etag:
+      - '"0x8D75EE6380ECFE3"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:11:57 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-acl:
+      - user::rwx,group::rwx,other::rwx
+      x-ms-group:
+      - $superuser
+      x-ms-owner:
+      - $superuser
+      x-ms-permissions:
+      - rwxrwxrwx
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:30 GMT
+      x-ms-meta-tag1:
+      - value1
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/desdirectory?comp=metadata
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:31 GMT
+      etag:
+      - '"0x8D75EE6B84C658A"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:15:32 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-request-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:33 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/desdirectory?comp=metadata
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:34 GMT
+      etag:
+      - '"0x8D75EE6B84C658A"'
+      last-modified:
+      - Fri, 01 Nov 2019 16:15:32 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-meta-tag1:
+      - value1
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:35 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: DELETE
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/desdirectory?recursive=True
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Fri, 01 Nov 2019 16:15:35 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.75
+      x-ms-date:
+      - Fri, 01 Nov 2019 16:15:37 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/desdirectory
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Fri, 01 Nov 2019 16:15:38 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+version: 1

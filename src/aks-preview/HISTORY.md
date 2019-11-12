@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.21
++++++
+* Support cluster certificate rotation operation using `az aks rotate-certs`
+* Add support for `az aks kanalyze`
+
 0.4.20
 +++++
 * Add commands '--zones' and '-z' for availability zones in aks

@@ -21,7 +21,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_internet_analyzer_profile')
         g.custom_command('delete', 'delete_internet_analyzer_profile')
         g.custom_command('list', 'list_internet_analyzer_profile')
-        g.show_command('show', 'get')
+        g.custom_command('show', 'get_internet_analyzer_profile')
 
     from ._client_factory import cf_preconfigured_endpoints
     internet_analyzer_preconfigured_endpoints = CliCommandType(
@@ -39,12 +39,12 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_internet_analyzer_test')
         g.custom_command('delete', 'delete_internet_analyzer_test')
         g.custom_command('list', 'list_internet_analyzer_test')
-        g.show_command('show', 'get')
+        g.custom_command('show', 'get_internet_analyzer_test')
 
     from ._client_factory import cf_reports
     internet_analyzer_reports = CliCommandType(
         operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._reports_operations#ReportsOperations.{}',
         client_factory=cf_reports)
     with self.command_group('internet-analyzer', internet_analyzer_reports, client_factory=cf_reports) as g:
-        g.show_command('show-scorecard', 'get_latency_scorecards')
-        g.show_command('show-timeseries', 'get_timeseries')
+        g.custom_command('show-scorecard', 'get_latency_scorecards')
+        g.custom_command('show-timeseries', 'get_timeseries')

@@ -9,7 +9,7 @@ import os
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
-
+from knack.util import CLIError
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
@@ -110,7 +110,6 @@ def validate_client_parameters(cmd, namespace):
         n.account_name = conn_dict.get('AccountName')
         n.account_key = conn_dict.get('AccountKey')
         if not n.account_name or not n.account_key:
-            from knack.util import CLIError
             raise CLIError('Connection-string: %s, is malformed. Some shell environments require the '
                            'connection string to be surrounded by quotes.' % n.connection_string)
 
@@ -159,6 +158,26 @@ def validate_azcopy_upload_destination_url(cmd, namespace):
         destination_path = ''
     url = client.make_blob_url(namespace.destination_container, destination_path)
     namespace.destination = url
+    del namespace.destination_container
+    del namespace.destination_path
+
+
+def validate_blob_directory_download_source_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    source_path = namespace.source_path
+    url = client.make_blob_url(namespace.source_container, source_path)
+    namespace.source = url
+    del namespace.source_container
+    del namespace.source_path
+
+
+def validate_blob_directory_upload_destination_url(cmd, namespace):
+    client = blob_data_service_factory(cmd.cli_ctx, {
+        'account_name': namespace.account_name})
+    destination_path = namespace.destination_path
+    url = client.make_blob_url(namespace.destination_container, destination_path)
+    namespace.destination = url + '/'
     del namespace.destination_container
     del namespace.destination_path
 
@@ -328,6 +347,16 @@ def validate_metadata(namespace):
         namespace.metadata = dict(x.split('=', 1) for x in namespace.metadata)
 
 
+def validate_storage_account(cmd, namespace):
+    n = namespace
+    rg, scf = _query_account_rg(cmd.cli_ctx, n.account_name)
+
+    storage_account_property = scf.storage_accounts.get_properties(rg, n.account_name)  # pylint: disable=no-member
+    if "access" in cmd.name:
+        if not storage_account_property.is_hns_enabled:
+            raise CLIError("You storage account doesn't enable HNS property.")
+
+
 def validate_subnet(cmd, namespace):
     from msrestazure.tools import resource_id, is_valid_resource_id
     from azure.cli.core.commands.client_factory import get_subscription_id
@@ -348,7 +377,6 @@ def validate_subnet(cmd, namespace):
             child_type_1='subnets',
             child_name_1=subnet)
     else:
-        from knack.util import CLIError
         raise CLIError('incorrect usage: [--subnet ID | --subnet NAME --vnet-name NAME]')
 
 
@@ -409,3 +437,13 @@ def services_type(loader):
         return t_services(_str=''.join(set(string)))
 
     return impl
+
+
+def validate_included_datasets(cmd, namespace):
+    if namespace.include:
+        include = namespace.include
+        if set(include) - set('cmsd'):
+            help_string = '(c)opy-info (m)etadata (s)napshots (d)eleted'
+            raise ValueError('valid values are {} or a combination thereof.'.format(help_string))
+        t_blob_include = cmd.get_models('blob#Include')
+        namespace.include = t_blob_include('s' in include, 'm' in include, False, 'c' in include, 'd' in include)
