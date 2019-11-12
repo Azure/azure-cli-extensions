@@ -181,6 +181,30 @@ def load_arguments(self, _):
         c.argument('policy_name', waf_policy_name_type, id_part=None)
         c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the overrides to list.')
 
+    with self.argument_context('network front-door waf-policy managed-rules exclusion add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to exclusion.')
+        c.argument('rule_group_id', help='Name of the rule group containing the rule to exclusion.')
+        c.argument('rule_id', help='Name of the rule to exclusion.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored.')
+        c.argument('operator', help='Operator used to compare the variable name to the value.')
+        c.argument('value', help='Values to match the variable name against.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the exclusion to remove.')
+        c.argument('rule_group_id', help='Name of the rule group containing the exclusion to remove.')
+        c.argument('rule_id', help='Name of the rule exclusion to remove.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored.')
+        c.argument('operator', help='Operator used to compare the variable name to the value.')
+        c.argument('value', help='Values to match the variable name against.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion list') as c:
+        c.argument('policy_name', waf_policy_name_type, id_part=None)
+        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the exclusions to list.')
+        c.argument('rule_group_id', help='Name of the rule group containing the exclusion to remove.')
+        c.argument('rule_id', help='Name of the rule exclusion to remove.')
+
     with self.argument_context('network front-door waf-policy managed-rules remove') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to remove.')

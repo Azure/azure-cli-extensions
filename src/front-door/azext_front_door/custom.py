@@ -745,6 +745,195 @@ def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
     raise CLIError("rule set '{}' not found".format(rule_set_type))
 
 
+def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                         match_variable, operator, value,
+                                         rule_group_id=None, rule_id=None, action=None, disabled=None):
+    from azext_front_door.vendored_sdks.models import ManagedRuleOverride, ManagedRuleGroupOverride, ManagedRuleExclusion
+    from knack.util import CLIError
+
+    if rule_id and not rule_group_id:
+        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+    exclusion = ManagedRuleExclusion(
+        match_variable=match_variable,
+        selector_match_operator=operator,
+        selector=value
+    )
+
+    setExclusion = False
+    # Find the matching rule_set to put the exclusion in, or fail
+    if policy.managed_rules.managed_rule_sets is None:
+        policy.managed_rules.managed_rule_sets = []
+    ruleSetObj = None
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            ruleSetObj = rule_set
+            break
+
+    if ruleSetObj is None:
+        raise CLIError("type '{}' not found".format(rule_set_type))
+
+    ruleGroupOverride = None
+    if rule_group_id is None:
+        if not ruleSetObj.exclusions:
+            ruleSetObj.exclusions = []
+        ruleSetObj.exclusions.append(exclusion)
+        setExclusion = True
+    else:
+        if ruleSetObj.rule_group_overrides is None:
+            ruleSetObj.rule_group_overrides = []
+        for rg in ruleSetObj.rule_group_overrides:
+            if rg.rule_group_name.upper() == rule_group_id.upper():
+                ruleGroupOverride = rg
+                break
+        if ruleGroupOverride is None:
+            ruleGroupOverride = ManagedRuleGroupOverride(
+                rule_group_name=rule_group_id)
+            ruleSetObj.rule_group_overrides.append(ruleGroupOverride)
+
+    if ruleGroupOverride is not None:
+        if rule_id is None:
+            if not ruleGroupOverride.exclusions:
+                ruleGroupOverride.exclusions = []
+            ruleGroupOverride.exclusions.append(exclusion)
+            setExclusion = True
+        else:
+            if ruleGroupOverride.rules is None:
+                ruleGroupOverride.rules = []
+            for rule in ruleGroupOverride.rules:
+                if rule.rule_id.upper() == rule_id.upper():
+                    if rule.exclusions is None:
+                        rule.exclusions = []
+                    rule.exclusions.append(exclusion)
+                    setExclusion = True
+            if not setExclusion:
+                override = ManagedRuleOverride(
+                    rule_id=rule_id,
+                    exclusions = [exclusion]
+                )
+                ruleGroupOverride.rules.append(override)
+                setExclusion = True
+
+    if not setExclusion:
+        if rule_id:
+            raise CLIError("rule {} within group {} within type '{}' not found".format(rule_id, rule_group_id, rule_set_type))
+        else:
+            raise CLIError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
+
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                            match_variable, operator, value,
+                                            rule_group_id=None, rule_id=None):
+    from azext_front_door.vendored_sdks.models import ManagedRuleOverride, ManagedRuleGroupOverride, ManagedRuleExclusion
+    from knack.util import CLIError
+
+    if rule_id and not rule_group_id:
+        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    exclusions = None
+
+    if not policy.managed_rules.managed_rule_sets:
+        raise CLIError("Exclusion not found")
+
+    ruleSetObj = None
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            ruleSetObj = rule_set
+            break
+
+    ruleGroupOverride = None
+    if ruleSetObj is not None:
+        if rule_group_id is None:
+            exclusions = ruleSetObj.exclusions
+        else:
+            if not ruleSetObj.rule_group_overrides:
+                raise CLIError("Exclusion not found")
+            for rg in ruleSetObj.rule_group_overrides:
+                if rg.rule_group_name.upper() == rule_group_id.upper():
+                    ruleGroupOverride = rg
+                    break
+
+    if ruleGroupOverride is not None:
+        if rule_id is None:
+            exclusions = ruleGroupOverride.exclusions
+        else:
+            if ruleGroupOverride.rules is None:
+                raise CLIError("Exclusion not found")
+            for rule in ruleGroupOverride.rules:
+                if rule.rule_id.upper() == rule_id.upper():
+                    exclusions = rule.exclusions
+                    break
+
+    if exclusions is None:
+        raise CLIError("Exclusion not found")
+
+    for i, exclusion in enumerate(exclusions):
+        if exclusion.match_variable == match_variable and exclusion.selector_match_operator == operator and exclusion.selector == value:
+            del exclusions[i]
+
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                          rule_group_id=None, rule_id=None):
+    from knack.util import CLIError
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    if rule_id and not rule_group_id:
+        from knack.util import CLIError
+        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    if policy.managed_rules.managed_rule_sets is None:
+        raise CLIError("rule set '{}' not found".format(rule_set_type))
+
+    ruleSetObj = None
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            if rule_group_id is None:
+                return rule_set.exclusions or []
+            ruleSetObj = rule_set
+            break
+
+    if ruleSetObj is None:
+        raise CLIError("rule set '{}' not found".format(rule_set_type))
+
+    if ruleSetObj.rule_group_overrides is None:
+        raise CLIError("rule set '{}' has no overrides".format(rule_set_type))
+
+    ruleGroupOverride = None
+    for rg in ruleSetObj.rule_group_overrides:
+        if rg.rule_group_name.upper() == rule_group_id.upper():
+            if rule_id is None:
+                return rg.exclusions or []
+
+            ruleGroupOverride = rg
+            break
+
+    if ruleGroupOverride is None:
+        raise CLIError("rule group '{}' not found".format(rule_group_id))
+
+    if ruleGroupOverride.rules is None:
+        raise CLIError("rule '{}' not found".format(rule_id))
+
+    for rule in ruleGroupOverride.rules:
+        if rule.rule_id.upper() == rule_id.upper():
+            return rule.exclusions or []
+
+    raise CLIError("rule '{}' not found".format(rule_id))
+
+
 def list_managed_rules_definitions(cmd):
     client = cf_waf_managed_rules(cmd.cli_ctx, None)
     definitions = client.list()
