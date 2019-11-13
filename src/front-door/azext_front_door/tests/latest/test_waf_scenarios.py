@@ -215,14 +215,14 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
             elapsed_seconds = 0
             while elapsed_seconds < 900:
                 r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
-                if(r.status_code == 403): break
+                if(r.status_code == 403):
+                    break
                 time.sleep(10)
                 elapsed_seconds += 10
             self.assertEqual(r.status_code, 403)
 
             r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
             self.assertEqual(r.status_code, 200)
-
 
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_managed_rules(self, resource_group):
@@ -430,7 +430,7 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         """
   az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --match-variable {match_variable} --operator {operator} --value {value}
   az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --match-variable {match_variable} --operator {operator} --value {value}
-  az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} 
+  az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type}
   az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --match-variable {match_variable} --operator {operator} --value {value}
   az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --match-variable {match_variable} --operator {operator} --value {value}
   az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group}
@@ -454,7 +454,6 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         result = self.cmd(cmd).get_output_in_json()
         self.assertIn('managedRules', result)
         self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetType'], type)
-
 
         matchVariable = "RequestHeaderNames"
         op = "Contains"
@@ -489,7 +488,6 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(len(result), 0)
 
-
         rulegroupid = "SQLI"
         cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid}'.format(**locals())
         try:
@@ -522,7 +520,6 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         self.assertEqual(ruleGroupOverride["ruleGroupName"], rulegroupid)
         exclusions = ruleGroupOverride['exclusions']
         self.assertEqual(len(exclusions), 0)
-
 
         ruleid = "942100"
         cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid} '.format(**locals())
