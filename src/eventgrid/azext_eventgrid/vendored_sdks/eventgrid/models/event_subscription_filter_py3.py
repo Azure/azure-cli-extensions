@@ -34,7 +34,8 @@ class EventSubscriptionFilter(Model):
     :type is_subject_case_sensitive: bool
     :param advanced_filters: An array of advanced filters that are used for
      filtering event subscriptions.
-    :type advanced_filters: list[~azure.mgmt.eventgrid.models.AdvancedFilter]
+    :type advanced_filters:
+     list[~microsoft.azure.management.eventgrid.models.AdvancedFilter]
     """
 
     _attribute_map = {
