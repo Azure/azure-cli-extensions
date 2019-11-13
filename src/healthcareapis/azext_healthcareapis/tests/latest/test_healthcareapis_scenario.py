@@ -13,71 +13,54 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class ApimgmtScenarioTest(ScenarioTest):
+class HealthcareApisScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_apimgmt')
-    def test_apimgmt(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_healthcareapis')
+    def test_healthcareapis(self, resource_group):
 
-        self.kwargs.update({
-            'name': 'test1'
-        })
+        self.cmd('az healthcareapis create '
+                 '--resource-group {rg} '
+                 '--name hcservicernd652 '
+                 '--kind "fhir-R4" '
+                 '--location "westus2" '
+                 '--access-policies-object-id "c487e7d1-3210-41a3-8ccc-e9372b78da47,5b307da8-43d4-492b-8b66-b0294ade872f" '
+                 '--cosmos-db-offer-throughput "1000" '
+                 '--authentication-authority "https://login.microsoftonline.com/abfde7b2-df0f-47e6-aabf-2462b07508dc" '
+                 '--authentication-audience "https://azurehealthcareapis.com" '
+                 '--authentication-smart-proxy-enabled true '
+                 '--cors-origins "*" '
+                 '--cors-headers "*" '
+                 '--cors-methods "DELETE,GET,OPTIONS,PATCH,POST,PUT" '
+                 '--cors-max-age "1440" '
+                 '--cors-allow-credentials false',
+                 checks=[])
 
-# create_or_update -- create
-        self.cmd('healthcareapis create  --resource-group "rg1" --name "service1" --kind "fhir" --location "westus"', checks=[
-        ])
+        self.cmd('az healthcareapis delete '
+                 '--resource-group {rg} '
+                 '--name hcservicernd652',
+                 checks=[])
 
-        self.cmd('healthcareapis create  --resource-group "rg1" --name "service1"', checks=[
-        ])
+        self.cmd('az healthcareapis create '
+                 '--resource-group {rg} '
+                 '--name hcservicernd653 '
+                 '--kind "fhir-R4" '
+                 '--location "westus2" '
+                 '--access-policies-object-id "c487e7d1-3210-41a3-8ccc-e9372b78da47"',
+                 checks=[])
 
-        self.cmd('healthcareapis create  --resource-group "rg1" --name "service1"', checks=[
-        ])
+        self.cmd('az healthcareapis show '
+                 '--resource-group {rg} '
+                 '--name hcservicernd653',
+                 checks=[])
 
-# create_or_update -- update
-        self.cmd('healthcareapis update  --resource-group "rg1" --name "service1" --kind "fhir" --location "westus"', checks=[
-        ])
+        self.cmd('az healthcareapis list',
+                 checks=[])
 
-        self.cmd('healthcareapis update  --resource-group "rg1" --name "service1"', checks=[
-        ])
+        self.cmd('az healthcareapis list '
+                 '--resource-group {rg}',
+                 checks=[])
 
-        self.cmd('healthcareapis update  --resource-group "rg1" --name "service1"', checks=[
-        ])
-
-# delete -- delete
-        self.cmd('healthcareapis delete  --resource-group "rg1" --name "service1"', checks=[
-        ])
-
-        self.cmd('healthcareapis delete  --resource-group "rg1" --name "service1"', checks=[
-        ])
-
-        self.cmd('healthcareapis delete  --resource-group "rg1" --name "service1"', checks=[
-        ])
-
-# list_by_resource_group -- list
-        self.cmd('healthcareapis list  --resource-group "rg1"', checks=[
-        ])
-
-        self.cmd('healthcareapis list  --resource-group "rg1"', checks=[
-        ])
-
-        self.cmd('healthcareapis list  --resource-group "rg1"', checks=[
-        ])
-
-# list -- list
-        self.cmd('healthcareapis list  --resource-group "rg1"', checks=[
-        ])
-
-        self.cmd('healthcareapis list  --resource-group "rg1"', checks=[
-        ])
-
-        self.cmd('healthcareapis list  --resource-group "rg1"', checks=[
-        ])
-
-# get -- show
-        self.cmd('healthcareapis show  --resource-group "rg1" --name "service1"', checks=[
-        ])
-
-        self.cmd('healthcareapis show  --resource-group "rg1" --name "service1"', checks=[
-        ])
-
-        self.cmd('healthcareapis show  --resource-group "rg1" --name "service1"', checks=[
-        ])
+        self.cmd('az healthcareapis delete '
+                 '--resource-group {rg} '
+                 '--name hcservicernd653',
+                 checks=[])
