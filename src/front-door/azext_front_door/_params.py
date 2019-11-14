@@ -186,8 +186,8 @@ def load_arguments(self, _):
         c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to exclusion.')
         c.argument('rule_group_id', help='Name of the rule group containing the rule to exclusion.')
         c.argument('rule_id', help='Name of the rule to exclusion.')
-        c.argument('match_variable', help='Which kind of variable\'s content will be ignored.')
-        c.argument('operator', help='Operator used to compare the variable name to the value.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored, e.g. RequestHeaderNames, RequestCookieNames, QueryStringArgNames, RequestBodyPostArgNames.')
+        c.argument('operator', help='Operator used to compare the variable name to the value, e.g. Equals, Contains, StartsWith, EndsWith, EqualsAny.')
         c.argument('value', help='Values to match the variable name against.')
 
     with self.argument_context('network front-door waf-policy managed-rules exclusion remove') as c:

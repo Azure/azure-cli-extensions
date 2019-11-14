@@ -765,52 +765,52 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
         selector=value
     )
 
-    ruleSetObj = None
-    exclusionHolder = None
+    rule_set_obj = None
+    exclusion_holder = None
 
     # Find the matching rule_set to put the exclusion in, or fail
     policy.managed_rules.managed_rule_sets = policy.managed_rules.managed_rule_sets or []
 
     for rule_set in policy.managed_rules.managed_rule_sets:
         if rule_set.rule_set_type.upper() == rule_set_type.upper():
-            ruleSetObj = rule_set
+            rule_set_obj = rule_set
             break
 
-    if ruleSetObj is None:
+    if rule_set_obj is None:
         raise CLIError("type '{}' not found".format(rule_set_type))
 
-    ruleGroupOverride = None
+    rule_group_override = None
     if rule_group_id is None:
-        exclusionHolder = ruleSetObj
+        exclusion_holder = rule_set_obj
     else:
-        ruleSetObj.rule_group_overrides = ruleSetObj.rule_group_overrides or []
-        for rg in ruleSetObj.rule_group_overrides:
+        rule_set_obj.rule_group_overrides = rule_set_obj.rule_group_overrides or []
+        for rg in rule_set_obj.rule_group_overrides:
             if rg.rule_group_name.upper() == rule_group_id.upper():
-                ruleGroupOverride = rg
+                rule_group_override = rg
                 break
-        if ruleGroupOverride is None:
-            ruleGroupOverride = ManagedRuleGroupOverride(
+        if rule_group_override is None:
+            rule_group_override = ManagedRuleGroupOverride(
                 rule_group_name=rule_group_id)
-            ruleSetObj.rule_group_overrides.append(ruleGroupOverride)
+            rule_set_obj.rule_group_overrides.append(rule_group_override)
 
-    if ruleGroupOverride is not None:
+    if rule_group_override is not None:
         if rule_id is None:
-            exclusionHolder = ruleGroupOverride
+            exclusion_holder = rule_group_override
         else:
-            ruleGroupOverride.rules = ruleGroupOverride.rules or []
-            for rule in ruleGroupOverride.rules:
+            rule_group_override.rules = rule_group_override.rules or []
+            for rule in rule_group_override.rules:
                 if rule.rule_id.upper() == rule_id.upper():
-                    exclusionHolder = rule
-            if not exclusionHolder:
-                exclusionHolder = ManagedRuleOverride(
+                    exclusion_holder = rule
+            if not exclusion_holder:
+                exclusion_holder = ManagedRuleOverride(
                     rule_id=rule_id
                 )
-                ruleGroupOverride.rules.append(exclusionHolder)
+                rule_group_override.rules.append(exclusion_holder)
 
-    if exclusionHolder:
-        if not exclusionHolder.exclusions:
-            exclusionHolder.exclusions = []
-        exclusionHolder.exclusions.append(exclusion)
+    if exclusion_holder:
+        if not exclusion_holder.exclusions:
+            exclusion_holder.exclusions = []
+        exclusion_holder.exclusions.append(exclusion)
     else:
         if rule_id:
             raise CLIError("rule {} within group {} within type '{}' not found"
@@ -836,31 +836,31 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
     if not policy.managed_rules.managed_rule_sets:
         raise CLIError("Exclusion not found")
 
-    ruleSetObj = None
+    rule_set_obj = None
     for rule_set in policy.managed_rules.managed_rule_sets:
         if rule_set.rule_set_type.upper() == rule_set_type.upper():
-            ruleSetObj = rule_set
+            rule_set_obj = rule_set
             break
 
-    ruleGroupOverride = None
-    if ruleSetObj is not None:
+    rule_group_override = None
+    if rule_set_obj is not None:
         if rule_group_id is None:
-            exclusions = ruleSetObj.exclusions
+            exclusions = rule_set_obj.exclusions
         else:
-            if not ruleSetObj.rule_group_overrides:
+            if not rule_set_obj.rule_group_overrides:
                 raise CLIError("Exclusion not found")
-            for rg in ruleSetObj.rule_group_overrides:
+            for rg in rule_set_obj.rule_group_overrides:
                 if rg.rule_group_name.upper() == rule_group_id.upper():
-                    ruleGroupOverride = rg
+                    rule_group_override = rg
                     break
 
-    if ruleGroupOverride is not None:
+    if rule_group_override is not None:
         if rule_id is None:
-            exclusions = ruleGroupOverride.exclusions
+            exclusions = rule_group_override.exclusions
         else:
-            if ruleGroupOverride.rules is None:
+            if rule_group_override.rules is None:
                 raise CLIError("Exclusion not found")
-            for rule in ruleGroupOverride.rules:
+            for rule in rule_group_override.rules:
                 if rule.rule_id.upper() == rule_id.upper():
                     exclusions = rule.exclusions
                     break
@@ -892,36 +892,36 @@ def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name,
     if policy.managed_rules.managed_rule_sets is None:
         raise CLIError("rule set '{}' not found".format(rule_set_type))
 
-    ruleSetObj = None
+    rule_set_obj = None
     for rule_set in policy.managed_rules.managed_rule_sets:
         if rule_set.rule_set_type.upper() == rule_set_type.upper():
             if rule_group_id is None:
                 return rule_set.exclusions or []
-            ruleSetObj = rule_set
+            rule_set_obj = rule_set
             break
 
-    if ruleSetObj is None:
+    if rule_set_obj is None:
         raise CLIError("rule set '{}' not found".format(rule_set_type))
 
-    if ruleSetObj.rule_group_overrides is None:
+    if rule_set_obj.rule_group_overrides is None:
         raise CLIError("rule set '{}' has no overrides".format(rule_set_type))
 
-    ruleGroupOverride = None
-    for rg in ruleSetObj.rule_group_overrides:
+    rule_group_override = None
+    for rg in rule_set_obj.rule_group_overrides:
         if rg.rule_group_name.upper() == rule_group_id.upper():
             if rule_id is None:
                 return rg.exclusions or []
 
-            ruleGroupOverride = rg
+            rule_group_override = rg
             break
 
-    if ruleGroupOverride is None:
+    if rule_group_override is None:
         raise CLIError("rule group '{}' not found".format(rule_group_id))
 
-    if ruleGroupOverride.rules is None:
+    if rule_group_override.rules is None:
         raise CLIError("rule '{}' not found".format(rule_id))
 
-    for rule in ruleGroupOverride.rules:
+    for rule in rule_group_override.rules:
         if rule.rule_id.upper() == rule_id.upper():
             return rule.exclusions or []
 
