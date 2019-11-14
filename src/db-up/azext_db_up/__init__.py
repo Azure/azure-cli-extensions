@@ -14,8 +14,7 @@ class DbUpCommandsLoader(AzCommandsLoader):
         db_up_custom = CliCommandType(
             operations_tmpl='azext_db_up.custom#{}')
         super(DbUpCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                 custom_command_type=db_up_custom,
-                                                 min_profile="2017-03-10-profile")
+                                                 custom_command_type=db_up_custom)
 
     def load_command_table(self, args):
         super(DbUpCommandsLoader, self).load_command_table(args)

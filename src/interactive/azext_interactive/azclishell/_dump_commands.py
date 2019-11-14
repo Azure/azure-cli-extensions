@@ -7,10 +7,11 @@ import json
 import os
 import yaml  # pylint: disable=import-error
 
+from azure.cli.core import MainCommandsLoader
+
 from knack.help import REQUIRED_TAG
 from knack.help_files import helps
 from knack.log import get_logger
-from azure.cli.core import MainCommandsLoader
 
 
 logger = get_logger(__name__)
@@ -133,7 +134,7 @@ def load_help_files(data):
     """ loads all the extra information from help files """
     for command_name, help_yaml in helps.items():
 
-        help_entry = yaml.load(help_yaml)
+        help_entry = yaml.safe_load(help_yaml)
         try:
             help_type = help_entry['type']
         except KeyError:

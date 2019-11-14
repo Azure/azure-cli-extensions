@@ -9,7 +9,7 @@ az extension add --name storage-preview
 
 ### Included Features
 #### Management Policy:
-Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts)\
+Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts)\
 *Examples:*
 ```
 az storage account management-policy create \
@@ -19,7 +19,7 @@ az storage account management-policy create \
 ```
 
 #### Static Website:
-Manage static website configurations: [more info](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website)\
+Manage static website configurations: [more info](https://docs.microsoft.com/azure/storage/blobs/storage-blob-static-website)\
 *Examples:*
 ```
 az storage blob service-properties update \
@@ -30,7 +30,7 @@ az storage blob service-properties update \
 ```
 
 #### Hierarchical Namespace:
-Enable the blob service to exhibit filesystem semantics: [more info](https://docs.microsoft.com/en-us/azure/storage/data-lake-storage/namespace)\
+Enable the blob service to exhibit filesystem semantics: [more info](https://docs.microsoft.com/azure/storage/data-lake-storage/namespace)\
 *Examples:*
 ```
 az storage account create \
@@ -41,24 +41,22 @@ az storage account create \
 ```
 
 #### File AAD Integration:
-Enable AAD integration for Azure files, which will support SMB access: [more info](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-enable)\
+Enable AAD integration for Azure files, which will support SMB access: [more info](https://docs.microsoft.com/azure/storage/files/storage-files-active-directory-enable)\
 *Examples:*
 ```
 az storage account create \
     --name accountName \
     --resource-group groupName \
-    --kind StorageV2 \
-    --file-aad
+    --kind StorageV2
 
 az storage account update \
     --name accountName \
-    --resource-group groupName \
-    --file-aad false
+    --resource-group groupName
 ```
 
 #### Premium Blobs/Files:
 Create premium blob/file storage accounts.\
-More info:[premium blobs](https://azure.microsoft.com/en-us/blog/introducing-azure-premium-blob-storage-limited-public-preview/) [premium files](https://docs.microsoft.com/en-us/azure/storage/files/storage-files-introduction)\
+More info:[premium blobs](https://azure.microsoft.com/blog/introducing-azure-premium-blob-storage-limited-public-preview/) [premium files](https://docs.microsoft.com/azure/storage/files/storage-files-introduction)\
 *Examples:*
 ```
 az storage account create \
@@ -75,7 +73,7 @@ az storage account create \
 ```
 
 #### Customer-Controlled Failover:
-Failover GRS/RA-GRS storage accounts from the primary cluster to the secondary cluster: [more info](https://docs.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance)\
+Failover GRS/RA-GRS storage accounts from the primary cluster to the secondary cluster: [more info](https://docs.microsoft.com/azure/storage/common/storage-disaster-recovery-guidance)\
 *Examples:*
 ```
 az storage account show \
@@ -131,4 +129,18 @@ az storage azcopy blob download \
     -s virtual_directory/path \
     -d download/path \
     --recursive
+```
+###### Sync a single blob and a directory:
+```
+az storage azcopy blob sync \
+    -c containerName \
+    --account-name accountName \
+    -s "file/path" \
+    -d blobName
+
+az storage azcopy blob sync \
+    -c containerName \
+    --account-name accountName \
+    -s directory/path \
+    -d sync/path
 ```

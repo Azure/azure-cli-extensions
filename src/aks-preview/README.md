@@ -9,7 +9,7 @@ az extension add --name aks-preview
 
 ## Included Features
 ### Cluster Auto Scaler:
-[more info](https://docs.microsoft.com/en-us/azure/aks/autoscaler)
+[more info](https://docs.microsoft.com/azure/aks/autoscaler)
 
 
 #### create aks cluster with enabled cluster autoscaler
@@ -82,21 +82,90 @@ az aks update \
     --api-server-authorized-ip-ranges ""
 ```
 
-#### Enable VMSS for new cluster
+#### Use VMAS for new cluster
 *Examples:*
 ```
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --enable-VMSS \
+    --vm-set-type AvailabilitySet \
 ```
 
-#### Enable VMSS for new cluster with availability zone feature
+#### Use VMSS for new cluster
 *Examples:*
 ```
 az aks create \
     -g MyResourceGroup \
     -n MyManagedCluster \
-    --enable-VMSS \
-    --node-zones 1 2 3
+    --vm-set-type VirtualMachineScaleSets \
+```
+
+#### Use VMSS for new cluster with availability zone feature
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --vm-set-type VirtualMachineScaleSets \
+    --zones 1 2 3
+```
+
+#### Enable pod security policy for new cluster
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-pod-security-policy \
+```
+
+#### Enable pod security policy for existing cluster
+*Examples:*
+```
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-pod-security-policy \
+```
+
+#### Disable pod security policy for existing cluster
+*Examples:*
+```
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --disable-pod-security-policy \
+```
+
+#### Enable cluster auto scaler for a node pool
+*Examples:*
+```
+az aks nodepool update \
+    -g MyResourceGroup \
+    -n nodepool1
+    --cluster-name MyManagedCluster \
+    --enable-cluster-autoscaler \
+    --max-count 10 \
+    --min-count 3
+```
+
+#### Update cluster auto scaler settings for a node pool
+*Examples:*
+```
+az aks nodepool update \
+    -g MyResourceGroup \
+    -n nodepool1
+    --cluster-name MyManagedCluster \
+    --update-cluster-autoscaler \
+    --max-count 10 \
+    --min-count 3
+```
+
+#### Create aks cluster whose cluster resource group will be managed by a managed identity (instead of a service principal)
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-managed-identity
 ```

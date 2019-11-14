@@ -49,3 +49,7 @@ def cf_events(cli_ctx, _, subscription=None):
 
 def cf_components(cli_ctx, _, subscription=None):
     return applicationinsights_mgmt_plane_client(cli_ctx, _, subscription=subscription).components
+
+
+def cf_api_key(cli_ctx, _, subscription=None):
+    return applicationinsights_mgmt_plane_client(cli_ctx, _, subscription=subscription).api_keys

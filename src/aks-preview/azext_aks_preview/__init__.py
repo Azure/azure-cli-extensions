@@ -16,13 +16,12 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_MGMT_AKS_PREVIEW, '2019-02-01')
+        register_resource_type('latest', CUSTOM_MGMT_AKS_PREVIEW, '2019-10-01')
 
         acs_custom = CliCommandType(operations_tmpl='azext_aks_preview.custom#{}')
         super(ContainerServiceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                              custom_command_type=acs_custom,
-                                                             resource_type=CUSTOM_MGMT_AKS_PREVIEW,
-                                                             min_profile='2017-03-10-profile')
+                                                             resource_type=CUSTOM_MGMT_AKS_PREVIEW)
 
     def load_command_table(self, args):
         super(ContainerServiceCommandsLoader, self).load_command_table(args)
@@ -31,8 +30,12 @@ class ContainerServiceCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        # super(ContainerServiceCommandsLoader, self).load_arguments(command)
-        super().load_arguments(command)
+        from sys import version_info
+        if version_info[0] < 3:
+            super(ContainerServiceCommandsLoader, self).load_arguments(command)
+        else:
+            super().load_arguments(command)
+
         from ._params import load_arguments
         load_arguments(self, command)
 
