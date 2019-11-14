@@ -106,19 +106,17 @@ def _install_dev_spaces_cli(force_install, do_not_prompt):
         setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
         setup_url = "https://aka.ms/get-azds-mac-az"
         setup_args = ['bash', setup_file]
-        if do_not_prompt:
-            setup_args.append('-y')
     elif system == 'Linux':
         # Linux
         azds_cli = 'azds'
         setup_file = os.path.join(_create_tmp_dir(), 'azds-linux-setup.sh')
         setup_url = "https://aka.ms/get-azds-linux-az"
         setup_args = ['bash', setup_file]
-        if do_not_prompt:
-            setup_args.append('-y')
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 
+    if do_not_prompt:
+        setup_args.append('-y')
     should_install_azds = force_install | (not _is_dev_spaces_installed(azds_cli))
 
     if should_install_azds:
