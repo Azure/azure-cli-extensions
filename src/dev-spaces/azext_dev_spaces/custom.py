@@ -63,7 +63,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, do_not_prompt=False
     :type do_not_prompt: bool
     """
 
-    azds_cli = _install_dev_spaces_cli(False)
+    azds_cli = _install_dev_spaces_cli(False, do_not_prompt)
 
     remove_command_arguments = [azds_cli, 'remove', '--name', cluster_name,
                                 '--resource-group', resource_group_name]
