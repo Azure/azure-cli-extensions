@@ -23,8 +23,6 @@ import time
 import uuid
 import base64
 import webbrowser
-from ipaddress import ip_network
-from distutils.version import StrictVersion  # pylint: disable=no-name-in-module,import-error
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
 from six.moves.urllib.error import URLError  # pylint: disable=import-error
 import requests
@@ -34,7 +32,7 @@ from knack.prompting import prompt_pass, NoTTYException
 
 import yaml  # pylint: disable=import-error
 from dateutil.relativedelta import relativedelta  # pylint: disable=import-error
-from dateutil.parser import parser  # pylint: disable=import-error
+from dateutil.parser import parse  # pylint: disable=import-error
 from msrestazure.azure_exceptions import CloudError
 
 import colorama  # pylint: disable=import-error
@@ -74,6 +72,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
+from ._helpers import _populate_api_server_access_profile, _set_load_balancer_sku, _set_vm_set_type
 
 
 logger = get_logger(__name__)
@@ -303,12 +302,12 @@ def _build_application_creds(password=None, key_value=None, key_type=None,
     if not start_date:
         start_date = datetime.datetime.utcnow()
     elif isinstance(start_date, str):
-        start_date = parser.parse(start_date)
+        start_date = parse(start_date)
 
     if not end_date:
         end_date = start_date + relativedelta(years=1)
     elif isinstance(end_date, str):
-        end_date = parser.parse(end_date)
+        end_date = parse(end_date)
 
     key_type = key_type or 'AsymmetricX509Cert'
     key_usage = key_usage or 'Verify'
@@ -491,7 +490,7 @@ def _resolve_role_id(role, scope, definitions_client):
         role_defs = list(definitions_client.list(scope, "roleName eq '{}'".format(role)))
         if not role_defs:
             raise CLIError("Role '{}' doesn't exist.".format(role))
-        elif len(role_defs) > 1:
+        if len(role_defs) > 1:
             ids = [r.id for r in role_defs]
             err = "More than one role matches the given name '{}'. Please pick a value from '{}'"
             raise CLIError(err.format(role, ids))
@@ -678,8 +677,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                attach_acr=None,
                enable_private_cluster=False,
                enable_managed_identity=False,
+               api_server_authorized_ip_ranges=None,
                no_wait=False):
-
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -704,32 +703,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                            format(vm_set_type))
         vm_set_type = "VirtualMachineScaleSets"
 
-    # NOTE: keep for future default behavior change
-    if not vm_set_type:
-        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
-            print('Setting vm_set_type to availabilityset as it is \
-            not specified and kubernetes version(%s) less than 1.12.9 only supports \
-            availabilityset\n' % (kubernetes_version))
-            vm_set_type = "AvailabilitySet"
+    vm_set_type = _set_vm_set_type(vm_set_type, kubernetes_version)
+    load_balancer_sku = _set_load_balancer_sku(load_balancer_sku, kubernetes_version)
 
-    if not vm_set_type:
-        vm_set_type = "VirtualMachineScaleSets"
-
-    # normalize as server validation is case-sensitive
-    if vm_set_type.lower() == "AvailabilitySet".lower():
-        vm_set_type = "AvailabilitySet"
-
-    if vm_set_type.lower() == "VirtualMachineScaleSets".lower():
-        vm_set_type = "VirtualMachineScaleSets"
-
-    if not load_balancer_sku:
-        if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
-            print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
-            version(%s) less than 1.13.0 only supports basic load balancer SKU\n' % (kubernetes_version))
-            load_balancer_sku = "basic"
-
-    if not load_balancer_sku:
-        load_balancer_sku = "standard"
+    if api_server_authorized_ip_ranges and load_balancer_sku == "basic":
+        raise CLIError('--api-server-authorized-ip-ranges can only be used with standard load balancer')
 
     agent_pool_profile = ManagedClusterAgentPoolProfile(
         name=_trim_nodepoolname(nodepool_name),  # Must be 12 chars or less before ACS RP adds to it
@@ -849,16 +827,25 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     if all([disable_rbac, enable_rbac]):
         raise CLIError('specify either "--disable-rbac" or "--enable-rbac", not both.')
 
+    api_server_access_profile = None
+    if api_server_authorized_ip_ranges:
+        api_server_access_profile = _populate_api_server_access_profile(api_server_authorized_ip_ranges)
+
     identity = None
     if enable_managed_identity:
         identity = ManagedClusterIdentity(
             type="SystemAssigned"
         )
+
+    enable_rbac = True
+    if disable_rbac:
+        enable_rbac = False
+
     mc = ManagedCluster(
         location=location, tags=tags,
         dns_prefix=dns_name_prefix,
         kubernetes_version=kubernetes_version,
-        enable_rbac=False if disable_rbac else True,
+        enable_rbac=enable_rbac,
         agent_pool_profiles=[agent_pool_profile],
         linux_profile=linux_profile,
         windows_profile=windows_profile,
@@ -867,7 +854,8 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         addon_profiles=addon_profiles,
         aad_profile=aad_profile,
         enable_pod_security_policy=bool(enable_pod_security_policy),
-        identity=identity)
+        identity=identity,
+        api_server_access_profile=api_server_access_profile)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -907,14 +895,19 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                disable_pod_security_policy=False,
                attach_acr=None,
                detach_acr=None):
-    update_flags = enable_cluster_autoscaler + disable_cluster_autoscaler + update_cluster_autoscaler
+    update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_lb_profile = load_balancer_managed_outbound_ip_count is not None or \
         load_balancer_outbound_ips is not None or load_balancer_outbound_ip_prefixes is not None
+    update_pod_security = enable_pod_security_policy or disable_pod_security_policy
+
     # pylint: disable=too-many-boolean-expressions
-    if update_flags != 1 and api_server_authorized_ip_ranges is None and \
-       (enable_pod_security_policy is False and disable_pod_security_policy is False) and \
-            update_acr is False and not update_lb_profile:
+    if not update_autoscaler and \
+       not update_acr and \
+       not update_lb_profile \
+       and api_server_authorized_ip_ranges is None and \
+       not update_pod_security and \
+       not update_lb_profile:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -928,8 +921,9 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                        '"--load-balancer-outbound-ip-prefixes"')
 
     instance = client.get(resource_group_name, name)
-    if update_flags > 0 and len(instance.agent_pool_profiles) > 1:
-        raise CLIError('There are more than one node pool in the cluster. Please use "az aks nodepool" command '
+
+    if update_autoscaler and len(instance.agent_pool_profiles) > 1:
+        raise CLIError('There is more than one node pool in the cluster. Please use "az aks nodepool" command '
                        'to update per node pool auto scaler settings')
 
     node_count = instance.agent_pool_profiles[0].count
@@ -938,6 +932,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
         if enable_cluster_autoscaler or update_cluster_autoscaler:
             raise CLIError('Please specifying both min-count and max-count when --enable-cluster-autoscaler or '
                            '--update-cluster-autoscaler set.')
+
     if min_count is not None and max_count is not None:
         if int(min_count) > int(max_count):
             raise CLIError('value of min-count should be less than or equal to value of max-count.')
@@ -976,6 +971,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
 
     if enable_pod_security_policy:
         instance.enable_pod_security_policy = True
+
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
 
@@ -986,18 +982,6 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
 
     if load_balancer_profile:
         instance.network_profile.load_balancer_profile = load_balancer_profile
-
-    if api_server_authorized_ip_ranges is not None:
-        instance.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
-            authorized_ip_ranges=[]
-        )
-        if api_server_authorized_ip_ranges != "":
-            for ip in api_server_authorized_ip_ranges.split(','):
-                try:
-                    ip_net = ip_network(ip)
-                    instance.api_server_access_profile.authorized_ip_ranges.append(ip_net.with_prefixlen)
-                except ValueError:
-                    raise CLIError('IP addresses or CIDRs should be provided for authorized IP ranges.')
 
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
@@ -1019,6 +1003,11 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
                         acr_name_or_id=detach_acr,
                         subscription_id=subscription_id,
                         detach=True)
+
+    # empty string is valid as it disables ip whitelisting
+    if api_server_authorized_ip_ranges is not None:
+        instance.api_server_access_profile = \
+            _populate_api_server_access_profile(api_server_authorized_ip_ranges, instance)
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
@@ -1064,12 +1053,12 @@ def aks_get_credentials(cmd, client, resource_group_name, name, admin=False,
 
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
-    else:
-        try:
-            kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
-            _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
-        except (IndexError, ValueError):
-            raise CLIError("Fail to find kubeconfig file.")
+
+    try:
+        kubeconfig = credentialResults.kubeconfigs[0].value.decode(encoding='UTF-8')
+        _print_or_merge_credentials(path, kubeconfig, overwrite_existing)
+    except (IndexError, ValueError):
+        raise CLIError("Fail to find kubeconfig file.")
 
 
 ADDONS = {
@@ -2120,8 +2109,6 @@ def load_kubernetes_configuration(filename):
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
             raise CLIError('{} does not exist'.format(filename))
-        else:
-            raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
