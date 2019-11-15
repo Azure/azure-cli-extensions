@@ -28,7 +28,7 @@ class DomainTopic(Resource):
      Possible values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :type provisioning_state: str or
-     ~azure.mgmt.eventgrid.models.DomainTopicProvisioningState
+     ~microsoft.azure.management.eventgrid.models.DomainTopicProvisioningState
     """
 
     _validation = {

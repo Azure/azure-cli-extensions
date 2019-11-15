@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from __future__ import unicode_literals
 import os
 import os.path
 import re
@@ -104,14 +105,31 @@ def validate_nodes_count(namespace):
 
 
 def validate_ip_ranges(namespace):
-    if namespace.api_server_authorized_ip_ranges is not None:
-        if namespace.api_server_authorized_ip_ranges == '':
-            return
-        for ip in namespace.api_server_authorized_ip_ranges.split(','):
-            try:
-                ip_network(ip)
-            except ValueError:
-                raise CLIError("--api-server-authorized-ip-ranges should be list of IPv4 addresses or CIDRs")
+    if not namespace.api_server_authorized_ip_ranges:
+        return
+
+    restrict_traffic_to_agentnodes = "0.0.0.0/32"
+    allow_all_traffic = ""
+    ip_ranges = [ip.strip() for ip in namespace.api_server_authorized_ip_ranges.split(",")]
+
+    if restrict_traffic_to_agentnodes in ip_ranges and len(ip_ranges) > 1:
+        raise CLIError(("Setting --api-server-authorized-ip-ranges to 0.0.0.0/32 is not allowed with other IP ranges."
+                        "Refer to https://aka.ms/aks/whitelist for more details"))
+
+    if allow_all_traffic in ip_ranges and len(ip_ranges) > 1:
+        raise CLIError("--api-server-authorized-ip-ranges cannot be disabled and simultaneously enabled")
+
+    for ip in ip_ranges:
+        if ip in [restrict_traffic_to_agentnodes, allow_all_traffic]:
+            continue
+        try:
+            ip = ip_network(ip)
+            if not ip.is_global:
+                raise CLIError("--api-server-authorized-ip-ranges must be global non-reserved addresses or CIDRs")
+            if ip.version == 6:
+                raise CLIError("--api-server-authorized-ip-ranges cannot be IPv6 addresses")
+        except ValueError:
+            raise CLIError("--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
 
 def validate_nodepool_name(namespace):
@@ -190,3 +208,8 @@ def validate_eviction_policy(namespace):
         if namespace.eviction_policy != "Delete" and \
                 namespace.eviction_policy != "Deallocate":
             raise CLIError("--eviction-policy can only be Delete or Deallocate")
+
+
+def validate_acr(namespace):
+    if namespace.attach_acr and namespace.detach_acr:
+        raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')

@@ -18,6 +18,14 @@ helps['storage account create'] = """
           text: az storage account create -n MyStorageAccount -g MyResourceGroup -l westus --sku Standard_LRS
 """
 
+helps['storage account keys list'] = """
+type: command
+short-summary: List the access keys or Kerberos keys (if active directory enabled) for a storage account.
+examples:
+  - name: List the access keys for a storage account.
+    text: az storage account keys list -g MyResourceGroup -n MyStorageAccount
+"""
+
 helps['storage account update'] = """
     type: command
     short-summary: Update the properties of a storage account.
@@ -112,6 +120,47 @@ helps['storage azcopy run-command'] = """
     short-summary: Run a command directly using the AzCopy CLI. Please use SAS tokens for authentication.
 """
 
+helps['storage blob access'] = """
+    type: group
+    short-summary: Manage the access control properties of a blob when Hierarchical Namespace is enabled
+"""
+
+helps['storage blob access set'] = """
+    type: command
+    short-summary: Set the access control properties of a blob.
+    examples:
+        - name: Set the access control properties of a blob.
+          text: az storage blob access set -a "user::rwx,group::r--,other::---" -b MyBlob -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob access show'] = """
+    type: command
+    short-summary: Show the access control properties of a blob.
+    examples:
+        - name: Show the access control properties of a blob.
+          text: az storage blob access show -b MyBlob -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob access update'] = """
+    type: command
+    short-summary: Update the access control properties of a blob.
+    examples:
+        - name: Update the access permissions of a blob.
+          text: az storage blob access update --permissions "rwxrwxrwx" -b MyBlob -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning user of a blob.
+          text: az storage blob access update --owner [entityId/UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning group of a blob.
+          text: az storage blob access update --group [entityId/UPN] -b MyBlob -c MyContainer --account-name MyStorageAccount
+"""
+
+helps['storage blob move'] = """
+    type: command
+    short-summary: Move a blob in a storage container.
+    examples:
+        - name: Move a blob in a storage container.
+          text: az storage blob move -c MyContainer -d DestinationBlobPath -s SourceBlobPath --account-name MyStorageAccount
+"""
+
 helps['storage blob directory'] = """
     type: group
     short-summary: Manage blob directories in storage account container.
@@ -143,8 +192,12 @@ helps['storage blob directory access update'] = """
     type: command
     short-summary: Update the access control properties of a directory.
     examples:
-        - name: Update the access control properties of a directory.
+        - name: Update the access permissions of a directory.
           text: az storage blob directory access update --permissions "rwxrwxrwx" -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning user of a directory.
+          text: az storage blob directory access update --owner [entityId/UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
+        - name: Update the owning group of a directory.
+          text: az storage blob directory access update --group [entityId/UPN] -d MyDirectoryPath -c MyContainer --account-name MyStorageAccount
 """
 
 helps['storage blob directory create'] = """
@@ -235,7 +288,7 @@ helps['storage blob directory show'] = """
     short-summary: Show a storage blob directory properties in a storage container.
     examples:
         - name: Show a storage blob directory properties in a storage container.
-          text: az storage blob show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+          text: az storage blob directory show -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
 """
 
 helps['storage blob directory upload'] = """
@@ -244,8 +297,8 @@ helps['storage blob directory upload'] = """
     examples:
         - name: Upload a single blob to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d directory
-        - name: Upload a directory to a container.
+        - name: Upload a local directory to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory" -d directory --recursive
-        - name: Upload the contents of a directory to a container.
-          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory/*" -d directory --recursive
+        - name: Upload a set of files in a local directory to a storage blob directory.
+          text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file*" -d directory --recursive
 """

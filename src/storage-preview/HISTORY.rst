@@ -7,6 +7,7 @@
 ++++++++++++++++
 * Integrate Azcopy v10.3.1
 * Add `az storage blob directory` command group
+* Add blob move command and blob access command group
 
 0.2.8 (2019-7-5)
 ++++++++++++++++

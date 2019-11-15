@@ -114,31 +114,26 @@ The secondary cluster will become the primary cluster after failover. Please und
         client_factory=adls_blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
-    # New commands for ADLS Gen2
-    # Blob Pipeline
+    # New Blob Commands
     with self.command_group('storage blob', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        from ._format import transform_blob_output
-        from ._transformers import transform_storage_list_output
-        g.storage_custom_command_oauth('move', 'rename_directory')
-        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
-                                table_transformer=transform_blob_output)
-        g.storage_custom_command_oauth('show', 'show_blob')
+        g.storage_command_oauth('move', 'rename_path', is_preview=True)
 
     with self.command_group('storage blob access', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
-        g.storage_custom_command_oauth('set', 'rename_directory')
-        g.storage_custom_command_oauth('update', 'show_blob')
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS, is_preview=True) as g:
+        g.storage_command_oauth('set', 'set_path_access_control')
+        g.storage_command_oauth('update', 'set_path_access_control')
+        g.storage_command_oauth('show', 'get_path_access_control')
 
-    # Blob directory Pipeline
+    # Blob directory Commands Group
     with self.command_group('storage blob directory', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
-                            resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:
+                            resource_type=CUSTOM_DATA_STORAGE_ADLS, is_preview=True) as g:
         from ._format import transform_blob_output
         from ._transformers import (transform_storage_list_output, create_boolean_result_output_transformer)
         g.storage_command_oauth('create', 'create_directory')
@@ -153,12 +148,12 @@ The secondary cluster will become the primary cluster after failover. Please und
             'metadata show', 'get_blob_metadata', exception_handler=show_exception_handler)
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
-    with self.command_group('storage blob directory',
-                            custom_command_type=get_custom_sdk('azcopy', blob_data_service_factory)) as g:
+    with self.command_group('storage blob directory', is_preview=True,
+                            custom_command_type=get_custom_sdk('azcopy', blob_data_service_factory))as g:
         g.storage_custom_command_oauth('upload', 'storage_blob_upload')
         g.storage_custom_command_oauth('download', 'storage_blob_download')
 
-    with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk,
+    with self.command_group('storage blob directory access', command_type=adls_base_blob_sdk, is_preview=True,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
                                                                CUSTOM_DATA_STORAGE_ADLS),
                             resource_type=CUSTOM_DATA_STORAGE_ADLS) as g:

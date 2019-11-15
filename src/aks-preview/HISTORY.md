@@ -2,6 +2,15 @@
 
 Release History
 ===============
+0.4.23
++++++
+* Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
+
+0.4.21
++++++
+* Support cluster certificate rotation operation using `az aks rotate-certs`
+* Add support for `az aks kanalyze`
+
 0.4.20
 +++++
 * Add commands '--zones' and '-z' for availability zones in aks
