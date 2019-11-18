@@ -276,7 +276,7 @@ az storage blob directory metadata update --metadata tag1=value1 -c MyContainer 
 ###### Manage permissions
 - Get ACLs of a directory or file 
 ```
-az storage blob access show -d my-directory -c my-file-system --account-name mystorageaccount
+az storage blob directory access show -d my-directory -c my-file-system --account-name mystorageaccount
 
 az storage blob access show -b my-directory/upload.txt -c my-file-system --account-name mystorageaccount
 ```
@@ -300,7 +300,7 @@ az storage blob access update --owner [entityId/UPN] -b my-directory/upload.txt 
 ```
 - Update owning group  of a directory or file
 ```
-az storage blob access update --group [entityId/UPN] -d my-directory -c my-file-system --account-name mystorageaccount
+az storage blob directory access update --group [entityId/UPN] -d my-directory -c my-file-system --account-name mystorageaccount
 
 az storage blob access update --group [entityId/UPN] -b my-directory/upload.txt -c my-file-system --account-name mystorageaccount
 ```
