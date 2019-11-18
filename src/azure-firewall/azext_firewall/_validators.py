@@ -117,10 +117,6 @@ def validate_af_nat_rule(namespace):
     return namespace
 
 
-def validate_af_application_rule(namespace):
-    return namespace
-
-
 def validate_rule_group_collection(namespace):
     from knack.util import CLIError
     if namespace.target_fqdns is not None and namespace.fqdn_tags is not None:
