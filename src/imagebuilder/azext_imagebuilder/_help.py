@@ -57,7 +57,7 @@ helps['imagebuilder delete'] = """
 
 helps['imagebuilder list'] = """
     type: command
-    short-summary: List all run outputs for the specified Image Template resource
+    short-summary: Gets information about the VM image templates associated with the specified resource group.
     examples:
       - name: List images by subscription.
         text: |-
@@ -67,8 +67,7 @@ helps['imagebuilder list'] = """
                az imagebuilder list --resource-group "myResourceGroup"
       - name: Retrieve a list of all outputs created by the last run of an Image Template
         text: |-
-               az imagebuilder list --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate"
+               az imagebuilder list --resource-group "myResourceGroup"
 """
 
 helps['imagebuilder show'] = """
@@ -83,6 +82,36 @@ helps['imagebuilder show'] = """
         text: |-
                az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
                "myImageTemplate"
+"""
+
+helps['imagebuilder run'] = """
+    type: command
+    short-summary: Create artifacts from a existing image template
+    examples:
+      - name: Create image(s) from existing imageTemplate.
+        text: |-
+               az imagebuilder run --resource-group "myResourceGroup" --image-template-name \\
+               "myImageTemplate"
+"""
+
+helps['imagebuilder list_run_outputs'] = """
+    type: command
+    short-summary: List all run outputs for the specified Image Template resource
+    examples:
+      - name: Retrieve a list of all outputs created by the last run of an Image Template
+        text: |-
+               az imagebuilder list_run_outputs --resource-group "myResourceGroup" --image-template-name \\
+               "myImageTemplate"
+"""
+
+helps['imagebuilder get_run_output'] = """
+    type: command
+    short-summary: Get the specified run output for the specified image template resource
+    examples:
+      - name: Retrieve single runOutput
+        text: |-
+               az imagebuilder get_run_output --resource-group "myResourceGroup" --image-template-name \\
+               "myImageTemplate" --name "myManagedImageOutput"
 """
 
 helps['imagebuilder'] = """

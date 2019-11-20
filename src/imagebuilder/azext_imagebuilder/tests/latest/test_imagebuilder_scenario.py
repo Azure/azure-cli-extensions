@@ -63,7 +63,11 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
         self.cmd('az imagebuilder list',
                  checks=[])
 
-        # EXAMPLE NOT FOUND: Create image(s) from existing imageTemplate.
+        self.cmd('az imagebuilder Run '
+                 '--resource-group {rg} '
+                 '--image-template-name "myImageTemplate"',
+                 checks=[])
+
         self.cmd('az imagebuilder update '
                  '--resource-group {rg} '
                  '--image-template-name "myImageTemplate" '

@@ -22,6 +22,9 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_imagebuilder')
         g.custom_command('list', 'list_imagebuilder')
         g.custom_command('show', 'get_imagebuilder')
+        g.custom_command('run', 'run_imagebuilder')
+        g.custom_command('list_run_outputs', 'list_run_outputs_imagebuilder')
+        g.custom_command('get_run_output', 'get_run_output_imagebuilder')
 
     from ._client_factory import cf_operations
     imagebuilder_operations = CliCommandType(

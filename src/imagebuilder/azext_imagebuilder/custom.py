@@ -75,19 +75,33 @@ def delete_imagebuilder(cmd, client,
 
 
 def list_imagebuilder(cmd, client,
-                      resource_group,
-                      image_template_name):
-    if resource_group is not None and image_template_name is not None:
-        return client.list_run_outputs(resource_group_name=resource_group, image_template_name=image_template_name)
-    elif resource_group is not None:
-        return client.list_by_resource_group(resource_group_name=resource_group)
-    return client.list()
+                      resource_group):
+    return client.list_by_resource_group(resource_group_name=resource_group)
 
 
 def get_imagebuilder(cmd, client,
                      resource_group,
                      image_template_name):
     return client.get(resource_group_name=resource_group, image_template_name=image_template_name)
+
+
+def run_imagebuilder(cmd, client,
+                     resource_group,
+                     image_template_name):
+    return client.run(resource_group_name=resource_group, image_template_name=image_template_name)
+
+
+def list_run_outputs_imagebuilder(cmd, client,
+                                  resource_group,
+                                  image_template_name):
+    return client.list_run_outputs(resource_group_name=resource_group, image_template_name=image_template_name)
+
+
+def get_run_output_imagebuilder(cmd, client,
+                                resource_group,
+                                image_template_name,
+                                name):
+    return client.get_run_output(resource_group_name=resource_group, image_template_name=image_template_name, run_output_name=name)
 
 
 def list_imagebuilder(cmd, client):
