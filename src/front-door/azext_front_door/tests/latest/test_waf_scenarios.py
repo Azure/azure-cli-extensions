@@ -39,7 +39,6 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         subscription = self.current_subscription()
         blockpolicy = self.create_random_name(prefix='cli', length=24)
         ruleName = self.create_random_name(prefix='cli', length=24)
-        frontdoorName = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --mode prevention'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(result['name'], blockpolicy)
@@ -168,7 +167,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         """
 Example command sequence:
 az network front-door waf-policy create --resource-group {resource_group} --name {policyName}
-az network front-door waf-policy rule create  -g {resource_group} --policy-name {policyName} -n {ruleName} --priority 6 --rule-type MatchRule --action Block --match-condition RequestBody RegEx "something"
+az network front-door waf-policy rule create  -g {resource_group} --policy-name {policyName} -n {ruleName} --priority 6 --rule-type MatchRule --action Block --match-variable RequestBody --operator RegEx --values "something"
 az network front-door create  --resource-group {resource_group} --backend-address www.example.com --name {frontdoorName}
 # wait two minutes
 az network front-door update --name {frontdoorName}--resource-group {resource_group} --set "FrontendEndpoints[0].WebApplicationFirewallPolicyLink.id=/subscriptions/{subscriptionId}/resourcegroups/{resource_group}/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/{policyName}"
@@ -213,12 +212,17 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
             import requests
 
             import time
-            time.sleep(480)
+            elapsed_seconds = 0
+            while elapsed_seconds < 900:
+                r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
+                if(r.status_code == 403):
+                    break
+                time.sleep(10)
+                elapsed_seconds += 10
+            self.assertEqual(r.status_code, 403)
+
             r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
             self.assertEqual(r.status_code, 200)
-
-            r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'something'")
-            self.assertEqual(r.status_code, 403)
 
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_managed_rules(self, resource_group):
@@ -419,3 +423,138 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         cmd = 'az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(len(result), 2)
+
+    @ResourceGroupPreparer(location='westus')
+    def test_waf_exclusions(self, resource_group):
+        # multi-line comment below
+        """
+  az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --match-variable {match_variable} --operator {operator} --value {value}
+  az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --match-variable {match_variable} --operator {operator} --value {value}
+  az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type}
+  az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --match-variable {match_variable} --operator {operator} --value {value}
+  az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --match-variable {match_variable} --operator {operator} --value {value}
+  az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group}
+  az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --rule-id {ruleid} --match-variable {match_variable} --operator {operator} --value {value}
+  az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --rule-id {ruleid} --match-variable {match_variable} --operator {operator} --value {value}
+  az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rule_group} --rule-id {ruleid}
+"""
+        subscription = self.current_subscription()
+        policyName = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {policyName} --mode prevention'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['name'], policyName)
+        self.assertEqual(result['policySettings']['mode'], "Prevention")
+        self.assertIn('customRules', result)
+        self.assertIn('managedRules', result)
+        self.assertIn('id', result)
+
+        type = "DefaultRuleSet"
+        version = "1.0"
+        cmd = 'az network front-door waf-policy managed-rules add -g {resource_group} --policy-name {policyName} --type {type} --version {version}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertIn('managedRules', result)
+        self.assertEqual(result['managedRules']['managedRuleSets'][0]['ruleSetType'], type)
+
+        matchVariable = "RequestHeaderNames"
+        op = "Contains"
+        selector = "ignoreme"
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 0)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --match-variable {matchVariable} --operator {op} --value {selector}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        exclusions = result['managedRules']['managedRuleSets'][0]['exclusions']
+        self.assertEqual(exclusions[0]["matchVariable"], matchVariable)
+        self.assertEqual(exclusions[0]["selectorMatchOperator"], op)
+        self.assertEqual(exclusions[0]["selector"], selector)
+        exclusions = None
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        exclusions = result
+        self.assertEqual(len(exclusions), 1)
+        self.assertEqual(exclusions[0]["matchVariable"], matchVariable)
+        self.assertEqual(exclusions[0]["selectorMatchOperator"], op)
+        self.assertEqual(exclusions[0]["selector"], selector)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --match-variable {matchVariable} --operator {op} --value {selector}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        exclusions = result['managedRules']['managedRuleSets'][0]['exclusions']
+        self.assertEqual(len(exclusions), 0)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 0)
+
+        rulegroupid = "SQLI"
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid}'.format(**locals())
+        try:
+            result = self.cmd(cmd)
+            self.fail("should throw exception")
+        except CLIError as e:
+            self.assertEqual(str(e), "rule group 'SQLI' not found")
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --match-variable {matchVariable} --operator {op} --value {selector}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        ruleGroupOverride = result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides'][0]
+        self.assertEqual(rulegroupid, ruleGroupOverride["ruleGroupName"])
+        exclusions = ruleGroupOverride['exclusions']
+        self.assertEqual(len(exclusions), 1)
+        self.assertEqual(exclusions[0]["matchVariable"], matchVariable)
+        self.assertEqual(exclusions[0]["selectorMatchOperator"], op)
+        self.assertEqual(exclusions[0]["selector"], selector)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        exclusions = result
+        self.assertEqual(len(exclusions), 1)
+        self.assertEqual(exclusions[0]["matchVariable"], matchVariable)
+        self.assertEqual(exclusions[0]["selectorMatchOperator"], op)
+        self.assertEqual(exclusions[0]["selector"], selector)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --match-variable {matchVariable} --operator {op} --value {selector}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        ruleGroupOverride = result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides'][0]
+        self.assertEqual(ruleGroupOverride["ruleGroupName"], rulegroupid)
+        exclusions = ruleGroupOverride['exclusions']
+        self.assertEqual(len(exclusions), 0)
+
+        ruleid = "942100"
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid} '.format(**locals())
+        try:
+            result = self.cmd(cmd)
+            self.fail("should throw exception")
+        except CLIError as e:
+            self.assertEqual(str(e), "rule '942100' not found")
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion add -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid}  --rule-id {ruleid} --match-variable {matchVariable} --operator {op} --value {selector}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        ruleOverride = result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides'][0]["rules"][0]
+        self.assertEqual(ruleOverride["ruleId"], ruleid)
+        exclusions = ruleOverride['exclusions']
+        self.assertEqual(len(exclusions), 1)
+        self.assertEqual(exclusions[0]["matchVariable"], matchVariable)
+        self.assertEqual(exclusions[0]["selectorMatchOperator"], op)
+        self.assertEqual(exclusions[0]["selector"], selector)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid} '.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        exclusions = result
+        self.assertEqual(len(exclusions), 1)
+        self.assertEqual(exclusions[0]["matchVariable"], matchVariable)
+        self.assertEqual(exclusions[0]["selectorMatchOperator"], op)
+        self.assertEqual(exclusions[0]["selector"], selector)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion remove -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid}  --rule-id {ruleid} --match-variable {matchVariable} --operator {op} --value {selector}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        ruleOverride = result['managedRules']['managedRuleSets'][0]['ruleGroupOverrides'][0]["rules"][0]
+        self.assertEqual(ruleOverride["ruleId"], ruleid)
+        exclusions = ruleOverride['exclusions']
+        self.assertEqual(len(exclusions), 0)
+
+        cmd = 'az network front-door waf-policy managed-rules exclusion list -g {resource_group} --policy-name {policyName} --type {type} --rule-group-id {rulegroupid} --rule-id {ruleid} '.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        exclusions = result
+        self.assertEqual(len(exclusions), 0)
