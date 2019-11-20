@@ -31,8 +31,9 @@ def load_command_table(self, _):
     )
 
     network_vwan_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2018_08_01.operations#VirtualWansOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2019_09_01.operations#VirtualWansOperations.{}',
         client_factory=cf_virtual_wans,
+        resource_type=CUSTOM_VHUB_ROUTE_TABLE,
         min_api='2018-08-01'
     )
 
