@@ -6,7 +6,7 @@
 
 def cf_imagebuilder(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.imagebuilder import ImageBuilderClient
+    from .vendored_sdks.image_builder_client import ImageBuilderClient
     return get_mgmt_service_client(cli_ctx, ImageBuilderClient)
 
 
