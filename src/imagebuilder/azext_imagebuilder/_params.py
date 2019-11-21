@@ -46,12 +46,12 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('image_template_name', id_part=None, help='The name of the image Template')
 
-    with self.argument_context('imagebuilder list') as c:
-        c.argument('resource_group', resource_group_name_type)
-
     with self.argument_context('imagebuilder show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('image_template_name', id_part=None, help='The name of the image Template')
+
+    with self.argument_context('imagebuilder list') as c:
+        c.argument('resource_group', resource_group_name_type)
 
     with self.argument_context('imagebuilder run') as c:
         c.argument('resource_group', resource_group_name_type)

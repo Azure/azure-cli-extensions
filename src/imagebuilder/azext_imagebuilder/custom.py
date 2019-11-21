@@ -74,15 +74,17 @@ def delete_imagebuilder(cmd, client,
     return client.delete(resource_group_name=resource_group, image_template_name=image_template_name)
 
 
-def list_imagebuilder(cmd, client,
-                      resource_group):
-    return client.list_by_resource_group(resource_group_name=resource_group)
-
-
 def get_imagebuilder(cmd, client,
                      resource_group,
                      image_template_name):
     return client.get(resource_group_name=resource_group, image_template_name=image_template_name)
+
+
+def list_imagebuilder(cmd, client,
+                      resource_group):
+    if resource_group is not None:
+        return client.list_by_resource_group(resource_group_name=resource_group)
+    return client.list()
 
 
 def run_imagebuilder(cmd, client,

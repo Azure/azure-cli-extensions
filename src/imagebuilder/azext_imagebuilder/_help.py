@@ -55,6 +55,20 @@ helps['imagebuilder delete'] = """
                "myImageTemplate"
 """
 
+helps['imagebuilder show'] = """
+    type: command
+    short-summary: Get information about a virtual machine image template
+    examples:
+      - name: Retrieve an Image Template.
+        text: |-
+               az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
+               "myImageTemplate"
+      - name: Retrieve single runOutput
+        text: |-
+               az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
+               "myImageTemplate"
+"""
+
 helps['imagebuilder list'] = """
     type: command
     short-summary: Gets information about the VM image templates associated with the specified resource group.
@@ -68,20 +82,6 @@ helps['imagebuilder list'] = """
       - name: Retrieve a list of all outputs created by the last run of an Image Template
         text: |-
                az imagebuilder list --resource-group "myResourceGroup"
-"""
-
-helps['imagebuilder show'] = """
-    type: command
-    short-summary: Get information about a virtual machine image template
-    examples:
-      - name: Retrieve an Image Template.
-        text: |-
-               az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate"
-      - name: Retrieve single runOutput
-        text: |-
-               az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate"
 """
 
 helps['imagebuilder run'] = """
