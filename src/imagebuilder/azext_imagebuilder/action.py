@@ -11,7 +11,7 @@ from knack.util import CLIError
 class ImageBuilderAddCustomize(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(PeeringAddDirectConnections, self).__call__(parser, namespace, action, option_string)
+        super(ImageBuilderAddCustomize, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -35,7 +35,7 @@ class ImageBuilderAddCustomize(argparse._AppendAction):
 class ImageBuilderAddDistribute(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        super(PeeringAddExchangeConnections, self).__call__(parser, namespace, action, option_string)
+        super(ImageBuilderAddDistribute, self).__call__(parser, namespace, action, option_string)
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
