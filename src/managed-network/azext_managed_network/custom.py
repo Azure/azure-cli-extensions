@@ -207,7 +207,7 @@ def create_managed_network_peering_policy(cmd, client,
                                           mesh=None):
     body = {}
     body['location'] = location  # str
-    body['type'] = _type  # str
+    body['type'] = policy_type  # str
     body.setdefault('hub', {})['id'] = hub_id  # str
     if spokes:
         body['spokes'] = [{'id': i} for i in spokes]
@@ -226,7 +226,7 @@ def update_managed_network_peering_policy(cmd, client,
                                           mesh=None):
     body = client.get(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name).as_dict()
     body.location = location  # str
-    body.type = _type  # str
+    body.type = policy_type  # str
     body.hub.id = hub_id  # str
     if spokes:
         body.spokes = [{'id': i} for i in spokes]
