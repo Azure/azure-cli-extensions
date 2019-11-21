@@ -19,7 +19,7 @@ from ._cogsvcs_utils import (
 logger = get_logger(__name__)
 
 
-def create_hack(cmd, name, runtime, database, location, ai=None):
+def create_hack(cmd, name, runtime, location, database=None, ai=None):
     # TODO: Update this to use a default location, or prompt??
     name = name + str(uuid4())[:5]
     # # Create RG
@@ -30,26 +30,33 @@ def create_hack(cmd, name, runtime, database, location, ai=None):
         logger.warning('Starting creation of Cognitive Services keys...')
         create_cogsvcs_key(cmd, name, location)
 
-    logger.warning("Starting database creation job...")
-    database = Database(cmd, database, name, location)
-    database_poller = database.create()
+    if database:
+        logger.warning("Starting database creation job...")
+        database = Database(cmd, database, name, location)
+        database_poller = database.create()
 
     logger.warning("Starting website creation job...")
     website = Website(cmd, name, location, runtime)
     website.create()
 
-    while True:
-        database_poller.result(15)
-        if database_poller.done():
-            break
+    if database:
+        # Wait for database to complete creation
+        while True:
+            database_poller.result(15)
+            if database_poller.done():
+                break
+    
+    app_settings = {}
 
-    app_settings = {
-        'DATABASE_HOST': database.host,
-        'DATABASE_NAME': database.name,
-        'DATABASE_PORT': database.port,
-        'DATABASE_USER': database.admin if database.database_type != 'mysql' else database.admin + '@' + database.name,
-        'DATABASE_PASSWORD': database.password,
-    }
+
+    if database:    
+        app_settings.update({
+            'DATABASE_HOST': database.host,
+            'DATABASE_NAME': database.name,
+            'DATABASE_PORT': database.port,
+            'DATABASE_USER': database.admin if database.database_type != 'mysql' else database.admin + '@' + database.name,
+            'DATABASE_PASSWORD': database.password,
+        })
 
     if ai:
         app_settings.update({

@@ -31,7 +31,7 @@ class HackExtCommandLoader(AzCommandsLoader):
                        options_list=['--database', '-d'],
                        help='Database type - { sql | mysql | cosmosdb }',
                        choices=['sql', 'mysql', 'cosmosdb'],
-                       default='sql',
+                       default=None,
                        type=str.lower)
             c.argument('runtime',
                        options_list=['--runtime', '-r'],
