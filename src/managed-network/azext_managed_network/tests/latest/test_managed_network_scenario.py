@@ -24,7 +24,7 @@ class ManagedNetworkScenarioTest(ScenarioTest):
 
         self.cmd('az managed-network create '
                  '--resource-group {rg} '
-                 '--name "MyManagedNetwork" '
+                 '--name "MyManagedNetworkABC" '
                  '--location westus',
                  checks=[])
 
@@ -48,7 +48,7 @@ class ManagedNetworkScenarioTest(ScenarioTest):
         # EXAMPLE NOT FOUND: ManagedNetworksGet
         self.cmd('az managed-network show '
                  '--resource-group {rg} '
-                 '--name "MyManagedNetwork"',
+                 '--name "MyManagedNetworkABC"',
                  checks=[])
         # EXAMPLE NOT FOUND: ManagedNetworksListByResourceGroup
         self.cmd('az managed-network list '
@@ -82,5 +82,5 @@ class ManagedNetworkScenarioTest(ScenarioTest):
 
         self.cmd('az managed-network delete '
                  '--resource-group {rg} '
-                 '--name "MyManagedNetwork"',
+                 '--name "MyManagedNetworkABC"',
                  checks=[])
