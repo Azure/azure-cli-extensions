@@ -13,8 +13,8 @@ from azure.cli.core.commands.parameters import (
     get_location_type
 )
 from azext_imagebuilder.action import (
-    PeeringAddCustomize,
-    PeeringAddDistribute
+    ImageBuilderAddCustomize,
+    ImageBuilderAddDistribute
 )
 
 
