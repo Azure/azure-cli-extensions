@@ -86,6 +86,12 @@ def list_managed_network(cmd, client,
     return client.list_by_subscription()
 
 
+def show_managed_network(cmd, client,
+                         resource_group,
+                         name):
+    return client.get(resource_group_name=resource_group, managed_network_name=name)
+
+
 def create_managed_network_scope_assignment(cmd, client,
                                             name,
                                             scope=None,
@@ -111,6 +117,12 @@ def delete_managed_network_scope_assignment(cmd, client,
 def list_managed_network_scope_assignment(cmd, client,
                                           scope=None):
     return client.list(scope=scope)
+
+
+def show_managed_network_scope_assignment(cmd, client,
+                                          name,
+                                          scope=None):
+    return client.get(scope=scope, scope_assignment_name=name)
 
 
 def create_managed_network_group(cmd, client,
@@ -177,6 +189,12 @@ def list_managed_network_group(cmd, client,
                                managed_network_name):
     return client.list_by_managed_network(resource_group_name=resource_group, managed_network_name=managed_network_name)
 
+def show_managed_network_group(cmd, client,
+                               resource_group,
+                               managed_network_name,
+                               name):
+    return client.get(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_group_name=name)
+
 
 def create_managed_network_peering_policy(cmd, client,
                                           resource_group,
@@ -227,3 +245,10 @@ def list_managed_network_peering_policy(cmd, client,
                                         resource_group,
                                         managed_network_name):
     return client.list_by_managed_network(resource_group_name=resource_group, managed_network_name=managed_network_name)
+
+
+def show_managed_network_peering_policy(cmd, client,
+                                        resource_group,
+                                        managed_network_name,
+                                        name):
+    return client.get(resource_group_name=resource_group, managed_network_name=managed_network_name, managed_network_peering_policy_name=name)

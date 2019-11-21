@@ -21,7 +21,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_managed_network')
         g.custom_command('delete', 'delete_managed_network')
         g.custom_command('list', 'list_managed_network')
-        g.show_command('show', 'get')
+        g.custom_command('show', 'show_managed_network')
 
     from ._client_factory import cf_scope_assignments
     managed_network_scope_assignments = CliCommandType(
@@ -32,7 +32,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_managed_network_scope_assignment')
         g.custom_command('delete', 'delete_managed_network_scope_assignment')
         g.custom_command('list', 'list_managed_network_scope_assignment')
-        g.show_command('show', 'get')
+        g.custom_command('show', 'show_managed_network_scope_assignment')
 
     from ._client_factory import cf_managed_network_groups
     managed_network_managed_network_groups = CliCommandType(
@@ -43,7 +43,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_managed_network_group')
         g.custom_command('delete', 'delete_managed_network_group')
         g.custom_command('list', 'list_managed_network_group')
-        g.show_command('show', 'get')
+        g.custom_command('show', 'show_managed_network_group')
 
     from ._client_factory import cf_managed_network_peering_policies
     managed_network_managed_network_peering_policies = CliCommandType(
@@ -54,4 +54,4 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_managed_network_peering_policy')
         g.custom_command('delete', 'delete_managed_network_peering_policy')
         g.custom_command('list', 'list_managed_network_peering_policy')
-        g.show_command('show', 'get')
+        g.custom_command('show', 'show_managed_network_peering_policy')
