@@ -26,8 +26,6 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--image-template-name "myImageTemplate" '
                  '--location "westus" '
-                 '--customize-name "Shell Customizer Example" '
-                 '--distribute-run-output-name "image_it_pir_1" '
                  '--vm-profile-vm-size "Standard_D2s_v3"',
                  checks=[])
 
@@ -35,8 +33,6 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--image-template-name "myImageTemplate" '
                  '--location "westus" '
-                 '--customize-name "Shell Customizer Example" '
-                 '--distribute-run-output-name "image_it_pir_1" '
                  '--vm-profile-vm-size "Standard_D2s_v3" '
                  '--type "UserAssigned"',
                  checks=[])

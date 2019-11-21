@@ -13,10 +13,9 @@ def create_imagebuilder(cmd, client,
                         resource_group,
                         image_template_name,
                         location,
-                        distribute_run_output_name,
+                        distribute,
                         tags=None,
-                        customize_name=None,
-                        distribute_artifact_tags=None,
+                        customize=None,
                         build_timeout_in_minutes=None,
                         vm_profile_vm_size=None,
                         _type=None,
@@ -24,9 +23,8 @@ def create_imagebuilder(cmd, client,
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body.setdefault('customize', {})['name'] = customize_name
-    body.setdefault('distribute', {})['run_output_name'] = distribute_run_output_name
-    body.setdefault('distribute', {})['artifact_tags'] = distribute_artifact_tags
+    body['customize'] = customize
+    body['distribute'] = distribute
     body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
     body.setdefault('vm_profile', {})['vm_size'] = vm_profile_vm_size  # str
     body.setdefault('identity', {})['type'] = _type  # str
@@ -39,9 +37,8 @@ def update_imagebuilder(cmd, client,
                         image_template_name,
                         location=None,
                         tags=None,
-                        customize_name=None,
-                        distribute_run_output_name=None,
-                        distribute_artifact_tags=None,
+                        customize=None,
+                        distribute=None,
                         build_timeout_in_minutes=None,
                         vm_profile_vm_size=None,
                         _type=None,
@@ -51,12 +48,10 @@ def update_imagebuilder(cmd, client,
         body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
-    if customize_name is not None:
-        body.setdefault('customize', {})['name'] = customize_name
-    if distribute_run_output_name is not None:
-        body.setdefault('distribute', {})['run_output_name'] = distribute_run_output_name
-    if distribute_artifact_tags is not None:
-        body.setdefault('distribute', {})['artifact_tags'] = distribute_artifact_tags
+    if customize is not None:
+        body['customize'] = customize
+    if distribute is not None:
+        body['distribute'] = distribute
     if build_timeout_in_minutes is not None:
         body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
     if vm_profile_vm_size is not None:

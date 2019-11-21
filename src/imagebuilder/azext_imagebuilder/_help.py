@@ -21,14 +21,12 @@ helps['imagebuilder create'] = """
       - name: Create an Image Template.
         text: |-
                az imagebuilder create --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate" --location "westus" --customize-name "Shell Customizer Example" \\
-               --distribute-run-output-name "image_it_pir_1" --vm-profile-vm-size "Standard_D2s_v3"
+               "myImageTemplate" --location "westus" --vm-profile-vm-size "Standard_D2s_v3"
       - name: Create an Image Template with a user assigned identity configured
         text: |-
                az imagebuilder create --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate" --location "westus" --customize-name "Shell Customizer Example" \\
-               --distribute-run-output-name "image_it_pir_1" --vm-profile-vm-size "Standard_D2s_v3" \\
-               --type "UserAssigned"
+               "myImageTemplate" --location "westus" --vm-profile-vm-size "Standard_D2s_v3" --type \\
+               "UserAssigned"
 """
 
 helps['imagebuilder update'] = """
