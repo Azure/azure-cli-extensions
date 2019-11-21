@@ -1,0 +1,1705 @@
+Modules:
+  - CommandGroup: image-template
+    ModuleName: azure_rm_imagebuildervirtualmachineimagetemplate
+    Options:
+      - NameSwagger: resourceGroupName
+        NameAnsible: resource_group
+        NamePythonSdk: resource_group_name
+        NameGoSdk: ResourceGroup
+        NameTerraform: resourceGroup
+        IdPortion: resourceGroups
+        Type: str
+        TypeNameGo: null
+        IsList: false
+        Required: true
+        Documentation: The name of the resource group.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: null
+        EnumValues: []
+        PathSwagger: ''
+        PathPython: null
+        PathGo: null
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: false
+        IncludeInResponse: false
+        format: ''
+        Kind: 0
+      - NameSwagger: parameters
+        NameAnsible: parameters
+        NamePythonSdk: parameters
+        NameGoSdk: Parameters
+        NameTerraform: Parameters
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateUpdateParameters
+        IsList: false
+        Required: !<tag:yaml.org,2002:js/undefined> ''
+        Documentation: Additional parameters for Image Template update.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: null
+        EnumValues: []
+        PathSwagger: ''
+        PathPython: null
+        PathGo: null
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: false
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 2
+      - NameSwagger: location
+        NameAnsible: location
+        NamePythonSdk: location
+        NameGoSdk: Location
+        NameTerraform: Location
+        IdPortion: null
+        Type: str
+        TypeNameGo: String
+        IsList: false
+        Required: true
+        Documentation: Resource location
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /location
+        PathPython: /location
+        PathGo: /location
+        DispositionSdk: /
+        DispositionRest: /
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: ''
+        Kind: 1
+      - NameSwagger: tags
+        NameAnsible: tags
+        NamePythonSdk: tags
+        NameGoSdk: Tags
+        NameTerraform: Tags
+        IdPortion: null
+        Type: >-
+          unknown[DictionaryType
+          {"$id":"460","$type":"DictionaryType","valueType":{"$id":"461","$type":"PrimaryType","knownPrimaryType":"string","name":{"$id":"462","fixed":false,"raw":"String"},"deprecated":false},"supportsAdditionalProperties":false,"name":{"$id":"463","fixed":false},"deprecated":false}]
+        TypeNameGo: >-
+          {"$id":"460","$type":"DictionaryType","valueType":{"$id":"461","$type":"PrimaryType","knownPrimaryType":"string","name":{"$id":"462","fixed":false,"raw":"String"},"deprecated":false},"supportsAdditionalProperties":false,"name":{"$id":"463","fixed":false},"deprecated":false}
+        IsList: false
+        Required: false
+        Documentation: The user-specified tags associated with the image template.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /tags
+        PathPython: /tags
+        PathGo: /tags
+        DispositionSdk: /
+        DispositionRest: /
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: properties
+        NameAnsible: properties
+        NamePythonSdk: properties
+        NameGoSdk: Properties
+        NameTerraform: Properties
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateProperties
+        IsList: false
+        Required: false
+        Documentation: The properties of the image template
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /properties
+        PathPython: ''
+        PathGo: /properties
+        DispositionSdk: /
+        DispositionRest: /
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: source
+        NameAnsible: source
+        NamePythonSdk: source
+        NameGoSdk: Source
+        NameTerraform: Source
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateSource
+        IsList: false
+        Required: true
+        Documentation: Specifies the properties used to describe the source image.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /properties/source
+        PathPython: /source
+        PathGo: /properties/source
+        DispositionSdk: /*
+        DispositionRest: /properties/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: customize
+        NameAnsible: customize
+        NamePythonSdk: customize
+        NameGoSdk: Customize
+        NameTerraform: Customize
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateCustomizer
+        IsList: true
+        Required: false
+        Documentation: >-
+          Specifies the properties used to describe the customization steps of
+          the image, like Image source etc
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions:
+          - NameSwagger: name
+            NameAnsible: name
+            NamePythonSdk: name
+            NameGoSdk: Name
+            NameTerraform: Name
+            IdPortion: null
+            Type: str
+            TypeNameGo: String
+            IsList: false
+            Required: false
+            Documentation: >-
+              Friendly Name to provide context on what this customization step
+              does
+            DefaultValue: null
+            IncludeInDocumentation: true
+            IncludeInArgSpec: true
+            NoLog: false
+            SubOptions: []
+            EnumValues: []
+            PathSwagger: /properties/customize/name
+            PathPython: /customize/name
+            PathGo: /properties/customize/name
+            DispositionSdk: '*'
+            DispositionRest: '*'
+            Comparison: ''
+            Updatable: true
+            ExampleValue: null
+            Hidden: false
+            IncludeInResponse: false
+            format: ''
+            Kind: 1
+        EnumValues: []
+        PathSwagger: /properties/customize
+        PathPython: /customize
+        PathGo: /properties/customize
+        DispositionSdk: /*
+        DispositionRest: /properties/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: false
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: distribute
+        NameAnsible: distribute
+        NamePythonSdk: distribute
+        NameGoSdk: Distribute
+        NameTerraform: Distribute
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateDistributor
+        IsList: true
+        Required: true
+        Documentation: The distribution targets where the image output needs to go to.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions:
+          - NameSwagger: runOutputName
+            NameAnsible: run_output_name
+            NamePythonSdk: run_output_name
+            NameGoSdk: RunOutputName
+            NameTerraform: RunOutputName
+            IdPortion: null
+            Type: str
+            TypeNameGo: String
+            IsList: false
+            Required: true
+            Documentation: The name to be used for the associated RunOutput.
+            DefaultValue: null
+            IncludeInDocumentation: true
+            IncludeInArgSpec: true
+            NoLog: false
+            SubOptions: []
+            EnumValues: []
+            PathSwagger: /properties/distribute/runOutputName
+            PathPython: /distribute/runOutputName
+            PathGo: /properties/distribute/runOutputName
+            DispositionSdk: '*'
+            DispositionRest: '*'
+            Comparison: ''
+            Updatable: true
+            ExampleValue: null
+            Hidden: false
+            IncludeInResponse: false
+            format: ''
+            Kind: 1
+          - NameSwagger: artifactTags
+            NameAnsible: artifact_tags
+            NamePythonSdk: artifact_tags
+            NameGoSdk: ArtifactTags
+            NameTerraform: ArtifactTags
+            IdPortion: null
+            Type: >-
+              unknown[DictionaryType
+              {"$id":"23","$type":"DictionaryType","valueType":{"$id":"24","$type":"PrimaryType","knownPrimaryType":"string","name":{"$id":"25","fixed":false,"raw":"String"},"deprecated":false},"supportsAdditionalProperties":false,"name":{"$id":"26","fixed":false},"deprecated":false}]
+            TypeNameGo: >-
+              {"$id":"23","$type":"DictionaryType","valueType":{"$id":"24","$type":"PrimaryType","knownPrimaryType":"string","name":{"$id":"25","fixed":false,"raw":"String"},"deprecated":false},"supportsAdditionalProperties":false,"name":{"$id":"26","fixed":false},"deprecated":false}
+            IsList: false
+            Required: false
+            Documentation: >-
+              Tags that will be applied to the artifact once it has been
+              created/updated by the distributor.
+            DefaultValue: null
+            IncludeInDocumentation: true
+            IncludeInArgSpec: true
+            NoLog: false
+            SubOptions: []
+            EnumValues: []
+            PathSwagger: /properties/distribute/artifactTags
+            PathPython: /distribute/artifactTags
+            PathGo: /properties/distribute/artifactTags
+            DispositionSdk: '*'
+            DispositionRest: '*'
+            Comparison: ''
+            Updatable: true
+            ExampleValue: null
+            Hidden: false
+            IncludeInResponse: false
+            format: !<tag:yaml.org,2002:js/undefined> ''
+            Kind: 1
+        EnumValues: []
+        PathSwagger: /properties/distribute
+        PathPython: /distribute
+        PathGo: /properties/distribute
+        DispositionSdk: /*
+        DispositionRest: /properties/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: false
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: buildTimeoutInMinutes
+        NameAnsible: build_timeout_in_minutes
+        NamePythonSdk: build_timeout_in_minutes
+        NameGoSdk: BuildTimeoutInMinutes
+        NameTerraform: BuildTimeoutInMinutes
+        IdPortion: null
+        Type: number
+        TypeNameGo: Int
+        IsList: false
+        Required: false
+        Documentation: >-
+          Maximum duration to wait while building the image template. Omit or
+          specify 0 to use the default (4 hours).
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /properties/buildTimeoutInMinutes
+        PathPython: /buildTimeoutInMinutes
+        PathGo: /properties/buildTimeoutInMinutes
+        DispositionSdk: /*
+        DispositionRest: /properties/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: vmProfile
+        NameAnsible: vm_profile
+        NamePythonSdk: vm_profile
+        NameGoSdk: VMProfile
+        NameTerraform: VMProfile
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateVmProfile
+        IsList: false
+        Required: false
+        Documentation: Describes how virtual machine is set up to build images
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /properties/vmProfile
+        PathPython: /vmProfile
+        PathGo: /properties/vmProfile
+        DispositionSdk: /*
+        DispositionRest: /properties/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: vmSize
+        NameAnsible: vm_profile_vm_size
+        NamePythonSdk: vm_size
+        NameGoSdk: VMSize
+        NameTerraform: VMProfilevm_profile_vm_size
+        IdPortion: null
+        Type: str
+        TypeNameGo: String
+        IsList: false
+        Required: false
+        Documentation: >-
+          Size of the virtual machine used to build, customize and capture
+          images. Omit or specify empty string to use the default
+          (Standard_D1_v2).
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /properties/vmProfile/vmSize
+        PathPython: /vmProfile/vmSize
+        PathGo: /properties/vmProfile/vmSize
+        DispositionSdk: /vm_profile/*
+        DispositionRest: /properties/vmProfile/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: ''
+        Kind: 1
+      - NameSwagger: identity
+        NameAnsible: identity
+        NamePythonSdk: identity
+        NameGoSdk: Identity
+        NameTerraform: Identity
+        IdPortion: null
+        Type: dict
+        TypeNameGo: ImageTemplateIdentity
+        IsList: false
+        Required: false
+        Documentation: 'The identity of the image template, if configured.'
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /identity
+        PathPython: /identity
+        PathGo: /identity
+        DispositionSdk: /
+        DispositionRest: /
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: type
+        NameAnsible: type
+        NamePythonSdk: type
+        NameGoSdk: Type
+        NameTerraform: Type
+        IdPortion: null
+        Type: str
+        TypeNameGo: ResourceIdentityType
+        IsList: false
+        Required: false
+        Documentation: >-
+          The type of identity used for the image template. The type 'None' will
+          remove any identities from the image template.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues:
+          - Key: UserAssigned
+            Value: UserAssigned
+            Description: !<tag:yaml.org,2002:js/undefined> ''
+          - Key: None
+            Value: None
+            Description: !<tag:yaml.org,2002:js/undefined> ''
+        PathSwagger: /identity/type
+        PathPython: /identity/type
+        PathGo: /identity/type
+        DispositionSdk: /identity/*
+        DispositionRest: /identity/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: userAssignedIdentities
+        NameAnsible: user_assigned_identities
+        NamePythonSdk: user_assigned_identities
+        NameGoSdk: UserAssignedIdentities
+        NameTerraform: UserAssignedIdentities
+        IdPortion: null
+        Type: >-
+          unknown[DictionaryType
+          {"$id":"186","$type":"DictionaryType","valueType":{"$ref":"157"},"supportsAdditionalProperties":false,"name":{"$id":"187","fixed":false},"deprecated":false}]
+        TypeNameGo: >-
+          {"$id":"186","$type":"DictionaryType","valueType":{"$ref":"157"},"supportsAdditionalProperties":false,"name":{"$id":"187","fixed":false},"deprecated":false}
+        IsList: false
+        Required: false
+        Documentation: >-
+          The list of user identities associated with the image template. The
+          user identity dictionary key references will be ARM resource ids in
+          the form:
+          '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /identity/userAssignedIdentities
+        PathPython: /identity/userAssignedIdentities
+        PathGo: /identity/userAssignedIdentities
+        DispositionSdk: /identity/*
+        DispositionRest: /identity/*
+        Comparison: ''
+        Updatable: true
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: false
+        format: !<tag:yaml.org,2002:js/undefined> ''
+        Kind: 1
+      - NameSwagger: imageTemplateName
+        NameAnsible: image_template_name
+        NamePythonSdk: image_template_name
+        NameGoSdk: ImageTemplateName
+        NameTerraform: ImageTemplateName
+        IdPortion: imageTemplates
+        Type: str
+        TypeNameGo: null
+        IsList: false
+        Required: true
+        Documentation: The name of the image Template
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: null
+        EnumValues: []
+        PathSwagger: ''
+        PathPython: null
+        PathGo: null
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: false
+        IncludeInResponse: false
+        format: ''
+        Kind: 0
+      - NameSwagger: runOutputName
+        NameAnsible: name
+        NamePythonSdk: run_output_name
+        NameGoSdk: RunOutputName
+        NameTerraform: name
+        IdPortion: runOutputs
+        Type: str
+        TypeNameGo: null
+        IsList: false
+        Required: true
+        Documentation: The name of the run output
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: true
+        NoLog: false
+        SubOptions: null
+        EnumValues: []
+        PathSwagger: ''
+        PathPython: null
+        PathGo: null
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: false
+        IncludeInResponse: false
+        format: ''
+        Kind: 0
+      - &ref_0
+        NameSwagger: id
+        NameAnsible: id
+        NamePythonSdk: id
+        NameGoSdk: ID
+        NameTerraform: ID
+        IdPortion: null
+        Type: str
+        TypeNameGo: String
+        IsList: false
+        Required: false
+        Documentation: Resource Id
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: false
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /id
+        PathPython: /id
+        PathGo: /id
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: true
+        format: ''
+        Kind: 1
+      - &ref_1
+        NameSwagger: name
+        NameAnsible: name
+        NamePythonSdk: name
+        NameGoSdk: Name
+        NameTerraform: Name
+        IdPortion: null
+        Type: str
+        TypeNameGo: String
+        IsList: false
+        Required: false
+        Documentation: Resource name
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: false
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /name
+        PathPython: /name
+        PathGo: /name
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: true
+        format: ''
+        Kind: 1
+      - &ref_2
+        NameSwagger: type
+        NameAnsible: type
+        NamePythonSdk: type
+        NameGoSdk: Type
+        NameTerraform: Type
+        IdPortion: null
+        Type: str
+        TypeNameGo: String
+        IsList: false
+        Required: false
+        Documentation: Resource type
+        DefaultValue: null
+        IncludeInDocumentation: true
+        IncludeInArgSpec: false
+        NoLog: false
+        SubOptions: []
+        EnumValues: []
+        PathSwagger: /type
+        PathPython: /type
+        PathGo: /type
+        DispositionSdk: '*'
+        DispositionRest: '*'
+        Comparison: ''
+        Updatable: false
+        ExampleValue: null
+        Hidden: true
+        IncludeInResponse: true
+        format: ''
+        Kind: 1
+    Methods:
+      - Name: CreateOrUpdate
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+          - parameters
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+          - parameters
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        HttpMethod: put
+        IsAsync: true
+        Documentation: Create or update a virtual machine image template
+        Kind: 0
+      - Name: Update
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+          - parameters
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+          - parameters
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        HttpMethod: patch
+        IsAsync: true
+        Documentation: Update the tags for this Virtual Machine Image Template
+        Kind: 1
+      - Name: Delete
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        HttpMethod: delete
+        IsAsync: true
+        Documentation: Delete a virtual machine image template
+        Kind: 2
+      - Name: Get
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        HttpMethod: get
+        IsAsync: false
+        Documentation: Get information about a virtual machine image template
+        Kind: 3
+      - Name: ListByResourceGroup
+        Options:
+          - resourceGroupName
+        RequiredOptions:
+          - resourceGroupName
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates
+        HttpMethod: get
+        IsAsync: false
+        Documentation: >-
+          Gets information about the VM image templates associated with the
+          specified resource group.
+        Kind: 4
+      - Name: List
+        Options: []
+        RequiredOptions: []
+        Url: >-
+          /subscriptions/{{ subscription_id
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates
+        HttpMethod: get
+        IsAsync: false
+        Documentation: >-
+          Gets information about the VM image templates associated with the
+          subscription.
+        Kind: 4
+      - Name: Run
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}/run
+        HttpMethod: post
+        IsAsync: true
+        Documentation: Create artifacts from a existing image template
+        Kind: 5
+      - Name: ListRunOutputs
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}/runOutputs
+        HttpMethod: get
+        IsAsync: false
+        Documentation: List all run outputs for the specified Image Template resource
+        Kind: 6
+      - Name: GetRunOutput
+        Options:
+          - resourceGroupName
+          - imageTemplateName
+          - runOutputName
+        RequiredOptions:
+          - resourceGroupName
+          - imageTemplateName
+          - runOutputName
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}/runOutputs/{{ run_output_name }}
+        HttpMethod: get
+        IsAsync: false
+        Documentation: Get the specified run output for the specified image template resource
+        Kind: 6
+    ResponseFields:
+      - *ref_0
+      - *ref_1
+      - *ref_2
+    ModuleOperationNameUpper: VirtualMachineImageTemplates
+    ModuleOperationName: virtual_machine_image_templates
+    ObjectName: VirtualMachineImageTemplate
+    ResourceNameFieldInResponse: null
+    NeedsDeleteBeforeUpdate: false
+    NeedsForceUpdate: false
+    CannotTestUpdate: false
+    Provider: Microsoft.VirtualMachineImages
+    ApiVersion: 2019-05-01-preview
+    Examples:
+      - LongRunning: false
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            api-version: 2019-05-01-preview
+          responses:
+            '200':
+              body:
+                value:
+                  - id: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group
+                      }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                      image_template_name }}
+                    name: myImageTemplate
+                    location: westus
+                    type: Microsoft.VirtualMachineImages/imageTemplate
+                    properties:
+                      source:
+                        type: ISO
+                        sourceUri: 'http://redhat.com/path/to/installation.iso'
+                        sha256Checksum: >-
+                          120acbca7b3d55465eb9f8ef53ad7365f2997d42d4f83d7cc285bf5c71e1131f
+                      customize:
+                        - type: Shell
+                          name: Shell customization example
+                          scriptUri: 'https://example.com/path/to/script.sh'
+                      distribute:
+                        - type: ManagedImage
+                          location: 1_location
+                          runOutputName: image_it_pir_1
+                          imageId: >-
+                            /subscriptions/{{ subscription_id
+                            }}/resourceGroups/{{ resource_group
+                            }}/providers/Microsoft.Compute/images/{{ image_name
+                            }}
+                          artifactTags:
+                            tagName: value
+                      vmProfile:
+                        vmSize: Standard_D2s_v3
+                  - id: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group
+                      }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                      image_template_name }}
+                    name: mySecondImageTemplate
+                    location: westus
+                    type: Microsoft.VirtualMachineImages/imageTemplate
+                    properties:
+                      source:
+                        type: PlatformImage
+                        publisher: Canonical
+                        offer: UbuntuServer
+                        sku: 18.04-LTS
+                        version: 18.04.201902121
+                      customize:
+                        - type: Shell
+                          name: Shell customization example
+                          scriptUri: 'https://example.com/path/to/script.sh'
+                      distribute:
+                        - type: ManagedImage
+                          location: eastus
+                          runOutputName: eus
+                          imageId: >-
+                            /subscriptions/{{ subscription_id
+                            }}/resourceGroups/{{ resource_group
+                            }}/providers/Microsoft.Compute/images/{{ image_name
+                            }}
+                          artifactTags:
+                            stage: development
+                      vmProfile:
+                        vmSize: Standard_D8s_v3
+                nextLink: >-
+                  /subscriptions/{{ subscription_id
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates?api-version=2018-02-01-preview&skip-token=2
+        Url: >-
+          /subscriptions/{{ subscription_id
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates
+        Method: get
+        Id: List images by subscription.
+        Title: List images by subscription.
+        Filename: virtualmachineimages_imagetemplates_get
+        Variables: []
+        References: []
+        OperationId: '669'
+        MethodId: '670'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: List
+      - LongRunning: false
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            api-version: 2019-05-01-preview
+          responses:
+            '200':
+              body:
+                value:
+                  - id: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group
+                      }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                      image_template_name }}
+                    name: myImageTemplate
+                    location: westus
+                    type: Microsoft.VirtualMachineImages/imageTemplate
+                    properties:
+                      source:
+                        type: ISO
+                        sourceUri: 'http://redhat.com/path/to/installation.iso'
+                        sha256Checksum: >-
+                          120acbca7b3d55465eb9f8ef53ad7365f2997d42d4f83d7cc285bf5c71e1131f
+                      customize:
+                        - type: Shell
+                          name: Shell customization example
+                          scriptUri: 'https://example.com/path/to/script.sh'
+                      distribute:
+                        - type: ManagedImage
+                          location: 1_location
+                          runOutputName: image_it_pir_1
+                          imageId: >-
+                            /subscriptions/{{ subscription_id
+                            }}/resourceGroups/{{ resource_group
+                            }}/providers/Microsoft.Compute/images/{{ image_name
+                            }}
+                          artifactTags:
+                            tagName: value
+                      vmProfile:
+                        vmSize: Standard_D2s_v3
+                  - id: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group
+                      }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                      image_template_name }}
+                    name: myOtherImageTemplate
+                    location: eastus
+                    type: Microsoft.VirtualMachineImages/imageTemplate
+                    properties:
+                      source:
+                        type: PlatformImage
+                        publisher: Canonical
+                        offer: UbuntuServer
+                        sku: 18.04-LTS
+                        version: 18.04.201902121
+                      customize:
+                        - type: Shell
+                          name: Shell customization example
+                          scriptUri: 'https://example.com/path/to/script.sh'
+                      distribute:
+                        - type: ManagedImage
+                          location: centralus
+                          runOutputName: singleImage
+                          imageId: >-
+                            /subscriptions/{{ subscription_id
+                            }}/resourceGroups/{{ resource_group
+                            }}/providers/Microsoft.Compute/images/{{ image_name
+                            }}
+                        - type: SharedImage
+                          galleryImageId: >-
+                            /subscriptions/{{ subscription_id
+                            }}/resourceGroups/{{ resource_group
+                            }}/providers/Microsoft.Compute/gallery/{{
+                            gallery_name }}/images/{{ image_name }}
+                          replicationRegions:
+                            - eastus
+                            - westus
+                          runOutputName: gallery
+                      vmProfile:
+                        vmSize: Standard_D8s_v3
+                nextLink: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroup/{{
+                  resource_group_name
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates?api-version=2019-05-01-preview&skip-token=2
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates
+        Method: get
+        Id: List images by resource group
+        Title: List images by resource group
+        Filename: virtualmachineimages_imagetemplates_get_1
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+        References: []
+        OperationId: '669'
+        MethodId: '688'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: ListByResourceGroup
+      - LongRunning: true
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            api-version: 2019-05-01-preview
+            imageTemplateName: myImageTemplate
+            parameters:
+              location: westus
+              tags:
+                imagetemplate_tag1: IT_T1
+                imagetemplate_tag2: IT_T2
+              properties:
+                source:
+                  type: ManagedImage
+                  imageId: >-
+                    /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                    resource_group }}/providers/Microsoft.Compute/images/{{
+                    image_name }}
+                customize:
+                  - type: Shell
+                    name: Shell Customizer Example
+                    scriptUri: 'https://example.com/path/to/script.sh'
+                distribute:
+                  - type: ManagedImage
+                    location: 1_location
+                    runOutputName: image_it_pir_1
+                    imageId: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group }}/providers/Microsoft.Compute/images/{{
+                      image_name }}
+                    artifactTags:
+                      tagName: value
+                vmProfile:
+                  vmSize: Standard_D2s_v3
+          responses:
+            '200':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                properties:
+                  source:
+                    type: ManagedImage
+                    imageId: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group }}/providers/Microsoft.Compute/images/{{
+                      image_name }}
+                  customize:
+                    - type: Shell
+                      name: Shell Customizer Example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+            '201':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                properties:
+                  source:
+                    type: ManagedImage
+                    imageId: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group }}/providers/Microsoft.Compute/images/{{
+                      image_name }}
+                  customize:
+                    - type: Shell
+                      name: Shell Customizer Example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        Method: put
+        Id: Create an Image Template.
+        Title: Create an Image Template.
+        Filename: virtualmachineimages_imagetemplates_put
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+          - name: image_name
+            value: myImage
+            swaggerName: ''
+        References:
+          - compute_images_put
+          - '# ref##scriptUri##https://example.com/path/to/script.sh'
+          - compute_images_put
+        OperationId: '669'
+        MethodId: '712'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: CreateOrUpdate
+      - LongRunning: true
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            api-version: 2019-05-01-preview
+            imageTemplateName: myImageTemplate
+            parameters:
+              location: westus
+              tags:
+                imagetemplate_tag1: IT_T1
+                imagetemplate_tag2: IT_T2
+              identity:
+                type: UserAssigned
+                userAssignedIdentities:
+                  /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity_1: {}
+              properties:
+                source:
+                  type: ManagedImage
+                  imageId: >-
+                    /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                    resource_group }}/providers/Microsoft.Compute/images/{{
+                    image_name }}
+                customize:
+                  - type: Shell
+                    name: Shell Customizer Example
+                    scriptUri: 'https://example.com/path/to/script.sh'
+                distribute:
+                  - type: ManagedImage
+                    location: 1_location
+                    runOutputName: image_it_pir_1
+                    imageId: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group }}/providers/Microsoft.Compute/images/{{
+                      image_name }}
+                    artifactTags:
+                      tagName: value
+                vmProfile:
+                  vmSize: Standard_D2s_v3
+          responses:
+            '200':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                identity:
+                  type: UserAssigned
+                  userAssignedIdentities:
+                    /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity_1:
+                      clientId: 00000000-0000-0000-0000-000000000000
+                      principalId: 00000000-0000-0000-0000-000000000000
+                properties:
+                  source:
+                    type: ManagedImage
+                    imageId: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group }}/providers/Microsoft.Compute/images/{{
+                      image_name }}
+                  customize:
+                    - type: Shell
+                      name: Shell Customizer Example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+            '201':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                identity:
+                  type: UserAssigned
+                  userAssignedIdentities:
+                    /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/rg1/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity_1:
+                      clientId: 00000000-0000-0000-0000-000000000000
+                      principalId: 00000000-0000-0000-0000-000000000000
+                properties:
+                  source:
+                    type: ManagedImage
+                    imageId: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group }}/providers/Microsoft.Compute/images/{{
+                      image_name }}
+                  customize:
+                    - type: Shell
+                      name: Shell Customizer Example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        Method: put
+        Id: Create an Image Template with a user assigned identity configured
+        Title: Create an Image Template with a user assigned identity configured
+        Filename: virtualmachineimages_imagetemplates_put_1
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+          - name: image_name
+            value: myImage
+            swaggerName: ''
+        References:
+          - compute_images_put
+          - '# ref##scriptUri##https://example.com/path/to/script.sh'
+          - compute_images_put
+          - virtualmachineimages_imagetemplates_put
+        OperationId: '669'
+        MethodId: '712'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: CreateOrUpdate
+      - LongRunning: true
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            imageTemplateName: myImageTemplate
+            api-version: 2019-05-01-preview
+            parameters:
+              tags:
+                new-tag: new-value
+          responses:
+            '200':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                tags:
+                  new-tag: new-value
+                properties:
+                  source:
+                    type: ISO
+                    sourceUri: 'http://redhat.com/path/to/installation.iso'
+                    sha256Checksum: >-
+                      120acbca7b3d55465eb9f8ef53ad7365f2997d42d4f83d7cc285bf5c71e1131f
+                  customize:
+                    - type: Shell
+                      name: Shell customization example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+            '202':
+              headers:
+                Azure-AsyncOperation: >-
+                  https://management.azure.com/subscriptions/{subscription-id}/providers/Microsoft.VirtualMachineImages/locations/{location}/operations/{operation-id}?api-version=2019-05-01-preview
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        Method: patch
+        Id: Update the tags for an Image Template.
+        Title: Update the tags for an Image Template.
+        Filename: virtualmachineimages_imagetemplates_patch
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+        References:
+          - virtualmachineimages_imagetemplates_put
+        OperationId: '669'
+        MethodId: '747'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: Update
+      - LongRunning: true
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            imageTemplateName: myImageTemplate
+            api-version: 2019-05-01-preview
+            parameters:
+              identity:
+                type: None
+          responses:
+            '200':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                identity:
+                  type: None
+                tags:
+                  new-tag: new-value
+                properties:
+                  source:
+                    type: ISO
+                    sourceUri: 'http://redhat.com/path/to/installation.iso'
+                    sha256Checksum: >-
+                      120acbca7b3d55465eb9f8ef53ad7365f2997d42d4f83d7cc285bf5c71e1131f
+                  customize:
+                    - type: Shell
+                      name: Shell customization example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+            '202':
+              headers:
+                Azure-AsyncOperation: >-
+                  https://management.azure.com/subscriptions/{subscription-id}/providers/Microsoft.VirtualMachineImages/locations/{location}/operations/{operation-id}?api-version=2019-05-01-preview
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        Method: patch
+        Id: Remove identities for an Image Template.
+        Title: Remove identities for an Image Template.
+        Filename: virtualmachineimages_imagetemplates_patch_1
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+        References:
+          - virtualmachineimages_imagetemplates_put
+        OperationId: '669'
+        MethodId: '747'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: Update
+      - LongRunning: false
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            api-version: 2019-05-01-preview
+            imageTemplateName: myImageTemplate
+          responses:
+            '200':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}
+                name: myImageTemplate
+                location: westus
+                type: Microsoft.VirtualMachineImages/imageTemplate
+                properties:
+                  source:
+                    type: ISO
+                    sourceUri: 'http://redhat.com/path/to/installation.iso'
+                    sha256Checksum: >-
+                      120acbca7b3d55465eb9f8ef53ad7365f2997d42d4f83d7cc285bf5c71e1131f
+                  customize:
+                    - type: Shell
+                      name: Shell Customizer Example
+                      scriptUri: 'https://example.com/path/to/script.sh'
+                  distribute:
+                    - type: ManagedImage
+                      location: 1_location
+                      runOutputName: image_it_pir_1
+                      imageId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      artifactTags:
+                        tagName: value
+                  vmProfile:
+                    vmSize: Standard_D2s_v3
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        Method: get
+        Id: Retrieve an Image Template.
+        Title: Retrieve an Image Template.
+        Filename: virtualmachineimages_imagetemplates_get_2
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+        References: []
+        OperationId: '669'
+        MethodId: '782'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: Get
+      - LongRunning: true
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            imageTemplateName: myImageTemplate
+            api-version: 2019-05-01-preview
+          responses:
+            '200': {}
+            '202':
+              headers:
+                Azure-AsyncOperation: >-
+                  https://management.azure.com/subscriptions/{subscription-id}/providers/Microsoft.VirtualMachineImages/locations/{location}/operations/{operation-id}?api-version=2019-05-01-preview
+            '204': {}
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}
+        Method: delete
+        Id: Delete an Image Template.
+        Title: Delete an Image Template.
+        Filename: virtualmachineimages_imagetemplates_delete
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+        References: []
+        OperationId: '669'
+        MethodId: '812'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: Delete
+      - LongRunning: true
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            imageTemplateName: myImageTemplate
+            api-version: 2019-05-01-preview
+          responses:
+            '202':
+              headers:
+                Azure-AsyncOperation: >-
+                  https://management.azure.com/subscriptions/{subscription-id}/providers/Microsoft.VirtualMachineImages/locations/{location}/operations/{operation-id}?api-version=2019-05-01-preview
+            '204': {}
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}/run
+        Method: post
+        Id: Create image(s) from existing imageTemplate.
+        Title: Create image(s) from existing imageTemplate.
+        Filename: virtualmachineimages_imagetemplates_run_post
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+        References: []
+        OperationId: '669'
+        MethodId: '844'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: Run
+      - LongRunning: false
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            imageTemplateName: myImageTemplate
+            api-version: 2019-05-01-preview
+          responses:
+            '200':
+              body:
+                value:
+                  - id: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group
+                      }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                      image_template_name }}/runOutputs/{{ run_output_name }}
+                    name: myManagedImageOutput
+                    properties:
+                      artifactId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group }}/providers/Microsoft.Compute/images/{{
+                        image_name }}
+                      provisioningState: Succeeded
+                    type: Microsoft.VirtualMachineImages/imageTemplates/runOutputs
+                  - id: >-
+                      /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                      resource_group
+                      }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                      image_template_name }}/runOutputs/{{ run_output_name }}
+                    name: mySharedImageOutput
+                    properties:
+                      artifactId: >-
+                        /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                        resource_group
+                        }}/providers/Microsoft.Compute/galleries/{{ gallery_name
+                        }}/images/{{ image_name }}/imageversions/{{
+                        imageversion_name }}
+                      provisioningState: Succeeded
+                    type: Microsoft.VirtualMachineImages/imageTemplates/runOutputs
+                nextLink: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name
+                  }}/runOutputs?api-version=2018-02-01-preview&$skipToken=3
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}/runOutputs
+        Method: get
+        Id: >-
+          Retrieve a list of all outputs created by the last run of an Image
+          Template
+        Title: >-
+          Retrieve a list of all outputs created by the last run of an Image
+          Template
+        Filename: virtualmachineimages_imagetemplates_runoutputs_get
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+        References: []
+        OperationId: '669'
+        MethodId: '875'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: ListRunOutputs
+      - LongRunning: false
+        Example:
+          parameters:
+            subscriptionId: '{subscription-id}'
+            resourceGroupName: myResourceGroup
+            imageTemplateName: myImageTemplate
+            runOutputName: myManagedImageOutput
+            api-version: 2019-05-01-preview
+          responses:
+            '200':
+              body:
+                id: >-
+                  /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                  resource_group
+                  }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+                  image_template_name }}/runOutputs/{{ run_output_name }}
+                name: myManagedImageOutput
+                properties:
+                  artifactId: >-
+                    /subscriptions/{{ subscription_id }}/resourceGroups/{{
+                    resource_group }}/providers/Microsoft.Compute/images/{{
+                    image_name }}
+                  provisioningState: Succeeded
+                type: Microsoft.VirtualMachineImages/imageTemplates/runOutputs
+        Url: >-
+          /subscriptions/{{ subscription_id }}/resourceGroups/{{ resource_group
+          }}/providers/Microsoft.VirtualMachineImages/imageTemplates/{{
+          image_template_name }}/runOutputs/{{ run_output_name }}
+        Method: get
+        Id: Retrieve single runOutput
+        Title: Retrieve single runOutput
+        Filename: virtualmachineimages_imagetemplates_runoutputs_get_1
+        Variables:
+          - name: resource_group
+            value: myResourceGroup
+            swaggerName: resourceGroupName
+          - name: image_template_name
+            value: myImageTemplate
+            swaggerName: imageTemplateName
+          - name: run_output_name
+            value: myRunOutput
+            swaggerName: runOutputName
+        References: []
+        OperationId: '669'
+        MethodId: '905'
+        OperationName: VirtualMachineImageTemplates
+        MethodName: GetRunOutput
+  - CommandGroup: operation
+    ModuleName: azure_rm_imagebuilderoperation
+    Options: []
+    Methods:
+      - Name: List
+        Options: []
+        RequiredOptions: []
+        Url: /providers/Microsoft.VirtualMachineImages/operations
+        HttpMethod: get
+        IsAsync: false
+        Documentation: >-
+          Lists available operations for the Microsoft.VirtualMachineImages
+          provider
+        Kind: 6
+    ResponseFields: []
+    ModuleOperationNameUpper: Operations
+    ModuleOperationName: operations
+    ObjectName: Operation
+    ResourceNameFieldInResponse: null
+    NeedsDeleteBeforeUpdate: false
+    NeedsForceUpdate: false
+    CannotTestUpdate: false
+    Provider: Microsoft.VirtualMachineImages
+    ApiVersion: 2019-05-01-preview
+    Examples: []
+ServiceName: ImageBuilderClient
+MgmtClientName: ImageBuilderClient
+CliName: imagebuilder
+Namespace: azure.mgmt.imagebuilder
