@@ -63,10 +63,6 @@ helps['imagebuilder show'] = """
         text: |-
                az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
                "myImageTemplate"
-      - name: Retrieve single runOutput
-        text: |-
-               az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate"
 """
 
 helps['imagebuilder list'] = """
@@ -77,9 +73,6 @@ helps['imagebuilder list'] = """
         text: |-
                az imagebuilder list
       - name: List images by resource group
-        text: |-
-               az imagebuilder list --resource-group "myResourceGroup"
-      - name: Retrieve a list of all outputs created by the last run of an Image Template
         text: |-
                az imagebuilder list --resource-group "myResourceGroup"
 """

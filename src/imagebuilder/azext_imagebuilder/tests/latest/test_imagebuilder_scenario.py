@@ -41,12 +41,12 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
                  '--type "UserAssigned"',
                  checks=[])
 
-        self.cmd('az imagebuilder show '
+        self.cmd('az imagebuilder get_run_output '
                  '--resource-group {rg} '
                  '--image-template-name "myImageTemplate"',
                  checks=[])
 
-        self.cmd('az imagebuilder list '
+        self.cmd('az imagebuilder list_run_outputs '
                  '--resource-group {rg} '
                  '--image-template-name "myImageTemplate"',
                  checks=[])
@@ -63,7 +63,7 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
         self.cmd('az imagebuilder list',
                  checks=[])
 
-        self.cmd('az imagebuilder Run '
+        self.cmd('az imagebuilder run '
                  '--resource-group {rg} '
                  '--image-template-name "myImageTemplate"',
                  checks=[])
