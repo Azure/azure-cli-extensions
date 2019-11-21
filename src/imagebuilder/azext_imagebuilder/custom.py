@@ -24,9 +24,9 @@ def create_imagebuilder(cmd, client,
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body.setdefault('customize', {})['name'] = None if customize_name is None else customize_name.split(',')
-    body.setdefault('distribute', {})['run_output_name'] = None if distribute_run_output_name is None else distribute_run_output_name.split(',')
-    body.setdefault('distribute', {})['artifact_tags'] = None if distribute_artifact_tags is None else distribute_artifact_tags.split(',')
+    body.setdefault('customize', {})['name'] = customize_name
+    body.setdefault('distribute', {})['run_output_name'] = distribute_run_output_name
+    body.setdefault('distribute', {})['artifact_tags'] = distribute_artifact_tags
     body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
     body.setdefault('vm_profile', {})['vm_size'] = vm_profile_vm_size  # str
     body.setdefault('identity', {})['type'] = _type  # str
@@ -52,11 +52,11 @@ def update_imagebuilder(cmd, client,
     if tags is not None:
         body['tags'] = tags  # dictionary
     if customize_name is not None:
-        body.setdefault('customize', {})['name'] = None if customize_name is None else customize_name.split(',')
+        body.setdefault('customize', {})['name'] = customize_name
     if distribute_run_output_name is not None:
-        body.setdefault('distribute', {})['run_output_name'] = None if distribute_run_output_name is None else distribute_run_output_name.split(',')
+        body.setdefault('distribute', {})['run_output_name'] = distribute_run_output_name
     if distribute_artifact_tags is not None:
-        body.setdefault('distribute', {})['artifact_tags'] = None if distribute_artifact_tags is None else distribute_artifact_tags.split(',')
+        body.setdefault('distribute', {})['artifact_tags'] = distribute_artifact_tags
     if build_timeout_in_minutes is not None:
         body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
     if vm_profile_vm_size is not None:
