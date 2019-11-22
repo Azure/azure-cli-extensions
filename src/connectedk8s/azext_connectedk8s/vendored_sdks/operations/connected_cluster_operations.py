@@ -13,7 +13,12 @@ import uuid
 from msrest.pipeline import ClientRawResponse
 
 from .. import models
-
+import os
+import subprocess
+from kubernetes import client, config
+from subprocess import Popen, PIPE
+import os.path, json
+from knack.util import CLIError
 
 class ConnectedClusterOperations(object):
     """ConnectedClusterOperations operations.
@@ -37,7 +42,49 @@ class ConnectedClusterOperations(object):
         self.config = config
 
     def create(
-            self, subscription_name, resource_group_name, cluster_name, onboarding_spn_id, onboarding_spn_secret, connected_cluster, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, cluster_name, onboarding_tenant_id, onboarding_spn_id, onboarding_spn_secret, location, kube_config, kube_context, custom_headers=None, raw=False, **operation_config):
+        subscription_id = self.config.subscription_id
+        if ((kube_config is not None and os.path.isfile(kube_config) is False) or kube_config is None):
+            print("The kube config file does not exist or the Path is invalid. Using default kube config ...")
+            kube_config = os.getenv('KUBECONFIG')
+            if(kube_config is None):
+                kube_config = "C:\\Users\\akkeshar\\.kube\\config"
+        contexts = config.list_kube_config_contexts(config_file=kube_config)
+        contexts_list = []
+        for ctxs in contexts[0]:
+            contexts_list.append(ctxs.get('name'))
+        if(kube_context not in contexts_list):
+            print("The kube context does on exist. Using default context ...")
+            kube_context = contexts[1].get('name')
+
+        cmd1 = "helm repo add haikupreview https://haikupreview.azurecr.io/helm/v1/repo"
+        response1 = subprocess.Popen(cmd1, stdout=PIPE, stderr=PIPE)
+        output1, error1 = response1.communicate()
+        if response1.returncode != 0:
+            raise CLIError(error1) 
+        else:
+            print(output1)
+
+        cmd2 = "helm fetch haikupreview/haiku-agents"
+        response2 = subprocess.Popen(cmd2, stdout=PIPE, stderr=PIPE)
+        output2, error2 = response2.communicate()
+        if response2.returncode != 0:
+            raise CLIError(error2) 
+        else:
+            print(output2)
+        
+        env3 = os.environ.copy()
+        env3["KUBECONFIG"] = kube_config
+        env3["HELM_KUBECONTEXT"] = kube_context
+        cmd3 = "helm install haiku haiku-agents-0.1.7.tgz --set global.subscriptionId={} --set global.resourceGroupName={} --set global.resourceName={} --set global.location={} --set global.tenantId={} --set global.clientId={} --set global.clientSecret={} --output json".format(subscription_id, resource_group_name, cluster_name, location, onboarding_tenant_id, onboarding_spn_id, onboarding_spn_secret)
+        response3 = subprocess.Popen(cmd3, env=env3, stdout=PIPE, stderr=PIPE)
+        output3, error3 = response3.communicate()
+        if response3.returncode != 0:
+            raise CLIError(error3) 
+        else:
+            #get_res = self.get(cluster_name, resource_group_name)
+            print("Haiku agents deployed successfully")
+        return
         """Registers a new K8s cluster.
 
         API to register a new K8s cluster and thereby create a tracked resource
@@ -177,6 +224,8 @@ class ConnectedClusterOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('ConnectedCluster', response)
 
+
+
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
@@ -207,6 +256,7 @@ class ConnectedClusterOperations(object):
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
+        #print("test2")
         # Construct URL
         url = self.get.metadata['url']
         path_format_arguments = {
@@ -215,7 +265,7 @@ class ConnectedClusterOperations(object):
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
-
+        print(url)
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
@@ -250,7 +300,12 @@ class ConnectedClusterOperations(object):
     get.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def delete(
-            self, resource_group_name, cluster_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, cluster_name, kube_config, kube_context, custom_headers=None, raw=False, **operation_config):
+        #print("test")
+        #return
+        #cmd_delete_agent = "helm delete haiku"
+        #res_delete_agent = os.system(cmd_delete_agent)
+        #print(res_delete_agent)
         """Deletes a specified cluster.
 
         API to delete an existing K8s cluster being tracked.
@@ -271,6 +326,41 @@ class ConnectedClusterOperations(object):
         :raises:
          :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
         """
+        url_config = self.delete.metadata['url']
+        url = url_config + "/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations"
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
+        }
+        url_config = self._client.format_url(url, **path_format_arguments)
+        print(url_config)
+
+        query_parameters_config = {}
+        query_parameters_config['api-version'] = "2019-11-01-preview"
+        print(query_parameters_config)
+
+
+        request_config = self._client.get(url_config, query_parameters_config)
+        response_config = self._client.send(request_config, stream=False, **operation_config)
+        print(response_config.status_code)
+        #print("test")
+        if response_config.status_code not in [200]:
+            raise models.ErrorResponseException(self._deserialize, response_config)
+        if response_config.status_code == 200:
+            #print(response_config['name'])
+            deserialized = self._deserialize('ConnectedCluster', response_config)
+
+        for conf in deserialized.additional_properties['value']:
+            temp_req = self._client.delete(url_config+"/"+conf['name'], query_parameters_config)
+            temp_res = self._client.send(temp_req, stream=False, **operation_config)
+            if response_config.status_code not in [200, 202]:
+                raise models.ErrorResponseException(self._deserialize, temp_res)
+        
+        print("All configs deleted")
+        #print(deserialized[1].name)
+        #print("config_deleted")
+
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
@@ -279,10 +369,14 @@ class ConnectedClusterOperations(object):
             'clusterName': self._serialize.url("cluster_name", cluster_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
-
+        print(url)
+        #url = url + "/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cluster2"
+        #print(url)
+        
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        print(query_parameters)
 
         # Construct headers
         header_parameters = {}
@@ -299,6 +393,32 @@ class ConnectedClusterOperations(object):
 
         if response.status_code not in [200, 204]:
             raise models.ErrorResponseException(self._deserialize, response)
+
+
+        if ((kube_config is not None and os.path.isfile(kube_config) is False) or kube_config is None):
+            print("The kube config file does not exist or the Path is invalid. Using default kube config ...")
+            kube_config = os.getenv('KUBECONFIG')
+            if(kube_config is None):
+                kube_config = "C:\\Users\\akkeshar\\.kube\\config"
+        contexts = config.list_kube_config_contexts(config_file=kube_config)
+        contexts_list = []
+        for ctxs in contexts[0]:
+            contexts_list.append(ctxs.get('name'))
+        if(kube_context not in contexts_list):
+            print("The kube context does on exist. Using default context ...")
+            kube_context = contexts[1].get('name')
+
+        env = os.environ.copy()
+        env["KUBECONFIG"] = kube_config
+        env["HELM_KUBECONTEXT"] = kube_context
+        cmd = "helm delete haiku"
+        response_del = subprocess.Popen(cmd, env=env, stdout=PIPE, stderr=PIPE)
+        output, error = response_del.communicate()
+        if response_del.returncode != 0:
+            raise CLIError(error) 
+        else:
+            #get_res = self.get(cluster_name, resource_group_name)
+            print(output)
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
@@ -405,7 +525,7 @@ class ConnectedClusterOperations(object):
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
-
+                print(url)
                 # Construct parameters
                 query_parameters = {}
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
@@ -426,8 +546,9 @@ class ConnectedClusterOperations(object):
 
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
+            print("1")
             response = self._client.send(request, stream=False, **operation_config)
-
+            print(response)
             if response.status_code not in [200]:
                 raise models.ErrorResponseException(self._deserialize, response)
 
@@ -471,7 +592,7 @@ class ConnectedClusterOperations(object):
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
-
+                print(url)
                 # Construct parameters
                 query_parameters = {}
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
@@ -493,9 +614,10 @@ class ConnectedClusterOperations(object):
             # Construct and send request
             request = self._client.get(url, query_parameters, header_parameters)
             response = self._client.send(request, stream=False, **operation_config)
+            print(response)
 
             if response.status_code not in [200]:
-                raise models.ErrorResponseException(self._deserialize, response)
+                raise CLIError(models.ErrorResponseException(self._deserialize, response))
 
             return response
 

@@ -16,7 +16,7 @@ def load_arguments(self, _):
 
     with self.argument_context('connectedk8s') as c:
         c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
+        #c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('cluster_name', cluster_name_type, options_list=['--name', '-n'])
 
     with self.argument_context('connectedk8s list') as c:

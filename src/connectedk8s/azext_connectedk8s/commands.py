@@ -17,9 +17,9 @@ def load_command_table(self, _):
 
     with self.command_group('connectedk8s', connectedk8s_sdk, client_factory=cf_connected_cluster) as g:
         g.custom_command('create', 'create_connectedk8s')
-        g.command('delete', 'delete')
+        g.custom_command('delete', 'delete_connectedk8s')
         g.custom_command('list', 'list_connectedk8s')
-        g.show_command('show', 'get')
+        g.custom_show_command('show', 'get_connectedk8s')
         g.generic_update_command('update', setter_name='update', custom_func_name='update_connectedk8s')
 
 

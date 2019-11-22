@@ -12,7 +12,7 @@ def cf_connectedk8s(cli_ctx, *_):
 def cf_connected_cluster(cli_ctx, _):
     return cf_connectedk8s(cli_ctx).connected_cluster
 
-def _resource_client_factory(cli_ctx, **_):
+def _resource_client_factory(cli_ctx):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.core.profiles import ResourceType
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
@@ -34,6 +34,7 @@ def _auth_client_factory(cli_ctx, scope=None):
     from azure.cli.core.profiles import ResourceType
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     subscription_id = None
+    #print(subscription_id)
     if scope:
         matched = re.match('/subscriptions/(?P<subscription>[^/]*)/', scope)
         if matched:
