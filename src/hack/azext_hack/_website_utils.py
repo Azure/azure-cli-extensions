@@ -25,7 +25,7 @@ _RUNTIME_SETTINGS = {
         'is_linux': True
     },
     'node': {
-        'name': 'node|10.15',
+        'name': 'node|LTS',
         'is_linux': True
     },
     'tomcat': {
