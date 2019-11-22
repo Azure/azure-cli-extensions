@@ -267,7 +267,7 @@ class Database():
             'location': location,
             'sku': sku,
             'elastic_pool_id': None,
-            'compute_model_type': ComputeModelType('Serverless')
+            'compute_model': ComputeModelType('Serverless')
         }
         steps.append(DatabaseCreationStep(
             'database', sql_database_create, database_parameters))
