@@ -45,16 +45,16 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
             database_poller.result(15)
             if database_poller.done():
                 break
-    
+
     app_settings = {}
 
-
-    if database:    
+    if database:
+        database.admin = database.admin if database.database_type != 'mysql' else database.admin + '@' + database.name
         app_settings.update({
             'DATABASE_HOST': database.host,
             'DATABASE_NAME': database.name,
             'DATABASE_PORT': database.port,
-            'DATABASE_USER': database.admin if database.database_type != 'mysql' else database.admin + '@' + database.name,
+            'DATABASE_USER': database.admin,
             'DATABASE_PASSWORD': database.password,
         })
 

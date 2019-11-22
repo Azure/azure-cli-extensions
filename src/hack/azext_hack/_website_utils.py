@@ -74,8 +74,9 @@ class Website:
         app_settings = []
         for key in settings:
             app_settings.append('{}={}'.format(key, settings[key]))
-        update_app_settings(self.__cmd, resource_group_name=self.resource_group,
-                            name=self.name, settings=app_settings)
+        if app_settings:
+            update_app_settings(self.__cmd, resource_group_name=self.resource_group,
+                                name=self.name, settings=app_settings)
 
     def finalize_resource_group(self):
         if self.resource_group.lower() == self.name:
