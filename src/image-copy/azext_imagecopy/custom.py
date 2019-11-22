@@ -16,6 +16,7 @@ logger = get_logger(__name__)
 
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=too-many-branches
 def imagecopy(source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, temporary_resource_group_name='image-copy-rg',
               source_type='image', cleanup='false', parallel_degree=-1, tags=None, target_name=None,
