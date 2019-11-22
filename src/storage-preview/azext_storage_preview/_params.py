@@ -11,7 +11,8 @@ from ._validators import (get_datetime_type, validate_metadata, validate_custom_
                           validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
-                          validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url)
+                          validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
+                          validate_storage_data_plane_list)
 from .profiles import CUSTOM_MGMT_STORAGE
 
 
@@ -42,6 +43,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                       completer=get_storage_name_completion_list(t_file_service, 'list_shares'))
     table_name_type = CLIArgumentType(options_list=['--table-name', '-t'],
                                       completer=get_storage_name_completion_list(t_table_service, 'list_tables'))
+    num_results_type = CLIArgumentType(
+        default=5000, help='Specifies the maximum number of results to return. Provide "*" to return all.',
+        validator=validate_storage_data_plane_list)
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -226,6 +230,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('permissions', help='The POSIX access permissions for the file owner,'
                    'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
                    'octal notation (e.g. 0766) are supported.')
+
+    with self.argument_context('storage blob list') as c:
+        c.argument('include', validator=validate_included_datasets, default='mc')
+        c.argument('num_results', arg_type=num_results_type)
 
     with self.argument_context('storage blob move') as c:
         c.argument('source_path', options_list=['--source-blob', '-s'],

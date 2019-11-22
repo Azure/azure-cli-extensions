@@ -447,3 +447,10 @@ def validate_included_datasets(cmd, namespace):
             raise ValueError('valid values are {} or a combination thereof.'.format(help_string))
         t_blob_include = cmd.get_models('blob#Include')
         namespace.include = t_blob_include('s' in include, 'm' in include, False, 'c' in include, 'd' in include)
+
+
+def validate_storage_data_plane_list(namespace):
+    if namespace.num_results == '*':
+        namespace.num_results = None
+    else:
+        namespace.num_results = int(namespace.num_results)
