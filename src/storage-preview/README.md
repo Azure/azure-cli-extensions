@@ -304,3 +304,5 @@ az storage blob directory access update --group [entityId/UPN] -d my-directory -
 
 az storage blob access update --group [entityId/UPN] -b my-directory/upload.txt -c my-file-system --account-name mystorageaccount
 ```
+
+If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
