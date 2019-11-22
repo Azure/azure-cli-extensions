@@ -22,8 +22,11 @@ Name of the application. This will be used to name the Resource Group, App Servi
 **--runtime -r**
 Runtime of the web application. Options are *python*, *php*, *aspnet*, *node*, *tomcat*, *jetty*.
 
-**--database -d**
-Database to create. Options are *mysql*, *sql*, or *cosmosdb*.
+**--location -l**
+Location for the resources to be created. 
 
-**--ai -ai**
-Create a Cognitive Services key (optional).
+**--database -d**
+Database to create. Options are *mysql*, *sql*, or *cosmosdb*. (optional)
+
+**--ai**
+Create a Cognitive Services key. (optional)

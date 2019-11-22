@@ -12,7 +12,9 @@ from azure.cli.command_modules.appservice.custom import (
     create_webapp,
     update_app_settings,
     set_deployment_user,
-    list_app_service_plans
+    list_app_service_plans,
+    get_app_settings,
+    show_source_control
 )
 from azure.cli.command_modules.resource.custom import move_resource
 from knack.log import get_logger
@@ -87,6 +89,19 @@ class Website:
         while not poller.done():
             poller.result(15)
         self.resource_group = self.name
+
+    def show(self):
+        output = {}
+        settings = {}
+        for setting in get_app_settings(self.__cmd, resource_group_name=self.name, name=self.name):
+            settings.update({setting['name']: setting['value']})
+        output.update({'App settings': settings})
+        urls = {}
+        repo_url = show_source_control(self.__cmd, resource_group_name=self.name, name=self.name).repo_url
+        urls.update({'Git url': repo_url})
+        urls.update({'Website url': repo_url.replace('scm.', '')})
+        output.update({'URLs': urls})
+        return output
 
     def __get_or_create_app_service_plan(self) -> str:
         plans = list_app_service_plans(self.__cmd)

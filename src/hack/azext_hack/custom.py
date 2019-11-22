@@ -24,7 +24,7 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
     name = name + str(uuid4())[:5]
     # # Create RG
     logger.warning("Creating resource group...")
-    create_resource_group(cmd, name, location)
+    _create_resource_group(cmd, name, location)
 
     if ai:
         logger.warning('Starting creation of Cognitive Services keys...')
@@ -101,7 +101,11 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
     return output
 
 
-def create_resource_group(cmd, name, location):
+def show_hack(cmd, name):
+    return Website(cmd, name, None, None).show()
+
+
+def _create_resource_group(cmd, name, location):
     client = get_mgmt_service_client(
         cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
     params = ResourceGroup(location=location)
