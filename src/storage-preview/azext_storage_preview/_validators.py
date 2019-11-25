@@ -14,6 +14,10 @@ from ._client_factory import get_storage_data_service_client, blob_data_service_
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
 from .profiles import CUSTOM_MGMT_STORAGE
+from knack.log import get_logger
+
+logger = get_logger(__name__)
+
 
 storage_account_key_options = {'primary': 'key1', 'secondary': 'key2'}
 
@@ -454,3 +458,32 @@ def validate_storage_data_plane_list(namespace):
         namespace.num_results = None
     else:
         namespace.num_results = int(namespace.num_results)
+
+
+def validate_move_file(cmd, namespace):
+    ns = vars(namespace)
+    t_base_blob_service = cmd.get_models('blob.baseblobservice#BaseBlobService')
+    account = ns.get('account_name')
+    key = ns.get('account_key')
+    cs = ns.get('connection_string')
+    sas = ns.get('sas_token')
+    client = get_storage_data_service_client(cmd.cli_ctx,
+                                             t_base_blob_service,
+                                             account,
+                                             key,
+                                             cs,
+                                             sas)
+    source = ns.get('source_path')
+    container = ns.get('container_name')
+    lease_id = ns.get('lease_id')
+    # Check Source
+    props = client.get_blob_properties(container, source, lease_id=lease_id)
+    if len(props.metadata) and props.metadata['hdi_isfolder'] == 'true':
+        raise ValueError('usage error: You are specifying --source-blob with a blob directory name. '
+                         'Please change to a valid blob name. If you want to move a blob directory, '
+                         'please use `az storage blob directory move` command.')
+    # Check Destination
+    destination = ns.get('new_path')
+    if client.exists(container, destination):
+        logger.warning('The destination blob name already exits in current container. If you continue excuting the command, '
+                       'the existing blob "{}" will be overwritten.'.format(destination))

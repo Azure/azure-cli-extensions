@@ -236,11 +236,12 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('num_results', arg_type=num_results_type)
 
     with self.argument_context('storage blob move') as c:
-        c.argument('source_path', options_list=['--source-blob', '-s'],
+        from ._validators import validate_move_file
+        c.argument('source_path', options_list=['--source-blob', '-s'], validator=validate_move_file,
                    help="The source blob name. It should be an absolute path under the container. e.g."
                         "'topdir1/dirsubfoo'.")
         c.argument('new_path', options_list=['--destination-blob', '-d'],
-                   help="The source blob name. It should be an absolute path under the container. e.g."
+                   help="The destination blob name. It should be an absolute path under the container. e.g."
                         "'topdir1/dirbar'.")
         c.argument('container_name', container_name_type)
         c.ignore('marker')

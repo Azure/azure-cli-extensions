@@ -96,6 +96,10 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 21))
         self.storage_cmd('storage blob exists -c {} -n {} ', account_info, container, blob) \
             .assert_with_checks(JMESPathCheck('exists', True))
+        with self.assertRaises(ValueError):
+            self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
+                             container, blob, des_directory)
+
 
         # Storage blob access control
         acl = "user::rwx,group::r--,other::---"

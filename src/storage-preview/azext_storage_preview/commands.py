@@ -118,7 +118,6 @@ The secondary cluster will become the primary cluster after failover. Please und
     with self.command_group('storage blob', command_type=adls_base_blob_sdk) as g:
         from ._format import transform_blob_output
         from ._transformers import transform_storage_list_output
-
         g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
                                 table_transformer=transform_blob_output)
 
