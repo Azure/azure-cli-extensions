@@ -204,6 +204,54 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {}'.format(
                 container, directory4, '/'.join([directory3, 'readme']), storage_account))
 
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @StorageTestFilesPreparer()
+    @ResourceGroupPreparer()
+    def test_storage_adls_blob_directory_upload(self, resource_group, test_dir):
+        storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
+        self.kwargs.update({
+            'sc': storage_account,
+            'rg': resource_group
+        })
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info)
+        directory = 'dir'
+
+        self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory)
+
+        # Upload a single blob to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
+                         os.path.join(test_dir, 'readme'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+        # Upload a local directory to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'apple'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 12))
+
+        # Upload files in a local directory to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'butter/file_*'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 22))
+
+        # Upload files in a local directory to the blob directory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'butter/file_*'))
+
+        # Upload files in a local directory to the blob subdirectory
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         '/'.join([directory, 'subdir']), os.path.join(test_dir, 'butter/file_*'))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, '/'.join([directory, 'subdir'])) \
+            .assert_with_checks(JMESPathCheck('length(@)', 10))
+
+        # Argument validation: Throw error when source path is blob name
+        with self.assertRaises(SystemExit):
+            self.cmd('storage blob directory upload -c {} -d {} -s {} --account-name {}'.format(
+                container, '/'.join([directory, 'readme']), test_dir, storage_account))
 
 if __name__ == '__main__':
     unittest.main()

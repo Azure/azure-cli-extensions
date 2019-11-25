@@ -333,7 +333,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='The upload destination container.')
         c.extra('destination_path', options_list=['--destination-path', '-d'], required=True,
                 validator=validate_blob_directory_upload_destination_url,
-                help='The upload destination directory path.')
+                help='The upload destination directory path. It should be an absolute path to container. If the '
+                     'specified destination path does not exist, a new directory path will be created.')
         c.argument('source', options_list=['--source', '-s'],
                    help='The source file path to upload from.')
         c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',

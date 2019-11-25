@@ -295,7 +295,7 @@ helps['storage blob directory show'] = """
 
 helps['storage blob directory upload'] = """
     type: command
-    short-summary: Upload blobs to a storage blob directory.
+    short-summary: Upload blobs or subdirectories to a storage blob directory.
     examples:
         - name: Upload a single blob to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file" -d directory
