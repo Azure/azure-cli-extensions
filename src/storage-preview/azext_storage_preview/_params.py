@@ -297,7 +297,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob directory move') as c:
         from ._validators import validate_move_directory
         c.argument('new_path', options_list=['--destination-path', '-d'],
-                   help='The destination blob directory path.')
+                   help='The destination blob directory path. It can be a directory or subdirectory name, e.g. dir, '
+                        'dir/subdir. If the destination path exists and is empty, the source will be moved into the '
+                        'destination path. If the destination path does not exist, the destination path will be created'
+                        ' and overwritten by the source. To control the move operation for nonempty path, you can use '
+                        '--move-mode to determine its behavior.')
         c.argument('source_path', options_list=['--source-path', '-s'],
                    help='The source blob directory path.', validator=validate_move_directory)
         c.argument('lease_id', options_list=['--lease-id'],
