@@ -136,6 +136,74 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
         self.storage_cmd('storage blob directory exists -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('exists', False))
 
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @StorageTestFilesPreparer()
+    @ResourceGroupPreparer()
+    def test_storage_adls_blob_directory_move(self, resource_group, test_dir):
+        storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
+        self.kwargs.update({
+            'sc': storage_account,
+            'rg': resource_group
+        })
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info)
+        directory = 'dir'
+        des_directory = 'dir1'
+
+        self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory)
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'apple'))
+        # Move from a directory to a nonexistent directory
+        self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', False))
+        self.storage_cmd('storage blob directory move -c {} -d {} -s {}', account_info,
+                         container, des_directory, directory)
+        self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('exists', False))
+        self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('length(@)', 11))
+
+        # Move from a directory to a existing empty directory
+        directory2 = 'dir2'
+        self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory2)
+        self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+        self.storage_cmd('storage blob directory move -c {} -d {} -s {}', account_info,
+                         container, directory2, des_directory)
+        self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, des_directory) \
+            .assert_with_checks(JMESPathCheck('exists', False))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory2) \
+            .assert_with_checks(JMESPathCheck('length(@)', 12))
+
+        # Move from a directory to a existing nonempty directory with mode "legacy"
+        directory3 = 'dir3'
+        self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory3)
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory3,
+                         os.path.join(test_dir, 'readme'))
+        self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {} --move-mode legacy'.format(container,  directory3, directory2, storage_account), expect_failure=True)
+
+        # Move from a directory to a existing nonempty directory with mode "posix"
+        self.storage_cmd('storage blob directory move -c {} -d {} -s {} --move-mode posix', account_info,
+                         container, directory3, directory2)
+        self.storage_cmd('storage blob directory exists -c {} -d {}', account_info, container,
+                         '/'.join([directory3, directory2])) \
+            .assert_with_checks(JMESPathCheck('exists', True))
+
+        # Move from a subdirectory to a new directory with mode "posix"
+        directory4 = "dir4"
+        self.storage_cmd('storage blob directory move -c {} -d {} -s {} --move-mode posix', account_info,
+                         container, directory4, '/'.join([directory3, directory2]))
+        self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory4) \
+            .assert_with_checks(JMESPathCheck('length(@)', 12))
+
+        # Argument validation: Throw error when source path is blob name
+        with self.assertRaises(SystemExit):
+            self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {}'.format(
+                container, directory4, '/'.join([directory3, 'readme']), storage_account))
+
 
 if __name__ == '__main__':
     unittest.main()

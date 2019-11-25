@@ -244,6 +244,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help="The destination blob name. It should be an absolute path under the container. e.g."
                         "'topdir1/dirbar'.")
         c.argument('container_name', container_name_type)
+        c.ignore('mode')
         c.ignore('marker')
 
     with self.argument_context('storage blob directory') as c:
@@ -295,10 +296,19 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob directory move') as c:
         from ._validators import validate_move_directory
-        c.argument('destination_path', options_list=['--destination-path', '-d'],
+        c.argument('new_path', options_list=['--destination-path', '-d'],
                    help='The destination blob directory path.')
         c.argument('source_path', options_list=['--source-path', '-s'],
                    help='The source blob directory path.', validator=validate_move_directory)
+        c.argument('lease_id', options_list=['--lease-id'],
+                   help='A lease ID for destination directory_path. The destination directory_path must have an active '
+                        'lease and the lease ID must match.')
+        c.argument('mode', options_list=['--move-mode'], arg_type=get_enum_type(["legacy", "posix"]), default="posix",
+                   help="Valid only when namespace is enabled. This parameter determines the behavior "
+                        "of the move operation. If the destination directory is empty, for both two mode, "
+                        "the destination directory will be overwritten. But if the destination directory is not empty, "
+                        "in legacy mode the move operation will fail and in posix mode, the source directory will be "
+                        "moved into the destination directory. ")
 
     with self.argument_context('storage blob directory show') as c:
         c.argument('directory_name', directory_path_type)

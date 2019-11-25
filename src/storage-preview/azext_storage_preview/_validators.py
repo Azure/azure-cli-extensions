@@ -494,8 +494,8 @@ def validate_move_file(cmd, namespace):
     # Check Destination
     destination = ns.get('new_path')
     if client.exists(container, destination):
-        logger.warning('The destination blob name already exits in current container. If continue, '
-                       'the existing blob "{}" will be overwritten.'.format(destination))
+        logger.warning('The destination blob name already exists in current container. '
+                       'The existing blob "{}" will be overwritten.'.format(destination))
 
 
 def validate_move_directory(cmd, namespace):
@@ -511,7 +511,7 @@ def validate_move_directory(cmd, namespace):
                          'Please change to a valid blob directory name. If you want to move a blob file, '
                          'please use `az storage blob move` command.')
     # Check Destination
-    destination = ns.get('destination_path')
+    destination = ns.get('new_path')
     if client.exists(container, destination):
-        logger.warning('The destination directory already exits in current container. If continue, '
-                       'the existing directory"{}" will be overwritten.'.format(destination))
+        logger.warning('The destination directory already exists in current container. If continue, '
+                       'the existing directory "{}" will be overwritten.'.format(destination))
