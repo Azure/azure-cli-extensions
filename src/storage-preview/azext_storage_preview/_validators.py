@@ -460,8 +460,7 @@ def validate_storage_data_plane_list(namespace):
         namespace.num_results = int(namespace.num_results)
 
 
-def validate_move_file(cmd, namespace):
-    ns = vars(namespace)
+def get_blob_client(cmd, ns):
     t_base_blob_service = cmd.get_models('blob.baseblobservice#BaseBlobService')
     account = ns.get('account_name')
     key = ns.get('account_key')
@@ -473,17 +472,46 @@ def validate_move_file(cmd, namespace):
                                              key,
                                              cs,
                                              sas)
+    return client
+
+
+def is_directory(props):
+    return len(props.metadata) and props.metadata['hdi_isfolder'] == 'true'
+
+
+def validate_move_file(cmd, namespace):
+    ns = vars(namespace)
+    client = get_blob_client(cmd, ns)
     source = ns.get('source_path')
     container = ns.get('container_name')
     lease_id = ns.get('lease_id')
     # Check Source
     props = client.get_blob_properties(container, source, lease_id=lease_id)
-    if len(props.metadata) and props.metadata['hdi_isfolder'] == 'true':
+    if is_directory(props):
         raise ValueError('usage error: You are specifying --source-blob with a blob directory name. '
                          'Please change to a valid blob name. If you want to move a blob directory, '
                          'please use `az storage blob directory move` command.')
     # Check Destination
     destination = ns.get('new_path')
     if client.exists(container, destination):
-        logger.warning('The destination blob name already exits in current container. If you continue excuting the command, '
+        logger.warning('The destination blob name already exits in current container. If continue, '
                        'the existing blob "{}" will be overwritten.'.format(destination))
+
+
+def validate_move_directory(cmd, namespace):
+    ns = vars(namespace)
+    client = get_blob_client(cmd, ns)
+    source = ns.get('source_path')
+    container = ns.get('container_name')
+    lease_id = ns.get('lease_id')
+    # Check Source
+    props = client.get_blob_properties(container, source, lease_id=lease_id)
+    if not is_directory(props):
+        raise ValueError('usage error: You are specifying --source-path with a blob name, not directory name. '
+                         'Please change to a valid blob directory name. If you want to move a blob file, '
+                         'please use `az storage blob move` command.')
+    # Check Destination
+    destination = ns.get('destination_path')
+    if client.exists(container, destination):
+        logger.warning('The destination directory already exits in current container. If continue, '
+                       'the existing directory"{}" will be overwritten.'.format(destination))

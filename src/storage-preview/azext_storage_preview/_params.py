@@ -294,10 +294,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('blob_name', directory_path_type)
 
     with self.argument_context('storage blob directory move') as c:
+        from ._validators import validate_move_directory
         c.argument('destination_path', options_list=['--destination-path', '-d'],
                    help='The destination blob directory path.')
         c.argument('source_path', options_list=['--source-path', '-s'],
-                   help='The source blob directory path.')
+                   help='The source blob directory path.', validator=validate_move_directory)
 
     with self.argument_context('storage blob directory show') as c:
         c.argument('directory_name', directory_path_type)

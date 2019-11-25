@@ -87,6 +87,9 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 22))
+        with self.assertRaises(ValueError):
+            self.storage_cmd('storage blob directory move -c {} -d {} -s {}', account_info,
+                             container, des_directory, '/'.join([des_directory, 'readme']))
 
         blob = 'readme'
         # Move a blob in a container
