@@ -177,11 +177,25 @@ def validate_blob_directory_download_source_url(cmd, namespace):
 
 
 def validate_blob_directory_upload_destination_url(cmd, namespace):
-    client = blob_data_service_factory(cmd.cli_ctx, {
-        'account_name': namespace.account_name})
-    destination_path = namespace.destination_path
-    url = client.make_blob_url(namespace.destination_container, destination_path)
-    namespace.destination = url + '/'
+    ns = vars(namespace)
+    destination = ns.get('destination_path')
+    container = ns.get('destination_container')
+    client = get_blob_client(cmd, ns)
+    destination = destination[1:] if destination.startswith('/') else destination
+    from azure.common import AzureException
+    try:
+        props = client.get_blob_properties(container, destination)
+        if not is_directory(props):
+            raise ValueError('usage error: You are specifying --destination-path with a blob name, not directory name. '
+                             'Please change to a valid blob directory name. If you want to upload to a blob file, '
+                             'please use `az storage blob upload` command.')
+    except AzureException:
+        pass
+
+    if not destination.endswith('/'):
+        destination += '/'
+    url = client.make_blob_url(container, destination)
+    namespace.destination = url
     del namespace.destination_container
     del namespace.destination_path
 
@@ -476,7 +490,7 @@ def get_blob_client(cmd, ns):
 
 
 def is_directory(props):
-    return len(props.metadata) and props.metadata['hdi_isfolder'] == 'true'
+    return 'hdi_isfolder' in props.metadata.keys() and props.metadata['hdi_isfolder'] == 'true'
 
 
 def validate_move_file(cmd, namespace):

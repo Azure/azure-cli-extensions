@@ -331,7 +331,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob directory upload') as c:
         c.extra('destination_container', options_list=['--container', '-c'], required=True,
                 help='The upload destination container.')
-        c.extra('destination_path', options_list=['--destination-directory', '-d'], required=True,
+        c.extra('destination_path', options_list=['--destination-path', '-d'], required=True,
                 validator=validate_blob_directory_upload_destination_url,
                 help='The upload destination directory path.')
         c.argument('source', options_list=['--source', '-s'],
