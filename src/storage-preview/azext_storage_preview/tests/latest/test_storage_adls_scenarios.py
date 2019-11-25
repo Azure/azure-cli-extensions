@@ -103,7 +103,6 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
                              container, blob, des_directory)
 
-
         # Storage blob access control
         acl = "user::rwx,group::r--,other::---"
         self.storage_cmd('storage blob access set -c {} -b {} -a "{}"', account_info, container, blob, acl)
@@ -183,7 +182,8 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
         self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory3)
         self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory3,
                          os.path.join(test_dir, 'readme'))
-        self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {} --move-mode legacy'.format(container,  directory3, directory2, storage_account), expect_failure=True)
+        self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {} --move-mode legacy'.format(
+            container, directory3, directory2, storage_account), expect_failure=True)
 
         # Move from a directory to a existing nonempty directory with mode "posix"
         self.storage_cmd('storage blob directory move -c {} -d {} -s {} --move-mode posix', account_info,

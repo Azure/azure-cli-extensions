@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access, logging-format-interpolation
 import os
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -98,9 +98,6 @@ def validate_client_parameters(cmd, namespace):
             account_key_args = [arg for arg in account_key_args if arg]
 
             if account_key_args:
-                from knack.log import get_logger
-
-                logger = get_logger(__name__)
                 logger.warning('In "login" auth mode, the following arguments are ignored: %s',
                                ' ,'.join(account_key_args))
             return
