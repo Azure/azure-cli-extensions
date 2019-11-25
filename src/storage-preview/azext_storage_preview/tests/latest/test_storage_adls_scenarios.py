@@ -34,7 +34,8 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
         self.storage_cmd('storage blob directory exists -c {} -d {} ', account_info, container, directory)\
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob list -c {}', account_info, container) \
-            .assert_with_checks(JMESPathCheck('length(@)', 1))
+            .assert_with_checks(JMESPathCheck('length(@)', 1)) \
+            .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', 'true'))
         self.storage_cmd('storage blob directory show -c {} -d {} ', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
 
