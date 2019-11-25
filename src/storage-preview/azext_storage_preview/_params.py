@@ -275,11 +275,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob directory download') as c:
         c.extra('source_container', options_list=['--container', '-c'], required=True,
                 help='The download source container.')
-        c.extra('source_path', options_list=['--source-directory', '-s'], required=True,
+        c.extra('source_path', options_list=['--source-path', '-s'], required=True,
                 validator=validate_blob_directory_download_source_url,
-                help='The download source directory path.')
+                help='The download source directory path. It should be an absolute path to container.')
         c.argument('destination', options_list=['--destination-path', '-d'],
-                   help='The destination directory path to download.')
+                   help='The destination local directory path to download.')
         c.argument('recursive', options_list=['--recursive', '-r'], action='store_true',
                    help='Recursively download blobs. If enabled, all the blobs including the blobs in subdirectories '
                         'will be downloaded.')

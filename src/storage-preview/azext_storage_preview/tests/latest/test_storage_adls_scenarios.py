@@ -253,5 +253,41 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             self.cmd('storage blob directory upload -c {} -d {} -s {} --account-name {}'.format(
                 container, '/'.join([directory, 'readme']), test_dir, storage_account))
 
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
+    @StorageTestFilesPreparer()
+    @ResourceGroupPreparer()
+    def test_storage_adls_blob_directory_download(self, resource_group, test_dir):
+        storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
+        self.kwargs.update({
+            'sc': storage_account,
+            'rg': resource_group
+        })
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info)
+        directory = 'dir'
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'readme'))
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}" --recursive', account_info, container,
+                         directory, os.path.join(test_dir, 'apple'))
+
+        local_folder = self.create_temp_dir()
+        # Download a single file
+        self.storage_cmd('storage blob directory download -c {} -s "{}" -d "{}" --recursive', account_info, container,
+                         os.path.join(directory, 'readme'), local_folder)
+        self.assertEqual(1, sum(len(f) for r, d, f in os.walk(local_folder)))
+
+        # Download entire directory
+        self.storage_cmd('storage blob directory download -c {} -s {} -d "{}" --recursive', account_info, container,
+                         directory, local_folder)
+        self.assertEqual(2, sum(len(d) for r, d, f in os.walk(local_folder)))
+        self.assertEqual(12, sum(len(f) for r, d, f in os.walk(local_folder)))
+
+        # Download an entire subdirectory of a storage blob directory.
+        self.storage_cmd('storage blob directory download -c {} -s {} -d "{}" --recursive', account_info, container,
+                         '/'.join([directory, 'apple']), local_folder)
+        self.assertEqual(3, sum(len(d) for r, d, f in os.walk(local_folder)))
+
+
 if __name__ == '__main__':
     unittest.main()
