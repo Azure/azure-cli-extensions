@@ -182,7 +182,7 @@ class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
                          container, '/'.join([des_directory, new_blob]), '/'.join([des_directory, blob]))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
-            .assert_with_checks(JMESPathCheck('[0].name', '/'.join([des_directory,new_blob])))
+            .assert_with_checks(JMESPathCheck('[0].name', '/'.join([des_directory, new_blob])))
 
         with self.assertRaises(SystemExit):
             self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,

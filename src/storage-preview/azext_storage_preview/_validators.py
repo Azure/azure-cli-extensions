@@ -10,11 +10,11 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
 from knack.util import CLIError
+from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
 from .profiles import CUSTOM_MGMT_STORAGE
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 

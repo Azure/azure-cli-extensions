@@ -133,8 +133,7 @@ def list_directory(client, container_name, directory_path, prefix=None, num_resu
 def rename_directory(client, container_name, new_path, source_path,
                      mode=None, lease_id=None, source_lease_id=None,
                      source_if_modified_since=None, source_if_unmodified_since=None,
-                     source_if_match=None, source_if_none_match=None, timeout=None
-                     ):
+                     source_if_match=None, source_if_none_match=None, timeout=None):
     """
      Rename a directory(which can contain other directories or blobs).
 
