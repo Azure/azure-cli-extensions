@@ -1,0 +1,1881 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --hierarchical-namespace
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resource/4.0.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2019-11-25T16:12:29Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 Nov 2019 16:12:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Standard_RAGRS"}, "kind": "StorageV2", "location": "westus",
+      "properties": {"isHnsEnabled": true}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '116'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -n -g --kind --hierarchical-namespace
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002?api-version=2018-07-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 25 Nov 2019 16:12:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/7aedf40b-71a3-47e1-be51-fb676770a5e6?monitor=true&api-version=2018-07-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --kind --hierarchical-namespace
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/westus/asyncoperations/7aedf40b-71a3-47e1-be51-fb676770a5e6?monitor=true&api-version=2018-07-01
+  response:
+    body:
+      string: '{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002","name":"clitestaldsaccount000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.2243569Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.2243569Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:43.1618939Z","primaryEndpoints":{"dfs":"https://clitestaldsaccount000002.dfs.core.windows.net/","web":"https://clitestaldsaccount000002.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002.blob.core.windows.net/","queue":"https://clitestaldsaccount000002.queue.core.windows.net/","table":"https://clitestaldsaccount000002.table.core.windows.net/","file":"https://clitestaldsaccount000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccount000002-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccount000002-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccount000002-secondary.queue.core.windows.net/","table":"https://clitestaldsaccount000002-secondary.table.core.windows.net/"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1805'
+      content-type:
+      - application/json
+      date:
+      - Mon, 25 Nov 2019 16:13:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account keys list
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n -g --query -o
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002/listKeys?api-version=2018-07-01
+  response:
+    body:
+      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '288'
+      content-type:
+      - application/json
+      date:
+      - Mon, 25 Nov 2019 16:13:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:04 GMT
+      x-ms-version:
+      - '2018-11-09'
+    method: PUT
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:13:05 GMT
+      etag:
+      - '"0x8D771C25AD295CB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:05 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2018-11-09'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:06 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir?resource=directory
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      etag:
+      - '"0x8D771C25C7D3C1B"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:09 GMT
+      x-ms-version:
+      - '2018-03-28'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:11 GMT
+      etag:
+      - '"0x8D771C25C7D3C1B"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2018-03-28'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:19 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir1
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 25 Nov 2019 16:13:19 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:20 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:21 GMT
+      etag:
+      - '"0x8D771C25C7D3C1B"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:21 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir1
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 25 Nov 2019 16:13:21 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:22 GMT
+      x-ms-rename-source:
+      - /contaxas4bp7t3cyq5q2iojn/dir
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir1?mode=posix
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:13:25 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:26 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 25 Nov 2019 16:13:27 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:28 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir1
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:31 GMT
+      etag:
+      - '"0x8D771C25C7D3C1B"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:32 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir1%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>dir1/</Prefix><Blobs><Blob><Name>dir1/apple</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2605E9FFA</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>dir1/apple/file_0</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2605FC2AA</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5aMbGMSwuUzzrLgFT8mRiw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_1</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260908380</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>UWjVOrXbh8Z624yyYSS/mw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_2</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2607E7128</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>qZ+maH2haoKaEExv2hsgIQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_3</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260631F45</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0Z5Pa8qeoWJpMg6ihIQFHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_4</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260637394</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>TB/xrrTy5uI65f8eq20NzQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_5</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260C441FD</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>DV4gmBTagI2dIXjKUhIxmA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_6</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26063AF08</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>igZ0+7LlARrKirl3/8fNpA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_7</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26098EB45</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>x+yLvXooCTPJLOCgCiwOiA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_8</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260A2BAF9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>n4om3FPDQA9BJsdFMktviA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir1/apple/file_9</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26086A85A</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>ZnMxXOsrSnQJhii1T/8lRQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Mon, 25 Nov 2019 16:13:34 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:34 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir2?resource=directory
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      etag:
+      - '"0x8D771C26D094CCB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir1
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:37 GMT
+      etag:
+      - '"0x8D771C25C7D3C1B"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:38 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir1
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:39 GMT
+      etag:
+      - '"0x8D771C25C7D3C1B"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:08 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:39 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir2
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:39 GMT
+      etag:
+      - '"0x8D771C26D094CCB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:39 GMT
+      x-ms-rename-source:
+      - /contaxas4bp7t3cyq5q2iojn/dir1
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir2?mode=posix
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:13:41 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:41 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir1
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 25 Nov 2019 16:13:42 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:43 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir2%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>dir2/</Prefix><Blobs><Blob><Name>dir2/dir1</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:08 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:08
+        GMT</Last-Modified><Etag>0x8D771C25C7D3C1B</Etag><Content-Length>0</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
+        /><Content-Language /><Content-CRC64>AAAAAAAAAAA=</Content-CRC64><Content-MD5
+        /><Cache-Control /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>dir2/dir1/apple</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2605E9FFA</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>dir2/dir1/apple/file_0</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2605FC2AA</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5aMbGMSwuUzzrLgFT8mRiw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_1</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260908380</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>UWjVOrXbh8Z624yyYSS/mw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_2</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2607E7128</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>qZ+maH2haoKaEExv2hsgIQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_3</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260631F45</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0Z5Pa8qeoWJpMg6ihIQFHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_4</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260637394</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>TB/xrrTy5uI65f8eq20NzQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_5</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260C441FD</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>DV4gmBTagI2dIXjKUhIxmA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_6</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26063AF08</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>igZ0+7LlARrKirl3/8fNpA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_7</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26098EB45</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>x+yLvXooCTPJLOCgCiwOiA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_8</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260A2BAF9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>n4om3FPDQA9BJsdFMktviA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir2/dir1/apple/file_9</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26086A85A</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>ZnMxXOsrSnQJhii1T/8lRQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Mon, 25 Nov 2019 16:13:45 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:46 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir3?resource=directory
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:13:46 GMT
+      etag:
+      - '"0x8D771C273C440F5"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/1.2.0rc1-1.2.0rc1 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:48 GMT
+      x-ms-version:
+      - '2018-03-28'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir3
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:48 GMT
+      etag:
+      - '"0x8D771C273C440F5"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2018-03-28'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage blob directory move
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -d -s --account-name --move-mode
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/storageAccounts?api-version=2018-07-01
+  response:
+    body:
+      string: '{"value":[{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rggv3tdit2ddva4hzvu4m5ptixlqke7qtq6pz7lktxhcrogmynixchev2c3iil35gfg/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountfv5pnr","name":"clitestaldsaccountfv5pnr","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:41.7088341Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:41.7088341Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:41.6462346Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountfv5pnr.dfs.core.windows.net/","web":"https://clitestaldsaccountfv5pnr.z22.web.core.windows.net/","blob":"https://clitestaldsaccountfv5pnr.blob.core.windows.net/","queue":"https://clitestaldsaccountfv5pnr.queue.core.windows.net/","table":"https://clitestaldsaccountfv5pnr.table.core.windows.net/","file":"https://clitestaldsaccountfv5pnr.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountfv5pnr-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountfv5pnr-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountfv5pnr-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountfv5pnr-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountfv5pnr-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg7gy7caxqrkssypsoxxmyx5qu5lbzzyknmizyvaeislqcjyupffkarlr4qrqgzbnw6/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountgd53zp","name":"clitestaldsaccountgd53zp","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:42.8962704Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:42.8962704Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:42.8337502Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountgd53zp.dfs.core.windows.net/","web":"https://clitestaldsaccountgd53zp.z22.web.core.windows.net/","blob":"https://clitestaldsaccountgd53zp.blob.core.windows.net/","queue":"https://clitestaldsaccountgd53zp.queue.core.windows.net/","table":"https://clitestaldsaccountgd53zp.table.core.windows.net/","file":"https://clitestaldsaccountgd53zp.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountgd53zp-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountgd53zp-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountgd53zp-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountgd53zp-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountgd53zp-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg3mlqzoftpwv7qs7rzcoyko2jvkguw45mkceb7agewkrlka5d3gngdohoupopgth3c/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountqp5wlv","name":"clitestaldsaccountqp5wlv","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:45.4275254Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:45.4275254Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:45.3650204Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountqp5wlv.dfs.core.windows.net/","web":"https://clitestaldsaccountqp5wlv.z22.web.core.windows.net/","blob":"https://clitestaldsaccountqp5wlv.blob.core.windows.net/","queue":"https://clitestaldsaccountqp5wlv.queue.core.windows.net/","table":"https://clitestaldsaccountqp5wlv.table.core.windows.net/","file":"https://clitestaldsaccountqp5wlv.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountqp5wlv-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountqp5wlv-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountqp5wlv-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountqp5wlv-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountqp5wlv-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgyw65qd3enqhpn2ekhc5uyjnxqze4zf4r5veqgmrofus4pc34zeuoys4b3ypevt7nh/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountvapp6l","name":"clitestaldsaccountvapp6l","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.7243892Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.7243892Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:43.6618869Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountvapp6l.dfs.core.windows.net/","web":"https://clitestaldsaccountvapp6l.z22.web.core.windows.net/","blob":"https://clitestaldsaccountvapp6l.blob.core.windows.net/","queue":"https://clitestaldsaccountvapp6l.queue.core.windows.net/","table":"https://clitestaldsaccountvapp6l.table.core.windows.net/","file":"https://clitestaldsaccountvapp6l.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountvapp6l-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountvapp6l-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountvapp6l-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountvapp6l-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountvapp6l-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002","name":"clitestaldsaccount000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.2243569Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.2243569Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:43.1618939Z","primaryEndpoints":{"dfs":"https://clitestaldsaccount000002.dfs.core.windows.net/","web":"https://clitestaldsaccount000002.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002.blob.core.windows.net/","queue":"https://clitestaldsaccount000002.queue.core.windows.net/","table":"https://clitestaldsaccount000002.table.core.windows.net/","file":"https://clitestaldsaccount000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccount000002-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccount000002-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccount000002-secondary.queue.core.windows.net/","table":"https://clitestaldsaccount000002-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuh/providers/Microsoft.Storage/storageAccounts/zuhstoragetest","name":"zuhstoragetest","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-21T02:50:09.7890855Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-21T02:50:09.7890855Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-21T02:50:09.7109403Z","primaryEndpoints":{"dfs":"https://zuhstoragetest.dfs.core.windows.net/","web":"https://zuhstoragetest.z22.web.core.windows.net/","blob":"https://zuhstoragetest.blob.core.windows.net/","queue":"https://zuhstoragetest.queue.core.windows.net/","table":"https://zuhstoragetest.table.core.windows.net/","file":"https://zuhstoragetest.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://zuhstoragetest-secondary.dfs.core.windows.net/","web":"https://zuhstoragetest-secondary.z22.web.core.windows.net/","blob":"https://zuhstoragetest-secondary.blob.core.windows.net/","queue":"https://zuhstoragetest-secondary.queue.core.windows.net/","table":"https://zuhstoragetest-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/feng-cli-rg/providers/Microsoft.Storage/storageAccounts/fengclirgdiag","name":"fengclirgdiag","type":"Microsoft.Storage/storageAccounts","location":"japaneast","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-19T05:42:01.4689958Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-19T05:42:01.4689958Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-11-19T05:42:01.4066038Z","primaryEndpoints":{"blob":"https://fengclirgdiag.blob.core.windows.net/","queue":"https://fengclirgdiag.queue.core.windows.net/","table":"https://fengclirgdiag.table.core.windows.net/","file":"https://fengclirgdiag.file.core.windows.net/"},"primaryLocation":"japaneast","statusOfPrimary":"available"}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro1","name":"storagesfrepro1","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:07:42.2058942Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:07:42.2058942Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:07:42.1277444Z","primaryEndpoints":{"dfs":"https://storagesfrepro1.dfs.core.windows.net/","web":"https://storagesfrepro1.z19.web.core.windows.net/","blob":"https://storagesfrepro1.blob.core.windows.net/","queue":"https://storagesfrepro1.queue.core.windows.net/","table":"https://storagesfrepro1.table.core.windows.net/","file":"https://storagesfrepro1.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro1-secondary.dfs.core.windows.net/","web":"https://storagesfrepro1-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro1-secondary.blob.core.windows.net/","queue":"https://storagesfrepro1-secondary.queue.core.windows.net/","table":"https://storagesfrepro1-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro10","name":"storagesfrepro10","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:00.8753334Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:00.8753334Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:14:00.7815921Z","primaryEndpoints":{"dfs":"https://storagesfrepro10.dfs.core.windows.net/","web":"https://storagesfrepro10.z19.web.core.windows.net/","blob":"https://storagesfrepro10.blob.core.windows.net/","queue":"https://storagesfrepro10.queue.core.windows.net/","table":"https://storagesfrepro10.table.core.windows.net/","file":"https://storagesfrepro10.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro10-secondary.dfs.core.windows.net/","web":"https://storagesfrepro10-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro10-secondary.blob.core.windows.net/","queue":"https://storagesfrepro10-secondary.queue.core.windows.net/","table":"https://storagesfrepro10-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro11","name":"storagesfrepro11","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:28.9859417Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:28.9859417Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:14:28.8609347Z","primaryEndpoints":{"dfs":"https://storagesfrepro11.dfs.core.windows.net/","web":"https://storagesfrepro11.z19.web.core.windows.net/","blob":"https://storagesfrepro11.blob.core.windows.net/","queue":"https://storagesfrepro11.queue.core.windows.net/","table":"https://storagesfrepro11.table.core.windows.net/","file":"https://storagesfrepro11.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro11-secondary.dfs.core.windows.net/","web":"https://storagesfrepro11-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro11-secondary.blob.core.windows.net/","queue":"https://storagesfrepro11-secondary.queue.core.windows.net/","table":"https://storagesfrepro11-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro12","name":"storagesfrepro12","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:15:15.6785362Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:15:15.6785362Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:15:15.5848345Z","primaryEndpoints":{"dfs":"https://storagesfrepro12.dfs.core.windows.net/","web":"https://storagesfrepro12.z19.web.core.windows.net/","blob":"https://storagesfrepro12.blob.core.windows.net/","queue":"https://storagesfrepro12.queue.core.windows.net/","table":"https://storagesfrepro12.table.core.windows.net/","file":"https://storagesfrepro12.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro12-secondary.dfs.core.windows.net/","web":"https://storagesfrepro12-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro12-secondary.blob.core.windows.net/","queue":"https://storagesfrepro12-secondary.queue.core.windows.net/","table":"https://storagesfrepro12-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro13","name":"storagesfrepro13","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:16:55.7609361Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:16:55.7609361Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:16:55.6671828Z","primaryEndpoints":{"dfs":"https://storagesfrepro13.dfs.core.windows.net/","web":"https://storagesfrepro13.z19.web.core.windows.net/","blob":"https://storagesfrepro13.blob.core.windows.net/","queue":"https://storagesfrepro13.queue.core.windows.net/","table":"https://storagesfrepro13.table.core.windows.net/","file":"https://storagesfrepro13.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro13-secondary.dfs.core.windows.net/","web":"https://storagesfrepro13-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro13-secondary.blob.core.windows.net/","queue":"https://storagesfrepro13-secondary.queue.core.windows.net/","table":"https://storagesfrepro13-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro14","name":"storagesfrepro14","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:17:40.7661469Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:17:40.7661469Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:17:40.6880204Z","primaryEndpoints":{"dfs":"https://storagesfrepro14.dfs.core.windows.net/","web":"https://storagesfrepro14.z19.web.core.windows.net/","blob":"https://storagesfrepro14.blob.core.windows.net/","queue":"https://storagesfrepro14.queue.core.windows.net/","table":"https://storagesfrepro14.table.core.windows.net/","file":"https://storagesfrepro14.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro14-secondary.dfs.core.windows.net/","web":"https://storagesfrepro14-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro14-secondary.blob.core.windows.net/","queue":"https://storagesfrepro14-secondary.queue.core.windows.net/","table":"https://storagesfrepro14-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro15","name":"storagesfrepro15","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:18:52.1812445Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:18:52.1812445Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:18:52.0718543Z","primaryEndpoints":{"dfs":"https://storagesfrepro15.dfs.core.windows.net/","web":"https://storagesfrepro15.z19.web.core.windows.net/","blob":"https://storagesfrepro15.blob.core.windows.net/","queue":"https://storagesfrepro15.queue.core.windows.net/","table":"https://storagesfrepro15.table.core.windows.net/","file":"https://storagesfrepro15.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro15-secondary.dfs.core.windows.net/","web":"https://storagesfrepro15-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro15-secondary.blob.core.windows.net/","queue":"https://storagesfrepro15-secondary.queue.core.windows.net/","table":"https://storagesfrepro15-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro16","name":"storagesfrepro16","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:19:33.1863807Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:19:33.1863807Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:19:33.0770034Z","primaryEndpoints":{"dfs":"https://storagesfrepro16.dfs.core.windows.net/","web":"https://storagesfrepro16.z19.web.core.windows.net/","blob":"https://storagesfrepro16.blob.core.windows.net/","queue":"https://storagesfrepro16.queue.core.windows.net/","table":"https://storagesfrepro16.table.core.windows.net/","file":"https://storagesfrepro16.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro16-secondary.dfs.core.windows.net/","web":"https://storagesfrepro16-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro16-secondary.blob.core.windows.net/","queue":"https://storagesfrepro16-secondary.queue.core.windows.net/","table":"https://storagesfrepro16-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro17","name":"storagesfrepro17","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:23.5553513Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:23.5553513Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:04:23.4771469Z","primaryEndpoints":{"dfs":"https://storagesfrepro17.dfs.core.windows.net/","web":"https://storagesfrepro17.z19.web.core.windows.net/","blob":"https://storagesfrepro17.blob.core.windows.net/","queue":"https://storagesfrepro17.queue.core.windows.net/","table":"https://storagesfrepro17.table.core.windows.net/","file":"https://storagesfrepro17.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro17-secondary.dfs.core.windows.net/","web":"https://storagesfrepro17-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro17-secondary.blob.core.windows.net/","queue":"https://storagesfrepro17-secondary.queue.core.windows.net/","table":"https://storagesfrepro17-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro18","name":"storagesfrepro18","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:53.8320772Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:53.8320772Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:04:53.7383176Z","primaryEndpoints":{"dfs":"https://storagesfrepro18.dfs.core.windows.net/","web":"https://storagesfrepro18.z19.web.core.windows.net/","blob":"https://storagesfrepro18.blob.core.windows.net/","queue":"https://storagesfrepro18.queue.core.windows.net/","table":"https://storagesfrepro18.table.core.windows.net/","file":"https://storagesfrepro18.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro18-secondary.dfs.core.windows.net/","web":"https://storagesfrepro18-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro18-secondary.blob.core.windows.net/","queue":"https://storagesfrepro18-secondary.queue.core.windows.net/","table":"https://storagesfrepro18-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro19","name":"storagesfrepro19","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:05:26.3650238Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:05:26.3650238Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:05:26.2556326Z","primaryEndpoints":{"dfs":"https://storagesfrepro19.dfs.core.windows.net/","web":"https://storagesfrepro19.z19.web.core.windows.net/","blob":"https://storagesfrepro19.blob.core.windows.net/","queue":"https://storagesfrepro19.queue.core.windows.net/","table":"https://storagesfrepro19.table.core.windows.net/","file":"https://storagesfrepro19.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro19-secondary.dfs.core.windows.net/","web":"https://storagesfrepro19-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro19-secondary.blob.core.windows.net/","queue":"https://storagesfrepro19-secondary.queue.core.windows.net/","table":"https://storagesfrepro19-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro2","name":"storagesfrepro2","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:08:45.8498203Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:08:45.8498203Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:08:45.7717196Z","primaryEndpoints":{"dfs":"https://storagesfrepro2.dfs.core.windows.net/","web":"https://storagesfrepro2.z19.web.core.windows.net/","blob":"https://storagesfrepro2.blob.core.windows.net/","queue":"https://storagesfrepro2.queue.core.windows.net/","table":"https://storagesfrepro2.table.core.windows.net/","file":"https://storagesfrepro2.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro2-secondary.dfs.core.windows.net/","web":"https://storagesfrepro2-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro2-secondary.blob.core.windows.net/","queue":"https://storagesfrepro2-secondary.queue.core.windows.net/","table":"https://storagesfrepro2-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro20","name":"storagesfrepro20","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:07.4295934Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:07.4295934Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:06:07.3358422Z","primaryEndpoints":{"dfs":"https://storagesfrepro20.dfs.core.windows.net/","web":"https://storagesfrepro20.z19.web.core.windows.net/","blob":"https://storagesfrepro20.blob.core.windows.net/","queue":"https://storagesfrepro20.queue.core.windows.net/","table":"https://storagesfrepro20.table.core.windows.net/","file":"https://storagesfrepro20.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro20-secondary.dfs.core.windows.net/","web":"https://storagesfrepro20-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro20-secondary.blob.core.windows.net/","queue":"https://storagesfrepro20-secondary.queue.core.windows.net/","table":"https://storagesfrepro20-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro21","name":"storagesfrepro21","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:37.4780251Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:37.4780251Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:06:37.3686460Z","primaryEndpoints":{"dfs":"https://storagesfrepro21.dfs.core.windows.net/","web":"https://storagesfrepro21.z19.web.core.windows.net/","blob":"https://storagesfrepro21.blob.core.windows.net/","queue":"https://storagesfrepro21.queue.core.windows.net/","table":"https://storagesfrepro21.table.core.windows.net/","file":"https://storagesfrepro21.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro21-secondary.dfs.core.windows.net/","web":"https://storagesfrepro21-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro21-secondary.blob.core.windows.net/","queue":"https://storagesfrepro21-secondary.queue.core.windows.net/","table":"https://storagesfrepro21-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro22","name":"storagesfrepro22","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:59.8295391Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:59.8295391Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:06:59.7201581Z","primaryEndpoints":{"dfs":"https://storagesfrepro22.dfs.core.windows.net/","web":"https://storagesfrepro22.z19.web.core.windows.net/","blob":"https://storagesfrepro22.blob.core.windows.net/","queue":"https://storagesfrepro22.queue.core.windows.net/","table":"https://storagesfrepro22.table.core.windows.net/","file":"https://storagesfrepro22.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro22-secondary.dfs.core.windows.net/","web":"https://storagesfrepro22-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro22-secondary.blob.core.windows.net/","queue":"https://storagesfrepro22-secondary.queue.core.windows.net/","table":"https://storagesfrepro22-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro23","name":"storagesfrepro23","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:29.0846619Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:29.0846619Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:07:29.0065050Z","primaryEndpoints":{"dfs":"https://storagesfrepro23.dfs.core.windows.net/","web":"https://storagesfrepro23.z19.web.core.windows.net/","blob":"https://storagesfrepro23.blob.core.windows.net/","queue":"https://storagesfrepro23.queue.core.windows.net/","table":"https://storagesfrepro23.table.core.windows.net/","file":"https://storagesfrepro23.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro23-secondary.dfs.core.windows.net/","web":"https://storagesfrepro23-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro23-secondary.blob.core.windows.net/","queue":"https://storagesfrepro23-secondary.queue.core.windows.net/","table":"https://storagesfrepro23-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro24","name":"storagesfrepro24","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:53.2658712Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:53.2658712Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:07:53.1565651Z","primaryEndpoints":{"dfs":"https://storagesfrepro24.dfs.core.windows.net/","web":"https://storagesfrepro24.z19.web.core.windows.net/","blob":"https://storagesfrepro24.blob.core.windows.net/","queue":"https://storagesfrepro24.queue.core.windows.net/","table":"https://storagesfrepro24.table.core.windows.net/","file":"https://storagesfrepro24.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro24-secondary.dfs.core.windows.net/","web":"https://storagesfrepro24-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro24-secondary.blob.core.windows.net/","queue":"https://storagesfrepro24-secondary.queue.core.windows.net/","table":"https://storagesfrepro24-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro25","name":"storagesfrepro25","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:08:18.7432319Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:08:18.7432319Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:08:18.6338258Z","primaryEndpoints":{"dfs":"https://storagesfrepro25.dfs.core.windows.net/","web":"https://storagesfrepro25.z19.web.core.windows.net/","blob":"https://storagesfrepro25.blob.core.windows.net/","queue":"https://storagesfrepro25.queue.core.windows.net/","table":"https://storagesfrepro25.table.core.windows.net/","file":"https://storagesfrepro25.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro25-secondary.dfs.core.windows.net/","web":"https://storagesfrepro25-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro25-secondary.blob.core.windows.net/","queue":"https://storagesfrepro25-secondary.queue.core.windows.net/","table":"https://storagesfrepro25-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro3","name":"storagesfrepro3","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:19.5698333Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:19.5698333Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:09:19.3510997Z","primaryEndpoints":{"dfs":"https://storagesfrepro3.dfs.core.windows.net/","web":"https://storagesfrepro3.z19.web.core.windows.net/","blob":"https://storagesfrepro3.blob.core.windows.net/","queue":"https://storagesfrepro3.queue.core.windows.net/","table":"https://storagesfrepro3.table.core.windows.net/","file":"https://storagesfrepro3.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro3-secondary.dfs.core.windows.net/","web":"https://storagesfrepro3-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro3-secondary.blob.core.windows.net/","queue":"https://storagesfrepro3-secondary.queue.core.windows.net/","table":"https://storagesfrepro3-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro4","name":"storagesfrepro4","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:54.9930953Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:54.9930953Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:09:54.8993063Z","primaryEndpoints":{"dfs":"https://storagesfrepro4.dfs.core.windows.net/","web":"https://storagesfrepro4.z19.web.core.windows.net/","blob":"https://storagesfrepro4.blob.core.windows.net/","queue":"https://storagesfrepro4.queue.core.windows.net/","table":"https://storagesfrepro4.table.core.windows.net/","file":"https://storagesfrepro4.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro4-secondary.dfs.core.windows.net/","web":"https://storagesfrepro4-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro4-secondary.blob.core.windows.net/","queue":"https://storagesfrepro4-secondary.queue.core.windows.net/","table":"https://storagesfrepro4-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro5","name":"storagesfrepro5","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:10:48.1114395Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:10:48.1114395Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:10:48.0177273Z","primaryEndpoints":{"dfs":"https://storagesfrepro5.dfs.core.windows.net/","web":"https://storagesfrepro5.z19.web.core.windows.net/","blob":"https://storagesfrepro5.blob.core.windows.net/","queue":"https://storagesfrepro5.queue.core.windows.net/","table":"https://storagesfrepro5.table.core.windows.net/","file":"https://storagesfrepro5.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro5-secondary.dfs.core.windows.net/","web":"https://storagesfrepro5-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro5-secondary.blob.core.windows.net/","queue":"https://storagesfrepro5-secondary.queue.core.windows.net/","table":"https://storagesfrepro5-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro6","name":"storagesfrepro6","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:11:28.0269117Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:11:28.0269117Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:11:27.9331594Z","primaryEndpoints":{"dfs":"https://storagesfrepro6.dfs.core.windows.net/","web":"https://storagesfrepro6.z19.web.core.windows.net/","blob":"https://storagesfrepro6.blob.core.windows.net/","queue":"https://storagesfrepro6.queue.core.windows.net/","table":"https://storagesfrepro6.table.core.windows.net/","file":"https://storagesfrepro6.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro6-secondary.dfs.core.windows.net/","web":"https://storagesfrepro6-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro6-secondary.blob.core.windows.net/","queue":"https://storagesfrepro6-secondary.queue.core.windows.net/","table":"https://storagesfrepro6-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro7","name":"storagesfrepro7","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:08.7761892Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:08.7761892Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:12:08.6824637Z","primaryEndpoints":{"dfs":"https://storagesfrepro7.dfs.core.windows.net/","web":"https://storagesfrepro7.z19.web.core.windows.net/","blob":"https://storagesfrepro7.blob.core.windows.net/","queue":"https://storagesfrepro7.queue.core.windows.net/","table":"https://storagesfrepro7.table.core.windows.net/","file":"https://storagesfrepro7.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro7-secondary.dfs.core.windows.net/","web":"https://storagesfrepro7-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro7-secondary.blob.core.windows.net/","queue":"https://storagesfrepro7-secondary.queue.core.windows.net/","table":"https://storagesfrepro7-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro8","name":"storagesfrepro8","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:39.5221164Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:39.5221164Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:12:39.4283923Z","primaryEndpoints":{"dfs":"https://storagesfrepro8.dfs.core.windows.net/","web":"https://storagesfrepro8.z19.web.core.windows.net/","blob":"https://storagesfrepro8.blob.core.windows.net/","queue":"https://storagesfrepro8.queue.core.windows.net/","table":"https://storagesfrepro8.table.core.windows.net/","file":"https://storagesfrepro8.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro8-secondary.dfs.core.windows.net/","web":"https://storagesfrepro8-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro8-secondary.blob.core.windows.net/","queue":"https://storagesfrepro8-secondary.queue.core.windows.net/","table":"https://storagesfrepro8-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro9","name":"storagesfrepro9","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:13:18.1628430Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:13:18.1628430Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:13:18.0691096Z","primaryEndpoints":{"dfs":"https://storagesfrepro9.dfs.core.windows.net/","web":"https://storagesfrepro9.z19.web.core.windows.net/","blob":"https://storagesfrepro9.blob.core.windows.net/","queue":"https://storagesfrepro9.queue.core.windows.net/","table":"https://storagesfrepro9.table.core.windows.net/","file":"https://storagesfrepro9.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro9-secondary.dfs.core.windows.net/","web":"https://storagesfrepro9-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro9-secondary.blob.core.windows.net/","queue":"https://storagesfrepro9-secondary.queue.core.windows.net/","table":"https://storagesfrepro9-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuh/providers/Microsoft.Storage/storageAccounts/zuhadls","name":"zuhadls","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T03:10:10.3563528Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T03:10:10.3563528Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T03:10:10.2782578Z","primaryEndpoints":{"dfs":"https://zuhadls.dfs.core.windows.net/","web":"https://zuhadls.z19.web.core.windows.net/","blob":"https://zuhadls.blob.core.windows.net/","queue":"https://zuhadls.queue.core.windows.net/","table":"https://zuhadls.table.core.windows.net/","file":"https://zuhadls.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://zuhadls-secondary.dfs.core.windows.net/","web":"https://zuhadls-secondary.z19.web.core.windows.net/","blob":"https://zuhadls-secondary.blob.core.windows.net/","queue":"https://zuhadls-secondary.queue.core.windows.net/","table":"https://zuhadls-secondary.table.core.windows.net/"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '53847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 Nov 2019 16:13:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 12388844-db21-4232-a22d-dfd9e2fa35b0
+      - 62e5d244-f3ef-4a53-bea7-29e306e5b1b8
+      - a2edfa49-66fb-486b-889d-e005ae119fc6
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage blob directory move
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -c -d -s --account-name --move-mode
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002/listKeys?api-version=2018-07-01
+  response:
+    body:
+      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '288'
+      content-type:
+      - application/json
+      date:
+      - Mon, 25 Nov 2019 16:13:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:58 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir2
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:58 GMT
+      etag:
+      - '"0x8D771C26D094CCB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:59 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir3
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:13:59 GMT
+      etag:
+      - '"0x8D771C273C440F5"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:13:59 GMT
+      x-ms-rename-source:
+      - /contaxas4bp7t3cyq5q2iojn/dir2
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir3?mode=legacy
+  response:
+    body:
+      string: '{"error":{"code":"InternalOperationAbortError","message":"This operation
+        is aborted because there is another conflicting operation in progress.\nRequestId:3f83c2b8-a01f-0108-66ab-a3f5ed000000\nTime:2019-11-25T16:14:01.0270374Z"}}'
+    headers:
+      content-length:
+      - '229'
+      content-type:
+      - application/json;charset=utf-8
+      date:
+      - Mon, 25 Nov 2019 16:14:00 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-error-code:
+      - InternalOperationAbortError
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 409
+      message: This operation is aborted because there is another conflicting operation
+        in progress.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:01 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir2
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:14:02 GMT
+      etag:
+      - '"0x8D771C26D094CCB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:02 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir3
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:14:02 GMT
+      etag:
+      - '"0x8D771C273C440F5"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:47 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:03 GMT
+      x-ms-rename-source:
+      - /contaxas4bp7t3cyq5q2iojn/dir2
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir3?mode=posix
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:14:03 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:05 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir3/dir2
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:14:05 GMT
+      etag:
+      - '"0x8D771C26D094CCB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:08 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir3/dir2
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Mon, 25 Nov 2019 16:14:08 GMT
+      etag:
+      - '"0x8D771C26D094CCB"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:36 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-meta-hdi_isfolder:
+      - 'true'
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:09 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir4
+  response:
+    body:
+      string: ''
+    headers:
+      date:
+      - Mon, 25 Nov 2019 16:14:08 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-error-code:
+      - BlobNotFound
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 404
+      message: The specified blob does not exist.
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:09 GMT
+      x-ms-rename-source:
+      - /contaxas4bp7t3cyq5q2iojn/dir3/dir2
+      x-ms-version:
+      - '2019-02-02'
+    method: PUT
+    uri: https://clitestaldsaccount000002.dfs.core.windows.net/cont000003/dir4?mode=posix
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Mon, 25 Nov 2019 16:14:10 GMT
+      server:
+      - Windows-Azure-HDFS/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:11 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: GET
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003?restype=container&comp=list&prefix=dir4%2F&include=metadata%2Ccopy
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><EnumerationResults
+        ServiceEndpoint=\"https://clitestaldsaccount000002.blob.core.windows.net/\"
+        ContainerName=\"cont000003\"><Prefix>dir4/</Prefix><Blobs><Blob><Name>dir4/dir1</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:08 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:08
+        GMT</Last-Modified><Etag>0x8D771C25C7D3C1B</Etag><Content-Length>0</Content-Length><Content-Type>application/octet-stream</Content-Type><Content-Encoding
+        /><Content-Language /><Content-CRC64>AAAAAAAAAAA=</Content-CRC64><Content-MD5
+        /><Cache-Control /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>dir4/dir1/apple</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2605E9FFA</Etag><Content-Length>0</Content-Length><Content-Type
+        /><Content-Encoding /><Content-Language /><Content-CRC64 /><Content-MD5 /><Cache-Control
+        /><Content-Disposition /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata><hdi_isfolder>true</hdi_isfolder></Metadata></Blob><Blob><Name>dir4/dir1/apple/file_0</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2605FC2AA</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>5aMbGMSwuUzzrLgFT8mRiw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_1</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260908380</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>UWjVOrXbh8Z624yyYSS/mw==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_2</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C2607E7128</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>qZ+maH2haoKaEExv2hsgIQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_3</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260631F45</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>0Z5Pa8qeoWJpMg6ihIQFHA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_4</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260637394</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>TB/xrrTy5uI65f8eq20NzQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_5</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260C441FD</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>DV4gmBTagI2dIXjKUhIxmA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_6</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26063AF08</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>igZ0+7LlARrKirl3/8fNpA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_7</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26098EB45</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>x+yLvXooCTPJLOCgCiwOiA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_8</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C260A2BAF9</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>n4om3FPDQA9BJsdFMktviA==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob><Blob><Name>dir4/dir1/apple/file_9</Name><Properties><Creation-Time>Mon,
+        25 Nov 2019 16:13:15 GMT</Creation-Time><Last-Modified>Mon, 25 Nov 2019 16:13:15
+        GMT</Last-Modified><Etag>0x8D771C26086A85A</Etag><Content-Length>128</Content-Length><Content-Type>text/plain;
+        charset=utf-8</Content-Type><Content-Encoding /><Content-Language /><Content-CRC64
+        /><Content-MD5>ZnMxXOsrSnQJhii1T/8lRQ==</Content-MD5><Cache-Control /><Content-Disposition
+        /><BlobType>BlockBlob</BlobType><AccessTier>Hot</AccessTier><AccessTierInferred>true</AccessTierInferred><LeaseStatus>unlocked</LeaseStatus><ServerEncrypted>true</ServerEncrypted></Properties><Metadata
+        /></Blob></Blobs><NextMarker /></EnumerationResults>"
+    headers:
+      content-type:
+      - application/xml
+      date:
+      - Mon, 25 Nov 2019 16:14:13 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      transfer-encoding:
+      - chunked
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage blob directory move
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -d -s --account-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/storageAccounts?api-version=2018-07-01
+  response:
+    body:
+      string: '{"value":[{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rggv3tdit2ddva4hzvu4m5ptixlqke7qtq6pz7lktxhcrogmynixchev2c3iil35gfg/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountfv5pnr","name":"clitestaldsaccountfv5pnr","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:41.7088341Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:41.7088341Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:41.6462346Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountfv5pnr.dfs.core.windows.net/","web":"https://clitestaldsaccountfv5pnr.z22.web.core.windows.net/","blob":"https://clitestaldsaccountfv5pnr.blob.core.windows.net/","queue":"https://clitestaldsaccountfv5pnr.queue.core.windows.net/","table":"https://clitestaldsaccountfv5pnr.table.core.windows.net/","file":"https://clitestaldsaccountfv5pnr.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountfv5pnr-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountfv5pnr-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountfv5pnr-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountfv5pnr-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountfv5pnr-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg7gy7caxqrkssypsoxxmyx5qu5lbzzyknmizyvaeislqcjyupffkarlr4qrqgzbnw6/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountgd53zp","name":"clitestaldsaccountgd53zp","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:42.8962704Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:42.8962704Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:42.8337502Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountgd53zp.dfs.core.windows.net/","web":"https://clitestaldsaccountgd53zp.z22.web.core.windows.net/","blob":"https://clitestaldsaccountgd53zp.blob.core.windows.net/","queue":"https://clitestaldsaccountgd53zp.queue.core.windows.net/","table":"https://clitestaldsaccountgd53zp.table.core.windows.net/","file":"https://clitestaldsaccountgd53zp.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountgd53zp-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountgd53zp-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountgd53zp-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountgd53zp-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountgd53zp-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg3mlqzoftpwv7qs7rzcoyko2jvkguw45mkceb7agewkrlka5d3gngdohoupopgth3c/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountqp5wlv","name":"clitestaldsaccountqp5wlv","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:45.4275254Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:45.4275254Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:45.3650204Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountqp5wlv.dfs.core.windows.net/","web":"https://clitestaldsaccountqp5wlv.z22.web.core.windows.net/","blob":"https://clitestaldsaccountqp5wlv.blob.core.windows.net/","queue":"https://clitestaldsaccountqp5wlv.queue.core.windows.net/","table":"https://clitestaldsaccountqp5wlv.table.core.windows.net/","file":"https://clitestaldsaccountqp5wlv.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountqp5wlv-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountqp5wlv-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountqp5wlv-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountqp5wlv-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountqp5wlv-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rgyw65qd3enqhpn2ekhc5uyjnxqze4zf4r5veqgmrofus4pc34zeuoys4b3ypevt7nh/providers/Microsoft.Storage/storageAccounts/clitestaldsaccountvapp6l","name":"clitestaldsaccountvapp6l","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.7243892Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.7243892Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:43.6618869Z","primaryEndpoints":{"dfs":"https://clitestaldsaccountvapp6l.dfs.core.windows.net/","web":"https://clitestaldsaccountvapp6l.z22.web.core.windows.net/","blob":"https://clitestaldsaccountvapp6l.blob.core.windows.net/","queue":"https://clitestaldsaccountvapp6l.queue.core.windows.net/","table":"https://clitestaldsaccountvapp6l.table.core.windows.net/","file":"https://clitestaldsaccountvapp6l.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccountvapp6l-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccountvapp6l-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccountvapp6l-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccountvapp6l-secondary.queue.core.windows.net/","table":"https://clitestaldsaccountvapp6l-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002","name":"clitestaldsaccount000002","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.2243569Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T16:12:43.2243569Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T16:12:43.1618939Z","primaryEndpoints":{"dfs":"https://clitestaldsaccount000002.dfs.core.windows.net/","web":"https://clitestaldsaccount000002.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002.blob.core.windows.net/","queue":"https://clitestaldsaccount000002.queue.core.windows.net/","table":"https://clitestaldsaccount000002.table.core.windows.net/","file":"https://clitestaldsaccount000002.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://clitestaldsaccount000002-secondary.dfs.core.windows.net/","web":"https://clitestaldsaccount000002-secondary.z22.web.core.windows.net/","blob":"https://clitestaldsaccount000002-secondary.blob.core.windows.net/","queue":"https://clitestaldsaccount000002-secondary.queue.core.windows.net/","table":"https://clitestaldsaccount000002-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuh/providers/Microsoft.Storage/storageAccounts/zuhstoragetest","name":"zuhstoragetest","type":"Microsoft.Storage/storageAccounts","location":"westus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-21T02:50:09.7890855Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-21T02:50:09.7890855Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-21T02:50:09.7109403Z","primaryEndpoints":{"dfs":"https://zuhstoragetest.dfs.core.windows.net/","web":"https://zuhstoragetest.z22.web.core.windows.net/","blob":"https://zuhstoragetest.blob.core.windows.net/","queue":"https://zuhstoragetest.queue.core.windows.net/","table":"https://zuhstoragetest.table.core.windows.net/","file":"https://zuhstoragetest.file.core.windows.net/"},"primaryLocation":"westus","statusOfPrimary":"available","secondaryLocation":"eastus","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://zuhstoragetest-secondary.dfs.core.windows.net/","web":"https://zuhstoragetest-secondary.z22.web.core.windows.net/","blob":"https://zuhstoragetest-secondary.blob.core.windows.net/","queue":"https://zuhstoragetest-secondary.queue.core.windows.net/","table":"https://zuhstoragetest-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_LRS","tier":"Standard"},"kind":"Storage","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/feng-cli-rg/providers/Microsoft.Storage/storageAccounts/fengclirgdiag","name":"fengclirgdiag","type":"Microsoft.Storage/storageAccounts","location":"japaneast","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-19T05:42:01.4689958Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-19T05:42:01.4689958Z"}},"keySource":"Microsoft.Storage"},"provisioningState":"Succeeded","creationTime":"2019-11-19T05:42:01.4066038Z","primaryEndpoints":{"blob":"https://fengclirgdiag.blob.core.windows.net/","queue":"https://fengclirgdiag.queue.core.windows.net/","table":"https://fengclirgdiag.table.core.windows.net/","file":"https://fengclirgdiag.file.core.windows.net/"},"primaryLocation":"japaneast","statusOfPrimary":"available"}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro1","name":"storagesfrepro1","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:07:42.2058942Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:07:42.2058942Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:07:42.1277444Z","primaryEndpoints":{"dfs":"https://storagesfrepro1.dfs.core.windows.net/","web":"https://storagesfrepro1.z19.web.core.windows.net/","blob":"https://storagesfrepro1.blob.core.windows.net/","queue":"https://storagesfrepro1.queue.core.windows.net/","table":"https://storagesfrepro1.table.core.windows.net/","file":"https://storagesfrepro1.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro1-secondary.dfs.core.windows.net/","web":"https://storagesfrepro1-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro1-secondary.blob.core.windows.net/","queue":"https://storagesfrepro1-secondary.queue.core.windows.net/","table":"https://storagesfrepro1-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro10","name":"storagesfrepro10","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:00.8753334Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:00.8753334Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:14:00.7815921Z","primaryEndpoints":{"dfs":"https://storagesfrepro10.dfs.core.windows.net/","web":"https://storagesfrepro10.z19.web.core.windows.net/","blob":"https://storagesfrepro10.blob.core.windows.net/","queue":"https://storagesfrepro10.queue.core.windows.net/","table":"https://storagesfrepro10.table.core.windows.net/","file":"https://storagesfrepro10.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro10-secondary.dfs.core.windows.net/","web":"https://storagesfrepro10-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro10-secondary.blob.core.windows.net/","queue":"https://storagesfrepro10-secondary.queue.core.windows.net/","table":"https://storagesfrepro10-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro11","name":"storagesfrepro11","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:28.9859417Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:14:28.9859417Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:14:28.8609347Z","primaryEndpoints":{"dfs":"https://storagesfrepro11.dfs.core.windows.net/","web":"https://storagesfrepro11.z19.web.core.windows.net/","blob":"https://storagesfrepro11.blob.core.windows.net/","queue":"https://storagesfrepro11.queue.core.windows.net/","table":"https://storagesfrepro11.table.core.windows.net/","file":"https://storagesfrepro11.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro11-secondary.dfs.core.windows.net/","web":"https://storagesfrepro11-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro11-secondary.blob.core.windows.net/","queue":"https://storagesfrepro11-secondary.queue.core.windows.net/","table":"https://storagesfrepro11-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro12","name":"storagesfrepro12","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:15:15.6785362Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:15:15.6785362Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:15:15.5848345Z","primaryEndpoints":{"dfs":"https://storagesfrepro12.dfs.core.windows.net/","web":"https://storagesfrepro12.z19.web.core.windows.net/","blob":"https://storagesfrepro12.blob.core.windows.net/","queue":"https://storagesfrepro12.queue.core.windows.net/","table":"https://storagesfrepro12.table.core.windows.net/","file":"https://storagesfrepro12.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro12-secondary.dfs.core.windows.net/","web":"https://storagesfrepro12-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro12-secondary.blob.core.windows.net/","queue":"https://storagesfrepro12-secondary.queue.core.windows.net/","table":"https://storagesfrepro12-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro13","name":"storagesfrepro13","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:16:55.7609361Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:16:55.7609361Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:16:55.6671828Z","primaryEndpoints":{"dfs":"https://storagesfrepro13.dfs.core.windows.net/","web":"https://storagesfrepro13.z19.web.core.windows.net/","blob":"https://storagesfrepro13.blob.core.windows.net/","queue":"https://storagesfrepro13.queue.core.windows.net/","table":"https://storagesfrepro13.table.core.windows.net/","file":"https://storagesfrepro13.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro13-secondary.dfs.core.windows.net/","web":"https://storagesfrepro13-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro13-secondary.blob.core.windows.net/","queue":"https://storagesfrepro13-secondary.queue.core.windows.net/","table":"https://storagesfrepro13-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro14","name":"storagesfrepro14","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:17:40.7661469Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:17:40.7661469Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:17:40.6880204Z","primaryEndpoints":{"dfs":"https://storagesfrepro14.dfs.core.windows.net/","web":"https://storagesfrepro14.z19.web.core.windows.net/","blob":"https://storagesfrepro14.blob.core.windows.net/","queue":"https://storagesfrepro14.queue.core.windows.net/","table":"https://storagesfrepro14.table.core.windows.net/","file":"https://storagesfrepro14.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro14-secondary.dfs.core.windows.net/","web":"https://storagesfrepro14-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro14-secondary.blob.core.windows.net/","queue":"https://storagesfrepro14-secondary.queue.core.windows.net/","table":"https://storagesfrepro14-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro15","name":"storagesfrepro15","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:18:52.1812445Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:18:52.1812445Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:18:52.0718543Z","primaryEndpoints":{"dfs":"https://storagesfrepro15.dfs.core.windows.net/","web":"https://storagesfrepro15.z19.web.core.windows.net/","blob":"https://storagesfrepro15.blob.core.windows.net/","queue":"https://storagesfrepro15.queue.core.windows.net/","table":"https://storagesfrepro15.table.core.windows.net/","file":"https://storagesfrepro15.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro15-secondary.dfs.core.windows.net/","web":"https://storagesfrepro15-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro15-secondary.blob.core.windows.net/","queue":"https://storagesfrepro15-secondary.queue.core.windows.net/","table":"https://storagesfrepro15-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro16","name":"storagesfrepro16","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:19:33.1863807Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:19:33.1863807Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:19:33.0770034Z","primaryEndpoints":{"dfs":"https://storagesfrepro16.dfs.core.windows.net/","web":"https://storagesfrepro16.z19.web.core.windows.net/","blob":"https://storagesfrepro16.blob.core.windows.net/","queue":"https://storagesfrepro16.queue.core.windows.net/","table":"https://storagesfrepro16.table.core.windows.net/","file":"https://storagesfrepro16.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro16-secondary.dfs.core.windows.net/","web":"https://storagesfrepro16-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro16-secondary.blob.core.windows.net/","queue":"https://storagesfrepro16-secondary.queue.core.windows.net/","table":"https://storagesfrepro16-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro17","name":"storagesfrepro17","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:23.5553513Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:23.5553513Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:04:23.4771469Z","primaryEndpoints":{"dfs":"https://storagesfrepro17.dfs.core.windows.net/","web":"https://storagesfrepro17.z19.web.core.windows.net/","blob":"https://storagesfrepro17.blob.core.windows.net/","queue":"https://storagesfrepro17.queue.core.windows.net/","table":"https://storagesfrepro17.table.core.windows.net/","file":"https://storagesfrepro17.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro17-secondary.dfs.core.windows.net/","web":"https://storagesfrepro17-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro17-secondary.blob.core.windows.net/","queue":"https://storagesfrepro17-secondary.queue.core.windows.net/","table":"https://storagesfrepro17-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro18","name":"storagesfrepro18","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:53.8320772Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:04:53.8320772Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:04:53.7383176Z","primaryEndpoints":{"dfs":"https://storagesfrepro18.dfs.core.windows.net/","web":"https://storagesfrepro18.z19.web.core.windows.net/","blob":"https://storagesfrepro18.blob.core.windows.net/","queue":"https://storagesfrepro18.queue.core.windows.net/","table":"https://storagesfrepro18.table.core.windows.net/","file":"https://storagesfrepro18.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro18-secondary.dfs.core.windows.net/","web":"https://storagesfrepro18-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro18-secondary.blob.core.windows.net/","queue":"https://storagesfrepro18-secondary.queue.core.windows.net/","table":"https://storagesfrepro18-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro19","name":"storagesfrepro19","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:05:26.3650238Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:05:26.3650238Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:05:26.2556326Z","primaryEndpoints":{"dfs":"https://storagesfrepro19.dfs.core.windows.net/","web":"https://storagesfrepro19.z19.web.core.windows.net/","blob":"https://storagesfrepro19.blob.core.windows.net/","queue":"https://storagesfrepro19.queue.core.windows.net/","table":"https://storagesfrepro19.table.core.windows.net/","file":"https://storagesfrepro19.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro19-secondary.dfs.core.windows.net/","web":"https://storagesfrepro19-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro19-secondary.blob.core.windows.net/","queue":"https://storagesfrepro19-secondary.queue.core.windows.net/","table":"https://storagesfrepro19-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro2","name":"storagesfrepro2","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:08:45.8498203Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:08:45.8498203Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:08:45.7717196Z","primaryEndpoints":{"dfs":"https://storagesfrepro2.dfs.core.windows.net/","web":"https://storagesfrepro2.z19.web.core.windows.net/","blob":"https://storagesfrepro2.blob.core.windows.net/","queue":"https://storagesfrepro2.queue.core.windows.net/","table":"https://storagesfrepro2.table.core.windows.net/","file":"https://storagesfrepro2.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro2-secondary.dfs.core.windows.net/","web":"https://storagesfrepro2-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro2-secondary.blob.core.windows.net/","queue":"https://storagesfrepro2-secondary.queue.core.windows.net/","table":"https://storagesfrepro2-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro20","name":"storagesfrepro20","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:07.4295934Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:07.4295934Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:06:07.3358422Z","primaryEndpoints":{"dfs":"https://storagesfrepro20.dfs.core.windows.net/","web":"https://storagesfrepro20.z19.web.core.windows.net/","blob":"https://storagesfrepro20.blob.core.windows.net/","queue":"https://storagesfrepro20.queue.core.windows.net/","table":"https://storagesfrepro20.table.core.windows.net/","file":"https://storagesfrepro20.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro20-secondary.dfs.core.windows.net/","web":"https://storagesfrepro20-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro20-secondary.blob.core.windows.net/","queue":"https://storagesfrepro20-secondary.queue.core.windows.net/","table":"https://storagesfrepro20-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro21","name":"storagesfrepro21","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:37.4780251Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:37.4780251Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:06:37.3686460Z","primaryEndpoints":{"dfs":"https://storagesfrepro21.dfs.core.windows.net/","web":"https://storagesfrepro21.z19.web.core.windows.net/","blob":"https://storagesfrepro21.blob.core.windows.net/","queue":"https://storagesfrepro21.queue.core.windows.net/","table":"https://storagesfrepro21.table.core.windows.net/","file":"https://storagesfrepro21.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro21-secondary.dfs.core.windows.net/","web":"https://storagesfrepro21-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro21-secondary.blob.core.windows.net/","queue":"https://storagesfrepro21-secondary.queue.core.windows.net/","table":"https://storagesfrepro21-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro22","name":"storagesfrepro22","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:59.8295391Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:06:59.8295391Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:06:59.7201581Z","primaryEndpoints":{"dfs":"https://storagesfrepro22.dfs.core.windows.net/","web":"https://storagesfrepro22.z19.web.core.windows.net/","blob":"https://storagesfrepro22.blob.core.windows.net/","queue":"https://storagesfrepro22.queue.core.windows.net/","table":"https://storagesfrepro22.table.core.windows.net/","file":"https://storagesfrepro22.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro22-secondary.dfs.core.windows.net/","web":"https://storagesfrepro22-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro22-secondary.blob.core.windows.net/","queue":"https://storagesfrepro22-secondary.queue.core.windows.net/","table":"https://storagesfrepro22-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro23","name":"storagesfrepro23","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:29.0846619Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:29.0846619Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:07:29.0065050Z","primaryEndpoints":{"dfs":"https://storagesfrepro23.dfs.core.windows.net/","web":"https://storagesfrepro23.z19.web.core.windows.net/","blob":"https://storagesfrepro23.blob.core.windows.net/","queue":"https://storagesfrepro23.queue.core.windows.net/","table":"https://storagesfrepro23.table.core.windows.net/","file":"https://storagesfrepro23.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro23-secondary.dfs.core.windows.net/","web":"https://storagesfrepro23-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro23-secondary.blob.core.windows.net/","queue":"https://storagesfrepro23-secondary.queue.core.windows.net/","table":"https://storagesfrepro23-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro24","name":"storagesfrepro24","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:53.2658712Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:07:53.2658712Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:07:53.1565651Z","primaryEndpoints":{"dfs":"https://storagesfrepro24.dfs.core.windows.net/","web":"https://storagesfrepro24.z19.web.core.windows.net/","blob":"https://storagesfrepro24.blob.core.windows.net/","queue":"https://storagesfrepro24.queue.core.windows.net/","table":"https://storagesfrepro24.table.core.windows.net/","file":"https://storagesfrepro24.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro24-secondary.dfs.core.windows.net/","web":"https://storagesfrepro24-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro24-secondary.blob.core.windows.net/","queue":"https://storagesfrepro24-secondary.queue.core.windows.net/","table":"https://storagesfrepro24-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro25","name":"storagesfrepro25","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T05:08:18.7432319Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T05:08:18.7432319Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T05:08:18.6338258Z","primaryEndpoints":{"dfs":"https://storagesfrepro25.dfs.core.windows.net/","web":"https://storagesfrepro25.z19.web.core.windows.net/","blob":"https://storagesfrepro25.blob.core.windows.net/","queue":"https://storagesfrepro25.queue.core.windows.net/","table":"https://storagesfrepro25.table.core.windows.net/","file":"https://storagesfrepro25.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro25-secondary.dfs.core.windows.net/","web":"https://storagesfrepro25-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro25-secondary.blob.core.windows.net/","queue":"https://storagesfrepro25-secondary.queue.core.windows.net/","table":"https://storagesfrepro25-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro3","name":"storagesfrepro3","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:19.5698333Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:19.5698333Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:09:19.3510997Z","primaryEndpoints":{"dfs":"https://storagesfrepro3.dfs.core.windows.net/","web":"https://storagesfrepro3.z19.web.core.windows.net/","blob":"https://storagesfrepro3.blob.core.windows.net/","queue":"https://storagesfrepro3.queue.core.windows.net/","table":"https://storagesfrepro3.table.core.windows.net/","file":"https://storagesfrepro3.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro3-secondary.dfs.core.windows.net/","web":"https://storagesfrepro3-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro3-secondary.blob.core.windows.net/","queue":"https://storagesfrepro3-secondary.queue.core.windows.net/","table":"https://storagesfrepro3-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro4","name":"storagesfrepro4","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:54.9930953Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:09:54.9930953Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:09:54.8993063Z","primaryEndpoints":{"dfs":"https://storagesfrepro4.dfs.core.windows.net/","web":"https://storagesfrepro4.z19.web.core.windows.net/","blob":"https://storagesfrepro4.blob.core.windows.net/","queue":"https://storagesfrepro4.queue.core.windows.net/","table":"https://storagesfrepro4.table.core.windows.net/","file":"https://storagesfrepro4.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro4-secondary.dfs.core.windows.net/","web":"https://storagesfrepro4-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro4-secondary.blob.core.windows.net/","queue":"https://storagesfrepro4-secondary.queue.core.windows.net/","table":"https://storagesfrepro4-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro5","name":"storagesfrepro5","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:10:48.1114395Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:10:48.1114395Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:10:48.0177273Z","primaryEndpoints":{"dfs":"https://storagesfrepro5.dfs.core.windows.net/","web":"https://storagesfrepro5.z19.web.core.windows.net/","blob":"https://storagesfrepro5.blob.core.windows.net/","queue":"https://storagesfrepro5.queue.core.windows.net/","table":"https://storagesfrepro5.table.core.windows.net/","file":"https://storagesfrepro5.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro5-secondary.dfs.core.windows.net/","web":"https://storagesfrepro5-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro5-secondary.blob.core.windows.net/","queue":"https://storagesfrepro5-secondary.queue.core.windows.net/","table":"https://storagesfrepro5-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro6","name":"storagesfrepro6","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:11:28.0269117Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:11:28.0269117Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:11:27.9331594Z","primaryEndpoints":{"dfs":"https://storagesfrepro6.dfs.core.windows.net/","web":"https://storagesfrepro6.z19.web.core.windows.net/","blob":"https://storagesfrepro6.blob.core.windows.net/","queue":"https://storagesfrepro6.queue.core.windows.net/","table":"https://storagesfrepro6.table.core.windows.net/","file":"https://storagesfrepro6.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro6-secondary.dfs.core.windows.net/","web":"https://storagesfrepro6-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro6-secondary.blob.core.windows.net/","queue":"https://storagesfrepro6-secondary.queue.core.windows.net/","table":"https://storagesfrepro6-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro7","name":"storagesfrepro7","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:08.7761892Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:08.7761892Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:12:08.6824637Z","primaryEndpoints":{"dfs":"https://storagesfrepro7.dfs.core.windows.net/","web":"https://storagesfrepro7.z19.web.core.windows.net/","blob":"https://storagesfrepro7.blob.core.windows.net/","queue":"https://storagesfrepro7.queue.core.windows.net/","table":"https://storagesfrepro7.table.core.windows.net/","file":"https://storagesfrepro7.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro7-secondary.dfs.core.windows.net/","web":"https://storagesfrepro7-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro7-secondary.blob.core.windows.net/","queue":"https://storagesfrepro7-secondary.queue.core.windows.net/","table":"https://storagesfrepro7-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro8","name":"storagesfrepro8","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:39.5221164Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:12:39.5221164Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:12:39.4283923Z","primaryEndpoints":{"dfs":"https://storagesfrepro8.dfs.core.windows.net/","web":"https://storagesfrepro8.z19.web.core.windows.net/","blob":"https://storagesfrepro8.blob.core.windows.net/","queue":"https://storagesfrepro8.queue.core.windows.net/","table":"https://storagesfrepro8.table.core.windows.net/","file":"https://storagesfrepro8.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro8-secondary.dfs.core.windows.net/","web":"https://storagesfrepro8-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro8-secondary.blob.core.windows.net/","queue":"https://storagesfrepro8-secondary.queue.core.windows.net/","table":"https://storagesfrepro8-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/storage-v2rt-repro/providers/Microsoft.Storage/storageAccounts/storagesfrepro9","name":"storagesfrepro9","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-02-26T04:13:18.1628430Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-02-26T04:13:18.1628430Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-02-26T04:13:18.0691096Z","primaryEndpoints":{"dfs":"https://storagesfrepro9.dfs.core.windows.net/","web":"https://storagesfrepro9.z19.web.core.windows.net/","blob":"https://storagesfrepro9.blob.core.windows.net/","queue":"https://storagesfrepro9.queue.core.windows.net/","table":"https://storagesfrepro9.table.core.windows.net/","file":"https://storagesfrepro9.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://storagesfrepro9-secondary.dfs.core.windows.net/","web":"https://storagesfrepro9-secondary.z19.web.core.windows.net/","blob":"https://storagesfrepro9-secondary.blob.core.windows.net/","queue":"https://storagesfrepro9-secondary.queue.core.windows.net/","table":"https://storagesfrepro9-secondary.table.core.windows.net/"}}},{"sku":{"name":"Standard_RAGRS","tier":"Standard"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/zuh/providers/Microsoft.Storage/storageAccounts/zuhadls","name":"zuhadls","type":"Microsoft.Storage/storageAccounts","location":"centralus","tags":{},"properties":{"isHnsEnabled":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":false,"encryption":{"services":{"file":{"enabled":true,"lastEnabledTime":"2019-11-25T03:10:10.3563528Z"},"blob":{"enabled":true,"lastEnabledTime":"2019-11-25T03:10:10.3563528Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2019-11-25T03:10:10.2782578Z","primaryEndpoints":{"dfs":"https://zuhadls.dfs.core.windows.net/","web":"https://zuhadls.z19.web.core.windows.net/","blob":"https://zuhadls.blob.core.windows.net/","queue":"https://zuhadls.queue.core.windows.net/","table":"https://zuhadls.table.core.windows.net/","file":"https://zuhadls.file.core.windows.net/"},"primaryLocation":"centralus","statusOfPrimary":"available","secondaryLocation":"eastus2","statusOfSecondary":"available","secondaryEndpoints":{"dfs":"https://zuhadls-secondary.dfs.core.windows.net/","web":"https://zuhadls-secondary.z19.web.core.windows.net/","blob":"https://zuhadls-secondary.blob.core.windows.net/","queue":"https://zuhadls-secondary.queue.core.windows.net/","table":"https://zuhadls-secondary.table.core.windows.net/"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '53847'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 25 Nov 2019 16:14:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - b1d124b1-dd86-49a5-9e22-605074a069bc
+      - 12de7f63-14f8-46dd-98f4-6a476a5ab9cc
+      - dbe1f3d5-9e8e-428c-9bc0-1d2d7485e83e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage blob directory move
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -c -d -s --account-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storage/3.1.0 Azure-SDK-For-Python AZURECLI/2.0.76
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitestaldsaccount000002/listKeys?api-version=2018-07-01
+  response:
+    body:
+      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '288'
+      content-type:
+      - application/json
+      date:
+      - Mon, 25 Nov 2019 16:14:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Azure-Storage/2.1.0-2.1.0 (Python CPython 3.7.4; Windows 10) AZURECLI/2.0.76
+      x-ms-date:
+      - Mon, 25 Nov 2019 16:14:15 GMT
+      x-ms-version:
+      - '2019-02-02'
+    method: HEAD
+    uri: https://clitestaldsaccount000002.blob.core.windows.net/cont000003/dir3/readme
+  response:
+    body:
+      string: ''
+    headers:
+      accept-ranges:
+      - bytes
+      content-length:
+      - '87'
+      content-md5:
+      - sYGKK8OX+WLKH+2bAe4tSQ==
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Mon, 25 Nov 2019 16:14:16 GMT
+      etag:
+      - '"0x8D771C2773A86C1"'
+      last-modified:
+      - Mon, 25 Nov 2019 16:13:53 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-access-tier:
+      - Hot
+      x-ms-access-tier-inferred:
+      - 'true'
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-creation-time:
+      - Mon, 25 Nov 2019 16:13:53 GMT
+      x-ms-lease-state:
+      - available
+      x-ms-lease-status:
+      - unlocked
+      x-ms-server-encrypted:
+      - 'true'
+      x-ms-version:
+      - '2019-02-02'
+    status:
+      code: 200
+      message: OK
+version: 1
