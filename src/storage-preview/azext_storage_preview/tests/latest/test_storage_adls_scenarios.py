@@ -14,8 +14,8 @@ from ...profiles import CUSTOM_MGMT_STORAGE
 
 class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
-    @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
+    @StorageTestFilesPreparer()
     def test_storage_adls_blob(self, resource_group, test_dir):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
         self.kwargs.update({
@@ -38,6 +38,17 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('[0].metadata.hdi_isfolder', 'true'))
         self.storage_cmd('storage blob directory show -c {} -d {} ', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
+        self.storage_cmd('storage blob directory access show -c {} -d {}', account_info, container, directory) \
+            .assert_with_checks(JMESPathCheck('permissions', "rwxr-x---"))
+
+        # Create a storage blob directory with permissions
+        directory2 = 'testdirectory2'
+        self.storage_cmd('storage blob directory create -c {} -d {} --permissions rwxrwxrwx --umask 0000',
+                         account_info, container, directory2)
+        self.storage_cmd('storage blob directory show -c {} -d {} ', account_info, container, directory2) \
+            .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
+        self.storage_cmd('storage blob directory access show -c {} -d {}', account_info, container, directory2) \
+            .assert_with_checks(JMESPathCheck('permissions', "rwxrwxrwx"))
 
         self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
                          os.path.join(test_dir, 'readme'))
@@ -86,7 +97,7 @@ class StorageADLSDirectoryMoveTests(StorageScenarioMixin, ScenarioTest):
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} -l centralus --kind StorageV2 --hierarchical-namespace true')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
@@ -149,36 +160,37 @@ class StorageADLSDirectoryMoveTests(StorageScenarioMixin, ScenarioTest):
 
 class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
-    @StorageTestFilesPreparer()
-    @ResourceGroupPreparer()
-    def test_storage_adls_blob_move(self, resource_group, test_dir):
-        storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
+    @ResourceGroupPreparer(location="centralus")
+    def test_storage_adls_blob_move(self, resource_group):
+        storage_account = 'clitestaldsblobmove'
         self.kwargs.update({
             'sc': storage_account,
             'rg': resource_group
         })
-        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true')
+        self.cmd('storage account create -n {sc} -g {rg} --kind StorageV2 --hierarchical-namespace true -l centralus')
         account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_container(account_info)
         directory = 'dir'
         des_directory = 'dir1'
-        blob = 'readme'
 
+        local_file = self.create_temp_file(128)
+        blob = self.create_random_name('blob', 24)
         self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory)
-        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
-                         os.path.join(test_dir, 'readme'))
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {}', account_info, container, local_file,
+                         '/'.join([directory, blob]))
+
         self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, des_directory)
 
         # Move a blob between different directory in a container
         self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
-                         container, '/'.join([des_directory, 'readme']), '/'.join([directory, 'readme']))
+                         container, '/'.join([des_directory, blob]), '/'.join([directory, blob]))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 1))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('length(@)', 0))
 
         # Move a blob in a directory
-        new_blob = 'readme2'
+        new_blob = self.create_random_name('blob', 24)
         self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
                          container, '/'.join([des_directory, new_blob]), '/'.join([des_directory, blob]))
         self.storage_cmd('storage blob directory list -c {} -d {}', account_info, container, des_directory) \

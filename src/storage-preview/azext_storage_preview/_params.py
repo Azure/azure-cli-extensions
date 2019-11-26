@@ -46,7 +46,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     num_results_type = CLIArgumentType(
         default=5000, help='Specifies the maximum number of results to return. Provide "*" to return all.',
         validator=validate_storage_data_plane_list)
-    acl_type = CLIArgumentType(options_list=['--acl-spec', '-a'], required=True,
+    acl_type = CLIArgumentType(options_list=['--acl-spec', '-a'],
                                help='The ACL specification to set on the path in the format '
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
@@ -219,7 +219,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('path', blob_name_type)
 
     with self.argument_context('storage blob access set') as c:
-        c.argument('acl', acl_type)
+        c.argument('acl', acl_type, required=True,)
         c.ignore('owner', 'group', 'permissions')
 
     with self.argument_context('storage blob access update') as c:
@@ -254,7 +254,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('path', directory_path_type)
 
     with self.argument_context('storage blob directory access set') as c:
-        c.argument('acl', acl_type)
+        c.argument('acl', acl_type, required=True)
         c.ignore('owner', 'group', 'permissions')
 
     with self.argument_context('storage blob directory access update') as c:
