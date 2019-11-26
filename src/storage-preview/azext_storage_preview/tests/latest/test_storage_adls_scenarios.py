@@ -5,14 +5,14 @@
 
 import os
 import unittest
-from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer,
+from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, ScenarioTest,
                                JMESPathCheck, api_version_constraint)
 
 from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
 from ...profiles import CUSTOM_MGMT_STORAGE
 
 
-class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
+class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
@@ -35,10 +35,14 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             .assert_with_checks(JMESPathCheck('exists', True))
         self.storage_cmd('storage blob list -c {}', account_info, container) \
             .assert_with_checks(JMESPathCheck('length(@)', 1)) \
-            .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', 'true'))
+            .assert_with_checks(JMESPathCheck('[0].metadata.hdi_isfolder', 'true'))
         self.storage_cmd('storage blob directory show -c {} -d {} ', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
 
+        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
+                         os.path.join(test_dir, 'readme'))
+
+        blob = '/'.join([directory, 'readme'])
         # Storage blob access control
         acl = "user::rwx,group::r--,other::---"
         self.storage_cmd('storage blob access set -c {} -b {} -a "{}"', account_info, container, blob, acl)
@@ -71,6 +75,8 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
         self.storage_cmd('storage blob directory exists -c {} -d {}', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('exists', False))
 
+
+class StorageADLSDirectoryMoveTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
@@ -140,6 +146,8 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {}'.format(
                 container, directory4, '/'.join([directory3, 'readme']), storage_account))
 
+
+class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
@@ -180,6 +188,8 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             self.storage_cmd('storage blob move -c {} -d {} -s {}', account_info,
                              container, blob, des_directory)
 
+
+class StorageADLSDirectoryUploadTests(StorageScenarioMixin, LiveScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
@@ -229,6 +239,8 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
             self.cmd('storage blob directory upload -c {} -d {} -s {} --account-name {}'.format(
                 container, '/'.join([directory, 'readme']), test_dir, storage_account))
 
+
+class StorageADLSDirectoryDownloadTests(StorageScenarioMixin, LiveScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
@@ -250,7 +262,7 @@ class StorageADLSTests(StorageScenarioMixin, LiveScenarioTest):
         local_folder = self.create_temp_dir()
         # Download a single file
         self.storage_cmd('storage blob directory download -c {} -s "{}" -d "{}" --recursive', account_info, container,
-                         os.path.join(directory, 'readme'), local_folder)
+                         '/'.join([directory, 'readme']), local_folder)
         self.assertEqual(1, sum(len(f) for r, d, f in os.walk(local_folder)))
 
         # Download entire directory
