@@ -15,8 +15,7 @@ from ...profiles import CUSTOM_MGMT_STORAGE
 class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @ResourceGroupPreparer()
-    @StorageTestFilesPreparer()
-    def test_storage_adls_blob(self, resource_group, test_dir):
+    def test_storage_adls_blob(self, resource_group):
         storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
         self.kwargs.update({
             'sc': storage_account,
@@ -50,11 +49,11 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
         self.storage_cmd('storage blob directory access show -c {} -d {}', account_info, container, directory2) \
             .assert_with_checks(JMESPathCheck('permissions', "rwxrwxrwx"))
 
-        self.storage_cmd('storage blob directory upload -c {} -d {} -s "{}"', account_info, container, directory,
-                         os.path.join(test_dir, 'readme'))
-
-        blob = '/'.join([directory, 'readme'])
         # Storage blob access control
+        local_file = self.create_temp_file(128)
+        blob = self.create_random_name('blob', 24)
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {}', account_info, container, local_file, blob)
+
         acl = "user::rwx,group::r--,other::---"
         self.storage_cmd('storage blob access set -c {} -b {} -a "{}"', account_info, container, blob, acl)
         self.storage_cmd('storage blob access show -c {} -b {}', account_info, container, blob) \
@@ -87,7 +86,7 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('exists', False))
 
 
-class StorageADLSDirectoryMoveTests(StorageScenarioMixin, ScenarioTest):
+class StorageADLSDirectoryMoveTests(StorageScenarioMixin, LiveScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @StorageTestFilesPreparer()
     @ResourceGroupPreparer()
@@ -162,7 +161,7 @@ class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):
     @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2018-02-01')
     @ResourceGroupPreparer(location="centralus")
     def test_storage_adls_blob_move(self, resource_group):
-        storage_account = 'clitestaldsblobmove'
+        storage_account = self.create_random_name(prefix='clitestaldsaccount', length=24)
         self.kwargs.update({
             'sc': storage_account,
             'rg': resource_group
