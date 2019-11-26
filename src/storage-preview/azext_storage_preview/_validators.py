@@ -526,3 +526,16 @@ def validate_move_directory(cmd, namespace):
     if client.exists(container, destination):
         logger.warning('The destination directory already exists in current container. If continue, '
                        'the existing directory "{}" will be overwritten.'.format(destination))
+
+
+def validate_create_directory(cmd, namespace):
+    ns = vars(namespace)
+    client = get_blob_client(cmd, ns)
+    source = ns.get('directory_path')
+    container = ns.get('container_name')
+
+    # Check Source
+    if client.exists(container, source):
+        raise ValueError('usage error: The specified --directory-path already exists in current container. '
+                         'Please change to a valid blob directory name. If you want to rename a directory, '
+                         'please use `az storage blob directory move` command.')
