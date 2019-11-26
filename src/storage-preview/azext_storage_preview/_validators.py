@@ -528,7 +528,7 @@ def validate_move_directory(cmd, namespace):
                        'the existing directory "{}" will be overwritten.'.format(destination))
 
 
-def validate_create_directory(cmd, namespace):
+def validate_directory_name(cmd, namespace):
     ns = vars(namespace)
     client = get_blob_client(cmd, ns)
     source = ns.get('directory_path')

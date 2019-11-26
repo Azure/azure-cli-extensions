@@ -39,6 +39,9 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('metadata.hdi_isfolder', "true"))
         self.storage_cmd('storage blob directory access show -c {} -d {}', account_info, container, directory) \
             .assert_with_checks(JMESPathCheck('permissions', "rwxr-x---"))
+        # Argument validation: Throw error when using existing directory name
+        with self.assertRaises(SystemExit):
+            self.storage_cmd('storage blob directory create -c {} -d {}', account_info, container, directory)
 
         # Create a storage blob directory with permissions
         directory2 = 'testdirectory2'
@@ -153,8 +156,8 @@ class StorageADLSDirectoryMoveTests(StorageScenarioMixin, LiveScenarioTest):
 
         # Argument validation: Throw error when source path is blob name
         with self.assertRaises(SystemExit):
-            self.cmd('storage blob directory move -c {} -d {} -s {} --account-name {}'.format(
-                container, directory4, '/'.join([directory3, 'readme']), storage_account))
+            self.storage_cmd('storage blob directory move -c {} -d {} -s {}', account_info,
+                             container, directory4, '/'.join([directory3, 'readme']))
 
 
 class StorageADLSMoveTests(StorageScenarioMixin, ScenarioTest):

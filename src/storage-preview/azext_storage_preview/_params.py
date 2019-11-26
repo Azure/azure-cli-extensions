@@ -266,6 +266,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    'octal notation (e.g. 0766) are supported.')
 
     with self.argument_context('storage blob directory create') as c:
+        from ._validators import validate_directory_name
         c.argument('posix_permissions', options_list=['--permissions'])
         c.argument('posix_umask', options_list=['--umask'], default='0027',
                    help='Optional and only valid if Hierarchical Namespace is enabled for the account. '
@@ -274,6 +275,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         'corresponding permission will be disabled. In this way, the resulting permission is given by '
                         'p & ^u, where p is the permission and u is the umask. Only 4-digit octal notation (e.g. 0022) '
                         'is supported here.')
+        c.argument('directory_path', directory_path_type, validator=validate_directory_name)
 
     with self.argument_context('storage blob directory download') as c:
         c.extra('source_container', options_list=['--container', '-c'], required=True,
