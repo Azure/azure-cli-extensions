@@ -207,6 +207,8 @@ helps['storage blob directory create'] = """
     examples:
         - name: Create a storage blob directory in a storage container.
           text: az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount
+        - name: Create a storage blob directory with permissions and umask.
+          text: az storage blob directory create -c MyContainer -d MyDirectoryPath --account-name MyStorageAccount --permissions rwxrwxrwx --umask 0000
 """
 
 helps['storage blob directory delete'] = """

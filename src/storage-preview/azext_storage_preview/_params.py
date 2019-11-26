@@ -46,6 +46,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     num_results_type = CLIArgumentType(
         default=5000, help='Specifies the maximum number of results to return. Provide "*" to return all.',
         validator=validate_storage_data_plane_list)
+    acl_type = CLIArgumentType(options_list=['--acl-spec', '-a'], required=True,
+                               help='The ACL specification to set on the path in the format '
+                                    '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
+                                    '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
+                                    'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -214,17 +219,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('path', blob_name_type)
 
     with self.argument_context('storage blob access set') as c:
-        c.argument('acl', options_list=['--acl-spec', '-a'], required=True,
-                   help='The ACL specification to set on the path in the format '
-                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
-                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('acl', acl_type)
         c.ignore('owner', 'group', 'permissions')
 
     with self.argument_context('storage blob access update') as c:
-        c.argument('acl', options_list=['--acl-spec', '-a'],
-                   help='The ACL specification to set on the path in the format '
-                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
-                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('acl', acl_type)
         c.argument('owner', help='The owning user for the directory.')
         c.argument('group', help='The owning group for the directory.')
         c.argument('permissions', help='The POSIX access permissions for the file owner,'
@@ -255,22 +254,26 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('path', directory_path_type)
 
     with self.argument_context('storage blob directory access set') as c:
-        c.argument('acl', options_list=['--acl-spec', '-a'], required=True,
-                   help='The ACL specification to set on the path in the format '
-                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
-                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('acl', acl_type)
         c.ignore('owner', 'group', 'permissions')
 
     with self.argument_context('storage blob directory access update') as c:
-        c.argument('acl', options_list=['--acl-spec', '-a'],
-                   help='The ACL specification to set on the path in the format '
-                   '"[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,'
-                   '[default:]user|group|other:[entity id or UPN]:r|-w|-x|-,...".')
+        c.argument('acl', acl_type)
         c.argument('owner', help='The owning user for the directory.')
         c.argument('group', help='The owning group for the directory.')
         c.argument('permissions', help='The POSIX access permissions for the file owner,'
                    'the file owning group, and others. Both symbolic (rwxrw-rw-) and 4-digit '
                    'octal notation (e.g. 0766) are supported.')
+
+    with self.argument_context('storage blob directory create') as c:
+        c.argument('posix_permissions', options_list=['--permissions'])
+        c.argument('posix_umask', options_list=['--umask'], default='0027',
+                   help='Optional and only valid if Hierarchical Namespace is enabled for the account. '
+                        'The umask restricts permission settings for file and directory, and will only be applied when '
+                        'default Acl does not exist in parent directory. If the umask bit has set, it means that the '
+                        'corresponding permission will be disabled. In this way, the resulting permission is given by '
+                        'p & ^u, where p is the permission and u is the umask. Both symbolic (rwxrw-rw-) and 4-digit '
+                        'octal notation (e.g. 0022) are supported.')
 
     with self.argument_context('storage blob directory download') as c:
         c.extra('source_container', options_list=['--container', '-c'], required=True,
