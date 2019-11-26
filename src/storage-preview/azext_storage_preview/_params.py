@@ -272,8 +272,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                         'The umask restricts permission settings for file and directory, and will only be applied when '
                         'default Acl does not exist in parent directory. If the umask bit has set, it means that the '
                         'corresponding permission will be disabled. In this way, the resulting permission is given by '
-                        'p & ^u, where p is the permission and u is the umask. Both symbolic (rwxrw-rw-) and 4-digit '
-                        'octal notation (e.g. 0022) are supported.')
+                        'p & ^u, where p is the permission and u is the umask. Only 4-digit octal notation (e.g. 0022) '
+                        'is supported here.')
 
     with self.argument_context('storage blob directory download') as c:
         c.extra('source_container', options_list=['--container', '-c'], required=True,
