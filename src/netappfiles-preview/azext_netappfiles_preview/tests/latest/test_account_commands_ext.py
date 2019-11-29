@@ -13,6 +13,7 @@ class AzureNetAppFilesExtAccountServiceScenarioTest(ScenarioTest):
     def test_ext_create_delete_account(self):
         account_name = self.create_random_name(prefix='cli', length=24)
         tags = 'Tag1=Value1 Tag2=Value2'
+        # active_directories = '[{"username": "aduser", "password": "aduser", "smbservername": "SMBSERVER", "dns": "1.2.3.4", "domain": "westcentralus"}]'
 
         # create and check
         # account = self.cmd("az netappfiles account create --resource-group {rg} --account-name '%s' -l 'westus2' --tags '%s' --active-directories %s" % (account_name, tags, active_directories)).get_output_in_json()
