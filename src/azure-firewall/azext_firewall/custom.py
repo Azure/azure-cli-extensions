@@ -82,7 +82,7 @@ def list_azure_firewalls(cmd, resource_group_name=None):
 
 
 def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
-                               public_ip_address, virtual_network_name, subnet='AzureFirewallSubnet',  # pylint: disable=unused-argument
+                               public_ip_address, virtual_network_name=None, subnet='AzureFirewallSubnet',  # pylint: disable=unused-argument
                                private_ip_address=None):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
