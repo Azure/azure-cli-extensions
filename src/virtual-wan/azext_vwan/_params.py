@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument('security_provider_name', help='The security provider name.')
         c.argument('office365_category', help='The office local breakout category.')
         c.argument('disable_vpn_encryption', arg_type=get_three_state_flag(), help='State of VPN encryption.')
+        c.argument('vwan_type', options_list='--type', arg_type=get_enum_type(['Basic', 'Standard']), help='The type of the VirtualWAN.')
     # endregion
 
     # region VirtualHub
@@ -46,6 +47,7 @@ def load_arguments(self, _):
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('virtual_wan', options_list='--vwan', help='Name or ID of the virtual WAN.', validator=get_network_resource_name_or_id('virtual_wan', 'virtualWans'))
         c.argument('address_prefix', help='CIDR address prefix for the virtual hub.')
+        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The sku of the VirtualHub.')
 
     with self.argument_context('network vhub', arg_group='Gateway') as c:
         c.argument('express_route_gateway', help='Name or ID of an ExpressRoute gateway.', validator=get_network_resource_name_or_id('express_route_gateway', 'expressRouteGateways'))

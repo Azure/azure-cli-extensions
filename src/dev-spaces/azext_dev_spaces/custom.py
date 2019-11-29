@@ -35,7 +35,7 @@ def ads_use_dev_spaces(cluster_name, resource_group_name, update=False, space_na
     :type do_not_prompt: bool
     """
 
-    azds_cli = _install_dev_spaces_cli(update)
+    azds_cli = _install_dev_spaces_cli(update, do_not_prompt)
 
     use_command_arguments = [azds_cli, 'use', '--name', cluster_name,
                              '--resource-group', resource_group_name]
@@ -63,7 +63,7 @@ def ads_remove_dev_spaces(cluster_name, resource_group_name, do_not_prompt=False
     :type do_not_prompt: bool
     """
 
-    azds_cli = _install_dev_spaces_cli(False)
+    azds_cli = _install_dev_spaces_cli(False, do_not_prompt)
 
     remove_command_arguments = [azds_cli, 'remove', '--name', cluster_name,
                                 '--resource-group', resource_group_name]
@@ -87,7 +87,7 @@ def _is_dev_spaces_installed(vsce_cli):
     return True
 
 
-def _install_dev_spaces_cli(force_install):
+def _install_dev_spaces_cli(force_install, do_not_prompt):
     azds_tool = 'Azure Dev Spaces CLI'
     should_install_azds = False
     system = platform.system()
@@ -100,18 +100,24 @@ def _install_dev_spaces_cli(force_install):
         setup_file = os.path.join(_create_tmp_dir(), 'azds-winx-setup.exe')
         setup_url = "https://aka.ms/get-azds-windows-az"
         setup_args = [setup_file]
+        if do_not_prompt:
+            setup_args.append('/quiet')
     elif system == 'Darwin':
         # OSX
         azds_cli = 'azds'
         setup_file = os.path.join(_create_tmp_dir(), 'azds-osx-setup.sh')
         setup_url = "https://aka.ms/get-azds-mac-az"
         setup_args = ['bash', setup_file]
+        if do_not_prompt:
+            setup_args.append('-y')
     elif system == 'Linux':
         # Linux
         azds_cli = 'azds'
         setup_file = os.path.join(_create_tmp_dir(), 'azds-linux-setup.sh')
         setup_url = "https://aka.ms/get-azds-linux-az"
         setup_args = ['bash', setup_file]
+        if do_not_prompt:
+            setup_args.append('-y')
     else:
         raise CLIError('Platform not supported: {}.'.format(system))
 

@@ -18,7 +18,7 @@ class Operation(Model):
     :param name: Name of the operation
     :type name: str
     :param display: Display name of the operation
-    :type display: ~azure.mgmt.eventgrid.models.OperationInfo
+    :type display: ~microsoft.azure.management.eventgrid.models.OperationInfo
     :param origin: Origin of the operation
     :type origin: str
     :param properties: Properties of the operation

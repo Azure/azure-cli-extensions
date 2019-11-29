@@ -3,6 +3,10 @@
  Release History
 ===============
 
+0.2.10 (2019-11-25)
+++++++++++++++++
+* Fix bugs for ADLS Gen2
+
 0.2.9 (2019-10-31)
 ++++++++++++++++
 * Integrate Azcopy v10.3.1
