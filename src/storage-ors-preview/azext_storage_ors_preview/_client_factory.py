@@ -3,10 +3,18 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-def cf_storage-ors-preview(cli_ctx, *_):
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    # TODO: Replace CONTOSO with the appropriate label and uncomment
-    # from azure.mgmt.CONTOSO import CONTOSOManagementClient
-    # return get_mgmt_service_client(cli_ctx, CONTOSOManagementClient)
-    return None
+from .profiles import CUSTOM_MGMT_STORAGE
+
+
+def storage_client_factory(cli_ctx, **_):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
+
+
+def cf_sa(cli_ctx, _):
+    return storage_client_factory(cli_ctx).storage_accounts
+
+
+def cf_ors_policy(cli_ctx, _):
+    return storage_client_factory(cli_ctx).object_replication_policies

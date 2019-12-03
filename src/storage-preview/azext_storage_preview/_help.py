@@ -8,17 +8,12 @@ from knack.help_files import helps
 
 # pylint: disable=line-too-long, too-many-lines
 
-helps['storage account create'] = """
-    type: command
-    short-summary: Create a storage account.
-    long-summary: >
-        The SKU of the storage account defaults to 'Standard_RAGRS'.
-    examples:
-        - name: Create a storage account 'MyStorageAccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
-          text: az storage account create -n MyStorageAccount -g MyResourceGroup -l westus --sku Standard_LRS
+helps['storage account ors-policy'] = """
+    type: group
+    short-summary: Manage storage account object replication policies.
 """
 
-helps['storage account keys list'] = """
+helps['storage account ors-policy create'] = """
 type: command
 short-summary: List the access keys or Kerberos keys (if active directory enabled) for a storage account.
 examples:
@@ -26,7 +21,7 @@ examples:
     text: az storage account keys list -g MyResourceGroup -n MyStorageAccount
 """
 
-helps['storage account update'] = """
+helps['storage account ors-policy update'] = """
     type: command
     short-summary: Update the properties of a storage account.
 """

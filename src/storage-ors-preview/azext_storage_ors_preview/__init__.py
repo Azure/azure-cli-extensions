@@ -4,29 +4,35 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
+from azure.cli.core.profiles import register_resource_type
+from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
-from azext_storage-ors-preview._help import helps  # pylint: disable=unused-import
+from azext_storage_ors_preview._help import helps  # pylint: disable=unused-import
+from .profiles import CUSTOM_MGMT_STORAGE
 
-
-class Storage-ors-previewCommandsLoader(AzCommandsLoader):
+class StorageCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_storage-ors-preview._client_factory import cf_storage-ors-preview
-        storage-ors-preview_custom = CliCommandType(
-            operations_tmpl='azext_storage-ors-preview.custom#{}',
-            client_factory=cf_storage-ors-preview)
-        super(Storage-ors-previewCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=storage-ors-preview_custom)
+
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2019-06-01')
+        storage_custom = CliCommandType(operations_tmpl='azext_storage_ors_preview.custom#{}')
+
+        super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                    resource_type=CUSTOM_MGMT_STORAGE,
+                                                    custom_command_type=storage_custom)
 
     def load_command_table(self, args):
-        from azext_storage-ors-preview.commands import load_command_table
+        super(StorageCommandsLoader, self).load_command_table(args)
+        from .commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_storage-ors-preview._params import load_arguments
+        super(StorageCommandsLoader, self).load_arguments(command)
+        from ._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = Storage-ors-previewCommandsLoader
+COMMAND_LOADER_CLS = StorageCommandsLoader
+

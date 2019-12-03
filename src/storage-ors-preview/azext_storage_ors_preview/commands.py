@@ -3,27 +3,44 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_storage-ors-preview._client_factory import cf_storage-ors-preview
+from azure.cli.core.commands.arm import show_exception_handler
+
+from ._client_factory import cf_ors_policy
+from .profiles import CUSTOM_MGMT_STORAGE
 
 
 def load_command_table(self, _):
 
-    # TODO: Add command type here
-    # storage-ors-preview_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_storage-ors-preview)
+    ors_policy_sdk = CliCommandType(
+        operations_tmpl='azext_storage_ors_preview.vendored_sdks.azure_mgmt_storage.operations'
+                        '#ObjectReplicationPoliciesOperations.{}',
+        client_factory=cf_ors_policy,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
 
+    ors_policy_custom_type = CliCommandType(
+        operations_tmpl='azext_storage_ors_preview.operations.account#{}',
+        client_factory=cf_ors_policy)
 
-    with self.command_group('storage-ors-preview') as g:
-        g.custom_command('create', 'create_storage-ors-preview')
-        # g.command('delete', 'delete')
-        g.custom_command('list', 'list_storage-ors-preview')
-        # g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_storage-ors-preview')
+    with self.command_group('storage account ors-policy', ors_policy_sdk, is_preview=True,
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2019-06-01',
+                            custom_command_type=ors_policy_custom_type) as g:
+        g.show_command('show', 'get')
+        g.command('list', 'list')
+        g.custom_command('create', 'create_ors_policies')
+        g.generic_update_command('update', getter_name='get',
+                                 setter_name='update_ors_policies',
+                                 setter_type=ors_policy_custom_type)
+        g.command('delete', 'delete')
 
-
-    with self.command_group('storage-ors-preview', is_preview=True):
-        pass
-
+    with self.command_group('storage account ors-policy rule', ors_policy_sdk, is_preview=True,
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2019-06-01',
+                            custom_command_type=ors_policy_custom_type) as g:
+        g.show_command('show', 'get_ors_rule')
+        g.custom_command('list', 'list_ors_rules')
+        g.custom_command('create', 'add_ors_rule')
+        g.generic_update_command('update', getter_name='get_ors_rule',
+                                 setter_name='update_ors_rule',
+                                 setter_type=ors_policy_custom_type)
+        g.command('remove', 'remove_ors_rule')

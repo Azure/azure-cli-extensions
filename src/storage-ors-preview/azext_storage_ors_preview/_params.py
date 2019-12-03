@@ -9,15 +9,28 @@ from knack.arguments import CLIArgumentType
 
 def load_arguments(self, _):
 
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
+    from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
-    storage-ors-preview_name_type = CLIArgumentType(options_list='--storage-ors-preview-name-name', help='Name of the Storage-ors-preview.', id_part='name')
+    acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
+                                     id_part='name',
+                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
+    object_replication_policy_type = CLIArgumentType(options_list=['--policy-name'],
+                                                     help='The name of object replication policy.')
 
-    with self.argument_context('storage-ors-preview') as c:
-        c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('storage-ors-preview_name', storage-ors-preview_name_type, options_list=['--name', '-n'])
+    with self.argument_context('storage account ors-policy create') as c:
+        c.argument('source_account', help='The source storage account name.')
+        c.argument('destination_account', help='The destination storage account name.')
+        c.argument('policy_name', help='The name of object replication policy.', default='default')
+        c.argument('properties', help='The object replication policy definition between two storage accounts, in JSON '
+                   'format. Multiple rules can be defined in one policy.')
 
-    with self.argument_context('storage-ors-preview list') as c:
-        c.argument('storage-ors-preview_name', storage-ors-preview_name_type, id_part=None)
+    with self.argument_context('storage account ors-policy update') as c:
+        c.argument('account_name', help='The name of the storage account within the specified resource group.')
+        c.argument('object_replication_policy_id', object_replication_policy_type)
+
+    with self.argument_context('storage account ors-policy list') as c:
+        c.argument('account_name', acct_name_type, id_part=None)
+
+    with self.argument_context('storage account ors-policy show') as c:
+        c.argument('account_name', help='The name of the storage account within the specified resource group.')
+        c.argument('object_replication_policy_id', object_replication_policy_type)
