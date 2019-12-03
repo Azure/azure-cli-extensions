@@ -13,17 +13,25 @@ class DevspacesExtCommandLoader(AzCommandsLoader):  # pylint:disable=too-few-pub
 
     def __init__(self, cli_ctx=None):
         dev_spaces_custom = CliCommandType(
-            operations_tmpl='azure.cli.command_modules.acs.custom#{}')
+            operations_tmpl='azext_dev_spaces.custom#{}')
         super(DevspacesExtCommandLoader, self).__init__(cli_ctx=cli_ctx,
                                                         custom_command_type=dev_spaces_custom)
 
+    # Make sure the following 2 functions stay in sync with what's declared in the core ACS component __init__.py
     def load_command_table(self, _):
-        dev_spaces_custom = CliCommandType(operations_tmpl='azure.cli.command_modules.acs.custom#{}')
+        dev_spaces_custom = CliCommandType(operations_tmpl='azext_dev_spaces.custom#{}')
 
         with self.command_group('aks', dev_spaces_custom) as g:
-            g.custom_command('use-dev-spaces', 'aks_use_dev_spaces')
+            g.custom_command('use-dev-spaces', 'ads_use_dev_spaces')
 
         return self.command_table
+
+    def load_arguments(self, _):
+        with self.argument_context('aks use-dev-spaces') as c:
+            c.argument('cluster_name', options_list=['--name', '-n'])
+            c.argument('update', options_list=['--update'], action='store_true')
+            c.argument('space_name', options_list=['--space', '-s'])
+            c.argument('do_not_prompt', options_list=['--yes', '-y'], action='store_true', help='Do not prompt for confirmation. Requires --space.')
 
 
 COMMAND_LOADER_CLS = DevspacesExtCommandLoader
