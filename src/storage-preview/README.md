@@ -159,22 +159,22 @@ You can find the command mapping from ADLS Gen1 to ADLS Gen2 as follows:
 |:----------------------------------------------:|:----------------------------------------------------:|
 | az dls fs                                      | az storage blob directory                            |
 | az dls fs access                               | az storage blob directory access                     |
-| az dls fs access remove-all                    | NO                                                   |
-| az dls fs access remove-entry                  | NO                                                   |
+| az dls fs access remove-all                    | Currently Not Supported                              |
+| az dls fs access remove-entry                  | Currently Not Supported                              |
 | az dls fs access set                           | az storage blob directory access set                 |
-| az dls fs access set-entry                     | NO                                                   |  
+| az dls fs access set-entry                     | Currently Not Supported                              |
 | az dls fs access set-owner                     | az storage blob directory access update              |  
 | az dls fs access set-permission                | az storage blob directory access update              |
 | az dls fs access show                          | az storage blob directory access show                |
-| az dls fs append                               | NO                                                   | 
+| az dls fs append                               | Currently Not Supported                              |
 | az dls fs create                               | az storage blob directory create                     |
 | az dls fs delete                               | az storage blob directory delete                     |
 | az dls fs download                             | az storage blob directory download                   | 
-| az dls fs join                                 | NO                                                   |  
+| az dls fs join                                 | Currently Not Supported                              |
 | az dls fs list                                 | az storage blob directory list                       | 
 | az dls fs move                                 | az storage blob directory move                       |  
-| az dls fs preview                              | NO                                                   |  
-| az dls fs set-expiry                           | NO                                                   |       
+| az dls fs preview                              | Currently Not Supported                              |
+| az dls fs set-expiry                           | Currently Not Supported                              |
 | az dls fs show                                 | az storage blob directory show                       | 
 | az dls fs test                                 | az storage blob directory exists                     | 
 | az dls fs upload                               | az storage blob directory upload                     |
@@ -230,7 +230,7 @@ az storage blob directory exists -c my-file-system -d my-directory --account-nam
 ###### Upload to a directory
 Upload files to a directory by using the `az storage blob directory upload` command.
 
-- Upload a file named `upload.txt` to a directory named `my-directory`.
+- Create or Upload a file named `upload.txt` to a directory named `my-directory`.
 ```
 az storage blob directory upload -c my-file-system --account-name mystorageaccount -s "C:\mylocaldirectory\upload.txt" -d my-directory
 ```
@@ -256,6 +256,12 @@ az storage blob directory download -c my-file-system --account-name mystorageacc
 ###### List directory contents
 ```
 az storage blob directory list -c my-file-system -d my-directory --account-name mystorageaccount
+```
+###### Create or Upload a file
+```
+az storage blob directory upload -c my-file-system --account-name mystorageaccount -s "C:\mylocaldirectory\upload.txt" -d my-directory
+or
+az storage blob upload -c my-file-system --account-name mystorageaccount -f "C:\mylocaldirectory\upload.txt" -n my-directory/upload.txt
 ```
 ###### Rename or Move a file
 ```
