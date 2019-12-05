@@ -27,7 +27,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         STORAGE_ACCOUNT_NAME_LENGTH - len(location))
 
     # create the target storage account. storage account name must be lowercase.
-    logger.warn(
+    logger.warning(
         "%s - Creating target storage account (can be slow sometimes)", location)
     target_storage_account_name = location.lower() + random_string
     cli_cmd = prepare_cli_command(['storage', 'account', 'create',
@@ -70,7 +70,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     logger.debug("sas token: %s", sas_token)
 
     # create a container in the target blob storage account
-    logger.warn(
+    logger.warning(
         "%s - Creating container in the target storage account", location)
     target_container_name = 'snapshots'
     cli_cmd = prepare_cli_command(['storage', 'container', 'create',
@@ -82,7 +82,7 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     # Copy the snapshot to the target region using the SAS URL
     blob_name = source_os_disk_snapshot_name + '.vhd'
-    logger.warn(
+    logger.warning(
         "%s - Copying blob to target storage account", location)
     cli_cmd = prepare_cli_command(['storage', 'blob', 'copy', 'start',
                                    '--source-uri', source_os_disk_snapshot_url,
@@ -100,10 +100,10 @@ def create_target_image(location, transient_resource_group_name, source_type, so
                                  azure_pool_frequency, location, target_subscription)
     msg = "{0} - Copy time: {1}".format(
         location, datetime.datetime.now() - start_datetime)
-    logger.warn(msg)
+    logger.warning(msg)
 
     # Create the snapshot in the target region from the copied blob
-    logger.warn(
+    logger.warning(
         "%s - Creating snapshot in target region from the copied blob", location)
     target_blob_path = target_blob_endpoint + \
         target_container_name + '/' + blob_name
@@ -125,9 +125,9 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     # Optionally create the final image
     if export_as_snapshot:
-        logger.warn("%s - Skipping image creation", location)
+        logger.warning("%s - Skipping image creation", location)
     else:
-        logger.warn("%s - Creating final image", location)
+        logger.warning("%s - Creating final image", location)
         if target_name is None:
             target_image_name = source_object_name
             if source_type != 'image':
@@ -170,7 +170,7 @@ def wait_for_blob_copy_operation(blob_name, target_container_name, target_storag
         if current_progress != prev_progress:
             msg = "{0} - Copy progress: {1}%"\
                 .format(location, str(current_progress))
-            logger.warn(msg)
+            logger.warning(msg)
 
         prev_progress = current_progress
 
