@@ -4,6 +4,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-lines
+
 import sys
 
 from azure.cli.core.commands import cached_get, cached_put
@@ -135,9 +137,9 @@ def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type,
 def create_front_door(cmd, resource_group_name, front_door_name, backend_address,
                       friendly_name=None, tags=None, disabled=None, no_wait=False,
                       backend_host_header=None, frontend_host_name=None,
-                      probe_path='/', probe_protocol='Https', probe_interval=30,
+                      probe_path='/', probe_protocol='Https', probe_interval=30, probe_method='HEAD',
                       accepted_protocols=None, patterns_to_match=None, forwarding_protocol='MatchRequest',
-                      enforce_certificate_name_check='Enabled'):
+                      enforce_certificate_name_check='Enabled', send_recv_timeout=None):
     from azext_front_door.vendored_sdks.models import (
         FrontDoor, FrontendEndpoint, BackendPool, Backend, HealthProbeSettingsModel, LoadBalancingSettingsModel,
         RoutingRule, ForwardingConfiguration, BackendPoolsSettings)
@@ -186,6 +188,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
             HealthProbeSettingsModel(
                 name=probe_setting_name,
                 interval_in_seconds=probe_interval,
+                health_probe_method=probe_method,
                 path=probe_path,
                 protocol=probe_protocol,
                 resource_state='Enabled'
@@ -220,18 +223,20 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
                 resource_state='Enabled'
             )
         ],
-        backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check)
+        backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
+                                                    send_recv_timeout_seconds=send_recv_timeout)
     )
     return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
                        resource_group_name, front_door_name, front_door)
 
 
-def update_front_door(instance, tags=None, enforce_certificate_name_check=None):
-    from azext_front_door.vendored_sdks.models import (BackendPoolsSettings)
+def update_front_door(instance, tags=None, enforce_certificate_name_check=None,
+                      send_recv_timeout=None):
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
-        c.update_param('backend_pools_settings',
-                       BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check), True)
+    with UpdateContext(instance.backend_pools_settings) as c:
+        c.update_param('enforce_certificate_name_check', enforce_certificate_name_check, False)
+        c.update_param('send_recv_timeout_seconds', send_recv_timeout, False)
     return instance
 
 
@@ -285,7 +290,8 @@ def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
-                                                certificate_source='FrontDoor', vault_id=None):
+                                                certificate_source='FrontDoor', vault_id=None,
+                                                minimum_tls_version='1.2'):
     keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
                       '--secret-name NAME --secret-version VERSION')
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
@@ -298,15 +304,16 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
         return configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name,
-                                                              front_door_name, item_name)
+                                                              front_door_name, item_name, minimum_tls_version)
     if certificate_source == 'AzureKeyVault':
         return configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name,
                                                              item_name, vault_id, secret_name,
-                                                             secret_version)
+                                                             secret_version, minimum_tls_version)
     return None
 
 
-def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name, item_name):
+def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, front_door_name,
+                                                   item_name, minimum_tls_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration
     config = CustomHttpsConfiguration(
         certificate_source="FrontDoor",
@@ -314,7 +321,8 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
         vault=None,
         secret_name=None,
         secret_version=None,
-        certificate_type="Dedicated"
+        certificate_type="Dedicated",
+        minimum_tls_version=minimum_tls_version
     )
     cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
                                                              item_name, config)
@@ -322,7 +330,7 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
 
 
 def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, front_door_name, item_name,
-                                                  vault_id, secret_name, secret_version):
+                                                  vault_id, secret_name, secret_version, minimum_tls_version):
     from azext_front_door.vendored_sdks.models import CustomHttpsConfiguration, SubResource
     config = CustomHttpsConfiguration(
         certificate_source="AzureKeyVault",
@@ -330,7 +338,8 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
         vault=SubResource(id=vault_id),
         secret_name=secret_name,
         secret_version=secret_version,
-        certificate_type=None
+        certificate_type=None,
+        minimum_tls_version=minimum_tls_version
     )
     cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
                                                              item_name, config)
@@ -423,25 +432,44 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
     client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
 
 
-def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, path, interval,
-                                    protocol=None):
+def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, probe_path, probe_interval,
+                                    protocol=None, probe_method='HEAD', enabled='Enabled'):
     from azext_front_door.vendored_sdks.models import HealthProbeSettingsModel
     probe = HealthProbeSettingsModel(
         name=item_name,
-        path=path,
+        path=probe_path,
         protocol=protocol,
-        interval_in_seconds=interval,
+        interval_in_seconds=probe_interval,
+        health_probe_method=probe_method,
+        enabled_state=enabled
     )
     return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name,
                                          'health_probe_settings', probe, 'name')
 
 
-def update_fd_health_probe_settings(instance, path=None, protocol=None, interval=None):
-    with UpdateContext(instance) as c:
-        c.update_param('path', path, False)
-        c.update_param('protocol', protocol, False)
-        c.update_param('interval_in_seconds', interval, False)
-    return instance
+def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name,
+                                    probe_path=None, probe_protocol=None, probe_interval=None,
+                                    enabled=None, probe_method=None):
+    client = cf_frontdoor(cmd.cli_ctx, None)
+    frontdoor = client.get(resource_group_name, front_door_name)
+    probe_setting = next((x for x in frontdoor.health_probe_settings if x.name == item_name), None)
+    if not probe_setting:
+        from knack.util import CLIError
+        raise CLIError("Health probe setting '{}' could not be found on frontdoor '{}'".format(
+            item_name, front_door_name))
+    if probe_method:
+        probe_setting.health_probe_method = probe_method
+    if probe_path:
+        probe_setting.path = probe_path
+    if probe_protocol:
+        probe_setting.protocol = probe_protocol
+    if probe_interval:
+        probe_setting.interval_in_seconds = probe_interval
+    if enabled:
+        probe_setting.enabled_state = enabled
+
+    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    return probe_setting
 
 
 def create_fd_load_balancing_settings(cmd, resource_group_name, front_door_name, item_name, sample_size,
@@ -717,6 +745,187 @@ def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
 
     from knack.util import CLIError
     raise CLIError("rule set '{}' not found".format(rule_set_type))
+
+
+def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                         match_variable, operator, value,
+                                         rule_group_id=None, rule_id=None):
+    from azext_front_door.vendored_sdks.models import ManagedRuleOverride, ManagedRuleGroupOverride
+    from azext_front_door.vendored_sdks.models import ManagedRuleExclusion
+    from knack.util import CLIError
+
+    if rule_id and not rule_group_id:
+        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+    exclusion = ManagedRuleExclusion(
+        match_variable=match_variable,
+        selector_match_operator=operator,
+        selector=value
+    )
+
+    rule_set_obj = None
+    exclusion_holder = None
+
+    # Find the matching rule_set to put the exclusion in, or fail
+    policy.managed_rules.managed_rule_sets = policy.managed_rules.managed_rule_sets or []
+
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            rule_set_obj = rule_set
+            break
+
+    if rule_set_obj is None:
+        raise CLIError("type '{}' not found".format(rule_set_type))
+
+    rule_group_override = None
+    if rule_group_id is None:
+        exclusion_holder = rule_set_obj
+    else:
+        rule_set_obj.rule_group_overrides = rule_set_obj.rule_group_overrides or []
+        for rg in rule_set_obj.rule_group_overrides:
+            if rg.rule_group_name.upper() == rule_group_id.upper():
+                rule_group_override = rg
+                break
+        if rule_group_override is None:
+            rule_group_override = ManagedRuleGroupOverride(
+                rule_group_name=rule_group_id)
+            rule_set_obj.rule_group_overrides.append(rule_group_override)
+
+    if rule_group_override is not None:
+        if rule_id is None:
+            exclusion_holder = rule_group_override
+        else:
+            rule_group_override.rules = rule_group_override.rules or []
+            for rule in rule_group_override.rules:
+                if rule.rule_id.upper() == rule_id.upper():
+                    exclusion_holder = rule
+            if not exclusion_holder:
+                exclusion_holder = ManagedRuleOverride(
+                    rule_id=rule_id
+                )
+                rule_group_override.rules.append(exclusion_holder)
+
+    if exclusion_holder:
+        if not exclusion_holder.exclusions:
+            exclusion_holder.exclusions = []
+        exclusion_holder.exclusions.append(exclusion)
+    else:
+        if rule_id:
+            raise CLIError("rule {} within group {} within type '{}' not found"
+                           .format(rule_id, rule_group_id, rule_set_type))
+        raise CLIError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
+
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                            match_variable, operator, value,
+                                            rule_group_id=None, rule_id=None):
+    from knack.util import CLIError
+
+    if rule_id and not rule_group_id:
+        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    exclusions = None
+
+    if not policy.managed_rules.managed_rule_sets:
+        raise CLIError("Exclusion not found")
+
+    rule_set_obj = None
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            rule_set_obj = rule_set
+            break
+
+    rule_group_override = None
+    if rule_set_obj is not None:
+        if rule_group_id is None:
+            exclusions = rule_set_obj.exclusions
+        else:
+            if not rule_set_obj.rule_group_overrides:
+                raise CLIError("Exclusion not found")
+            for rg in rule_set_obj.rule_group_overrides:
+                if rg.rule_group_name.upper() == rule_group_id.upper():
+                    rule_group_override = rg
+                    break
+
+    if rule_group_override is not None:
+        if rule_id is None:
+            exclusions = rule_group_override.exclusions
+        else:
+            if rule_group_override.rules is None:
+                raise CLIError("Exclusion not found")
+            for rule in rule_group_override.rules:
+                if rule.rule_id.upper() == rule_id.upper():
+                    exclusions = rule.exclusions
+                    break
+
+    if exclusions is None:
+        raise CLIError("Exclusion not found")
+
+    for i, exclusion in enumerate(exclusions):
+        if (exclusion.match_variable == match_variable and
+                exclusion.selector_match_operator == operator and exclusion.selector == value):
+            del exclusions[i]
+
+    return client.create_or_update(resource_group_name, policy_name, policy)
+
+
+def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
+                                          rule_group_id=None, rule_id=None):
+    from knack.util import CLIError
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    if rule_id and not rule_group_id:
+        raise CLIError("Must specify rule-group-id of the rule when you specify rule-id")
+
+    client = cf_waf_policies(cmd.cli_ctx, None)
+    policy = client.get(resource_group_name, policy_name)
+
+    if policy.managed_rules.managed_rule_sets is None:
+        raise CLIError("rule set '{}' not found".format(rule_set_type))
+
+    rule_set_obj = None
+    for rule_set in policy.managed_rules.managed_rule_sets:
+        if rule_set.rule_set_type.upper() == rule_set_type.upper():
+            if rule_group_id is None:
+                return rule_set.exclusions or []
+            rule_set_obj = rule_set
+            break
+
+    if rule_set_obj is None:
+        raise CLIError("rule set '{}' not found".format(rule_set_type))
+
+    if rule_set_obj.rule_group_overrides is None:
+        raise CLIError("rule set '{}' has no overrides".format(rule_set_type))
+
+    rule_group_override = None
+    for rg in rule_set_obj.rule_group_overrides:
+        if rg.rule_group_name.upper() == rule_group_id.upper():
+            if rule_id is None:
+                return rg.exclusions or []
+
+            rule_group_override = rg
+            break
+
+    if rule_group_override is None:
+        raise CLIError("rule group '{}' not found".format(rule_group_id))
+
+    if rule_group_override.rules is None:
+        raise CLIError("rule '{}' not found".format(rule_id))
+
+    for rule in rule_group_override.rules:
+        if rule.rule_id.upper() == rule_id.upper():
+            return rule.exclusions or []
+
+    raise CLIError("rule '{}' not found".format(rule_id))
 
 
 def list_managed_rules_definitions(cmd):

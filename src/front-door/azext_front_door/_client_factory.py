@@ -14,10 +14,6 @@ def cf_frontdoor(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).front_doors
 
 
-def cf_fd_backend_pools(cli_ctx, _):
-    return frontdoor_client_factory(cli_ctx).backend_pools
-
-
 def cf_fd_endpoints(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).endpoints
 
@@ -26,20 +22,8 @@ def cf_fd_frontend_endpoints(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).frontend_endpoints
 
 
-def cf_fd_probes(cli_ctx, _):
-    return frontdoor_client_factory(cli_ctx).health_probe_settings
-
-
-def cf_fd_load_balancing(cli_ctx, _):
-    return frontdoor_client_factory(cli_ctx).load_balancing_settings
-
-
 def cf_fd_policies(cli_ctx, _):
     return frontdoor_client_factory(cli_ctx).policies
-
-
-def cf_fd_routing_rules(cli_ctx, _):
-    return frontdoor_client_factory(cli_ctx).routing_rules
 
 
 def cf_waf_policies(cli_ctx, _):

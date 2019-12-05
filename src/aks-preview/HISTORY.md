@@ -2,6 +2,46 @@
 
 Release History
 ===============
+0.4.23
++++++
+* Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
+
+0.4.21
++++++
+* Support cluster certificate rotation operation using `az aks rotate-certs`
+* Add support for `az aks kanalyze`
+
+0.4.20
++++++
+* Add commands '--zones' and '-z' for availability zones in aks
+
+0.4.19
++++++
+* Refactor and remove a custom way of getting subscriptions
+
+0.4.18
++++++
+* Update to use 2019-10-01 api-version
+
+0.4.17
++++++
+* Add support for public IP per node during node pool creation
+* Add support for taints during node pool creation
+* Add support for low priority node pool
+
+0.4.16
++++++
+* Add support for `az aks kollect`
+* Add support for `az aks upgrade --control-plane-only`
+
+0.4.15
++++++
+* Set default cluster creation to SLB and VMSS
+
+0.4.14
++++++
+* Add support for using managed identity to manage cluster resource group
+
 0.4.13
 ++++++
 * Rename a few options for ACR integration, which includes

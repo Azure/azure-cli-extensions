@@ -49,7 +49,7 @@ class EventGridManagementClientConfiguration(AzureConfiguration):
 
         super(EventGridManagementClientConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('azure-mgmt-eventgrid/{}'.format(VERSION))
+        self.add_user_agent('eventgridmanagementclient/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
@@ -63,17 +63,17 @@ class EventGridManagementClient(SDKClient):
     :vartype config: EventGridManagementClientConfiguration
 
     :ivar domains: Domains operations
-    :vartype domains: azure.mgmt.eventgrid.operations.DomainsOperations
+    :vartype domains: microsoft.azure.management.eventgrid.operations.DomainsOperations
     :ivar domain_topics: DomainTopics operations
-    :vartype domain_topics: azure.mgmt.eventgrid.operations.DomainTopicsOperations
+    :vartype domain_topics: microsoft.azure.management.eventgrid.operations.DomainTopicsOperations
     :ivar event_subscriptions: EventSubscriptions operations
-    :vartype event_subscriptions: azure.mgmt.eventgrid.operations.EventSubscriptionsOperations
+    :vartype event_subscriptions: microsoft.azure.management.eventgrid.operations.EventSubscriptionsOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.eventgrid.operations.Operations
+    :vartype operations: microsoft.azure.management.eventgrid.operations.Operations
     :ivar topics: Topics operations
-    :vartype topics: azure.mgmt.eventgrid.operations.TopicsOperations
+    :vartype topics: microsoft.azure.management.eventgrid.operations.TopicsOperations
     :ivar topic_types: TopicTypes operations
-    :vartype topic_types: azure.mgmt.eventgrid.operations.TopicTypesOperations
+    :vartype topic_types: microsoft.azure.management.eventgrid.operations.TopicTypesOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -92,7 +92,7 @@ class EventGridManagementClient(SDKClient):
         super(EventGridManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2019-02-01-preview'
+        self.api_version = '2020-01-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 

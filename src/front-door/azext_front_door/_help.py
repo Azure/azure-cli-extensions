@@ -177,12 +177,17 @@ helps['network front-door probe list'] = """
 
 helps['network front-door probe show'] = """
     type: command
-    short-summary: Get the details of a Front Door health probe settings bundle.
+    short-summary: Get the details of a Front Door health probe settings.
 """
 
 helps['network front-door probe delete'] = """
     type: command
     short-summary: Delete Front Door health probe settings.
+"""
+
+helps['network front-door probe update'] = """
+    type: command
+    short-summary: Update Front Door health probe settings.
 """
 
 # endregion
@@ -364,6 +369,35 @@ helps['network front-door waf-policy managed-rules override'] = """
     type: group
     short-summary: View and alter overrides on managed rules within a managed rule set.
     long-summary: >
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion add'] = """
+    type: command
+    short-summary: Add an exclusion on a managed rule set, rule group, or rule within a managed rule set.
+    long-summary: >
+        Prevents the rule set, rule group, or rule from being applied to the content of the specified variable.
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion remove'] = """
+    type: command
+    short-summary: Remove an exclusion on a managed rule set, rule group, or rule within a managed rule set.
+    long-summary: >
+        After this command, the standard behavior for the rule within the managed rule set will apply.
+        Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion list'] = """
+    type: command
+    short-summary: List the exclusions on managed rule set, rule group, or rule within a managed rule set.
+"""
+
+helps['network front-door waf-policy managed-rules exclusion'] = """
+    type: group
+    short-summary: View and alter exclusions on a managed rule set, rule group, or rule within a managed rule set.
+    long-summary: >
+        Exclusions prevent the rule set, rule group, or rule from being applied to the content of the specified variable.
         Use 'az network front-door waf-policy managed-rule-definition list' to see the available rules.
 """
 

@@ -29,8 +29,8 @@ class RouteType(str, Enum):
 def load_arguments(self, _):
 
     from azext_front_door.vendored_sdks.models import (
-        PolicyMode, FrontDoorProtocol, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
-        FrontDoorRedirectType, FrontDoorRedirectProtocol
+        PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
+        FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
@@ -65,9 +65,11 @@ def load_arguments(self, _):
         c.argument('secret_name', help='The name of the Key Vault secret representing the full certificate PFX')
         c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX')
         c.argument('vault_id', help='The resource id of the Key Vault containing the SSL certificate')
+        c.argument('minimum_tls_version', arg_type=get_enum_type(MinimumTLSVersion), help='The minimum TLS version required from the clients to establish an SSL handshake with Front Door.')
 
     with self.argument_context('network front-door', arg_group='BackendPools Settings') as c:
         c.argument('enforce_certificate_name_check', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Whether to disable certificate name check on HTTPS requests to all backend pools. No effect on non-HTTPS requests.')
+        c.argument('send_recv_timeout', type=int, help='Send and receive timeout in seconds on forwarding request to the backend. When timeout is reached, the request fails and returns.')
 
     with self.argument_context('network front-door', arg_group='Backend') as c:
         c.argument('backend_address', help='FQDN of the backend endpoint.')
@@ -76,7 +78,9 @@ def load_arguments(self, _):
     with self.argument_context('network front-door', arg_group='Probe Setting') as c:
         c.argument('probe_path', options_list='--path', help='Path to probe.')
         c.argument('probe_protocol', options_list='--protocol', arg_type=get_enum_type(FrontDoorProtocol), help='Protocol to use for sending probes.')
-        c.argument('probe_interval', options_list='--interval', help='Interval in seconds between probes.')
+        c.argument('probe_interval', options_list='--interval', type=int, help='Interval in seconds between probes.')
+        c.argument('enabled', arg_type=get_three_state_flag(positive_label='Enabled', negative_label='Disabled', return_label=True), help='Enabled status.')
+        c.argument('probe_method', options_list='--probeMethod', arg_type=get_enum_type(FrontDoorHealthProbeMethod), help='Configures which HTTP method to use to probe the backends defined under backendPools.')
 
     with self.argument_context('network front-door', arg_group='Routing Rule') as c:
         c.argument('accepted_protocols', nargs='+', help='Space-separated list of protocols to accept. Default: Http')
@@ -153,7 +157,7 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rules add') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to apply.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to apply.')
         c.argument('version', help='Rule set version.')
 
     with self.argument_context('network front-door waf-policy managed-rules list') as c:
@@ -162,24 +166,48 @@ def load_arguments(self, _):
     with self.argument_context('network front-door waf-policy managed-rules override add') as c:
         c.argument('policy_name', waf_policy_name_type)
         c.argument('action', arg_type=get_enum_type(ActionType), help='Action for applied rulesets.')
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to override.')
-        c.argument('rule_group_id', help='Name of the rule group containing the rule to override.')
-        c.argument('rule_id', help='Name of the rule to override.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to override.')
+        c.argument('rule_group_id', help='ID of the rule group containing the rule to override.')
+        c.argument('rule_id', help='ID of the rule to override.')
         c.argument('disabled', help='Whether to disable the rule.')
 
     with self.argument_context('network front-door waf-policy managed-rules override remove') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the override to remove.')
-        c.argument('rule_group_id', help='Name of the rule group containing the override to remove.')
-        c.argument('rule_id', help='Name of the rule override to remove.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the override to remove.')
+        c.argument('rule_group_id', help='ID of the rule group containing the override to remove.')
+        c.argument('rule_id', help='ID of the rule override to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rules override list') as c:
         c.argument('policy_name', waf_policy_name_type, id_part=None)
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset with the overrides to list.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the overrides to list.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion add') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to exclusion.')
+        c.argument('rule_group_id', help='ID of the rule group containing the rule to exclusion.')
+        c.argument('rule_id', help='ID of the rule to apply exclusion.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored, e.g. RequestHeaderNames, RequestCookieNames, QueryStringArgNames, RequestBodyPostArgNames.')
+        c.argument('operator', help='Operator used to compare the variable name to the value, e.g. Equals, Contains, StartsWith, EndsWith, EqualsAny.')
+        c.argument('value', help='Values to match the variable name against.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion remove') as c:
+        c.argument('policy_name', waf_policy_name_type)
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the exclusion to remove.')
+        c.argument('rule_group_id', help='ID of the rule group containing the exclusion to remove.')
+        c.argument('rule_id', help='ID of the rule to remove from exclusion.')
+        c.argument('match_variable', help='Which kind of variable\'s content will be ignored, e.g. RequestHeaderNames, RequestCookieNames, QueryStringArgNames, RequestBodyPostArgNames.')
+        c.argument('operator', help='Operator used to compare the variable name to the value, e.g. Equals, Contains, StartsWith, EndsWith, EqualsAny.')
+        c.argument('value', help='Values to match the variable name against.')
+
+    with self.argument_context('network front-door waf-policy managed-rules exclusion list') as c:
+        c.argument('policy_name', waf_policy_name_type, id_part=None)
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset with the exclusions to list.')
+        c.argument('rule_group_id', help='ID of the rule group containing the exclusions to list.')
+        c.argument('rule_id', help='ID of the rule to list exclusion for.')
 
     with self.argument_context('network front-door waf-policy managed-rules remove') as c:
         c.argument('policy_name', waf_policy_name_type)
-        c.argument('rule_set_type', options_list=['--type'], help='Name of the ruleset to remove.')
+        c.argument('rule_set_type', options_list=['--type'], help='ID of the ruleset to remove.')
 
     with self.argument_context('network front-door waf-policy managed-rule-definition list') as c:
         c.argument('policy_name', waf_policy_name_type)

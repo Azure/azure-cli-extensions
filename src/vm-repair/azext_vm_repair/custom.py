@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
+import logging
 import os
 import pkgutil
 import timeit
@@ -32,7 +33,8 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _handle_command_error,
-    _get_function_param_dict
+    _get_function_param_dict,
+    _fetch_disk_sku
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 from .telemetry import _track_command_telemetry, _track_run_command_telemetry
@@ -44,9 +46,11 @@ logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
+    is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
+    # begin progress reporting for long running operation if not verbose
+    if not is_verbose:
+        cmd.cli_ctx.get_progress_controller().begin()
+        cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer for custom telemetry
@@ -78,11 +82,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, password=repair_password)
-        # Add username field only for Windows
-        if not is_linux:
-            create_repair_vm_command += ' --admin-username {username}'.format(username=repair_username)
+        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
+                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
         # fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm)
         if not sku:
@@ -100,13 +101,16 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
             # Copy OS disk command
             disk_sku = source_vm.storage_profile.os_disk.managed_disk.storage_account_type
+            if not disk_sku:
+                # VM is deallocated so fetch disk_sku info from disk itself
+                disk_sku = _fetch_disk_sku(resource_group_name, target_disk_name)
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --query id -o tsv' \
                                 .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=source_vm.location)
             # Validate create vm create command to validate parameters before runnning copy disk command
             validate_create_vm_command = create_repair_vm_command + ' --validate'
 
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password])
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
@@ -114,7 +118,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                   .format(g=repair_group_name, repair=repair_vm_name, id=copy_disk_id)
 
             logger.info('Creating repair VM...')
-            _call_az_command(create_repair_vm_command, secure_params=[repair_password])
+            _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
             logger.info('Attaching copied disk to repair VM...')
             _call_az_command(attach_disk_command)
         # UNMANAGED DISK
@@ -126,7 +130,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Validate create vm create command to validate parameters before runnning copy disk commands
             validate_create_vm_command = create_repair_vm_command + ' --validate'
             logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password])
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
 
             # get storage account connection string
             get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
@@ -152,7 +156,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Create new repair VM with copied ummanaged disk command
             create_repair_vm_command = create_repair_vm_command + ' --use-unmanaged-disk'
             logger.info('Creating repair VM while disk copy is in progress...')
-            _call_az_command(create_repair_vm_command, secure_params=[repair_password])
+            _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
 
             logger.info('Checking if disk copy is done...')
             copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
@@ -190,8 +194,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
-        # end long running op for process
-        cmd.cli_ctx.get_progress_controller().end()
+        # end long running op for process if not verbose
+        if not is_verbose:
+            cmd.cli_ctx.get_progress_controller().end()
 
     # Command failed block. Output right error message and return dict
     if not command_succeeded:
@@ -225,9 +230,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
+    is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
+    # begin progress reporting for long running operation if not verbose
+    if not is_verbose:
+        cmd.cli_ctx.get_progress_controller().begin()
+        cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer for custom telemetry
@@ -293,8 +300,9 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
-        # end long running op for process
-        cmd.cli_ctx.get_progress_controller().end()
+        # end long running op for process if not verbose
+        if not is_verbose:
+            cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
         return_status = STATUS_ERROR
@@ -317,9 +325,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
 
 def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
+    is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
+    # begin progress reporting for long running operation if not verbose
+    if not is_verbose:
+        cmd.cli_ctx.get_progress_controller().begin()
+        cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer and params for custom telemetry
@@ -420,14 +430,15 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             logger.info('\nScript returned with output:\n%s\n', output)
         else:
             script_status = STATUS_ERROR
-            return_status = STATUS_ERROR
-            message = 'Script returned with possible errors.'
+            return_status = STATUS_SUCCESS
+            message = 'Script succesfully run but returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
             logger.error('\nScript returned with error:\n%s\n', output)
 
         logger.debug("stderr: %s", stderr)
         return_message = message
         return_dict['status'] = return_status
+        return_dict['script_status'] = script_status
         return_dict['message'] = message
         return_dict['logs'] = stdout
         return_dict['log_full_path'] = log_fullpath
@@ -451,15 +462,17 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
-        # end long running op for process
-        cmd.cli_ctx.get_progress_controller().end()
+        # end long running op for process if not verbose
+        if not is_verbose:
+            cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
         script_duration = ''
-        output = 'Script returned with possible errors.'
+        output = 'Repair run failed.'
         script_status = STATUS_ERROR
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
+        return_dict['script_status'] = script_status
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
