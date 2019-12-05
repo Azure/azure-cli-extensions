@@ -132,13 +132,11 @@ class Website:
         deployment_user = web_client_factory(
             self.__cmd.cli_ctx).get_publishing_user()
         # Check for existing deployment user
-        print(deployment_user)
         if not deployment_user or not deployment_user.publishing_user_name:
             # Create random password, set name to base of app name
             logger.warning('Creating deployment user')
             password = str(uuid4())
             user_name = self.name
-            print([user_name, password])
             set_deployment_user(self.__cmd, user_name=user_name, password=password)
             self.deployment_user_name = user_name
             self.deployment_user_password = password
