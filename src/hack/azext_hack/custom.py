@@ -67,7 +67,9 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
     website.update_settings(app_settings)
     website.finalize_resource_group()
 
-    output = {}
+    output = {
+        'Application name': name
+    }
 
     deployment_info = {
         'Deployment url': website.deployment_url,
