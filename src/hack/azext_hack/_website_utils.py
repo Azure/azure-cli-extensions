@@ -13,8 +13,7 @@ from azure.cli.command_modules.appservice.custom import (
     update_app_settings,
     set_deployment_user,
     list_app_service_plans,
-    get_app_settings,
-    show_source_control
+    get_app_settings
 )
 from azure.cli.command_modules.resource.custom import move_resource
 from knack.log import get_logger
@@ -65,11 +64,11 @@ class Website:
 
     def create(self):
         app_service_plan = self.__get_or_create_app_service_plan()
-        webapp = self.__create_webapp(app_service_plan)
-
         self.__set_deployment_user()
 
-        self.deployment_url = webapp.deploymentLocalGitUrl
+        webapp = self.__create_webapp(app_service_plan)
+
+        self.deployment_url = 'https://{}.scm.azurewebsites.net/{}.git'.format(self.name, self.name)
         self.host_name = 'https://' + webapp.host_names[0]
 
     def update_settings(self, settings):
@@ -97,7 +96,7 @@ class Website:
             settings.update({setting['name']: setting['value']})
         output.update({'App settings': settings})
         urls = {}
-        repo_url = show_source_control(self.__cmd, resource_group_name=self.name, name=self.name).repo_url
+        repo_url = 'https://{}.scm.azurewebsites.net/{}.git'.format(self.name, self.name)
         urls.update({'Git url': repo_url})
         urls.update({'Website url': repo_url.replace('scm.', '')})
         output.update({'URLs': urls})
@@ -133,12 +132,13 @@ class Website:
         deployment_user = web_client_factory(
             self.__cmd.cli_ctx).get_publishing_user()
         # Check for existing deployment user
-        if not deployment_user:
-            # Create random password, set name to first 10 characters of app name
-            self.deployment_user_password = str(uuid4())
-            set_deployment_user(self.__cmd,
-                                user_name=self.name[:10],
-                                password=self.deployment_user_password)
-            self.deployment_user_name = self.name[:10]
+        if not deployment_user or not deployment_user.publishing_user_name:
+            # Create random password, set name to base of app name
+            logger.warning('Creating deployment user')
+            password = str(uuid4())
+            user_name = self.name
+            set_deployment_user(self.__cmd, user_name=user_name, password=password)
+            self.deployment_user_name = user_name
+            self.deployment_user_password = password
         else:
             self.deployment_user_name = deployment_user.publishing_user_name

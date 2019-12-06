@@ -67,7 +67,9 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
     website.update_settings(app_settings)
     website.finalize_resource_group()
 
-    output = {}
+    output = {
+        'Application name': name
+    }
 
     deployment_info = {
         'Deployment url': website.deployment_url,
@@ -87,7 +89,7 @@ def create_hack(cmd, name, runtime, location, database=None, ai=None):
         '2- Add all code': 'git add .',
         '3- Commit code': 'git commit -m \'Initial commit\'',
         '4- Add remote to git': 'git remote add azure ' + website.deployment_url,
-        '5- Deploy to Azure': 'git push azure'
+        '5- Deploy to Azure': 'git push -u azure master'
     }
 
     output.update({'Settings and keys': {
