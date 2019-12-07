@@ -63,10 +63,19 @@ def validate_create(cmd, namespace):
         logger.warning('The source VM\'s OS disk is encrypted.')
 
     # Validate Auth Params
+<<<<<<< HEAD
+=======
+    # Prompt vm username
+>>>>>>> f913d78a5cf48326f8011aeb0b7bdf3e408d441a
     if not namespace.repair_username:
         _prompt_repair_username(namespace)
+    # Validate vm username
+    validate_vm_username(namespace.repair_username, is_linux)
+    # Prompt vm password
     if not namespace.repair_password:
         _prompt_repair_password(namespace)
+    # Validate vm password
+    validate_vm_password(namespace.repair_password, is_linux)
 
     # Validate vm username
     validate_vm_username(namespace.repair_username, is_linux)
@@ -275,13 +284,13 @@ def fetch_repair_vm(namespace):
         message = 'More than one repair VM found:\n'
         for vm in repair_list:
             message += vm['id'] + '\n'
-        message += '\nPlease specify the --repair-vm-id to restore the disk-swap with.'
+        message += '\nPlease specify the repair VM id using the parameter --repair-vm-id'
         raise CLIError(message)
 
     # One repair VM found
     namespace.repair_vm_id = repair_list[0]['id']
 
-    logger.info('Performing command on repair VM: %s\n', namespace.repair_vm_id)
+    logger.info('Found repair VM: %s\n', namespace.repair_vm_id)
 
 
 def validate_vm_password(password, is_linux):

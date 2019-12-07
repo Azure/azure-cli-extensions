@@ -44,6 +44,8 @@ try:
     from .storage_queue_event_subscription_destination_py3 import StorageQueueEventSubscriptionDestination
     from .hybrid_connection_event_subscription_destination_py3 import HybridConnectionEventSubscriptionDestination
     from .service_bus_queue_event_subscription_destination_py3 import ServiceBusQueueEventSubscriptionDestination
+    from .service_bus_topic_event_subscription_destination_py3 import ServiceBusTopicEventSubscriptionDestination
+    from .azure_function_event_subscription_destination_py3 import AzureFunctionEventSubscriptionDestination
     from .event_subscription_py3 import EventSubscription
     from .event_subscription_update_parameters_py3 import EventSubscriptionUpdateParameters
     from .event_subscription_full_url_py3 import EventSubscriptionFullUrl
@@ -90,6 +92,8 @@ except (SyntaxError, ImportError):
     from .storage_queue_event_subscription_destination import StorageQueueEventSubscriptionDestination
     from .hybrid_connection_event_subscription_destination import HybridConnectionEventSubscriptionDestination
     from .service_bus_queue_event_subscription_destination import ServiceBusQueueEventSubscriptionDestination
+    from .service_bus_topic_event_subscription_destination import ServiceBusTopicEventSubscriptionDestination
+    from .azure_function_event_subscription_destination import AzureFunctionEventSubscriptionDestination
     from .event_subscription import EventSubscription
     from .event_subscription_update_parameters import EventSubscriptionUpdateParameters
     from .event_subscription_full_url import EventSubscriptionFullUrl
@@ -154,6 +158,8 @@ __all__ = [
     'StorageQueueEventSubscriptionDestination',
     'HybridConnectionEventSubscriptionDestination',
     'ServiceBusQueueEventSubscriptionDestination',
+    'ServiceBusTopicEventSubscriptionDestination',
+    'AzureFunctionEventSubscriptionDestination',
     'EventSubscription',
     'EventSubscriptionUpdateParameters',
     'EventSubscriptionFullUrl',

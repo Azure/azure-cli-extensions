@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.1.2
++++++
+
+* Upgraded API version to latest stable
+* Removed preview tag
+
 0.1.1
 +++++
 

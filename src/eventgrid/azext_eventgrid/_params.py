@@ -31,7 +31,7 @@ labels_type = CLIArgumentType(
 
 input_schema_type = CLIArgumentType(
     help="Schema in which incoming events will be published to this topic/domain. If you specify customeventschema as the value for this parameter, you must also provide values for at least one of --input_mapping_default_values / --input_mapping_fields.",
-    arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventv01schema'], default='eventgridschema')
+    arg_type=get_enum_type(['eventgridschema', 'customeventschema', 'cloudeventschemav1_0'], default='eventgridschema')
 )
 
 input_mapping_fields_type = CLIArgumentType(
@@ -69,7 +69,7 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
         c.argument('tags', arg_type=tags_type)
         c.argument('included_event_types', arg_type=included_event_types_type)
         c.argument('labels', arg_type=labels_type)
-        c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue'], default='webhook'))
+        c.argument('endpoint_type', arg_type=get_enum_type(['webhook', 'eventhub', 'storagequeue', 'hybridconnection', 'servicebusqueue', 'servicebustopic', 'azurefunction'], default='webhook'))
         c.argument('source_resource_id', help="Fully qualified identifier of the source Azure resource.")
         c.argument('resource_id', deprecate_info=c.deprecate(redirect="--source-resource-id", expiration='2.1.0', hide=True), help="Fully qualified identifier of the Azure resource.")
         c.argument('endpoint', help="Endpoint where EventGrid should deliver events matching this event subscription. For webhook endpoint type, this should be the corresponding webhook URL. For other endpoint types, this should be the Azure resource identifier of the endpoint.")
@@ -114,12 +114,16 @@ def load_arguments(self, _):    # pylint: disable=too-many-statements
     with self.argument_context('eventgrid event-subscription') as c:
         c.argument('topic_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), help='Name of Event Grid topic.', options_list=['--topic-name'], completer=get_resource_name_completion_list('Microsoft.EventGrid/topics'))
         c.argument('event_subscription_name', arg_type=name_type, help='Name of the event subscription.')
-        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventv01schema']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
+        c.argument('event_delivery_schema', arg_type=get_enum_type(['eventgridschema', 'custominputschema', 'cloudeventschemav1_0']), help='The schema in which events should be delivered for this event subscription. By default, events will be delivered in the same schema in which they are published (based on the corresponding topic\'s input schema).')
         c.argument('max_delivery_attempts', help="Maximum number of delivery attempts. Must be a number between 1 and 30.")
+        c.argument('max_events_per_batch', help="Maximum number of events in a batch. Must be a number between 1 and 5000.")
+        c.argument('preferred_batch_size_in_kilobytes', help="Preferred batch size in kilobytes. Must be a number between 1 and 1024.")
         c.argument('event_ttl', help="Event time to live (in minutes). Must be a number between 1 and 1440.")
         c.argument('deadletter_endpoint', help="The Azure resource ID of an Azure Storage blob container destination where EventGrid should deadletter undeliverable events for this event subscription.")
         c.argument('advanced_filter', action=EventSubscriptionAddFilter, nargs='+')
         c.argument('expiration_date', help="Date or datetime (in UTC, e.g. '2018-11-30T11:59:59+00:00' or '2018-11-30') after which the event subscription would expire. By default, there is no expiration for the event subscription.")
+        c.argument('azure_active_directory_tenant_id', help="The Azure Active Directory Tenant Id to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
+        c.argument('azure_active_directory_application_id_or_uri', help="The Azure Active Directory Application Id or Uri to get the access token that will be included as the bearer token in delivery requests. Applicable only for webhook as a destination")
 
     with self.argument_context('eventgrid event-subscription create') as c:
         c.argument('resource_group_name', deprecate_info=c.deprecate(expiration='2.1.0', hide=True), arg_type=resource_group_name_type)

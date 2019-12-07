@@ -20,7 +20,7 @@ from ._validators import (
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
-    validate_taints, validate_priority, validate_eviction_policy)
+    validate_taints, validate_priority, validate_eviction_policy, validate_acr)
 
 
 def load_arguments(self, _):
@@ -78,10 +78,11 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.')
         c.argument('vm_set_type', type=str, validator=validate_vm_set_type)
-        c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+        c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated, use --zones) Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
-        c.argument('attach_acr', acr_arg_type)
+        c.argument('attach_acr', acr_arg_type, validator=validate_acr)
+        c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_private_cluster', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
 
@@ -97,8 +98,8 @@ def load_arguments(self, _):
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('disable_pod_security_policy', action='store_true')
-        c.argument('attach_acr', acr_arg_type)
-        c.argument('detach_acr', acr_arg_type)
+        c.argument('attach_acr', acr_arg_type, validator=validate_acr)
+        c.argument('detach_acr', acr_arg_type, validator=validate_acr)
 
     with self.argument_context('aks scale') as c:
         c.argument('nodepool_name', type=str,
@@ -113,7 +114,7 @@ def load_arguments(self, _):
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
-            c.argument('node_zones', zones_type, options_list='--node-zones', help='(PREVIEW) Space-separated list of availability zones where agent nodes will be placed.')
+            c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.')
             c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'], validator=validate_max_pods)
             c.argument('os_type', type=str)

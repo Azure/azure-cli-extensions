@@ -13,8 +13,9 @@ class VirtualWanCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from .profiles import CUSTOM_VWAN
+        from .profiles import CUSTOM_VWAN, CUSTOM_VHUB_ROUTE_TABLE
         register_resource_type('latest', CUSTOM_VWAN, '2018-08-01')
+        register_resource_type('latest', CUSTOM_VHUB_ROUTE_TABLE, '2019-09-01')
 
         super(VirtualWanCommandsLoader, self).__init__(
             cli_ctx=cli_ctx,

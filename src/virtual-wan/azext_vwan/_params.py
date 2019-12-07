@@ -38,6 +38,7 @@ def load_arguments(self, _):
         c.argument('security_provider_name', help='The security provider name.')
         c.argument('office365_category', help='The office local breakout category.')
         c.argument('disable_vpn_encryption', arg_type=get_three_state_flag(), help='State of VPN encryption.')
+        c.argument('vwan_type', options_list='--type', arg_type=get_enum_type(['Basic', 'Standard']), help='The type of the VirtualWAN.')
     # endregion
 
     # region VirtualHub
@@ -46,6 +47,7 @@ def load_arguments(self, _):
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('virtual_wan', options_list='--vwan', help='Name or ID of the virtual WAN.', validator=get_network_resource_name_or_id('virtual_wan', 'virtualWans'))
         c.argument('address_prefix', help='CIDR address prefix for the virtual hub.')
+        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The sku of the VirtualHub.')
 
     with self.argument_context('network vhub', arg_group='Gateway') as c:
         c.argument('express_route_gateway', help='Name or ID of an ExpressRoute gateway.', validator=get_network_resource_name_or_id('express_route_gateway', 'expressRouteGateways'))
@@ -69,6 +71,16 @@ def load_arguments(self, _):
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('address_prefixes', nargs='+', help='Space-separated list of CIDR prefixes.')
         c.argument('next_hop_ip_address', options_list='--next-hop', help='IP address of the next hop.')
+        c.argument('index', type=int, help='List index of the item (starting with 1).')
+
+    with self.argument_context('network vhub route-table') as c:
+        c.argument('virtual_hub_name', vhub_name_type, id_part=None)
+        c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
+        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table')
+        c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR']), help='The type of destinations')
+        c.argument('destinations', nargs='+', help='Space-separated list of all destinations.')
+        c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress']), help='The type of next hops. Currently it only supports IP Address.')
+        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop.')
         c.argument('index', type=int, help='List index of the item (starting with 1).')
     # endregion
 

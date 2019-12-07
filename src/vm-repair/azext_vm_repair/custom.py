@@ -5,6 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
 import json
+import logging
 import os
 import pkgutil
 import timeit
@@ -45,9 +46,11 @@ logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
+    is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
+    # begin progress reporting for long running operation if not verbose
+    if not is_verbose:
+        cmd.cli_ctx.get_progress_controller().begin()
+        cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer for custom telemetry
@@ -191,8 +194,9 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
-        # end long running op for process
-        cmd.cli_ctx.get_progress_controller().end()
+        # end long running op for process if not verbose
+        if not is_verbose:
+            cmd.cli_ctx.get_progress_controller().end()
 
     # Command failed block. Output right error message and return dict
     if not command_succeeded:
@@ -226,9 +230,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
 
 def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None, yes=False):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
+    is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
+    # begin progress reporting for long running operation if not verbose
+    if not is_verbose:
+        cmd.cli_ctx.get_progress_controller().begin()
+        cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer for custom telemetry
@@ -294,8 +300,9 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
-        # end long running op for process
-        cmd.cli_ctx.get_progress_controller().end()
+        # end long running op for process if not verbose
+        if not is_verbose:
+            cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
         return_status = STATUS_ERROR
@@ -318,9 +325,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
 
 
 def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custom_script_file=None, parameters=None, run_on_repair=False):
-    # begin progress reporting for long running operation
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Running')
+    is_verbose = any(handler.level == logging.INFO for handler in get_logger().handlers)
+    # begin progress reporting for long running operation if not verbose
+    if not is_verbose:
+        cmd.cli_ctx.get_progress_controller().begin()
+        cmd.cli_ctx.get_progress_controller().add(message='Running')
     # Function param for telemetry
     func_params = _get_function_param_dict(inspect.currentframe())
     # Start timer and params for custom telemetry
@@ -421,14 +430,15 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             logger.info('\nScript returned with output:\n%s\n', output)
         else:
             script_status = STATUS_ERROR
-            return_status = STATUS_ERROR
-            message = 'Script returned with possible errors.'
+            return_status = STATUS_SUCCESS
+            message = 'Script succesfully run but returned with possible errors.'
             output = '\n'.join([log['message'] for log in logs if log['level'].lower() == 'error'])
             logger.error('\nScript returned with error:\n%s\n', output)
 
         logger.debug("stderr: %s", stderr)
         return_message = message
         return_dict['status'] = return_status
+        return_dict['script_status'] = script_status
         return_dict['message'] = message
         return_dict['logs'] = stdout
         return_dict['log_full_path'] = log_fullpath
@@ -452,15 +462,17 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
-        # end long running op for process
-        cmd.cli_ctx.get_progress_controller().end()
+        # end long running op for process if not verbose
+        if not is_verbose:
+            cmd.cli_ctx.get_progress_controller().end()
 
     if not command_succeeded:
         script_duration = ''
-        output = 'Script returned with possible errors.'
+        output = 'Repair run failed.'
         script_status = STATUS_ERROR
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
+        return_dict['script_status'] = script_status
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time

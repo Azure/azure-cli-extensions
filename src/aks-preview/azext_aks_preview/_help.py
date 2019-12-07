@@ -181,6 +181,9 @@ helps['aks create'] = """
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Using a system assigned managed identity to manage cluster resource group.
+        - name: --api-server-authorized-ip-ranges
+          type: string
+          short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -192,7 +195,7 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --node-count 3 --enable-cluster-autoscaler --min-count 1 --max-count 5
         - name: Create a kubernetes cluster with k8s 1.13.9 but use vmas.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --kubernetes-version 1.13.9 --vm-set-type AvailabilitySet
-        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(basic) and default vm set type(AvailabilitySet).
+        - name: Create a kubernetes cluster with default kubernetes vesrion, default SKU load balancer(standard) and default vm set type(VirtualMachineScaleSets).
           text: az aks create -g MyResourceGroup -n MyManagedCluster
         - name: Create a kubernetes cluster with standard SKU load balancer and two AKS created IPs for the load balancer outbound connection usage.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-managed-outbound-ip-count 2
@@ -202,6 +205,9 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
         - name: Create a kubernetes cluster with basic SKU load balancer and AvailabilitySet vm set type.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
+        - name: Create a kubernetes cluster with authorized apiserver IP ranges.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
+
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -248,9 +254,6 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specifying the value in the range of [1, 100]
-        - name: --api-server-authorized-ip-ranges
-          type: str
-          short-summary: List of authorized IP ranges (separated by comma) for apiserver. Set to "" for disabling it.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -275,6 +278,9 @@ helps['aks update'] = """
         - name: --detach-acr
           type: string
           short-summary: Disable the 'acrpull' role assignment to the ACR specified by name or resource ID.
+        - name: --api-server-authorized-ip-ranges
+          type: string
+          short-summary: Comma seperated list of authorized apiserver IP ranges. Set to "" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -282,8 +288,6 @@ helps['aks update'] = """
         text: az aks update --disable-cluster-autoscaler -g MyResourceGroup -n MyManagedCluster
       - name: Update min-count or max-count for cluster autoscaler.
         text: az aks update --update-cluster-autoscaler --min-count 1 --max-count 10 -g MyResourceGroup -n MyManagedCluster
-      - name: Enable authorized IP ranges for apiserver.
-        text: az aks update --api-server-authorized-ip-ranges 172.0.0.10/16,168.10.0.10/18 -g MyResourceGroup -n MyManagedCluster
       - name: Enable pod security policy.
         text: az aks update --enable-pod-security-policy -g MyResourceGroup -n MyManagedCluster
       - name: Disable pod security policy.
@@ -294,6 +298,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ips <ip-resource-id-1,ip-resource-id-2>
       - name: Update a kubernetes cluster with standard SKU load balancer to use the provided public IP prefixes for the load balancer outbound connection usage.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --load-balancer-outbound-ip-prefixes <ip-prefix-resource-id-1,ip-prefix-resource-id-2>
+      - name: Update a kubernetes cluster with authorized apiserver ip ranges.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24
+      - name: Disable authorized apiserver ip ranges feature for a kubernetes cluster.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges ""
+      - name: Restrict apiserver traffic in a kubernetes cluster to agentpool nodes.
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
 """
 
 helps['aks kollect'] = """
@@ -312,6 +322,23 @@ helps['aks kollect'] = """
         - name: --sas-token
           type: string
           short-summary: The SAS token with writable permission for the storage account.
+        - name: --container-logs
+          type: string
+          short-summary: The list of container logs to collect.
+          long-summary: |-
+            The list of container logs to collect. Its value can be either all containers
+            in a namespace, for example, kube-system, or a specific container in a
+            namespace, for example, kube-system/tunnelfront.
+        - name: --kube-objects
+          type: string
+          short-summary: The list of kubernetes objects to describe.
+          long-summary: |-
+            The list of kubernetes objects to describe. Its value can be either all objects of a type
+            in a namespace, for example, kube-system/pod, or a specific object of a type in a namespace,
+            for example, kube-system/deployment/tunnelfront.
+        - name: --node-logs
+          type: string
+          short-summary: The list of node logs to collect. For example, /var/log/cloud-init.log
     examples:
       - name: using storage account name and a shared access signature token with write permission
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
@@ -319,6 +346,17 @@ helps['aks kollect'] = """
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster --storage-account "MyStoreageAccountResourceId"
       - name: using the storagea account in diagnostics settings for your managed cluster.
         text: az aks kollect -g MyResourceGroup -n MyManagedCluster
+      - name: customize the container logs to collect.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --container-logs "mynamespace1/mypod1 myns2"
+      - name: customize the kubernetes objects to collect.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --kube-objects "mynamespace1/service myns2/deployment/deployment1"
+      - name: customize the node log files to collect.
+        text: az aks kollect -g MyResourceGroup -n MyManagedCluster --node-logs "/var/log/azure-vnet.log /var/log/azure-vnet-ipam.log"
+"""
+
+helps['aks kanalyze'] = """
+    type: command
+    short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
 helps['aks nodepool'] = """
@@ -358,9 +396,9 @@ helps['aks nodepool add'] = """
           type: int
           short-summary: The maximum number of pods deployable to a node.
           long-summary: If not specified, defaults to 110, or 30 for advanced networking configurations.
-        - name: --node-zones
+        - name: --node-zones --zones -z
           type: string array
-          short-summary: (PREVIEW) Availability zones where agent nodes will be placed.
+          short-summary: (will be deprecated, use --zones) Availability zones where agent nodes will be placed.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -495,4 +533,10 @@ examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup
     crafted: true
+"""
+
+helps['aks rotate-certs'] = """
+    type: command
+    short-summary: Rotate certificates and keys on a managed Kubernetes cluster
+    long-summary: Kubernetes will be unavailable during cluster certificate rotation.
 """
