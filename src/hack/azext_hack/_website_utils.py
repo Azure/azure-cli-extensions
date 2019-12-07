@@ -12,7 +12,8 @@ from azure.cli.command_modules.appservice.custom import (
     create_webapp,
     update_app_settings,
     set_deployment_user,
-    list_app_service_plans
+    list_app_service_plans,
+    get_app_settings
 )
 from azure.cli.command_modules.resource.custom import move_resource
 from knack.log import get_logger
@@ -25,7 +26,7 @@ _RUNTIME_SETTINGS = {
         'is_linux': True
     },
     'node': {
-        'name': 'node|10.6',
+        'name': 'node|LTS',
         'is_linux': True
     },
     'tomcat': {
@@ -63,19 +64,20 @@ class Website:
 
     def create(self):
         app_service_plan = self.__get_or_create_app_service_plan()
-        webapp = self.__create_webapp(app_service_plan)
-
         self.__set_deployment_user()
 
-        self.deployment_url = webapp.deploymentLocalGitUrl
+        webapp = self.__create_webapp(app_service_plan)
+
+        self.deployment_url = 'https://{}.scm.azurewebsites.net/{}.git'.format(self.name, self.name)
         self.host_name = 'https://' + webapp.host_names[0]
 
     def update_settings(self, settings):
         app_settings = []
         for key in settings:
             app_settings.append('{}={}'.format(key, settings[key]))
-        update_app_settings(self.__cmd, resource_group_name=self.resource_group,
-                            name=self.name, settings=app_settings)
+        if app_settings:
+            update_app_settings(self.__cmd, resource_group_name=self.resource_group,
+                                name=self.name, settings=app_settings)
 
     def finalize_resource_group(self):
         if self.resource_group.lower() == self.name:
@@ -86,6 +88,19 @@ class Website:
         while not poller.done():
             poller.result(15)
         self.resource_group = self.name
+
+    def show(self):
+        output = {}
+        settings = {}
+        for setting in get_app_settings(self.__cmd, resource_group_name=self.name, name=self.name):
+            settings.update({setting['name']: setting['value']})
+        output.update({'App settings': settings})
+        urls = {}
+        repo_url = 'https://{}.scm.azurewebsites.net/{}.git'.format(self.name, self.name)
+        urls.update({'Git url': repo_url})
+        urls.update({'Website url': repo_url.replace('scm.', '')})
+        output.update({'URLs': urls})
+        return output
 
     def __get_or_create_app_service_plan(self) -> str:
         plans = list_app_service_plans(self.__cmd)
@@ -117,12 +132,13 @@ class Website:
         deployment_user = web_client_factory(
             self.__cmd.cli_ctx).get_publishing_user()
         # Check for existing deployment user
-        if not deployment_user:
-            # Create random password, set name to first 10 characters of app name
-            self.deployment_user_password = str(uuid4())
-            set_deployment_user(self.__cmd,
-                                user_name=self.name[:10],
-                                password=self.deployment_user_password)
-            self.deployment_user_name = self.name[:10]
+        if not deployment_user or not deployment_user.publishing_user_name:
+            # Create random password, set name to base of app name
+            logger.warning('Creating deployment user')
+            password = str(uuid4())
+            user_name = self.name
+            set_deployment_user(self.__cmd, user_name=user_name, password=password)
+            self.deployment_user_name = user_name
+            self.deployment_user_password = password
         else:
             self.deployment_user_name = deployment_user.publishing_user_name
