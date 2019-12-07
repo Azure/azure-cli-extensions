@@ -192,7 +192,7 @@ def _fetch_compatible_windows_os_urn(source_vm):
     logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
     os_image_ref = source_vm.storage_profile.image_reference
-    if os_image_ref and type(os_image_ref.version) == str and os_image_ref.version in urns[0]:
+    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()

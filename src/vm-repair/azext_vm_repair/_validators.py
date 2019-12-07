@@ -63,10 +63,7 @@ def validate_create(cmd, namespace):
         logger.warning('The source VM\'s OS disk is encrypted.')
 
     # Validate Auth Params
-<<<<<<< HEAD
-=======
     # Prompt vm username
->>>>>>> f913d78a5cf48326f8011aeb0b7bdf3e408d441a
     if not namespace.repair_username:
         _prompt_repair_username(namespace)
     # Validate vm username
@@ -77,11 +74,6 @@ def validate_create(cmd, namespace):
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
 
-    # Validate vm username
-    validate_vm_username(namespace.repair_username, is_linux)
-    # Validate vm password
-    validate_vm_password(namespace.repair_password, is_linux)
-    
 
 def validate_restore(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
