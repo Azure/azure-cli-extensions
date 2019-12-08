@@ -35,20 +35,17 @@ jobs:
       TSLint: false
       ToolLogsNotFoundAction: 'Standard'
 
-# - job: SourceStatic
-#   displayName: "Source Code Static Check"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "Source Code Static Check"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/test_static.sh
+ - job: CodeStyleCheck
+   displayName: "Code Style Check"
+   pool:
+     vmImage: 'ubuntu-16.04'
+   steps:
+   - task: UsePythonVersion@0
+     displayName: 'Use Python 3.6'
+     inputs:
+       versionSpec: 3.6
+   - bash: scripts/ci/test_static.sh
+     displayName: "Code Style Check"
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
