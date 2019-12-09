@@ -219,7 +219,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         created_resources.append(copy_disk_id)
         return_dict = {}
         return_dict['status'] = return_status
-        return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+        return_dict['message'] = return_message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
                                  'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
                                  '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
                                  'Note that the copied disk is created within the original resource group \'{rg}\'.' \
@@ -227,7 +227,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_dict['repair_vm_name'] = repair_vm_name
         return_dict['copied_disk_name'] = copy_disk_name
         return_dict['copied_disk_uri'] = copy_disk_id
-        return_dict['repair_resouce_group'] = repair_group_name
+        return_dict['repair_resource_group'] = repair_group_name
         return_dict['resource_tag'] = resource_tag
         return_dict['created_resources'] = created_resources
 
@@ -328,7 +328,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         return_status = STATUS_SUCCESS
         return_dict = {}
         return_dict['status'] = return_status
-        return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
+        return_dict['message'] = return_message = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
                                  'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
                                  .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
 
@@ -461,7 +461,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_dict['log_full_path'] = log_fullpath
         return_dict['output'] = output
         return_dict['vm_name'] = repair_vm_name
-        return_dict['resouce_group'] = repair_resource_group
+        return_dict['resource_group'] = repair_resource_group
         command_succeeded = True
     except KeyboardInterrupt:
         error_stack_trace = traceback.format_exc()

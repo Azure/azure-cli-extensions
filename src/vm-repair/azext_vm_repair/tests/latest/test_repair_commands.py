@@ -24,7 +24,7 @@ class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
         result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resouce_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -57,7 +57,7 @@ class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
         result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resouce_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -90,7 +90,7 @@ class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
         result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resouce_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
@@ -123,7 +123,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
         result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018').get_output_in_json()
 
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resouce_group'])).get_output_in_json()
+        repair_vms = self.cmd('vm list -g {}'.format(result['repair_resource_group'])).get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         # Check attached data disk
