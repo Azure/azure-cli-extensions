@@ -10,8 +10,8 @@ import os
 import pkgutil
 import timeit
 import inspect
-import requests
 import traceback
+import requests
 from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -220,10 +220,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         return_dict = {}
         return_dict['status'] = return_status
         return_dict['message'] = return_message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-                                 'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
-                                 '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
-                                 'Note that the copied disk is created within the original resource group \'{rg}\'.' \
-                                 .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
+                                                  'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
+                                                  '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
+                                                  'Note that the copied disk is created within the original resource group \'{rg}\'.' \
+                                                  .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
         return_dict['repair_vm_name'] = repair_vm_name
         return_dict['copied_disk_name'] = copy_disk_name
         return_dict['copied_disk_uri'] = copy_disk_id
@@ -329,8 +329,8 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         return_dict = {}
         return_dict['status'] = return_status
         return_dict['message'] = return_message = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
-                                 'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
-                                 .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
+                                                  'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
+                                                  .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
 
         logger.info('\n%s\n', return_dict['message'])
 
