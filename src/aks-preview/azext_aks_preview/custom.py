@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-lines
+
 from __future__ import print_function
 
 import binascii
@@ -76,9 +78,6 @@ from ._helpers import _populate_api_server_access_profile, _set_load_balancer_sk
 
 
 logger = get_logger(__name__)
-
-
-# pylint:disable=too-many-lines,unused-argument
 
 
 def which(binary):
