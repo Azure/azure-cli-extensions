@@ -44,8 +44,8 @@ jobs:
       displayName: 'Use Python 3.6'
       inputs:
         versionSpec: 3.6
-    - bash: pip install wheel pylint==2.3.0 flake8
-      displayName: 'Install Pylint and Flake8'
+    - bash: pip install wheel==0.30.0 pylint==2.3.0 flake8
+      displayName: 'Install wheel, pylint and flake8'
     - bash: python scripts/ci/test_static.py
       displayName: "Static Analysis"
 
