@@ -74,7 +74,7 @@ Please refer to the help file 'az dms project create -h' for the supported scena
                 source_platform,
                 target_platform,
                 tags)
-        except:
+        except:     # pylint: disable=try-except-raise
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
             raise
@@ -151,7 +151,7 @@ for the supported scenarios.")
                                         enable_schema_validation,
                                         enable_data_integrity_validation,
                                         enable_query_analysis_validation)
-        except:
+        except:     # pylint: disable=try-except-raise
             # TODO: We currently don't have any CLI core code to perform any validations
             # because of this we need to raise the error here.
             raise
