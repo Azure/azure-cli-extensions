@@ -14,7 +14,6 @@ import subprocess
 import sys
 from threading import Thread
 
-import jmespath
 from six.moves import configparser
 from knack.log import get_logger
 from knack.util import CLIError
@@ -25,6 +24,7 @@ from azure.cli.core.api import get_config_dir
 from azure.cli.core.util import handle_exception
 
 # pylint: disable=import-error
+import jmespath
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.document import Document
