@@ -2319,11 +2319,11 @@ def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-ma
         columns = node_line.split()
         logger.debug(node_line)
         if columns[1] != "Ready":
-            logger.warning("Node {} is not Ready. Current state is: {}.".format(columns[0], columns[1]))
+            logger.warning("Node %s is not Ready. Current state is: %s.", columns[0], columns[1])
         else:
             ready_nodes[columns[0]] = False
 
-    logger.debug('There are {} ready nodes in the cluster'.format(len(ready_nodes)))
+    logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
 
     if not ready_nodes:
         logger.warning('No nodes are ready in the current cluster. Diagnostics info might not be available.')
@@ -2362,13 +2362,13 @@ def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-ma
                          "get", "apd", apdName, "-n",
                          "aks-periscope", "-o=jsonpath={.spec.networkconfig}"],
                         universal_newlines=True)
-                    logger.debug('Dns status for node {} is {}'.format(node_name, network_config))
+                    logger.debug('Dns status for node %s is %s', node_name, network_config)
                     network_status = subprocess.check_output(
                         ["kubectl", "--kubeconfig", temp_kubeconfig_path,
                          "get", "apd", apdName, "-n",
                          "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"],
                         universal_newlines=True)
-                    logger.debug('Network status for node {} is {}'.format(node_name, network_status))
+                    logger.debug('Network status for node %s is %s', node_name, network_status)
 
                     if not network_config or not network_status:
                         print("The diagnostics information for node {} is not ready yet. "
