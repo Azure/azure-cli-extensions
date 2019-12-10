@@ -5,9 +5,10 @@
 
 from __future__ import print_function
 from knack.log import get_logger
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+
 from azext_dns.dns.dns_management_client import DnsManagementClient
 from azext_dns.dns.models import (Zone)
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 
 logger = get_logger(__name__)

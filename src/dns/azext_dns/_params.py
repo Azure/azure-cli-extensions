@@ -4,10 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import get_enum_type
+
 from azext_dns.dns.models import ZoneType
 from azext_dns._validators import (dns_zone_name_type, get_vnet_validator, validate_metadata)
-from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
