@@ -7,17 +7,11 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
-    tags_type,
-    get_enum_type,
     resource_group_name_type,
-    get_location_type
 )
 
 
 def load_arguments(self, _):
-
-    with self.argument_context('attestation list') as c:
-        pass
 
     with self.argument_context('attestation create') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -38,6 +32,3 @@ def load_arguments(self, _):
     with self.argument_context('attestation show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of the attestation service')
-
-    with self.argument_context('attestation list') as c:
-        c.argument('resource_group', resource_group_name_type)

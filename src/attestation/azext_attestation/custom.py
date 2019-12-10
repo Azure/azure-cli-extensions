@@ -7,10 +7,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-
-
-def list_attestation(cmd, client):
-    return client.list()
+import json
 
 
 def create_attestation(cmd, client,
@@ -47,10 +44,3 @@ def get_attestation(cmd, client,
                     resource_group,
                     name):
     return client.get(resource_group_name=resource_group, provider_name=name)
-
-
-def list_attestation(cmd, client,
-                     resource_group):
-    if resource_group is not None:
-        return client.list_by_resource_group(resource_group_name=resource_group)
-    return client.list()

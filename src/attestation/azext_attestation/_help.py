@@ -14,20 +14,6 @@ helps['attestation'] = """
     short-summary: Commands to manage attestation.
 """
 
-helps['attestation list'] = """
-    type: command
-    short-summary: Lists all of the available Azure attestation operations.
-    examples:
-      - name: Operations_List
-        text: |-
-               az attestation list
-"""
-
-helps['attestation'] = """
-    type: group
-    short-summary: Commands to manage attestation.
-"""
-
 helps['attestation create'] = """
     type: command
     short-summary: Creates or updates the Attestation Provider.
@@ -58,16 +44,4 @@ helps['attestation show'] = """
       - name: AttestationProviders_Get
         text: |-
                az attestation show --resource-group "MyResourceGroup" --name "MyAttestationProvider"
-"""
-
-helps['attestation list'] = """
-    type: command
-    short-summary: Returns attestation providers list in a resource group.
-    examples:
-      - name: AttestationProviders_List
-        text: |-
-               az attestation list
-      - name: AttestationProviders_ListByResourceGroup
-        text: |-
-               az attestation list --resource-group "testrg1"
 """

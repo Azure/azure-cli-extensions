@@ -22,9 +22,6 @@ class AttestationScenarioTest(ScenarioTest):
             'name': 'test1'
         })
 
-        self.cmd('az attestation list',
-                 checks=[])
-
         self.cmd('az attestation create '
                  '--resource-group {rg} '
                  '--name "MyAttestationProvider"',
@@ -33,13 +30,6 @@ class AttestationScenarioTest(ScenarioTest):
         self.cmd('az attestation show '
                  '--resource-group {rg} '
                  '--name "MyAttestationProvider"',
-                 checks=[])
-
-        self.cmd('az attestation list',
-                 checks=[])
-
-        self.cmd('az attestation list '
-                 '--resource-group {rg}',
                  checks=[])
 
         self.cmd('az attestation delete '

@@ -12,13 +12,6 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from ._client_factory import cf_operations
-    attestation_operations = CliCommandType(
-        operations_tmpl='azext_attestation.vendored_sdks.attestation.operations._operations_operations#OperationsOperations.{}',
-        client_factory=cf_operations)
-    with self.command_group('attestation', attestation_operations, client_factory=cf_operations) as g:
-        g.custom_command('list', 'list_attestation')
-
     from ._client_factory import cf_attestation_providers
     attestation_attestation_providers = CliCommandType(
         operations_tmpl='azext_attestation.vendored_sdks.attestation.operations._attestation_providers_operations#AttestationProvidersOperations.{}',
@@ -28,4 +21,3 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_attestation')
         g.custom_command('delete', 'delete_attestation')
         g.custom_command('show', 'get_attestation')
-        g.custom_command('list', 'list_attestation')
