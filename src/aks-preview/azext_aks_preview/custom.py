@@ -632,8 +632,7 @@ def _trim_nodepoolname(nodepool_name):
     return nodepool_name[:12]
 
 
-# pylint: disable=too-many-branches
-def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements
+def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                client,
                resource_group_name,
                name,
@@ -890,7 +889,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements
     raise retry_exception
 
 
-def aks_update(cmd,     # pylint: disable=too-many-statements
+def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
                client,
                resource_group_name,
                name,
@@ -1086,7 +1085,7 @@ ADDONS = {
 
 
 # pylint: disable=line-too-long
-def aks_kollect(cmd,    # pylint: disable=too-many-statements
+def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
                 client,
                 resource_group_name,
                 name,
@@ -1799,7 +1798,7 @@ def aks_agentpool_list(cmd,     # pylint: disable=unused-argument
     return client.list(resource_group_name, cluster_name)
 
 
-def aks_agentpool_add(cmd,      # pylint: disable=unused-argument
+def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-locals
                       client,
                       resource_group_name,
                       cluster_name,
@@ -2306,7 +2305,7 @@ def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
     return None
 
 
-def display_diagnostics_report(temp_kubeconfig_path):
+def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
     if not which('kubectl'):
         raise CLIError('Can not find kubectl executable in PATH')
 
