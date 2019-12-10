@@ -683,6 +683,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_private_cluster=False,
                enable_managed_identity=False,
                api_server_authorized_ip_ranges=None,
+               aks_custom_headers=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -872,13 +873,26 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             enable_private_cluster=True
         )
 
+    headers = {}
+    if aks_custom_headers is not None:
+        if aks_custom_headers != "":
+            for pair in aks_custom_headers.split(','):
+                parts = pair.split('=')
+                if len(parts) != 2:
+                    raise CLIError('custom headers format is incorrect')
+
+                headers[parts[0]] = parts[1]
+
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
             return sdk_no_wait(no_wait, client.create_or_update,
-                               resource_group_name=resource_group_name, resource_name=name, parameters=mc)
+                               resource_group_name=resource_group_name,
+                               resource_name=name,
+                               parameters=mc,
+                               custom_headers=headers)
         except CloudError as ex:
             retry_exception = ex
             if 'not found in Active Directory tenant' in ex.message:
