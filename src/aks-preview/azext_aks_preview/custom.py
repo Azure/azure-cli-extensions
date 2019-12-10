@@ -534,9 +534,13 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
-# pylint: disable=too-many-statements
-def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
-               listen_address='127.0.0.1', listen_port='8001'):
+def aks_browse(cmd,     # pylint: disable=too-many-statements
+               client,
+               resource_group_name,
+               name,
+               disable_browser=False,
+               listen_address='127.0.0.1',
+               listen_port='8001'):
     if not which('kubectl'):
         raise CLIError('Can not find kubectl executable in PATH')
 
@@ -628,9 +632,12 @@ def _trim_nodepoolname(nodepool_name):
     return nodepool_name[:12]
 
 
-# pylint: disable=too-many-statements
 # pylint: disable=too-many-branches
-def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
+def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements
+               client,
+               resource_group_name,
+               name,
+               ssh_key_value,
                dns_name_prefix=None,
                location=None,
                admin_username="azureuser",
@@ -883,7 +890,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     raise retry_exception
 
 
-def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler=False,
+def aks_update(cmd,     # pylint: disable=too-many-statements
+               client,
+               resource_group_name,
+               name,
+               enable_cluster_autoscaler=False,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False,
@@ -1075,7 +1086,10 @@ ADDONS = {
 
 
 # pylint: disable=line-too-long
-def aks_kollect(cmd, client, resource_group_name, name,
+def aks_kollect(cmd,    # pylint: disable=too-many-statements
+                client,
+                resource_group_name,
+                name,
                 storage_account=None,
                 sas_token=None,
                 container_logs=None,
