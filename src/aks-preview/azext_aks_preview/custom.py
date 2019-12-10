@@ -1012,7 +1012,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
-def aks_show(cmd, client, resource_group_name, name):
+def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
@@ -1042,7 +1042,11 @@ def _remove_nulls(managed_clusters):
     return managed_clusters
 
 
-def aks_get_credentials(cmd, client, resource_group_name, name, admin=False,
+def aks_get_credentials(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        name,
+                        admin=False,
                         path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                         overwrite_existing=False):
     credentialResults = None
@@ -1263,7 +1267,13 @@ def aks_kanalyze(cmd, client, resource_group_name, name):
     display_diagnostics_report(temp_kubeconfig_path)
 
 
-def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
+def aks_scale(cmd,  # pylint: disable=unused-argument
+              client,
+              resource_group_name,
+              name,
+              node_count,
+              nodepool_name="",
+              no_wait=False):
     instance = client.get(resource_group_name, name)
 
     if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
@@ -1282,8 +1292,14 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
-def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version,
-                control_plane_only=False, no_wait=False, **kwargs):  # pylint: disable=unused-argument
+def aks_upgrade(cmd,    # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                name,
+                kubernetes_version,
+                control_plane_only=False,
+                no_wait=False,
+                **kwargs):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
 
     if instance.kubernetes_version == kubernetes_version:
@@ -1704,7 +1720,7 @@ def _create_client_secret():
 def _ensure_aks_acr(cli_ctx,
                     client_id,
                     acr_name_or_id,
-                    subscription_id,
+                    subscription_id,    # pylint: disable=unused-argument
                     detach=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
     # Check if the ACR exists by resource ID.
@@ -1753,16 +1769,27 @@ def _ensure_aks_acr_role_assignment(cli_ctx,
     return
 
 
-def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
+def aks_agentpool_show(cmd,     # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       cluster_name,
+                       nodepool_name):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     return instance
 
 
-def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
+def aks_agentpool_list(cmd,     # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       cluster_name):
     return client.list(resource_group_name, cluster_name)
 
 
-def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
+def aks_agentpool_add(cmd,      # pylint: disable=unused-argument
+                      client,
+                      resource_group_name,
+                      cluster_name,
+                      nodepool_name,
                       kubernetes_version=None,
                       node_zones=None,
                       node_vm_size=None,
@@ -1845,7 +1872,10 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
 
 
-def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
+def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        cluster_name,
                         nodepool_name,
                         node_count=3,
                         no_wait=False):
@@ -1859,7 +1889,10 @@ def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_upgrade(cmd, client, resource_group_name, cluster_name,
+def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
+                          client,
+                          resource_group_name,
+                          cluster_name,
                           kubernetes_version,
                           nodepool_name,
                           no_wait=False):
@@ -1869,7 +1902,11 @@ def aks_agentpool_upgrade(cmd, client, resource_group_name, cluster_name,
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepool_name,
+def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         cluster_name,
+                         nodepool_name,
                          enable_cluster_autoscaler=False,
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
@@ -1924,7 +1961,10 @@ def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepoo
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
+def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         cluster_name,
                          nodepool_name,
                          no_wait=False):
     agentpool_exists = False
@@ -1988,12 +2028,19 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
-def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):
+def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True): # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable, workspace_resource_id=None,
-                   subnet_name=None, no_wait=False):
+def _update_addons(cmd,
+                   instance,
+                   subscription_id,
+                   resource_group_name,
+                   addons,
+                   enable,
+                   workspace_resource_id=None,
+                   subnet_name=None,
+                   no_wait=False):  # pylint: disable=unused-argument
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
@@ -2056,7 +2103,7 @@ def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, 
     return instance
 
 
-def aks_get_versions(cmd, client, location):
+def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_orchestrators(location, resource_type='managedClusters')
 
 
