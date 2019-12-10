@@ -202,7 +202,7 @@ class _FileSharedAccessHelper(_SharedAccessHelper):
     def __init__(self):
         super(_FileSharedAccessHelper, self).__init__()
 
-    def add_resource_signature(self, account_name, account_key, path):
+    def add_resource_signature(self, account_name, account_key, path):  # pylint: disable=arguments-differ
         def get_value_to_append(query):
             return_value = self.query_dict.get(query) or ''
             return return_value + '\n'
