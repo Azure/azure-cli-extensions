@@ -7,6 +7,7 @@ reports=no
 # locally-disabled: Warning locally suppressed using disable-msg
 # cyclic-import: because of https://github.com/PyCQA/pylint/issues/850
 # too-many-arguments: Due to the nature of the CLI many commands have large arguments set which reflect in large arguments set in corresponding methods.
+# useless-object-inheritance: Due to some class inherits from __builtin__.object(), can be safely removed from bases in python3
 disable=missing-docstring,
         locally-disabled,
         fixme,
@@ -14,8 +15,6 @@ disable=missing-docstring,
         too-many-arguments,
         invalid-name,
         duplicate-code,
-        no-else-return,
-        no-else-raise,
         useless-object-inheritance
 
 [TYPECHECK]
