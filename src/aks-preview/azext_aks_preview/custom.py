@@ -2054,7 +2054,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
-def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True): # pylint: disable=unused-argument
+def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
