@@ -44,6 +44,7 @@ jobs:
       displayName: 'Use Python 3.6'
       inputs:
         versionSpec: 3.6
+    - bash: pip install pylint==2.3.0 flake8
     - bash: python scripts/ci/test_static.py
       displayName: "Static Analysis"
 
