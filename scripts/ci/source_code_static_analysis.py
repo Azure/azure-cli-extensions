@@ -76,10 +76,9 @@ def _run_pylint(module_paths, ignored_modules=None, rcfile=None, cpu_count=1):
     pylint_opts.append("--jobs={}".format(cpu_count))
     pylint_opts.extend(module_paths)
 
-    status = 0
     try:
-        status = lint.Run(pylint_opts).linter.msg_status
-    except SystemExit:
+        lint.Run(pylint_opts)
+    except SystemExit as se:
         # 0:  everything is fine
         # 1:  Fatal message issued
         # 2:  Error message issued
@@ -87,8 +86,8 @@ def _run_pylint(module_paths, ignored_modules=None, rcfile=None, cpu_count=1):
         # 8:  Refactor message issued
         # 16: Convention message issued
         # 32: Usage error
-        if status in [1, 2, 4, 32]:
-            sys.exit(status)
+        if se.code not in [0, 8, 16, 24]:
+            sys.exit(se.code)
 
 
 def _run_flake8(module_paths, config_file=None):
