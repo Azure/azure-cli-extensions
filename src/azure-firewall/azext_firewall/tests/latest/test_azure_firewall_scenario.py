@@ -23,6 +23,36 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_ip_config')
+    def test_azure_firewall_ip_config(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'pubip': 'pubip',
+            'pubip2': 'pubip2',
+            'vnet': 'myvnet',
+            'subnet': 'mysubnet',
+            'ipconfig': 'myipconfig1',
+            'ipconfig2': 'myipconfig2'
+        })
+        self.cmd('network firewall create -g {rg} -n {af}')
+        self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
+        self.cmd('network public-ip create -g {rg} -n {pubip2} --sku standard')
+        vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+
+        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
+            self.check('name', '{ipconfig}'),
+            self.check('subnet.id', subnet_id_default)
+        ])
+        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig2} -f {af} --public-ip-address {pubip2}', checks=[
+            self.check('name', '{ipconfig2}'),
+            self.check('subnet', None)
+        ])
+
+        self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
+        self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_rules')
     def test_azure_firewall_rules(self, resource_group):
 
