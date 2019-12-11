@@ -53,23 +53,12 @@ def get_subnet_validator():
     from msrestazure.tools import is_valid_resource_id, resource_id
 
     def simple_validator(cmd, namespace):
-        if namespace.virtual_network_name is None and namespace.subnet is None:
+        if namespace.virtual_network_name is None:
+            namespace.subnet = None
             return
-        if namespace.subnet == '':
-            return
-        usage_error = ValueError('incorrect usage: ( --subnet ID | --subnet NAME --vnet-name NAME)')
-        # error if vnet-name is provided without subnet
-        if namespace.virtual_network_name and not namespace.subnet:
-            raise usage_error
 
         # determine if subnet is name or ID
         is_id = is_valid_resource_id(namespace.subnet)
-
-        # error if vnet-name is provided along with a subnet ID
-        if is_id and namespace.virtual_network_name:
-            raise usage_error
-        if not is_id and not namespace.virtual_network_name:
-            raise usage_error
 
         if not is_id:
             namespace.subnet = resource_id(
