@@ -92,7 +92,7 @@ def load_arguments(self, _):
         c.argument('resource_name', firewall_name_type)
         c.argument('azure_firewall_name', firewall_name_type)
         c.argument('subnet', validator=get_subnet_validator(), help=argparse.SUPPRESS)
-        c.argument('virtual_network_name', virtual_network_name_type)
+        c.argument('virtual_network_name', virtual_network_name_type, help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
         c.argument('public_ip_address', help='Name or ID of the public IP to use.', validator=get_public_ip_validator())
         c.argument('private_ip_address', help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
 
