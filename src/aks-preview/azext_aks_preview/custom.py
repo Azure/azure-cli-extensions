@@ -684,6 +684,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_managed_identity=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
+               appgw_name=None,
+               subnet_prefix=None,
+               appgw_id=None,
+               subnet_id=None,
+               appgw_shared=None,
+               appgw_watch_namespace=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -816,7 +822,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         subscription_id,
         resource_group_name,
         {},
-        workspace_resource_id
+        workspace_resource_id,
+        appgw_name,
+        subnet_prefix,
+        appgw_id,
+        subnet_id,
+        appgw_shared,
+        appgw_watch_namespace
     )
     if 'omsagent' in addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, addon_profiles['omsagent'])
@@ -1099,7 +1111,8 @@ ADDONS = {
     'monitoring': 'omsagent',
     'virtual-node': 'aciConnector',
     'azure-policy': 'azurepolicy',
-    'kube-dashboard': 'kubeDashboard'
+    'kube-dashboard': 'kubeDashboard',
+    'ingress-appgw': 'IngressApplicationGateway'
 }
 
 
@@ -1387,7 +1400,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
-                        workspace_resource_id=None):
+                        workspace_resource_id=None, appgw_name=None, subnet_prefix=None, appgw_id=None, subnet_id=None, appgw_shared=None, appgw_watch_namespace=None):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -1418,6 +1431,18 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
     if 'azure-policy' in addons:
         addon_profiles['azurepolicy'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('azure-policy')
+    if 'ingress-appgw' in addons:
+        addon_profiles['IngressApplicationGateway'] = ManagedClusterAddonProfile(
+            enabled=True,
+            config={
+                'ApplicationGatewayName': appgw_name,
+                'SubnetPrefix': subnet_prefix,
+                'ApplicationGatewayId': appgw_id,
+                'SubnetId': subnet_id,
+                'Shared': appgw_shared,
+                'WatchNamespace': appgw_watch_namespace
+            })
+        addons.remove('ingress-appgw')
     # error out if any (unrecognized) addons remain
     if addons:
         raise CLIError('"{}" {} not recognized by the --enable-addons argument.'.format(
@@ -1567,6 +1592,9 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
 
 
 def _ensure_container_insights_for_monitoring(cmd, addon):
+    if not addon.enabled:
+        return
+
     # workaround for this addon key which has been seen lowercased in the wild
     if 'loganalyticsworkspaceresourceid' in addon.config:
         addon.config['logAnalyticsWorkspaceResourceID'] = addon.config.pop('loganalyticsworkspaceresourceid')
@@ -2022,6 +2050,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
         instance,
         subscription_id,
         resource_group_name,
+        name,
         addons,
         enable=False,
         no_wait=no_wait
@@ -2032,12 +2061,13 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
-                      subnet_name=None, no_wait=False):
+                      subnet_name=None, appgw_name=None, subnet_prefix=None, appgw_id=None, subnet_id=None, appgw_shared=None, appgw_watch_namespace=None, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     service_principal_client_id = instance.service_principal_profile.client_id
-    instance = _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable=True,
-                              workspace_resource_id=workspace_resource_id, subnet_name=subnet_name, no_wait=no_wait)
+    instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
+                              workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
+                              appgw_name=appgw_name, subnet_prefix=subnet_prefix, appgw_id=appgw_id, subnet_id=subnet_id, appgw_shared=appgw_shared, appgw_watch_namespace=appgw_watch_namespace, no_wait=no_wait)
 
     if 'omsagent' in instance.addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
@@ -2055,6 +2085,23 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                         service_principal_client_id, scope=cluster_resource_id):
                 logger.warning('Could not create a role assignment for Monitoring addon. '
                                'Are you an Owner on this subscription?')
+    if 'IngressApplicationGateway' in instance.addon_profiles:
+        if "ApplicationGatewayId" in instance.addon_profiles["IngressApplicationGateway"].config:
+            appgw_id = instance.addon_profiles["IngressApplicationGateway"].config["ApplicationGatewayId"]
+            from msrestazure.tools import parse_resource_id, resource_id
+            appgw_id_dict = parse_resource_id(appgw_id)
+            appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
+            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                        service_principal_client_id, scope=appgw_group_id):
+                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                'Are you an Owner on this subscription?')
+        if "SubnetId" in instance.addon_profiles["IngressApplicationGateway"].config:
+            subnet_id = instance.addon_profiles["IngressApplicationGateway"].config["SubnetId"]
+            from msrestazure.tools import parse_resource_id, resource_id
+            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                        service_principal_client_id, scope=subnet_id):
+                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                'Are you an Owner on this subscription?')
 
     # send the managed cluster representation to update the addon profiles
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
@@ -2062,7 +2109,6 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
 def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
-
 
 def _update_addons(cmd,
                    instance,
@@ -2072,7 +2118,14 @@ def _update_addons(cmd,
                    enable,
                    workspace_resource_id=None,
                    subnet_name=None,
+                   appgw_name=None,
+                   subnet_prefix=None,
+                   appgw_id=None,
+                   subnet_id=None,
+                   appgw_shared=None,
+                   appgw_watch_namespace=None,
                    no_wait=False):  # pylint: disable=unused-argument
+
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
@@ -2119,6 +2172,25 @@ def _update_addons(cmd,
                 if not subnet_name:
                     raise CLIError('The aci-connector addon requires setting a subnet name.')
                 addon_profile.config = {'SubnetName': subnet_name}
+            elif addon.lower() == 'ingressapplicationgateway':
+                if addon_profile.enabled:
+                    raise CLIError('The ingress-appgw addon is already enabled for this managed cluster.\n'
+                                   'To change ingress-appgw configuration, run '
+                                   f'"az aks disable-addons -a ingress-appgw -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
+                if appgw_name is not None:
+                    addon_profile.config["ApplicationGatewayName"] = appgw_name
+                if subnet_prefix is not None:
+                    addon_profile.config["SubnetPrefix"]=subnet_prefix
+                if appgw_id is not None:
+                    addon_profile.config["ApplicationGatewayId"] = appgw_id
+                if subnet_id is not None:
+                    addon_profile.config["SubnetId"] = subnet_id
+                if appgw_shared is not None:
+                    addon_profile.config["Shared"] = appgw_shared
+                if appgw_watch_namespace is not None:
+                    addon_profile.config["WatchNamespace"] = appgw_watch_namespace
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
