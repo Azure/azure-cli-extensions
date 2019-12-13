@@ -39,6 +39,8 @@ def create_target_image(location, transient_resource_group_name, source_type, so
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
     target_blob_endpoint = json_output['primaryEndpoints']['blob']
+    # for the new update on Azure CLI : https://docs.microsoft.com/en-us/cli/azure/release-notes-azure-cli?view=azure-cli-latest#compute
+    target_sa_id = json_output['id']
 
     # Setup the target storage account
     cli_cmd = prepare_cli_command(['storage', 'account', 'keys', 'list',
@@ -112,12 +114,14 @@ def create_target_image(location, transient_resource_group_name, source_type, so
         snapshot_resource_group_name = target_resource_group_name
     else:
         snapshot_resource_group_name = transient_resource_group_name
-
+        
+    #To add the storage account ID
     cli_cmd = prepare_cli_command(['snapshot', 'create',
                                    '--resource-group', snapshot_resource_group_name,
                                    '--name', target_snapshot_name,
                                    '--location', location,
-                                   '--source', target_blob_path],
+                                   '--source', target_blob_path,
+                                  '--source-storage-account-id', target_sa_id],
                                   subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
