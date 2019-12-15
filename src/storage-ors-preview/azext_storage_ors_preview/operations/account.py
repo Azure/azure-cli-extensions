@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 def create_ors_policy(cmd, client, resource_group_name, account_name, source_account=None, destination_account=None,
-                      properties=None, policy_id=None, rule_id=None, source_container=None, destination_container=None,
+                      properties=None, policy_id='default', rule_id=None, source_container=None, destination_container=None,
                       tag=None, prefix_match=None):
     ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
     if properties:
@@ -49,6 +49,11 @@ def update_ors_policy(instance, properties=None):
         instance.properties = ors_policy
 
     return instance
+
+
+def get_ors_policy(client, resource_group_name, account_name, policy_id='default'):
+    return client.get(resource_group_name=resource_group_name, account_name=account_name,
+                      object_replication_policy_id=policy_id)
 
 
 def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id, rule_id,

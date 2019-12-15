@@ -26,7 +26,7 @@ def load_command_table(self, _):
     with self.command_group('storage account ors-policy', ors_policy_sdk, is_preview=True,
                             resource_type=CUSTOM_MGMT_STORAGE, min_api='2019-06-01',
                             custom_command_type=ors_policy_custom_type) as g:
-        g.show_command('show', 'get')
+        g.custom_show_command('show', 'get_ors_policy')
         g.command('list', 'list')
         g.custom_command('create', 'create_ors_policy', validator=validate_ors_policy)
         g.generic_update_command('update', getter_name='get',

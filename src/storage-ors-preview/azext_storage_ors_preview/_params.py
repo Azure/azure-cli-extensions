@@ -14,8 +14,7 @@ def load_arguments(self, _):
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
                                      completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
-    object_replication_policy_type = CLIArgumentType(options_list=['--policy-id'],
-                                                     help='The ID of object replication policy.')
+    object_replication_policy_type = CLIArgumentType(options_list=['--policy-id'])
 
     with self.argument_context('storage account ors-policy create') as c:
         c.argument('source_account', help='The source storage account name. Required when no --properties provided.')
