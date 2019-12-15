@@ -35,7 +35,7 @@ helps['notificationhubs create'] = """
       - name: NameSpaceCreate
         text: |-
                az notificationhubs create --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
-               --location "South Central US"
+               --location "South Central US" --tier "Standard"
 """
 
 helps['notificationhubs update'] = """
@@ -44,7 +44,8 @@ helps['notificationhubs update'] = """
     examples:
       - name: NameSpaceUpdate
         text: |-
-               az notificationhubs update --resource-group "5ktrial" --namespace-name "nh-sdk-ns"
+               az notificationhubs update --resource-group "5ktrial" --namespace-name "nh-sdk-ns" --tier \\
+               "Standard"
 """
 
 helps['notificationhubs delete'] = """

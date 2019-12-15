@@ -19,7 +19,10 @@ def create_notificationhubs(cmd, client,
                             name,
                             location=None,
                             tags=None,
-                            sku=None,
+                            tier=None,
+                            size=None,
+                            family=None,
+                            capacity=None,
                             is_availiable=None,
                             rights=None,
                             policy_key=None):
@@ -27,7 +30,10 @@ def create_notificationhubs(cmd, client,
     body['name'] = name  # str
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body['sku'] = json.loads(sku) if isinstance(sku, str) else sku
+    body.setdefault('sku', {})['tier'] = tier  # str
+    body.setdefault('sku', {})['size'] = size  # str
+    body.setdefault('sku', {})['family'] = family  # str
+    body.setdefault('sku', {})['capacity'] = capacity  # number
     body['is_availiable'] = is_availiable  # boolean
     body['rights'] = None if rights is None else rights.split(',')
     body['policy_key'] = policy_key  # str
@@ -40,7 +46,10 @@ def update_notificationhubs(cmd, client,
                             name=None,
                             location=None,
                             tags=None,
-                            sku=None,
+                            tier=None,
+                            size=None,
+                            family=None,
+                            capacity=None,
                             is_availiable=None,
                             rights=None,
                             policy_key=None):
@@ -51,8 +60,14 @@ def update_notificationhubs(cmd, client,
         body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
-    if sku is not None:
-        body['sku'] = json.loads(sku) if isinstance(sku, str) else sku
+    if tier is not None:
+        body.setdefault('sku', {})['tier'] = tier  # str
+    if size is not None:
+        body.setdefault('sku', {})['size'] = size  # str
+    if family is not None:
+        body.setdefault('sku', {})['family'] = family  # str
+    if capacity is not None:
+        body.setdefault('sku', {})['capacity'] = capacity  # number
     if is_availiable is not None:
         body['is_availiable'] = is_availiable  # boolean
     if rights is not None:
@@ -136,7 +151,10 @@ def create_notificationhubs_notification_hub(cmd, client,
                                              name,
                                              location=None,
                                              tags=None,
-                                             sku=None,
+                                             tier=None,
+                                             size=None,
+                                             family=None,
+                                             capacity=None,
                                              is_availiable=None,
                                              rights=None,
                                              policy_key=None):
@@ -144,7 +162,10 @@ def create_notificationhubs_notification_hub(cmd, client,
     body['name'] = name  # str
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body['sku'] = json.loads(sku) if isinstance(sku, str) else sku
+    body.setdefault('sku', {})['tier'] = tier  # str
+    body.setdefault('sku', {})['size'] = size  # str
+    body.setdefault('sku', {})['family'] = family  # str
+    body.setdefault('sku', {})['capacity'] = capacity  # number
     body['is_availiable'] = is_availiable  # boolean
     body['rights'] = None if rights is None else rights.split(',')
     body['policy_key'] = policy_key  # str
@@ -158,7 +179,10 @@ def update_notificationhubs_notification_hub(cmd, client,
                                              name=None,
                                              location=None,
                                              tags=None,
-                                             sku=None,
+                                             tier=None,
+                                             size=None,
+                                             family=None,
+                                             capacity=None,
                                              is_availiable=None,
                                              rights=None,
                                              policy_key=None):
@@ -169,8 +193,14 @@ def update_notificationhubs_notification_hub(cmd, client,
         body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
-    if sku is not None:
-        body['sku'] = json.loads(sku) if isinstance(sku, str) else sku
+    if tier is not None:
+        body.setdefault('sku', {})['tier'] = tier  # str
+    if size is not None:
+        body.setdefault('sku', {})['size'] = size  # str
+    if family is not None:
+        body.setdefault('sku', {})['family'] = family  # str
+    if capacity is not None:
+        body.setdefault('sku', {})['capacity'] = capacity  # number
     if is_availiable is not None:
         body['is_availiable'] = is_availiable  # boolean
     if rights is not None:
