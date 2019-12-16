@@ -16,14 +16,23 @@ def list_datafactory(cmd, client):
 def create_datafactory(cmd, client,
                        resource_group,
                        name,
+                       account_name,
+                       repository_name,
+                       collaboration_branch,
+                       root_folder,
+                       _type,
+                       repo_configuration_account_name,
+                       repo_configuration_repository_name,
+                       repo_configuration_collaboration_branch,
+                       repo_configuration_root_folder,
                        git_hub_access_code,
                        git_hub_access_token_base_url,
                        factory_resource_id=None,
-                       repo_configuration=None,
+                       last_commit_id=None,
                        location=None,
                        tags=None,
                        additional_properties=None,
-                       identity=None,
+                       repo_configuration_last_commit_id=None,
                        git_hub_client_id=None,
                        permissions=None,
                        access_resource_path=None,
@@ -32,11 +41,20 @@ def create_datafactory(cmd, client,
                        expire_time=None):
     body = {}
     body['factory_resource_id'] = factory_resource_id  # str
-    body['repo_configuration'] = json.loads(repo_configuration) if isinstance(repo_configuration, str) else repo_configuration
+    body.setdefault('repo_configuration', {})['account_name'] = account_name  # str
+    body.setdefault('repo_configuration', {})['repository_name'] = repository_name  # str
+    body.setdefault('repo_configuration', {})['collaboration_branch'] = collaboration_branch  # str
+    body.setdefault('repo_configuration', {})['root_folder'] = root_folder  # str
+    body.setdefault('repo_configuration', {})['last_commit_id'] = last_commit_id  # str
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['additional_properties'] = additional_properties  # dictionary
-    body['identity'] = json.loads(identity) if isinstance(identity, str) else identity
+    body.setdefault('identity', {})['type'] = _type  # str
+    body.setdefault('repo_configuration', {})['account_name'] = repo_configuration_account_name  # str
+    body.setdefault('repo_configuration', {})['repository_name'] = repo_configuration_repository_name  # str
+    body.setdefault('repo_configuration', {})['collaboration_branch'] = repo_configuration_collaboration_branch  # str
+    body.setdefault('repo_configuration', {})['root_folder'] = repo_configuration_root_folder  # str
+    body.setdefault('repo_configuration', {})['last_commit_id'] = repo_configuration_last_commit_id  # str
     body['git_hub_access_code'] = git_hub_access_code  # str
     body['git_hub_client_id'] = git_hub_client_id  # str
     body['git_hub_access_token_base_url'] = git_hub_access_token_base_url  # str
@@ -52,11 +70,20 @@ def update_datafactory(cmd, client,
                        resource_group,
                        name,
                        factory_resource_id=None,
-                       repo_configuration=None,
+                       account_name=None,
+                       repository_name=None,
+                       collaboration_branch=None,
+                       root_folder=None,
+                       last_commit_id=None,
                        location=None,
                        tags=None,
                        additional_properties=None,
-                       identity=None,
+                       _type=None,
+                       repo_configuration_account_name=None,
+                       repo_configuration_repository_name=None,
+                       repo_configuration_collaboration_branch=None,
+                       repo_configuration_root_folder=None,
+                       repo_configuration_last_commit_id=None,
                        git_hub_access_code=None,
                        git_hub_client_id=None,
                        git_hub_access_token_base_url=None,
@@ -68,16 +95,34 @@ def update_datafactory(cmd, client,
     body = client.get(resource_group_name=resource_group, factory_name=name, if-none-match=body).as_dict()
     if factory_resource_id is not None:
         body['factory_resource_id'] = factory_resource_id  # str
-    if repo_configuration is not None:
-        body['repo_configuration'] = json.loads(repo_configuration) if isinstance(repo_configuration, str) else repo_configuration
+    if account_name is not None:
+        body.setdefault('repo_configuration', {})['account_name'] = account_name  # str
+    if repository_name is not None:
+        body.setdefault('repo_configuration', {})['repository_name'] = repository_name  # str
+    if collaboration_branch is not None:
+        body.setdefault('repo_configuration', {})['collaboration_branch'] = collaboration_branch  # str
+    if root_folder is not None:
+        body.setdefault('repo_configuration', {})['root_folder'] = root_folder  # str
+    if last_commit_id is not None:
+        body.setdefault('repo_configuration', {})['last_commit_id'] = last_commit_id  # str
     if location is not None:
         body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
-    if identity is not None:
-        body['identity'] = json.loads(identity) if isinstance(identity, str) else identity
+    if _type is not None:
+        body.setdefault('identity', {})['type'] = _type  # str
+    if repo_configuration_account_name is not None:
+        body.setdefault('repo_configuration', {})['account_name'] = repo_configuration_account_name  # str
+    if repo_configuration_repository_name is not None:
+        body.setdefault('repo_configuration', {})['repository_name'] = repo_configuration_repository_name  # str
+    if repo_configuration_collaboration_branch is not None:
+        body.setdefault('repo_configuration', {})['collaboration_branch'] = repo_configuration_collaboration_branch  # str
+    if repo_configuration_root_folder is not None:
+        body.setdefault('repo_configuration', {})['root_folder'] = repo_configuration_root_folder  # str
+    if repo_configuration_last_commit_id is not None:
+        body.setdefault('repo_configuration', {})['last_commit_id'] = repo_configuration_last_commit_id  # str
     if git_hub_access_code is not None:
         body['git_hub_access_code'] = git_hub_access_code  # str
     if git_hub_client_id is not None:
@@ -360,14 +405,18 @@ def create_datafactory_linkedservice(cmd, client,
                                      resource_group,
                                      factory_name,
                                      name,
+                                     connect_via_type,
+                                     connect_via_reference_name,
                                      additional_properties=None,
-                                     connect_via=None,
+                                     connect_via_parameters=None,
                                      description=None,
                                      parameters=None,
                                      annotations=None):
     body = {}
     body['additional_properties'] = additional_properties  # dictionary
-    body['connect_via'] = json.loads(connect_via) if isinstance(connect_via, str) else connect_via
+    body.setdefault('connect_via', {})['type'] = connect_via_type  # str
+    body.setdefault('connect_via', {})['reference_name'] = connect_via_reference_name  # str
+    body.setdefault('connect_via', {})['parameters'] = connect_via_parameters  # dictionary
     body['description'] = description  # str
     body['parameters'] = parameters  # dictionary
     body['annotations'] = None if annotations is None else annotations.split(',')
@@ -379,15 +428,21 @@ def update_datafactory_linkedservice(cmd, client,
                                      factory_name,
                                      name,
                                      additional_properties=None,
-                                     connect_via=None,
+                                     connect_via_type=None,
+                                     connect_via_reference_name=None,
+                                     connect_via_parameters=None,
                                      description=None,
                                      parameters=None,
                                      annotations=None):
     body = client.get(resource_group_name=resource_group, factory_name=factory_name, linked_service_name=name, if-none-match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
-    if connect_via is not None:
-        body['connect_via'] = json.loads(connect_via) if isinstance(connect_via, str) else connect_via
+    if connect_via_type is not None:
+        body.setdefault('connect_via', {})['type'] = connect_via_type  # str
+    if connect_via_reference_name is not None:
+        body.setdefault('connect_via', {})['reference_name'] = connect_via_reference_name  # str
+    if connect_via_parameters is not None:
+        body.setdefault('connect_via', {})['parameters'] = connect_via_parameters  # dictionary
     if description is not None:
         body['description'] = description  # str
     if parameters is not None:
@@ -421,23 +476,27 @@ def create_datafactory_dataset(cmd, client,
                                resource_group,
                                factory_name,
                                name,
-                               linked_service_name,
+                               linked_service_name_type,
+                               linked_service_name_reference_name,
                                additional_properties=None,
                                description=None,
                                structure=None,
                                schema=None,
+                               linked_service_name_parameters=None,
                                parameters=None,
                                annotations=None,
-                               folder=None):
+                               folder_name=None):
     body = {}
     body['additional_properties'] = additional_properties  # dictionary
     body['description'] = description  # str
     body['structure'] = structure  # unknown-primary[object]
     body['schema'] = schema  # unknown-primary[object]
-    body['linked_service_name'] = json.loads(linked_service_name) if isinstance(linked_service_name, str) else linked_service_name
+    body.setdefault('linked_service_name', {})['type'] = linked_service_name_type  # str
+    body.setdefault('linked_service_name', {})['reference_name'] = linked_service_name_reference_name  # str
+    body.setdefault('linked_service_name', {})['parameters'] = linked_service_name_parameters  # dictionary
     body['parameters'] = parameters  # dictionary
     body['annotations'] = None if annotations is None else annotations.split(',')
-    body['folder'] = json.loads(folder) if isinstance(folder, str) else folder
+    body.setdefault('folder', {})['name'] = folder_name  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, dataset=body)
 
 
@@ -449,10 +508,12 @@ def update_datafactory_dataset(cmd, client,
                                description=None,
                                structure=None,
                                schema=None,
-                               linked_service_name=None,
+                               linked_service_name_type=None,
+                               linked_service_name_reference_name=None,
+                               linked_service_name_parameters=None,
                                parameters=None,
                                annotations=None,
-                               folder=None):
+                               folder_name=None):
     body = client.get(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, if-none-match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
@@ -462,14 +523,18 @@ def update_datafactory_dataset(cmd, client,
         body['structure'] = structure  # unknown-primary[object]
     if schema is not None:
         body['schema'] = schema  # unknown-primary[object]
-    if linked_service_name is not None:
-        body['linked_service_name'] = json.loads(linked_service_name) if isinstance(linked_service_name, str) else linked_service_name
+    if linked_service_name_type is not None:
+        body.setdefault('linked_service_name', {})['type'] = linked_service_name_type  # str
+    if linked_service_name_reference_name is not None:
+        body.setdefault('linked_service_name', {})['reference_name'] = linked_service_name_reference_name  # str
+    if linked_service_name_parameters is not None:
+        body.setdefault('linked_service_name', {})['parameters'] = linked_service_name_parameters  # dictionary
     if parameters is not None:
         body['parameters'] = parameters  # dictionary
     if annotations is not None:
         body['annotations'] = None if annotations is None else annotations.split(',')
-    if folder is not None:
-        body['folder'] = json.loads(folder) if isinstance(folder, str) else folder
+    if folder_name is not None:
+        body.setdefault('folder', {})['name'] = folder_name  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, dataset=body)
 
 
@@ -505,7 +570,7 @@ def create_datafactory_pipeline(cmd, client,
                                 concurrency=None,
                                 annotations=None,
                                 run_dimensions=None,
-                                folder=None):
+                                folder_name=None):
     body = {}
     body['additional_properties'] = additional_properties  # dictionary
     body['description'] = description  # str
@@ -515,7 +580,7 @@ def create_datafactory_pipeline(cmd, client,
     body['concurrency'] = concurrency  # number
     body['annotations'] = None if annotations is None else annotations.split(',')
     body['run_dimensions'] = run_dimensions  # dictionary
-    body['folder'] = json.loads(folder) if isinstance(folder, str) else folder
+    body.setdefault('folder', {})['name'] = folder_name  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, pipeline=body)
 
 
@@ -531,7 +596,7 @@ def update_datafactory_pipeline(cmd, client,
                                 concurrency=None,
                                 annotations=None,
                                 run_dimensions=None,
-                                folder=None):
+                                folder_name=None):
     body = client.get(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, if-none-match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
@@ -549,8 +614,8 @@ def update_datafactory_pipeline(cmd, client,
         body['annotations'] = None if annotations is None else annotations.split(',')
     if run_dimensions is not None:
         body['run_dimensions'] = run_dimensions  # dictionary
-    if folder is not None:
-        body['folder'] = json.loads(folder) if isinstance(folder, str) else folder
+    if folder_name is not None:
+        body.setdefault('folder', {})['name'] = folder_name  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, pipeline=body)
 
 
@@ -786,11 +851,11 @@ def create_datafactory_dataflow(cmd, client,
                                 name,
                                 description=None,
                                 annotations=None,
-                                folder=None):
+                                folder_name=None):
     body = {}
     body['description'] = description  # str
     body['annotations'] = None if annotations is None else annotations.split(',')
-    body['folder'] = json.loads(folder) if isinstance(folder, str) else folder
+    body.setdefault('folder', {})['name'] = folder_name  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, data_flow=body)
 
 
@@ -800,14 +865,14 @@ def update_datafactory_dataflow(cmd, client,
                                 name,
                                 description=None,
                                 annotations=None,
-                                folder=None):
+                                folder_name=None):
     body = client.get(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, if-none-match=body).as_dict()
     if description is not None:
         body['description'] = description  # str
     if annotations is not None:
         body['annotations'] = None if annotations is None else annotations.split(',')
-    if folder is not None:
-        body['folder'] = json.loads(folder) if isinstance(folder, str) else folder
+    if folder_name is not None:
+        body.setdefault('folder', {})['name'] = folder_name  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, data_flow=body)
 
 
@@ -834,33 +899,53 @@ def list_datafactory_dataflow(cmd, client,
 def create_datafactory_create_data_flow_debug_session(cmd, client,
                                                       resource_group,
                                                       name,
+                                                      linked_service_type,
+                                                      linked_service_reference_name,
+                                                      stream_name,
                                                       compute_type=None,
                                                       core_count=None,
                                                       time_to_live=None,
-                                                      integration_runtime=None,
+                                                      properties_additional_properties=None,
+                                                      properties_description=None,
                                                       additional_properties=None,
                                                       session_id=None,
-                                                      data_flow=None,
+                                                      properties_annotations=None,
+                                                      properties_folder_name=None,
                                                       datasets=None,
                                                       linked_services=None,
-                                                      staging=None,
-                                                      debug_settings=None,
+                                                      linked_service_parameters=None,
+                                                      folder_path=None,
+                                                      source_settings=None,
+                                                      parameters=None,
+                                                      dataset_parameters=None,
                                                       command=None,
-                                                      command_payload=None):
+                                                      row_limits=None,
+                                                      columns=None,
+                                                      expression=None):
     body = {}
     body['compute_type'] = compute_type  # str
     body['core_count'] = core_count  # number
     body['time_to_live'] = time_to_live  # number
-    body['integration_runtime'] = json.loads(integration_runtime) if isinstance(integration_runtime, str) else integration_runtime
+    body.setdefault('integration_runtime', {}).setdefault('properties', {})['additional_properties'] = properties_additional_properties  # dictionary
+    body.setdefault('integration_runtime', {}).setdefault('properties', {})['description'] = properties_description  # str
     body['additional_properties'] = additional_properties  # dictionary
     body['session_id'] = session_id  # str
-    body['data_flow'] = json.loads(data_flow) if isinstance(data_flow, str) else data_flow
+    body.setdefault('data_flow', {}).setdefault('properties', {})['annotations'] = None if properties_annotations is None else properties_annotations.split(',')
+    body.setdefault('data_flow', {}).setdefault('properties', {}).setdefault('folder', {})['name'] = properties_folder_name  # str
     body['datasets'] = datasets
     body['linked_services'] = linked_services
-    body['staging'] = json.loads(staging) if isinstance(staging, str) else staging
-    body['debug_settings'] = json.loads(debug_settings) if isinstance(debug_settings, str) else debug_settings
+    body.setdefault('staging', {}).setdefault('linked_service', {})['type'] = linked_service_type  # str
+    body.setdefault('staging', {}).setdefault('linked_service', {})['reference_name'] = linked_service_reference_name  # str
+    body.setdefault('staging', {}).setdefault('linked_service', {})['parameters'] = linked_service_parameters  # dictionary
+    body.setdefault('staging', {})['folder_path'] = folder_path  # str
+    body.setdefault('debug_settings', {})['source_settings'] = source_settings
+    body.setdefault('debug_settings', {})['parameters'] = parameters  # dictionary
+    body.setdefault('debug_settings', {})['dataset_parameters'] = dataset_parameters  # unknown-primary[object]
     body['command'] = command  # str
-    body['command_payload'] = json.loads(command_payload) if isinstance(command_payload, str) else command_payload
+    body.setdefault('command_payload', {})['stream_name'] = stream_name  # str
+    body.setdefault('command_payload', {})['row_limits'] = row_limits  # number
+    body.setdefault('command_payload', {})['columns'] = None if columns is None else columns.split(',')
+    body.setdefault('command_payload', {})['expression'] = expression  # str
     return client.create(resource_group_name=resource_group, factory_name=name, request=body)
 
 

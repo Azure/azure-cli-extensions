@@ -443,11 +443,14 @@ helps['datafactory dataset create'] = """
       - name: Datasets_Create
         text: |-
                az datafactory dataset create --resource-group "exampleResourceGroup" --factory-name \\
-               "exampleFactoryName" --name "exampleDataset"
+               "exampleFactoryName" --name "exampleDataset" --linked-service-name-type \\
+               "LinkedServiceReference" --linked-service-name-reference-name "exampleLinkedService"
       - name: Datasets_Update
         text: |-
                az datafactory dataset create --resource-group "exampleResourceGroup" --factory-name \\
-               "exampleFactoryName" --name "exampleDataset" --description "Example description"
+               "exampleFactoryName" --name "exampleDataset" --description "Example description" \\
+               --linked-service-name-type "LinkedServiceReference" --linked-service-name-reference-name \\
+               "exampleLinkedService"
 """
 
 helps['datafactory dataset update'] = """
