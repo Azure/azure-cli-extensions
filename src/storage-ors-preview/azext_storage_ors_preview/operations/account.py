@@ -13,7 +13,7 @@ from knack.util import CLIError
 logger = get_logger(__name__)
 
 
-def create_ors_policy(cmd, client, resource_group_name, account_name, source_account=None, destination_account=None,
+def create_ors_policy(cmd, client, resource_group_name, account_name, source_account=None, destination_account=None, rule=None,
                       properties=None, policy_id='default', rule_id=None, source_container=None, destination_container=None,
                       tag=None, prefix_match=None):
     ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
@@ -23,16 +23,22 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, source_acc
         else:
             ors_policy = shell_safe_json_parse(properties)
     else:
+        rules = []
         ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
             cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
-        rule = ObjectReplicationPolicyRule(
-            rule_id=rule_id,
-            source_container=source_container,
-            destination_container=destination_container,
-            filter=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)
-        )
-        rules = []
-        rules.append(rule)
+        #from azure.cli.core.commands import cached_get, cached_put
+        #rule = cached_get(cmd, get_ors_rule, resource_group_name, account_name)
+        if rule:
+            rule_properties = shell_safe_json_parse(rule)
+            rules.append(rule_properties)
+        if source_container and destination_container:
+            rule = ObjectReplicationPolicyRule(
+                rule_id=rule_id,
+                source_container=source_container,
+                destination_container=destination_container,
+                filter=ObjectReplicationPolicyFilter(prefix_match=prefix_match, tag=tag)
+            )
+            rules.append(rule)
         ors_policy = ObjectReplicationPolicy(source_account=source_account,
                                              destination_account=destination_account,
                                              rules=rules)
@@ -56,8 +62,8 @@ def get_ors_policy(client, resource_group_name, account_name, policy_id='default
                       object_replication_policy_id=policy_id)
 
 
-def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id, rule_id,
-                 source_container, destination_container, tag=None, prefix_match=None):
+def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
+                 source_container, destination_container, rule_id=None,  tag=None, prefix_match=None):
     """
     Initialize rule for ORS policy
     """
@@ -73,6 +79,22 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id, rule
     )
     policy_properties.rules.append(new_ors_rule)
     return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
+
+
+def create_ors_rule(cmd, source_container, destination_container,
+                    rule_id=None, tag=None, prefix_match=None):
+    """
+    Initialize rule for ORS policy
+    """
+    ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
+        cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
+    new_ors_rule = ObjectReplicationPolicyRule(
+        rule_id=rule_id,
+        source_container=source_container,
+        destination_container=destination_container,
+        filter=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)
+    )
+    return new_ors_rule
 
 
 def remove_ors_rule(client, resource_group_name, account_name, policy_id, rule_id):

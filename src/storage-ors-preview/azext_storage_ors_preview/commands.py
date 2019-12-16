@@ -28,7 +28,7 @@ def load_command_table(self, _):
                             custom_command_type=ors_policy_custom_type) as g:
         g.custom_show_command('show', 'get_ors_policy')
         g.command('list', 'list')
-        g.custom_command('create', 'create_ors_policy', validator=validate_ors_policy)
+        g.custom_command('create', 'create_ors_policy', validator=validate_ors_policy, supports_local_cache=True)
         g.generic_update_command('update', getter_name='get',
                                  custom_func_name='update_ors_policy')
         g.command('delete', 'delete')
@@ -39,6 +39,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_ors_rule')
         g.custom_command('list', 'list_ors_rules')
         g.custom_command('add', 'add_ors_rule', validator=validate_ors_rule)
+        g.custom_command('create', 'create_ors_rule', validator=validate_ors_rule, supports_local_cache=True)
         g.generic_update_command('update', getter_name='get_ors_rule', getter_type=ors_policy_custom_type,
                                  setter_name='update_ors_rule',
                                  setter_type=ors_policy_custom_type)

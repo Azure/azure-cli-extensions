@@ -6,11 +6,17 @@
 
 def validate_ors_policy(namespace):
     if namespace.properties is None:
+        error_msg = "Please provide --properties in JSON format or the following arguments: "
+        error_elements = []
         if namespace.source_account is None:
-            raise ValueError("--source-account is required to create ORS Policy.")
+            error_elements.append("--source-account")
         if namespace.destination_account is None:
-            raise ValueError("--destination-account is required to create ORS Policy.")
-        validate_ors_rule
+            error_elements.append("--destination-account")
+
+        if error_elements:
+            error_msg += ", ".join(error_elements)
+            error_msg += " to initialize ORS Policy for storage account."
+            raise ValueError(error_msg)
 
 
 def validate_ors_rule(namespace):
