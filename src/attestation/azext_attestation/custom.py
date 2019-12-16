@@ -15,10 +15,7 @@ def create_attestation(cmd, client,
                        name,
                        attestation_policy=None,
                        policy_signing_certificates=None):
-    body = {}
-    body['attestation_policy'] = attestation_policy  # str
-    body['policy_signing_certificates'] = json.loads(policy_signing_certificates) if isinstance(policy_signing_certificates, str) else policy_signing_certificates
-    return client.create(resource_group_name=resource_group, provider_name=name, creation_params=body)
+    return client.create(resource_group_name=resource_group, provider_name=name, attestation_policy=attestation_policy, policy_signing_certificates=policy_signing_certificates)
 
 
 def update_attestation(cmd, client,
@@ -26,11 +23,6 @@ def update_attestation(cmd, client,
                        name,
                        attestation_policy=None,
                        policy_signing_certificates=None):
-    body = client.get(resource_group_name=resource_group, provider_name=name).as_dict()
-    if attestation_policy is not None:
-        body['attestation_policy'] = attestation_policy  # str
-    if policy_signing_certificates is not None:
-        body['policy_signing_certificates'] = json.loads(policy_signing_certificates) if isinstance(policy_signing_certificates, str) else policy_signing_certificates
     return client.create(resource_group_name=resource_group, provider_name=name, creation_params=body)
 
 
