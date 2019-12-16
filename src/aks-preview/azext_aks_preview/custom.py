@@ -2094,14 +2094,14 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=appgw_group_id):
                 logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
-                'Are you an Owner on this subscription?')
+                               'Are you an Owner on this subscription?')
         if "SubnetId" in instance.addon_profiles["IngressApplicationGateway"].config:
             subnet_id = instance.addon_profiles["IngressApplicationGateway"].config["SubnetId"]
             from msrestazure.tools import parse_resource_id, resource_id
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=subnet_id):
                 logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
-                'Are you an Owner on this subscription?')
+                               'Are you an Owner on this subscription?')
 
     # send the managed cluster representation to update the addon profiles
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
@@ -2182,7 +2182,7 @@ def _update_addons(cmd,
                 if appgw_name is not None:
                     addon_profile.config["ApplicationGatewayName"] = appgw_name
                 if subnet_prefix is not None:
-                    addon_profile.config["SubnetPrefix"]=subnet_prefix
+                    addon_profile.config["SubnetPrefix"] = subnet_prefix
                 if appgw_id is not None:
                     addon_profile.config["ApplicationGatewayId"] = appgw_id
                 if subnet_id is not None:
