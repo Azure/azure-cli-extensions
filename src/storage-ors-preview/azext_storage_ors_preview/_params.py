@@ -18,6 +18,7 @@ def load_arguments(self, _):
 
     with self.argument_context('storage account ors-policy') as c:
         c.argument('account_name', acct_name_type)
+        c.argument('object_replication_policy_id', object_replication_policy_type)
 
     with self.argument_context('storage account ors-policy create') as c:
         c.argument('source_account', options_list=['--source-account', '-s'], help='The source storage account name. Required when no --properties provided.')
@@ -39,7 +40,6 @@ def load_arguments(self, _):
 
     with self.argument_context('storage account ors-policy update') as c:
         c.argument('account_name', help='The name of the storage account within the specified resource group.')
-        c.argument('object_replication_policy_id', object_replication_policy_type)
         c.argument('properties', help='The object replication policy definition between two storage accounts, in JSON '
                                       'format. Multiple rules can be defined in one policy.')
 

@@ -46,15 +46,15 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, source_acc
                                    object_replication_policy_id=policy_id, properties=ors_policy)
 
 
-def update_ors_policy(instance, properties=None):
+def update_ors_policy(client, resource_group_name, account_name, policy_id, properties=None):
     if properties:
         if os.path.exists(properties):
             ors_policy = get_file_json(properties)
         else:
             ors_policy = shell_safe_json_parse(properties)
-        instance.properties = ors_policy
 
-    return instance
+    return client.create_or_update(resource_group_name, account_name=account_name,
+                                   object_replication_policy_id=policy_id, properties=ors_policy)
 
 
 def get_ors_policy(client, resource_group_name, account_name, policy_id='default'):
@@ -81,29 +81,19 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
     return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
 
 
-def create_ors_rule(cmd, source_container, destination_container,
-                    rule_id=None, tag=None, prefix_match=None):
-    """
-    Initialize rule for ORS policy
-    """
-    ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
-        cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
-    new_ors_rule = ObjectReplicationPolicyRule(
-        rule_id=rule_id,
-        source_container=source_container,
-        destination_container=destination_container,
-        filter=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)
-    )
-    return new_ors_rule
-
-
 def remove_ors_rule(client, resource_group_name, account_name, policy_id, rule_id):
 
-    policy_properties = client.get(resource_group_name, account_name, policy_id, rule_id)
+    policy_properties = client.get(resource_group_name=resource_group_name,
+                                   account_name=account_name,
+                                   object_replication_policy_id=policy_id)
+    n = len(policy_properties.rules)
+    for i in range(n):
+        if policy_properties.rules[i].rule_id == rule_id:
+            policy_properties.rules.pop(i)
+            break
+    if i == n:
+        raise CLIError("--rule-id is invalid.")
 
-    for rule in policy_properties.rules:
-        if rule.rule_id == rule_id:
-            policy_properties.rules.remove(rule)
     return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
 
 

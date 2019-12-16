@@ -29,8 +29,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_ors_policy')
         g.command('list', 'list')
         g.custom_command('create', 'create_ors_policy', validator=validate_ors_policy, supports_local_cache=True)
-        g.generic_update_command('update', getter_name='get',
-                                 custom_func_name='update_ors_policy')
+        g.custom_command('update', 'update_ors_policy')
         g.command('delete', 'delete')
 
     with self.command_group('storage account ors-policy rule', ors_policy_sdk, is_preview=True,
