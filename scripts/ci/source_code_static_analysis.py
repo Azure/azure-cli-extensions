@@ -117,8 +117,8 @@ def main():
     sdk_modules.append("vendored_sdks")
     module_paths = _get_azext_module_paths(root_dir)
 
-    # scripts_dir = os.path.join(root_dir, "scripts")
-    # ci_files = _get_ci_py_file_paths(os.path.join(scripts_dir, "ci"))
+    scripts_dir = os.path.join(root_dir, "scripts")
+    ci_files = _get_ci_py_file_paths(os.path.join(scripts_dir, "ci"))
 
     rc_file = os.path.join(root_dir, "pylintrc")
     config_file = os.path.join(root_dir, ".flake8")
@@ -131,9 +131,9 @@ def main():
     _run_flake8(module_paths, config_file)
     print("Flake8 OK.\n")
 
-    # print("Running pylint on CI scripts...")
-    # _run_pylint(ci_files, rcfile=rcfile, cpu_count=cpu_count)
-    # print("Pylint OK.\n")
+    print("Running pylint on CI scripts...")
+    _run_pylint(ci_files, rcfile=rc_file, cpu_count=cpu_count)
+    print("Pylint OK.\n")
     #
     # print("Running flake8 on CI scripts...")
     # _run_flake8(ci_files, config_file=config_file)
