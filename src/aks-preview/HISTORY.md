@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.25
++++++
+* Update to use 2019-11-01 api-version
+
 0.4.24
 +++++
 * added custom header support
