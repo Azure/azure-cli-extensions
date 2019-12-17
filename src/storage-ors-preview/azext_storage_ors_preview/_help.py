@@ -7,32 +7,62 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['storage-ors-preview'] = """
+helps['storage account ors-policy'] = """
     type: group
-    short-summary: Commands to manage Storage-ors-previews.
+    short-summary: Manage Object Replication Service Policy for storage account.
 """
 
-helps['storage-ors-preview create'] = """
+helps['storage account ors-policy create'] = """
     type: command
-    short-summary: Create a Storage-ors-preview.
+    short-summary: Create Object Replication Service Policy for storage account.
 """
 
-helps['storage-ors-preview list'] = """
+helps['storage account ors-policy update'] = """
     type: command
-    short-summary: List Storage-ors-previews.
+    short-summary: Update Object Replication Service Policy properties for storage account.
 """
 
-# helps['storage-ors-preview delete'] = """
-#     type: command
-#     short-summary: Delete a Storage-ors-preview.
-# """
+helps['storage account ors-policy show'] = """
+    type: command
+    short-summary: Show the properties of specified Object Replication Service Policy for storage account.
+"""
 
-# helps['storage-ors-preview show'] = """
-#     type: command
-#     short-summary: Show details of a Storage-ors-preview.
-# """
+helps['storage account ors-policy list'] = """
+    type: command
+    short-summary: List Object Replication Service Policies associated with the specified storage account.
+"""
 
-# helps['storage-ors-preview update'] = """
-#     type: command
-#     short-summary: Update a Storage-ors-preview.
-# """
+helps['storage account ors-policy remove'] = """
+    type: command
+    short-summary: Remove Object Replication Service Policy associated with the specified storage account.
+"""
+
+helps['storage account ors-policy rule'] = """
+    type: group
+    short-summary: Manage Object Replication Service Policy Rules.
+"""
+
+helps['storage account ors-policy rule add'] = """
+    type: command
+    short-summary: Add rule to the specified Object Replication Service Policy.
+"""
+
+helps['storage account ors-policy rule update'] = """
+    type: command
+    short-summary: Update rule properties to Object Replication Service Policy.
+"""
+
+helps['storage account ors-policy rule show'] = """
+    type: command
+    short-summary: Show the properties of specified rule in Object Replication Service Policy.
+"""
+
+helps['storage account ors-policy rule list'] = """
+    type: command
+    short-summary: List all the rules in the specified Object Replication Service Policy.
+"""
+
+helps['storage account ors-policy rule remove'] = """
+    type: command
+    short-summary: Remove the specified rule from the specified Object Replication Service Policy.
+"""
