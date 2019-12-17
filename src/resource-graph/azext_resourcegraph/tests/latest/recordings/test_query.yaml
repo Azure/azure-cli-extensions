@@ -1,34 +1,71 @@
 interactions:
 - request:
-    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
-      "query": "project id, tags, properties | limit 2", "options": {"$top": 2, "$skip": 0}}'
+    body: '{"subscriptions": ["a18897a6-7e44-457d-9260-f2854c0aca42", "e01de573-132a-42ac-9ee2-f9dea9dd2717",
+      "d21a0e9f-5e29-4b39-8ba5-0e189bc5fe2d", "c59ea945-6d69-43cb-8cf5-7674fc245c37",
+      "d03b04c7-d1d4-467b-aaaa-87b6fcb38b38", "26b9b438-7fe8-482f-b732-ea99c70f2abb",
+      "8bc2f89b-c4f6-4559-ad6a-4f2cfa6ccc49", "eb87f285-893a-4f0f-8c55-7b4f67b1d097",
+      "52a442a2-31e9-42f9-8e3e-4b27dbf82673", "bead59b7-f469-4601-803a-790729c5213d",
+      "33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b", "979523fb-a19c-4bb0-a8ee-cef29597b0a4",
+      "bd62906c-0a81-43c3-a2f8-126e4cf66ada", "ac073789-bf4e-4438-a70d-fe98276e2771",
+      "00c06639-6ee4-454e-8058-8d8b1703bd87", "ae4fd9c1-f57f-4077-8cb5-e9c0a1bb8796",
+      "6b085460-5f21-477e-ba44-1035046e9101", "0b1f6471-1bf0-4dda-aec3-cb9272f09590"],
+      "query": "project id, tags, properties | limit 2", "options": {"$top": 100,
+      "$skip": 0, "resultFormat": "objectArray"}}'
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [graph query]
-      Connection: [keep-alive]
-      Content-Length: ['986']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
-          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
-          AZURECLI/2.0.46]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '859'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -q
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resourcegraph/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.77
+      accept-language:
+      - en-US
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2019-04-01
   response:
-    body: {string: '{"totalRecords":2,"count":2,"data":{"columns":[{"name":"id","type":"string"},{"name":"tags","type":"object"},{"name":"properties","type":"object"}],"rows":[["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mms-wcus/providers/Microsoft.Automation/automationAccounts/Automate-1394611-WCUS",{},{"creationTime":"2017-06-01T05:35:53.1000000Z","lastModifiedTime":"2018-08-07T18:40:20.7730000Z","lastModifiedBy":"aaaaa@aaaaaaaaa.com","state":"Ok","RegistrationUrl":"https://aaaa-aaaaaservice-prod-1.azure-automation.net/accounts/b8103983-a1e8-a1e8-a1e8-b8103983b3e9","sku":{"name":"Free","capacity":null,"family":null}}],["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.Network/publicIPAddresses/myPublicIP",{},{"provisioningState":"Succeeded","resourceGuid":"e143e88a-b2df-b2df-b2df-e143e88aef12","publicIPAllocationMethod":"Dynamic","idleTimeoutInMinutes":4,"publicIPAddressVersion":"IPv4","dnsSettings":{"domainNameLabel":"testuser000","fqdn":"testuser000.eastus.cloudapp.azure.com"},"ipConfiguration":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testRG/providers/Microsoft.Network/networkInterfaces/myVMNic/ipConfigurations/ipconfig1"},"ipTags":[],"ipAddress":"99.999.99.99"}]]},"facets":[],"resultTruncated":"false"}'}
+    body:
+      string: '{"totalRecords":2,"count":2,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yugangwbyok10/providers/Microsoft.KeyVault/vaults/yugangwbyok10-kv","tags":{},"properties":{"provisioningState":"Succeeded","sku":{"name":"standard","family":"A"},"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","enabledForDeployment":false,"accessPolicies":[{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","permissions":{"secrets":["get","list","set","delete","backup","restore","recover"],"certificates":["get","list","delete","create","import","update","managecontacts","getissuers","listissuers","setissuers","deleteissuers","manageissuers","recover"],"keys":["get","create","delete","list","update","import","backup","restore","recover"],"storage":["get","list","delete","set","update","regeneratekey","setsas","listsas","getsas","deletesas"]},"objectId":"89ed5be8-ff97-41b5-ab11-055e1e3cc34b"},{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","permissions":{"keys":["get","recover","unwrapKey","wrapKey"]},"objectId":"088d0f75-90eb-4619-83c2-c0f6c3b1f6d7"}],"vaultUri":"https://yugangwbyok10-kv.vault.azure.net/","enableSoftDelete":true,"enablePurgeProtection":true}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/yugangwbyok10/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yugangwbyok10-mi","tags":{},"properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"088d0f75-90eb-4619-83c2-c0f6c3b1f6d7","clientId":"36ddc83f-df48-415e-b17a-553a4392f9c0"}}],"facets":[],"resultTruncated":"false"}'
     headers:
-      cache-control: [no-cache]
-      content-length: ['1309']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 11 Sep 2018 18:28:35 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-tenant-writes: ['1198']
-    status: {code: 200, message: OK}
+      cache-control:
+      - no-cache
+      content-length:
+      - '1573'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 12 Dec 2019 03:02:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '12'
+      x-ms-user-quota-remaining:
+      - '12'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 200
+      message: OK
 version: 1

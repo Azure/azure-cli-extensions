@@ -52,7 +52,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
             full_query = _get_extension() + "| " + graph_query
 
         except Exception as e:
-            __logger.warning("Failed to include displayNames to result. Error: " + str(e))
+            __logger.warning("Failed to include displayNames to result. Error: %s", e)
 
     try:
         result_truncated = False

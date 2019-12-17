@@ -175,7 +175,7 @@ class TunnelServer(object):
                     ws_socket.send_binary(responseData)
                     logger.info('Done sending to websocket, index: %s', index)
                 else:
-                    logger.warn('Client disconnected %s', index)
+                    logger.warning('Client disconnected %s', index)
                     client.close()
                     ws_socket.close()
                     break

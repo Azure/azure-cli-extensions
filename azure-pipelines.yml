@@ -35,20 +35,19 @@ jobs:
       TSLint: false
       ToolLogsNotFoundAction: 'Standard'
 
-# - job: SourceStatic
-#   displayName: "Source Code Static Check"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "Source Code Static Check"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/test_static.sh
+- job: StaticAnalysis
+  displayName: "Static Analysis"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8 requests
+      displayName: 'Install wheel, pylint, flake8, requests'
+    - bash: python scripts/ci/source_code_static_analysis.py
+      displayName: "Static Analysis"
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"
