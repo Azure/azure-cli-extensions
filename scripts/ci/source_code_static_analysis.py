@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import os
 import sys
+import argparse
 import multiprocessing
 
 from pylint import lint
@@ -14,7 +15,6 @@ from flake8.main import application
 
 from util import get_repo_root
 
-import argparse
 from verify_codeowners import main as _verify_codeowners
 from verify_license import main as _verify_license
 
@@ -86,7 +86,7 @@ def _run_pylint(module_paths, ignored_modules=None, rcfile=None, cpu_count=1):
         # 8:  Refactor message issued
         # 16: Convention message issued
         # 32: Usage error
-        if se.code not in [0, 8, 16, 24]:
+        if se.code != 0:
             sys.exit(se.code)
 
 
