@@ -21,3 +21,17 @@ class NotificationHubsScenarioTest(ScenarioTest):
         self.kwargs.update({
             'name': 'test1'
         })
+
+        self.cmd('az notificationhubs namespace create '
+                 '--resource-group {rg} '
+                 '--namespace-name "nh-sdk-ns" '
+                 '--location "South Central US" '
+                 '--sku-name "Standard" '
+                 '--sku-tier "Standard"',
+                 checks=[])
+
+        self.cmd('az notificationhubs hub create '
+                 '--resource-group {rg} '
+                 '--namespace-name "nh-sdk-ns" '
+                 '--notification-hub-name "nh-sdk-hub"',
+                 checks=[])
