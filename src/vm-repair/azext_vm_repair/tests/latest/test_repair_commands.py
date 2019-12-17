@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
 
 
-class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
+class WindowsManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_WinManagedCreateRestore(self, resource_group):
@@ -39,7 +39,7 @@ class WindowsManagedDiskCreateRestoreTest(ScenarioTest):
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
 
-class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
+class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_WinUnmanagedCreateRestore(self, resource_group):
@@ -72,7 +72,7 @@ class WindowsUnmanagedDiskCreateRestoreTest(ScenarioTest):
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
 
-class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
+class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
@@ -105,7 +105,7 @@ class LinuxManagedDiskCreateRestoreTest(ScenarioTest):
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
 
-class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
+class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxUnmanagedCreateRestore(self, resource_group):
@@ -138,7 +138,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(ScenarioTest):
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
 
-class WindowsRunHelloWorldTest(ScenarioTest):
+class WindowsRunHelloWorldTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_WinRunHelloWorld(self, resource_group):
@@ -159,7 +159,7 @@ class WindowsRunHelloWorldTest(ScenarioTest):
         assert 'Hello World!' in result['output']
 
 
-class LinuxRunHelloWorldTest(ScenarioTest):
+class LinuxRunHelloWorldTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxRunHelloWorld(self, resource_group):
