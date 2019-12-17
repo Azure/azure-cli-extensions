@@ -121,16 +121,16 @@ def main():
     # ci_files = _get_ci_py_file_paths(os.path.join(scripts_dir, "ci"))
 
     rc_file = os.path.join(root_dir, "pylintrc")
-    # config_file = os.path.join(root_dir, "flake8")
+    config_file = os.path.join(root_dir, ".flake8")
 
     print("\nRunning pylint on extensions...")
     _run_pylint(module_paths, ",".join(sdk_modules), rc_file, cpu_count)
     print("Pylint OK.\n")
 
-    # print("Running flake8 on extensions...")
-    # _run_flake8(module_paths, config_file)
-    # print("Flake8 OK.\n")
-    #
+    print("Running flake8 on extensions...")
+    _run_flake8(module_paths, config_file)
+    print("Flake8 OK.\n")
+
     # print("Running pylint on CI scripts...")
     # _run_pylint(ci_files, rcfile=rcfile, cpu_count=cpu_count)
     # print("Pylint OK.\n")
