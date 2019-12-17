@@ -4,10 +4,30 @@ reports=no
 
 [MESSAGES CONTROL]
 # For all codes, run 'pylint --list-msgs' or go to 'https://pylint.readthedocs.io/en/latest/reference_guide/features.html'
-# locally-disabled: Warning locally suppressed using disable-msg
-# cyclic-import: because of https://github.com/PyCQA/pylint/issues/850
-# too-many-arguments: Due to the nature of the CLI many commands have large arguments set which reflect in large arguments set in corresponding methods.
-disable=missing-docstring,locally-disabled,fixme,cyclic-import,too-many-arguments,invalid-name,duplicate-code
+#
+# locally-disabled:
+#       Warning locally suppressed using disable-msg
+#
+# cyclic-import:
+#       because of https://github.com/PyCQA/pylint/issues/850
+#
+# too-many-arguments:
+#       Due to the nature of the CLI many commands have large arguments set which reflect in large arguments set in corresponding methods.
+#
+# too-many-lines:
+#       Due to unreasonable structure and history debut, files get expanding very large
+#
+# useless-object-inheritance:
+#       Due to some classes inherits from __builtin__.object(), can be safely removed from bases in python3
+#
+disable=missing-docstring,
+        locally-disabled,
+        fixme,
+        cyclic-import,
+        too-many-arguments,
+        invalid-name,
+        duplicate-code,
+        useless-object-inheritance
 
 [TYPECHECK]
 # For Azure CLI extensions, we ignore some import errors as they'll be available in the environment of the CLI
