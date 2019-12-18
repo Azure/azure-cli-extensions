@@ -5,9 +5,10 @@
 from random import randint
 from time import sleep
 
+from azure.cli.core.commands.progress import ProgressViewBase
+
 from prompt_toolkit.document import Document  # pylint: disable=import-error
 
-from azure.cli.core.commands.progress import ProgressViewBase
 from .util import get_window_dim
 
 

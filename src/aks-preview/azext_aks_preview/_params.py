@@ -83,6 +83,7 @@ def load_arguments(self, _):
         c.argument('node_resource_group')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
+        c.argument('aks_custom_headers')
         c.argument('enable_private_cluster', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
 

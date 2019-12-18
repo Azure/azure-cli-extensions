@@ -5,6 +5,8 @@
 
 # pylint: disable=line-too-long
 
+from azure.cli.core.commands import CliCommandType
+
 from azext_applicationinsights._client_factory import (
     cf_events,
     cf_metrics,
@@ -12,8 +14,6 @@ from azext_applicationinsights._client_factory import (
     cf_components,
     cf_api_key
 )
-
-from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):

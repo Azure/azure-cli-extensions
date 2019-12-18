@@ -1,33 +1,71 @@
 interactions:
 - request:
-    body: '{"subscriptions": ["00000000-0000-0000-0000-000000000000"],
-      "query": "where where", "options": {"$top": 2, "$skip": 0}}'
+    body: '{"subscriptions": ["a18897a6-7e44-457d-9260-f2854c0aca42", "e01de573-132a-42ac-9ee2-f9dea9dd2717",
+      "d21a0e9f-5e29-4b39-8ba5-0e189bc5fe2d", "c59ea945-6d69-43cb-8cf5-7674fc245c37",
+      "d03b04c7-d1d4-467b-aaaa-87b6fcb38b38", "26b9b438-7fe8-482f-b732-ea99c70f2abb",
+      "8bc2f89b-c4f6-4559-ad6a-4f2cfa6ccc49", "eb87f285-893a-4f0f-8c55-7b4f67b1d097",
+      "52a442a2-31e9-42f9-8e3e-4b27dbf82673", "bead59b7-f469-4601-803a-790729c5213d",
+      "33b1bf3d-53dc-432d-ac1c-ae964ceb1c9b", "979523fb-a19c-4bb0-a8ee-cef29597b0a4",
+      "bd62906c-0a81-43c3-a2f8-126e4cf66ada", "ac073789-bf4e-4438-a70d-fe98276e2771",
+      "00c06639-6ee4-454e-8058-8d8b1703bd87", "ae4fd9c1-f57f-4077-8cb5-e9c0a1bb8796",
+      "6b085460-5f21-477e-ba44-1035046e9101", "0b1f6471-1bf0-4dda-aec3-cb9272f09590"],
+      "query": "where where", "options": {"$top": 100, "$skip": 0, "resultFormat":
+      "objectArray"}}'
     headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [graph query]
-      Connection: [keep-alive]
-      Content-Length: ['959']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.6.3 (Windows-10-10.0.17134-SP0) requests/2.19.1 msrest/0.5.5
-          msrest_azure/0.4.34 azure-mgmt-resourcegraph/0.6.0 Azure-SDK-For-Python
-          AZURECLI/2.0.46]
-      accept-language: [en-US]
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph query
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '832'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -q
+      User-Agent:
+      - python/3.6.8 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-resourcegraph/2.0.0 Azure-SDK-For-Python AZURECLI/2.0.77
+      accept-language:
+      - en-US
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2018-09-01-preview
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2019-04-01
   response:
-    body: {string: "{\"error\":{\"code\":\"InvalidQuery\",\"message\":\"Query validation
-        error\",\"details\":[{\"code\":\"ParserFailure\",\"message\":\"Parser failure\",\"line\":1,\"characterPositionInLine\":11,\"token\":\"<EOF>\",\"expectedToken\":\"\u0178\"}]}}"}
+    body:
+      string: "{\"error\":{\"code\":\"BadRequest\",\"message\":\"Please provide below
+        info when asking for support: timestamp = 2019-12-12T03:02:52.2568093Z, correlationId
+        = dcfb51de-e1d1-44cc-ade0-c7b186674eac.\",\"details\":[{\"code\":\"InvalidQuery\",\"message\":\"Query
+        is invalid. Please refer to the documentation for the Azure Resource Graph
+        service and fix the error before retrying.\"},{\"code\":\"ParserFailure\",\"message\":\"ParserFailure\",\"line\":1,\"characterPositionInLine\":11,\"token\":\"<EOF>\",\"expectedToken\":\"\u0179\"}]}}"
     headers:
-      cache-control: [no-cache]
-      content-length: ['207']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 11 Sep 2018 18:28:36 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-tenant-writes: ['1199']
-    status: {code: 400, message: Bad Request}
+      cache-control:
+      - no-cache
+      content-length:
+      - '488'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 12 Dec 2019 03:02:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '13'
+      x-ms-user-quota-remaining:
+      - '13'
+      x-ms-user-quota-resets-after:
+      - 00:00:05
+    status:
+      code: 400
+      message: Bad Request
 version: 1

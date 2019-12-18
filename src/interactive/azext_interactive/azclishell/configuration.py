@@ -7,8 +7,10 @@ from __future__ import print_function
 import os
 
 from six.moves import configparser
-from prompt_toolkit import prompt  # pylint: disable=import-error
+
 from azure.cli.core._help import PRIVACY_STATEMENT
+
+from prompt_toolkit import prompt  # pylint: disable=import-error
 
 
 SELECT_SYMBOL = {

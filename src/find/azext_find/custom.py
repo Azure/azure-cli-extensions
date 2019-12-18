@@ -29,7 +29,8 @@ def process_query(cli_term):
     response = call_aladdin_service(cli_term)
 
     if response.status_code != 200:
-        logger.error('[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content))
+        err_msg = '[?] Unexpected Error: [HTTP {0}]: Content: {1}'.format(response.status_code, response.content)
+        logger.error(err_msg)
     else:
         if (platform.system() == 'Windows' and should_enable_styling()):
             colorama.init(convert=True)

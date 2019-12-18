@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.24
++++++
+* added custom header support
+
 0.4.23
 +++++
 * Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
