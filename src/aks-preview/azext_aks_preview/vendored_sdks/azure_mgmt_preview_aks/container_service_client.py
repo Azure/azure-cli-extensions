@@ -78,7 +78,6 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
         _PROFILE_TAG: {
             'open_shift_managed_clusters': '2018-09-30-preview',
             'container_services': '2017-07-01',
-            'managed_clusters': '2019-10-01',
             'managed_clusters': '2019-11-01',
             'operations': '2018-03-31',
             None: DEFAULT_API_VERSION
