@@ -13,7 +13,7 @@ from knack.util import CLIError
 logger = get_logger(__name__)
 
 
-def create_ors_policy(cmd, client, resource_group_name, properties=None, source_account=None, destination_account=None,
+def create_ors_policy(cmd, client, resource_group_name, account_name, properties=None, source_account=None, destination_account=None,
                       policy_id='default', rule_id=None, source_container=None, destination_container=None, tag=None,
                       prefix_match=None):
 
@@ -42,8 +42,8 @@ def create_ors_policy(cmd, client, resource_group_name, properties=None, source_
                                      object_replication_policy_id=policy_id, properties=ors_policy)
 
     # Create ORS Policy on destination account
-    return client.create_or_update(resource_group_name, account_name=source_account,
-                                   object_replication_policy_id=result.policy_id, properties=result)
+    return client.create_or_update(resource_group_name, account_name=account_name,
+                                   object_replication_policy_id=policy_id, properties=result)
 
 
 def update_ors_policy(client, resource_group_name, account_name, policy_id, properties=None):
