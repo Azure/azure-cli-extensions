@@ -14,22 +14,18 @@ logger = get_logger(__name__)
 
 
 def create_ors_policy(cmd, client, resource_group_name, properties=None, source_account=None, destination_account=None,
-                      policy_id='default', source_container=None, destination_container=None, tag=None,
+                      policy_id='default', rule_id=None, source_container=None, destination_container=None, tag=None,
                       prefix_match=None):
 
     ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
 
-    if properties:
-        if os.path.exists(properties):
-            ors_policy = get_file_json(properties)
-        else:
-            ors_policy = shell_safe_json_parse(properties)
-    else:
+    if properties is None:
         rules = []
         ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
             cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
         if source_container and destination_container:
             rule = ObjectReplicationPolicyRule(
+                rule_id=rule_id,
                 source_container=source_container,
                 destination_container=destination_container,
                 filter=ObjectReplicationPolicyFilter(prefix_match=prefix_match, tag=tag)
@@ -38,13 +34,16 @@ def create_ors_policy(cmd, client, resource_group_name, properties=None, source_
         ors_policy = ObjectReplicationPolicy(source_account=source_account,
                                              destination_account=destination_account,
                                              rules=rules)
+    else:
+        ors_policy = properties
+
     # Create ORS Policy on destination account
-    result = client.create_or_update(resource_group_name, account_name=destination_account,
+    result = client.create_or_update(resource_group_name, account_name=source_account,
                                      object_replication_policy_id=policy_id, properties=ors_policy)
 
     # Create ORS Policy on destination account
     return client.create_or_update(resource_group_name, account_name=source_account,
-                                   object_replication_policy_id=policy_id, properties=ors_policy)
+                                   object_replication_policy_id=result.policy_id, properties=result)
 
 
 def update_ors_policy(client, resource_group_name, account_name, policy_id, properties=None):

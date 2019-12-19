@@ -8,33 +8,50 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 
 helps['storage account ors-policy'] = """
-    type: group
-    short-summary: Manage Object Replication Service Policy for storage account.
+type: group
+short-summary: Manage Object Replication Service Policy for storage account.
 """
 
 helps['storage account ors-policy create'] = """
-    type: command
-    short-summary: Create Object Replication Service Policy for storage account.
-"""
-
-helps['storage account ors-policy update'] = """
-    type: command
-    short-summary: Update Object Replication Service Policy properties for storage account.
-"""
-
-helps['storage account ors-policy show'] = """
-    type: command
-    short-summary: Show the properties of specified Object Replication Service Policy for storage account.
+type: command
+short-summary: Create Object Replication Service Policy for storage account.
+examples:
+  - name: Create Object Replication Service Policy for storage account.
+    text: az storage account ors-policy create -g ResourceGroupName -d destAccountName -s srcAccountName --destination-container dcont --source-container scont
+  - name: Create Object Replication Service Policy trough json file for storage account.
+    text: az storage account ors-policy create -g ResourceGroupName --policy @policy.json
 """
 
 helps['storage account ors-policy list'] = """
-    type: command
-    short-summary: List Object Replication Service Policies associated with the specified storage account.
+type: command
+short-summary: List Object Replication Service Policies associated with the specified storage account.
+examples:
+  - name: List Object Replication Service Policies associated with the specified storage account.
+    text: az storage account ors-policy list -g ResourceGroupName -n StorageAccountName
 """
 
 helps['storage account ors-policy remove'] = """
-    type: command
-    short-summary: Remove Object Replication Service Policy associated with the specified storage account.
+type: command
+short-summary: Remove Object Replication Service Policy associated with the specified storage account.
+examples:
+  - name: Remove Object Replication Service Policy associated with the specified storage account.
+    text: az storage account ors-policy remove -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
+"""
+
+helps['storage account ors-policy show'] = """
+type: command
+short-summary: Show the properties of specified Object Replication Service Policy for storage account.
+examples:
+  - name: Show the properties of specified Object Replication Service Policy for storage account.
+    text: az storage account ors-policy show -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
+"""
+
+helps['storage account ors-policy update'] = """
+type: command
+short-summary: Update Object Replication Service Policy properties for storage account.
+examples:
+  - name: Update Object Replication Service Policy for storage account.
+    text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName
 """
 
 helps['storage account ors-policy rule'] = """
