@@ -10,7 +10,7 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(
-        resource="https://api.applicationinsights.io",
+        resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
         subscription_id=subscription
     )
     return ApplicationInsightsDataClient(cred)
