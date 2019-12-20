@@ -22,10 +22,7 @@ def create_notificationhubs_namespace(cmd, client,
                                       sku_tier=None,
                                       sku_size=None,
                                       sku_family=None,
-                                      sku_capacity=None,
-                                      is_availiable=None,
-                                      rights=None,
-                                      policy_key=None):
+                                      sku_capacity=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -34,9 +31,6 @@ def create_notificationhubs_namespace(cmd, client,
     body.setdefault('sku', {})['size'] = sku_size  # str
     body.setdefault('sku', {})['family'] = sku_family  # str
     body.setdefault('sku', {})['capacity'] = sku_capacity  # number
-    body['is_availiable'] = is_availiable  # boolean
-    body['rights'] = None if rights is None else rights.split(',')
-    body['policy_key'] = policy_key  # str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, parameters=body)
 
 
@@ -49,10 +43,7 @@ def update_notificationhubs_namespace(cmd, client,
                                       sku_tier=None,
                                       sku_size=None,
                                       sku_family=None,
-                                      sku_capacity=None,
-                                      is_availiable=None,
-                                      rights=None,
-                                      policy_key=None):
+                                      sku_capacity=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -68,12 +59,6 @@ def update_notificationhubs_namespace(cmd, client,
         body.setdefault('sku', {})['family'] = sku_family  # str
     if sku_capacity is not None:
         body.setdefault('sku', {})['capacity'] = sku_capacity  # number
-    if is_availiable is not None:
-        body['is_availiable'] = is_availiable  # boolean
-    if rights is not None:
-        body['rights'] = None if rights is None else rights.split(',')
-    if policy_key is not None:
-        body['policy_key'] = policy_key  # str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, parameters=body)
 
 
@@ -96,8 +81,8 @@ def list_notificationhubs_namespace(cmd, client,
     return client.list_all()
 
 
-def check_availability_notificationhubs_namespace(cmd, client):
-    body = {}
+def check_availability_notificationhubs_namespace(cmd, client, name):
+    body = {"name":name}
     return client.check_availability(parameters=body)
 
 
@@ -132,9 +117,12 @@ def list_authorization_rules_notificationhubs_namespace(cmd, client,
 def create_or_update_authorization_rule_notificationhubs_namespace(cmd, client,
                                                                    resource_group,
                                                                    namespace_name,
-                                                                   name):
+                                                                   name,
+                                                                   rights):
     body = {}
-    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name, parameters=body)
+    body['rights'] = None if rights is None else rights.split(',')
+    
+    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name, properties=body)
 
 
 def delete_authorization_rule_notificationhubs_namespace(cmd, client,
@@ -149,15 +137,14 @@ def create_notificationhubs_hub(cmd, client,
                                 namespace_name,
                                 notification_hub_name,
                                 sku_name,
-                                location=None,
+                                location,
                                 tags=None,
                                 sku_tier=None,
                                 sku_size=None,
                                 sku_family=None,
                                 sku_capacity=None,
                                 is_availiable=None,
-                                rights=None,
-                                policy_key=None):
+                                registration_ttl=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -167,10 +154,8 @@ def create_notificationhubs_hub(cmd, client,
     body.setdefault('sku', {})['family'] = sku_family  # str
     body.setdefault('sku', {})['capacity'] = sku_capacity  # number
     body['is_availiable'] = is_availiable  # boolean
-    body['rights'] = None if rights is None else rights.split(',')
-    body['policy_key'] = policy_key  # str
+    body['registration_ttl'] = registration_ttl #str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
 
 def update_notificationhubs_hub(cmd, client,
                                 resource_group,
@@ -241,9 +226,9 @@ def regenerate_keys_notificationhubs_hub(cmd, client,
                                          resource_group,
                                          namespace_name,
                                          notification_hub_name,
-                                         name):
-    body = {}
-    return client.regenerate_keys(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name, parameters=body)
+                                         name,
+                                         policy_key):
+    return client.regenerate_keys(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name, policy_key=policy_key)
 
 
 def get_pns_credentials_notificationhubs_hub(cmd, client,
@@ -264,9 +249,13 @@ def list_keys_notificationhubs_hub(cmd, client,
 def debug_send_notificationhubs_hub(cmd, client,
                                     resource_group,
                                     namespace_name,
-                                    notification_hub_name):
-    body = {}
-    return client.debug_send(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+                                    notification_hub_name,
+                                    payload,
+                                    notification_format):
+    import json
+    parameters = json.loads(payload)
+    custom_headers = {"servicebusnotification-format": notification_format}
+    return client.debug_send(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers = custom_headers)
 
 
 def list_authorization_rules_notificationhubs_hub(cmd, client,
@@ -288,9 +277,11 @@ def create_or_update_authorization_rule_notificationhubs_hub(cmd, client,
                                                              resource_group,
                                                              namespace_name,
                                                              notification_hub_name,
-                                                             name):
+                                                             name,
+                                                             rights):
     body = {}
-    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name, parameters=body)
+    body['rights'] = None if rights is None else rights.split(',')
+    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name, properties=body)
 
 
 def delete_authorization_rule_notificationhubs_hub(cmd, client,
@@ -299,3 +290,23 @@ def delete_authorization_rule_notificationhubs_hub(cmd, client,
                                                    notification_hub_name,
                                                    name):
     return client.delete_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name)
+
+def update_gcm_credential(cmd, client,
+                          resource_group,
+                          namespace_name,
+                          notification_hub_name,
+                          google_api_key):
+    body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body.setdefault('gcm_credential', {})['google_api_key'] = google_api_key
+    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+
+def update_adm_credential(cmd, client,
+                          resource_group,
+                          namespace_name,
+                          notification_hub_name,
+                          client_id,
+                          client_secret):
+    body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body.setdefault('adm_credential', {})['client_id'] = client_id
+    body.setdefault('adm_credential', {})['client_secret'] = client_secret
+    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)    

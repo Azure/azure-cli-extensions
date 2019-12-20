@@ -89,63 +89,68 @@ helps['notificationhubs namespace check_availability'] = """
                az notificationhubs namespace check_availability
 """
 
-helps['notificationhubs namespace list_keys'] = """
+helps['notificationhubs namespace authorization_rule'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs namespace authorization rule.
+"""
+
+helps['notificationhubs namespace authorization_rule list_keys'] = """
     type: command
     short-summary: Gets the Primary and Secondary ConnectionStrings to the namespace 
     examples:
       - name: NameSpaceAuthorizationRuleListKey
         text: |-
-               az notificationhubs namespace list_keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace authorization_rule list_keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
-helps['notificationhubs namespace regenerate_keys'] = """
+helps['notificationhubs namespace authorization_rule regenerate_keys'] = """
     type: command
     short-summary: Regenerates the Primary/Secondary Keys to the Namespace Authorization Rule
     examples:
       - name: NameSpaceAuthorizationRuleRegenerateKey
         text: |-
-               az notificationhubs namespace regenerate_keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace authorization_rule regenerate_keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
-helps['notificationhubs namespace get_authorization_rule'] = """
+helps['notificationhubs namespace authorization_rule show'] = """
     type: command
     short-summary: Gets an authorization rule for a namespace by name.
     examples:
       - name: NameSpaceAuthorizationRuleGet
         text: |-
-               az notificationhubs namespace get_authorization_rule --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization_rule show --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
-helps['notificationhubs namespace list_authorization_rules'] = """
+helps['notificationhubs namespace authorization_rule list'] = """
     type: command
-    short-summary: Gets the authorization rules for a namespace.
+    short-summary: List the authorization rules for a namespace.
     examples:
       - name: NameSpaceAuthorizationRuleListAll
         text: |-
-               az notificationhubs namespace list_authorization_rules --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization_rule list --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns"
 """
 
-helps['notificationhubs namespace create_or_update_authorization_rule'] = """
+helps['notificationhubs namespace authorization_rule create'] = """
     type: command
     short-summary: Creates an authorization rule for a namespace
     examples:
       - name: NameSpaceAuthorizationRuleCreate
         text: |-
-               az notificationhubs namespace create_or_update_authorization_rule --resource-group \\
+               az notificationhubs namespace authorization_rule create --resource-group \\
                "5ktrial" --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788"
 """
 
-helps['notificationhubs namespace delete_authorization_rule'] = """
+helps['notificationhubs namespace authorization_rule delete'] = """
     type: command
     short-summary: Deletes a namespace authorization rule
     examples:
       - name: NameSpaceAuthorizationRuleDelete
         text: |-
-               az notificationhubs namespace delete_authorization_rule --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization_rule delete --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
@@ -203,23 +208,28 @@ helps['notificationhubs hub list'] = """
                az notificationhubs hub list --resource-group "5ktrial" --namespace-name "nh-sdk-ns"
 """
 
-helps['notificationhubs hub check_notification_hub_availability'] = """
+helps['notificationhubs hub check_availability'] = """
     type: command
     short-summary: Checks the availability of the given notificationHub in a namespace.
     examples:
       - name: notificationHubCheckNameAvailability
         text: |-
-               az notificationhubs hub check_notification_hub_availability --resource-group "5ktrial" \\
+               az notificationhubs hub check_availability --resource-group "5ktrial" \\
                --namespace-name "locp-newns"
 """
 
-helps['notificationhubs hub regenerate_keys'] = """
+helps['notificationhubs hub authorization_rule'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs authorization rule.
+"""
+
+helps['notificationhubs hub authorization_rule regenerate_keys'] = """
     type: command
     short-summary: Regenerates the Primary/Secondary Keys to the NotificationHub Authorization Rule
     examples:
       - name: NotificationHubAuthorizationRuleRegenrateKey
         text: |-
-               az notificationhubs hub regenerate_keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs hub authorization_rule regenerate_keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
@@ -234,13 +244,13 @@ helps['notificationhubs hub get_pns_credentials'] = """
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
-helps['notificationhubs hub list_keys'] = """
+helps['notificationhubs hub authorization_rule list_keys'] = """
     type: command
     short-summary: Gets the Primary and Secondary ConnectionStrings to the NotificationHub 
     examples:
       - name: NotificationHubAuthorizationRuleListKey
         text: |-
-               az notificationhubs hub list_keys --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
+               az notificationhubs hub authorization_rule list_keys --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --name "sdk-AuthRules-5800"
 """
 
@@ -254,45 +264,90 @@ helps['notificationhubs hub debug_send'] = """
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
-helps['notificationhubs hub list_authorization_rules'] = """
+helps['notificationhubs hub authorization_rule list'] = """
     type: command
     short-summary: Gets the authorization rules for a NotificationHub.
     examples:
       - name: NotificationHubAuthorizationRuleListAll
         text: |-
-               az notificationhubs hub list_authorization_rules --resource-group "5ktrial" \\
+               az notificationhubs hub authorization_rule list --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
-helps['notificationhubs hub get_authorization_rule'] = """
+helps['notificationhubs hub authorization_rule show'] = """
     type: command
     short-summary: Gets an authorization rule for a NotificationHub by name.
     examples:
       - name: NotificationHubAuthorizationRuleGet
         text: |-
-               az notificationhubs hub get_authorization_rule --resource-group "5ktrial" \\
+               az notificationhubs hub authorization_rule show --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
 
-helps['notificationhubs hub create_or_update_authorization_rule'] = """
+helps['notificationhubs hub authorization_rule create'] = """
     type: command
     short-summary: Creates/Updates an authorization rule for a NotificationHub
     examples:
       - name: NotificationHubAuthorizationRuleCreate
         text: |-
-               az notificationhubs hub create_or_update_authorization_rule --resource-group "5ktrial" \\
+               az notificationhubs hub authorization_rule create --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
 
-helps['notificationhubs hub delete_authorization_rule'] = """
+helps['notificationhubs hub authorization_rule delete'] = """
     type: command
     short-summary: Deletes a notificationHub authorization rule
     examples:
       - name: NotificationHubAuthorizationRuleDelete
         text: |-
-               az notificationhubs hub delete_authorization_rule --resource-group "5ktrial" \\
+               az notificationhubs hub authorization_rule delete --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
+"""
+
+helps['notificationhubs hub credential'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential.
+"""
+helps['notificationhubs hub credential gcm'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential for Google(GCM/FCM).
+"""
+
+helps['notificationhubs hub credential adm'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential for Amazon(ADM).
+"""
+
+helps['notificationhubs hub credential apns'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential for Apple(APNS).
+"""
+
+helps['notificationhubs hub credential baidu'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential for Baidu(Andrioid China).
+"""
+
+helps['notificationhubs hub credential mpns'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential for Windows Phone(MPNS).
+"""
+
+helps['notificationhubs hub credential wns'] = """
+    type: group
+    short-summary: Commands to manage notificationhubs credential for Windows(WNS).
+"""
+
+helps['notificationhubs hub credential gcm update'] = """
+    type: command
+    short-summary: Update the Google GCM/FCM API key.
+    examples:
+      - name: NotificationHubAuthorizationGcmUpdate
+        text: |-
+               az notificationhubs hub credential gcm update --resource-group "5ktrial" \\
+               --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --google-api-key \\
+               "xxxxxxxxx"
 """

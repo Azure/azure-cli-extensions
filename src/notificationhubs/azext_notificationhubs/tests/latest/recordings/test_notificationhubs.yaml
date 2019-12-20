@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"properties": {"rights": ["Send"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - notificationhubs hub create_or_update_authorization_rule
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '36'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --namespace-name --notification-hub-name --name --rights
+      User-Agent:
+      - python/3.7.3 (Darwin-19.0.0-x86_64-i386-64bit) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-notificationhubs/2.1.0 Azure-SDK-For-Python AZURECLI/2.0.77
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/feng-cli-rg/providers/Microsoft.NotificationHubs/namespaces/MyTestSpace/notificationHubs/MyTestHub/AuthorizationRules/MyHubSendKey?api-version=2017-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/feng-cli-rg/providers/Microsoft.NotificationHubs/namespaces/MyTestSpace/notificationHubs/MyTestHub/AuthorizationRules/MyHubSendKey","name":"MyHubSendKey","type":"Microsoft.NotificationHubs/namespaces/notificationHubs/authorizationRules","location":null,"tags":null,"properties":{"rights":["Send"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '372'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 19 Dec 2019 08:54:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Service-Bus-Resource-Provider/CH3
+      - Microsoft-HTTPAPI/2.0
+      server-sb:
+      - Service-Bus-Resource-Provider/CH3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+version: 1
