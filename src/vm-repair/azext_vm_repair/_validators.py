@@ -241,7 +241,7 @@ def _validate_resource_group_name(rg_name):
 
     # Check for existing dup name
     try:
-        list_rg_command = 'az group list --query "[].name"'
+        list_rg_command = 'az group list --query "[].name" -o json'
         logger.info('Checking for existing resource groups with identical name within subscription...')
         output = _call_az_command(list_rg_command)
     except AzCommandError as azCommandError:
@@ -257,7 +257,7 @@ def fetch_repair_vm(namespace):
     # Find repair VM
     tag = _get_repair_resource_tag(namespace.resource_group_name, namespace.vm_name)
     try:
-        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']"' \
+        find_repair_command = 'az resource list --tag {tag} --query "[?type==\'Microsoft.Compute/virtualMachines\']" -o json' \
                               .format(tag=tag)
         logger.info('Searching for repair-vm within subscription...')
         output = _call_az_command(find_repair_command)
