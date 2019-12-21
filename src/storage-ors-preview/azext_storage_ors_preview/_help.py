@@ -17,9 +17,11 @@ type: command
 short-summary: Create Object Replication Service Policy for storage account.
 examples:
   - name: Create Object Replication Service Policy for storage account.
-    text: az storage account ors-policy create -g ResourceGroupName -d destAccountName -s srcAccountName --destination-container dcont --source-container scont
+    text: az storage account ors-policy create -g ResourceGroupName -n storageAccountName -d destAccountName -s srcAccountName --destination-container dcont --source-container scont
   - name: Create Object Replication Service Policy trough json file for storage account.
-    text: az storage account ors-policy create -g ResourceGroupName --policy @policy.json
+    text: az storage account ors-policy create -g ResourceGroupName -n storageAccountName --policy @policy.json
+  - name: Create Object Replication Service Policy to source storage account through policy associated with destination storage account.
+    text: az storage account ors-policy show -g ResourceGroupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
 """
 
 helps['storage account ors-policy list'] = """
