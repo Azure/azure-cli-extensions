@@ -41,15 +41,26 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
                                    object_replication_policy_id=policy_id, properties=ors_policy)
 
 
-def update_ors_policy(client, resource_group_name, account_name, policy_id, properties=None):
-    if properties:
-        if os.path.exists(properties):
-            ors_policy = get_file_json(properties)
-        else:
-            ors_policy = shell_safe_json_parse(properties)
+def update_ors_policy(cmd, parameters, properties=None, source_account=None, destination_account=None,
+                      rule_id=None, source_container=None, destination_container=None, tag=None,
+                      prefix_match=None):
 
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   object_replication_policy_id=policy_id, properties=ors_policy)
+    ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
+
+    if source_account is not None:
+        parameters.source_account = source_account
+    if destination_account is not None:
+        parameters.destination_account = destination_account
+    if rule_id:
+        for i, rule in enumerate(parameters.rules):
+            if rule.rule_id == rule_id:
+                parameters.rules[i] = update_ors_rule(rule, source_container=source_container,
+                                                      destination_container=destination_container,
+                                                      tag=tag, prefix_match=prefix_match)
+    if properties is not None:
+        parameters = properties
+
+    return parameters
 
 
 def get_ors_policy(client, resource_group_name, account_name, policy_id='default'):
@@ -58,7 +69,7 @@ def get_ors_policy(client, resource_group_name, account_name, policy_id='default
 
 
 def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
-                 source_container, destination_container, rule_id=None,  tag=None, prefix_match=None):
+                 source_container, destination_container, tag=None, prefix_match=None):
     """
     Initialize rule for ORS policy
     """
@@ -67,7 +78,6 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
     ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
         cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
     new_ors_rule = ObjectReplicationPolicyRule(
-        rule_id=rule_id,
         source_container=source_container,
         destination_container=destination_container,
         filter=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)

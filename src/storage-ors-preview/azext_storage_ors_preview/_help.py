@@ -52,6 +52,10 @@ helps['storage account ors-policy update'] = """
 type: command
 short-summary: Update Object Replication Service Policy properties for storage account.
 examples:
+  - name: Update source storage account in Object Replication Service Policy.
+    text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName --source-account newSourceAccount --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
+  - name: Update source storage account in Object Replication Service Policy Rule.
+    text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332" --sourceContainer newSourceContainer
   - name: Update Object Replication Service Policy for storage account.
     text: az storage account ors-policy update -g ResourceGroupName -n StorageAccountName -p @policy.json
 """

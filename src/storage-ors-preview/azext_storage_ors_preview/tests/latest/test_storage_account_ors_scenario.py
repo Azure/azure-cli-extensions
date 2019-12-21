@@ -14,10 +14,10 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class StorageAccountORSScenarioTest(ScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2019-04-01')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2019-06-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_account_ors', location='eastus2euap')
-    @StorageAccountPreparer(parameter_name='source_account', name_Prefix='cli_test_storage_ors', kind='StorageV2')
-    @StorageAccountPreparer(parameter_name='destination_account', name_Prefix='cli_test_storage_ors', kind='StorageV2')
+    @StorageAccountPreparer(parameter_name='source_account', name_Prefix='cli_test_storage_ors', location='eastus2euap', kind='StorageV2')
+    @StorageAccountPreparer(parameter_name='destination_account', name_Prefix='cli_test_storage_ors', location='eastus2euap', kind='StorageV2')
     def test_storage_account_ors(self, resource_group, source_account, destination_account):
         src_account_info = self.get_account_info(resource_group, source_account)
         src_container = self.create_container(src_account_info)
@@ -56,6 +56,34 @@ class StorageAccountORSScenarioTest(ScenarioTest):
             .assert_with_checks(JMESPathCheck('rules[0].sourceContainer', src_container)) \
             .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container))
 
+        # Add rules
+        self.storage_cmd('storage account ors-policy rule list --policy-id {policy_id}', dest_account_info)\
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+        self.storage_cmd('storage account ors-policy show --rule-id {rule_id} --policy-id {policy_id}',
+                         dest_account_info)\
+            .assert_with_checks(JMESPathCheck('ruleId', result["rules"]["ruleId"])) \
+            .assert_with_checks(JMESPathCheck('sourceContainer', src_container)) \
+            .assert_with_checks(JMESPathCheck('destinationContainer', dest_container))
+        result = self.storage_cmd('storage account ors-policy rule add --policy-id {policy_id} -d {} -s {}',
+                                  destination_account).get_output_in_json()
+        self.storage_cmd('storage account ors-policy rule list --policy-id {policy_id}', dest_account_info)\
+            .assert_with_checks(JMESPathCheck('length(@)', 2))
+
+        # Update rules
+        new_destination_container = "new_dcont"
+        self.storage_cmd('storage account ors-policy rule update --policy-id {} --rule-id {} -d {}'.format(
+            result['policyId'], result['rules']['ruleId'], new_destination_container
+        ))
+        self.storage_cmd('storage account ors-policy rule show --policy-id {} --rule-id {}'.format(
+            result['policyId'], result['rules']['ruleId'])) \
+            .assert_with_checks(JMESPathCheck('destinationContainer', new_destination_container))
+
+        # Remove rules
+        self.storage_cmd('storage account ors-policy rule remove --policy-id {} --rule-id {}'.format(
+            result['policyId'], result['rules']['ruleId']))
+        self.storage_cmd('storage account ors-policy rule list --policy-id {policy_id}', dest_account_info) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+
         # Create ORS policy on source account
         self.storage_cmd('storage account ors-policy create -p result', src_account_info)
 
@@ -71,27 +99,13 @@ class StorageAccountORSScenarioTest(ScenarioTest):
             .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container))
 
         # Update ORS policy
-        self.storage_cmd('storage account ors-policy update ')
-
-        # Add rules
-        self.storage_cmd('storage account ors-policy rule list ')
-        self.storage_cmd('storage account ors-policy rule add ')
-        self.storage_cmd('storage account ors-policy rule list ')
-        self.storage_cmd('storage account ors-policy show')
-
-        # Update rules
-        self.storage_cmd('storage account ors-policy rule show')
-        self.storage_cmd('storage account ors-policy rule update')
-        self.storage_cmd('storage account ors-policy rule show')
-        self.storage_cmd('storage account ors-policy show')
-
-        # Remove rules
-        self.storage_cmd('storage account ors-policy rule list ')
-        self.storage_cmd('storage account ors-policy rule remove')
-        self.storage_cmd('storage account ors-policy rule list ')
-        self.storage_cmd('storage account ors-policy show')
+        new_source_account = 'new_source_account'
+        self.storage_cmd('storage account ors-policy update --policy-id {policy-id} --source-account {}'.format(
+            new_source_account), dest_account_info) \
+            .assert_with_checks(JMESPathCheck('sourceAccount', new_source_account))
 
         # Remove policy from destination and source account
-        self.storage_cmd('storage account ors-policy list ')
-        self.storage_cmd('storage account ors-policy delete ')
-        self.storage_cmd('storage account ors-policy list ')
+        self.storage_cmd('storage account ors-policy remove --policy-id {policy_id}', dest_account_info)
+
+        self.storage_cmd('storage account ors-policy list ') \
+            .assert_with_checks(JMESPathCheck('length(@)', 0))
