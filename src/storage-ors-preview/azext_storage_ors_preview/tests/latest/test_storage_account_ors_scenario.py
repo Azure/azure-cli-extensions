@@ -26,29 +26,49 @@ class StorageAccountORSScenarioTest(ScenarioTest):
         self.kwargs.update({
             'rg': resource_group,
             'src_sc': source_account,
-            'dest_sc': destination_account
+            'dest_sc': destination_account,
+            'scont': src_container,
+            'dcont': dest_container
         })
 
-        #TODO: Enable ChangeFeed for Storage Account
+        # Enable ChangeFeed for Storage Accounts
+        self.storage_cmd('storage account blob-service-properties update --enable-change-feed', src_account_info) \
+            .assert_with_checks(JMESPathCheck('changeFeed', True))
+        self.storage_cmd('storage account blob-service-properties update --enable-change-feed', dest_account_info) \
+            .assert_with_checks(JMESPathCheck('changeFeed', True))
 
         # Create ORS policy on destination account
-        res = self.storage_cmd('storage account ors-policy create --properties @ors_policy.json', dest_account_info) \
-            .get_output_in_json()
+        result = self.storage_cmd('storage account ors-policy create -s {src_sc} -d {dest_sc} --destination-container {dcont} --source-container {scont}',
+                                  dest_account_info).get_output_in_json()
+        self.assertIn('policyId', result)
+        self.assertIn('ruleId', result['rules'][0])
+
         self.kwargs.update({
-            'policy_id': res["policyId"],
-            'rule_id': res["rules"]["ruleId"]
+            'policy_id': result["policyId"],
+            'rule_id': result["rules"]["ruleId"]
         })
 
-        self.storage_cmd('storage account ors-policy create --policy-id default --source-account {stc_sc} --destination-account {dest_sc} --rules {}', dest_account_info)
-        # Get ORS policy from destination account
-        self.storage_cmd('storage account ors-policy show --policy-id {policy_id}', dest_account_info)
+        # Get policy properties from destination account
+        self.storage_cmd('storage account ors-policy show --policy-id {policy_id}', dest_account_info) \
+            .assert_with_checks(JMESPathCheck('type', "Microsoft.Storage/storageAccounts/objectReplicationPolicies")) \
+            .assert_with_checks(JMESPathCheck('sourceAccount', source_account)) \
+            .assert_with_checks(JMESPathCheck('destinationAccount', destination_account)) \
+            .assert_with_checks(JMESPathCheck('rules[0].sourceContainer', src_container)) \
+            .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container))
 
         # Create ORS policy on source account
-        self.storage_cmd('storage account ors-policy create ', src_account_info)
+        self.storage_cmd('storage account ors-policy create -p result', src_account_info)
 
         # Get Policy from source account
-        self.storage_cmd('storage account ors-policy list ')
-        self.storage_cmd('storage account ors-policy show ')
+        self.storage_cmd('storage account ors-policy list', src_account_info) \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+        self.storage_cmd('storage account ors-policy show --policy-id {policy_id}', src_account_info) \
+            .assert_with_checks(JMESPathCheck('type', "Microsoft.Storage/storageAccounts/objectReplicationPolicies")) \
+            .assert_with_checks(JMESPathCheck('sourceAccount', source_account)) \
+            .assert_with_checks(JMESPathCheck('destinationAccount', destination_account)) \
+            .assert_with_checks(JMESPathCheck('rules[0].sourceContainer', src_container)) \
+            .assert_with_checks(JMESPathCheck('rules[0].destinationContainer', dest_container))
 
         # Update ORS policy
         self.storage_cmd('storage account ors-policy update ')

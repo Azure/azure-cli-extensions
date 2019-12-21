@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 
 def create_ors_policy(cmd, client, resource_group_name, account_name, properties=None, source_account=None, destination_account=None,
-                      policy_id='default', rule_id=None, source_container=None, destination_container=None, tag=None,
+                      policy_id="default", rule_id=None, source_container=None, destination_container=None, tag=None,
                       prefix_match=None):
 
     ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
@@ -37,13 +37,8 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
     else:
         ors_policy = properties
 
-    # Create ORS Policy on destination account
-    result = client.create_or_update(resource_group_name, account_name=source_account,
-                                     object_replication_policy_id=policy_id, properties=ors_policy)
-
-    # Create ORS Policy on destination account
-    return client.create_or_update(resource_group_name, account_name=account_name,
-                                   object_replication_policy_id=policy_id, properties=result)
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   object_replication_policy_id=policy_id, properties=ors_policy)
 
 
 def update_ors_policy(client, resource_group_name, account_name, policy_id, properties=None):
@@ -53,7 +48,7 @@ def update_ors_policy(client, resource_group_name, account_name, policy_id, prop
         else:
             ors_policy = shell_safe_json_parse(properties)
 
-    return client.create_or_update(resource_group_name, account_name=account_name,
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    object_replication_policy_id=policy_id, properties=ors_policy)
 
 
