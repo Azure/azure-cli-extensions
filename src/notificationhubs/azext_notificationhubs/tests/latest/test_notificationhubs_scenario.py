@@ -5,9 +5,10 @@
 
 import os
 import unittest
+import time
 
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck,JMESPathCheckExists)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -20,113 +21,127 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'name': 'test1',
-            'rg':'feng-cli-rg'
+            'rg':'feng-cli-rg',
         })
+
+        self.cmd('az notificationhubs namespace check_availability '
+                 '--name "my-test-space"',
+                 checks=[])
 
         self.cmd('az notificationhubs namespace create '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
+                 '--namespace-name "my-test-space" '
                  '--location "South Central US" '
-                 '--sku-name "Standard" '
-                 '--sku-tier "Standard"',
-                 checks=[])
+                 '--sku-name "Free" '
+                 '--sku-tier "Free"',
+                 checks=[JMESPathCheck('name', 'my-test-space')])
+
+        if self.is_live:
+            time.sleep(60)
+
+        self.cmd('az notificationhubs hub check_availability '
+            '--namespace-name "my-test-space" '
+            '--notification-hub-name "my-test-hub"',
+            checks=[])
 
         self.cmd('az notificationhubs hub create '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub" '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub" '
                  '--location "South Central US" '
-                 '--sku-name "Standard"',
-                 checks=[])
+                 '--sku-name "Free"',
+                 checks=[JMESPathCheck('name', 'my-test-hub')])
 
-        self.cmd('az notificationhubs namespace authorization_rule create'
+        self.cmd('az notificationhubs namespace authorization_rule create '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--name "MySpaceRule" '
+                 '--namespace-name "my-test-space" '
+                 '--name "my-space-rule" '
                  '--rights "Listen,Send"',
-                 checks=[])
+                 checks=[JMESPathCheck('name', 'my-space-rule')])
 
-        self.cmd('az notificationhubs namespace authorization_rule show'
+        self.cmd('az notificationhubs namespace authorization_rule show '
             '--resource-group {rg} '
-            '--namespace-name "MyTestSpace" '
-            '--name "MySpaceRule"',
-            checks=[])
+            '--namespace-name "my-test-space" '
+            '--name "my-space-rule"',
+            checks=[JMESPathCheck('name', 'my-space-rule')])
+
+            
+        self.cmd('az notificationhubs namespace authorization_rule list '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space"',
+                 checks=[JMESPathCheckExists("[0].rights")])
 
         self.cmd('az notificationhubs namespace authorization_rule list_keys '
             '--resource-group {rg} '
-            '--namespace-name "MyTestSpace" '
-            '--name "MySpaceRule"',
-            checks=[])
+            '--namespace-name "my-test-space" '
+            '--name "my-space-rule"',
+            checks=[JMESPathCheckExists('primaryConnectionString')])
 
-        self.cmd('az notificationhubs hub credential gcm update'
+        self.cmd('az notificationhubs hub authorization_rule create '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub" '
+                 '--name "my-hub-send-key" '
+                 '--rights "Listen"',
+                 checks=[JMESPathCheck('name', 'my-hub-send-key')])
+
+        self.cmd('az notificationhubs hub authorization_rule show '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub" '
+                 '--name "my-hub-send-key"',
+                 checks=[JMESPathCheck('name', 'my-hub-send-key')])
+
+        self.cmd('az notificationhubs hub authorization_rule list '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub"',
+                 checks=[JMESPathCheckExists("[0].rights")])
+
+        self.cmd('az notificationhubs hub authorization_rule list_keys '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub" '
+                 '--name "my-hub-send-key"',
+                 checks=[JMESPathCheckExists('primaryConnectionString')])
+
+        self.cmd('az notificationhubs hub credential gcm update '
             '--resource-group {rg} '
-            '--namespace-name "MyTestSpace" '
-            '--notification-hub-name "MyTestHub" '
+            '--namespace-name "my-test-space" '
+            '--notification-hub-name "my-test-hub" '
             '--google-api-key "AAAANgU-LAk:APA91bFs_MDVVfouFbeIHNx8p-y8ZHk3jLgxXr4CDZLbiCLKyRd9pnGSGI4BY9OeiZZXY3thSPN0Mh0_irhnymnhyWvauSgeCplUF1aDvDCB8lDiQngOgx6tOAbSohy1oZRLUXedgkWp"',
             checks=[])
 
         self.cmd('az notificationhubs hub get_pns_credentials '
             '--resource-group {rg} '
-            '--namespace-name "MyTestSpace" '
-            '--notification-hub-name "MyTestHub"',
-            checks=[])
+            '--namespace-name "my-test-space" '
+            '--notification-hub-name "my-test-hub"',
+            checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
 
-        self.cmd('az notificationhubs hub debug_send '
-            '--resource-group {rg} '
-            '--namespace-name "MyTestSpace" '
-            '--notification-hub-name "MyTestHub" '
-            '--notification-format gcm '
-            '--payload "{\"data\":{\"message\":\"test notification\"}}"',
-            checks=[])
-
-        self.cmd('az notificationhubs hub authorization_rule create '
-                 '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub" '
-                 '--name "MyHubSendKey" '
-                 '--rights "Send"',
-                 checks=[])
-
-        self.cmd('az notificationhubs hub authorization_rule show '
-                 '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub" '
-                 '--name "MyHubSendKey"',
-                 checks=[])
-
-        self.cmd('az notificationhubs hub authorization_rule list'
-                 '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub"',
-                 checks=[])
-
-        self.cmd('az notificationhubs hub authorization_rule list_keys '
-                 '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub" '
-                 '--name "MyHubSendKey"',
-                 checks=[])   
+        # self.cmd('az notificationhubs hub debug_send '
+        #     '--resource-group {rg} '
+        #     '--namespace-name "my-test-space" '
+        #     '--notification-hub-name "my-test-hub" '
+        #     '--notification-format gcm '
+        #     r'--payload "{\"data\":{\"message\":\"test notification\"}}"',
+        #     checks=[])
 
         self.cmd('az notificationhubs hub show '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub"',
-                 checks=[])
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub"',
+                 checks=[JMESPathCheck('name', 'my-test-hub')])
 
-        self.cmd('az notificationhubs namespace authorization_rule list '
-                 '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace"',
-                 checks=[])
 
         self.cmd('az notificationhubs hub list '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace"',
+                 '--namespace-name "my-test-space"',
                  checks=[])
 
         self.cmd('az notificationhubs namespace show '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace"',
-                 checks=[])
+                 '--namespace-name "my-test-space"',
+                 checks=[JMESPathCheck('name', 'my-test-space')])
 
         self.cmd('az notificationhubs namespace list '
                  '--resource-group {rg}',
@@ -134,17 +149,26 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         self.cmd('az notificationhubs hub authorization_rule regenerate_keys '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--notification-hub-name "MyTestHub" '
-                 '--name "MyHubSendKey" '
-                 '--policy-key "SecondaryKey"',
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub" '
+                 '--name "my-hub-send-key" '
+                 '--policy-key "Secondary Key"',
                  checks=[])
 
         self.cmd('az notificationhubs namespace authorization_rule regenerate_keys '
                  '--resource-group {rg} '
-                 '--namespace-name "MyTestSpace" '
-                 '--name "MySpaceRule"'
-                 '--policy-key "SecondaryKey"',
+                 '--namespace-name "my-test-space" '
+                 '--name "my-space-rule" '
+                 '--policy-key "Secondary Key"',
                  checks=[])
 
+        self.cmd('az notificationhubs hub delete '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub"',
+                 checks=[])
 
+        self.cmd('az notificationhubs namespace delete '
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space"',
+                 checks=[])

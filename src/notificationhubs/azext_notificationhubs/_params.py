@@ -66,6 +66,7 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('name', id_part=None, help='The connection string of the namespace for the specified authorizationRule.')
+        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']),id_part=None, help='Name of the key that has to be regenerated for the Namespace Authorization Rule.')
 
     with self.argument_context('notificationhubs namespace authorization_rule show') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -136,7 +137,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The authorization rule name.')
-        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']),id_part=None, help='Name of the key that has to be regenerated for the Namespace/Notification Hub Authorization Rule.')
+        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']),id_part=None, help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
 
     with self.argument_context('notificationhubs hub get_pns_credentials') as c:
         c.argument('resource_group', resource_group_name_type)

@@ -86,7 +86,7 @@ helps['notificationhubs namespace check_availability'] = """
     examples:
       - name: NameSpaceCheckNameAvailability
         text: |-
-               az notificationhubs namespace check_availability
+               az notificationhubs namespace check_availability --name "my-test-space"
 """
 
 helps['notificationhubs namespace authorization_rule'] = """
@@ -111,7 +111,7 @@ helps['notificationhubs namespace authorization_rule regenerate_keys'] = """
       - name: NameSpaceAuthorizationRuleRegenerateKey
         text: |-
                az notificationhubs namespace authorization_rule regenerate_keys --resource-group "5ktrial" --namespace-name \\
-               "nh-sdk-ns" --name "RootManageSharedAccessKey"
+               "nh-sdk-ns" --name "RootManageSharedAccessKey" --policy-key "Secondary Key"
 """
 
 helps['notificationhubs namespace authorization_rule show'] = """
@@ -231,7 +231,7 @@ helps['notificationhubs hub authorization_rule regenerate_keys'] = """
         text: |-
                az notificationhubs hub authorization_rule regenerate_keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
-               "DefaultListenSharedAccessSignature"
+               "DefaultListenSharedAccessSignature" --policy-key "Secondary Key"
 """
 
 helps['notificationhubs hub get_pns_credentials'] = """
