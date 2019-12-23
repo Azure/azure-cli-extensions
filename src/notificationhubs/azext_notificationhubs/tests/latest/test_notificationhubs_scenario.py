@@ -39,12 +39,12 @@ class NotificationHubsScenarioTest(ScenarioTest):
         if self.is_live:
             time.sleep(60)
 
-        self.cmd('az notificationhubs hub check_availability '
+        self.cmd('az notificationhubs check_availability '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[])
 
-        self.cmd('az notificationhubs hub create '
+        self.cmd('az notificationhubs create '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
@@ -76,7 +76,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--name "my-space-rule"',
                  checks=[JMESPathCheckExists('primaryConnectionString')])
 
-        self.cmd('az notificationhubs hub authorization_rule create '
+        self.cmd('az notificationhubs authorization_rule create '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
@@ -84,40 +84,40 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--rights "Listen"',
                  checks=[JMESPathCheck('name', 'my-hub-send-key')])
 
-        self.cmd('az notificationhubs hub authorization_rule show '
+        self.cmd('az notificationhubs authorization_rule show '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
                  '--name "my-hub-send-key"',
                  checks=[JMESPathCheck('name', 'my-hub-send-key')])
 
-        self.cmd('az notificationhubs hub authorization_rule list '
+        self.cmd('az notificationhubs authorization_rule list '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        self.cmd('az notificationhubs hub authorization_rule list_keys '
+        self.cmd('az notificationhubs authorization_rule list_keys '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
                  '--name "my-hub-send-key"',
                  checks=[JMESPathCheckExists('primaryConnectionString')])
 
-        self.cmd('az notificationhubs hub credential gcm update '
+        self.cmd('az notificationhubs credential gcm update '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
                  '--google-api-key "AAAANgU-LAk:APA91bFs_MDVVfouFbeIHNx8p-y8ZHk3jLgxXr4CDZLbiCLKyRd9pnGSGI4BY9OeiZZXY3thSPN0Mh0_irhnymnhyWvauSgeCplUF1aDvDCB8lDiQngOgx6tOAbSohy1oZRLUXedgkWp"',
                  checks=[])
 
-        self.cmd('az notificationhubs hub get_pns_credentials '
+        self.cmd('az notificationhubs credential list '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
 
-        # self.cmd('az notificationhubs hub debug_send '
+        # self.cmd('az notificationhubs debug_send '
         #     '--resource-group {rg} '
         #     '--namespace-name "my-test-space" '
         #     '--notification-hub-name "my-test-hub" '
@@ -125,13 +125,13 @@ class NotificationHubsScenarioTest(ScenarioTest):
         #     r'--payload "{\"data\":{\"message\":\"test notification\"}}"',
         #     checks=[])
 
-        self.cmd('az notificationhubs hub show '
+        self.cmd('az notificationhubs show '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheck('name', 'my-test-hub')])
 
-        self.cmd('az notificationhubs hub list '
+        self.cmd('az notificationhubs list '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space"',
                  checks=[])
@@ -145,22 +145,24 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--resource-group {rg}',
                  checks=[])
 
-        self.cmd('az notificationhubs hub authorization_rule regenerate_keys '
-                 '--resource-group {rg} '
-                 '--namespace-name "my-test-space" '
-                 '--notification-hub-name "my-test-hub" '
-                 '--name "my-hub-send-key" '
-                 '--policy-key "Secondary Key"',
-                 checks=[])
+        # if self.is_live:
+        #     time.sleep(60)
+        # self.cmd('az notificationhubs authorization_rule regenerate_keys '
+        #          '--resource-group {rg} '
+        #          '--namespace-name "my-test-space" '
+        #          '--notification-hub-name "my-test-hub" '
+        #          '--name "my-hub-send-key" '
+        #          '--policy-key "Secondary Key"',
+        #          checks=[])
 
-        self.cmd('az notificationhubs namespace authorization_rule regenerate_keys '
-                 '--resource-group {rg} '
-                 '--namespace-name "my-test-space" '
-                 '--name "my-space-rule" '
-                 '--policy-key "Secondary Key"',
-                 checks=[])
+        # self.cmd('az notificationhubs namespace authorization_rule regenerate_keys '
+        #          '--resource-group {rg} '
+        #          '--namespace-name "my-test-space" '
+        #          '--name "my-space-rule" '
+        #          '--policy-key "Secondary Key"',
+        #          checks=[])
 
-        self.cmd('az notificationhubs hub delete '
+        self.cmd('az notificationhubs delete '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',

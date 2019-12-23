@@ -41,7 +41,7 @@ def load_command_table(self, _):
     notificationhubs_notification_hubs = CliCommandType(
         operations_tmpl='azext_notificationhubs.vendored_sdks.notificationhubs.operations._notification_hubs_operations#NotificationHubsOperations.{}',
         client_factory=cf_notification_hubs)
-    with self.command_group('notificationhubs hub', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
+    with self.command_group('notificationhubs', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
         g.custom_command('create', 'create_notificationhubs_hub')
         g.custom_command('update', 'update_notificationhubs_hub')
         g.custom_command('delete', 'delete_notificationhubs_hub')
@@ -56,7 +56,7 @@ def load_command_table(self, _):
         g.custom_command('authorization_rule list_keys', 'list_keys_notificationhubs_hub')
         g.custom_command('authorization_rule regenerate_keys', 'regenerate_keys_notificationhubs_hub')
 
-    with self.command_group('notificationhubs hub credential', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
+    with self.command_group('notificationhubs credential', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
         g.custom_command('list', 'get_pns_credentials_notificationhubs_hub')
         g.custom_command('gcm update', 'update_gcm_credential')
         g.custom_command('apns update', 'update_apns_credential')

@@ -86,7 +86,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('name', id_part=None, help='Authorization rule name.')
 
-    with self.argument_context('notificationhubs hub create') as c:
+    with self.argument_context('notificationhubs create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
@@ -99,7 +99,7 @@ def load_arguments(self, _):
         c.argument('sku_capacity', id_part=None, help='The capacity of the resource')
         c.argument('registration_ttl', id_part=None, help='The RegistrationTtl of the created NotificationHub')
 
-    with self.argument_context('notificationhubs hub update') as c:
+    with self.argument_context('notificationhubs update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
@@ -111,88 +111,88 @@ def load_arguments(self, _):
         c.argument('sku_family', id_part=None, help='The Sku Family')
         c.argument('sku_capacity', id_part=None, help='The capacity of the resource')
 
-    with self.argument_context('notificationhubs hub delete') as c:
+    with self.argument_context('notificationhubs delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
 
-    with self.argument_context('notificationhubs hub show') as c:
+    with self.argument_context('notificationhubs show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
 
-    with self.argument_context('notificationhubs hub list') as c:
+    with self.argument_context('notificationhubs list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
 
-    with self.argument_context('notificationhubs hub check_availability') as c:
+    with self.argument_context('notificationhubs check_availability') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name to check.')
 
-    with self.argument_context('notificationhubs hub authorization_rule regenerate_keys') as c:
+    with self.argument_context('notificationhubs authorization_rule regenerate_keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The authorization rule name.')
         c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), id_part=None, help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
 
-    with self.argument_context('notificationhubs hub credential list') as c:
+    with self.argument_context('notificationhubs credential list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
 
-    with self.argument_context('notificationhubs hub authorization_rule list_keys') as c:
+    with self.argument_context('notificationhubs authorization_rule list_keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The authorization rule name.')
 
-    with self.argument_context('notificationhubs hub debug_send') as c:
+    with self.argument_context('notificationhubs debug_send') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('notification_format', arg_type=get_enum_type(['apple', 'baidu', 'gcm', 'template', 'windows', 'windowsphone']), id_part=None, help='The format of notification message.')
         c.argument('payload', id_part=None, help='The payload for message.')
 
-    with self.argument_context('notificationhubs hub authorization_rule list') as c:
+    with self.argument_context('notificationhubs authorization_rule list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
 
-    with self.argument_context('notificationhubs hub authorization_rule show') as c:
+    with self.argument_context('notificationhubs authorization_rule show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The connection string of the NotificationHub for the specified authorizationRule.')
 
-    with self.argument_context('notificationhubs hub authorization_rule create') as c:
+    with self.argument_context('notificationhubs authorization_rule create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The connection string of the NotificationHub for the specified authorizationRule.')
         c.argument('rights', id_part=None, help='The rights associated with the rule.')
 
-    with self.argument_context('notificationhubs hub authorization_rule delete') as c:
+    with self.argument_context('notificationhubs authorization_rule delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The connection string of the NotificationHub for the specified authorizationRule.')
 
-    with self.argument_context('notificationhubs hub credential gcm update') as c:
+    with self.argument_context('notificationhubs credential gcm update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('google_api_key', id_part=None, help='Google GCM/FCM API key.')
 
-    with self.argument_context('notificationhubs hub credential adm update') as c:
+    with self.argument_context('notificationhubs credential adm update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('client_id', id_part=None, help='The client identifier.')
         c.argument('client_secret', id_part=None, help='The credential secret access key.')
 
-    with self.argument_context('notificationhubs hub credential apns update') as c:
+    with self.argument_context('notificationhubs credential apns update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
@@ -204,21 +204,21 @@ def load_arguments(self, _):
         c.argument('app_id', id_part=None, help='The issuer (iss) registered claim key, whose value is your 10-character Team ID, obtained from your developer account')
         c.argument('token', id_part=None, help='Provider Authentication Token, obtained through your developer account.')
 
-    with self.argument_context('notificationhubs hub credential baidu update') as c:
+    with self.argument_context('notificationhubs credential baidu update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('baidu_api_key', id_part=None, help='Baidu API key.')
         c.argument('baidu_secret_key', id_part=None, help='Baidu secret key.')
 
-    with self.argument_context('notificationhubs hub credential mpns update') as c:
+    with self.argument_context('notificationhubs credential mpns update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('mpns_certificate', id_part=None, help='The MPNS certificate.')
         c.argument('certificate_key', id_part=None, help='The certificate key for this credential.')
 
-    with self.argument_context('notificationhubs hub credential wns update') as c:
+    with self.argument_context('notificationhubs credential wns update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
