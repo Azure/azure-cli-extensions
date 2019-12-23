@@ -115,13 +115,25 @@ def list_ors_rules(client, resource_group_name, account_name, policy_id):
     return policy_properties.rules
 
 
-def update_ors_rule(instance, source_container=None, destination_container=None, tag=None, prefix_match=None):
-    if destination_container is not None:
-        instance.destination_container = destination_container
-    if source_container is not None:
-        instance.source_container = source_container
-    if tag is not None:
-        instance.filter.tag = tag
-    if prefix_match is not None:
-        instance.filter.prefix_match = prefix_match
-    return instance
+def update_ors_rule(cmd, client, resource_group_name, account_name, policy_id, rule_id, source_container=None,
+                    destination_container=None, tag=None, prefix_match=None):
+    policy_properties = client.get(resource_group_name, account_name, policy_id)
+
+    ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
+        cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
+    for i, rule in enumerate(policy_properties.rules):
+        if rule.rule_id == rule_id:
+            if destination_container is not None:
+                policy_properties.rules[i].destination_container = destination_container
+            if source_container is not None:
+                policy_properties.rules[i].source_container = source_container
+            if tag is not None:
+                policy_properties.rules[i].filter.tag = tag
+            if prefix_match is not None:
+                policy_properties.rules[i].filter.prefix_match = prefix_match
+
+    client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                            object_replication_policy_id=policy_id, properties=policy_properties)
+
+    return get_ors_rule(client, resource_group_name=resource_group_name, account_name=account_name,
+                        policy_id=policy_id, rule_id=rule_id)

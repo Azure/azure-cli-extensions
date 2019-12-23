@@ -39,7 +39,5 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_ors_rule')
         g.custom_command('list', 'list_ors_rules')
         g.custom_command('add', 'add_ors_rule')
-        g.generic_update_command('update', getter_name='get_ors_rule', getter_type=ors_policy_custom_type,
-                                 setter_name='update_ors_rule',
-                                 setter_type=ors_policy_custom_type)
+        g.custom_command('update', 'update_ors_rule')
         g.custom_command('remove', 'remove_ors_rule')
