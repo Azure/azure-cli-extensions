@@ -33,7 +33,7 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
         })
 
         # Enable ChangeFeed for Storage Accounts
-        self.cmd('storage account blob-service-properties update -n {src_sc} --enable-change-feed',  checks=[
+        self.cmd('storage account blob-service-properties update -n {src_sc} --enable-change-feed', checks=[
                  JMESPathCheck('changeFeed.enabled', True)])
 
         self.cmd('storage account blob-service-properties update -n {dest_sc} --enable-change-feed', checks=[
@@ -81,14 +81,8 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('filter.prefixMatch[0]', 'blobA')) \
             .assert_with_checks(JMESPathCheck('filter.prefixMatch[1]', 'blobB'))
 
-        # Remove rules
-        self.cmd('storage account ors-policy rule remove -g {} -n {} --policy-id {} --rule-id {}'.format(
-            resource_group, destination_account, result['policyId'], result['rules'][0]['ruleId']))
-        self.cmd('storage account ors-policy rule list -g {rg} -n {dest_sc} --policy-id {policy_id}') \
-            .assert_with_checks(JMESPathCheck('length(@)', 1))
-
         # Create ORS policy on source account
-        self.cmd('storage account ors-policy show -g {rg} -n {dest_sc} --policy-id {policy-id} | az storage account ors-policy create g {rg} -n {src_sc} -p "@-"')
+        self.cmd('storage account ors-policy show -g {rg} -n {dest_sc} --policy-id {policy_id} | az storage account ors-policy create g {rg} -n {src_sc} -p "@-"')
 
         # Get Policy from source account
         self.cmd('storage account ors-policy list -g {rg} -n {src_sc}') \
@@ -106,6 +100,12 @@ class StorageAccountORSScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage account ors-policy update -g {} -n {} --policy-id {} --source-account {}'.format(
             resource_group, source_account, self.kwargs["policy_id"], new_source_account)) \
             .assert_with_checks(JMESPathCheck('sourceAccount', new_source_account))
+
+        # Remove rules
+        self.cmd('storage account ors-policy rule remove -g {} -n {} --policy-id {} --rule-id {}'.format(
+            resource_group, destination_account, result['policyId'], result['rules'][0]['ruleId']))
+        self.cmd('storage account ors-policy rule list -g {rg} -n {dest_sc} --policy-id {policy_id}') \
+            .assert_with_checks(JMESPathCheck('length(@)', 1))
 
         # Remove policy from destination and source account
         self.cmd('storage account ors-policy remove -g {rg} -n {src_sc} --policy-id {policy_id}')

@@ -50,5 +50,3 @@ def validate_ors_policy(namespace):
 
         if "policyId" in ors_policy.keys() and ors_policy["policyId"]:
             namespace.policy_id = ors_policy['policyId']
-
-

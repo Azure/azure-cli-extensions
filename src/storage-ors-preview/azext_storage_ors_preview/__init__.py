@@ -5,7 +5,6 @@
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
-from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 from azext_storage_ors_preview._help import helps  # pylint: disable=unused-import
 from .profiles import CUSTOM_MGMT_STORAGE_ORS
@@ -36,4 +35,3 @@ class StorageCommandsLoader(AzCommandsLoader):
 
 
 COMMAND_LOADER_CLS = StorageCommandsLoader
-

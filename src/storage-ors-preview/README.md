@@ -30,6 +30,10 @@ az storage account ors-policy create \
     --source-container srcContainer \
     --destination-container destContainer
 ```
+3. Create Object Replication Service Policy to source storage account through policy associated with destination storage account.
+```
+az storage account ors-policy show -g ResourceGroupName -n destAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92" | az storage account ors-policy create -g ResourceGroupName -n srcAccountName -p "@-"
+```
 
 To save the policyId/ruleId in Powershell Scripts, you can use:
 `$policyId = (az storage account ors-policy create --account-name accountName --resource-group groupName --properties @{path}) --query policyId)`
@@ -43,6 +47,11 @@ az storage account ors-policy list --account-name accountName --resource-group g
 ##### Show ORS Policy on storage account
 ```
 az storage account ors-policy show --policy-id policyId --account-name accountName --resource-group groupName
+```
+
+##### Update ORS Policy on storage account
+```
+az storage account ors-policy update --policy-id policyId --account-name accountName --resource-group groupName -s newSourceAccount
 ```
 
 ##### Add rule to ORS Policy
@@ -61,9 +70,19 @@ az storage account ors-policy rule list --policy-id $policyId --account-name acc
 az storage account ors-policy rule show --rule-id $ruleId --policy-id $policyId --account-name accountName --resource-group groupName
 ```
 
+##### Update properties for ORS Policy Rule
+```
+az storage account ors-policy rule remove --rule-id $ruleId --policy-id $policyId --account-name accountName --resource-group groupName --prefix-match blobA
+```
+
 ##### Remove rule for ORS Policy
 ```
 az storage account ors-policy rule remove --rule-id $ruleId --policy-id $policyId --account-name accountName --resource-group groupName
+```
+
+##### Remove ORS Policy on storage account
+```
+az storage account ors-policy remove --policy-id policyId --account-name accountName --resource-group groupName
 ```
 
 

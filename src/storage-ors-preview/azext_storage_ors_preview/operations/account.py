@@ -5,17 +5,15 @@
 
 """Custom operations for storage account commands"""
 
-import os
-from azure.cli.core.util import get_file_json, shell_safe_json_parse
 from knack.log import get_logger
 from knack.util import CLIError
 
 logger = get_logger(__name__)
 
 
-def create_ors_policy(cmd, client, resource_group_name, account_name, properties=None, source_account=None, destination_account=None,
-                      policy_id="default", rule_id=None, source_container=None, destination_container=None, tag=None,
-                      prefix_match=None):
+def create_ors_policy(cmd, client, resource_group_name, account_name, properties=None, source_account=None,
+                      destination_account=None, policy_id="default", rule_id=None, source_container=None,
+                      destination_container=None, tag=None, prefix_match=None):
 
     ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
 
@@ -41,27 +39,19 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
                                    object_replication_policy_id=policy_id, properties=ors_policy)
 
 
-def update_ors_policy(client, parameters, resource_group_name, account_name, properties=None, source_account=None, destination_account=None,
-                      rule_id=None, source_container=None, destination_container=None, tag=None,
-                      prefix_match=None):
-
-    #ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
+def update_ors_policy(client, parameters, resource_group_name, account_name, object_replication_policy_id,
+                      properties=None, source_account=None, destination_account=None):
 
     if source_account is not None:
-        instance.source_account = source_account
+        parameters.source_account = source_account
     if destination_account is not None:
-        instance.destination_account = destination_account
-    if rule_id:
-        for i, rule in enumerate(instance.rules):
-            if rule.rule_id == rule_id:
-                instance.rules[i] = update_ors_rule(rule, source_container=source_container,
-                                                    destination_container=destination_container,
-                                                    tag=tag, prefix_match=prefix_match)
+        parameters.destination_account = destination_account
+
     if properties is not None:
-        instance = properties
+        parameters = properties
 
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                            object_replication_policy_id=policy_id, properties=policy_properties)
+                                   object_replication_policy_id=object_replication_policy_id, properties=parameters)
 
 
 def get_ors_policy(client, resource_group_name, account_name, policy_id='default'):
@@ -116,12 +106,10 @@ def list_ors_rules(client, resource_group_name, account_name, policy_id):
     return policy_properties.rules
 
 
-def update_ors_rule(cmd, client, resource_group_name, account_name, policy_id, rule_id, source_container=None,
+def update_ors_rule(client, resource_group_name, account_name, policy_id, rule_id, source_container=None,
                     destination_container=None, tag=None, prefix_match=None):
     policy_properties = client.get(resource_group_name, account_name, policy_id)
 
-    ObjectReplicationPolicyRule, ObjectReplicationPolicyFilter = \
-        cmd.get_models('ObjectReplicationPolicyRule', 'ObjectReplicationPolicyFilter')
     for i, rule in enumerate(policy_properties.rules):
         if rule.rule_id == rule_id:
             if destination_container is not None:

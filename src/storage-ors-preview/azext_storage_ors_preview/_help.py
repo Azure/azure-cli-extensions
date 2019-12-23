@@ -92,7 +92,7 @@ examples:
 helps['storage account ors-policy rule show'] = """
 type: command
 short-summary: Show the properties of specified rule in Object Replication Service Policy.
-examples: 
+examples:
   - name: Show the properties of specified rule in Object Replication Service Policy.
     text: az storage account ors-policy rule show -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332"
 """
@@ -104,6 +104,3 @@ examples:
   - name: Update rule properties to Object Replication Service Policy.
     text: az storage account ors-policy rule remove -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8" --rule-id "78746d86-d3b7-4397-a99c-0837e6741332" --prefix-match blobA blobB
 """
-
-
-

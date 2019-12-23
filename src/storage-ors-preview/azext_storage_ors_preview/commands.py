@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands import CliCommandType
-from azure.cli.core.commands.arm import show_exception_handler
 
 from ._client_factory import cf_ors_policy
 from .profiles import CUSTOM_MGMT_STORAGE_ORS
