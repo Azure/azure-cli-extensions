@@ -5,11 +5,11 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-from .profiles import CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_MGMT_STORAGE_ORS
 
 
 def storage_client_factory(cli_ctx, **_):
-    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE_ORS)
 
 
 def cf_sa(cli_ctx, _):

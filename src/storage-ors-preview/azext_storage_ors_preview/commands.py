@@ -7,8 +7,9 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 
 from ._client_factory import cf_ors_policy
-from .profiles import CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_MGMT_STORAGE_ORS
 from ._validators import validate_ors_policy
+
 
 def load_command_table(self, _):
 
@@ -16,7 +17,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_storage_ors_preview.vendored_sdks.azure_mgmt_storage.operations'
                         '#ObjectReplicationPoliciesOperations.{}',
         client_factory=cf_ors_policy,
-        resource_type=CUSTOM_MGMT_STORAGE
+        resource_type=CUSTOM_MGMT_STORAGE_ORS
     )
 
     ors_policy_custom_type = CliCommandType(
@@ -24,7 +25,7 @@ def load_command_table(self, _):
         client_factory=cf_ors_policy)
 
     with self.command_group('storage account ors-policy', ors_policy_sdk, is_preview=True,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2019-06-01',
+                            resource_type=CUSTOM_MGMT_STORAGE_ORS, min_api='2019-06-01',
                             custom_command_type=ors_policy_custom_type) as g:
         g.show_command('show', 'get')
         g.command('list', 'list')
@@ -33,7 +34,7 @@ def load_command_table(self, _):
         g.command('remove', 'delete')
 
     with self.command_group('storage account ors-policy rule', ors_policy_sdk, is_preview=True,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2019-06-01',
+                            resource_type=CUSTOM_MGMT_STORAGE_ORS, min_api='2019-06-01',
                             custom_command_type=ors_policy_custom_type) as g:
         g.custom_show_command('show', 'get_ors_rule')
         g.custom_command('list', 'list_ors_rules')

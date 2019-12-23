@@ -8,18 +8,19 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 from azext_storage_ors_preview._help import helps  # pylint: disable=unused-import
-from .profiles import CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_MGMT_STORAGE_ORS
+
 
 class StorageCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
 
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2019-06-01')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE_ORS, '2019-06-01')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_ors_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    resource_type=CUSTOM_MGMT_STORAGE,
+                                                    resource_type=CUSTOM_MGMT_STORAGE_ORS,
                                                     custom_command_type=storage_custom)
 
     def load_command_table(self, args):

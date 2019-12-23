@@ -7,17 +7,17 @@ import os
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer,
                                JMESPathCheck, api_version_constraint)
-from ...profiles import CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_MGMT_STORAGE_ORS
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class StorageAccountORSScenarioTest(ScenarioTest):
-    @api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2019-06-01')
+    @api_version_constraint(CUSTOM_MGMT_STORAGE_ORS, min_api='2019-06-01')
     @ResourceGroupPreparer(name_prefix='cli_test_storage_account_ors', location='eastus2euap')
-    @StorageAccountPreparer(parameter_name='source_account', name_Prefix='cli_test_storage_ors', location='eastus2euap', kind='StorageV2')
-    @StorageAccountPreparer(parameter_name='destination_account', name_Prefix='cli_test_storage_ors', location='eastus2euap', kind='StorageV2')
+    @StorageAccountPreparer(parameter_name='source_account', location='eastus2euap', kind='StorageV2')
+    @StorageAccountPreparer(parameter_name='destination_account', location='eastus2euap', kind='StorageV2')
     def test_storage_account_ors(self, resource_group, source_account, destination_account):
         src_account_info = self.get_account_info(resource_group, source_account)
         src_container = self.create_container(src_account_info)
