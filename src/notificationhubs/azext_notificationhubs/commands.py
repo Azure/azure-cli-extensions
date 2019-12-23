@@ -64,4 +64,3 @@ def load_command_table(self, _):
         g.custom_command('mpns update', 'update_mpns_credential')
         g.custom_command('adm update', 'update_adm_credential')
         g.custom_command('baidu update', 'update_baidu_credential')
-

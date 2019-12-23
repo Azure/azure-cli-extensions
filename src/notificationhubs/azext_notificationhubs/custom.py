@@ -9,10 +9,6 @@
 # pylint: disable=unused-argument
 
 
-def list_notificationhubs_namespace(cmd, client):
-    return client.list()
-
-
 def create_notificationhubs_namespace(cmd, client,
                                       resource_group,
                                       namespace_name,
@@ -82,7 +78,7 @@ def list_notificationhubs_namespace(cmd, client,
 
 
 def check_availability_notificationhubs_namespace(cmd, client, name):
-    body = {"name":name}
+    body = {"name": name}
     return client.check_availability(parameters=body)
 
 
@@ -121,7 +117,6 @@ def create_or_update_authorization_rule_notificationhubs_namespace(cmd, client,
                                                                    rights):
     body = {}
     body['rights'] = None if rights is None else rights.split(',')
-    
     return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name, properties=body)
 
 
@@ -154,8 +149,9 @@ def create_notificationhubs_hub(cmd, client,
     body.setdefault('sku', {})['family'] = sku_family  # str
     body.setdefault('sku', {})['capacity'] = sku_capacity  # number
     body['is_availiable'] = is_availiable  # boolean
-    body['registration_ttl'] = registration_ttl #str
+    body['registration_ttl'] = registration_ttl  # str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+
 
 def update_notificationhubs_hub(cmd, client,
                                 resource_group,
@@ -219,7 +215,7 @@ def check_notification_hub_availability_notificationhubs_hub(cmd, client,
                                                              resource_group,
                                                              namespace_name,
                                                              notification_hub_name):
-    body = {"name":notification_hub_name}
+    body = {"name": notification_hub_name}
     return client.check_notification_hub_availability(resource_group_name=resource_group, namespace_name=namespace_name, parameters=body)
 
 
@@ -256,7 +252,7 @@ def debug_send_notificationhubs_hub(cmd, client,
     import json
     parameters = json.loads(payload)
     custom_headers = {"servicebusnotification-format": notification_format}
-    return client.debug_send(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers = custom_headers)
+    return client.debug_send(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers=custom_headers)
 
 
 def list_authorization_rules_notificationhubs_hub(cmd, client,
@@ -292,6 +288,7 @@ def delete_authorization_rule_notificationhubs_hub(cmd, client,
                                                    name):
     return client.delete_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name)
 
+
 def update_gcm_credential(cmd, client,
                           resource_group,
                           namespace_name,
@@ -300,6 +297,7 @@ def update_gcm_credential(cmd, client,
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     body.setdefault('gcm_credential', {})['google_api_key'] = google_api_key
     return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+
 
 def update_adm_credential(cmd, client,
                           resource_group,
@@ -312,17 +310,18 @@ def update_adm_credential(cmd, client,
     body.setdefault('adm_credential', {})['client_secret'] = client_secret
     return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
+
 def update_apns_credential(cmd, client,
-                          resource_group,
-                          namespace_name,
-                          notification_hub_name,
-                          apns_certificate=None,
-                          certificate_key=None,
-                          end_point=None,
-                          key_id=None,
-                          app_name=None,
-                          app_id=None,
-                          token=None):
+                           resource_group,
+                           namespace_name,
+                           notification_hub_name,
+                           apns_certificate=None,
+                           certificate_key=None,
+                           end_point=None,
+                           key_id=None,
+                           app_name=None,
+                           app_id=None,
+                           token=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     if apns_certificate is not None:
         body.setdefault('apns_credential', {})['apns_certificate'] = apns_certificate
@@ -340,27 +339,30 @@ def update_apns_credential(cmd, client,
         body.setdefault('apns_credential', {})['token'] = token
     return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
+
 def update_baidu_credential(cmd, client,
-                          resource_group,
-                          namespace_name,
-                          notification_hub_name,
-                          baidu_api_key,
-                          baidu_secret_key):
+                            resource_group,
+                            namespace_name,
+                            notification_hub_name,
+                            baidu_api_key,
+                            baidu_secret_key):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     body.setdefault('baidu_credential', {})['baidu_api_key'] = baidu_api_key
     body.setdefault('baidu_credential', {})['baidu_secret_key'] = baidu_secret_key
     return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
+
 def update_mpns_credential(cmd, client,
-                          resource_group,
-                          namespace_name,
-                          notification_hub_name,
-                          mpns_certificate,
-                          certificate_key):
+                           resource_group,
+                           namespace_name,
+                           notification_hub_name,
+                           mpns_certificate,
+                           certificate_key):
     body = {}
     body.setdefault('mpns_credential', {})['mpns_certificate'] = mpns_certificate
     body.setdefault('mpns_credential', {})['certificate_key'] = certificate_key
     return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+
 
 def update_wns_credential(cmd, client,
                           resource_group,

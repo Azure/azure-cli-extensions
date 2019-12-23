@@ -8,7 +8,7 @@ import unittest
 import time
 
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck,JMESPathCheckExists)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -21,7 +21,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'name': 'test1',
-            'rg':'feng-cli-rg',
+            'rg': 'feng-cli-rg',
         })
 
         self.cmd('az notificationhubs namespace check_availability '
@@ -40,9 +40,9 @@ class NotificationHubsScenarioTest(ScenarioTest):
             time.sleep(60)
 
         self.cmd('az notificationhubs hub check_availability '
-            '--namespace-name "my-test-space" '
-            '--notification-hub-name "my-test-hub"',
-            checks=[])
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub"',
+                 checks=[])
 
         self.cmd('az notificationhubs hub create '
                  '--resource-group {rg} '
@@ -60,22 +60,21 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  checks=[JMESPathCheck('name', 'my-space-rule')])
 
         self.cmd('az notificationhubs namespace authorization_rule show '
-            '--resource-group {rg} '
-            '--namespace-name "my-test-space" '
-            '--name "my-space-rule"',
-            checks=[JMESPathCheck('name', 'my-space-rule')])
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--name "my-space-rule"',
+                 checks=[JMESPathCheck('name', 'my-space-rule')])
 
-            
         self.cmd('az notificationhubs namespace authorization_rule list '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space"',
                  checks=[JMESPathCheckExists("[0].rights")])
 
         self.cmd('az notificationhubs namespace authorization_rule list_keys '
-            '--resource-group {rg} '
-            '--namespace-name "my-test-space" '
-            '--name "my-space-rule"',
-            checks=[JMESPathCheckExists('primaryConnectionString')])
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--name "my-space-rule"',
+                 checks=[JMESPathCheckExists('primaryConnectionString')])
 
         self.cmd('az notificationhubs hub authorization_rule create '
                  '--resource-group {rg} '
@@ -106,17 +105,17 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  checks=[JMESPathCheckExists('primaryConnectionString')])
 
         self.cmd('az notificationhubs hub credential gcm update '
-            '--resource-group {rg} '
-            '--namespace-name "my-test-space" '
-            '--notification-hub-name "my-test-hub" '
-            '--google-api-key "AAAANgU-LAk:APA91bFs_MDVVfouFbeIHNx8p-y8ZHk3jLgxXr4CDZLbiCLKyRd9pnGSGI4BY9OeiZZXY3thSPN0Mh0_irhnymnhyWvauSgeCplUF1aDvDCB8lDiQngOgx6tOAbSohy1oZRLUXedgkWp"',
-            checks=[])
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub" '
+                 '--google-api-key "AAAANgU-LAk:APA91bFs_MDVVfouFbeIHNx8p-y8ZHk3jLgxXr4CDZLbiCLKyRd9pnGSGI4BY9OeiZZXY3thSPN0Mh0_irhnymnhyWvauSgeCplUF1aDvDCB8lDiQngOgx6tOAbSohy1oZRLUXedgkWp"',
+                 checks=[])
 
         self.cmd('az notificationhubs hub get_pns_credentials '
-            '--resource-group {rg} '
-            '--namespace-name "my-test-space" '
-            '--notification-hub-name "my-test-hub"',
-            checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
+                 '--resource-group {rg} '
+                 '--namespace-name "my-test-space" '
+                 '--notification-hub-name "my-test-hub"',
+                 checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
 
         # self.cmd('az notificationhubs hub debug_send '
         #     '--resource-group {rg} '
@@ -131,7 +130,6 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheck('name', 'my-test-hub')])
-
 
         self.cmd('az notificationhubs hub list '
                  '--resource-group {rg} '

@@ -8,7 +8,6 @@
 
 from azure.cli.core.commands.parameters import (
     tags_type,
-    get_three_state_flag,
     get_enum_type,
     resource_group_name_type,
     get_location_type
@@ -55,7 +54,6 @@ def load_arguments(self, _):
 
     with self.argument_context('notificationhubs namespace check_availability') as c:
         c.argument('name', id_part=None, help='The namespace name to check.')
-        pass
 
     with self.argument_context('notificationhubs namespace authorization_rule list_keys') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -66,7 +64,7 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('name', id_part=None, help='The connection string of the namespace for the specified authorizationRule.')
-        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']),id_part=None, help='Name of the key that has to be regenerated for the Namespace Authorization Rule.')
+        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), id_part=None, help='Name of the key that has to be regenerated for the Namespace Authorization Rule.')
 
     with self.argument_context('notificationhubs namespace authorization_rule show') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -137,7 +135,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The authorization rule name.')
-        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']),id_part=None, help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
+        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), id_part=None, help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
 
     with self.argument_context('notificationhubs hub credential list') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -209,20 +207,19 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('baidu_api_key', id_part=None, help='Baidu API key.') 
-        c.argument('baidu_secret_key', id_part=None, help='Baidu secret key.') 
+        c.argument('baidu_api_key', id_part=None, help='Baidu API key.')
+        c.argument('baidu_secret_key', id_part=None, help='Baidu secret key.')
 
     with self.argument_context('notificationhubs hub credential mpns update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('mpns_certificate', id_part=None, help='The MPNS certificate.')
-        c.argument('certificate_key', id_part=None, help='The certificate key for this credential.') 
-        # c.argument('thumbprint', id_part=None, help='The MPNS certificate Thumbprint.') 
+        c.argument('certificate_key', id_part=None, help='The certificate key for this credential.')
 
     with self.argument_context('notificationhubs hub credential wns update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('package_sid', id_part=None, help='The package ID for this credential.')
-        c.argument('secret_key', id_part=None, help='The secret key.') 
+        c.argument('secret_key', id_part=None, help='The secret key.')

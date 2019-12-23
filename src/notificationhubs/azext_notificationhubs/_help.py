@@ -96,7 +96,7 @@ helps['notificationhubs namespace authorization_rule'] = """
 
 helps['notificationhubs namespace authorization_rule list_keys'] = """
     type: command
-    short-summary: Gets the Primary and Secondary ConnectionStrings to the namespace 
+    short-summary: Gets the Primary and Secondary ConnectionStrings to the namespace
     examples:
       - name: NameSpaceAuthorizationRuleListKey
         text: |-
@@ -246,7 +246,7 @@ helps['notificationhubs hub credential list'] = """
 
 helps['notificationhubs hub authorization_rule list_keys'] = """
     type: command
-    short-summary: Gets the Primary and Secondary ConnectionStrings to the NotificationHub 
+    short-summary: Gets the Primary and Secondary ConnectionStrings to the NotificationHub
     examples:
       - name: NotificationHubAuthorizationRuleListKey
         text: |-
