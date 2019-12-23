@@ -299,7 +299,7 @@ def update_gcm_credential(cmd, client,
                           google_api_key):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     body.setdefault('gcm_credential', {})['google_api_key'] = google_api_key
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+    return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 def update_adm_credential(cmd, client,
                           resource_group,
@@ -310,26 +310,35 @@ def update_adm_credential(cmd, client,
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     body.setdefault('adm_credential', {})['client_id'] = client_id
     body.setdefault('adm_credential', {})['client_secret'] = client_secret
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+    return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 def update_apns_credential(cmd, client,
                           resource_group,
                           namespace_name,
                           notification_hub_name,
-                          apns_certificate,
-                          certificate_key,
-                          key_id,
-                          app_name,
-                          app_id,
-                          token):
+                          apns_certificate=None,
+                          certificate_key=None,
+                          end_point=None,
+                          key_id=None,
+                          app_name=None,
+                          app_id=None,
+                          token=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
-    body.setdefault('apns_credential', {})['apns_certificate'] = apns_certificate
-    body.setdefault('apns_credential', {})['certificate_key'] = certificate_key
-    body.setdefault('apns_credential', {})['key_id'] = key_id
-    body.setdefault('apns_credential', {})['app_name'] = app_name
-    body.setdefault('apns_credential', {})['app_id'] = app_id
-    body.setdefault('apns_credential', {})['token'] = token
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+    if apns_certificate is not None:
+        body.setdefault('apns_credential', {})['apns_certificate'] = apns_certificate
+    if certificate_key is not None:
+        body.setdefault('apns_credential', {})['certificate_key'] = certificate_key
+    if end_point is not None:
+        body.setdefault('apns_credential', {})['end_point'] = end_point
+    if key_id is not None:
+        body.setdefault('apns_credential', {})['key_id'] = key_id
+    if app_name is not None:
+        body.setdefault('apns_credential', {})['app_name'] = app_name
+    if app_id is not None:
+        body.setdefault('apns_credential', {})['app_id'] = app_id
+    if token is not None:
+        body.setdefault('apns_credential', {})['token'] = token
+    return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 def update_baidu_credential(cmd, client,
                           resource_group,
@@ -340,18 +349,7 @@ def update_baidu_credential(cmd, client,
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     body.setdefault('baidu_credential', {})['baidu_api_key'] = baidu_api_key
     body.setdefault('baidu_credential', {})['baidu_secret_key'] = baidu_secret_key
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-def update_baidu_credential(cmd, client,
-                          resource_group,
-                          namespace_name,
-                          notification_hub_name,
-                          baidu_api_key,
-                          baidu_secret_key):
-    body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
-    body.setdefault('baidu_credential', {})['baidu_api_key'] = baidu_api_key
-    body.setdefault('baidu_credential', {})['baidu_secret_key'] = baidu_secret_key
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+    return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 def update_mpns_credential(cmd, client,
                           resource_group,
@@ -359,21 +357,10 @@ def update_mpns_credential(cmd, client,
                           notification_hub_name,
                           mpns_certificate,
                           certificate_key):
-    body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
+    body = {}
     body.setdefault('mpns_credential', {})['mpns_certificate'] = mpns_certificate
     body.setdefault('mpns_credential', {})['certificate_key'] = certificate_key
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
-
-def update_mpns_credential(cmd, client,
-                          resource_group,
-                          namespace_name,
-                          notification_hub_name,
-                          mpns_certificate,
-                          certificate_key):
-    body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
-    body.setdefault('mpns_credential', {})['mpns_certificate'] = mpns_certificate
-    body.setdefault('mpns_credential', {})['certificate_key'] = certificate_key
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+    return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 def update_wns_credential(cmd, client,
                           resource_group,
@@ -384,4 +371,4 @@ def update_wns_credential(cmd, client,
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     body.setdefault('wns_credential', {})['package_sid'] = package_sid
     body.setdefault('wns_credential', {})['secret_key'] = secret_key
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
+    return client.patch(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)

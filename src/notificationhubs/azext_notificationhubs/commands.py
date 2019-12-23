@@ -48,7 +48,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_notificationhubs_hub')
         g.custom_command('list', 'list_notificationhubs_hub')
         g.custom_command('check_availability', 'check_notification_hub_availability_notificationhubs_hub')
-        g.custom_command('get_pns_credentials', 'get_pns_credentials_notificationhubs_hub')
         g.custom_command('debug_send', 'debug_send_notificationhubs_hub')
         g.custom_command('authorization_rule list', 'list_authorization_rules_notificationhubs_hub')
         g.custom_show_command('authorization_rule show', 'get_authorization_rule_notificationhubs_hub')
@@ -58,6 +57,7 @@ def load_command_table(self, _):
         g.custom_command('authorization_rule regenerate_keys', 'regenerate_keys_notificationhubs_hub')
 
     with self.command_group('notificationhubs hub credential', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
+        g.custom_command('list', 'get_pns_credentials_notificationhubs_hub')
         g.custom_command('gcm update', 'update_gcm_credential')
         g.custom_command('apns udpate', 'update_apns_credential')
         g.custom_command('wns update', 'update_wns_credential')

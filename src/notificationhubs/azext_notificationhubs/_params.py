@@ -139,7 +139,7 @@ def load_arguments(self, _):
         c.argument('name', id_part=None, help='The authorization rule name.')
         c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']),id_part=None, help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
 
-    with self.argument_context('notificationhubs hub get_pns_credentials') as c:
+    with self.argument_context('notificationhubs hub credential list') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
@@ -199,8 +199,9 @@ def load_arguments(self, _):
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('apns_certificate', id_part=None, help='The APNS certificate.')
         c.argument('certificate_key', id_part=None, help='The certificate key.')
+        c.argument('endpoint', id_part=None, help='The endpoint of this credential.')
         c.argument('key_id', id_part=None, help='A 10-character key identifier (kid) key, obtained from your developer account')
-        c.argument('app_name', id_part=None, help='The name of the application')
+        c.argument('app_name', id_part=None, help='The name of the application/bundle id.')
         c.argument('app_id', id_part=None, help='The issuer (iss) registered claim key, whose value is your 10-character Team ID, obtained from your developer account')
         c.argument('token', id_part=None, help='Provider Authentication Token, obtained through your developer account.')
 

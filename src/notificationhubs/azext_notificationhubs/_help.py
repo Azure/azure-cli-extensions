@@ -234,13 +234,13 @@ helps['notificationhubs hub authorization_rule regenerate_keys'] = """
                "DefaultListenSharedAccessSignature" --policy-key "Secondary Key"
 """
 
-helps['notificationhubs hub get_pns_credentials'] = """
+helps['notificationhubs hub credential list'] = """
     type: command
     short-summary: Lists the PNS Credentials associated with a notification hub .
     examples:
       - name: notificationHubPnsCredentials
         text: |-
-               az notificationhubs hub get_pns_credentials --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs hub credential list --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
@@ -350,4 +350,29 @@ helps['notificationhubs hub credential gcm update'] = """
                az notificationhubs hub credential gcm update --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --google-api-key \\
                "xxxxxxxxx"
+"""
+
+helps['notificationhubs hub credential adm update'] = """
+    type: group
+    short-summary: Update credential for Amazon(ADM).
+"""
+
+helps['notificationhubs hub credential apns update'] = """
+    type: group
+    short-summary: Update credential for Apple(APNS).
+"""
+
+helps['notificationhubs hub credential baidu update'] = """
+    type: group
+    short-summary: Update credential for Baidu(Andrioid China).
+"""
+
+helps['notificationhubs hub credential mpns update'] = """
+    type: group
+    short-summary: Update credential for Windows Phone(MPNS).
+"""
+
+helps['notificationhubs hub credential wns update'] = """
+    type: group
+    short-summary: Update credential for Windows(WNS).
 """
