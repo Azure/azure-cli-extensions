@@ -138,7 +138,6 @@ def create_notificationhubs_hub(cmd, client,
                                 sku_size=None,
                                 sku_family=None,
                                 sku_capacity=None,
-                                is_availiable=None,
                                 registration_ttl=None):
     body = {}
     body['location'] = location  # str
@@ -148,7 +147,6 @@ def create_notificationhubs_hub(cmd, client,
     body.setdefault('sku', {})['size'] = sku_size  # str
     body.setdefault('sku', {})['family'] = sku_family  # str
     body.setdefault('sku', {})['capacity'] = sku_capacity  # number
-    body['is_availiable'] = is_availiable  # boolean
     body['registration_ttl'] = registration_ttl  # str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
@@ -163,10 +161,7 @@ def update_notificationhubs_hub(cmd, client,
                                 sku_tier=None,
                                 sku_size=None,
                                 sku_family=None,
-                                sku_capacity=None,
-                                is_availiable=None,
-                                rights=None,
-                                policy_key=None):
+                                sku_capacity=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -182,12 +177,6 @@ def update_notificationhubs_hub(cmd, client,
         body.setdefault('sku', {})['family'] = sku_family  # str
     if sku_capacity is not None:
         body.setdefault('sku', {})['capacity'] = sku_capacity  # number
-    if is_availiable is not None:
-        body['is_availiable'] = is_availiable  # boolean
-    if rights is not None:
-        body['rights'] = None if rights is None else rights.split(',')
-    if policy_key is not None:
-        body['policy_key'] = policy_key  # str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 
@@ -317,7 +306,7 @@ def update_apns_credential(cmd, client,
                            notification_hub_name,
                            apns_certificate=None,
                            certificate_key=None,
-                           end_point=None,
+                           endpoint=None,
                            key_id=None,
                            app_name=None,
                            app_id=None,
@@ -327,8 +316,8 @@ def update_apns_credential(cmd, client,
         body.setdefault('apns_credential', {})['apns_certificate'] = apns_certificate
     if certificate_key is not None:
         body.setdefault('apns_credential', {})['certificate_key'] = certificate_key
-    if end_point is not None:
-        body.setdefault('apns_credential', {})['end_point'] = end_point
+    if endpoint is not None:
+        body.setdefault('apns_credential', {})['endpoint'] = endpoint
     if key_id is not None:
         body.setdefault('apns_credential', {})['key_id'] = key_id
     if app_name is not None:

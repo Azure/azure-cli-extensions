@@ -59,7 +59,7 @@ def load_command_table(self, _):
     with self.command_group('notificationhubs hub credential', notificationhubs_notification_hubs, client_factory=cf_notification_hubs) as g:
         g.custom_command('list', 'get_pns_credentials_notificationhubs_hub')
         g.custom_command('gcm update', 'update_gcm_credential')
-        g.custom_command('apns udpate', 'update_apns_credential')
+        g.custom_command('apns update', 'update_apns_credential')
         g.custom_command('wns update', 'update_wns_credential')
         g.custom_command('mpns update', 'update_mpns_credential')
         g.custom_command('adm update', 'update_adm_credential')

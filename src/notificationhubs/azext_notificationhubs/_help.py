@@ -141,7 +141,7 @@ helps['notificationhubs namespace authorization_rule create'] = """
       - name: NameSpaceAuthorizationRuleCreate
         text: |-
                az notificationhubs namespace authorization_rule create --resource-group \\
-               "5ktrial" --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788"
+               "5ktrial" --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788" --rights "Listen"
 """
 
 helps['notificationhubs namespace authorization_rule delete'] = """
@@ -166,7 +166,7 @@ helps['notificationhubs hub create'] = """
       - name: NotificationHubCreate
         text: |-
                az notificationhubs hub create --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
-               --notification-hub-name "nh-sdk-hub"
+               --notification-hub-name "nh-sdk-hub" --location "South Central US" --sku-name "Free"
 """
 
 helps['notificationhubs hub update'] = """
@@ -215,7 +215,7 @@ helps['notificationhubs hub check_availability'] = """
       - name: notificationHubCheckNameAvailability
         text: |-
                az notificationhubs hub check_availability --resource-group "5ktrial" \\
-               --namespace-name "locp-newns"
+               --namespace-name "locp-newns" --notification-hub-name "nh-sdk-hub"
 """
 
 helps['notificationhubs hub authorization_rule'] = """
@@ -261,7 +261,8 @@ helps['notificationhubs hub debug_send'] = """
       - name: debugsend
         text: |-
                az notificationhubs hub debug_send --resource-group "5ktrial" --namespace-name \\
-               "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
+               "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\
+               --payload "{\\\"data\\\":{\\\"message\\\":\\\"test notification\\\"}}"
 """
 
 helps['notificationhubs hub authorization_rule list'] = """
@@ -293,7 +294,7 @@ helps['notificationhubs hub authorization_rule create'] = """
         text: |-
                az notificationhubs hub authorization_rule create --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
-               "DefaultListenSharedAccessSignature"
+               "DefaultListenSharedAccessSignature" --rights "Listen"
 """
 
 helps['notificationhubs hub authorization_rule delete'] = """
@@ -353,26 +354,26 @@ helps['notificationhubs hub credential gcm update'] = """
 """
 
 helps['notificationhubs hub credential adm update'] = """
-    type: group
+    type: command
     short-summary: Update credential for Amazon(ADM).
 """
 
 helps['notificationhubs hub credential apns update'] = """
-    type: group
+    type: command
     short-summary: Update credential for Apple(APNS).
 """
 
 helps['notificationhubs hub credential baidu update'] = """
-    type: group
+    type: command
     short-summary: Update credential for Baidu(Andrioid China).
 """
 
 helps['notificationhubs hub credential mpns update'] = """
-    type: group
+    type: command
     short-summary: Update credential for Windows Phone(MPNS).
 """
 
 helps['notificationhubs hub credential wns update'] = """
-    type: group
+    type: command
     short-summary: Update credential for Windows(WNS).
 """

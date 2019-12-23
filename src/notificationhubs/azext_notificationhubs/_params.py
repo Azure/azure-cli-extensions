@@ -152,6 +152,7 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('notification_format', arg_type=get_enum_type(['apple', 'baidu', 'gcm', 'template', 'windows', 'windowsphone']), id_part=None, help='The format of notification message.')
         c.argument('payload', id_part=None, help='The payload for message.')
 
     with self.argument_context('notificationhubs hub authorization_rule list') as c:
