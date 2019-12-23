@@ -41,26 +41,27 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
                                    object_replication_policy_id=policy_id, properties=ors_policy)
 
 
-def update_ors_policy(cmd, parameters, properties=None, source_account=None, destination_account=None,
+def update_ors_policy(client, parameters, resource_group_name, account_name, properties=None, source_account=None, destination_account=None,
                       rule_id=None, source_container=None, destination_container=None, tag=None,
                       prefix_match=None):
 
-    ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
+    #ObjectReplicationPolicy = cmd.get_models('ObjectReplicationPolicy')
 
     if source_account is not None:
-        parameters.source_account = source_account
+        instance.source_account = source_account
     if destination_account is not None:
-        parameters.destination_account = destination_account
+        instance.destination_account = destination_account
     if rule_id:
-        for i, rule in enumerate(parameters.rules):
+        for i, rule in enumerate(instance.rules):
             if rule.rule_id == rule_id:
-                parameters.rules[i] = update_ors_rule(rule, source_container=source_container,
-                                                      destination_container=destination_container,
-                                                      tag=tag, prefix_match=prefix_match)
+                instance.rules[i] = update_ors_rule(rule, source_container=source_container,
+                                                    destination_container=destination_container,
+                                                    tag=tag, prefix_match=prefix_match)
     if properties is not None:
-        parameters = properties
+        instance = properties
 
-    return parameters
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                            object_replication_policy_id=policy_id, properties=policy_properties)
 
 
 def get_ors_policy(client, resource_group_name, account_name, policy_id='default'):
