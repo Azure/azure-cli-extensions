@@ -156,7 +156,7 @@ helps['notificationhubs namespace authorization_rule delete'] = """
 
 helps['notificationhubs'] = """
     type: group
-    short-summary: Commands to manage notificationhubs.
+    short-summary: Manage Notification Hubs.
 """
 
 helps['notificationhubs create'] = """
