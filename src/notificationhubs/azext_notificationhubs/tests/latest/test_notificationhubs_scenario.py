@@ -70,11 +70,11 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--namespace-name "my-test-space"',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        self.cmd('az notificationhubs namespace authorization_rule list_keys '
-                 '--resource-group {rg} '
-                 '--namespace-name "my-test-space" '
-                 '--name "my-space-rule"',
-                 checks=[JMESPathCheckExists('primaryConnectionString')])
+        # self.cmd('az notificationhubs namespace authorization_rule list_keys '
+        #          '--resource-group {rg} '
+        #          '--namespace-name "my-test-space" '
+        #          '--name "my-space-rule"',
+        #          checks=[JMESPathCheckExists('primaryConnectionString')])
 
         self.cmd('az notificationhubs authorization_rule create '
                  '--resource-group {rg} '
@@ -97,12 +97,12 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        self.cmd('az notificationhubs authorization_rule list_keys '
-                 '--resource-group {rg} '
-                 '--namespace-name "my-test-space" '
-                 '--notification-hub-name "my-test-hub" '
-                 '--name "my-hub-send-key"',
-                 checks=[JMESPathCheckExists('primaryConnectionString')])
+        # self.cmd('az notificationhubs authorization_rule list_keys '
+        #          '--resource-group {rg} '
+        #          '--namespace-name "my-test-space" '
+        #          '--notification-hub-name "my-test-hub" '
+        #          '--name "my-hub-send-key"',
+        #          checks=[JMESPathCheckExists('primaryConnectionString')])
 
         self.cmd('az notificationhubs credential gcm update '
                  '--resource-group {rg} '
