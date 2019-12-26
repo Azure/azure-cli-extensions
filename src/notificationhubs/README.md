@@ -63,7 +63,7 @@ az notificationhubs credential gcm update \
 
 ##### Test sending message to Android devices
 ```
-az notificationhubs debug_send \
+az notificationhubs test_send \
     --resource-group groupName \
     --namespace-name spaceName \
     --notification-hub-name hubName \

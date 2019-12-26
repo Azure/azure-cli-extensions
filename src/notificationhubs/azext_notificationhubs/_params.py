@@ -16,9 +16,6 @@ from azure.cli.core.commands.parameters import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('notificationhubs namespace list') as c:
-        pass
-
     with self.argument_context('notificationhubs namespace create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
@@ -58,18 +55,18 @@ def load_arguments(self, _):
     with self.argument_context('notificationhubs namespace authorization_rule list_keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('name', id_part=None, help='The connection string of the namespace for the specified authorizationRule.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
 
     with self.argument_context('notificationhubs namespace authorization_rule regenerate_keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('name', id_part=None, help='The connection string of the namespace for the specified authorizationRule.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
         c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), id_part=None, help='Name of the key that has to be regenerated for the Namespace Authorization Rule.')
 
     with self.argument_context('notificationhubs namespace authorization_rule show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('name', id_part=None, help='Authorization rule name.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
 
     with self.argument_context('notificationhubs namespace authorization_rule list') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -78,13 +75,13 @@ def load_arguments(self, _):
     with self.argument_context('notificationhubs namespace authorization_rule create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('name', id_part=None, help='Authorization rule name.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
         c.argument('rights', id_part=None, help='The rights associated with the rule.')
 
     with self.argument_context('notificationhubs namespace authorization_rule delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('name', id_part=None, help='Authorization rule name.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
 
     with self.argument_context('notificationhubs create') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -148,7 +145,7 @@ def load_arguments(self, _):
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('name', id_part=None, help='The authorization rule name.')
 
-    with self.argument_context('notificationhubs debug_send') as c:
+    with self.argument_context('notificationhubs test_send') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
@@ -164,20 +161,20 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('name', id_part=None, help='The connection string of the NotificationHub for the specified authorizationRule.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
 
     with self.argument_context('notificationhubs authorization_rule create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('name', id_part=None, help='The connection string of the NotificationHub for the specified authorizationRule.')
-        c.argument('rights', id_part=None, help='The rights associated with the rule.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
+        c.argument('rights', id_part=None, help='The rights associated with the rule. Separated by comma.')
 
     with self.argument_context('notificationhubs authorization_rule delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('name', id_part=None, help='The connection string of the NotificationHub for the specified authorizationRule.')
+        c.argument('name', id_part=None, help='The authorization rule name.')
 
     with self.argument_context('notificationhubs credential gcm update') as c:
         c.argument('resource_group', resource_group_name_type)

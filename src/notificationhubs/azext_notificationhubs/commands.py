@@ -48,7 +48,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_notificationhubs_hub')
         g.custom_command('list', 'list_notificationhubs_hub')
         g.custom_command('check_availability', 'check_notification_hub_availability_notificationhubs_hub')
-        g.custom_command('debug_send', 'debug_send_notificationhubs_hub')
+        g.custom_command('test_send', 'debug_send_notificationhubs_hub')
         g.custom_command('authorization_rule list', 'list_authorization_rules_notificationhubs_hub')
         g.custom_show_command('authorization_rule show', 'get_authorization_rule_notificationhubs_hub')
         g.custom_command('authorization_rule create', 'create_or_update_authorization_rule_notificationhubs_hub')

@@ -117,7 +117,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
 
-        # self.cmd('az notificationhubs debug_send '
+        # self.cmd('az notificationhubs test_send '
         #     '--resource-group {rg} '
         #     '--namespace-name "my-test-space" '
         #     '--notification-hub-name "my-test-hub" '
