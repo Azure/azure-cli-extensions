@@ -35,7 +35,7 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
         self.cmd('az imagebuilder create '
                  '--resource-group {rg} '
                  '--name {it} '
-                 '--source '
+                 '--source-type Canonical:UbuntuServer:18.04-LTS:18.04.201903060'
                  '--location westus '
                  '--distribute-type ManagedImage '
                  '--distribute-location westus '

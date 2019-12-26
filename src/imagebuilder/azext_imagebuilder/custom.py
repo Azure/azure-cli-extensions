@@ -15,6 +15,7 @@ def create_imagebuilder(cmd, client,
                         resource_group,
                         image_template_name,
                         location,
+                        source_type,
                         distribute_type,
                         tags=None,
                         customize=None,
@@ -22,12 +23,21 @@ def create_imagebuilder(cmd, client,
                         vm_size=None,
                         _type=None,
                         user_assigned_identities=None,
+                        source_image=None,
+                        source_uri=None,
+                        source_checksum=None,
+                        source_urn=None,
                         distribute_location=None,
                         distribute_image=None,
                         artifact_tag=None,
                         run_output_name=None):
+
+    if source_type == 'PlatformImage':
+        if not source_urn:
+            raise CLIError('usage error: Please provide --source-urn')
+
     if distribute_type == 'VHD':
-        if distribute_locations or distribute_image:
+        if distribute_location or distribute_image:
             raise CLIError('usage error: Do not provide --distribute-location or --distribute-image for VHD')
     elif distribute_type in ['ManagedImage', 'SharedImage']:
         if not distribute_location or not distribute_image:
@@ -37,6 +47,22 @@ def create_imagebuilder(cmd, client,
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['customize'] = customize
+
+    # source
+    if source_type == 'PlatformImage':
+        terms = source_urn.split(':')
+        if len(terms) != 4:
+            raise CLIError('usage error: URN format error')
+        source = {
+            "type": source_type,
+            "publisher": terms[0],
+            "offer": terms[1],
+            "sku": terms[2],
+            "version": terms[3]
+        }
+        body['source'] = source
+    else:
+        raise CLIError('usage error: Do not support this source type now')
 
     # distribute
     if not run_output_name:

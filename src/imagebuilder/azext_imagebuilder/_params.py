@@ -36,12 +36,26 @@ def load_arguments(self, _):
         c.argument('_type', options_list=['--type'], arg_type=get_enum_type(['UserAssigned', 'None']), id_part=None, help='The type of identity used for the image template. The type \'None\' will remove any identities from the image template.')
         c.argument('user_assigned_identities', id_part=None, help='The list of user identities associated with the image template. The user identity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'.')
 
+    with self.argument_context('imagebuilder create', arg_group='Source') as c:
+        c.argument('source_type',
+                   arg_type=get_enum_type(['ISO', 'PlatformImage', 'ManagedImage', 'SharedImageVersion']),
+                   help='The type of source image you want to start with')
+        c.argument('source_image', help='Name or ID of managed image or image version in the shared image gallery')
+        c.argument('source_uri',
+                   help='URI to get the ISO image. This URI has to be accessible to the resource provider '
+                        'at the time of the image template creation.')
+        c.argument('source_checksum', help='SHA256 Checksum of the ISO image')
+        c.argument('source_urn', help='URN of PlatformImage. Format: publisher:offer:sku:version')
+
     with self.argument_context('imagebuilder create', arg_group='Distribute') as c:
-        c.argument('distribute_type', arg_type=get_enum_type(['ManagedImage', 'SharedImage', 'VHD']), help='Type of distribution')
-        c.argument('distribute_location', nargs='+', help='Location of managed image or locations of Shared Image Gallery image')
+        c.argument('distribute_type', arg_type=get_enum_type(['ManagedImage', 'SharedImage', 'VHD']),
+                   help='Type of distribution')
+        c.argument('distribute_location', nargs='+',
+                   help='Location of managed image or locations of Shared Image Gallery image')
         c.argument('distribute_image', help='Name or ID of managed image or Shared Image Gallery image')
         c.argument('run_output_name', help='The name to be used for the associated RunOutput')
-        c.argument('artifact_tag', tags_type, help='Tags that will be applied to the artifact once it has been created/updated by the distributor')
+        c.argument('artifact_tag', tags_type,
+                   help='Tags that will be applied to the artifact once it has been created/updated by the distributor')
 
     with self.argument_context('imagebuilder update') as c:
         c.argument('resource_group', resource_group_name_type)
