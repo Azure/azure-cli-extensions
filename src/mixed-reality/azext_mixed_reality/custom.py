@@ -9,19 +9,16 @@
 # pylint: disable=unused-argument
 
 
-# operation: operations
 def list_mixed_reality_operation(cmd, client):
     return client.list()
 
 
-# operation: 
 def check_name_availability_local_mixed_reality_location_check_name_availability(cmd, client,
                                                                                  location):
     body = {}
     return client.check_name_availability_local(location=location, check_name_availability=body)
 
 
-# operation: spatial_anchors_accounts
 def create_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name,
@@ -35,7 +32,6 @@ def create_mixed_reality_spatial_anchors_account(cmd, client,
     return client.create(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account=body)
 
 
-# operation: spatial_anchors_accounts
 def update_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name,
@@ -52,21 +48,18 @@ def update_mixed_reality_spatial_anchors_account(cmd, client,
     return client.create(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account=body)
 
 
-# operation: spatial_anchors_accounts
 def delete_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name):
     return client.delete(resource_group_name=resource_group, spatial_anchors_account_name=name)
 
 
-# operation: spatial_anchors_accounts
 def get_mixed_reality_spatial_anchors_account(cmd, client,
                                               resource_group,
                                               name):
     return client.get(resource_group_name=resource_group, spatial_anchors_account_name=name)
 
 
-# operation: spatial_anchors_accounts
 def list_mixed_reality_spatial_anchors_account(cmd, client,
                                                resource_group):
     if resource_group is not None:
@@ -74,7 +67,6 @@ def list_mixed_reality_spatial_anchors_account(cmd, client,
     return client.list_by_subscription()
 
 
-# operation: spatial_anchors_accounts
 def regenerate_keys_mixed_reality_spatial_anchors_account(cmd, client,
                                                           resource_group,
                                                           name):
@@ -82,7 +74,6 @@ def regenerate_keys_mixed_reality_spatial_anchors_account(cmd, client,
     return client.regenerate_keys(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account_key_regenerate=body)
 
 
-# operation: spatial_anchors_accounts
 def get_keys_mixed_reality_spatial_anchors_account(cmd, client,
                                                    resource_group,
                                                    name):
