@@ -8,25 +8,55 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
+from knack.util import CLIError
+
 
 def create_imagebuilder(cmd, client,
                         resource_group,
                         image_template_name,
                         location,
-                        distribute,
+                        distribute_type,
                         tags=None,
                         customize=None,
                         build_timeout_in_minutes=None,
-                        vm_profile_vm_size=None,
+                        vm_size=None,
                         _type=None,
-                        user_assigned_identities=None):
+                        user_assigned_identities=None,
+                        distribute_location=None,
+                        distribute_image=None,
+                        artifact_tag=None,
+                        run_output_name=None):
+    if distribute_type == 'VHD':
+        if distribute_locations or distribute_image:
+            raise CLIError('usage error: Do not provide --distribute-location or --distribute-image for VHD')
+    elif distribute_type in ['ManagedImage', 'SharedImage']:
+        if not distribute_location or not distribute_image:
+            raise CLIError('usage error: Please provide --distribute-location and --distribute-image')
+
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['customize'] = customize
-    body['distribute'] = distribute
+
+    # distribute
+    if not run_output_name:
+        run_output_name = 'runoutput_' + image_template_name
+    distribute = {
+        "type": distribute_type,
+        "runOutputName": run_output_name
+    }
+    if distribute_type == 'ManagedImage':
+        distribute["imageId"] = distribute_image
+        if len(distribute_location) != 1:
+            raise CLIError('usage error: Only one location allowed')
+        distribute["location"] = distribute_location[0]
+    elif distribute_type == 'SharedImage':
+        distribute["galleryImageId"] = distribute_image
+        distribute["replicationRegions"] = distribute_location
+    body['distribute'] = [distribute]
+
     body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
-    body.setdefault('vm_profile', {})['vm_size'] = vm_profile_vm_size  # str
+    body.setdefault('vm_profile', {})['vm_size'] = vm_size  # str
     body.setdefault('identity', {})['type'] = _type  # str
     body.setdefault('identity', {})['user_assigned_identities'] = user_assigned_identities  # dictionary
     return client.create_or_update(resource_group_name=resource_group, image_template_name=image_template_name, parameters=body)

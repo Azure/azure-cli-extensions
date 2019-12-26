@@ -32,3 +32,5 @@ def load_command_table(self, _):
         client_factory=cf_operations)
     with self.command_group('imagebuilder', imagebuilder_operations, client_factory=cf_operations) as g:
         g.custom_command('list', 'list_imagebuilder')
+
+    # with self.command_group('imagebuilder distribute create ')

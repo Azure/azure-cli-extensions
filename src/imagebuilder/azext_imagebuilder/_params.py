@@ -16,21 +16,32 @@ from azext_imagebuilder.action import (
     ImageBuilderAddCustomize,
     ImageBuilderAddDistribute
 )
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
 
+    name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
+    image_template_name = CLIArgumentType(overrides=name_arg_type, help='The name of the image Template', id_part='name')
+
     with self.argument_context('imagebuilder create') as c:
         c.argument('resource_group', resource_group_name_type)
-        c.argument('image_template_name', id_part=None, help='The name of the image Template')
+        c.argument('image_template_name', image_template_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('customize', id_part=None, help='Specifies the properties used to describe the customization steps of the image, like Image source etc', action=ImageBuilderAddCustomize, nargs='+')
-        c.argument('distribute', id_part=None, help='The distribution targets where the image output needs to go to.', action=ImageBuilderAddDistribute, nargs='+')
+        # c.argument('distribute', id_part=None, help='The distribution targets where the image output needs to go to.', nargs='+')
         c.argument('build_timeout_in_minutes', id_part=None, help='Maximum duration to wait while building the image template. Omit or specify 0 to use the default (4 hours).')
-        c.argument('vm_profile_vm_size', id_part=None, help='Size of the virtual machine used to build, customize and capture images. Omit or specify empty string to use the default (Standard_D1_v2).')
+        c.argument('vm_size', id_part=None, help='Size of the virtual machine used to build, customize and capture images. Omit or specify empty string to use the default (Standard_D1_v2).')
         c.argument('_type', options_list=['--type'], arg_type=get_enum_type(['UserAssigned', 'None']), id_part=None, help='The type of identity used for the image template. The type \'None\' will remove any identities from the image template.')
         c.argument('user_assigned_identities', id_part=None, help='The list of user identities associated with the image template. The user identity dictionary key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'.')
+
+    with self.argument_context('imagebuilder create', arg_group='Distribute') as c:
+        c.argument('distribute_type', arg_type=get_enum_type(['ManagedImage', 'SharedImage', 'VHD']), help='Type of distribution')
+        c.argument('distribute_location', nargs='+', help='Location of managed image or locations of Shared Image Gallery image')
+        c.argument('distribute_image', help='Name or ID of managed image or Shared Image Gallery image')
+        c.argument('run_output_name', help='The name to be used for the associated RunOutput')
+        c.argument('artifact_tag', tags_type, help='Tags that will be applied to the artifact once it has been created/updated by the distributor')
 
     with self.argument_context('imagebuilder update') as c:
         c.argument('resource_group', resource_group_name_type)

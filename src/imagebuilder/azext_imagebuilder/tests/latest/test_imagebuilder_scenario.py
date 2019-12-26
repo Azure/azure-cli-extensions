@@ -15,18 +15,31 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ImageBuilderClientScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_imagebuilder')
+    @ResourceGroupPreparer(name_prefix='cli_test_imagebuilder', location='westus2')
     def test_imagebuilder(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'it': 'it1'
         })
+
+        # az feature register --namespace Microsoft.VirtualMachineImages --name VirtualMachineTemplatePreview
+
+        rg_id = self.cmd('az group show -g {rg}').get_output_in_json()['id']
+
+        self.kwargs.update({
+            'rg_id': rg_id
+        })
+
+        self.cmd('az role assignment create --assignee cf32a0cc-373c-47c9-9156-0db11f6a6dfc --role Contributor --scope {rg_id}')
 
         self.cmd('az imagebuilder create '
                  '--resource-group {rg} '
-                 '--image-template-name "myImageTemplate" '
-                 '--location "westus" '
-                 '--vm-profile-vm-size "Standard_D2s_v3"',
+                 '--name {it} '
+                 '--source '
+                 '--location westus '
+                 '--distribute-type ManagedImage '
+                 '--distribute-location westus '
+                 '--distribute-image image1',
                  checks=[])
 
         self.cmd('az imagebuilder create '
