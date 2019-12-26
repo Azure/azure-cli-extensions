@@ -60,7 +60,7 @@ helps['mixed-reality remote-rendering-account update'] = """
       - name: ResourceCreateOrUpdate
         text: |-
                az mixed-reality remote-rendering-account update --resource-group "MyResourceGroup" \\
-               --name "alpha"
+               --name "MyAccount"
 """
 
 helps['mixed-reality remote-rendering-account delete'] = """
@@ -70,7 +70,7 @@ helps['mixed-reality remote-rendering-account delete'] = """
       - name: Delete remote rendering account
         text: |-
                az mixed-reality remote-rendering-account delete --resource-group "MyResourceGroup" \\
-               --name "alpha"
+               --name "MyAccount"
 """
 
 helps['mixed-reality remote-rendering-account show'] = """
@@ -80,7 +80,7 @@ helps['mixed-reality remote-rendering-account show'] = """
       - name: Get remote rendering account
         text: |-
                az mixed-reality remote-rendering-account show --resource-group "MyResourceGroup" --name \\
-               "alpha"
+               "MyAccount"
 """
 
 helps['mixed-reality remote-rendering-account list'] = """
@@ -102,7 +102,7 @@ helps['mixed-reality remote-rendering-account regenerate_keys'] = """
       - name: Regenerate remote rendering account keys
         text: |-
                az mixed-reality remote-rendering-account regenerate_keys --resource-group \\
-               "MyResourceGroup" --name "alpha"
+               "MyResourceGroup" --name "MyAccount"
 """
 
 helps['mixed-reality remote-rendering-account get_keys'] = """
@@ -112,7 +112,7 @@ helps['mixed-reality remote-rendering-account get_keys'] = """
       - name: Get remote rendering account key
         text: |-
                az mixed-reality remote-rendering-account get_keys --resource-group "MyResourceGroup" \\
-               --name "alpha"
+               --name "MyAccount"
 """
 
 helps['mixed-reality spatial-anchors-account'] = """
@@ -127,7 +127,7 @@ helps['mixed-reality spatial-anchors-account create'] = """
       - name: Create spatial anchor account
         text: |-
                az mixed-reality spatial-anchors-account create --resource-group "MyResourceGroup" --name \\
-               "alpha" --location "EastUs2"
+               "MyAccount" --location "eastus2euap"
 """
 
 helps['mixed-reality spatial-anchors-account update'] = """
@@ -137,7 +137,7 @@ helps['mixed-reality spatial-anchors-account update'] = """
       - name: ResourceCreateOrUpdate
         text: |-
                az mixed-reality spatial-anchors-account update --resource-group "MyResourceGroup" --name \\
-               "alpha"
+               "MyAccount"
 """
 
 helps['mixed-reality spatial-anchors-account delete'] = """
@@ -147,7 +147,7 @@ helps['mixed-reality spatial-anchors-account delete'] = """
       - name: Delete spatial anchors account
         text: |-
                az mixed-reality spatial-anchors-account delete --resource-group "MyResourceGroup" --name \\
-               "alpha"
+               "MyAccount"
 """
 
 helps['mixed-reality spatial-anchors-account show'] = """
@@ -157,7 +157,7 @@ helps['mixed-reality spatial-anchors-account show'] = """
       - name: Get spatial anchor accounts
         text: |-
                az mixed-reality spatial-anchors-account show --resource-group "MyResourceGroup" --name \\
-               "alpha"
+               "MyAccount"
 """
 
 helps['mixed-reality spatial-anchors-account list'] = """
@@ -179,7 +179,7 @@ helps['mixed-reality spatial-anchors-account regenerate_keys'] = """
       - name: Regenerate spatial anchors account keys
         text: |-
                az mixed-reality spatial-anchors-account regenerate_keys --resource-group \\
-               "MyResourceGroup" --name "alpha"
+               "MyResourceGroup" --name "MyAccount"
 """
 
 helps['mixed-reality spatial-anchors-account get_keys'] = """
@@ -189,5 +189,5 @@ helps['mixed-reality spatial-anchors-account get_keys'] = """
       - name: Get spatial anchor account key
         text: |-
                az mixed-reality spatial-anchors-account get_keys --resource-group "MyResourceGroup" \\
-               --name "alpha"
+               --name "MyAccount"
 """
