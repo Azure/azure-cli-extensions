@@ -35,7 +35,7 @@ helps['mixed-reality location check-name-availability check_name_availability_lo
       - name: CheckLocalNameAvailability
         text: |-
                az mixed-reality location check-name-availability check_name_availability_local \\
-               --location "Global"
+               --location "eastus2euap"
 """
 
 helps['mixed-reality remote-rendering-account'] = """
@@ -47,10 +47,10 @@ helps['mixed-reality remote-rendering-account create'] = """
     type: command
     short-summary: Creating or Updating a Remote Rendering Account.
     examples:
-      - name: ResourceCreate
+      - name: Create remote rendering account
         text: |-
-               az mixed-reality remote-rendering-account create --resource-group "mrsecf" --name "alpha" \\
-               --location "EastUs2"
+               az mixed-reality remote-rendering-account create --resource-group "MyResourceGroup" \\
+               --name "MyAccountName" --location "eastus2euap"
 """
 
 helps['mixed-reality remote-rendering-account update'] = """
@@ -59,57 +59,60 @@ helps['mixed-reality remote-rendering-account update'] = """
     examples:
       - name: ResourceCreateOrUpdate
         text: |-
-               az mixed-reality remote-rendering-account update --resource-group "mrsecf" --name "alpha"
+               az mixed-reality remote-rendering-account update --resource-group "MyResourceGroup" \\
+               --name "alpha"
 """
 
 helps['mixed-reality remote-rendering-account delete'] = """
     type: command
     short-summary: Delete a Remote Rendering Account.
     examples:
-      - name: ResourceDelete
+      - name: Delete remote rendering account
         text: |-
-               az mixed-reality remote-rendering-account delete --resource-group "mrsecf" --name "alpha"
+               az mixed-reality remote-rendering-account delete --resource-group "MyResourceGroup" \\
+               --name "alpha"
 """
 
 helps['mixed-reality remote-rendering-account show'] = """
     type: command
     short-summary: Retrieve a Remote Rendering Account.
     examples:
-      - name: ResourceGet
+      - name: Get remote rendering account
         text: |-
-               az mixed-reality remote-rendering-account show --resource-group "mrsecf" --name "alpha"
+               az mixed-reality remote-rendering-account show --resource-group "MyResourceGroup" --name \\
+               "alpha"
 """
 
 helps['mixed-reality remote-rendering-account list'] = """
     type: command
     short-summary: List Resources by Resource Group
     examples:
-      - name: RemoteRenderingAccountPageBySubscription
+      - name: List remote rendering accounts by subscription
         text: |-
                az mixed-reality remote-rendering-account list
-      - name: ResourceGet
+      - name: List remote rendering accounts by resource group
         text: |-
-               az mixed-reality remote-rendering-account list --resource-group "mrsecf"
+               az mixed-reality remote-rendering-account list --resource-group "MyResourceGroup"
 """
 
 helps['mixed-reality remote-rendering-account regenerate_keys'] = """
     type: command
     short-summary: Regenerate specified Key of a Remote Rendering Account
     examples:
-      - name: ResourceRegenerateKey
+      - name: Regenerate remote rendering account keys
         text: |-
-               az mixed-reality remote-rendering-account regenerate_keys --resource-group "mrsecf" \\
-               --name "alpha"
+               az mixed-reality remote-rendering-account regenerate_keys --resource-group \\
+               "MyResourceGroup" --name "alpha"
 """
 
 helps['mixed-reality remote-rendering-account get_keys'] = """
     type: command
     short-summary: Get Both of the 2 Keys of a Remote Rendering Account
     examples:
-      - name: ResourceGetKey
+      - name: Get remote rendering account key
         text: |-
-               az mixed-reality remote-rendering-account get_keys --resource-group "mrsecf" --name \\
-               "alpha"
+               az mixed-reality remote-rendering-account get_keys --resource-group "MyResourceGroup" \\
+               --name "alpha"
 """
 
 helps['mixed-reality spatial-anchors-account'] = """
@@ -121,10 +124,10 @@ helps['mixed-reality spatial-anchors-account create'] = """
     type: command
     short-summary: Creating or Updating a Spatial Anchors Account.
     examples:
-      - name: ResourceCreate
+      - name: Create spatial anchor account
         text: |-
-               az mixed-reality spatial-anchors-account create --resource-group "mrsecf" --name "alpha" \\
-               --location "EastUs2"
+               az mixed-reality spatial-anchors-account create --resource-group "MyResourceGroup" --name \\
+               "alpha" --location "EastUs2"
 """
 
 helps['mixed-reality spatial-anchors-account update'] = """
@@ -133,55 +136,58 @@ helps['mixed-reality spatial-anchors-account update'] = """
     examples:
       - name: ResourceCreateOrUpdate
         text: |-
-               az mixed-reality spatial-anchors-account update --resource-group "mrsecf" --name "alpha"
+               az mixed-reality spatial-anchors-account update --resource-group "MyResourceGroup" --name \\
+               "alpha"
 """
 
 helps['mixed-reality spatial-anchors-account delete'] = """
     type: command
     short-summary: Delete a Spatial Anchors Account.
     examples:
-      - name: ResourceDelete
+      - name: Delete spatial anchors account
         text: |-
-               az mixed-reality spatial-anchors-account delete --resource-group "mrsecf" --name "alpha"
+               az mixed-reality spatial-anchors-account delete --resource-group "MyResourceGroup" --name \\
+               "alpha"
 """
 
 helps['mixed-reality spatial-anchors-account show'] = """
     type: command
     short-summary: Retrieve a Spatial Anchors Account.
     examples:
-      - name: ResourceGet
+      - name: Get spatial anchor accounts
         text: |-
-               az mixed-reality spatial-anchors-account show --resource-group "mrsecf" --name "alpha"
+               az mixed-reality spatial-anchors-account show --resource-group "MyResourceGroup" --name \\
+               "alpha"
 """
 
 helps['mixed-reality spatial-anchors-account list'] = """
     type: command
     short-summary: List Resources by Resource Group
     examples:
-      - name: SpatialAnchorsAccountPageBySubscription
+      - name: List spatial anchors accounts by subscription
         text: |-
                az mixed-reality spatial-anchors-account list
-      - name: ResourceGet
+      - name: List spatial anchor accounts by resource group
         text: |-
-               az mixed-reality spatial-anchors-account list --resource-group "mrsecf"
+               az mixed-reality spatial-anchors-account list --resource-group "MyResourceGroup"
 """
 
 helps['mixed-reality spatial-anchors-account regenerate_keys'] = """
     type: command
     short-summary: Regenerate specified Key of a Spatial Anchors Account
     examples:
-      - name: ResourceRegenerateKey
+      - name: Regenerate spatial anchors account keys
         text: |-
-               az mixed-reality spatial-anchors-account regenerate_keys --resource-group "mrsecf" --name \\
-               "alpha"
+               az mixed-reality spatial-anchors-account regenerate_keys --resource-group \\
+               "MyResourceGroup" --name "alpha"
 """
 
 helps['mixed-reality spatial-anchors-account get_keys'] = """
     type: command
     short-summary: Get Both of the 2 Keys of a Spatial Anchors Account
     examples:
-      - name: ResourceGetKey
+      - name: Get spatial anchor account key
         text: |-
-               az mixed-reality spatial-anchors-account get_keys --resource-group "mrsecf" --name \\
-               "alpha"
+               az mixed-reality spatial-anchors-account get_keys --resource-group "MyResourceGroup" \\
+               --name "alpha"
 """
