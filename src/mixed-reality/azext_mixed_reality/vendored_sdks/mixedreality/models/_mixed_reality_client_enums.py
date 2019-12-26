@@ -9,14 +9,16 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._operations import Operations
-from ._remote_rendering_accounts_operations import RemoteRenderingAccountsOperations
-from ._spatial_anchors_accounts_operations import SpatialAnchorsAccountsOperations
-from ._mixed_reality_client_operations import MixedRealityClientOperationsMixin
+from enum import Enum
 
-__all__ = [
-    'Operations',
-    'RemoteRenderingAccountsOperations',
-    'SpatialAnchorsAccountsOperations',
-    'MixedRealityClientOperationsMixin',
-]
+
+class NameAvailability(str, Enum):
+
+    true = "true"
+    false = "false"
+
+
+class NameUnavailableReason(str, Enum):
+
+    invalid = "Invalid"
+    already_exists = "AlreadyExists"
