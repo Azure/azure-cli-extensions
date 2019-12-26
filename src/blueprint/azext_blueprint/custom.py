@@ -197,7 +197,7 @@ def list_blueprint_published_artifact(cmd, client,
     return client.list(scope=scope, blueprint_name=blueprint_name, version_id=version_id)
 
 
-def create_blueprint(cmd, client,
+def create_blueprint_assignment(cmd, client,
                      name,
                      location,
                      identity_type,
@@ -228,7 +228,7 @@ def create_blueprint(cmd, client,
     return client.create_or_update(scope=scope, assignment_name=name, assignment=body)
 
 
-def update_blueprint(cmd, client,
+def update_blueprint_assignment(cmd, client,
                      name,
                      scope=None,
                      location=None,
@@ -271,24 +271,24 @@ def update_blueprint(cmd, client,
     return client.create_or_update(scope=scope, assignment_name=name, assignment=body)
 
 
-def delete_blueprint(cmd, client,
+def delete_blueprint_assignment(cmd, client,
                      name,
                      scope=None):
     return client.delete(scope=scope, assignment_name=name)
 
 
-def get_blueprint(cmd, client,
+def get_blueprint_assignment(cmd, client,
                   name,
                   scope=None):
     return client.get(scope=scope, assignment_name=name)
 
 
-def list_blueprint(cmd, client,
+def list_blueprint_assignment(cmd, client,
                    scope=None):
     return client.list(scope=scope)
 
 
-def who_is_blueprint_blueprint(cmd, client,
+def who_is_blueprint_blueprint_assignment(cmd, client,
                                name,
                                scope=None):
     return client.who_is_blueprint(scope=scope, assignment_name=name)

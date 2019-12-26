@@ -340,12 +340,12 @@ helps['blueprint published artifact list'] = """
                --version-id "V2"
 """
 
-helps['blueprint'] = """
+helps['blueprint assignment'] = """
     type: group
-    short-summary: Commands to manage blueprint.
+    short-summary: Commands to manage blueprint assignment.
 """
 
-helps['blueprint create'] = """
+helps['blueprint assignment create'] = """
     type: command
     short-summary: Create or update a blueprint assignment.
     examples:
@@ -365,12 +365,12 @@ helps['blueprint create'] = """
                nt/blueprints/simpleBlueprint"
 """
 
-helps['blueprint update'] = """
+helps['blueprint assignment update'] = """
     type: command
     short-summary: Create or update a blueprint assignment.
 """
 
-helps['blueprint delete'] = """
+helps['blueprint assignment delete'] = """
     type: command
     short-summary: Delete a blueprint assignment.
     examples:
@@ -380,7 +380,7 @@ helps['blueprint delete'] = """
                "assignSimpleBlueprint"
 """
 
-helps['blueprint show'] = """
+helps['blueprint assignment show'] = """
     type: command
     short-summary: Get a blueprint assignment.
     examples:
@@ -390,7 +390,7 @@ helps['blueprint show'] = """
                "assignSimpleBlueprint"
 """
 
-helps['blueprint list'] = """
+helps['blueprint assignment list'] = """
     type: command
     short-summary: List blueprint assignments within a subscription.
     examples:
@@ -399,7 +399,7 @@ helps['blueprint list'] = """
                az blueprint list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
 """
 
-helps['blueprint who_is_blueprint'] = """
+helps['blueprint assignment who_is_blueprint'] = """
     type: command
     short-summary: Get Blueprints service SPN objectId
     examples:

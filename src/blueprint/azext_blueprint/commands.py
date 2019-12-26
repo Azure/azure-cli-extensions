@@ -57,10 +57,10 @@ def load_command_table(self, _):
     blueprint_assignments = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._assignments_operations#AssignmentsOperations.{}',
         client_factory=cf_assignments)
-    with self.command_group('blueprint', blueprint_assignments, client_factory=cf_assignments) as g:
-        g.custom_command('create', 'create_blueprint')
-        g.custom_command('update', 'update_blueprint')
-        g.custom_command('delete', 'delete_blueprint')
-        g.custom_command('show', 'get_blueprint')
-        g.custom_command('list', 'list_blueprint')
-        g.custom_command('who_is_blueprint', 'who_is_blueprint_blueprint')
+    with self.command_group('blueprint assignment', blueprint_assignments, client_factory=cf_assignments) as g:
+        g.custom_command('create', 'create_blueprint_assignment')
+        g.custom_command('update', 'update_blueprint_assignment')
+        g.custom_command('delete', 'delete_blueprint_assignment')
+        g.custom_command('show', 'get_blueprint_assignment')
+        g.custom_command('list', 'list_blueprint_assignment')
+        g.custom_command('who_is_blueprint', 'who_is_blueprint_blueprint_assignment')

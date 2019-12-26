@@ -122,7 +122,7 @@ def load_arguments(self, _):
         c.argument('blueprint_name', id_part=None, help='Name of the blueprint definition.')
         c.argument('version_id', id_part=None, help='Version of the published blueprint definition.')
 
-    with self.argument_context('blueprint create') as c:
+    with self.argument_context('blueprint assignment create') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('name', id_part=None, help='Name of the blueprint assignment.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -138,7 +138,7 @@ def load_arguments(self, _):
         c.argument('locks_mode', arg_type=get_enum_type(['None', 'AllResourcesReadOnly', 'AllResourcesDoNotDelete']), id_part=None, help='Lock mode.')
         c.argument('locks_excluded_principals', id_part=None, help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
 
-    with self.argument_context('blueprint update') as c:
+    with self.argument_context('blueprint assignment update') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('name', id_part=None, help='Name of the blueprint assignment.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
@@ -154,17 +154,17 @@ def load_arguments(self, _):
         c.argument('locks_mode', arg_type=get_enum_type(['None', 'AllResourcesReadOnly', 'AllResourcesDoNotDelete']), id_part=None, help='Lock mode.')
         c.argument('locks_excluded_principals', id_part=None, help='List of AAD principals excluded from blueprint locks. Up to 5 principals are permitted.', nargs='+')
 
-    with self.argument_context('blueprint delete') as c:
+    with self.argument_context('blueprint assignment delete') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('name', id_part=None, help='Name of the blueprint assignment.')
 
-    with self.argument_context('blueprint show') as c:
+    with self.argument_context('blueprint assignment show') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('name', id_part=None, help='Name of the blueprint assignment.')
 
-    with self.argument_context('blueprint list') as c:
+    with self.argument_context('blueprint assignment list') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
 
-    with self.argument_context('blueprint who_is_blueprint') as c:
+    with self.argument_context('blueprint assignment who_is_blueprint') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('name', id_part=None, help='Name of the blueprint assignment.')
