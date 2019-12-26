@@ -82,4 +82,3 @@ def list_workspace_keys_ml(cmd, client,
                            resource_group,
                            name):
     return client.list_workspace_keys(resource_group_name=resource_group, workspace_name=name)
-
