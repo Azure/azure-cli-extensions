@@ -25,11 +25,7 @@ def create_mixed_reality_remote_rendering_account(cmd, client,
                                                   location,
                                                   tags=None,
                                                   serial=None):
-    body = {}
-    body['tags'] = tags  # dictionary
-    body['location'] = location  # str
-    body['serial'] = serial  # number
-    return client.create(resource_group_name=resource_group, account_name=name, remote_rendering_account=body)
+    return client.create(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
 
 
 def update_mixed_reality_remote_rendering_account(cmd, client,
@@ -86,11 +82,7 @@ def create_mixed_reality_spatial_anchors_account(cmd, client,
                                                  location,
                                                  tags=None,
                                                  serial=None):
-    body = {}
-    body['tags'] = tags  # dictionary
-    body['location'] = location  # str
-    body['serial'] = serial  # number
-    return client.create(resource_group_name=resource_group, account_name=name, spatial_anchors_account=body)
+    return client.create(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
 
 
 def update_mixed_reality_spatial_anchors_account(cmd, client,
