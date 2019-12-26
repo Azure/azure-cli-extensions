@@ -9,10 +9,6 @@
 # pylint: disable=unused-argument
 
 
-def list_mixed_reality(cmd, client):
-    return client.list()
-
-
 def check_name_availability_local_mixed_reality_check_name_availability(cmd, client,
                                                                         location):
     body = {}
