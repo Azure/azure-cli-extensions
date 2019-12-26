@@ -1,70 +1,110 @@
+# coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.help_files import helps
+# pylint: disable=too-many-lines
+# pylint: disable=line-too-long
+from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['spatial-anchors-account'] = """
+
+helps['mixed-reality'] = """
     type: group
-    short-summary: Manage Spatial Anchors Accounts.
+    short-summary: Commands to manage mixed reality.
 """
 
-helps['spatial-anchors-account list'] = """
+helps['mixed-reality list'] = """
     type: command
-    short-summary: List Spatial Anchors Accounts.
+    short-summary: Exposing Available Operations
     examples:
-        - name: List all Spatial Anchors Accounts in Resource Group 'example'.
-          text: az spatial-anchors-account list -g example
-        - name: List all Spatial Anchors Accounts in current Subscription.
-          text: az spatial-anchors-account list
+      - name: OperationList
+        text: |-
+               az mixed-reality list
 """
 
-helps['spatial-anchors-account create'] = """
+helps['mixed-reality check-name-availability'] = """
+    type: group
+    short-summary: Commands to manage mixed reality check name availability.
+"""
+
+helps['mixed-reality check-name-availability check_name_availability_local'] = """
     type: command
-    short-summary: Create a Spatial Anchors Account.
+    short-summary: Check Name Availability for global uniqueness
     examples:
-        - name: Create a Spatial Anchors Account.
-          text: az spatial-anchors-account create -g example -n example -l eastus2
-        - name: Create a Spatial Anchors Account without Location specified.
-          text: az spatial-anchors-account create -g example -n example
+      - name: CheckLocalNameAvailability
+        text: |-
+               az mixed-reality check-name-availability check_name_availability_local --location \\
+               "Global"
 """
 
-helps['spatial-anchors-account show'] = """
+helps['mixed-reality'] = """
+    type: group
+    short-summary: Commands to manage mixed reality.
+"""
+
+helps['mixed-reality create'] = """
     type: command
-    short-summary: Show a Spatial Anchors Account.
+    short-summary: Creating or Updating a Spatial Anchors Account.
     examples:
-        - name: Show properties of a Spatial Anchors Account.
-          text: az spatial-anchors-account show -g example -n example
+      - name: ResourceCreate
+        text: |-
+               az mixed-reality create --resource-group "mrsecf" --name "alpha" --location "Global"
 """
 
-helps['spatial-anchors-account delete'] = """
+helps['mixed-reality update'] = """
+    type: command
+    short-summary: Creating or Updating a Spatial Anchors Account.
+    examples:
+      - name: ResourceCreateOrUpdate
+        text: |-
+               az mixed-reality update --resource-group "mrsecf" --name "alpha"
+"""
+
+helps['mixed-reality delete'] = """
     type: command
     short-summary: Delete a Spatial Anchors Account.
     examples:
-        - name: Delete of a Spatial Anchors Account.
-          text: az spatial-anchors-account delete -g example -n example
+      - name: ResourceDelete
+        text: |-
+               az mixed-reality delete --resource-group "mrsecf" --name "alpha"
 """
 
-helps['spatial-anchors-account key'] = """
-    type: group
-    short-summary: Manage developer keys of a Spatial Anchors Account.
-"""
-
-helps['spatial-anchors-account key show'] = """
+helps['mixed-reality show'] = """
     type: command
-    short-summary: Show keys of a Spatial Anchors Account.
+    short-summary: Retrieve a Spatial Anchors Account.
     examples:
-        - name: Show primary key and secondary key of a Spatial Anchors Account.
-          text: az spatial-anchors-account key show -g example -n example
+      - name: ResourceGet
+        text: |-
+               az mixed-reality show --resource-group "mrsecf" --name "alpha"
 """
 
-helps['spatial-anchors-account key renew'] = """
+helps['mixed-reality list'] = """
     type: command
-    short-summary: Renew one of the keys of a Spatial Anchors Account.
+    short-summary: List Resources by Resource Group
     examples:
-        - name: Renew primary key of a Spatial Anchors Account.
-          text: az spatial-anchors-account key renew -g example -n example -k primary
-        - name: Renew secondary key of a Spatial Anchors Account.
-          text: az spatial-anchors-account key renew -g example -n example -k secondary
+      - name: SpatialAnchorsAccountListBySubscription
+        text: |-
+               az mixed-reality list
+      - name: ResourceGet
+        text: |-
+               az mixed-reality list --resource-group "mrsecf"
+"""
+
+helps['mixed-reality regenerate_keys'] = """
+    type: command
+    short-summary: Regenerate 1 Key of a Spatial Anchors Account
+    examples:
+      - name: ResourceRegenerateKey
+        text: |-
+               az mixed-reality regenerate_keys --resource-group "mrsecf" --name "alpha"
+"""
+
+helps['mixed-reality get_keys'] = """
+    type: command
+    short-summary: Get Both of the 2 Keys of a Spatial Anchors Account
+    examples:
+      - name: ResourceRegenerateKey
+        text: |-
+               az mixed-reality get_keys --resource-group "mrsecf" --name "alpha"
 """

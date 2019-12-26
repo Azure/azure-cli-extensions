@@ -2,41 +2,54 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-statements
 
-
-from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (
-    resource_group_name_type,
-    get_resource_name_completion_list,
-    get_location_type,
-    get_enum_type,
     tags_type,
-    name_type
-)
-
-spatial_anchors_account_name_type = CLIArgumentType(
-    help='Name of the Spatial Anchors Account',
-    arg_type=name_type,
-    id_part='name',
-    completer=get_resource_name_completion_list('Microsoft.MixedReality/spatialAnchorsAccounts')
-)
-
-spatial_anchors_account_key_type = CLIArgumentType(
-    help='Key to be regenerated.',
-    arg_type=get_enum_type(['primary', 'secondary']),
-    options_list=['--key', '-k'],
+    resource_group_name_type,
+    get_location_type
 )
 
 
 def load_arguments(self, _):
-    with self.argument_context('spatial-anchors-account') as c:
-        c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('spatial_anchors_account_name', arg_type=spatial_anchors_account_name_type)
 
-    with self.argument_context('spatial-anchors-account create') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)  # pylint: disable=line-too-long
-        c.argument('tags', arg_type=tags_type)
+    with self.argument_context('mixed-reality list') as c:
+        pass
 
-    with self.argument_context('spatial-anchors-account key renew') as c:
-        c.argument('key', arg_type=spatial_anchors_account_key_type)
+    with self.argument_context('mixed-reality check-name-availability check_name_availability_local') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+
+    with self.argument_context('mixed-reality create') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('serial', id_part=None, help='serial of key to be regenerated')
+
+    with self.argument_context('mixed-reality update') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('serial', id_part=None, help='serial of key to be regenerated')
+
+    with self.argument_context('mixed-reality delete') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
+
+    with self.argument_context('mixed-reality show') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
+
+    with self.argument_context('mixed-reality list') as c:
+        c.argument('resource_group', resource_group_name_type)
+
+    with self.argument_context('mixed-reality regenerate_keys') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
+
+    with self.argument_context('mixed-reality get_keys') as c:
+        c.argument('resource_group', resource_group_name_type)
+        c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')

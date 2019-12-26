@@ -4,11 +4,19 @@
 # --------------------------------------------------------------------------------------------
 
 
-def mixed_reality_client_factory(cli_ctx):
+def cf_mixed_reality(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_mixed_reality.vendored_sdks.mixedreality.mixed_reality_client import MixedRealityClient
-    return get_mgmt_service_client(cli_ctx, MixedRealityClient, subscription_bound=True)
+    from .vendored_sdks.mixedreality import MixedRealityClient
+    return get_mgmt_service_client(cli_ctx, MixedRealityClient)
 
 
-def spatial_anchors_account_factory(cli_ctx, _):
-    return mixed_reality_client_factory(cli_ctx).spatial_anchors_accounts
+def cf_operations(cli_ctx, *_):
+    return cf_mixed_reality(cli_ctx).operations
+
+
+def cf_(cli_ctx, *_):
+    return cf_mixed_reality(cli_ctx).
+
+
+def cf_spatial_anchors_accounts(cli_ctx, *_):
+    return cf_mixed_reality(cli_ctx).spatial_anchors_accounts
