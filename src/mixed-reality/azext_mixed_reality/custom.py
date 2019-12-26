@@ -19,6 +19,67 @@ def check_name_availability_local_mixed_reality_location_check_name_availability
     return client.check_name_availability_local(location=location, check_name_availability=body)
 
 
+def create_mixed_reality_remote_rendering_account(cmd, client,
+                                                  resource_group,
+                                                  name,
+                                                  location,
+                                                  tags=None,
+                                                  serial=None):
+    body = {}
+    body['tags'] = tags  # dictionary
+    body['location'] = location  # str
+    body['serial'] = serial  # number
+    return client.create(resource_group_name=resource_group, account_name=name, remote_rendering_account=body)
+
+
+def update_mixed_reality_remote_rendering_account(cmd, client,
+                                                  resource_group,
+                                                  name,
+                                                  tags=None,
+                                                  location=None,
+                                                  serial=None):
+    body = client.get(resource_group_name=resource_group, account_name=name).as_dict()
+    if tags is not None:
+        body['tags'] = tags  # dictionary
+    if location is not None:
+        body['location'] = location  # str
+    if serial is not None:
+        body['serial'] = serial  # number
+    return client.create(resource_group_name=resource_group, account_name=name, remote_rendering_account=body)
+
+
+def delete_mixed_reality_remote_rendering_account(cmd, client,
+                                                  resource_group,
+                                                  name):
+    return client.delete(resource_group_name=resource_group, account_name=name)
+
+
+def get_mixed_reality_remote_rendering_account(cmd, client,
+                                               resource_group,
+                                               name):
+    return client.get(resource_group_name=resource_group, account_name=name)
+
+
+def list_mixed_reality_remote_rendering_account(cmd, client,
+                                                resource_group):
+    if resource_group is not None:
+        return client.list_by_resource_group(resource_group_name=resource_group)
+    return client.list_by_subscription()
+
+
+def regenerate_keys_mixed_reality_remote_rendering_account(cmd, client,
+                                                           resource_group,
+                                                           name):
+    body = {}
+    return client.regenerate_keys(resource_group_name=resource_group, account_name=name, regenerate=body)
+
+
+def get_keys_mixed_reality_remote_rendering_account(cmd, client,
+                                                    resource_group,
+                                                    name):
+    return client.get_keys(resource_group_name=resource_group, account_name=name)
+
+
 def create_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name,
@@ -29,7 +90,7 @@ def create_mixed_reality_spatial_anchors_account(cmd, client,
     body['tags'] = tags  # dictionary
     body['location'] = location  # str
     body['serial'] = serial  # number
-    return client.create(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account=body)
+    return client.create(resource_group_name=resource_group, account_name=name, spatial_anchors_account=body)
 
 
 def update_mixed_reality_spatial_anchors_account(cmd, client,
@@ -38,26 +99,26 @@ def update_mixed_reality_spatial_anchors_account(cmd, client,
                                                  tags=None,
                                                  location=None,
                                                  serial=None):
-    body = client.get(resource_group_name=resource_group, spatial_anchors_account_name=name).as_dict()
+    body = client.get(resource_group_name=resource_group, account_name=name).as_dict()
     if tags is not None:
         body['tags'] = tags  # dictionary
     if location is not None:
         body['location'] = location  # str
     if serial is not None:
         body['serial'] = serial  # number
-    return client.create(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account=body)
+    return client.create(resource_group_name=resource_group, account_name=name, spatial_anchors_account=body)
 
 
 def delete_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name):
-    return client.delete(resource_group_name=resource_group, spatial_anchors_account_name=name)
+    return client.delete(resource_group_name=resource_group, account_name=name)
 
 
 def get_mixed_reality_spatial_anchors_account(cmd, client,
                                               resource_group,
                                               name):
-    return client.get(resource_group_name=resource_group, spatial_anchors_account_name=name)
+    return client.get(resource_group_name=resource_group, account_name=name)
 
 
 def list_mixed_reality_spatial_anchors_account(cmd, client,
@@ -71,10 +132,10 @@ def regenerate_keys_mixed_reality_spatial_anchors_account(cmd, client,
                                                           resource_group,
                                                           name):
     body = {}
-    return client.regenerate_keys(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account_key_regenerate=body)
+    return client.regenerate_keys(resource_group_name=resource_group, account_name=name, regenerate=body)
 
 
 def get_keys_mixed_reality_spatial_anchors_account(cmd, client,
                                                    resource_group,
                                                    name):
-    return client.get_keys(resource_group_name=resource_group, spatial_anchors_account_name=name)
+    return client.get_keys(resource_group_name=resource_group, account_name=name)

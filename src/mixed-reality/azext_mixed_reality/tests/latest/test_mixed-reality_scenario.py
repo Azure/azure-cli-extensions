@@ -22,26 +22,49 @@ class MixedRealityClientScenarioTest(ScenarioTest):
             'name': 'test1'
         })
 
-        self.cmd('az mixed-reality spatial-anchors-account create '
+        self.cmd('az mixed-reality remote-rendering-account create '
                  '--resource-group {rg} '
                  '--name "alpha" '
-                 '--location "Global"',
+                 '--location "EastUs2"',
                  checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
+        self.cmd('az mixed-reality remote-rendering-account create '
                  '--resource-group {rg} '
                  '--name "alpha" '
-                 '--serial "1"',
+                 '--location "EastUs2"',
                  checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account show '
+        self.cmd('az mixed-reality remote-rendering-account get_keys '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account show '
+        self.cmd('az mixed-reality remote-rendering-account get_keys '
                  '--resource-group {rg} '
                  '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account show '
+                 '--resource-group {rg} '
+                 '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account show '
+                 '--resource-group {rg} '
+                 '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account show '
+                 '--resource-group {rg} '
+                 '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account show '
+                 '--resource-group {rg} '
+                 '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account list',
                  checks=[])
 
         self.cmd('az mixed-reality spatial-anchors-account list',
@@ -50,13 +73,24 @@ class MixedRealityClientScenarioTest(ScenarioTest):
         self.cmd('az mixed-reality operation list',
                  checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
+        self.cmd('az mixed-reality remote-rendering-account regenerate_keys '
                  '--resource-group {rg} '
                  '--name "alpha" '
                  '--serial "1"',
                  checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account update '
+        self.cmd('az mixed-reality remote-rendering-account regenerate_keys '
+                 '--resource-group {rg} '
+                 '--name "alpha" '
+                 '--serial "1"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account update '
+                 '--resource-group {rg} '
+                 '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account update '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])
@@ -65,7 +99,12 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--location "Global"',
                  checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account delete '
+        self.cmd('az mixed-reality remote-rendering-account delete '
+                 '--resource-group {rg} '
+                 '--name "alpha"',
+                 checks=[])
+
+        self.cmd('az mixed-reality remote-rendering-account delete '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])
