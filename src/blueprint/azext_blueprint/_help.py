@@ -232,11 +232,6 @@ helps['blueprint published create'] = """
                --version-id "v2"
 """
 
-helps['blueprint published update'] = """
-    type: command
-    short-summary: Publish a new version of the blueprint definition with the latest artifacts. Published blueprint definitions are immutable.
-"""
-
 helps['blueprint published delete'] = """
     type: command
     short-summary: Delete a published version of a blueprint definition.

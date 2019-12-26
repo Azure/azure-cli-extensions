@@ -40,7 +40,6 @@ def load_command_table(self, _):
         client_factory=cf_published_blueprints)
     with self.command_group('blueprint published', blueprint_published_blueprints, client_factory=cf_published_blueprints) as g:
         g.custom_command('create', 'create_blueprint_published')
-        g.custom_command('update', 'update_blueprint_published')
         g.custom_command('delete', 'delete_blueprint_published')
         g.custom_command('show', 'get_blueprint_published')
         g.custom_command('list', 'list_blueprint_published')

@@ -133,35 +133,6 @@ def create_blueprint_published(cmd, client,
     return client.create(scope=scope, blueprint_name=name, version_id=version_id, published_blueprint=body)
 
 
-def update_blueprint_published(cmd, client,
-                               name,
-                               version_id,
-                               scope=None,
-                               display_name=None,
-                               description=None,
-                               target_scope=None,
-                               parameters=None,
-                               resource_groups=None,
-                               blueprint_name=None,
-                               change_notes=None):
-    body = client.get(scope=scope, blueprint_name=name, version_id=version_id).as_dict()
-    if display_name is not None:
-        body['display_name'] = display_name  # str
-    if description is not None:
-        body['description'] = description  # str
-    if target_scope is not None:
-        body['target_scope'] = target_scope  # str
-    if parameters is not None:
-        body['parameters'] = parameters  # dictionary
-    if resource_groups is not None:
-        body['resource_groups'] = resource_groups  # dictionary
-    if blueprint_name is not None:
-        body['blueprint_name'] = blueprint_name  # str
-    if change_notes is not None:
-        body['change_notes'] = change_notes  # str
-    return client.create(scope=scope, blueprint_name=name, version_id=version_id, published_blueprint=body)
-
-
 def delete_blueprint_published(cmd, client,
                                name,
                                version_id,
