@@ -10,10 +10,6 @@
 import json
 
 
-def list_ml(cmd, client):
-    return client.list()
-
-
 def create_ml(cmd, client,
               resource_group,
               name,
