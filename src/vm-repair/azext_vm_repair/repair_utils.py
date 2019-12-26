@@ -180,7 +180,8 @@ def _uses_encrypted_disk(vm):
 
 def _fetch_compatible_windows_os_urn(source_vm):
 
-    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l westus2 --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'
+    location = source_vm.location
+    fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))"'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
@@ -188,12 +189,16 @@ def _fetch_compatible_windows_os_urn(source_vm):
     if not urns:
         raise WindowsOsNotAvailableError()
 
+    logger.debug('Fetched Urns:\n%s', urns)
     # temp fix to mitigate Windows disk signature collision error
-    if source_vm.storage_profile.image_reference and source_vm.storage_profile.image_reference.version in urns[0]:
+    os_image_ref = source_vm.storage_profile.image_reference
+    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
             logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
+        logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
         return urns[1]
+    logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
 
 
