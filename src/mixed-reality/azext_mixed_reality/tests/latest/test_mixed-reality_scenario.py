@@ -22,50 +22,50 @@ class MixedRealityClientScenarioTest(ScenarioTest):
             'name': 'test1'
         })
 
-        self.cmd('az mixed-reality create '
+        self.cmd('az mixed-reality spatial-anchors-account create '
                  '--resource-group {rg} '
                  '--name "alpha" '
                  '--location "Global"',
                  checks=[])
 
-        self.cmd('az mixed-reality regenerate_keys '
+        self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
                  '--resource-group {rg} '
                  '--name "alpha" '
                  '--serial "1"',
                  checks=[])
 
-        self.cmd('az mixed-reality show '
+        self.cmd('az mixed-reality spatial-anchors-account show '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])
 
-        self.cmd('az mixed-reality show '
+        self.cmd('az mixed-reality spatial-anchors-account show '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])
 
-        self.cmd('az mixed-reality list',
+        self.cmd('az mixed-reality spatial-anchors-account list',
                  checks=[])
 
-        self.cmd('az mixed-reality list',
+        self.cmd('az mixed-reality operation list',
                  checks=[])
 
-        self.cmd('az mixed-reality regenerate_keys '
+        self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
                  '--resource-group {rg} '
                  '--name "alpha" '
                  '--serial "1"',
                  checks=[])
 
-        self.cmd('az mixed-reality update '
+        self.cmd('az mixed-reality spatial-anchors-account update '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])
 
-        self.cmd('az mixed-reality check-name-availability check_name_availability_local '
+        self.cmd('az mixed-reality location check-name-availability check_name_availability_local '
                  '--location "Global"',
                  checks=[])
 
-        self.cmd('az mixed-reality delete '
+        self.cmd('az mixed-reality spatial-anchors-account delete '
                  '--resource-group {rg} '
                  '--name "alpha"',
                  checks=[])

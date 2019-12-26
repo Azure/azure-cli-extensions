@@ -15,41 +15,41 @@ from azure.cli.core.commands.parameters import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('mixed-reality list') as c:
+    with self.argument_context('mixed-reality operation list') as c:
         pass
 
-    with self.argument_context('mixed-reality check-name-availability check_name_availability_local') as c:
+    with self.argument_context('mixed-reality location check-name-availability check_name_availability_local') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
-    with self.argument_context('mixed-reality create') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account create') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
-    with self.argument_context('mixed-reality update') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
-    with self.argument_context('mixed-reality delete') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account delete') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
 
-    with self.argument_context('mixed-reality show') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account show') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
 
-    with self.argument_context('mixed-reality list') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account list') as c:
         c.argument('resource_group', resource_group_name_type)
 
-    with self.argument_context('mixed-reality regenerate_keys') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account regenerate_keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')
 
-    with self.argument_context('mixed-reality get_keys') as c:
+    with self.argument_context('mixed-reality spatial-anchors-account get_keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Spatial Anchors Account.')

@@ -9,18 +9,25 @@
 # pylint: disable=unused-argument
 
 
-def check_name_availability_local_mixed_reality_check_name_availability(cmd, client,
-                                                                        location):
+# operation: operations
+def list_mixed_reality_operation(cmd, client):
+    return client.list()
+
+
+# operation: 
+def check_name_availability_local_mixed_reality_location_check_name_availability(cmd, client,
+                                                                                 location):
     body = {}
     return client.check_name_availability_local(location=location, check_name_availability=body)
 
 
-def create_mixed_reality(cmd, client,
-                         resource_group,
-                         name,
-                         location,
-                         tags=None,
-                         serial=None):
+# operation: spatial_anchors_accounts
+def create_mixed_reality_spatial_anchors_account(cmd, client,
+                                                 resource_group,
+                                                 name,
+                                                 location,
+                                                 tags=None,
+                                                 serial=None):
     body = {}
     body['tags'] = tags  # dictionary
     body['location'] = location  # str
@@ -28,12 +35,13 @@ def create_mixed_reality(cmd, client,
     return client.create(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account=body)
 
 
-def update_mixed_reality(cmd, client,
-                         resource_group,
-                         name,
-                         tags=None,
-                         location=None,
-                         serial=None):
+# operation: spatial_anchors_accounts
+def update_mixed_reality_spatial_anchors_account(cmd, client,
+                                                 resource_group,
+                                                 name,
+                                                 tags=None,
+                                                 location=None,
+                                                 serial=None):
     body = client.get(resource_group_name=resource_group, spatial_anchors_account_name=name).as_dict()
     if tags is not None:
         body['tags'] = tags  # dictionary
@@ -44,33 +52,38 @@ def update_mixed_reality(cmd, client,
     return client.create(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account=body)
 
 
-def delete_mixed_reality(cmd, client,
-                         resource_group,
-                         name):
+# operation: spatial_anchors_accounts
+def delete_mixed_reality_spatial_anchors_account(cmd, client,
+                                                 resource_group,
+                                                 name):
     return client.delete(resource_group_name=resource_group, spatial_anchors_account_name=name)
 
 
-def get_mixed_reality(cmd, client,
-                      resource_group,
-                      name):
+# operation: spatial_anchors_accounts
+def get_mixed_reality_spatial_anchors_account(cmd, client,
+                                              resource_group,
+                                              name):
     return client.get(resource_group_name=resource_group, spatial_anchors_account_name=name)
 
 
-def list_mixed_reality(cmd, client,
-                       resource_group):
+# operation: spatial_anchors_accounts
+def list_mixed_reality_spatial_anchors_account(cmd, client,
+                                               resource_group):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list_by_subscription()
 
 
-def regenerate_keys_mixed_reality(cmd, client,
-                                  resource_group,
-                                  name):
+# operation: spatial_anchors_accounts
+def regenerate_keys_mixed_reality_spatial_anchors_account(cmd, client,
+                                                          resource_group,
+                                                          name):
     body = {}
     return client.regenerate_keys(resource_group_name=resource_group, spatial_anchors_account_name=name, spatial_anchors_account_key_regenerate=body)
 
 
-def get_keys_mixed_reality(cmd, client,
-                           resource_group,
-                           name):
+# operation: spatial_anchors_accounts
+def get_keys_mixed_reality_spatial_anchors_account(cmd, client,
+                                                   resource_group,
+                                                   name):
     return client.get_keys(resource_group_name=resource_group, spatial_anchors_account_name=name)
