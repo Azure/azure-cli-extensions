@@ -14,9 +14,10 @@ def list_mixed_reality_operation(cmd, client):
 
 
 def check_name_availability_local_mixed_reality_location_check_name_availability(cmd, client,
-                                                                                 location):
-    body = {}
-    return client.check_name_availability_local(location=location, check_name_availability=body)
+                                                                                 location,
+                                                                                 name,
+                                                                                 type):
+    return client.check_name_availability_local(location=location, name=name, type=type)
 
 
 def create_mixed_reality_remote_rendering_account(cmd, client,
@@ -31,17 +32,9 @@ def create_mixed_reality_remote_rendering_account(cmd, client,
 def update_mixed_reality_remote_rendering_account(cmd, client,
                                                   resource_group,
                                                   name,
-                                                  tags=None,
-                                                  location=None,
-                                                  serial=None):
-    body = client.get(resource_group_name=resource_group, account_name=name).as_dict()
-    if tags is not None:
-        body['tags'] = tags  # dictionary
-    if location is not None:
-        body['location'] = location  # str
-    if serial is not None:
-        body['serial'] = serial  # number
-    return client.create(resource_group_name=resource_group, account_name=name, remote_rendering_account=body)
+                                                  location,
+                                                  tags=None):
+    return client.update(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
 
 
 def delete_mixed_reality_remote_rendering_account(cmd, client,
@@ -88,17 +81,9 @@ def create_mixed_reality_spatial_anchors_account(cmd, client,
 def update_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name,
-                                                 tags=None,
-                                                 location=None,
-                                                 serial=None):
-    body = client.get(resource_group_name=resource_group, account_name=name).as_dict()
-    if tags is not None:
-        body['tags'] = tags  # dictionary
-    if location is not None:
-        body['location'] = location  # str
-    if serial is not None:
-        body['serial'] = serial  # number
-    return client.create(resource_group_name=resource_group, account_name=name, spatial_anchors_account=body)
+                                                 location,
+                                                 tags=None):
+    return client.update(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
 
 
 def delete_mixed_reality_spatial_anchors_account(cmd, client,

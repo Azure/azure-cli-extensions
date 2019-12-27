@@ -18,10 +18,6 @@ class MixedRealityClientScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_mixed_reality')
     def test_mixed_reality(self, resource_group):
 
-        self.kwargs.update({
-            'name': 'test1'
-        })
-
         self.cmd('az mixed-reality spatial-anchors-account create '
                  '--resource-group {rg} '
                  '--name "MyAccount" '
@@ -79,16 +75,22 @@ class MixedRealityClientScenarioTest(ScenarioTest):
 
         #self.cmd('az mixed-reality remote-rendering-account update '
         #         '--resource-group {rg} '
-        #         '--name "MyAccount"',
+        #         '--name "MyAccount" '
+        #         '--location eastus2euap '
+        #         '--tags a=b',
         #         checks=[])
 
         #self.cmd('az mixed-reality remote-rendering-account update '
         #         '--resource-group {rg} '
-        #         '--name "MyAccount"',
+        #         '--name "MyAccount" '
+        #         '--location eastus2euap '
+        #         '--tags a=b',
         #         checks=[])
 
         #self.cmd('az mixed-reality location check-name-availability check_name_availability_local '
-        #         '--location "eastus2euap"',
+        #         '--location "eastus2euap" '
+        #         '--name "MyAccount" '
+        #         '--type "SpatialAnchorsAccounts" ',
         #         checks=[])
 
         self.cmd('az mixed-reality spatial-anchors-account delete '
