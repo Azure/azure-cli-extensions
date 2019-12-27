@@ -57,7 +57,7 @@ def get_mixed_reality_remote_rendering_account(cmd, client,
 
 
 def list_mixed_reality_remote_rendering_account(cmd, client,
-                                                resource_group):
+                                                resource_group=None):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list_by_subscription()
@@ -114,7 +114,7 @@ def get_mixed_reality_spatial_anchors_account(cmd, client,
 
 
 def list_mixed_reality_spatial_anchors_account(cmd, client,
-                                               resource_group):
+                                               resource_group=None):
     if resource_group is not None:
         return client.list_by_resource_group(resource_group_name=resource_group)
     return client.list_by_subscription()
