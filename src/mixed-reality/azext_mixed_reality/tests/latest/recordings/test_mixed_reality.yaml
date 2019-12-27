@@ -25,7 +25,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount?api-version=2019-12-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount","name":"MyAccount","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":{"type":"None"},"location":"eastus2euap","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2euap.mixedreality.azure.com","accountId":"647c3b84-7a5f-4fc2-9329-190919f1f9d3"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount","name":"MyAccount","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":{"type":"None"},"location":"eastus2euap","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2euap.mixedreality.azure.com","accountId":"26ecc8b7-1b4b-4817-96bb-58df3e80c89a"}}'
     headers:
       cache-control:
       - no-cache
@@ -34,13 +34,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 27 Dec 2019 07:13:42 GMT
+      - Fri, 27 Dec 2019 07:15:55 GMT
       expires:
       - '-1'
       location:
       - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount
       ms-cv:
-      - Jaeguv/NGEWrc0aI1DjXKA.0
+      - xPJh6Q1fCEGbSE738YALNw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -78,7 +78,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount?api-version=2019-12-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount","name":"MyAccount","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"None"},"location":"eastus2euap","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2euap.mixedreality.azure.com","accountId":"eceb47ed-09d9-4626-a2c5-199256d7725d"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount","name":"MyAccount","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"None"},"location":"eastus2euap","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2euap.mixedreality.azure.com","accountId":"ecbf58ad-9100-4637-9841-445236711140"}}'
     headers:
       cache-control:
       - no-cache
@@ -87,13 +87,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 27 Dec 2019 07:13:51 GMT
+      - Fri, 27 Dec 2019 07:16:03 GMT
       expires:
       - '-1'
       location:
       - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount
       ms-cv:
-      - cwpHN8V4zkSpXqkV1Zdzdw.0
+      - grZ8pvEYMkmoLqjKhkhvWw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -105,4 +105,102 @@ interactions:
     status:
       code: 201
       message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mixed-reality remote-rendering-account get_keys
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.6.9 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-mixedreality/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount/keys?api-version=2019-12-02-preview
+  response:
+    body:
+      string: '{"primaryKey":"jqv4jrt4nSH+dANJHtp5d6UTKSK/5wjJ3xrEkiaPxZU=","secondaryKey":"zYUDA3/olXJrktEcFSHeX62Ca7VO+R6aYkbDrIk3rdY="}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '123'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2019 07:16:06 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - hMfvcg8Li0qi1NtzB+qO7g.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mixed-reality spatial-anchors-account get_keys
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - python/3.6.9 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-mixedreality/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount/keys?api-version=2019-12-02-preview
+  response:
+    body:
+      string: '{"primaryKey":"D6M/PUbGcECq4BVmWHLTs5ErUzNZtGhbE7gz2lw7EUw=","secondaryKey":"dxmn/tVgNIzpwZ2/h8iUORHXE+Zb1OA4iSLAfjd56tU="}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '123'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2019 07:16:08 GMT
+      expires:
+      - '-1'
+      ms-cv:
+      - gREarvoilUu5+adKfPMJKw.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
 version: 1
