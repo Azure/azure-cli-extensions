@@ -54,11 +54,11 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--name "MyAccount"',
                  checks=[])
 
-        #self.cmd('az mixed-reality remote-rendering-account list',
-        #         checks=[])
+        self.cmd('az mixed-reality remote-rendering-account list',
+                 checks=[])
 
-        #self.cmd('az mixed-reality spatial-anchors-account list',
-        #         checks=[])
+        self.cmd('az mixed-reality spatial-anchors-account list',
+                 checks=[])
 
         #self.cmd('az mixed-reality operation list',
         #         checks=[])
