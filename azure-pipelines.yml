@@ -8,20 +8,46 @@ trigger:
     - '*'
 
 jobs:
-# - job: SourceStatic
-#   displayName: "Source Code Static Check"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "Source Code Static Check"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/test_static.sh
+- job: CredScan
+  displayName: "Credential Scan"
+
+  pool:
+    vmImage: "windows-2019"
+  steps:
+  - task: CredScan@2
+    inputs:
+      toolMajorVersion: 'V2'
+
+  - task: PostAnalysis@1
+    inputs:
+      AllTools: false
+      APIScan: false
+      BinSkim: false
+      CodesignValidation: false
+      CredScan: true
+      FortifySCA: false
+      FxCop: false
+      ModernCop: false
+      PoliCheck: false
+      RoslynAnalyzers: false
+      SDLNativeRules: false
+      Semmle: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
+
+- job: StaticAnalysis
+  displayName: "Static Analysis"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8==3.5.0 requests
+      displayName: 'Install wheel, pylint, flake8, requests'
+    - bash: python scripts/ci/source_code_static_analysis.py
+      displayName: "Static Analysis"
 
 - job: IndexVerify
   displayName: "Verify Extensions Index"

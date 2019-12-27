@@ -43,7 +43,7 @@ def validate_create(cmd, namespace):
         namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:15]
 
     # Check copy disk name
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S.%f')
     if namespace.copy_disk_name:
         _validate_disk_name(namespace.copy_disk_name)
     else:

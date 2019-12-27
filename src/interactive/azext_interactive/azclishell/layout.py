@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=import-error
+from pygments.token import Token
+from pygments.lexer import Lexer as PygLex
 from prompt_toolkit.enums import DEFAULT_BUFFER, SEARCH_BUFFER
 from prompt_toolkit.filters import Condition, Always, IsDone, HasFocus, RendererHeightIsKnown
 from prompt_toolkit.layout.containers import VSplit, HSplit, \
@@ -18,9 +20,6 @@ from prompt_toolkit.layout.processors import HighlightSearchProcessor, \
 from prompt_toolkit.layout.prompt import DefaultPrompt
 from prompt_toolkit.layout.screen import Char
 
-from pygments.token import Token
-from pygments.lexer import Lexer as PygLex
-# pylint: enable=import-error
 
 from .progress import get_progress_message, get_done
 
