@@ -34,7 +34,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-# TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'azure-cli-core'
 ]
@@ -48,11 +47,9 @@ setup(
     name='aladdin',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Aladdin Extension',
-    # TODO: Update author and email, if applicable
-    author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
-    # TODO: consider pointing directly to your source code instead of the generic repo
-    url='https://github.com/Azure/azure-cli-extensions',
+    author='Matthew Booe',
+    author_email='mabooe@microsoft.com',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aladdin',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
