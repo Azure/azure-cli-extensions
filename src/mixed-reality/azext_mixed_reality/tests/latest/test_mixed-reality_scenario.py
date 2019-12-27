@@ -44,8 +44,6 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--name "MyAccount"',
                  checks=[])
 
-        return
-
         self.cmd('az mixed-reality spatial-anchors-account list '
                  '--resource-group {rg}',
                  checks=[])
@@ -60,40 +58,40 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--name "MyAccount"',
                  checks=[])
 
-        self.cmd('az mixed-reality remote-rendering-account list',
-                 checks=[])
+        #self.cmd('az mixed-reality remote-rendering-account list',
+        #         checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account list',
-                 checks=[])
+        #self.cmd('az mixed-reality spatial-anchors-account list',
+        #         checks=[])
 
-        self.cmd('az mixed-reality operation list',
-                 checks=[])
+        #self.cmd('az mixed-reality operation list',
+        #         checks=[])
 
-        self.cmd('az mixed-reality remote-rendering-account regenerate_keys '
-                 '--resource-group {rg} '
-                 '--name "MyAccount" '
-                 '--serial "1"',
-                 checks=[])
+        #self.cmd('az mixed-reality remote-rendering-account regenerate_keys '
+        #         '--resource-group {rg} '
+        #         '--name "MyAccount" '
+        #         '--serial "1"',
+        #         checks=[])
 
-        self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
-                 '--resource-group {rg} '
-                 '--name "MyAccount" '
-                 '--serial "1"',
-                 checks=[])
+        #self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
+        #         '--resource-group {rg} '
+        #         '--name "MyAccount" '
+        #         '--serial "1"',
+        #         checks=[])
 
-        self.cmd('az mixed-reality remote-rendering-account update '
-                 '--resource-group {rg} '
-                 '--name "MyAccount"',
-                 checks=[])
+        #self.cmd('az mixed-reality remote-rendering-account update '
+        #         '--resource-group {rg} '
+        #         '--name "MyAccount"',
+        #         checks=[])
 
-        self.cmd('az mixed-reality remote-rendering-account update '
-                 '--resource-group {rg} '
-                 '--name "MyAccount"',
-                 checks=[])
+        #self.cmd('az mixed-reality remote-rendering-account update '
+        #         '--resource-group {rg} '
+        #         '--name "MyAccount"',
+        #         checks=[])
 
-        self.cmd('az mixed-reality location check-name-availability check_name_availability_local '
-                 '--location "eastus2euap"',
-                 checks=[])
+        #self.cmd('az mixed-reality location check-name-availability check_name_availability_local '
+        #         '--location "eastus2euap"',
+        #         checks=[])
 
         self.cmd('az mixed-reality spatial-anchors-account delete '
                  '--resource-group {rg} '
