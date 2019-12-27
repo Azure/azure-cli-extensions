@@ -34,6 +34,8 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--location "eastus2euap"',
                  checks=[])
 
+        return
+
         self.cmd('az mixed-reality remote-rendering-account get_keys '
                  '--resource-group {rg} '
                  '--name "MyAccount"',

@@ -1,0 +1,108 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mixed-reality spatial-anchors-account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '27'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --location
+      User-Agent:
+      - python/3.6.9 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-mixedreality/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount?api-version=2019-12-02-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount","name":"MyAccount","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":{"type":"None"},"location":"eastus2euap","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2euap.mixedreality.azure.com","accountId":"647c3b84-7a5f-4fc2-9329-190919f1f9d3"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '507'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2019 07:13:42 GMT
+      expires:
+      - '-1'
+      location:
+      - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/MyAccount
+      ms-cv:
+      - Jaeguv/NGEWrc0aI1DjXKA.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "eastus2euap"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mixed-reality remote-rendering-account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '27'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --location
+      User-Agent:
+      - python/3.6.9 (Linux-4.9.184-linuxkit-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.10
+        msrest_azure/0.6.2 azure-mgmt-mixedreality/0.1.0 Azure-SDK-For-Python AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount?api-version=2019-12-02-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount","name":"MyAccount","type":"Microsoft.MixedReality/remoteRenderingAccounts","identity":{"type":"None"},"location":"eastus2euap","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"eastus2euap.mixedreality.azure.com","accountId":"eceb47ed-09d9-4626-a2c5-199256d7725d"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '509'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 27 Dec 2019 07:13:51 GMT
+      expires:
+      - '-1'
+      location:
+      - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/cli_test_mixed_reality000001/providers/Microsoft.MixedReality/remoteRenderingAccounts/MyAccount
+      ms-cv:
+      - cwpHN8V4zkSpXqkV1Zdzdw.0
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+version: 1
