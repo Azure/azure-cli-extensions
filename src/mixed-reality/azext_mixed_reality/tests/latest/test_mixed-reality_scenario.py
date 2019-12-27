@@ -48,7 +48,11 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--resource-group {rg}',
                  checks=[])
 
-        # EXAMPLE NOT FOUND: Get spatial anchors account
+        self.cmd('az mixed-reality spatial-anchors-account show '
+                 '--resource-group {rg} '
+                 '--name "MyAccount"',
+                 checks=[])
+
         self.cmd('az mixed-reality remote-rendering-account show '
                  '--resource-group {rg} '
                  '--name "MyAccount"',
