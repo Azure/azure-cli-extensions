@@ -9,14 +9,16 @@
 # pylint: disable=unused-argument
 
 from knack.util import CLIError
+from msrestazure.tools import resource_id, is_valid_resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 
 def create_imagebuilder(cmd, client,
-                        resource_group,
+                        resource_group_name,
                         image_template_name,
-                        location,
                         source_type,
                         distribute_type,
+                        location=None,
                         tags=None,
                         customize=None,
                         build_timeout_in_minutes=None,
@@ -42,6 +44,7 @@ def create_imagebuilder(cmd, client,
     elif distribute_type in ['ManagedImage', 'SharedImage']:
         if not distribute_location or not distribute_image:
             raise CLIError('usage error: Please provide --distribute-location and --distribute-image')
+
 
     body = {}
     body['location'] = location  # str
@@ -72,6 +75,11 @@ def create_imagebuilder(cmd, client,
         "runOutputName": run_output_name
     }
     if distribute_type == 'ManagedImage':
+        if distribute_image is not None and not is_valid_resource_id(distribute_image):
+            distribute_image = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group_name,
+                namespace='Microsoft.Compute', type='images', name=distribute_image
+            )
         distribute["imageId"] = distribute_image
         if len(distribute_location) != 1:
             raise CLIError('usage error: Only one location allowed')
@@ -83,9 +91,9 @@ def create_imagebuilder(cmd, client,
 
     body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
     body.setdefault('vm_profile', {})['vm_size'] = vm_size  # str
-    body.setdefault('identity', {})['type'] = _type  # str
-    body.setdefault('identity', {})['user_assigned_identities'] = user_assigned_identities  # dictionary
-    return client.create_or_update(resource_group_name=resource_group, image_template_name=image_template_name, parameters=body)
+    # body.setdefault('identity', {})['type'] = _type  # str
+    # body.setdefault('identity', {})['user_assigned_identities'] = user_assigned_identities  # dictionary
+    return client.create_or_update(resource_group_name=resource_group_name, image_template_name=image_template_name, parameters=body)
 
 
 def update_imagebuilder(cmd, client,
