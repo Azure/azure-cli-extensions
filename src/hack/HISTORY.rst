@@ -16,3 +16,7 @@ Release History
 ++++++
 * Clarified deployment URL
 * Fixed deployment user creation
+
+0.4.0
+++++++
+* Added support for app level git credentials
