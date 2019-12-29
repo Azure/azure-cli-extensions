@@ -50,7 +50,7 @@ helps['mixed-reality remote-rendering-account create'] = """
       - name: Create remote rendering account
         text: |-
                az mixed-reality remote-rendering-account create --resource-group "MyResourceGroup" \\
-               --name "MyAccountName" --location "eastus2euap"
+               --name "MyAccount" --location "eastus2euap"
 """
 
 helps['mixed-reality remote-rendering-account update'] = """
@@ -154,7 +154,7 @@ helps['mixed-reality spatial-anchors-account show'] = """
     type: command
     short-summary: Retrieve a Spatial Anchors Account.
     examples:
-      - name: Get spatial anchor accounts
+      - name: Get spatial anchors account
         text: |-
                az mixed-reality spatial-anchors-account show --resource-group "MyResourceGroup" --name \\
                "MyAccount"
