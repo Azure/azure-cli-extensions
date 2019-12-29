@@ -18,7 +18,7 @@ helps['mixed-reality operation list'] = """
     type: command
     short-summary: Exposing Available Operations
     examples:
-      - name: OperationPage
+      - name: List available operations
         text: |-
                az mixed-reality operation list
 """
@@ -57,7 +57,7 @@ helps['mixed-reality remote-rendering-account update'] = """
     type: command
     short-summary: Creating or Updating a Remote Rendering Account.
     examples:
-      - name: ResourceCreateOrUpdate
+      - name: Update remote rendering account
         text: |-
                az mixed-reality remote-rendering-account update --resource-group "MyResourceGroup" \\
                --name "MyAccount"
@@ -134,7 +134,7 @@ helps['mixed-reality spatial-anchors-account update'] = """
     type: command
     short-summary: Creating or Updating a Spatial Anchors Account.
     examples:
-      - name: ResourceCreateOrUpdate
+      - name: Update spatial anchors account
         text: |-
                az mixed-reality spatial-anchors-account update --resource-group "MyResourceGroup" --name \\
                "MyAccount"
