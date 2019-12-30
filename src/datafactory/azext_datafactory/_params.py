@@ -10,14 +10,17 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
     resource_group_name_type,
-    get_location_type
+    get_location_type,
+    get_three_state_flag
 )
+'''
 from azext_datafactory.action import (
     PeeringAddActivities,
     PeeringAddDatasets,
     PeeringAddLinkedServices,
     PeeringAddSourceSettings
 )
+'''
 
 
 def load_arguments(self, _):
@@ -326,7 +329,7 @@ def load_arguments(self, _):
         c.argument('pipeline_name', id_part=None, help='The pipeline name.')
         c.argument('additional_properties', id_part=None, help='Unmatched properties from the message are deserialized this collection')
         c.argument('description', id_part=None, help='The description of the pipeline.')
-        c.argument('activities', id_part=None, help='List of activities in pipeline.', action=PeeringAddActivities, nargs='+')
+        #c.argument('activities', id_part=None, help='List of activities in pipeline.', action=PeeringAddActivities, nargs='+')
         c.argument('parameters', id_part=None, help='List of parameters for pipeline.')
         c.argument('variables', id_part=None, help='List of variables for pipeline.')
         c.argument('concurrency', id_part=None, help='The max number of concurrent runs for the pipeline.')
@@ -340,7 +343,7 @@ def load_arguments(self, _):
         c.argument('pipeline_name', id_part=None, help='The pipeline name.')
         c.argument('additional_properties', id_part=None, help='Unmatched properties from the message are deserialized this collection')
         c.argument('description', id_part=None, help='The description of the pipeline.')
-        c.argument('activities', id_part=None, help='List of activities in pipeline.', action=PeeringAddActivities, nargs='+')
+        #c.argument('activities', id_part=None, help='List of activities in pipeline.', action=PeeringAddActivities, nargs='+')
         c.argument('parameters', id_part=None, help='List of parameters for pipeline.')
         c.argument('variables', id_part=None, help='List of variables for pipeline.')
         c.argument('concurrency', id_part=None, help='The max number of concurrent runs for the pipeline.')
@@ -539,13 +542,13 @@ def load_arguments(self, _):
         c.argument('session_id', id_part=None, help='The ID of data flow debug session.')
         c.argument('properties_annotations', id_part=None, help='List of tags that can be used for describing the data flow.', nargs='+')
         c.argument('properties_folder_name', id_part=None, help='The name of the folder that this data flow is in.')
-        c.argument('datasets', id_part=None, help='List of datasets.', action=PeeringAddDatasets, nargs='+')
-        c.argument('linked_services', id_part=None, help='List of linked services.', action=PeeringAddLinkedServices, nargs='+')
+        #c.argument('datasets', id_part=None, help='List of datasets.', action=PeeringAddDatasets, nargs='+')
+        #c.argument('linked_services', id_part=None, help='List of linked services.', action=PeeringAddLinkedServices, nargs='+')
         c.argument('linked_service_type', id_part=None, help='Linked service reference type.')
         c.argument('linked_service_reference_name', id_part=None, help='Reference LinkedService name.')
         c.argument('linked_service_parameters', id_part=None, help='Arguments for LinkedService.')
         c.argument('folder_path', id_part=None, help='Folder path for staging blob.')
-        c.argument('source_settings', id_part=None, help='Source setting for data flow debug.', action=PeeringAddSourceSettings, nargs='+')
+        #c.argument('source_settings', id_part=None, help='Source setting for data flow debug.', action=PeeringAddSourceSettings, nargs='+')
         c.argument('parameters', id_part=None, help='Data flow parameters.')
         c.argument('dataset_parameters', id_part=None, help='Parameters for dataset.')
         c.argument('command', arg_type=get_enum_type(['executePreviewQuery', 'executeStatisticsQuery', 'executeExpressionQuery']), id_part=None, help='The command type.')

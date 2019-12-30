@@ -8,6 +8,15 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
+from ._client_factory import cf_resource_groups
+
+
+def _get_rg_location(ctx, resource_group_name, subscription_id=None):
+    groups = cf_resource_groups(ctx, subscription_id=subscription_id)
+    # Just do the get, we don't need the result, it will error out if the group doesn't exist.
+    rg = groups.get(resource_group_name)
+    return rg.location
+
 
 def list_datafactory(cmd, client):
     return client.list()
@@ -16,17 +25,17 @@ def list_datafactory(cmd, client):
 def create_datafactory(cmd, client,
                        resource_group,
                        name,
-                       account_name,
-                       repository_name,
-                       collaboration_branch,
-                       root_folder,
-                       _type,
-                       repo_configuration_account_name,
-                       repo_configuration_repository_name,
-                       repo_configuration_collaboration_branch,
-                       repo_configuration_root_folder,
-                       git_hub_access_code,
-                       git_hub_access_token_base_url,
+                       account_name=None,
+                       repository_name=None,
+                       collaboration_branch=None,
+                       root_folder=None,
+                       _type=None,
+                       repo_configuration_account_name=None,
+                       repo_configuration_repository_name=None,
+                       repo_configuration_collaboration_branch=None,
+                       repo_configuration_root_folder=None,
+                       git_hub_access_code=None,
+                       git_hub_access_token_base_url=None,
                        factory_resource_id=None,
                        last_commit_id=None,
                        location=None,
@@ -40,29 +49,56 @@ def create_datafactory(cmd, client,
                        start_time=None,
                        expire_time=None):
     body = {}
-    body['factory_resource_id'] = factory_resource_id  # str
-    body.setdefault('repo_configuration', {})['account_name'] = account_name  # str
-    body.setdefault('repo_configuration', {})['repository_name'] = repository_name  # str
-    body.setdefault('repo_configuration', {})['collaboration_branch'] = collaboration_branch  # str
-    body.setdefault('repo_configuration', {})['root_folder'] = root_folder  # str
-    body.setdefault('repo_configuration', {})['last_commit_id'] = last_commit_id  # str
-    body['location'] = location  # str
-    body['tags'] = tags  # dictionary
-    body['additional_properties'] = additional_properties  # dictionary
-    body.setdefault('identity', {})['type'] = _type  # str
-    body.setdefault('repo_configuration', {})['account_name'] = repo_configuration_account_name  # str
-    body.setdefault('repo_configuration', {})['repository_name'] = repo_configuration_repository_name  # str
-    body.setdefault('repo_configuration', {})['collaboration_branch'] = repo_configuration_collaboration_branch  # str
-    body.setdefault('repo_configuration', {})['root_folder'] = repo_configuration_root_folder  # str
-    body.setdefault('repo_configuration', {})['last_commit_id'] = repo_configuration_last_commit_id  # str
-    body['git_hub_access_code'] = git_hub_access_code  # str
-    body['git_hub_client_id'] = git_hub_client_id  # str
-    body['git_hub_access_token_base_url'] = git_hub_access_token_base_url  # str
-    body['permissions'] = permissions  # str
-    body['access_resource_path'] = access_resource_path  # str
-    body['profile_name'] = profile_name  # str
-    body['start_time'] = start_time  # str
-    body['expire_time'] = expire_time  # str
+    if factory_resource_id is not None:
+        body['factory_resource_id'] = factory_resource_id  # str
+    if account_name is not None:
+        body.setdefault('repo_configuration', {})['account_name'] = account_name  # str
+    if repository_name is not None:
+        body.setdefault('repo_configuration', {})['repository_name'] = repository_name  # str
+    if collaboration_branch is not None:
+        body.setdefault('repo_configuration', {})['collaboration_branch'] = collaboration_branch  # str
+    if root_folder is not None:
+        body.setdefault('repo_configuration', {})['root_folder'] = root_folder  # str
+    if last_commit_id is not None:
+        body.setdefault('repo_configuration', {})['last_commit_id'] = last_commit_id  # str
+
+    if location is None:
+        rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
+        location = rg_location
+    body['location'] = location
+    
+    if tags is not None:
+        body['tags'] = tags  # dictionary
+    if additional_properties is not None:
+        body['additional_properties'] = additional_properties  # dictionary
+    if _type is not None:
+        body.setdefault('identity', {})['type'] = _type  # str
+    if repo_configuration_account_name is not None:
+        body.setdefault('repo_configuration', {})['account_name'] = repo_configuration_account_name  # str
+    if repo_configuration_repository_name is not None:
+        body.setdefault('repo_configuration', {})['repository_name'] = repo_configuration_repository_name  # str
+    if repo_configuration_collaboration_branch is not None:
+        body.setdefault('repo_configuration', {})['collaboration_branch'] = repo_configuration_collaboration_branch  # str
+    if repo_configuration_root_folder is not None:
+        body.setdefault('repo_configuration', {})['root_folder'] = repo_configuration_root_folder  # str
+    if repo_configuration_last_commit_id is not None:
+        body.setdefault('repo_configuration', {})['last_commit_id'] = repo_configuration_last_commit_id  # str
+    if git_hub_access_code is not None:
+        body['git_hub_access_code'] = git_hub_access_code  # str
+    if git_hub_client_id is not None:
+        body['git_hub_client_id'] = git_hub_client_id  # str
+    if git_hub_access_token_base_url is not None:
+        body['git_hub_access_token_base_url'] = git_hub_access_token_base_url  # str
+    if permissions is not None:
+        body['permissions'] = permissions  # str
+    if access_resource_path is not None:
+        body['access_resource_path'] = access_resource_path  # str
+    if profile_name is not None:
+        body['profile_name'] = profile_name  # str
+    if start_time is not None:
+        body['start_time'] = start_time  # str
+    if expire_time is not None:
+        body['expire_time'] = expire_time  # str
     return client.create_or_update(resource_group_name=resource_group, factory_name=name, factory=body)
 
 
@@ -92,7 +128,8 @@ def update_datafactory(cmd, client,
                        profile_name=None,
                        start_time=None,
                        expire_time=None):
-    body = client.get(resource_group_name=resource_group, factory_name=name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=name, if_none_match=body).as_dict()
     if factory_resource_id is not None:
         body['factory_resource_id'] = factory_resource_id  # str
     if account_name is not None:
@@ -151,7 +188,8 @@ def delete_datafactory(cmd, client,
 def get_datafactory(cmd, client,
                     resource_group,
                     name):
-    return client.get(resource_group_name=resource_group, factory_name=name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=name, if_none_match=body)
 
 
 def list_datafactory(cmd, client,
@@ -230,7 +268,8 @@ def update_datafactory_integration_runtime(cmd, client,
                                            subscription_id=None,
                                            data_factory_name=None,
                                            data_factory_location=None):
-    body = client.get(resource_group_name=resource_group, factory_name=factory_name, integration_runtime_name=name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=factory_name, integration_runtime_name=name, if_none_match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
     if description is not None:
@@ -261,7 +300,8 @@ def get_datafactory_integration_runtime(cmd, client,
                                         resource_group,
                                         factory_name,
                                         name):
-    return client.get(resource_group_name=resource_group, factory_name=factory_name, integration_runtime_name=name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=factory_name, integration_runtime_name=name, if_none_match=body)
 
 
 def list_datafactory_integration_runtime(cmd, client,
@@ -434,7 +474,8 @@ def update_datafactory_linkedservice(cmd, client,
                                      description=None,
                                      parameters=None,
                                      annotations=None):
-    body = client.get(resource_group_name=resource_group, factory_name=factory_name, linked_service_name=name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=factory_name, linked_service_name=name, if_none_match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
     if connect_via_type is not None:
@@ -463,7 +504,8 @@ def get_datafactory_linkedservice(cmd, client,
                                   resource_group,
                                   factory_name,
                                   name):
-    return client.get(resource_group_name=resource_group, factory_name=factory_name, linked_service_name=name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=factory_name, linked_service_name=name, if_none_match=body)
 
 
 def list_datafactory_linkedservice(cmd, client,
@@ -514,7 +556,8 @@ def update_datafactory_dataset(cmd, client,
                                parameters=None,
                                annotations=None,
                                folder_name=None):
-    body = client.get(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, if_none_match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
     if description is not None:
@@ -549,7 +592,8 @@ def get_datafactory_dataset(cmd, client,
                             resource_group,
                             factory_name,
                             name):
-    return client.get(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=factory_name, dataset_name=name, if_none_match=body)
 
 
 def list_datafactory_dataset(cmd, client,
@@ -597,7 +641,8 @@ def update_datafactory_pipeline(cmd, client,
                                 annotations=None,
                                 run_dimensions=None,
                                 folder_name=None):
-    body = client.get(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, if_none_match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
     if description is not None:
@@ -630,7 +675,8 @@ def get_datafactory_pipeline(cmd, client,
                              resource_group,
                              factory_name,
                              pipeline_name):
-    return client.get(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=factory_name, pipeline_name=pipeline_name, if_none_match=body)
 
 
 def list_datafactory_pipeline(cmd, client,
@@ -701,7 +747,8 @@ def update_datafactory_trigger(cmd, client,
                                additional_properties=None,
                                description=None,
                                annotations=None):
-    body = client.get(resource_group_name=resource_group, factory_name=factory_name, trigger_name=name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=factory_name, trigger_name=name, if_none_match=body).as_dict()
     if additional_properties is not None:
         body['additional_properties'] = additional_properties  # dictionary
     if description is not None:
@@ -722,7 +769,8 @@ def get_datafactory_trigger(cmd, client,
                             resource_group,
                             factory_name,
                             name):
-    return client.get(resource_group_name=resource_group, factory_name=factory_name, trigger_name=name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=factory_name, trigger_name=name, if_none_match=body)
 
 
 def list_datafactory_trigger(cmd, client,
@@ -866,7 +914,8 @@ def update_datafactory_dataflow(cmd, client,
                                 description=None,
                                 annotations=None,
                                 folder_name=None):
-    body = client.get(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, if-none-match=body).as_dict()
+    body = {}
+    body = client.get(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, if_none_match=body).as_dict()
     if description is not None:
         body['description'] = description  # str
     if annotations is not None:
@@ -887,7 +936,8 @@ def get_datafactory_dataflow(cmd, client,
                              resource_group,
                              factory_name,
                              name):
-    return client.get(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, if-none-match=body)
+    body = {}
+    return client.get(resource_group_name=resource_group, factory_name=factory_name, data_flow_name=name, if_none_match=body)
 
 
 def list_datafactory_dataflow(cmd, client,
@@ -965,6 +1015,7 @@ def add_data_flow_datafactory_create_data_flow_debug_session(cmd, client,
 def delete_datafactory_create_data_flow_debug_session(cmd, client,
                                                       resource_group,
                                                       name):
+    body = {}
     return client.delete(resource_group_name=resource_group, factory_name=name, request=body)
 
 
