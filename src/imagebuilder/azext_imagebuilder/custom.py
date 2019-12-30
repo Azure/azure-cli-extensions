@@ -48,7 +48,6 @@ def create_imagebuilder(cmd, client,
         if not distribute_location or not distribute_image:
             raise CLIError('usage error: Please provide --distribute-location and --distribute-image')
 
-
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -111,8 +110,6 @@ def update_imagebuilder(cmd, client,
                         image_template_name,
                         location=None,
                         tags=None,
-                        customize=None,
-                        distribute=None,
                         build_timeout_in_minutes=None,
                         vm_profile_vm_size=None,
                         _type=None,
@@ -122,10 +119,6 @@ def update_imagebuilder(cmd, client,
         body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
-    if customize is not None:
-        body['customize'] = customize
-    if distribute is not None:
-        body['distribute'] = distribute
     if build_timeout_in_minutes is not None:
         body['build_timeout_in_minutes'] = build_timeout_in_minutes  # number
     if vm_profile_vm_size is not None:
@@ -173,7 +166,3 @@ def get_run_output_imagebuilder(cmd, client,
                                 image_template_name,
                                 name):
     return client.get_run_output(resource_group_name=resource_group, image_template_name=image_template_name, run_output_name=name)
-
-
-def list_imagebuilder(cmd, client):
-    return client.list()

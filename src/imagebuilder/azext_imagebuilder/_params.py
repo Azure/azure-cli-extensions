@@ -10,14 +10,9 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
     resource_group_name_type,
-    get_location_type,
-    file_type
+    get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_imagebuilder.action import (
-    ImageBuilderAddCustomize,
-    ImageBuilderAddDistribute
-)
 from knack.arguments import CLIArgumentType
 
 
@@ -66,8 +61,6 @@ def load_arguments(self, _):
         c.argument('image_template_name', image_template_name)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
-        c.argument('customize', id_part=None, help='Specifies the properties used to describe the customization steps of the image, like Image source etc', action=ImageBuilderAddCustomize, nargs='+')
-        c.argument('distribute', id_part=None, help='The distribution targets where the image output needs to go to.', action=ImageBuilderAddDistribute, nargs='+')
         c.argument('build_timeout_in_minutes', id_part=None, help='Maximum duration to wait while building the image template. Omit or specify 0 to use the default (4 hours).')
         c.argument('vm_profile_vm_size', id_part=None, help='Size of the virtual machine used to build, customize and capture images. Omit or specify empty string to use the default (Standard_D1_v2).')
         c.argument('_type', options_list=['--type'], arg_type=get_enum_type(['UserAssigned', 'None']), id_part=None, help='The type of identity used for the image template. The type \'None\' will remove any identities from the image template.')

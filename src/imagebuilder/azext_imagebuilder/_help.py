@@ -20,13 +20,18 @@ helps['imagebuilder create'] = """
     examples:
       - name: Create an Image Template.
         text: |-
-               az imagebuilder create --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate" --location "westus" --vm-profile-vm-size "Standard_D2s_v3"
-      - name: Create an Image Template with a user assigned identity configured
+               az imagebuilder create --resource-group "myResourceGroup" --name \\
+               "myImageTemplate" --location "westus" --source-type "PlatformImage" \\
+               --source-urn "Canonical:UbuntuServer:18.04-LTS:18.04.201903060" \\
+               --customize "@cus.json" --distribute-type "ManagedImage" \\
+               --distribute-location "westus" --distribute-image "myImage"
+      - name: Create an Image Template.
         text: |-
-               az imagebuilder create --resource-group "myResourceGroup" --image-template-name \\
-               "myImageTemplate" --location "westus" --vm-profile-vm-size "Standard_D2s_v3" --type \\
-               "UserAssigned"
+               az imagebuilder create --resource-group "myResourceGroup" --name \\
+               "myImageTemplate" --location "westus" --source-type "PlatformImage" \\
+               --source-urn "Canonical:UbuntuServer:18.04-LTS:18.04.201903060" \\
+               --customize "@cus.json" --distribute-type "SharedImage" \\
+               --distribute-location "westus" --distribute-image "imageDefinitionID"
 """
 
 helps['imagebuilder update'] = """
@@ -35,11 +40,11 @@ helps['imagebuilder update'] = """
     examples:
       - name: Update the tags for an Image Template.
         text: |-
-               az imagebuilder update --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder update --resource-group "myResourceGroup" --name \\
                "myImageTemplate"
       - name: Remove identities for an Image Template.
         text: |-
-               az imagebuilder update --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder update --resource-group "myResourceGroup" --name \\
                "myImageTemplate" --type "None"
 """
 
@@ -49,7 +54,7 @@ helps['imagebuilder delete'] = """
     examples:
       - name: Delete an Image Template.
         text: |-
-               az imagebuilder delete --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder delete --resource-group "myResourceGroup" --name \\
                "myImageTemplate"
 """
 
@@ -59,7 +64,7 @@ helps['imagebuilder show'] = """
     examples:
       - name: Retrieve an Image Template.
         text: |-
-               az imagebuilder show --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder show --resource-group "myResourceGroup" --name \\
                "myImageTemplate"
 """
 
@@ -81,7 +86,7 @@ helps['imagebuilder run'] = """
     examples:
       - name: Create image(s) from existing imageTemplate.
         text: |-
-               az imagebuilder run --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder run --resource-group "myResourceGroup" --name \\
                "myImageTemplate"
 """
 
@@ -91,7 +96,7 @@ helps['imagebuilder list_run_outputs'] = """
     examples:
       - name: Retrieve a list of all outputs created by the last run of an Image Template
         text: |-
-               az imagebuilder list_run_outputs --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder list_run_outputs --resource-group "myResourceGroup" --name \\
                "myImageTemplate"
 """
 
