@@ -23,6 +23,7 @@ def validate_application_rule_protocols(namespace):
 
 def validate_ip_groups(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id
+
     def _validate_name_or_id(ip_group, subscription):
         # determine if public_ip_address is name or ID
         is_id = is_valid_resource_id(ip_group)
