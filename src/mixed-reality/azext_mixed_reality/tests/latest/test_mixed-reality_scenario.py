@@ -69,12 +69,14 @@ class MixedRealityClientScenarioTest(ScenarioTest):
 
         self.cmd('az mixed-reality remote-rendering-account regenerate_keys '
                  '--resource-group {rg} '
-                 '--name "MyAccount" ',
+                 '--name "MyAccount" '
+                 '--serial "1"',
                  checks=[])
 
         self.cmd('az mixed-reality spatial-anchors-account regenerate_keys '
                  '--resource-group {rg} '
-                 '--name "MyAccount" ',
+                 '--name "MyAccount" '
+                 '--serial "1"',
                  checks=[])
 
         #self.cmd('az mixed-reality remote-rendering-account update '
