@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.7
+++++++
+* `az network firewall network-rule/nat-rule/application-rule`: support ip-groups for firewall rules.
+
 0.1.6
 ++++++
 * `az network firewall ip-config`: bug fix to support multiple ip-config creation.

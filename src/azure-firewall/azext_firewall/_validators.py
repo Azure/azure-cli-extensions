@@ -21,6 +21,28 @@ def validate_application_rule_protocols(namespace):
     namespace.protocols = protocol_list
 
 
+def validate_ip_groups(cmd, namespace):
+    from msrestazure.tools import is_valid_resource_id, resource_id
+
+    def _validate_name_or_id(ip_group, subscription):
+        # determine if public_ip_address is name or ID
+        is_id = is_valid_resource_id(ip_group)
+        return ip_group if is_id else resource_id(
+            subscription=subscription,
+            resource_group=namespace.resource_group_name,
+            namespace='Microsoft.Network',
+            type='ipGroups',
+            name=ip_group)
+
+    subscription = get_subscription_id(cmd.cli_ctx)
+    if hasattr(namespace, 'destination_ip_groups') and namespace.destination_ip_groups is not None:
+        for i, ip_group in enumerate(namespace.destination_ip_groups):
+            namespace.destination_ip_groups[i] = _validate_name_or_id(ip_group, subscription)
+    if hasattr(namespace, 'source_ip_groups') and namespace.source_ip_groups is not None:
+        for i, ip_group in enumerate(namespace.source_ip_groups):
+            namespace.source_ip_groups[i] = _validate_name_or_id(ip_group, subscription)
+
+
 def get_public_ip_validator():
     """ Retrieves a validator for public IP address. Accepting all defaults will perform a check
     for an existing name or ID with no ARM-required -type parameter. """
@@ -88,22 +110,32 @@ def validate_firewall_policy(cmd, namespace):
             name=namespace.base_policy)
 
 
-def validate_af_network_rule(namespace):
+def validate_af_network_rule(cmd, namespace):
     from knack.util import CLIError
-    if namespace.destination_addresses is None and namespace.destination_fqdns is None:
-        raise CLIError('usage error: --destination-addresses | --destination-fqdns')
-    if namespace.destination_addresses is not None and namespace.destination_fqdns is not None:
-        raise CLIError('usage error: --destination-addresses | --destination-fqdns')
-    return namespace
+    validate_argument_count = 0
+    if namespace.destination_addresses is not None:
+        validate_argument_count += 1
+    if namespace.destination_fqdns is not None:
+        validate_argument_count += 1
+    if namespace.destination_ip_groups is not None:
+        validate_argument_count += 1
+    if validate_argument_count != 1:
+        raise CLIError('usage error: --destination-addresses | --destination-fqdns | --destination-ip-groups')
+    validate_ip_groups(cmd, namespace)
 
 
-def validate_af_nat_rule(namespace):
+def validate_af_nat_rule(cmd, namespace):
     from knack.util import CLIError
     if namespace.translated_address is None and namespace.translated_fqdn is None:
         raise CLIError('usage error: --translated-address | --translated-fqdn')
     if namespace.translated_address is not None and namespace.translated_fqdn is not None:
         raise CLIError('usage error: --translated-address | --translated-fqdn')
-    return namespace
+    validate_ip_groups(cmd, namespace)
+
+
+def validate_af_application_rule(cmd, namespace):
+    validate_application_rule_protocols(namespace)
+    validate_ip_groups(cmd, namespace)
 
 
 def validate_rule_group_collection(namespace):
