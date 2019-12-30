@@ -24,8 +24,7 @@ def create_mixed_reality_remote_rendering_account(cmd, client,
                                                   resource_group,
                                                   name,
                                                   location,
-                                                  tags=None,
-                                                  serial=None):
+                                                  tags=None):
     return client.create(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
 
 
@@ -73,8 +72,7 @@ def create_mixed_reality_spatial_anchors_account(cmd, client,
                                                  resource_group,
                                                  name,
                                                  location,
-                                                 tags=None,
-                                                 serial=None):
+                                                 tags=None):
     return client.create(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
 
 

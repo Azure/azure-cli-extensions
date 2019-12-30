@@ -26,14 +26,12 @@ def load_arguments(self, _):
         c.argument('name', id_part=None, help='Name of an Mixed Reality Account.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
     with self.argument_context('mixed-reality remote-rendering-account update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Account.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
     with self.argument_context('mixed-reality remote-rendering-account delete') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -59,14 +57,12 @@ def load_arguments(self, _):
         c.argument('name', id_part=None, help='Name of an Mixed Reality Account.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
     with self.argument_context('mixed-reality spatial-anchors-account update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Account.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
-        c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
     with self.argument_context('mixed-reality spatial-anchors-account delete') as c:
         c.argument('resource_group', resource_group_name_type)
