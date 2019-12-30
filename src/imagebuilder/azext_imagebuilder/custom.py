@@ -8,6 +8,9 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
+import json
+from json import JSONDecodeError
+
 from knack.util import CLIError
 from msrestazure.tools import resource_id, is_valid_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -49,7 +52,6 @@ def create_imagebuilder(cmd, client,
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
-    body['customize'] = customize
 
     # source
     if source_type == 'PlatformImage':
@@ -66,6 +68,14 @@ def create_imagebuilder(cmd, client,
         body['source'] = source
     else:
         raise CLIError('usage error: Do not support this source type now')
+
+    # customize
+    if customize:
+        try:
+            customize = json.loads(customize)
+        except JSONDecodeError:
+            raise CLIError('usage error: json decode error in --customize')
+        body['customize'] = customize
 
     # distribute
     if not run_output_name:

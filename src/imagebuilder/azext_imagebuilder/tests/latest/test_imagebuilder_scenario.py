@@ -5,6 +5,7 @@
 
 import os
 import unittest
+import mock
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -34,14 +35,16 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
             'rg_id': rg_id
         })
 
-        self.cmd('az role assignment create --assignee cf32a0cc-373c-47c9-9156-0db11f6a6dfc '
-                 '--role Contributor --scope {rg_id}')
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd('az role assignment create --assignee cf32a0cc-373c-47c9-9156-0db11f6a6dfc '
+                     '--role Contributor --scope {rg_id}')
 
         self.cmd('az imagebuilder create '
                  '--resource-group {rg} '
                  '--name {it} '
                  '--source-type PlatformImage '
                  '--source-urn Canonical:UbuntuServer:18.04-LTS:18.04.201903060 '
+                 '--customize @cus.json '
                  '--distribute-type ManagedImage '
                  '--distribute-location westus '
                  '--distribute-image {img}',
@@ -72,8 +75,9 @@ class ImageBuilderClientScenarioTest(ScenarioTest):
             'rg_id': rg_id
         })
 
-        self.cmd('az role assignment create --assignee cf32a0cc-373c-47c9-9156-0db11f6a6dfc '
-                 '--role Contributor --scope {rg_id}')
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd('az role assignment create --assignee cf32a0cc-373c-47c9-9156-0db11f6a6dfc '
+                     '--role Contributor --scope {rg_id}')
 
         self.cmd('az sig create -g {rg} --gallery-name {sig}')
 
