@@ -9,30 +9,10 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['aladdin'] = """
     type: group
-    short-summary: Commands to manage Aladdins.
+    short-summary: AI hooks into the Azure CLI core.
 """
 
-helps['aladdin create'] = """
+helps['aladdin check-connection'] = """
     type: command
-    short-summary: Create a Aladdin.
+    short-summary: Check if the client can connect to the Aladdin service.
 """
-
-helps['aladdin list'] = """
-    type: command
-    short-summary: List Aladdins.
-"""
-
-# helps['aladdin delete'] = """
-#     type: command
-#     short-summary: Delete a Aladdin.
-# """
-
-# helps['aladdin show'] = """
-#     type: command
-#     short-summary: Show details of a Aladdin.
-# """
-
-# helps['aladdin update'] = """
-#     type: command
-#     short-summary: Update a Aladdin.
-# """

@@ -3,27 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
-from azext_aladdin._client_factory import cf_aladdin
-
 
 def load_command_table(self, _):
 
-    # TODO: Add command type here
-    # aladdin_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_aladdin)
-
-
     with self.command_group('aladdin') as g:
-        g.custom_command('create', 'create_aladdin')
-        # g.command('delete', 'delete')
-        g.custom_command('list', 'list_aladdin')
-        # g.show_command('show', 'get')
-        # g.generic_update_command('update', setter_name='update', custom_func_name='update_aladdin')
-
+        g.custom_command('check-connection', 'check_connection_aladdin')
 
     with self.command_group('aladdin', is_preview=True):
         pass
-

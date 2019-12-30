@@ -7,7 +7,6 @@
 import json
 import re
 import requests
-from knack.util import CLIError
 from pkg_resources import parse_version
 
 from azure.cli.core import telemetry as telemetry_core
@@ -15,18 +14,13 @@ from azure.cli.core import __version__ as core_version
 from azure.cli.core._help import HelpExample
 
 
-def create_aladdin(cmd, resource_group_name, aladdin_name, location=None, tags=None):
-    raise CLIError('TODO: Implement `aladdin create`')
-
-
-def list_aladdin(cmd, resource_group_name=None):
-    raise CLIError('TODO: Implement `aladdin list`')
-
-
-def update_aladdin(cmd, instance, tags=None):
-    with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
-    return instance
+def check_connection_aladdin():
+    # TODO: Report time for round trip
+    response = ping_aladdin_service()
+    if response.status_code == 200:
+        print('Connection was successful')
+    else:
+        print('Connection failed')
 
 
 def provide_examples(help_file):
@@ -57,6 +51,17 @@ def get_generated_examples(cli_term):
             examples.append(clean_from_http_answer(answer))
 
     return examples
+
+
+def ping_aladdin_service():
+    api_url = 'https://app.aladdin.microsoft.com/api/v1.0/monitor'
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.get(
+        api_url,
+        headers=headers)
+
+    return response
 
 
 def call_aladdin_service(query):
