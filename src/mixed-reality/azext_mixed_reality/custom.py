@@ -25,7 +25,7 @@ def create_mixed_reality_remote_rendering_account(cmd, client,
                                                   name,
                                                   location,
                                                   tags=None):
-    return client.create(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
+    return client.create(resource_group_name=resource_group, account_name=name, tags=tags, location=location)
 
 
 def update_mixed_reality_remote_rendering_account(cmd, client,
@@ -33,7 +33,7 @@ def update_mixed_reality_remote_rendering_account(cmd, client,
                                                   name,
                                                   location,
                                                   tags=None):
-    return client.update(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
+    return client.create(resource_group_name=resource_group, account_name=name, tags=tags, location=location)
 
 
 def delete_mixed_reality_remote_rendering_account(cmd, client,
@@ -73,7 +73,7 @@ def create_mixed_reality_spatial_anchors_account(cmd, client,
                                                  name,
                                                  location,
                                                  tags=None):
-    return client.create(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
+    return client.create(resource_group_name=resource_group, account_name=name, tags=tags, location=location)
 
 
 def update_mixed_reality_spatial_anchors_account(cmd, client,
@@ -81,7 +81,7 @@ def update_mixed_reality_spatial_anchors_account(cmd, client,
                                                  name,
                                                  location,
                                                  tags=None):
-    return client.update(resource_group_name=resource_group, account_name=name, location=location, tags=tags)
+    return client.create(resource_group_name=resource_group, account_name=name, tags=tags, location=location)
 
 
 def delete_mixed_reality_spatial_anchors_account(cmd, client,
