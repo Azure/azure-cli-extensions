@@ -22,21 +22,12 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
-        c.argument('sku_tier', id_part=None, help='The tier of particular sku')
-        c.argument('sku_size', id_part=None, help='The Sku size')
-        c.argument('sku_family', id_part=None, help='The Sku Family')
-        c.argument('sku_capacity', id_part=None, help='The capacity of the resource')
 
     with self.argument_context('notificationhubs namespace update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
-        c.argument('sku_tier', id_part=None, help='The tier of particular sku')
-        c.argument('sku_size', id_part=None, help='The Sku size')
-        c.argument('sku_family', id_part=None, help='The Sku Family')
-        c.argument('sku_capacity', id_part=None, help='The capacity of the resource')
 
     with self.argument_context('notificationhubs namespace delete') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -90,23 +81,14 @@ def load_arguments(self, _):
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
-        c.argument('sku_tier', id_part=None, help='The tier of particular sku')
-        c.argument('sku_size', id_part=None, help='The Sku size')
-        c.argument('sku_family', id_part=None, help='The Sku Family')
-        c.argument('sku_capacity', id_part=None, help='The capacity of the resource')
         c.argument('registration_ttl', id_part=None, help='The RegistrationTtl of the created NotificationHub')
 
     with self.argument_context('notificationhubs update') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('tags', tags_type)
         c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
-        c.argument('sku_tier', id_part=None, help='The tier of particular sku')
-        c.argument('sku_size', id_part=None, help='The Sku size')
-        c.argument('sku_family', id_part=None, help='The Sku Family')
-        c.argument('sku_capacity', id_part=None, help='The capacity of the resource')
 
     with self.argument_context('notificationhubs delete') as c:
         c.argument('resource_group', resource_group_name_type)

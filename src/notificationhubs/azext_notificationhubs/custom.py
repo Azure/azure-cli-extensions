@@ -23,10 +23,6 @@ def create_notificationhubs_namespace(cmd, client,
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body.setdefault('sku', {})['name'] = sku_name  # str
-    body.setdefault('sku', {})['tier'] = sku_tier  # str
-    body.setdefault('sku', {})['size'] = sku_size  # str
-    body.setdefault('sku', {})['family'] = sku_family  # str
-    body.setdefault('sku', {})['capacity'] = sku_capacity  # number
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, parameters=body)
 
 
@@ -41,20 +37,10 @@ def update_notificationhubs_namespace(cmd, client,
                                       sku_family=None,
                                       sku_capacity=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name).as_dict()
-    if location is not None:
-        body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
     if sku_name is not None:
         body.setdefault('sku', {})['name'] = sku_name  # str
-    if sku_tier is not None:
-        body.setdefault('sku', {})['tier'] = sku_tier  # str
-    if sku_size is not None:
-        body.setdefault('sku', {})['size'] = sku_size  # str
-    if sku_family is not None:
-        body.setdefault('sku', {})['family'] = sku_family  # str
-    if sku_capacity is not None:
-        body.setdefault('sku', {})['capacity'] = sku_capacity  # number
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, parameters=body)
 
 
@@ -143,10 +129,6 @@ def create_notificationhubs_hub(cmd, client,
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body.setdefault('sku', {})['name'] = sku_name  # str
-    body.setdefault('sku', {})['tier'] = sku_tier  # str
-    body.setdefault('sku', {})['size'] = sku_size  # str
-    body.setdefault('sku', {})['family'] = sku_family  # str
-    body.setdefault('sku', {})['capacity'] = sku_capacity  # number
     body['registration_ttl'] = registration_ttl  # str
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
@@ -163,20 +145,10 @@ def update_notificationhubs_hub(cmd, client,
                                 sku_family=None,
                                 sku_capacity=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
-    if location is not None:
-        body['location'] = location  # str
     if tags is not None:
         body['tags'] = tags  # dictionary
     if sku_name is not None:
         body.setdefault('sku', {})['name'] = sku_name  # str
-    if sku_tier is not None:
-        body.setdefault('sku', {})['tier'] = sku_tier  # str
-    if sku_size is not None:
-        body.setdefault('sku', {})['size'] = sku_size  # str
-    if sku_family is not None:
-        body.setdefault('sku', {})['family'] = sku_family  # str
-    if sku_capacity is not None:
-        body.setdefault('sku', {})['capacity'] = sku_capacity  # number
     return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=body)
 
 

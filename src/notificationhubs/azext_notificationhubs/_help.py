@@ -26,7 +26,7 @@ helps['notificationhubs namespace create'] = """
       - name: Creates a namespace
         text: |-
                az notificationhubs namespace create --resource-group "5ktrial" --namespace-name \\
-               "nh-sdk-ns" --location "South Central US" --sku-name "Standard" --sku-tier "Standard"
+               "nh-sdk-ns" --location "South Central US" --sku-name "Standard"
 """
 
 helps['notificationhubs namespace update'] = """
@@ -36,7 +36,7 @@ helps['notificationhubs namespace update'] = """
       - name: Updates the namespace
         text: |-
                az notificationhubs namespace update --resource-group "5ktrial" --namespace-name \\
-               "nh-sdk-ns" --sku-name "Standard" --sku-tier "Standard"
+               "nh-sdk-ns" --sku-name "Standard"
 """
 
 helps['notificationhubs namespace delete'] = """
