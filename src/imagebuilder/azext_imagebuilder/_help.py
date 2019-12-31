@@ -18,14 +18,14 @@ helps['imagebuilder create'] = """
     type: command
     short-summary: Create or update a virtual machine image template
     examples:
-      - name: Create an Image Template.
+      - name: Create an Image Template, distribute it to a managed image.
         text: |-
                az imagebuilder create --resource-group "myResourceGroup" --name \\
                "myImageTemplate" --location "westus" --source-type "PlatformImage" \\
                --source-urn "Canonical:UbuntuServer:18.04-LTS:18.04.201903060" \\
                --customize "@cus.json" --distribute-type "ManagedImage" \\
                --distribute-location "westus" --distribute-image "myImage"
-      - name: Create an Image Template.
+      - name: Create an Image Template, distribute it to a shared image gallery.
         text: |-
                az imagebuilder create --resource-group "myResourceGroup" --name \\
                "myImageTemplate" --location "westus" --source-type "PlatformImage" \\

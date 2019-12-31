@@ -16,7 +16,7 @@ def load_command_table(self, _):
     imagebuilder_virtual_machine_image_templates = CliCommandType(
         operations_tmpl='azext_imagebuilder.vendored_sdks.imagebuilder.operations._virtual_machine_image_templates_operations#VirtualMachineImageTemplatesOperations.{}',
         client_factory=cf_virtual_machine_image_templates)
-    with self.command_group('imagebuilder', imagebuilder_virtual_machine_image_templates, client_factory=cf_virtual_machine_image_templates) as g:
+    with self.command_group('imagebuilder', imagebuilder_virtual_machine_image_templates, client_factory=cf_virtual_machine_image_templates, is_preview=True) as g:
         g.custom_command('create', 'create_imagebuilder')
         g.custom_command('update', 'update_imagebuilder')
         g.custom_command('delete', 'delete_imagebuilder')
