@@ -90,23 +90,23 @@ helps['imagebuilder run'] = """
                "myImageTemplate"
 """
 
-helps['imagebuilder list_run_outputs'] = """
+helps['imagebuilder list-run-outputs'] = """
     type: command
     short-summary: List all run outputs for the specified Image Template resource
     examples:
       - name: Retrieve a list of all outputs created by the last run of an Image Template
         text: |-
-               az imagebuilder list_run_outputs --resource-group "myResourceGroup" --name \\
+               az imagebuilder list-run-outputs --resource-group "myResourceGroup" --name \\
                "myImageTemplate"
 """
 
-helps['imagebuilder get_run_output'] = """
+helps['imagebuilder get-run-output'] = """
     type: command
     short-summary: Get the specified run output for the specified image template resource
     examples:
       - name: Retrieve single runOutput
         text: |-
-               az imagebuilder get_run_output --resource-group "myResourceGroup" --image-template-name \\
+               az imagebuilder get-run-output --resource-group "myResourceGroup" --image-template-name \\
                "myImageTemplate" --name "myManagedImageOutput"
 """
 

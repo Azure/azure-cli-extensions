@@ -81,11 +81,11 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('image_template_name', image_template_name)
 
-    with self.argument_context('imagebuilder list_run_outputs') as c:
+    with self.argument_context('imagebuilder list-run-outputs') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('image_template_name', image_template_name)
 
-    with self.argument_context('imagebuilder get_run_output') as c:
+    with self.argument_context('imagebuilder get-run-output') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('image_template_name', id_part=None, help='The name of the image Template')
         c.argument('name', id_part=None, help='The name of the run output')
