@@ -24,7 +24,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
             'rg': 'feng-cli-rg',
         })
 
-        self.cmd('az notificationhubs namespace check_availability '
+        self.cmd('az notificationhubs namespace check-availability '
                  '--name "my-test-space"',
                  checks=[])
 
@@ -39,7 +39,8 @@ class NotificationHubsScenarioTest(ScenarioTest):
         if self.is_live:
             time.sleep(60)
 
-        self.cmd('az notificationhubs check_availability '
+        self.cmd('az notificationhubs check-availability '
+                 '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[])
@@ -52,31 +53,31 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--sku-name "Free"',
                  checks=[JMESPathCheck('name', 'my-test-hub')])
 
-        self.cmd('az notificationhubs namespace authorization_rule create '
+        self.cmd('az notificationhubs namespace authorization-rule create '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--name "my-space-rule" '
                  '--rights "Listen,Send"',
                  checks=[JMESPathCheck('name', 'my-space-rule')])
 
-        self.cmd('az notificationhubs namespace authorization_rule show '
+        self.cmd('az notificationhubs namespace authorization-rule show '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--name "my-space-rule"',
                  checks=[JMESPathCheck('name', 'my-space-rule')])
 
-        self.cmd('az notificationhubs namespace authorization_rule list '
+        self.cmd('az notificationhubs namespace authorization-rule list '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space"',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        # self.cmd('az notificationhubs namespace authorization_rule list_keys '
+        # self.cmd('az notificationhubs namespace authorization-rule list_keys '
         #          '--resource-group {rg} '
         #          '--namespace-name "my-test-space" '
         #          '--name "my-space-rule"',
         #          checks=[JMESPathCheckExists('primaryConnectionString')])
 
-        self.cmd('az notificationhubs authorization_rule create '
+        self.cmd('az notificationhubs authorization-rule create '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
@@ -84,20 +85,20 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--rights "Listen"',
                  checks=[JMESPathCheck('name', 'my-hub-send-key')])
 
-        self.cmd('az notificationhubs authorization_rule show '
+        self.cmd('az notificationhubs authorization-rule show '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub" '
                  '--name "my-hub-send-key"',
                  checks=[JMESPathCheck('name', 'my-hub-send-key')])
 
-        self.cmd('az notificationhubs authorization_rule list '
+        self.cmd('az notificationhubs authorization-rule list '
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        # self.cmd('az notificationhubs authorization_rule list_keys '
+        # self.cmd('az notificationhubs authorization-rule list_keys '
         #          '--resource-group {rg} '
         #          '--namespace-name "my-test-space" '
         #          '--notification-hub-name "my-test-hub" '
@@ -117,7 +118,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--notification-hub-name "my-test-hub"',
                  checks=[JMESPathCheckExists('gcmCredential.googleApiKey')])
 
-        # self.cmd('az notificationhubs test_send '
+        # self.cmd('az notificationhubs test-send '
         #     '--resource-group {rg} '
         #     '--namespace-name "my-test-space" '
         #     '--notification-hub-name "my-test-hub" '
@@ -147,7 +148,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         # if self.is_live:
         #     time.sleep(60)
-        # self.cmd('az notificationhubs authorization_rule regenerate_keys '
+        # self.cmd('az notificationhubs authorization-rule regenerate_keys '
         #          '--resource-group {rg} '
         #          '--namespace-name "my-test-space" '
         #          '--notification-hub-name "my-test-hub" '
@@ -155,7 +156,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
         #          '--policy-key "Secondary Key"',
         #          checks=[])
 
-        # self.cmd('az notificationhubs namespace authorization_rule regenerate_keys '
+        # self.cmd('az notificationhubs namespace authorization-rule regenerate_keys '
         #          '--resource-group {rg} '
         #          '--namespace-name "my-test-space" '
         #          '--name "my-space-rule" '

@@ -71,77 +71,77 @@ helps['notificationhubs namespace list'] = """
                az notificationhubs namespace list
 """
 
-helps['notificationhubs namespace check_availability'] = """
+helps['notificationhubs namespace check-availability'] = """
     type: command
     short-summary: Checks the availability of the given service namespace across all Azure subscriptions. This is useful because the domain name is created based on the service namespace name.
     examples:
       - name: Checks name availability of namespace
         text: |-
-               az notificationhubs namespace check_availability --name "my-test-space"
+               az notificationhubs namespace check-availability --name "my-test-space"
 """
 
-helps['notificationhubs namespace authorization_rule'] = """
+helps['notificationhubs namespace authorization-rule'] = """
     type: group
     short-summary: Commands to manage notificationhubs namespace authorization rule.
 """
 
-helps['notificationhubs namespace authorization_rule list_keys'] = """
+helps['notificationhubs namespace authorization-rule list-keys'] = """
     type: command
     short-summary: Gets the Primary and Secondary ConnectionStrings to the namespace
     examples:
       - name: Lists keys of the namesapce authorization rule
         text: |-
-               az notificationhubs namespace authorization_rule list_keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace authorization-rule list-keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
-helps['notificationhubs namespace authorization_rule regenerate_keys'] = """
+helps['notificationhubs namespace authorization-rule regenerate-keys'] = """
     type: command
     short-summary: Regenerates the Primary/Secondary Keys to the Namespace Authorization Rule
     examples:
       - name: Regenerates keys of the namesapce authorization rule
         text: |-
-               az notificationhubs namespace authorization_rule regenerate_keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace authorization-rule regenerate-keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey" --policy-key "Secondary Key"
 """
 
-helps['notificationhubs namespace authorization_rule show'] = """
+helps['notificationhubs namespace authorization-rule show'] = """
     type: command
     short-summary: Gets an authorization rule for a namespace by name.
     examples:
       - name: Shows namespace authorization rule info
         text: |-
-               az notificationhubs namespace authorization_rule show --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization-rule show --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
-helps['notificationhubs namespace authorization_rule list'] = """
+helps['notificationhubs namespace authorization-rule list'] = """
     type: command
     short-summary: List the authorization rules for a namespace.
     examples:
       - name: Lists authorization rules of the namespace
         text: |-
-               az notificationhubs namespace authorization_rule list --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization-rule list --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns"
 """
 
-helps['notificationhubs namespace authorization_rule create'] = """
+helps['notificationhubs namespace authorization-rule create'] = """
     type: command
     short-summary: Creates an authorization rule for a namespace
     examples:
       - name: Creates a namespace authorization rule
         text: |-
-               az notificationhubs namespace authorization_rule create --resource-group \\
+               az notificationhubs namespace authorization-rule create --resource-group \\
                "5ktrial" --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788" --rights "Listen"
 """
 
-helps['notificationhubs namespace authorization_rule delete'] = """
+helps['notificationhubs namespace authorization-rule delete'] = """
     type: command
     short-summary: Deletes a namespace authorization rule
     examples:
       - name: Deletes a namespace authorization rule
         text: |-
-               az notificationhubs namespace authorization_rule delete --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization-rule delete --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
@@ -199,28 +199,28 @@ helps['notificationhubs list'] = """
                az notificationhubs list --resource-group "5ktrial" --namespace-name "nh-sdk-ns"
 """
 
-helps['notificationhubs check_availability'] = """
+helps['notificationhubs check-availability'] = """
     type: command
     short-summary: Checks the availability of the given notificationHub in a namespace.
     examples:
       - name: Checks the availability of the given notificationHub name
         text: |-
-               az notificationhubs check_availability --resource-group "5ktrial" \\
+               az notificationhubs check-availability --resource-group "5ktrial" \\
                --namespace-name "locp-newns" --notification-hub-name "nh-sdk-hub"
 """
 
-helps['notificationhubs authorization_rule'] = """
+helps['notificationhubs authorization-rule'] = """
     type: group
     short-summary: Commands to manage notificationhubs authorization rule.
 """
 
-helps['notificationhubs authorization_rule regenerate_keys'] = """
+helps['notificationhubs authorization-rule regenerate-keys'] = """
     type: command
     short-summary: Regenerates the Primary/Secondary Keys to the NotificationHub Authorization Rule
     examples:
       - name: Regenerates the Notification Hub authorization rule
         text: |-
-               az notificationhubs authorization_rule regenerate_keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs authorization-rule regenerate-keys --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature" --policy-key "Secondary Key"
 """
@@ -235,66 +235,66 @@ helps['notificationhubs credential list'] = """
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
-helps['notificationhubs authorization_rule list_keys'] = """
+helps['notificationhubs authorization-rule list-keys'] = """
     type: command
     short-summary: Gets the Primary and Secondary ConnectionStrings to the NotificationHub
     examples:
       - name: List connectionStrings of the authorization rule
         text: |-
-               az notificationhubs authorization_rule list_keys --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
+               az notificationhubs authorization-rule list-keys --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --name "sdk-AuthRules-5800"
 """
 
-helps['notificationhubs test_send'] = """
+helps['notificationhubs test-send'] = """
     type: command
     short-summary: test send a push notification
     examples:
       - name: debug send notification
         text: |-
-               az notificationhubs test_send --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs test-send --resource-group "5ktrial" --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\
                --payload "{\\\"data\\\":{\\\"message\\\":\\\"test notification\\\"}}"
 """
 
-helps['notificationhubs authorization_rule list'] = """
+helps['notificationhubs authorization-rule list'] = """
     type: command
     short-summary: Lists the authorization rules for a NotificationHub.
     examples:
       - name: Lists authorization rules
         text: |-
-               az notificationhubs authorization_rule list --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule list --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
-helps['notificationhubs authorization_rule show'] = """
+helps['notificationhubs authorization-rule show'] = """
     type: command
     short-summary: Gets an authorization rule for a NotificationHub by name.
     examples:
       - name: Shows the authorization rule information
         text: |-
-               az notificationhubs authorization_rule show --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule show --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
 
-helps['notificationhubs authorization_rule create'] = """
+helps['notificationhubs authorization-rule create'] = """
     type: command
     short-summary: Creates/Updates an authorization rule for a NotificationHub
     examples:
       - name: Creates an authorization rule
         text: |-
-               az notificationhubs authorization_rule create --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule create --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature" --rights "Listen"
 """
 
-helps['notificationhubs authorization_rule delete'] = """
+helps['notificationhubs authorization-rule delete'] = """
     type: command
     short-summary: Deletes a notificationHub authorization rule
     examples:
       - name: Deletes the authorization rule
         text: |-
-               az notificationhubs authorization_rule delete --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule delete --resource-group "5ktrial" \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
