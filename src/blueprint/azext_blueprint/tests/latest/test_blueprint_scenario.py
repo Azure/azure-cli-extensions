@@ -19,11 +19,13 @@ class BlueprintScenarioTest(ScenarioTest):
     def test_blueprint(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'name': 'test1',
+            'ManagementGroupId': 'CliMgmtGroup',
+            'subId':'0b1f6471-1bf0-4dda-aec3-cb9272f09590'
         })
 
         self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
+                 '--scope "subscriptions/{subId}"',
                  checks=[])
 
         self.cmd('az blueprint create '
@@ -34,11 +36,11 @@ class BlueprintScenarioTest(ScenarioTest):
                  checks=[])
 
         self.cmd('az blueprint list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup"',
+                 '--scope "providers/Microsoft.Management/managementGroups/{ManagementGroupId}"',
                  checks=[])
 
-        self.cmd('az blueprint create '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
+        self.cmd('az blueprint assign create '
+                 '--scope "subscriptions/{subId}}" '
                  '--name "assignSimpleBlueprint" '
                  '--location "eastus" '
                  '--identity-type "SystemAssigned" '
