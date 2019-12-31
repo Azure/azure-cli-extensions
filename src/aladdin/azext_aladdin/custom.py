@@ -14,8 +14,8 @@ from azure.cli.core import __version__ as core_version
 from azure.cli.core._help import HelpExample
 
 
+# Commands
 def check_connection_aladdin():
-    # TODO: Report time for round trip
     response = ping_aladdin_service()
     if response.status_code == 200:
         print('Connection was successful')
@@ -23,11 +23,24 @@ def check_connection_aladdin():
         print('Connection failed')
 
 
+# Replacements for core functions
 def provide_examples(help_file):
     # Specify az to force all the examples to be for the exact command
     lookup_term = "az " + help_file.command
     aladdin_examples = get_generated_examples(lookup_term)
     return concat_unique_examples(help_file.examples, aladdin_examples)
+
+
+# Support functions
+def get_generated_examples(cli_term):
+    examples = []
+    response = call_aladdin_service(cli_term)
+
+    if response.status_code == 200:
+        for answer in json.loads(response.content):
+            examples.append(clean_from_http_answer(answer))
+
+    return examples
 
 
 def concat_unique_examples(first_list, second_list):
@@ -42,17 +55,24 @@ def are_examples_equal(first, second):
     return first.short_summary == second.short_summary or first.command == second.command
 
 
-def get_generated_examples(cli_term):
-    examples = []
-    response = call_aladdin_service(cli_term)
+def clean_from_http_answer(http_answer):
+    example = HelpExample()
+    example.short_summary = http_answer['title'].strip()
+    example.command = http_answer['snippet'].strip()
+    if example.short_summary.startswith("az "):
+        example.short_summary, example.command = example.command, example.short_summary
+        example.short_summary = example.short_summary.split('\r\n')[0]
+    elif '```azurecli\r\n' in example.command:
+        start_index = example.command.index('```azurecli\r\n') + len('```azurecli\r\n')
+        example.command = example.command[start_index:]
+    example.command = example.command.replace('```', '').replace(example.short_summary, '').strip()
+    example.command = re.sub(r'\[.*\]', '', example.command).strip()
+    # Add a '\n' to comply with the existing examples format
+    example.command = example.command + '\n'
+    return example
 
-    if response.status_code == 200:
-        for answer in json.loads(response.content):
-            examples.append(clean_from_http_answer(answer))
 
-    return examples
-
-
+# HTTP calls
 def ping_aladdin_service():
     api_url = 'https://app.aladdin.microsoft.com/api/v1.0/monitor'
     headers = {'Content-Type': 'application/json'}
@@ -96,20 +116,3 @@ def call_aladdin_service(query):
         headers=headers)
 
     return response
-
-
-def clean_from_http_answer(http_answer):
-    example = HelpExample()
-    example.short_summary = http_answer['title'].strip()
-    example.command = http_answer['snippet'].strip()
-    if example.short_summary.startswith("az "):
-        example.short_summary, example.command = example.command, example.short_summary
-        example.short_summary = example.short_summary.split('\r\n')[0]
-    elif '```azurecli\r\n' in example.command:
-        start_index = example.command.index('```azurecli\r\n') + len('```azurecli\r\n')
-        example.command = example.command[start_index:]
-    example.command = example.command.replace('```', '').replace(example.short_summary, '').strip()
-    example.command = re.sub(r'\[.*\]', '', example.command).strip()
-    # Add a '\n' to comply with the existing examples format
-    example.command = example.command + '\n'
-    return example

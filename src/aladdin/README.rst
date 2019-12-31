@@ -1,4 +1,4 @@
 Microsoft Azure CLI 'aladdin' Extension
 ==========================================
 
-AI hooks into the Azure CLI core.
+Improve the Azure CLI experience by adding AI powered updates to it's core.

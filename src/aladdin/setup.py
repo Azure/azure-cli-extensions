@@ -14,7 +14,6 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 VERSION = '0.1.0'
 
@@ -50,7 +49,7 @@ setup(
     author='Matthew Booe',
     author_email='mabooe@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aladdin',
-    long_description=README + '\n\n' + HISTORY,
+    long_description='Improve the Azure CLI experience by adding AI powered updates to it\'s core',
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
