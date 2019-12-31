@@ -32,8 +32,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--namespace-name "my-test-space" '
                  '--location "South Central US" '
-                 '--sku-name "Free" '
-                 '--sku-tier "Free"',
+                 '--sku-name "Free"',
                  checks=[JMESPathCheck('name', 'my-test-space')])
 
         if self.is_live:
