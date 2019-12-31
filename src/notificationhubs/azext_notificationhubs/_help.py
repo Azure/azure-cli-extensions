@@ -21,7 +21,7 @@ helps['notificationhubs namespace'] = """
 
 helps['notificationhubs namespace create'] = """
     type: command
-    short-summary: Creates/Updates a service namespace. Once created, this namespace's resource manifest is immutable. This operation is idempotent.
+    short-summary: Creates a service namespace. Once created, this namespace's resource manifest is immutable. This operation is idempotent.
     examples:
       - name: Creates a namespace
         text: |-
@@ -31,7 +31,7 @@ helps['notificationhubs namespace create'] = """
 
 helps['notificationhubs namespace update'] = """
     type: command
-    short-summary: Creates/Updates a service namespace. Once created, this namespace's resource manifest is immutable. This operation is idempotent.
+    short-summary: Updates a service namespace. The namespace's resource manifest is immutable and cannot be modified.
     examples:
       - name: Updates the namespace
         text: |-
@@ -152,7 +152,7 @@ helps['notificationhubs'] = """
 
 helps['notificationhubs create'] = """
     type: command
-    short-summary: Creates/Update a NotificationHub in a namespace.
+    short-summary: Creates a NotificationHub in a namespace.
     examples:
       - name: Creates a Notification Hub
         text: |-
@@ -162,7 +162,7 @@ helps['notificationhubs create'] = """
 
 helps['notificationhubs update'] = """
     type: command
-    short-summary: Creates/Update a NotificationHub in a namespace.
+    short-summary: Updates a NotificationHub in a namespace.
     examples:
       - name: Updates the Notification Hub
         text: |-
@@ -279,7 +279,7 @@ helps['notificationhubs authorization-rule show'] = """
 
 helps['notificationhubs authorization-rule create'] = """
     type: command
-    short-summary: Creates/Updates an authorization rule for a NotificationHub
+    short-summary: Creates an authorization rule for a NotificationHub
     examples:
       - name: Creates an authorization rule
         text: |-
