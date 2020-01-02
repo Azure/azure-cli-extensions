@@ -25,7 +25,7 @@ helps['notificationhubs namespace create'] = """
     examples:
       - name: Creates a namespace
         text: |-
-               az notificationhubs namespace create --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace create --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --location "South Central US" --sku-name "Standard"
 """
 
@@ -35,7 +35,7 @@ helps['notificationhubs namespace update'] = """
     examples:
       - name: Updates the namespace
         text: |-
-               az notificationhubs namespace update --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace update --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --sku-name "Standard"
 """
 
@@ -45,7 +45,7 @@ helps['notificationhubs namespace delete'] = """
     examples:
       - name: Deletes the namespace
         text: |-
-               az notificationhubs namespace delete --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace delete --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns"
 """
 
@@ -55,7 +55,7 @@ helps['notificationhubs namespace show'] = """
     examples:
       - name: Gets namespace info
         text: |-
-               az notificationhubs namespace show --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace show --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns"
 """
 
@@ -65,7 +65,7 @@ helps['notificationhubs namespace list'] = """
     examples:
       - name: Lists available namespaces within a resourceGroup
         text: |-
-               az notificationhubs namespace list --resource-group "5ktrial"
+               az notificationhubs namespace list --resource-group MyResourceGroup
       - name: Lists all the available namespaces within the subscription irrespective of the resourceGroups
         text: |-
                az notificationhubs namespace list
@@ -91,7 +91,7 @@ helps['notificationhubs namespace authorization-rule list-keys'] = """
     examples:
       - name: Lists keys of the namesapce authorization rule
         text: |-
-               az notificationhubs namespace authorization-rule list-keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace authorization-rule list-keys --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
@@ -101,7 +101,7 @@ helps['notificationhubs namespace authorization-rule regenerate-keys'] = """
     examples:
       - name: Regenerates keys of the namesapce authorization rule
         text: |-
-               az notificationhubs namespace authorization-rule regenerate-keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs namespace authorization-rule regenerate-keys --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey" --policy-key "Secondary Key"
 """
 
@@ -111,7 +111,7 @@ helps['notificationhubs namespace authorization-rule show'] = """
     examples:
       - name: Shows namespace authorization rule info
         text: |-
-               az notificationhubs namespace authorization-rule show --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization-rule show --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
@@ -121,7 +121,7 @@ helps['notificationhubs namespace authorization-rule list'] = """
     examples:
       - name: Lists authorization rules of the namespace
         text: |-
-               az notificationhubs namespace authorization-rule list --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization-rule list --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns"
 """
 
@@ -132,7 +132,7 @@ helps['notificationhubs namespace authorization-rule create'] = """
       - name: Creates a namespace authorization rule
         text: |-
                az notificationhubs namespace authorization-rule create --resource-group \\
-               "5ktrial" --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788" --rights "Listen"
+               MyResourceGroup --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788" --rights "Listen"
 """
 
 helps['notificationhubs namespace authorization-rule delete'] = """
@@ -141,7 +141,7 @@ helps['notificationhubs namespace authorization-rule delete'] = """
     examples:
       - name: Deletes a namespace authorization rule
         text: |-
-               az notificationhubs namespace authorization-rule delete --resource-group "5ktrial" \\
+               az notificationhubs namespace authorization-rule delete --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
 """
 
@@ -156,7 +156,7 @@ helps['notificationhubs create'] = """
     examples:
       - name: Creates a Notification Hub
         text: |-
-               az notificationhubs create --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
+               az notificationhubs create --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --location "South Central US" --sku-name "Free"
 """
 
@@ -176,7 +176,7 @@ helps['notificationhubs delete'] = """
     examples:
       - name: Deletes a notification hub
         text: |-
-               az notificationhubs delete --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
+               az notificationhubs delete --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub"
 """
 
@@ -186,7 +186,7 @@ helps['notificationhubs show'] = """
     examples:
       - name: Shows the Notification Hub info
         text: |-
-               az notificationhubs show --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
+               az notificationhubs show --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub"
 """
 
@@ -196,7 +196,7 @@ helps['notificationhubs list'] = """
     examples:
       - name: Lists the notification hubs
         text: |-
-               az notificationhubs list --resource-group "5ktrial" --namespace-name "nh-sdk-ns"
+               az notificationhubs list --resource-group MyResourceGroup --namespace-name "nh-sdk-ns"
 """
 
 helps['notificationhubs check-availability'] = """
@@ -205,7 +205,7 @@ helps['notificationhubs check-availability'] = """
     examples:
       - name: Checks the availability of the given notificationHub name
         text: |-
-               az notificationhubs check-availability --resource-group "5ktrial" \\
+               az notificationhubs check-availability --resource-group MyResourceGroup \\
                --namespace-name "locp-newns" --notification-hub-name "nh-sdk-hub"
 """
 
@@ -220,7 +220,7 @@ helps['notificationhubs authorization-rule regenerate-keys'] = """
     examples:
       - name: Regenerates the Notification Hub authorization rule
         text: |-
-               az notificationhubs authorization-rule regenerate-keys --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs authorization-rule regenerate-keys --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature" --policy-key "Secondary Key"
 """
@@ -231,7 +231,7 @@ helps['notificationhubs credential list'] = """
     examples:
       - name: Lists the PNS Credentials
         text: |-
-               az notificationhubs credential list --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs credential list --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
@@ -241,7 +241,7 @@ helps['notificationhubs authorization-rule list-keys'] = """
     examples:
       - name: List connectionStrings of the authorization rule
         text: |-
-               az notificationhubs authorization-rule list-keys --resource-group "5ktrial" --namespace-name "nh-sdk-ns" \\
+               az notificationhubs authorization-rule list-keys --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --name "sdk-AuthRules-5800"
 """
 
@@ -251,7 +251,7 @@ helps['notificationhubs test-send'] = """
     examples:
       - name: debug send notification
         text: |-
-               az notificationhubs test-send --resource-group "5ktrial" --namespace-name \\
+               az notificationhubs test-send --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\
                --payload "{\\\"data\\\":{\\\"message\\\":\\\"test notification\\\"}}"
 """
@@ -262,7 +262,7 @@ helps['notificationhubs authorization-rule list'] = """
     examples:
       - name: Lists authorization rules
         text: |-
-               az notificationhubs authorization-rule list --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule list --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
 """
 
@@ -272,7 +272,7 @@ helps['notificationhubs authorization-rule show'] = """
     examples:
       - name: Shows the authorization rule information
         text: |-
-               az notificationhubs authorization-rule show --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule show --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
@@ -283,7 +283,7 @@ helps['notificationhubs authorization-rule create'] = """
     examples:
       - name: Creates an authorization rule
         text: |-
-               az notificationhubs authorization-rule create --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule create --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature" --rights "Listen"
 """
@@ -294,7 +294,7 @@ helps['notificationhubs authorization-rule delete'] = """
     examples:
       - name: Deletes the authorization rule
         text: |-
-               az notificationhubs authorization-rule delete --resource-group "5ktrial" \\
+               az notificationhubs authorization-rule delete --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
                "DefaultListenSharedAccessSignature"
 """
@@ -339,7 +339,7 @@ helps['notificationhubs credential gcm update'] = """
     examples:
       - name: Updates gcm key
         text: |-
-               az notificationhubs credential gcm update --resource-group "5ktrial" \\
+               az notificationhubs credential gcm update --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --google-api-key \\
                "xxxxxxxxx"
 """
