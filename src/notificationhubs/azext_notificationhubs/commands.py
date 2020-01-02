@@ -24,7 +24,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_notificationhubs.vendored_sdks.notificationhubs.operations._namespaces_operations#NamespacesOperations.{}',
         client_factory=cf_namespaces)
     with self.command_group('notificationhubs namespace', notificationhubs_namespaces, client_factory=cf_namespaces, is_preview=True) as g:
-        g.custom_command('create', 'create_notificationhubs_namespace')
+        g.custom_command('create', 'create_notificationhubs_namespace', supports_no_wait=True)
         g.custom_command('update', 'update_notificationhubs_namespace')
         g.custom_command('delete', 'delete_notificationhubs_namespace')
         g.custom_show_command('show', 'get_notificationhubs_namespace')
@@ -42,7 +42,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_notificationhubs.vendored_sdks.notificationhubs.operations._notification_hubs_operations#NotificationHubsOperations.{}',
         client_factory=cf_notification_hubs)
     with self.command_group('notificationhubs', notificationhubs_notification_hubs, client_factory=cf_notification_hubs, is_preview=True) as g:
-        g.custom_command('create', 'create_notificationhubs_hub')
+        g.custom_command('create', 'create_notificationhubs_hub', supports_no_wait=True)
         g.custom_command('update', 'update_notificationhubs_hub')
         g.custom_command('delete', 'delete_notificationhubs_hub')
         g.custom_show_command('show', 'get_notificationhubs_hub')
