@@ -10,6 +10,7 @@ from datetime import date, timedelta
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import ScenarioTest
 
+
 class SupportScenarioTest(ScenarioTest):
 
     def test_support_services(self):
@@ -79,7 +80,7 @@ class SupportScenarioTest(ScenarioTest):
                                                           ticket["name"]).get_output_in_json()
             self.assertTrue(list_tickets_communications_result is not None)
             self.assertTrue(len(list_tickets_communications_result) >= 0)
-            
+
             if len(list_tickets_communications_result) > 0:
                 self.assertTrue("type" in list_tickets_communications_result[0])
                 self.assertTrue(list_tickets_communications_result[0]["type"] == "Microsoft.Support/communications")

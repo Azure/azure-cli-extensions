@@ -7,6 +7,10 @@
 # pylint: disable=too-many-locals
 
 from knack.util import CLIError
+from knack.log import get_logger
+from azext_support._client_factory import cf_support
+import json
+logger = get_logger(__name__)
 
 
 def list_support_support_tickets(cmd, client,
@@ -88,7 +92,7 @@ def create_support_tickets(cmd, client,
 
     rsp = client.check_name_availability_with_subscription(name=ticket_name,
                                                            type="Microsoft.Support/supportTickets")
-    if not rsp["name_available"]:
+    if not rsp.name_available:
         raise CLIError('Support ticket name \'' + ticket_name + '\' not available. Please try again with another name!')
 
     contactBody = {}
@@ -102,14 +106,6 @@ def create_support_tickets(cmd, client,
     contactBody["country"] = contact_country
     contactBody["preferred_support_language"] = contact_language
 
-    quotaBody = {}
-    quotaBody["quota_change_request_sub_type"] = quota_change_subtype
-    quotaBody["quota_change_request_version"] = quota_change_version
-    quota_change_requests = []
-    for (region, payload) in zip(quota_change_regions, quota_change_payload):
-        quota_change_requests.append({"region": region, "payload": payload})
-    quotaBody["quota_change_requests"] = quota_change_requests
-
     body = {}
     body["description"] = description
     body["problem_classification_id"] = problem_classification
@@ -119,8 +115,24 @@ def create_support_tickets(cmd, client,
     body["service_id"] = service
     body["require24_x7_response"] = require_24_by_7_response
     body["problem_start_time"] = start_time
-    body["technical_ticket_details"] = {"resource_id": technical_resource}
-    body["quota_ticket_details"] = quotaBody
+
+    if _is_quota_ticket(service):
+        quotaBody = {}
+        quotaBody["quota_change_request_sub_type"] = quota_change_subtype
+        quotaBody["quota_change_request_version"] = quota_change_version
+        quota_change_requests = []
+        if quota_change_regions is not None and quota_change_payload is not None:
+            for (region, payload) in zip(quota_change_regions, quota_change_payload):
+                quota_change_requests.append({"region": region, "payload": payload})
+        quotaBody["quota_change_requests"] = quota_change_requests
+
+        body["quota_ticket_details"] = quotaBody
+
+    if _is_technical_ticket(service):
+        body["technical_ticket_details"] = {"resource_id": technical_resource}
+
+    logger.debug("Sending create request with below payload: ")
+    logger.debug(json.dumps(body, indent=4))
 
     return client.create_support_ticket_for_subscription(support_ticket_name=ticket_name,
                                                          create_support_ticket_parameters=body)
@@ -128,8 +140,8 @@ def create_support_tickets(cmd, client,
 
 def wait_support_tickets(cmd,
                          ticket_name=None):
-    from azext_support._client_factory import cf_support_tickets
-    return get_support_tickets(cmd, cf_support_tickets, ticket_name=ticket_name)
+    client = cf_support(cmd.cli_ctx)
+    return get_support_tickets(cmd, client.support_tickets, ticket_name=ticket_name)
 
 
 def create_support_tickets_communications(cmd, client,
@@ -158,6 +170,24 @@ def create_support_tickets_communications(cmd, client,
 def wait_support_tickets_communications(cmd,
                                         ticket_name=None,
                                         communication_name=None):
-    from azext_support._client_factory import cf_communications
-    return get_support_tickets_communications(cmd, cf_communications, ticket_name=ticket_name,
+    client = cf_support(cmd.cli_ctx)
+    return get_support_tickets_communications(cmd, client.communications, ticket_name=ticket_name,
                                               communication_name=communication_name)
+
+
+def _is_billing_ticket(service_name):
+    return "517f2da6-78fd-0498-4e22-ad26996b1dfc" in service_name
+
+
+def _is_quota_ticket(service_name):
+    return "06bfd9d3-516b-d5c6-5802-169c800dec89" in service_name
+
+
+def _is_subscription_mgmt_ticket(service_name):
+    return "f3dc5421-79ef-1efa-41a5-42bf3cbb52c6" in service_name
+
+
+def _is_technical_ticket(service_name):
+    return (not _is_billing_ticket(service_name)) and \
+           (not _is_quota_ticket(service_name)) and \
+           (not _is_subscription_mgmt_ticket(service_name))

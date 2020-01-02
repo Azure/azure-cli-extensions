@@ -52,7 +52,7 @@ def load_tickets_argument(self, _):
         c.argument('contact_email', help='The primary email address.')
         c.argument('contact_additional_emails', nargs='+', help='Space seperated list of additional email addresses.')
         c.argument('contact_phone_number', help='The phone number. Required when contact method is \'phone\'.')
-        c.argument('contact_timezone', help='The name of the time zone from \'Microsoft Time Zone Index Values\'.' +
+        c.argument('contact_timezone', help='The name of the time zone from \'Microsoft Time Zone Index Values\'. ' +
                    'e.g. Pacific Standard Time')
         c.argument('contact_country', help='The ISO 3166-1 alpha-3 country code. e.g. USA')
         c.argument('contact_language', help='The standard language-country code. e.g. en-US')
@@ -72,7 +72,7 @@ def load_tickets_argument(self, _):
         c.argument('contact_email', help='The primary email address.', required=True)
         c.argument('contact_additional_emails', nargs='+', help='Space seperated list of additional email addresses.')
         c.argument('contact_phone_number', help='The phone number. Required when contact method is \'phone\'.')
-        c.argument('contact_timezone', help='The name of the time zone from \'Microsoft Time Zone Index Values\'.' +
+        c.argument('contact_timezone', help='The name of the time zone from \'Microsoft Time Zone Index Values\'. ' +
                    'e.g. Pacific Standard Time', required=True)
         c.argument('contact_country', help='The ISO 3166-1 alpha-3 country code. e.g. USA', required=True)
         c.argument('contact_language', help='The standard language-country code. e.g. en-US', required=True)
