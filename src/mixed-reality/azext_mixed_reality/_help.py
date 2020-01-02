@@ -28,13 +28,13 @@ helps['mixed-reality location check-name-availability'] = """
     short-summary: Commands to manage mixed reality location check name availability.
 """
 
-helps['mixed-reality location check-name-availability check_name_availability_local'] = """
+helps['mixed-reality location check-name-availability check-name-availability-local'] = """
     type: command
     short-summary: Check Name Availability for local uniqueness
     examples:
       - name: CheckLocalNameAvailability
         text: |-
-               az mixed-reality location check-name-availability check_name_availability_local \\
+               az mixed-reality location check-name-availability check-name-availability-local \\
                --location "eastus2euap"
 """
 
@@ -95,23 +95,23 @@ helps['mixed-reality remote-rendering-account list'] = """
                az mixed-reality remote-rendering-account list --resource-group "MyResourceGroup"
 """
 
-helps['mixed-reality remote-rendering-account regenerate_keys'] = """
+helps['mixed-reality remote-rendering-account regenerate-keys'] = """
     type: command
     short-summary: Regenerate specified Key of a Remote Rendering Account
     examples:
       - name: Regenerate remote rendering account keys
         text: |-
-               az mixed-reality remote-rendering-account regenerate_keys --resource-group \\
+               az mixed-reality remote-rendering-account regenerate-keys --resource-group \\
                "MyResourceGroup" --name "MyAccount"
 """
 
-helps['mixed-reality remote-rendering-account get_keys'] = """
+helps['mixed-reality remote-rendering-account get-keys'] = """
     type: command
     short-summary: Get Both of the 2 Keys of a Remote Rendering Account
     examples:
       - name: Get remote rendering account key
         text: |-
-               az mixed-reality remote-rendering-account get_keys --resource-group "MyResourceGroup" \\
+               az mixed-reality remote-rendering-account get-keys --resource-group "MyResourceGroup" \\
                --name "MyAccount"
 """
 
@@ -172,22 +172,22 @@ helps['mixed-reality spatial-anchors-account list'] = """
                az mixed-reality spatial-anchors-account list --resource-group "MyResourceGroup"
 """
 
-helps['mixed-reality spatial-anchors-account regenerate_keys'] = """
+helps['mixed-reality spatial-anchors-account regenerate-keys'] = """
     type: command
     short-summary: Regenerate specified Key of a Spatial Anchors Account
     examples:
       - name: Regenerate spatial anchors account keys
         text: |-
-               az mixed-reality spatial-anchors-account regenerate_keys --resource-group \\
+               az mixed-reality spatial-anchors-account regenerate-keys --resource-group \\
                "MyResourceGroup" --name "MyAccount"
 """
 
-helps['mixed-reality spatial-anchors-account get_keys'] = """
+helps['mixed-reality spatial-anchors-account get-keys'] = """
     type: command
     short-summary: Get Both of the 2 Keys of a Spatial Anchors Account
     examples:
       - name: Get spatial anchor account key
         text: |-
-               az mixed-reality spatial-anchors-account get_keys --resource-group "MyResourceGroup" \\
+               az mixed-reality spatial-anchors-account get-keys --resource-group "MyResourceGroup" \\
                --name "MyAccount"
 """
