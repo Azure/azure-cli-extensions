@@ -24,7 +24,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_mixed_reality.vendored_sdks.mixedreality.operations.__operations#Operations.{}',
         client_factory=cf_mixed_reality)
     with self.command_group('mixed-reality location check-name-availability', mixed_reality_, client_factory=cf_mixed_reality) as g:
-        g.custom_command('check_name_availability_local', 'check_name_availability_local_mixed_reality_location_check_name_availability')
+        g.custom_command('check-name-availability-local', 'check_name_availability_local_mixed_reality_location_check_name_availability')
 
     from ._client_factory import cf_remote_rendering_accounts
     mixed_reality_remote_rendering_accounts = CliCommandType(
@@ -36,8 +36,8 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_mixed_reality_remote_rendering_account')
         g.custom_command('show', 'get_mixed_reality_remote_rendering_account')
         g.custom_command('list', 'list_mixed_reality_remote_rendering_account')
-        g.custom_command('regenerate_keys', 'regenerate_keys_mixed_reality_remote_rendering_account')
-        g.custom_command('get_keys', 'get_keys_mixed_reality_remote_rendering_account')
+        g.custom_command('regenerate-keys', 'regenerate_keys_mixed_reality_remote_rendering_account')
+        g.custom_command('get-keys', 'get_keys_mixed_reality_remote_rendering_account')
 
     from ._client_factory import cf_spatial_anchors_accounts
     mixed_reality_spatial_anchors_accounts = CliCommandType(
@@ -49,5 +49,5 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_mixed_reality_spatial_anchors_account')
         g.custom_command('show', 'get_mixed_reality_spatial_anchors_account')
         g.custom_command('list', 'list_mixed_reality_spatial_anchors_account')
-        g.custom_command('regenerate_keys', 'regenerate_keys_mixed_reality_spatial_anchors_account')
-        g.custom_command('get_keys', 'get_keys_mixed_reality_spatial_anchors_account')
+        g.custom_command('regenerate-keys', 'regenerate_keys_mixed_reality_spatial_anchors_account')
+        g.custom_command('get-keys', 'get_keys_mixed_reality_spatial_anchors_account')
