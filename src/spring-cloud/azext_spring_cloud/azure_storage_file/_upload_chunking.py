@@ -7,6 +7,7 @@
 # pylint: disable=too-few-public-methods, too-many-instance-attributes
 
 import threading
+import concurrent.futures
 
 
 def _upload_file_chunks(file_service, share_name, directory_name, file_name,
@@ -30,7 +31,6 @@ def _upload_file_chunks(file_service, share_name, directory_name, file_name,
         progress_callback(0, file_size)
 
     if max_connections > 1:
-        import concurrent.futures
         executor = concurrent.futures.ThreadPoolExecutor(max_connections)
         range_ids = list(executor.map(uploader.process_chunk,
                                       uploader.get_chunk_offsets()))
