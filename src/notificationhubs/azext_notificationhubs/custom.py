@@ -10,6 +10,7 @@
 
 DEFAULT_APNS_ENDPOINT = "gateway.push.apple.com"
 
+
 def create_notificationhubs_namespace(cmd, client,
                                       resource_group,
                                       namespace_name,
@@ -222,7 +223,7 @@ def debug_send_notificationhubs_hub(cmd, client,
     custom_headers = {"servicebusnotification-format": notification_format}
     if tag is not None:
         custom_headers['servicebusnotification-tags'] = tag
-     
+
     return client.debug_send(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers=custom_headers)
 
 
