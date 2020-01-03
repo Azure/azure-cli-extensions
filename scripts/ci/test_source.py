@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 import shutil
+import shlex
 from subprocess import check_output, check_call, CalledProcessError
 
 import mock
@@ -30,9 +31,21 @@ for src_d in os.listdir(SRC_PATH):
     pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
 
     # If running in Travis CI, only run tests for edited extensions
+    cmd_tpl = 'git --no-pager diff --name-only {commit_start} -- {code_dir}'
+
+    # If running in Travis CI, only run tests for edited extensions
     commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
     if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
         continue
+
+    # Running in Azure DevOps
+    ado_source_version = os.environ.get('BUILD_SOURCE_VERSION')
+    print('*' * 70)
+    print(ado_source_version)
+    if ado_source_version:
+        cmd = cmd_tpl.format(commit_start=ado_source_version, code_dir=src_d_full)
+        if not check_output(shlex.split(cmd)):
+            continue
 
     # Find the package and check it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):

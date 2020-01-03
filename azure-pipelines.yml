@@ -82,7 +82,11 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
     - bash: pip install wheel==0.30.0
+      displayName: 'Install wheel==0.30.0'
     - bash: ./scripts/ci/test_source.sh
+      displayName: 'Run unittest and build test'
+      env:
+        BUILD_SOURCE_VERSION: $(Build.SourceVersion)
 
 # - job: LintModifiedExtensions
 #   displayName: "CLI Linter on Modified Extensions"
