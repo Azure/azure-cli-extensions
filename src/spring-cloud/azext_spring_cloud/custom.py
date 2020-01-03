@@ -359,7 +359,7 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     deployment_properties = client.deployments.get(
         resource_group, service, name, deployment).properties
     if deployment_properties.source.type == "Jar":
-        raise CLIError("Jar deployment have no build logs.")
+        raise CLIError("Jar deployment has no build logs.")
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
