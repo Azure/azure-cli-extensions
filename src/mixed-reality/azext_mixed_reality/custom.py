@@ -106,7 +106,6 @@ def list_mixed_reality_spatial_anchors_account(cmd, client,
 def regenerate_keys_mixed_reality_spatial_anchors_account(cmd, client,
                                                           resource_group,
                                                           name,
-
                                                           serial=None):
     return client.regenerate_keys(resource_group_name=resource_group, account_name=name, serial=serial)
 
