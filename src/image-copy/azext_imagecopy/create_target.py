@@ -9,6 +9,9 @@ import time
 from knack.util import CLIError
 from knack.log import get_logger
 
+from msrestazure.tools import resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
+
 from azext_imagecopy.cli_utils import run_cli_command, prepare_cli_command
 
 logger = get_logger(__name__)
@@ -18,7 +21,7 @@ STORAGE_ACCOUNT_NAME_LENGTH = 24
 
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
-def create_target_image(location, transient_resource_group_name, source_type, source_object_name,
+def create_target_image(cmd, location, transient_resource_group_name, source_type, source_object_name,
                         source_os_disk_snapshot_name, source_os_disk_snapshot_url, source_os_type,
                         target_resource_group_name, azure_pool_frequency, tags, target_name, target_subscription,
                         export_as_snapshot, timeout):
@@ -113,11 +116,21 @@ def create_target_image(location, transient_resource_group_name, source_type, so
     else:
         snapshot_resource_group_name = transient_resource_group_name
 
+    storage_account_name = target_blob_path.split('.')[0].split('/')[-1]
+    if target_subscription:
+        subscription_id = target_subscription
+    else:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+    source_storage_account_id = resource_id(
+        subscription=subscription_id, resource_group=transient_resource_group_name,
+        namespace='Microsoft.Storage', type='storageAccounts', name=storage_account_name)
+
     cli_cmd = prepare_cli_command(['snapshot', 'create',
                                    '--resource-group', snapshot_resource_group_name,
                                    '--name', target_snapshot_name,
                                    '--location', location,
-                                   '--source', target_blob_path],
+                                   '--source', target_blob_path,
+                                   '--source-storage-account-id', source_storage_account_id],
                                   subscription=target_subscription)
 
     json_output = run_cli_command(cli_cmd, return_as_json=True)
