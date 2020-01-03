@@ -35,7 +35,7 @@ helps['mixed-reality location check-name-availability check-name-availability-lo
       - name: CheckLocalNameAvailability
         text: |-
                az mixed-reality location check-name-availability check-name-availability-local \\
-               --location "eastus2euap"
+               --location "eastus2euap" --name "MyAccount" --type "SpatialAnchorsAccount"
 """
 
 helps['mixed-reality remote-rendering-account'] = """
@@ -102,7 +102,7 @@ helps['mixed-reality remote-rendering-account regenerate-keys'] = """
       - name: Regenerate remote rendering account keys
         text: |-
                az mixed-reality remote-rendering-account regenerate-keys --resource-group \\
-               "MyResourceGroup" --name "MyAccount"
+               "MyResourceGroup" --name "MyAccount" --serial "1"
 """
 
 helps['mixed-reality remote-rendering-account get-keys'] = """
@@ -179,7 +179,7 @@ helps['mixed-reality spatial-anchors-account regenerate-keys'] = """
       - name: Regenerate spatial anchors account keys
         text: |-
                az mixed-reality spatial-anchors-account regenerate-keys --resource-group \\
-               "MyResourceGroup" --name "MyAccount"
+               "MyResourceGroup" --name "MyAccount" --serial "1"
 """
 
 helps['mixed-reality spatial-anchors-account get-keys'] = """
