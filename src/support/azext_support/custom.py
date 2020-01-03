@@ -6,18 +6,23 @@
 # pylint: disable=unused-argument
 # pylint: disable=too-many-locals
 
-from knack.util import CLIError
-from knack.log import get_logger
-from azext_support._client_factory import cf_support
 import json
+from datetime import date, timedelta
+
+from azext_support._client_factory import cf_support
+from knack.log import get_logger
+from knack.util import CLIError
+
 logger = get_logger(__name__)
 
 
 def list_support_support_tickets(cmd, client,
-                                 top=None,
-                                 filters=None,
-                                 skip_token=None):
-    return client.list_by_subscription(top=top, filter=filters, skip_token=skip_token)
+                                 filters=None):
+
+    if filters is None:
+        filters = "CreatedDate ge " + str(date.today() - timedelta(7))
+
+    return client.list_by_subscription(top=100, filter=filters)
 
 
 def get_support_tickets(cmd, client,
@@ -53,11 +58,9 @@ def update_support_tickets(cmd, client,
 
 def list_support_tickets_communications(cmd, client,
                                         ticket_name=None,
-                                        top=None,
-                                        filters=None,
-                                        skip_token=None):
+                                        filters=None):
     return client.list_by_subscription_ticket(support_ticket_name=ticket_name,
-                                              top=top, filter=filters, skip_token=skip_token)
+                                              filter=filters)
 
 
 def get_support_tickets_communications(cmd, client,

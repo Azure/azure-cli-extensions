@@ -3,8 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
 from azext_support._validators import datetime_type
+from azure.cli.core.commands.parameters import (get_enum_type,
+                                                get_three_state_flag)
 
 
 def load_arguments(self, _):
@@ -34,10 +35,8 @@ def load_problem_classifications_argument(self, _):
 
 def load_tickets_argument(self, _):
     with self.argument_context('support tickets list') as c:
-        c.argument('top', type=int, help='The number of values to return in the collection.' +
-                   'Default is 25 and max is 100.')
-        c.argument('filters', help='The odata filters to apply on the operation.')
-        c.argument('skip_token', help='The pagination token for requesting next page.')
+        c.argument('filters', help='The odata filters to apply on the operation. ' +
+                   'By default past one week filter is applied.')
 
     with self.argument_context('support tickets show') as c:
         c.argument('ticket_name', help="Name of the ticket.", required=True)
@@ -95,10 +94,7 @@ def load_tickets_argument(self, _):
 def load_communications_argument(self, _):
     with self.argument_context('support tickets communications list') as c:
         c.argument('ticket_name', help="Name of the ticket.", required=True)
-        c.argument('top', type=int,
-                   help='The number of values to return in the collection. Default is 10 and max is 10.')
         c.argument('filters', help='The odata filters to apply on the operation.')
-        c.argument('skip_token', help='The pagination token for requesting next page.')
 
     with self.argument_context('support tickets communications show') as c:
         c.argument('ticket_name', help="Name of the ticket.", required=True)

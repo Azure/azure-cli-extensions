@@ -50,8 +50,10 @@ helps['support services problem-classifications show'] = """
     short-summary: Show problem classification for service.
     examples:
       - name: Show problem classification 'VM Performance / Memory usage is higher than expected' under service 'Virtual Machine Running Window'
-        text: |-
-               az support services problem-classifications show --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396" --problem-classification-name "0cb121be-61df-48e4-5faa-b34f01c7aa16"
+        text: >
+               az support services problem-classifications show \\
+                 --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396" \\
+                 --problem-classification-name "0cb121be-61df-48e4-5faa-b34f01c7aa16"
 """
 
 helps['support tickets'] = """
@@ -65,7 +67,7 @@ helps['support tickets list'] = """
     examples:
       - name: List support tickets that are active and created after specific date"
         text: |-
-               az support tickets list --top 5 --filters "CreatedDate ge 2019-12-01 and Status eq 'Open'"
+               az support tickets list --filters "CreatedDate ge 2019-12-01 and Status eq 'Open'"
 """
 
 helps['support tickets show'] = """
