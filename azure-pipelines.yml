@@ -86,9 +86,11 @@ jobs:
     - bash: ./scripts/ci/test_source.sh
       displayName: 'Run unittest and build test'
       env:
-        BUILD_SOURCE_VERSION: $(Build.SourceVersion)
+        ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
+        ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
-# - job: LintModifiedExtensions
+
+  # - job: LintModifiedExtensions
 #   displayName: "CLI Linter on Modified Extensions"
 #   pool:
 #     vmImage: 'ubuntu-16.04'

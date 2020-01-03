@@ -31,19 +31,16 @@ for src_d in os.listdir(SRC_PATH):
     pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
 
     # If running in Travis CI, only run tests for edited extensions
-    cmd_tpl = 'git --no-pager diff --name-only {commit_start} -- {code_dir}'
-
-    # If running in Travis CI, only run tests for edited extensions
     commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
     if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
         continue
 
     # Running in Azure DevOps
-    ado_source_version = os.environ.get('BUILD_SOURCE_VERSION')
-    print('*' * 70)
-    print(ado_source_version)
-    if ado_source_version:
-        cmd = cmd_tpl.format(commit_start=ado_source_version, code_dir=src_d_full)
+    cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} {code_dir}'
+    ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
+    ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+    if ado_branch_last_commit and ado_target_branch:
+        cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit, code_dir=src_d_full)
         if not check_output(shlex.split(cmd)):
             continue
 
