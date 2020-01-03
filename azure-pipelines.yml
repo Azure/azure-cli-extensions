@@ -89,21 +89,25 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
+- job: LintModifiedExtensions
+  displayName: "CLI Linter on Modified Extensions"
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: |
+        set -ev
 
-  # - job: LintModifiedExtensions
-#   displayName: "CLI Linter on Modified Extensions"
-#   pool:
-#     vmImage: 'ubuntu-16.04'
-#   steps:
-#   - task: UsePythonVersion@0
-#     displayName: 'Use Python 3.7'
-#     inputs:
-#       versionSpec: 3.7
-#   - task: Bash@3
-#     displayName: "CLI Linter on Modified Extension"
-#     inputs:
-#       targetType: 'filePath'
-#       filePath: scripts/ci/verify_modified_index.sh
+        # prepare and activate virtualenv
+        pip install virtualenv
+        python -m virtualenv venv/
+        source ./venv/bin/activate
+
+        ./scripts/ci/verify_modified_index.sh
+      displayName: "CLI Linter on Modified Extension"
 
 - job: IndexRefDocVerify
   displayName: "Verify Ref Docs"
