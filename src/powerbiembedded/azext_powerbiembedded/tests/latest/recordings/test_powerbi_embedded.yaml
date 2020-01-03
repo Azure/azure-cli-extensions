@@ -1,0 +1,594 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-resource/6.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_powerbi_embedded000001?api-version=2019-07-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001","name":"cli_test_powerbi_embedded000001","type":"Microsoft.Resources/resourceGroups","location":"southcentralus","tags":{"product":"azurecli","cause":"automation","date":"2020-01-03T08:13:47Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '436'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:13:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "mycli-powerbi-wc", "type": "Microsoft.PowerBI/workspaceCollections"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '78'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBI/locations/southcentralus/checkNameAvailability?api-version=2016-01-29
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:13:54 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - c3dca411-020c-4e16-9ccc-513c32bbca8d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "southcentralus", "tags": {"owner": "cli"}, "sku": {"name":
+      "S1", "tier": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '99'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc?api-version=2016-01-29
+  response:
+    body:
+      string: '{"type":"Microsoft.PowerBI/workspaceCollections","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc","name":"mycli-powerbi-wc","location":"South
+        Central US","tags":{"owner":"cli"},"properties":{"provisioningState":"Succeeded","createdDate":"2020-01-03T08:14:00.4422371Z","status":"Active"},"sku":{"name":"S1","tier":"Standard"}}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '492'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:01 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - 1fd92523-9c09-4083-8716-565c16005285
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"owner": "mycli"}, "sku": {"name": "S1", "tier": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc?api-version=2016-01-29
+  response:
+    body:
+      string: '{"type":"Microsoft.PowerBI/workspaceCollections","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc","name":"mycli-powerbi-wc","location":"South
+        Central US","tags":{"owner":"mycli"},"properties":{"provisioningState":"Succeeded","createdDate":"2020-01-03T08:14:00.443","status":"Active"},"sku":{"name":"S1","tier":"Standard"}}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '489'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:08 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - b0327172-a240-4adb-97aa-48f52a0b5768
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection show
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc?api-version=2016-01-29
+  response:
+    body:
+      string: '{"type":"Microsoft.PowerBI/workspaceCollections","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc","name":"mycli-powerbi-wc","location":"South
+        Central US","tags":{"owner":"mycli"},"properties":{"provisioningState":"Succeeded","createdDate":"2020-01-03T08:14:00.443","status":"Active"},"sku":{"name":"S1","tier":"Standard"}}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '489'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:09 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - eb706018-ccb4-487b-a22d-6d2455a0af68
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection list
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections?api-version=2016-01-29
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.PowerBI/workspaceCollections","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc","name":"mycli-powerbi-wc","location":"South
+        Central US","tags":{"owner":"mycli"},"properties":{"provisioningState":"Succeeded","createdDate":"2020-01-03T08:14:00.443","status":"Active"},"sku":{"name":"S1","tier":"Standard"}}]}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '501'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:11 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - 8847437b-3351-40dd-a9dc-a98b9a220cfb
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection get-access-keys
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc/listKeys?api-version=2016-01-29
+  response:
+    body:
+      string: '{"key1":"aBPjeWDjVRF3/tMYhi060yyNo56fr3bzEoteOVft2FY8RybrO2Znc/+a5fsWAjc65jWgjqYimP0yHJRM0CF7aA==","key2":"2BXGkpwPqYhhJy/KAFGprEFeYUe48s0Hh2l1uLlZHlP2BVBLTgshHAfMDR4X5qq1+VyE+q9aZvMozJmVEmlPaQ=="}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '197'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:13 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - d826fcdc-0a2b-480d-aab4-d623f70f4663
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"keyName": "key1"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection regenerate-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '19'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc/regenerateKey?api-version=2016-01-29
+  response:
+    body:
+      string: '{"key1":"gx+4yPLfSB71+dB/b0xlRllOSUcxIEgFm7cf369pp018aXzc+6FQX3urdEr6fdD8HoQoMDbTvCw4RdaPWz8qgQ==","key2":"2BXGkpwPqYhhJy/KAFGprEFeYUe48s0Hh2l1uLlZHlP2BVBLTgshHAfMDR4X5qq1+VyE+q9aZvMozJmVEmlPaQ=="}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '197'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:16 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - 31c69b19-3282-409b-9682-c89ab6aeb4e8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection workspace list
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g --workspace-collection-name
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc/workspaces?api-version=2016-01-29
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 03 Jan 2020 08:14:16 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - 90fc8760-6876-4f71-968f-dc709f93813a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_powerbi_embedded000001/providers/Microsoft.PowerBI/workspaceCollections/mycli-powerbi-wc?api-version=2016-01-29
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-length:
+      - '0'
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 03 Jan 2020 08:14:20 GMT
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBI/locations/southcentralus/operationResults/3e949171-29cf-4fb7-bc11-166ca8225cc0?api-version=2016-01-29
+      pragma:
+      - no-cache
+      requestid:
+      - d5409301-53f8-4b97-a91e-8eb6a8dbf655
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - powerbi-embedded workspace-collection delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.9 msrest_azure/0.6.2 azure-mgmt-powerbiembedded/2.0.0
+        Azure-SDK-For-Python AZURECLI/2.0.79
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.PowerBI/locations/southcentralus/operationResults/3e949171-29cf-4fb7-bc11-166ca8225cc0?api-version=2016-01-29
+  response:
+    body:
+      string: ''
+    headers:
+      access-control-expose-headers:
+      - RequestId
+      cache-control:
+      - no-store, must-revalidate, no-cache
+      content-type:
+      - application/octet-stream
+      date:
+      - Fri, 03 Jan 2020 08:14:24 GMT
+      pragma:
+      - no-cache
+      requestid:
+      - 8f283abe-6674-400a-a776-3d352b659cf1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+    status:
+      code: 204
+      message: No Content
+version: 1
