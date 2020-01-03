@@ -16,8 +16,8 @@ def list_mixed_reality_operation(cmd, client):
 def check_name_availability_local_mixed_reality_location_check_name_availability(cmd, client,
                                                                                  location,
                                                                                  name,
-                                                                                 type):
-    return client.check_name_availability_local(location=location, name=name, type=type)
+                                                                                 _type):
+    return client.check_name_availability_local(location=location, name=name, type=_type)
 
 
 def create_mixed_reality_remote_rendering_account(cmd, client,
@@ -57,9 +57,9 @@ def list_mixed_reality_remote_rendering_account(cmd, client,
 
 def regenerate_keys_mixed_reality_remote_rendering_account(cmd, client,
                                                            resource_group,
-                                                           name):
-    body = {}
-    return client.regenerate_keys(resource_group_name=resource_group, account_name=name, regenerate=body)
+                                                           name,
+                                                           serial=None):
+    return client.regenerate_keys(resource_group_name=resource_group, account_name=name, serial=serial)
 
 
 def get_keys_mixed_reality_remote_rendering_account(cmd, client,
@@ -105,9 +105,10 @@ def list_mixed_reality_spatial_anchors_account(cmd, client,
 
 def regenerate_keys_mixed_reality_spatial_anchors_account(cmd, client,
                                                           resource_group,
-                                                          name):
-    body = {}
-    return client.regenerate_keys(resource_group_name=resource_group, account_name=name, regenerate=body)
+                                                          name,
+
+                                                          serial=None):
+    return client.regenerate_keys(resource_group_name=resource_group, account_name=name, serial=serial)
 
 
 def get_keys_mixed_reality_spatial_anchors_account(cmd, client,

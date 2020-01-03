@@ -93,10 +93,10 @@ class MixedRealityClientScenarioTest(ScenarioTest):
         #         '--tags a=b',
         #         checks=[])
 
-        #self.cmd('az mixed-reality location check-name-availability check_name_availability_local '
+        #self.cmd('az mixed-reality location check-name-availability check-name-availability-local '
         #         '--location "eastus2euap" '
         #         '--name "MyAccount" '
-        #         '--type "SpatialAnchorsAccounts" ',
+        #         '--type "SpatialAnchorsAccount"',
         #         checks=[])
 
         self.cmd('az mixed-reality spatial-anchors-account delete '

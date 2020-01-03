@@ -20,6 +20,8 @@ def load_arguments(self, _):
 
     with self.argument_context('mixed-reality location check-name-availability check-name-availability-local') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
+        c.argument('name', id_part=None, help='Resource Name To Verify')
+        c.argument('_type', options_list=['--type'], id_part=None, help='Fully qualified resource type which includes provider namespace')
 
     with self.argument_context('mixed-reality remote-rendering-account create') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -47,6 +49,7 @@ def load_arguments(self, _):
     with self.argument_context('mixed-reality remote-rendering-account regenerate-keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Account.')
+        c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
     with self.argument_context('mixed-reality remote-rendering-account get-keys') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -78,6 +81,7 @@ def load_arguments(self, _):
     with self.argument_context('mixed-reality spatial-anchors-account regenerate-keys') as c:
         c.argument('resource_group', resource_group_name_type)
         c.argument('name', id_part=None, help='Name of an Mixed Reality Account.')
+        c.argument('serial', id_part=None, help='serial of key to be regenerated')
 
     with self.argument_context('mixed-reality spatial-anchors-account get-keys') as c:
         c.argument('resource_group', resource_group_name_type)
