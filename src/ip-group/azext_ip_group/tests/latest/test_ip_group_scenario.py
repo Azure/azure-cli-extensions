@@ -19,7 +19,7 @@ class IpGroupScenarioTest(ScenarioTest):
     def test_ip_group(self, resource_group):
 
         self.kwargs.update({
-            'name': 'test1'
+            'name': 'test-ip-group'
         })
 
         self.cmd(
