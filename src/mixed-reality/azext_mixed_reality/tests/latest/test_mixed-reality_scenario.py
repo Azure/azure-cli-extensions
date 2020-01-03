@@ -64,8 +64,8 @@ class MixedRealityClientScenarioTest(ScenarioTest):
         self.cmd('az mixed-reality spatial-anchors-account list',
                  checks=[])
 
-        #self.cmd('az mixed-reality operation list',
-        #         checks=[])
+        # self.cmd('az mixed-reality operation list',
+        #          checks=[])
 
         self.cmd('az mixed-reality remote-rendering-account regenerate-keys '
                  '--resource-group {rg} '
@@ -79,25 +79,21 @@ class MixedRealityClientScenarioTest(ScenarioTest):
                  '--serial "1"',
                  checks=[])
 
-        #self.cmd('az mixed-reality remote-rendering-account update '
-        #         '--resource-group {rg} '
-        #         '--name "MyAccount" '
-        #         '--location eastus2euap '
-        #         '--tags a=b',
-        #         checks=[])
+        # self.cmd('az mixed-reality remote-rendering-account update '
+        #          '--resource-group {rg} '
+        #          '--name "MyAccount"',
+        #          checks=[])
 
-        #self.cmd('az mixed-reality remote-rendering-account update '
-        #         '--resource-group {rg} '
-        #         '--name "MyAccount" '
-        #         '--location eastus2euap '
-        #         '--tags a=b',
-        #         checks=[])
+        # self.cmd('az mixed-reality spatial-anchors-account update '
+        #          '--resource-group {rg} '
+        #          '--name "MyAccount"',
+        #          checks=[])
 
-        #self.cmd('az mixed-reality location check-name-availability check-name-availability-local '
-        #         '--location "eastus2euap" '
-        #         '--name "MyAccount" '
-        #         '--type "SpatialAnchorsAccount"',
-        #         checks=[])
+        # self.cmd('az mixed-reality location check-name-availability check-name-availability-local '
+        #          '--location "eastus2euap" '
+        #          '--name "MyAccount" '
+        #          '--type "SpatialAnchorsAccount"',
+        #          checks=[])
 
         self.cmd('az mixed-reality spatial-anchors-account delete '
                  '--resource-group {rg} '
