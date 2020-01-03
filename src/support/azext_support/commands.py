@@ -57,8 +57,6 @@ def load_command_table(self, _):
         client_factory=cf_support)
     self.command_group('support', support, client_factory=cf_support, is_preview=True)
     with self.command_group('support tickets', support, client_factory=cf_support, is_preview=True) as g:
-        g.custom_command('create', 'create_support_tickets', supports_no_wait=True)
-        g.custom_wait_command('wait', 'wait_support_tickets')
+        g.custom_command('create', 'create_support_tickets', supports_no_wait=False)
     with self.command_group('support tickets communications', support, client_factory=cf_support, is_preview=True) as g:
-        g.custom_command('create', 'create_support_tickets_communications', supports_no_wait=True)
-        g.custom_wait_command('wait', 'wait_support_tickets_communications')
+        g.custom_command('create', 'create_support_tickets_communications', supports_no_wait=False)

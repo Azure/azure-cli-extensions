@@ -122,10 +122,9 @@ helps['support tickets create'] = """
                 --ticket-name "test_ticket_from_pythoncli" \\
                 --title "test ticket from python cli" \\
                 --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
-                --no-wait \\
                 --technical-resource "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
 
-      - name: Create support ticket for billing issue
+      - name: Create support ticket for billing issue using AOBO scenario. First run "az login" (To customer tenant) and "az login -t contoso.onmicrosoft.com --allow-no-subscriptions" (To partner tenant)
         text: >
                az support tickets create \\
                 --contact-country "USA" \\
@@ -141,8 +140,7 @@ helps['support tickets create'] = """
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
                 --title "test ticket from python cli" \\
-                --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
-                --no-wait
+                --partner-subscription-id "00000000-0000-0000-0000-000000000000"
 
       - name: Create support ticket for quota issue
         text: >
@@ -163,11 +161,6 @@ helps['support tickets create'] = """
                 --quota-change-payload "{\"SKU\":\"DSv3 Series\",\"NewLimit\":111}" "{\"SKU\":\"DSv3 Series\",\"NewLimit\":102}" \\
                 --quota-change-regions "EastUS" "EastUS2" \\
                 --quota-change-version "1.0"
-"""
-
-helps['support tickets wait'] = """
-    type: command
-    short-summary: Wait for support ticket creation to reach completion.
 """
 
 helps['support tickets communications'] = """
@@ -207,9 +200,4 @@ helps['support tickets communications create'] = """
                 --communication-name "message1" \\
                 --communication-body "test communication message body" \\
                 --communication-subject "message from python cli"
-"""
-
-helps['support tickets communications wait'] = """
-    type: command
-    short-summary: Wait for support ticket communication creation to reach completion.
 """

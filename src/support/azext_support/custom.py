@@ -9,7 +9,7 @@
 import json
 from datetime import date, timedelta
 
-from azext_support._client_factory import cf_support
+from azure.cli.core._profile import Profile
 from knack.log import get_logger
 from knack.util import CLIError
 
@@ -91,8 +91,8 @@ def create_support_tickets(cmd, client,
                            quota_change_version=None,
                            quota_change_subtype=None,
                            quota_change_regions=None,
-                           quota_change_payload=None):
-
+                           quota_change_payload=None,
+                           partner_subscription_id=None):
     rsp = client.check_name_availability_with_subscription(name=ticket_name,
                                                            type="Microsoft.Support/supportTickets")
     if not rsp.name_available:
@@ -137,14 +137,16 @@ def create_support_tickets(cmd, client,
     logger.debug("Sending create request with below payload: ")
     logger.debug(json.dumps(body, indent=4))
 
+    custom_headers = {}
+    if partner_subscription_id is not None:
+        profile = Profile(cli_ctx=cmd.cli_ctx)
+        creds, _, _ = profile.get_raw_token(subscription=partner_subscription_id,
+                                            resource=cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
+        custom_headers["x-ms-authorization-auxiliary"] = creds[1]
+
     return client.create_support_ticket_for_subscription(support_ticket_name=ticket_name,
-                                                         create_support_ticket_parameters=body)
-
-
-def wait_support_tickets(cmd,
-                         ticket_name=None):
-    client = cf_support(cmd.cli_ctx)
-    return get_support_tickets(cmd, client.support_tickets, ticket_name=ticket_name)
+                                                         create_support_ticket_parameters=body,
+                                                         custom_headers=custom_headers)
 
 
 def create_support_tickets_communications(cmd, client,
@@ -156,7 +158,7 @@ def create_support_tickets_communications(cmd, client,
     rsp = client.check_name_availability_for_support_ticket_communication(support_ticket_name=ticket_name,
                                                                           name=communication_name,
                                                                           type="Microsoft.Support/communications")
-    if not rsp["name_available"]:
+    if not rsp.name_available:
         raise CLIError('Support ticket communication name \'' + communication_name +
                        '\' not available. Please try again with another name!')
 
@@ -168,14 +170,6 @@ def create_support_tickets_communications(cmd, client,
     return client.create_support_ticket_communication(support_ticket_name=ticket_name,
                                                       communication_name=communication_name,
                                                       create_communication_parameters=body)
-
-
-def wait_support_tickets_communications(cmd,
-                                        ticket_name=None,
-                                        communication_name=None):
-    client = cf_support(cmd.cli_ctx)
-    return get_support_tickets_communications(cmd, client.communications, ticket_name=ticket_name,
-                                              communication_name=communication_name)
 
 
 def _is_billing_ticket(service_name):
