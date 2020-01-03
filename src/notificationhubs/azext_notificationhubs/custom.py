@@ -8,6 +8,7 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
+DEFAULT_APNS_ENDPOINT = "gateway.push.apple.com"
 
 def create_notificationhubs_namespace(cmd, client,
                                       resource_group,
@@ -209,10 +210,19 @@ def debug_send_notificationhubs_hub(cmd, client,
                                     namespace_name,
                                     notification_hub_name,
                                     payload,
-                                    notification_format):
-    import json
-    parameters = json.loads(payload)
+                                    notification_format,
+                                    tag=None):
+
+    if notification_format not in ['windows', 'windowsphone']:
+        import json
+        parameters = json.loads(payload)
+    else:
+        parameters = payload
+
     custom_headers = {"servicebusnotification-format": notification_format}
+    if tag is not None:
+        custom_headers['servicebusnotification-tags'] = tag
+     
     return client.debug_send(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, parameters=parameters, custom_headers=custom_headers)
 
 
@@ -278,14 +288,18 @@ def update_apns_credential(cmd, client,
                            notification_hub_name,
                            apns_certificate=None,
                            certificate_key=None,
-                           endpoint=None,
+                           endpoint=DEFAULT_APNS_ENDPOINT,
                            key_id=None,
                            app_name=None,
                            app_id=None,
                            token=None):
+    import base64
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     if apns_certificate is not None:
-        body.setdefault('apns_credential', {})['apns_certificate'] = apns_certificate
+        with open(apns_certificate, "rb") as f:
+            data_bytes = f.read()
+            cert_data = base64.b64encode(data_bytes).decode('utf-8')
+            body.setdefault('apns_credential', {})['apns_certificate'] = cert_data
     if certificate_key is not None:
         body.setdefault('apns_credential', {})['certificate_key'] = certificate_key
     if endpoint is not None:

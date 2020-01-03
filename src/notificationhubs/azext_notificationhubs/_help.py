@@ -249,6 +249,11 @@ helps['notificationhubs test-send'] = """
     type: command
     short-summary: test send a push notification
     examples:
+      - name: debug send notification from file
+        text: |-
+               az notificationhubs test-send --resource-group MyResourceGroup --namespace-name \\
+               "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\
+               --payload @path/to/file
       - name: debug send notification
         text: |-
                az notificationhubs test-send --resource-group MyResourceGroup --namespace-name \\
@@ -352,6 +357,12 @@ helps['notificationhubs credential adm update'] = """
 helps['notificationhubs credential apns update'] = """
     type: command
     short-summary: Update credential for Apple(APNS).
+    examples:
+      - name: Updates APNS certificate
+        text: |-
+               az notificationhubs credential apns update --namespace-name "nh-sdk-ns" \\
+               --notification-hub-name "nh-sdk-hub" --apns-certificate "/path/to/certificate" \\
+               --certificate-key "xxxxxx"
 """
 
 helps['notificationhubs credential baidu update'] = """

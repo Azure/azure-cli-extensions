@@ -4,15 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 
-def example_name_or_id_validator(cmd, namespace):
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
-    if namespace.storage_account:
-        if not is_valid_resource_id(namespace.RESOURCE):
-            namespace.storage_account = resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=namespace.resource_group_name,
-                namespace='Microsoft.Storage',
-                type='storageAccounts',
-                name=namespace.storage_account
-            )
+def validate_cert_file(namespace):
+    """Validate the give cert file existing"""
+    try:
+        if namespace.apns_certificate is not None:
+            with open(namespace.apns_certificate, "rb"):
+                pass
+    except EnvironmentError:
+        raise ValueError("Cannot access certificate file: " + namespace.apns_certificate)

@@ -6,13 +6,17 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+from argcomplete.completers import FilesCompleter
 from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
     resource_group_name_type,
-    get_location_type
+    get_location_type,
+    file_type
 )
+
+from ._validators import validate_cert_file
 
 
 def load_arguments(self, _):
@@ -181,9 +185,9 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('apns_certificate', id_part=None, help='The APNS certificate.')
+        c.argument('apns_certificate', type=file_type, id_part=None, help='The APNS certificate.', validator=validate_cert_file, completer=FilesCompleter())
         c.argument('certificate_key', id_part=None, help='The certificate key.')
-        c.argument('endpoint', id_part=None, help='The endpoint of this credential.')
+        c.argument('endpoint', id_part=None, help='The endpoint of this credential. Example values:"gateway.sandbox.push.apple.com","gateway.push.apple.com"')
         c.argument('key_id', id_part=None, help='A 10-character key identifier (kid) key, obtained from your developer account')
         c.argument('app_name', id_part=None, help='The name of the application/bundle id.')
         c.argument('app_id', id_part=None, help='The issuer (iss) registered claim key, whose value is your 10-character Team ID, obtained from your developer account')
@@ -200,7 +204,7 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('mpns_certificate', id_part=None, help='The MPNS certificate.')
+        c.argument('mpns_certificate', type=file_type, id_part=None, help='The MPNS certificate.', validator=validate_cert_file, completer=FilesCompleter())
         c.argument('certificate_key', id_part=None, help='The certificate key for this credential.')
 
     with self.argument_context('notificationhubs credential wns update') as c:
