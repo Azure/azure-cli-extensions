@@ -92,7 +92,7 @@ def create_support_tickets(cmd, client,
                            quota_change_subtype=None,
                            quota_change_regions=None,
                            quota_change_payload=None,
-                           partner_subscription_id=None):
+                           partner_tenant_id=None):
     rsp = client.check_name_availability_with_subscription(name=ticket_name,
                                                            type="Microsoft.Support/supportTickets")
     if not rsp.name_available:
@@ -138,11 +138,11 @@ def create_support_tickets(cmd, client,
     logger.debug(json.dumps(body, indent=4))
 
     custom_headers = {}
-    if partner_subscription_id is not None:
+    if partner_tenant_id is not None:
         profile = Profile(cli_ctx=cmd.cli_ctx)
-        creds, _, _ = profile.get_raw_token(subscription=partner_subscription_id,
+        creds, _, _ = profile.get_raw_token(subscription=partner_tenant_id,
                                             resource=cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
-        custom_headers["x-ms-authorization-auxiliary"] = creds[1]
+        custom_headers["x-ms-authorization-auxiliary"] = "Bearer " + creds[1]
 
     return client.create_support_ticket_for_subscription(support_ticket_name=ticket_name,
                                                          create_support_ticket_parameters=body,

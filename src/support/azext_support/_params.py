@@ -86,7 +86,7 @@ def load_tickets_argument(self, _):
                    'Required for quota ticket.')
         c.argument('quota_change_payload', nargs='+', help='Space seperated list of quota change request payload(s)' +
                    ' for corresponding region(s). Required for quota ticket.')
-        c.argument('partner_subscription_id', help='Provide partner subscription id for Admin On Behalf ' +
+        c.argument('partner_tenant_id', help='Provide partner tenant id for Admin On Behalf ' +
                    'of (AOBO) scenario. "az login" to customer tenant and "az login -t <> ' +
                    '--allow-no-subscriptions" to partner tenant required before using this command.')
 

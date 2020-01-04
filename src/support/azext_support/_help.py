@@ -140,7 +140,7 @@ helps['support tickets create'] = """
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
                 --title "test ticket from python cli" \\
-                --partner-subscription-id "00000000-0000-0000-0000-000000000000"
+                --partner-tenant-id "00000000-0000-0000-0000-000000000000"
 
       - name: Create support ticket for quota issue
         text: >
