@@ -6,28 +6,28 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_aladdin._help import helps  # pylint: disable=unused-import
+from azext_ai_examples._help import helps  # pylint: disable=unused-import
 
 
 def inject_functions_into_core():
     # Replace the default examples from help calls
     from azure.cli.core._help import AzCliHelp
-    from azext_aladdin.custom import provide_examples
+    from azext_ai_examples.custom import provide_examples
     AzCliHelp.example_provider = provide_examples
 
 
-class AladdinCommandsLoader(AzCommandsLoader):
+class AiExamplesCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        aladdin_custom = CliCommandType(
-            operations_tmpl='azext_aladdin.custom#{}')
-        super(AladdinCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                    custom_command_type=aladdin_custom)
+        ai_examples_custom = CliCommandType(
+            operations_tmpl='azext_ai_examples.custom#{}')
+        super(AiExamplesCommandsLoader, self).__init__(cli_ctx=cli_ctx,
+                                                       custom_command_type=ai_examples_custom)
         inject_functions_into_core()
 
     def load_command_table(self, args):
-        from azext_aladdin.commands import load_command_table
+        from azext_ai_examples.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
@@ -35,4 +35,4 @@ class AladdinCommandsLoader(AzCommandsLoader):
         pass
 
 
-COMMAND_LOADER_CLS = AladdinCommandsLoader
+COMMAND_LOADER_CLS = AiExamplesCommandsLoader

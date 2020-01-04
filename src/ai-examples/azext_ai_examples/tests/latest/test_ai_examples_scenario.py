@@ -11,8 +11,8 @@ import requests
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from azext_aladdin.custom import (call_aladdin_service, ping_aladdin_service,
-                                  clean_from_http_answer, get_generated_examples)
+from azext_ai_examples.custom import (call_aladdin_service, ping_aladdin_service,
+                                      clean_from_http_answer, get_generated_examples)
 
 
 def create_valid_http_response():
@@ -45,10 +45,10 @@ def create_failed_http_response():
     return mock_response
 
 
-class AladdinCustomCommandTest(unittest.TestCase):
+class AiExamplesCustomCommandTest(unittest.TestCase):
 
     # Test the Aladdin check connection command
-    def test_aladdin_ping_aladdin_service_success(self):
+    def test_ai_examples_ping_aladdin_service_success(self):
         mock_response = create_empty_http_response()
 
         with mock.patch('requests.get', return_value=(mock_response)):
@@ -56,7 +56,7 @@ class AladdinCustomCommandTest(unittest.TestCase):
 
             self.assertEqual(200, response.status_code)
 
-    def test_aladdin_ping_aladdin_service_failed(self):
+    def test_ai_examples_ping_aladdin_service_failed(self):
         mock_response = create_failed_http_response()
 
         with mock.patch('requests.get', return_value=(mock_response)):
@@ -65,7 +65,7 @@ class AladdinCustomCommandTest(unittest.TestCase):
             self.assertEqual(500, response.status_code)
 
     # Test the Aladdin examples
-    def test_aladdin_call_aladdin_service(self):
+    def test_ai_examples_call_aladdin_service(self):
         mock_response = create_valid_http_response()
 
         with mock.patch('requests.get', return_value=(mock_response)):
@@ -73,7 +73,7 @@ class AladdinCustomCommandTest(unittest.TestCase):
             self.assertEqual(200, response.status_code)
             self.assertEqual(2, len(json.loads(response.content)))
 
-    def test_aladdin_example_clean_from_http_answer(self):
+    def test_ai_examples_example_clean_from_http_answer(self):
         cleaned_responses = []
         mock_response = create_valid_http_response()
 
@@ -85,7 +85,7 @@ class AladdinCustomCommandTest(unittest.TestCase):
         self.assertEqual('The title', cleaned_responses[1].short_summary)
         self.assertEqual('az test\n', cleaned_responses[1].command)
 
-    def test_aladdin_get_generated_examples_full(self):
+    def test_ai_examples_get_generated_examples_full(self):
         examples = []
         mock_response = create_valid_http_response()
 
@@ -97,7 +97,7 @@ class AladdinCustomCommandTest(unittest.TestCase):
             self.assertEqual('The title', examples[1].short_summary)
             self.assertEqual('az test\n', examples[1].command)
 
-    def test_aladdin_get_generated_examples_empty(self):
+    def test_ai_examples_get_generated_examples_empty(self):
         examples = []
         mock_response = create_empty_http_response()
 

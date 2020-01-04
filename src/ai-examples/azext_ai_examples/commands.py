@@ -1,19 +1,13 @@
-# coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
 
-from knack.help_files import helps  # pylint: disable=unused-import
+def load_command_table(self, _):
 
+    with self.command_group('ai-examples') as g:
+        g.custom_command('check-connection', 'check_connection_aladdin')
 
-helps['aladdin'] = """
-    type: group
-    short-summary: AI hooks into the Azure CLI core.
-"""
-
-helps['aladdin check-connection'] = """
-    type: command
-    short-summary: Check if the client can connect to the Aladdin service.
-"""
+    with self.command_group('ai-examples', is_preview=True):
+        pass

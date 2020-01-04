@@ -43,16 +43,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='aladdin',
+    name='ai_examples',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Aladdin Extension',
+    description='Microsoft Azure Command-Line Tools AI Examples Extension',
     author='Matthew Booe',
     author_email='mabooe@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aladdin',
-    long_description='Improve the Azure CLI experience by adding AI powered updates to it\'s core',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ai-examples',
+    long_description='Improve the Azure CLI experience by adding AI powered examples to command help content.',
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_aladdin': ['azext_metadata.json']},
+    package_data={'azext_ai_examples': ['azext_metadata.json']},
 )

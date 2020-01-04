@@ -7,4 +7,4 @@ Release History
 ++++++
 * Initial release.
 * Add AI generated examples to the "--help" examples
-* Check to see if the client can connect to the Aladdin service
+* Check to see if the client can connect to the AI example service
