@@ -141,6 +141,8 @@ def load_arguments(self, _):
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('notification_format', arg_type=get_enum_type(['apple', 'baidu', 'gcm', 'template', 'windows', 'windowsphone']), id_part=None, help='The format of notification message.')
+        c.argument('message', id_part=None, help='The message body to send. If not None, payload will be ignored')
+        c.argument('title', id_part=None, help='The title of the notification.')
         c.argument('payload', arg_type=payload_type, id_part=None)
         c.argument('tag', id_part=None, help='You can send test notifications to a specific set of registrations using this option. Leave this field empty if you like to send push notifications to 10 random registrations on the selected platform.')
 

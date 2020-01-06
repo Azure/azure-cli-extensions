@@ -249,12 +249,17 @@ helps['notificationhubs test-send'] = """
     type: command
     short-summary: test send a push notification
     examples:
-      - name: debug send notification from file
+      - name: test send notification with message body
+        text: |-
+               az notificationhubs test-send --resource-group MyResourceGroup --namespace-name \\
+               "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\
+               --message "test notification"
+      - name: test send notification from file
         text: |-
                az notificationhubs test-send --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\
                --payload @path/to/file
-      - name: debug send notification
+      - name: test send notification with json string
         text: |-
                az notificationhubs test-send --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --notification-format gcm \\

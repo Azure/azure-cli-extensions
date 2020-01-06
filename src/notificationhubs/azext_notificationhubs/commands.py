@@ -8,6 +8,7 @@
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 from azure.cli.core.commands import CliCommandType
+from ._validators import validate_notification_message
 
 
 def load_command_table(self, _):
@@ -42,13 +43,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_notificationhubs.vendored_sdks.notificationhubs.operations._notification_hubs_operations#NotificationHubsOperations.{}',
         client_factory=cf_notification_hubs)
     with self.command_group('notificationhubs', notificationhubs_notification_hubs, client_factory=cf_notification_hubs, is_preview=True) as g:
-        g.custom_command('create', 'create_notificationhubs_hub', supports_no_wait=True)
+        g.custom_command('create', 'create_notificationhubs_hub')
         g.custom_command('update', 'update_notificationhubs_hub')
         g.custom_command('delete', 'delete_notificationhubs_hub')
         g.custom_show_command('show', 'get_notificationhubs_hub')
         g.custom_command('list', 'list_notificationhubs_hub')
         g.custom_command('check-availability', 'check_notification_hub_availability_notificationhubs_hub')
-        g.custom_command('test-send', 'debug_send_notificationhubs_hub')
+        g.custom_command('test-send', 'debug_send_notificationhubs_hub', validator=validate_notification_message)
         g.custom_command('authorization-rule list', 'list_authorization_rules_notificationhubs_hub')
         g.custom_show_command('authorization-rule show', 'get_authorization_rule_notificationhubs_hub')
         g.custom_command('authorization-rule create', 'create_or_update_authorization_rule_notificationhubs_hub')

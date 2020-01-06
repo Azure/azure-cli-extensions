@@ -12,3 +12,10 @@ def validate_cert_file(namespace):
                 pass
     except EnvironmentError:
         raise ValueError("Cannot access certificate file: " + namespace.apns_certificate)
+
+
+def validate_notification_message(namespace):
+    """Validate message or payload to send"""
+    from knack.util import CLIError
+    if namespace.message is None and namespace.payload is None:
+        raise CLIError('usage error: --message | --payload')

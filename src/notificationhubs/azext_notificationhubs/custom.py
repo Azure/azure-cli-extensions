@@ -194,16 +194,37 @@ def debug_send_notificationhubs_hub(cmd, client,
                                     resource_group,
                                     namespace_name,
                                     notification_hub_name,
-                                    payload,
                                     notification_format,
+                                    message=None,
+                                    title='',
+                                    payload=None,
                                     tag=None):
 
-    if notification_format not in ['windows', 'windowsphone']:
-        import json
-        parameters = json.loads(payload)
+    if message is not None:
+        if notification_format == 'gcm':
+            parameters = {"data": {"message": message}}
+        elif notification_format == 'baidu':
+            parameters = {"title": title, "description": message}
+        elif notification_format == 'apple':
+            parameters = {"aps": {"alert": "Notification Hub test notification"}}
+        elif notification_format == 'template':
+            parameters = {"message": message}
+        elif notification_format == 'windows':
+            parameters = message
+        elif notification_format == 'windowsphone':
+            parameters = '''<?xml version= "1.0" encoding= "utf-8" ?>
+<root>
+<Value1>{}</Value1>
+<Value2>{}</Value2>
+</root>
+'''.format(title, message)
     else:
-        parameters = payload
-
+        if notification_format not in ['windows', 'windowsphone']:
+            import json
+            parameters = json.loads(payload)
+        else:
+            parameters = payload
+    print(parameters)
     custom_headers = {"servicebusnotification-format": notification_format}
     if tag is not None:
         custom_headers['servicebusnotification-tags'] = tag
