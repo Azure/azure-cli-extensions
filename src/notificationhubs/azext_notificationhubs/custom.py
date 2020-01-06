@@ -16,11 +16,7 @@ def create_notificationhubs_namespace(cmd, client,
                                       namespace_name,
                                       sku_name,
                                       location=None,
-                                      tags=None,
-                                      sku_tier=None,
-                                      sku_size=None,
-                                      sku_family=None,
-                                      sku_capacity=None):
+                                      tags=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -33,11 +29,7 @@ def update_notificationhubs_namespace(cmd, client,
                                       namespace_name,
                                       location=None,
                                       tags=None,
-                                      sku_name=None,
-                                      sku_tier=None,
-                                      sku_size=None,
-                                      sku_family=None,
-                                      sku_capacity=None):
+                                      sku_name=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name).as_dict()
     if tags is not None:
         body['tags'] = tags  # dictionary
@@ -122,10 +114,6 @@ def create_notificationhubs_hub(cmd, client,
                                 sku_name,
                                 location,
                                 tags=None,
-                                sku_tier=None,
-                                sku_size=None,
-                                sku_family=None,
-                                sku_capacity=None,
                                 registration_ttl=None):
     body = {}
     body['location'] = location  # str
@@ -141,11 +129,7 @@ def update_notificationhubs_hub(cmd, client,
                                 notification_hub_name,
                                 location=None,
                                 tags=None,
-                                sku_name=None,
-                                sku_tier=None,
-                                sku_size=None,
-                                sku_family=None,
-                                sku_capacity=None):
+                                sku_name=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()
     if tags is not None:
         body['tags'] = tags  # dictionary
