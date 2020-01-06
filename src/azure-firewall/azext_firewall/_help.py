@@ -14,6 +14,10 @@ helps['network firewall'] = """
 helps['network firewall create'] = """
     type: command
     short-summary: Create an Azure Firewall.
+    examples:
+    - name: Create a Azure firewall with private ranges
+      text: |
+        az network firewall create -g MyResourceGroup -n MyFirewall --private-ranges 10.0.0.0 10.0.0.0/16 IANAPrivateRanges
 """
 
 helps['network firewall delete'] = """
@@ -61,6 +65,37 @@ helps['network firewall ip-config list'] = """
 helps['network firewall ip-config show'] = """
     type: command
     short-summary: Get the details of an Azure Firewall IP configuration.
+"""
+# endregion
+
+# region AzureFirewall Threat Intelligence Whitelist
+helps['network firewall threat-intel-whitelist'] = """
+    type: group
+    short-summary: Manage and configure Azure Firewall Threat Intelligence Whitelist.
+"""
+
+helps['network firewall threat-intel-whitelist create'] = """
+    type: command
+    short-summary: Create an Azure Firewall Threat Intelligence Whitelist.
+    examples:
+        - name: Create a threat intelligence whitelist
+          text: |
+            az network firewall threat-intel-whitelist create -g MyResourceGroup -n MyFirewall --ip-addresses 10.0.0.0 10.0.0.1 --fqdns *.microsoft.com www.bing.com *google.com
+"""
+
+helps['network firewall threat-intel-whitelist delete'] = """
+    type: command
+    short-summary: Delete an Azure Firewall Threat Intelligence Whitelist.
+"""
+
+helps['network firewall threat-intel-whitelist update'] = """
+    type: command
+    short-summary: Update Azure Firewall Threat Intelligence Whitelist.
+"""
+
+helps['network firewall threat-intel-whitelist show'] = """
+    type: command
+    short-summary: Get the details of an Azure Firewall Threat Intelligence Whitelist.
 """
 # endregion
 

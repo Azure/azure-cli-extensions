@@ -62,7 +62,8 @@ def _find_item_at_path(instance, path):
 
 
 # region AzureFirewall
-def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None, tags=None, zones=None, private_ranges=None):
+def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
+                          tags=None, zones=None, private_ranges=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     AzureFirewall = cmd.get_models('AzureFirewall')
     firewall = AzureFirewall(location=location, tags=tags, zones=zones, additional_properties={})
@@ -256,21 +257,22 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
                            AzureFirewallApplicationRule, item_name, params, collection_params)
 
 
-def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name, ipaddresses=None, fqdns=None):
+def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name,
+                                                 ip_addresses=None, fqdns=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
     if firewall.additional_properties is None:
         firewall.additional_properties = {}
-    firewall.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ipaddresses
+    firewall.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ip_addresses
     firewall.additional_properties['ThreatIntel.Whitelist.FQDNs'] = fqdns
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
-def update_azure_firewall_threat_intel_whitelist(instance, ipaddresses=None, fqdns=None):
-    if ipaddresses is not None:
+def update_azure_firewall_threat_intel_whitelist(instance, ip_addresses=None, fqdns=None):
+    if ip_addresses is not None:
         if instance.additional_properties is None:
             instance.additional_properties = {}
-        instance.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ipaddresses
+        instance.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ip_addresses
     if fqdns is not None:
         if instance.additional_properties is None:
             instance.additional_properties = {}

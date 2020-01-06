@@ -144,5 +144,14 @@ def validate_rule_group_collection(namespace):
         raise CLIError('usage error: --target-fqdns | --fqdn-tags')
     return namespace
 
+
 def validate_private_ranges(namespace):
     namespace.private_ranges = ', '.join(namespace.private_ranges)
+
+
+def validate_threat_intel_whitelist_ip_addresses(namespace):
+    namespace.ip_addresses = ', '.join(namespace.ip_addresses)
+
+
+def validate_threat_intel_whitelist_fqdns(namespace):
+    namespace.fqdns = ', '.join(namespace.fqdns)
