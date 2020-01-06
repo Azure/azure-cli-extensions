@@ -395,8 +395,8 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
         raise CLIError("To use the log streaming feature, please enable the test endpoint")
 
     base_url = 'azuremicroservices.io' if cmd.cli_ctx.cloud.name == 'AzureCloud' else 'asc-test.net'
-    streaming_url = "https://{0}.{1}/api/logstream/instance/{2}".format(
-        service, base_url, instance)
+    streaming_url = "https://{0}.{1}/api/logstream/apps/{2}/instances/{3}".format(
+        service, base_url, name, instance)
     params = {}
     params["tailLines"] = lines
     params["limitBytes"] = limit
