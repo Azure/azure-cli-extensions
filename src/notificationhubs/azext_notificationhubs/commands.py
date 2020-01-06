@@ -26,7 +26,7 @@ def load_command_table(self, _):
     with self.command_group('notificationhubs namespace', notificationhubs_namespaces, client_factory=cf_namespaces, is_preview=True) as g:
         g.custom_command('create', 'create_notificationhubs_namespace', supports_no_wait=True)
         g.custom_command('update', 'update_notificationhubs_namespace')
-        g.custom_command('delete', 'delete_notificationhubs_namespace')
+        g.custom_command('delete', 'delete_notificationhubs_namespace', supports_no_wait=True)
         g.custom_show_command('show', 'get_notificationhubs_namespace')
         g.custom_command('list', 'list_notificationhubs_namespace')
         g.custom_command('check-availability', 'check_availability_notificationhubs_namespace')
