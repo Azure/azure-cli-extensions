@@ -143,3 +143,6 @@ def validate_rule_group_collection(namespace):
     if namespace.target_fqdns is not None and namespace.fqdn_tags is not None:
         raise CLIError('usage error: --target-fqdns | --fqdn-tags')
     return namespace
+
+def validate_private_ranges(namespace):
+    namespace.private_ranges = ', '.join(namespace.private_ranges)

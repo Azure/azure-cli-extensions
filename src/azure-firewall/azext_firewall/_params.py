@@ -15,7 +15,7 @@ from knack.arguments import CLIArgumentType
 from ._completers import get_af_subresource_completion_list
 from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
-    validate_firewall_policy, validate_rule_group_collection)
+    validate_firewall_policy, validate_rule_group_collection, validate_private_ranges)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -44,6 +44,7 @@ def load_arguments(self, _):
         c.argument('translated_fqdn', help='Translated FQDN for this NAT rule.')
         c.argument('tags', tags_type)
         c.argument('zones', zones_type)
+        c.argument('private_ranges', nargs='+', validator=validate_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
 
     for scope in ['network-rule', 'nat-rule']:
         with self.argument_context('network firewall {}'.format(scope)) as c:
