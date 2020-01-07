@@ -16,15 +16,24 @@ def create_blueprint(cmd, client,
                      description=None,
                      target_scope=None,
                      parameters=None,
-                     resource_groups=None,
+                    #  resource_groups=None,
                      versions=None,
-                     layout=None):
+                     layout=None,
+                     rg_name=None,
+                     rg_location=None,
+                     rg_display_name=None,
+                     tags=None):
     body = {}
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['target_scope'] = target_scope  # str
     body['parameters'] = parameters  # dictionary
-    body['resource_groups'] = resource_groups  # dictionary
+    body['resource_groups'] = {"resource_group": {
+        "name": rg_name, 
+        "location": rg_location,
+        "display_name": rg_display_name,
+        "tags":tags
+        }}
     body['versions'] = versions  # unknown-primary[object]
     body['layout'] = layout  # unknown-primary[object]
     return client.create_or_update(scope=scope, blueprint_name=name, blueprint=body)
@@ -78,10 +87,32 @@ def list_blueprint(cmd, client,
 def create_blueprint_artifact(cmd, client,
                               blueprint_name,
                               name,
+                              kind,
                               scope=None):
     body = {}
     return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=name, artifact=body)
 
+def create_blueprint_artifact_policy(cmd, client,
+                              blueprint_name,
+                              name,
+                              policy_definition_id,
+                              parameters=None,
+                              scope=None,
+                              display_name=None,
+                              resource_group_art=None,
+                              description=None,
+                              depends_on=None
+                              ):
+    import json                   
+    body = {'dispaly_name': display_name,
+            'policy_definition_id': policy_definition_id,
+            'kind': 'policyAssignment',
+            'description': description,
+            'depends_on': depends_on,
+            'parameters': json.loads(parameters) if parameters else {},
+            'resource_group': resource_group_art
+        }
+    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=name, artifact=body)
 
 def update_blueprint_artifact(cmd, client,
                               blueprint_name,

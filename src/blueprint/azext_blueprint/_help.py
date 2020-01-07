@@ -125,6 +125,18 @@ helps['blueprint artifact create'] = """
                "simpleBlueprint" --name "costCenterPolicy"
 """
 
+helps['blueprint artifact policy create'] = """
+    type: command
+    short-summary: Create blueprint policy artifact.
+    examples:
+      - name: Create a policy artifact
+        text: |-
+               az blueprint artifact policy create --scope "subscriptions/{subscriptionId}" \\
+               --blueprint-name "myBlueprint" --name "myPolicy" --policy-definition-id \\
+               "/providers/Microsoft.Authorization/policyDefinitions/{policyId}" \\
+               --parameters @/path/to/file --display-name "Policy to do sth"
+"""
+
 helps['blueprint artifact update'] = """
     type: command
     short-summary: Create or update blueprint artifact.
@@ -394,12 +406,12 @@ helps['blueprint assignment list'] = """
                az blueprint list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
 """
 
-helps['blueprint assignment who_is_blueprint'] = """
+helps['blueprint assignment who-is-blueprint'] = """
     type: command
     short-summary: Get Blueprints service SPN objectId
     examples:
       - name: WhoIsBlueprint_Action
         text: |-
-               az blueprint who_is_blueprint --scope \\
+               az blueprint who-is-blueprint --scope \\
                "subscriptions/00000000-0000-0000-0000-000000000000" --name "assignSimpleBlueprint"
 """
