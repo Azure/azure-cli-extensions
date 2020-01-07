@@ -13,7 +13,7 @@ from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags, cf_firewall_po
 from ._util import (
     list_network_resource_property, get_network_resource_property_entry, delete_network_resource_property_entry)
 
-from ._validators import validate_af_network_rule, validate_af_nat_rule
+from ._validators import validate_af_network_rule, validate_af_nat_rule, validate_af_application_rule
 
 
 # pylint: disable=too-many-locals, too-many-statements
@@ -67,7 +67,7 @@ def load_command_table(self, _):
     af_rules = {
         'network_rule': {'scope': 'network-rule', 'validator': validate_af_network_rule},
         'nat_rule': {'scope': 'nat-rule', 'validator': validate_af_nat_rule},
-        'application_rule': {'scope': 'application-rule', 'validator': None}
+        'application_rule': {'scope': 'application-rule', 'validator': validate_af_application_rule}
     }
 
     for rule_type, af_rule in af_rules.items():
