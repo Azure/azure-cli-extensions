@@ -67,7 +67,7 @@ jobs:
     displayName: "Verify Extensions Index"
 
 - job: SourceTests
-  displayName: "Unittest Test, Build Test"
+  displayName: "Integration Tests, Build Tests"
   pool:
     vmImage: 'ubuntu-16.04'
   strategy:
@@ -84,7 +84,7 @@ jobs:
     - bash: pip install wheel==0.30.0
       displayName: 'Install wheel==0.30.0'
     - bash: ./scripts/ci/test_source.sh
-      displayName: 'Run unittest and build test'
+      displayName: 'Run integration test and build test'
       env:
         ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
