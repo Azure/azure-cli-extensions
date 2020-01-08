@@ -145,13 +145,16 @@ def validate_rule_group_collection(namespace):
     return namespace
 
 
-def validate_private_ranges(namespace):
-    namespace.private_ranges = ', '.join(namespace.private_ranges)
+def process_private_ranges(namespace):
+    if namespace.private_ranges is not None:
+        namespace.private_ranges = ', '.join(namespace.private_ranges)
 
 
-def validate_threat_intel_whitelist_ip_addresses(namespace):
-    namespace.ip_addresses = ', '.join(namespace.ip_addresses)
+def process_threat_intel_whitelist_ip_addresses(namespace):
+    if namespace.ip_addresses is not None:
+        namespace.ip_addresses = ', '.join(namespace.ip_addresses)
 
 
-def validate_threat_intel_whitelist_fqdns(namespace):
-    namespace.fqdns = ', '.join(namespace.fqdns)
+def process_threat_intel_whitelist_fqdns(namespace):
+    if namespace.fqdns is not None:
+        namespace.fqdns = ', '.join(namespace.fqdns)
