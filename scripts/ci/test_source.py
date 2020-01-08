@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 import shutil
+import shlex
 from subprocess import check_output, check_call, CalledProcessError
 
 import mock
@@ -33,6 +34,15 @@ for src_d in os.listdir(SRC_PATH):
     commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
     if commit_range and not check_output(['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
         continue
+
+    # Running in Azure DevOps
+    cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} {code_dir}'
+    ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
+    ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+    if ado_branch_last_commit and ado_target_branch:
+        cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit, code_dir=src_d_full)
+        if not check_output(shlex.split(cmd)):
+            continue
 
     # Find the package and check it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
