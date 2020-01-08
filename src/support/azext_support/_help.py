@@ -9,7 +9,7 @@ from knack.help_files import helps
 
 helps['support'] = """
     type: group
-    short-summary: Use Azure Support functionality.
+    short-summary: Manage and administer support tickets.
 """
 
 helps['support services'] = """
@@ -20,13 +20,17 @@ helps['support services'] = """
 helps['support services list'] = """
     type: command
     short-summary: List services.
+    examples:
+      - name: List services available for creating support ticket.
+        text: |-
+               az support services list
 """
 
 helps['support services show'] = """
     type: command
     short-summary: Show service.
     examples:
-      - name: Show Virtual Machine Running Windows Service
+      - name: Show service named 'Virtual Machine Running Windows Service'.
         text: |-
                az support services show --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396"
 """
@@ -40,7 +44,7 @@ helps['support services problem-classifications list'] = """
     type: command
     short-summary: List problem classifications for service.
     examples:
-      - name: Show supported problem classifications under service 'Virtual Machine Running Window'
+      - name: Show supported problem classifications for service 'Virtual Machine Running Window'.
         text: |-
                az support services problem-classifications list --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396"
 """
@@ -49,7 +53,7 @@ helps['support services problem-classifications show'] = """
     type: command
     short-summary: Show problem classification for service.
     examples:
-      - name: Show problem classification 'VM Performance / Memory usage is higher than expected' under service 'Virtual Machine Running Window'
+      - name: Show problem classification 'VM Performance / Memory usage is higher than expected' for service 'Virtual Machine Running Window'.
         text: >
                az support services problem-classifications show \\
                  --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396" \\
@@ -65,7 +69,7 @@ helps['support tickets list'] = """
     type: command
     short-summary: List support tickets.
     examples:
-      - name: List support tickets that are active and created after specific date"
+      - name: List support tickets that are active and created after specific date".
         text: |-
                az support tickets list --filters "CreatedDate ge 2019-12-01 and Status eq 'Open'"
 """
@@ -74,7 +78,7 @@ helps['support tickets show'] = """
     type: command
     short-summary: Show support ticket.
     examples:
-      - name: Show support ticket named "test_ticket_from_pythoncli"
+      - name: Show support ticket named "test_ticket_from_pythoncli".
         text: |-
                az support tickets show --ticket-name "test_ticket_from_pythoncli"
 """
@@ -83,11 +87,11 @@ helps['support tickets update'] = """
     type: command
     short-summary: Update support ticket.
     examples:
-      - name: Update severity for support ticket named "test_ticket_from_pythoncli"
+      - name: Update severity for support ticket named "test_ticket_from_pythoncli".
         text: |-
                az support tickets update --ticket-name "test_ticket_from_pythoncli" --severity "moderate"
 
-      - name: Update one or more contact details for support ticket named "test_ticket_from_pythoncli"
+      - name: Update one or more properties of contact details for support ticket named "test_ticket_from_pythoncli".
         text: >
                az support tickets update --ticket-name "test_ticket_from_pythoncli" \\
                 --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
@@ -103,9 +107,9 @@ helps['support tickets update'] = """
 
 helps['support tickets create'] = """
     type: command
-    short-summary: Create support ticket
+    short-summary: Create support ticket.
     examples:
-      - name: Create support ticket for technical issue
+      - name: Create support ticket for technical issue.
         text: >
                az support tickets create \\
                 --contact-country "USA" \\
@@ -116,15 +120,15 @@ helps['support tickets create'] = """
                 --contact-method "email" \\
                 --contact-timezone "Pacific Standard Time" \\
                 --description "test ticket description" \\
-                --problem-classification "/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc/problemClassifications/ef8b3865-0c5a-247b-dcaa-d70fd7611a3c" \\
+                --problem-classification "/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc/problemClassifications/ffe93180-2ece-07c9-0cd4-6ae7ccc19d7c" \\
                 --service "/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc" \\
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
                 --title "test ticket from python cli" \\
                 --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
-                --technical-resource "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
+                --technical-resource "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
 
-      - name: Create support ticket for billing issue using AOBO scenario. First run "az login" (To customer tenant) and "az login -t contoso.onmicrosoft.com --allow-no-subscriptions" (To partner tenant)
+      - name: Create support ticket for billing issue.
         text: >
                az support tickets create \\
                 --contact-country "USA" \\
@@ -139,10 +143,9 @@ helps['support tickets create'] = """
                 --service "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc" \\
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
-                --title "test ticket from python cli" \\
-                --partner-tenant-id "00000000-0000-0000-0000-000000000000"
+                --title "test ticket from python cli"
 
-      - name: Create support ticket for quota issue
+      - name: Create support ticket for quota issue.
         text: >
                az support tickets create \\
                 --contact-country "USA" \\
@@ -167,7 +170,7 @@ helps['support tickets communications'] = """
     type: group
     short-summary: Commands to manage support ticket communication.
     examples:
-      - name: Show support ticket named "test_ticket_from_pythoncli"
+      - name: Show support ticket named "test_ticket_from_pythoncli".
         text: |-
                az support tickets communications list --ticket-name "test_ticket_from_pythoncli"
 """
@@ -176,7 +179,7 @@ helps['support tickets communications list'] = """
     type: command
     short-summary: List communications for support ticket.
     examples:
-      - name: List communications for support ticket named "test_ticket_from_pythoncli"
+      - name: List communications for support ticket named "test_ticket_from_pythoncli".
         text: |-
                az support tickets communications list --ticket-name "test_ticket_from_pythoncli" --filters "CreatedDate ge 2019-12-01 and communicationType eq 'web'"
 """
@@ -185,16 +188,16 @@ helps['support tickets communications show'] = """
     type: command
     short-summary: Show communication for support ticket.
     examples:
-      - name: Show communication named "mycommunicationname" for support ticket named "test_ticket_from_pythoncli"
+      - name: Show communication named "test_communication_from_pythoncli" for support ticket named "test_ticket_from_pythoncli"
         text: |-
-               az support tickets communications show --ticket-name "test_ticket_from_pythoncli" --communication-name "message1"
+               az support tickets communications show --ticket-name "test_ticket_from_pythoncli" --communication-name "test_communication_from_pythoncli"
 """
 
 helps['support tickets communications create'] = """
     type: command
     short-summary: Create communication for support ticket.
     examples:
-      - name: Post message named "message1" for support ticket named "test_ticket_from_pythoncli"
+      - name: Create communication named "test_communication_from_pythoncli" for support ticket named "test_ticket_from_pythoncli".
         text: >
                az support tickets communications create --ticket-name "test_ticket_from_pythoncli" \\
                 --communication-name "message1" \\

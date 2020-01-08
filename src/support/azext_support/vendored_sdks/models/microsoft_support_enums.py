@@ -33,8 +33,8 @@ class PreferredContactMethod(Enum):
 
 class CommunicationType(Enum):
 
-    web = "Web"
-    phone = "Phone"
+    web = "web"
+    phone = "phone"
 
 
 class CommunicationDirection(Enum):

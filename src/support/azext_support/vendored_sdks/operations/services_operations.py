@@ -43,12 +43,12 @@ class ServicesOperations(object):
         List all the Azure services available for support. This includes
         **Billing**, **Subscription Management**, **Service and subscription
         limits (quotas)** and all **technical** services. User must provide the
-        id of the Azure service when creating a support ticket.
-        * For Billing, the id is
+        id of the Azure service when creating a support ticket. <br/>For
+        Billing, the id is
         '/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc'.
-        * For Subscription Management, the id is
+        <br/>For Subscription Management, the id is
         '/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6'.
-        * For Quota, the id is
+        <br/>For Quota, the id is
         '/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89'
         and rest of the ids are for technical services.
 

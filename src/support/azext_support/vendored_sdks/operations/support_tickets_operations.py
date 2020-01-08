@@ -37,17 +37,15 @@ class SupportTicketsOperations(object):
         self.config = config
 
     def list_by_subscription(
-            self, top=None, filter=None, skip_token=None, custom_headers=None, raw=False, **operation_config):
+            self, top=None, filter=None, custom_headers=None, raw=False, **operation_config):
         """Lists all the support tickets for an Azure subscription. Support
-        tickets older than 12 months cannot be retrieved using this API.
+        tickets older than 6 months cannot be retrieved using this API.
 
         :param top: The number of values to return in the collection. Default
          is 25 and max is 100.
         :type top: int
         :param filter: The filter to apply on the operation.
         :type filter: str
-        :param skip_token: The pagination token for requesting next page.
-        :type skip_token: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -75,8 +73,6 @@ class SupportTicketsOperations(object):
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
                 if filter is not None:
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-                if skip_token is not None:
-                    query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:

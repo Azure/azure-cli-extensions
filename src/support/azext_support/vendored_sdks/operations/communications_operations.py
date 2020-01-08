@@ -37,7 +37,7 @@ class CommunicationsOperations(object):
         self.config = config
 
     def list_by_subscription_ticket(
-            self, support_ticket_name, top=None, filter=None, skip_token=None, custom_headers=None, raw=False, **operation_config):
+            self, support_ticket_name, top=None, filter=None, custom_headers=None, raw=False, **operation_config):
         """Lists all communications for a support ticket.
 
         :param support_ticket_name: Support ticket name.
@@ -47,8 +47,6 @@ class CommunicationsOperations(object):
         :type top: int
         :param filter: The filter to apply on the operation.
         :type filter: str
-        :param skip_token: The pagination token for requesting next page.
-        :type skip_token: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
@@ -77,8 +75,6 @@ class CommunicationsOperations(object):
                     query_parameters['$top'] = self._serialize.query("top", top, 'int')
                 if filter is not None:
                     query_parameters['$filter'] = self._serialize.query("filter", filter, 'str')
-                if skip_token is not None:
-                    query_parameters['$skipToken'] = self._serialize.query("skip_token", skip_token, 'str')
                 query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:

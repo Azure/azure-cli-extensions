@@ -9,7 +9,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .service_level_agreement import ServiceLevelAgreement
 from .operation_display import OperationDisplay
 from .operation import Operation
 from .service import Service
@@ -17,6 +16,7 @@ from .problem_classification import ProblemClassification
 from .check_name_availability_input import CheckNameAvailabilityInput
 from .check_name_availability_output import CheckNameAvailabilityOutput
 from .contact_profile import ContactProfile
+from .service_level_agreement import ServiceLevelAgreement
 from .support_engineer import SupportEngineer
 from .technical_ticket_details import TechnicalTicketDetails
 from .quota_change_request import QuotaChangeRequest
@@ -42,7 +42,6 @@ from .microsoft_support_enums import (
 )
 
 __all__ = [
-    'ServiceLevelAgreement',
     'OperationDisplay',
     'Operation',
     'Service',
@@ -50,6 +49,7 @@ __all__ = [
     'CheckNameAvailabilityInput',
     'CheckNameAvailabilityOutput',
     'ContactProfile',
+    'ServiceLevelAgreement',
     'SupportEngineer',
     'TechnicalTicketDetails',
     'QuotaChangeRequest',

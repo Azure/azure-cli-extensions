@@ -29,3 +29,9 @@ def cf_support_ticket_subscription(cli_ctx, *_):
 
 def cf_communications(cli_ctx, *_):
     return cf_support(cli_ctx).communications
+
+
+def cf_resource(cli_ctx, **_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.cli.core.profiles import ResourceType
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)

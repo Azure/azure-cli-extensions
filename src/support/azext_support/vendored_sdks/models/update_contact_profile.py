@@ -30,13 +30,13 @@ class UpdateContactProfile(Model):
     :param phone_number: Phone number. This is required if preferred contact
      method is phone.
     :type phone_number: str
-    :param preferred_time_zone: Time zone of the user. This is the name of the
-     time zone from 'Microsoft Time Zone Index Values'
+    :param preferred_time_zone: Time zone of the user. This is the
+     System.TimeZoneInfo.Id value
     :type preferred_time_zone: str
-    :param country: Country of the user. This is the ISO 3166-1 alpha-3 code
+    :param country: Country of the user. This is the ISO Alpha-3 code
     :type country: str
     :param preferred_support_language: Language of the user. This is the
-     standard language-country code.
+     standard country-language code.
     :type preferred_support_language: str
     """
 

@@ -25,7 +25,7 @@ class CommunicationDetails(Model):
     :ivar type: Type of the resource 'Microsoft.Support/communications
     :vartype type: str
     :ivar communication_type: Communication type. Possible values include:
-     'Web', 'Phone'
+     'web', 'phone'
     :vartype communication_type: str or
      ~azure.mgmt.support.models.CommunicationType
     :ivar communication_direction: Direction of communication. Possible values
