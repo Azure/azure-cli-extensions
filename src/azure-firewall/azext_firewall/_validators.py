@@ -143,3 +143,18 @@ def validate_rule_group_collection(namespace):
     if namespace.target_fqdns is not None and namespace.fqdn_tags is not None:
         raise CLIError('usage error: --target-fqdns | --fqdn-tags')
     return namespace
+
+
+def process_private_ranges(namespace):
+    if namespace.private_ranges is not None:
+        namespace.private_ranges = ', '.join(namespace.private_ranges)
+
+
+def process_threat_intel_whitelist_ip_addresses(namespace):
+    if namespace.ip_addresses is not None:
+        namespace.ip_addresses = ', '.join(namespace.ip_addresses)
+
+
+def process_threat_intel_whitelist_fqdns(namespace):
+    if namespace.fqdns is not None:
+        namespace.fqdns = ', '.join(namespace.fqdns)
