@@ -47,6 +47,9 @@ helps['aks create'] = """
         - name: --node-osdisk-size
           type: int
           short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+        - name: --node-osdisk-diskencryptionset-id
+          type: string
+          short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest.
         - name: --kubernetes-version -k
           type: string
           short-summary: Version of Kubernetes to use for creating the cluster, such as "1.7.12" or "1.8.7".
@@ -210,7 +213,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --load-balancer-sku basic --vm-set-type AvailabilitySet
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
-
+        - name: Create a kubernetes cluster with server side encryption using your owned key.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 

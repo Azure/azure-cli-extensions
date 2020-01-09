@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.26
++++++
+* Update to use 2020-01-01 api-version
+* Support cluster creation with server side encryption using customer managed key
+
 0.4.25
 +++++
 * List credentials for different users via parameter `--user`
