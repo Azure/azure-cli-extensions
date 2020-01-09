@@ -15,6 +15,7 @@ def _py3_byte_to_str(byte_or_str):
     except TypeError:  # python 2 doesn't allow decoding through str
         return str(byte_or_str)
 
+
 class PowerBIKeyReplacer(RecordingProcessor):
     """Replace the access token for service principal authentication in a response body."""
 
