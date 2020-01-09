@@ -936,20 +936,22 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     file_service = FileService(storage_name, sas_token=sas_token)
     file_service.create_file_from_path(share_name, None, relative_path, path)
 
-    if file_type == "Source" and ~no_wait:
+    if file_type == "Source" and not no_wait:
         def get_log_url():
             try:
-                log_url = client.deployments.get_log_file_url(
+                log_file_url_response = client.deployments.get_log_file_url(
                     resource_group_name=resource_group,
                     service_name=service,
                     app_name=app,
-                    deployment_name=name).url
-                return log_url
+                    deployment_name=name)
+                if not log_file_url_response:
+                    return None
+                else:
+                    return log_file_url_response.url
             except CloudError:
                 return None
 
         def get_logs_loop():
-            old_log_url = get_log_url()
             log_url = None
             while not log_url or log_url == old_log_url:
                 log_url = get_log_url()
@@ -959,6 +961,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
             stream_logs(client.deployments, resource_group, service,
                         app, name, logger_level_func=logger.info)
 
+        old_log_url = get_log_url()
+        
         timer = Timer(3, get_logs_loop)
         timer.daemon = True
         timer.start()
