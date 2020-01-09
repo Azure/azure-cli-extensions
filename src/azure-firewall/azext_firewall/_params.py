@@ -37,6 +37,8 @@ def load_arguments(self, _):
         c.argument('destination_fqdns', nargs='+', help="Space-separated list of destination FQDNs.")
         c.argument('source_addresses', nargs='+', help="Space-separated list of source IP addresses. Use '*' to match all.")
         c.argument('destination_ports', nargs='+', help="Space-separated list of destination ports. Use '*' to match all.")
+        c.argument('source_ip_groups', nargs='+', help='Space-separated list of name or resource id of source IpGroups.')
+        c.argument('destination_ip_groups', nargs='+', help='Space-separated list of name or resource id of destination IpGroups')
         c.argument('translated_address', help='Translated address for this NAT rule.')
         c.argument('translated_port', help='Translated port for this NAT rule.')
         c.argument('translated_fqdn', help='Translated FQDN for this NAT rule.')
