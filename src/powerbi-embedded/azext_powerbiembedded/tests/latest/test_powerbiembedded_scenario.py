@@ -4,16 +4,20 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
-
-from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from ._test_util import PowerBIKeyReplacer
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class PowerBIEmbeddedScenarioTest(ScenarioTest):
+
+    def __init__(self, method_name):
+        super(PowerBIEmbeddedScenarioTest, self).__init__(
+            method_name,
+            recording_processors=[PowerBIKeyReplacer()]
+        )
 
     @ResourceGroupPreparer(name_prefix='cli_test_powerbi_embedded', location='southcentralus')
     def test_powerbi_embedded(self, resource_group):
