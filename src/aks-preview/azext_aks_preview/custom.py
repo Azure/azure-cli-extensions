@@ -1069,14 +1069,19 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                         resource_group_name,
                         name,
                         admin=False,
+                        user='clusterUser',
                         path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                         overwrite_existing=False):
     credentialResults = None
     if admin:
         credentialResults = client.list_cluster_admin_credentials(resource_group_name, name)
     else:
-        credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
-
+        if user.lower() == 'clusteruser':
+            credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
+        elif user.lower() == 'clustermonitoringuser':
+            credentialResults = client.list_cluster_monitoring_user_credentials(resource_group_name, name)
+        else:
+            raise CLIError("The user is invalid.")
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
 

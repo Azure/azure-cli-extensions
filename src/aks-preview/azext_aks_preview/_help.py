@@ -523,6 +523,9 @@ parameters:
   - name: --admin -a
     type: bool
     short-summary: "Get cluster administrator credentials.  Default: cluster user credentials."
+  - name: --user -u
+    type: string
+    short-summary: "Get credentials for the user. Only valid when --admin is False.  Default: cluster user credentials."
   - name: --file -f
     type: string
     short-summary: Kubernetes configuration file to update. Use "-" to print YAML to stdout instead.
