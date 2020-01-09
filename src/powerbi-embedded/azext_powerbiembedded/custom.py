@@ -9,6 +9,8 @@
 # pylint: disable=unused-argument
 
 from knack.util import CLIError
+
+
 def create_powerbiembedded_workspace_collection(cmd, client,
                                                 resource_group_name,
                                                 name,
@@ -17,8 +19,7 @@ def create_powerbiembedded_workspace_collection(cmd, client,
     exist = client.check_name_availability(location=location, name=name).name_available
     if exist:
         return client.create(resource_group_name=resource_group_name, workspace_collection_name=name, location=location, tags=tags)
-    else:
-        raise CLIError("{} already exists. Please use another name.".format(name))
+    raise CLIError("{} already exists. Please use another name.".format(name))
 
 
 def update_powerbiembedded_workspace_collection(cmd, client,
