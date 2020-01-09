@@ -946,8 +946,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                     deployment_name=name)
                 if not log_file_url_response:
                     return None
-                else:
-                    return log_file_url_response.url
+                return log_file_url_response.url
             except CloudError:
                 return None
 
@@ -962,7 +961,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                         app, name, logger_level_func=logger.info)
 
         old_log_url = get_log_url()
-        
+
         timer = Timer(3, get_logs_loop)
         timer.daemon = True
         timer.start()
