@@ -30,24 +30,12 @@ def load_arguments(self, _):
         c.argument('description', id_part=None, help='Multi-line explain this resource.')
         c.argument('target_scope', arg_type=get_enum_type(['subscription', 'managementGroup']), id_part=None, help='The scope where this blueprint definition can be assigned.')
         c.argument('parameters', id_part=None, help='Parameters required by this blueprint definition.')
-        c.argument('versions', id_part=None, help='Published versions of this blueprint definition.')
-        c.argument('layout', id_part=None, help='Layout view of the blueprint definition for UI reference.')
-        c.argument('rg_name',  arg_group='Resource Group', help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
-        c.argument('rg_location',  arg_group='Resource Group', help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
-        c.argument('rg_display_name',  arg_group='Resource Group', help='Display name of this resource group artifact.')
-        c.argument('tags', tags_type,  options_list=['--rg-tags'], arg_group='Resource Group', help='Tags to be assigned to this resource group.')
 
 
     with self.argument_context('blueprint update') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('name', id_part=None, help='Name of the blueprint definition.')
-        c.argument('display_name', id_part=None, help='One-liner string explain this resource.')
         c.argument('description', id_part=None, help='Multi-line explain this resource.')
-        c.argument('target_scope', arg_type=get_enum_type(['subscription', 'managementGroup']), id_part=None, help='The scope where this blueprint definition can be assigned.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None, help='Parameters required by this blueprint definition.')
-        c.argument('resource_groups', id_part=None, help='Resource group placeholders defined by this blueprint definition.')
-        c.argument('versions', id_part=None, help='Published versions of this blueprint definition.')
-        c.argument('layout', id_part=None, help='Layout view of the blueprint definition for UI reference.')
 
     with self.argument_context('blueprint delete') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -65,6 +53,18 @@ def load_arguments(self, _):
     #     c.argument('blueprint_name', id_part=None, help='Name of the blueprint definition.')
     #     c.argument('name', id_part=None, help='Name of the blueprint artifact.')
     #     c.argument('kind', arg_type=get_enum_type(['template', 'roleAssignment', 'policyAssignment']), help='Specifies the kind of blueprint artifact.')
+
+    with self.argument_context('blueprint artifact resource-group create') as c:
+        c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
+        c.argument('blueprint_name', id_part=None, help='Name of the blueprint definition.')
+        c.argument('name', id_part=None, help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
+        c.argument('location', id_part=None, help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
+        c.argument('artifact_name', id_part=None, help='A unique name of this resource group artifact.')
+        c.argument('display_name', id_part=None, help='Display name of this resource group artifact.')
+        c.argument('description', id_part=None, help='Description of the blueprint artifact.')
+        c.argument('depends_on', id_part=None, nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
+        c.argument('tags', tags_type, id_part=None, arg_group='Resource Group', help='Tags to be assigned to this resource group.')
+
 
     with self.argument_context('blueprint artifact policy create') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
