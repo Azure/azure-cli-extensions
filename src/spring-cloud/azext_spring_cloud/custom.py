@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order
+# pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 
 import yaml   # pylint: disable=import-error
 from time import sleep
@@ -14,20 +14,22 @@ from ._utils import _get_upload_local_file
 from knack.util import CLIError
 from .vendored_sdks.appplatform import models
 from knack.log import get_logger
-from urllib.parse import urlparse
 from .azure_storage_file import FileService
 from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
+from urllib import parse
+from threading import Timer
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL = 5
-APP__CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
+APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
+LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, no_wait=False):
@@ -96,8 +98,8 @@ def app_create(cmd, client, resource_group, service, name,
                enable_persistent_storage=None):
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
-        raise CLIError("App {} already exists.".format(name))
-    logger.info("Creating app with name {}".format(name))
+        raise CLIError("App '{}' already exists.".format(name))
+    logger.warning("[1/4] Creating app with name '{}'".format(name))
     properties = models.AppResourceProperties()
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -109,10 +111,10 @@ def app_create(cmd, client, resource_group, service, name,
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
 
-    poller = client.apps.create_or_update(resource_group, service, name, properties)
-    logger.info("Waiting for the app {} create completion".format(name))
+    poller = client.apps.create_or_update(
+        resource_group, service, name, properties)
     while poller.done() is False:
-        sleep(APP__CREATE_OR_UPDATE_SLEEP_INTERVAL)
+        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
@@ -128,16 +130,18 @@ def app_create(cmd, client, resource_group, service, name,
         source=user_source_info)
 
     # create default deployment
-    logger.info("Creating default deployment with name {}".format(DEFAULT_DEPLOYMENT_NAME))
+    logger.warning(
+        "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
     poller = client.deployments.create_or_update(
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
 
-    logger.info("Setting default deployment to production")
+    logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
 
     app_poller = client.apps.update(resource_group, service, name, properties)
-    logger.info("Waiting for the deployment {} create and app {} update completion".format(DEFAULT_DEPLOYMENT_NAME, name))
+    logger.warning(
+        "[4/4] Updating app '{}' (this operation can take a while to complete)".format(name))
     while not poller.done() or not app_poller.done():
         sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
@@ -145,6 +149,7 @@ def app_create(cmd, client, resource_group, service, name,
         resource_group, service, name, DEFAULT_DEPLOYMENT_NAME)
     app = client.apps.get(resource_group, service, name)
     app.properties.active_deployment = active_deployment
+    logger.warning("App create succeeded")
     return app
 
 
@@ -162,22 +167,24 @@ def app_update(cmd, client, resource_group, service, name,
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    logger.info("updating app {}".format(name))
+    logger.warning("[1/2] updating app '{}'".format(name))
     poller = client.apps.update(
         resource_group, service, name, properties)
-    logger.info("Waiting for the app {} update completion".format(name))
     while poller.done() is False:
-        sleep(APP__CREATE_OR_UPDATE_SLEEP_INTERVAL)
+        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
     app_updated = client.apps.get(resource_group, service, name)
 
     if deployment is None:
+        logger.warning(
+            "No '--deployment' given, will update app's production deployment")
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if deployment is None:
+            logger.warning("No deployment found for update")
             return app_updated
 
-    logger.info("Updating deployment {}".format(deployment))
+    logger.warning("[2/2] Updating deployment '{}'".format(deployment))
     deployment_settings = models.DeploymentSettings(
         cpu=None,
         memory_in_gb=None,
@@ -187,12 +194,13 @@ def app_update(cmd, client, resource_group, service, name,
         runtime_version=runtime_version,)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    poller = client.deployments.update(resource_group, service, name, deployment, properties)
-    logger.info("Waiting for the deployment {} update completion".format(deployment))
+    poller = client.deployments.update(
+        resource_group, service, name, deployment, properties)
     while poller.done() is False:
         sleep(DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
-    deployment = client.deployments.get(resource_group, service, name, deployment)
+    deployment = client.deployments.get(
+        resource_group, service, name, deployment)
     app_updated.properties.active_deployment = deployment
     return app_updated
 
@@ -291,10 +299,11 @@ def app_deploy(cmd, client, resource_group, service, name,
                instance_count=None,
                env=None,
                no_wait=False):
-    if deployment is None:
+    logger.warning(LOG_RUNNING_PROMPT)
+    if not deployment:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-        if deployment is None:
+        if not deployment:
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
 
     client.deployments.get(resource_group, service, name, deployment)
@@ -341,7 +350,7 @@ def app_scale(cmd, client, resource_group, service, name,
                        resource_group, service, name, deployment, properties)
 
 
-def app_get_log(cmd, client, resource_group, service, name, deployment=None):
+def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -350,7 +359,7 @@ def app_get_log(cmd, client, resource_group, service, name, deployment=None):
     deployment_properties = client.deployments.get(
         resource_group, service, name, deployment).properties
     if deployment_properties.source.type == "Jar":
-        raise CLIError("Jar deployment have no build logs.")
+        raise CLIError("Jar deployment has no build logs.")
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
@@ -381,6 +390,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       instance_count=None,
                       env=None,
                       no_wait=False):
+    logger.warning(LOG_RUNNING_PROMPT)
     deployments = _get_all_deployments(client, resource_group, service, app)
     if name in deployments:
         raise CLIError("Deployment " + name + " already exists")
@@ -551,7 +561,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
     if config.repositories:
         repos = [repo for repo in config.repositories if repo.name == repo_name]
         if repos:
-            raise CLIError("Repo {} already exiests.".format(repo_name))
+            raise CLIError("Repo '{}' already exiests.".format(repo_name))
     else:
         config.repositories = []
 
@@ -582,13 +592,13 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
     resource = client.get(resource_group, name)
     config_server = resource.properties.config_server_properties.config_server
     if not config_server or not config_server.config or not config_server.config.repositories:
-        raise CLIError("Repo {} not found.".format(repo_name))
+        raise CLIError("Repo '{}' not found.".format(repo_name))
 
     config = config_server.git_property
     repository = [
         repo for repo in config.repositories if repo.name == repo_name]
     if not repository:
-        raise CLIError("Repo {} not found.".format(repo_name))
+        raise CLIError("Repo '{}' not found.".format(repo_name))
 
     config.repositories.remove(repository[0])
 
@@ -617,12 +627,12 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     resource = client.get(resource_group, name)
     config_server = resource.properties.config_server_properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
-        raise CLIError("Repo {} not found.".format(repo_name))
+        raise CLIError("Repo '{}' not found.".format(repo_name))
     config = config_server.git_property
     repository = [
         repo for repo in config.repositories if repo.name == repo_name]
     if not repository:
-        raise CLIError("Repo {} not found.".format(repo_name))
+        raise CLIError("Repo '{}' not found.".format(repo_name))
 
     if search_paths:
         search_paths = search_paths.split(",")
@@ -874,7 +884,7 @@ def _get_all_apps(client, resource_group, service):
     return apps
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals, no-member
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
                 env,
@@ -884,6 +894,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                 update=False):
     upload_url = None
     relative_path = None
+    logger.warning("[1/3] Requesting for upload URL")
     try:
         response = client.apps.get_resource_upload_url(resource_group,
                                                        service,
@@ -899,7 +910,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     if not upload_url:
         raise CLIError("Failed to get a SAS URL to upload context.")
 
-    prase_result = urlparse(upload_url)
+    prase_result = parse.urlparse(upload_url)
     storage_name = prase_result.netloc.split('.')[0]
     split_path = prase_result.path.split('/')[1:3]
     share_name = split_path[0]
@@ -921,11 +932,43 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         source=user_source_info)
 
     # upload file
+    logger.warning("[2/3] Uploading package to blob")
     file_service = FileService(storage_name, sas_token=sas_token)
     file_service.create_file_from_path(share_name, None, relative_path, path)
-    logger.info("Upload file succeed, start to update deployment.")
+
+    if file_type == "Source" and not no_wait:
+        def get_log_url():
+            try:
+                log_file_url_response = client.deployments.get_log_file_url(
+                    resource_group_name=resource_group,
+                    service_name=service,
+                    app_name=app,
+                    deployment_name=name)
+                if not log_file_url_response:
+                    return None
+                return log_file_url_response.url
+            except CloudError:
+                return None
+
+        def get_logs_loop():
+            log_url = None
+            while not log_url or log_url == old_log_url:
+                log_url = get_log_url()
+                sleep(10)
+
+            logger.info("Trying to fetch build logs")
+            stream_logs(client.deployments, resource_group, service,
+                        app, name, logger_level_func=logger.info)
+
+        old_log_url = get_log_url()
+
+        timer = Timer(3, get_logs_loop)
+        timer.daemon = True
+        timer.start()
 
     # create deployment
+    logger.warning(
+        "[3/3] Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
                            resource_group, service, app, name, properties)
