@@ -36,8 +36,11 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--sku-name "Free"',
                  checks=[JMESPathCheck('name', self.kwargs.get('namespace-name', ''))])
 
-        if self.is_live:
-            time.sleep(60)
+        self.cmd('az notificationhubs namespace wait '
+                 '--resource-group {rg} '
+                 '--namespace-name {namespace-name} '
+                 '--created',
+                 checks=[])
 
         self.cmd('az notificationhubs check-availability '
                  '--resource-group {rg} '
@@ -71,7 +74,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--namespace-name {namespace-name}',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        # self.cmd('az notificationhubs namespace authorization-rule list_keys '
+        # self.cmd('az notificationhubs namespace authorization-rule list-keys '
         #          '--resource-group {rg} '
         #          '--namespace-name {namespace-name} '
         #          '--name "my-space-rule"',
@@ -81,16 +84,16 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
                  '--notification-hub-name {notification-hub-name} '
-                 '--name "my-hub-send-key" '
+                 '--name "my-hub-listen-key" '
                  '--rights "Listen"',
-                 checks=[JMESPathCheck('name', 'my-hub-send-key')])
+                 checks=[JMESPathCheck('name', 'my-hub-listen-key')])
 
         self.cmd('az notificationhubs authorization-rule show '
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
                  '--notification-hub-name {notification-hub-name} '
-                 '--name "my-hub-send-key"',
-                 checks=[JMESPathCheck('name', 'my-hub-send-key')])
+                 '--name "my-hub-listen-key"',
+                 checks=[JMESPathCheck('name', 'my-hub-listen-key')])
 
         self.cmd('az notificationhubs authorization-rule list '
                  '--resource-group {rg} '
@@ -98,11 +101,11 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--notification-hub-name {notification-hub-name}',
                  checks=[JMESPathCheckExists("[0].rights")])
 
-        # self.cmd('az notificationhubs authorization-rule list_keys '
+        # self.cmd('az notificationhubs authorization-rule list-keys '
         #          '--resource-group {rg} '
         #          '--namespace-name {namespace-name} '
         #          '--notification-hub-name {notification-hub-name} '
-        #          '--name "my-hub-send-key"',
+        #          '--name "my-hub-listen-key"',
         #          checks=[JMESPathCheckExists('primaryConnectionString')])
 
         self.cmd('az notificationhubs credential gcm update '
@@ -148,15 +151,15 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         # if self.is_live:
         #     time.sleep(60)
-        # self.cmd('az notificationhubs authorization-rule regenerate_keys '
+        # self.cmd('az notificationhubs authorization-rule regenerate-keys '
         #          '--resource-group {rg} '
         #          '--namespace-name {namespace-name} '
         #          '--notification-hub-name {notification-hub-name} '
-        #          '--name "my-hub-send-key" '
+        #          '--name "my-hub-listen-key" '
         #          '--policy-key "Secondary Key"',
         #          checks=[])
 
-        # self.cmd('az notificationhubs namespace authorization-rule regenerate_keys '
+        # self.cmd('az notificationhubs namespace authorization-rule regenerate-keys '
         #          '--resource-group {rg} '
         #          '--namespace-name {namespace-name} '
         #          '--name "my-space-rule" '
@@ -166,10 +169,12 @@ class NotificationHubsScenarioTest(ScenarioTest):
         self.cmd('az notificationhubs delete '
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
-                 '--notification-hub-name {notification-hub-name}',
+                 '--notification-hub-name {notification-hub-name} '
+                 '-y',
                  checks=[])
 
         self.cmd('az notificationhubs namespace delete '
                  '--resource-group {rg} '
-                 '--namespace-name {namespace-name}',
+                 '--namespace-name {namespace-name} '
+                 '-y',
                  checks=[])

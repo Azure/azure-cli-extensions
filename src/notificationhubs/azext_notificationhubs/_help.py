@@ -80,6 +80,15 @@ helps['notificationhubs namespace check-availability'] = """
                az notificationhubs namespace check-availability --name "my-test-space"
 """
 
+helps['notificationhubs namespace wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the Notification Hub Namesapce is met.
+    examples:
+        - name: Pause executing next line of CLI script until the Notification Hub Namesapce is successfully provisioned.
+          text: az notificationhubs namespace wait --resource-group MyResourceGroup --namespace-name \\
+               "nh-sdk-ns" --created
+"""
+
 helps['notificationhubs namespace authorization-rule'] = """
     type: group
     short-summary: Commands to manage notificationhubs namespace authorization rule.

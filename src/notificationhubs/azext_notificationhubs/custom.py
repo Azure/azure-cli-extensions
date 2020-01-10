@@ -8,6 +8,9 @@
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
 
+from azure.cli.core.util import sdk_no_wait
+
+
 DEFAULT_APNS_ENDPOINT = "gateway.push.apple.com"
 
 
@@ -21,7 +24,9 @@ def create_notificationhubs_namespace(cmd, client,
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body.setdefault('sku', {})['name'] = sku_name  # str
-    return client.create_or_update(resource_group_name=resource_group, namespace_name=namespace_name, parameters=body)
+    return client.create_or_update(resource_group_name=resource_group,
+                                   namespace_name=namespace_name,
+                                   parameters=body)
 
 
 def update_notificationhubs_namespace(cmd, client,
@@ -40,8 +45,9 @@ def update_notificationhubs_namespace(cmd, client,
 
 def delete_notificationhubs_namespace(cmd, client,
                                       resource_group,
-                                      namespace_name):
-    return client.delete(resource_group_name=resource_group, namespace_name=namespace_name)
+                                      namespace_name,
+                                      no_wait=False):
+    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group, namespace_name=namespace_name)
 
 
 def get_notificationhubs_namespace(cmd, client,
