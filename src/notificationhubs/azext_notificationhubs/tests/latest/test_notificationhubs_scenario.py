@@ -112,7 +112,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
                  '--notification-hub-name {notification-hub-name} '
-                 '--google-api-key "AAAANgU-LAk:APA91bFs_MDVVfouFbeIHNx8p-y8ZHk3jLgxXr4CDZLbiCLKyRd9pnGSGI4BY9OeiZZXY3thSPN0Mh0_irhnymnhyWvauSgeCplUF1aDvDCB8lDiQngOgx6tOAbSohy1oZRLUXedgkWp"',
+                 '--google-api-key "XXXXX"',
                  checks=[])
 
         self.cmd('az notificationhubs credential list '
