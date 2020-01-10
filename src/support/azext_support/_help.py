@@ -121,7 +121,6 @@ helps['support tickets create'] = """
                 --contact-timezone "Pacific Standard Time" \\
                 --description "test ticket description" \\
                 --problem-classification "/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc/problemClassifications/ffe93180-2ece-07c9-0cd4-6ae7ccc19d7c" \\
-                --service "/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc" \\
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
                 --title "test ticket from python cli" \\
@@ -140,10 +139,10 @@ helps['support tickets create'] = """
                 --contact-timezone "Pacific Standard Time" \\
                 --description "test ticket description" \\
                 --problem-classification "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/a8d819ba-73bd-10c2-fcd5-7059fc386df3" \\
-                --service "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc" \\
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
-                --title "test ticket from python cli"
+                --title "test ticket from python cli" \\
+                --partner-tenant-id "12345678-1234-1234-1234-123456789012"
 
       - name: Create support ticket for quota issue.
         text: >
@@ -157,7 +156,6 @@ helps['support tickets create'] = """
                 --contact-timezone "Pacific Standard Time" \\
                 --description "test ticket description" \\
                 --problem-classification "/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3" \\
-                --service "/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89" \\
                 --severity "minimal" \\
                 --ticket-name "test_ticket_from_pythoncli" \\
                 --title "test ticket from python cli" \\

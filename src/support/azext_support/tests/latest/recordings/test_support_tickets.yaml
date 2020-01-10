@@ -1,0 +1,634 @@
+interactions:
+- request:
+    body: '{"properties": {"sender": "nichheda@microsoft.com", "subject": "test subject
+      for communication posted from azure python cli", "body": "test body for communication
+      posted from azure python cli"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets communications create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '194'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/c24b3279-47bf-48be-9ba6-dffc20738ff1?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"Error":{"Code":"InvalidData","Message":"Communication resource name
+        is invalid. Please provide a valid name.","Target":null,"InnerError":null,"Details":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '158'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 Jan 2020 03:53:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets communications list
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/message1","name":"message1","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"aashu@litwarecorp.com","subject":"message
+        from python cli","body":"test communication message body","createdDate":"2020-01-10T03:45:17Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test_ticket_communication_01_09_20","name":"test_ticket_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T03:40:09Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test7_communication_01_09_20","name":"test7_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T03:15:48Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/12345","name":"12345","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T03:05:24Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test6_communication_01_09_20","name":"test6_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T02:56:57Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test5_communication_01_09_20","name":"test5_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T02:48:32Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test4_communication_01_09_20","name":"test4_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T02:41:09Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test3_communication_01_09_20","name":"test3_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T02:38:05Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test2_communication_01_09_20","name":"test2_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T02:32:45Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test1_communication_01_09_20","name":"test1_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T02:29:40Z"}}],"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications?api-version=2019-05-01-preview&%24skipToken=%252BRID%253A%7ee6dtAN5YUAa9GUUAAAASAw%253D%253D%2523RT%253A1%2523TRC%253A10%2523RTD%253AVe0yMDIwLTAxLTEwVDAyOjI5OjQwLjc4ODg3MTZa%2523ISV%253A1%2523FPC%253AAggUAQAASAwAABQBAABIDAAAFAEAAEgMAAAWAG6ZDoABwBACJAAAoAIECAAEgiGAAYA%253D"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5766'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets communications list
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications?api-version=2019-05-01-preview&%24skipToken=%252BRID%253A~e6dtAN5YUAa9GUUAAAASAw%253D%253D%2523RT%253A1%2523TRC%253A10%2523RTD%253AVe0yMDIwLTAxLTEwVDAyOjI5OjQwLjc4ODg3MTZa%2523ISV%253A1%2523FPC%253AAggUAQAASAwAABQBAABIDAAAFAEAAEgMAAAWAG6ZDoABwBACJAAAoAIECAAEgiGAAYA%253D
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test_communication1_01_09_20","name":"test_communication1_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T01:24:18Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test_communication_01_09_20","name":"test_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T01:16:12Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test_support_ticket_communication_01_09_20","name":"test_support_ticket_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T01:14:37Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1663'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets communications show
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name --communication-name
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test_support_ticket_communication_01_09_20?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20/communications/test_support_ticket_communication_01_09_20","name":"test_support_ticket_communication_01_09_20","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Inbound","sender":"nichheda@microsoft.com","subject":"test
+        subject for communication posted from azure python cli","body":"test body
+        for communication posted from azure python cli","createdDate":"2020-01-10T01:14:37Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '569'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets list
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --filters
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?$top=100&$filter=status%20eq%20%27Open%27%20and%20CreatedDate%20ge%202020-01-02%20&api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20","name":"test_support_ticket_01_09_20","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test","problemClassificationId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3","problemClassificationDisplayName":"Compute-VM
+        (cores-vCPUs) subscription limit increases","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"quotaTicketDetails":{"quotaChangeRequestVersion":"1.0","quotaChangeRequests":[{"region":"EastUS","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"},{"region":"EastUS2","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"}]},"serviceLevelAgreement":{"startTime":"2020-01-10T01:12:55Z","expirationTime":"2020-01-10T17:12:55Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120011021000114","title":"test
+        ticket from python cli e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","serviceDisplayName":"Service
+        and subscription limits (quotas)","status":"Open","problemStartTime":"2020-01-09T17:12:42Z","createdDate":"2020-01-10T01:12:55Z","modifiedDate":"2020-01-10T03:16:28Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010921001570","name":"120010921001570","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"first
+        436","lastName":"last 817","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"176","preferredTimeZone":"Eastern
+        Standard Time","country":"CAN","preferredSupportLanguage":"ja-jp"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"yes"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-09T18:27:03Z","expirationTime":"2020-01-09T20:27:03Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010921001570","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-09T18:26:39Z","modifiedDate":"2020-01-09T18:27:18Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010921001565","name":"120010921001565","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"first
+        557","lastName":"last 348","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"564","preferredTimeZone":"Eastern
+        Standard Time","country":"CAN","preferredSupportLanguage":"ja-jp"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"yes"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-09T18:25:11Z","expirationTime":"2020-01-09T20:25:11Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010921001565","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-09T18:24:53Z","modifiedDate":"2020-01-09T18:25:28Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010921001465","name":"120010921001465","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-09T17:38:27Z","expirationTime":"2020-01-09T19:38:27Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010921001465","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-09T17:38:02Z","modifiedDate":"2020-01-09T17:38:27Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010821001607","name":"120010821001607","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-08T17:31:51Z","expirationTime":"2020-01-08T19:31:51Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010821001607","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-08T17:31:26Z","modifiedDate":"2020-01-08T17:31:51Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010721001727","name":"120010721001727","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-07T18:33:50Z","expirationTime":"2020-01-07T20:33:50Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010721001727","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-07T18:33:25Z","modifiedDate":"2020-01-07T18:33:50Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010721001650","name":"120010721001650","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-07T18:03:38Z","expirationTime":"2020-01-07T20:03:38Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010721001650","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-07T18:03:14Z","modifiedDate":"2020-01-07T18:03:38Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010621002006","name":"120010621002006","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-06T17:32:01Z","expirationTime":"2020-01-06T19:32:01Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010621002006","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-06T17:31:38Z","modifiedDate":"2020-01-06T17:32:01Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010521000193","name":"120010521000193","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-06T14:00:00Z","expirationTime":"2020-01-06T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010521000193","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-05T18:32:50Z","modifiedDate":"2020-01-05T18:33:12Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010521000167","name":"120010521000167","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-06T14:00:00Z","expirationTime":"2020-01-06T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010521000167","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-05T17:31:23Z","modifiedDate":"2020-01-05T17:31:42Z"}}],"nextLink":"https://management.azure.com:443/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?%24top=100&%24filter=status+eq+%27Open%27+and+CreatedDate+ge+2020-01-02+&api-version=2019-05-01-preview&%24skipToken=%255B%257B%2522compositeToken%2522%253A%257B%2522token%2522%253Anull%252C%2522range%2522%253A%257B%2522min%2522%253A%252205C1E9673399CA%2522%252C%2522max%2522%253A%252205C1E9CD673398%2522%257D%257D%252C%2522orderByItems%2522%253A%255B%257B%2522item%2522%253A%25222020-01-04T17%253A31%253A47.1308665Z%2522%257D%255D%252C%2522rid%2522%253A%2522e6dtAI34RR97-j0AAAAgAg%253D%253D%2522%252C%2522skipCount%2522%253A0%252C%2522filter%2522%253Anull%257D%255D"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '19632'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets list
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --filters
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets?%24top=100&%24filter=status+eq+%27Open%27+and+CreatedDate+ge+2020-01-02+&api-version=2019-05-01-preview&%24skipToken=%255B%257B%2522compositeToken%2522%253A%257B%2522token%2522%253Anull%252C%2522range%2522%253A%257B%2522min%2522%253A%252205C1E9673399CA%2522%252C%2522max%2522%253A%252205C1E9CD673398%2522%257D%257D%252C%2522orderByItems%2522%253A%255B%257B%2522item%2522%253A%25222020-01-04T17%253A31%253A47.1308665Z%2522%257D%255D%252C%2522rid%2522%253A%2522e6dtAI34RR97-j0AAAAgAg%253D%253D%2522%252C%2522skipCount%2522%253A0%252C%2522filter%2522%253Anull%257D%255D
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010421000188","name":"120010421000188","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-06T14:00:00Z","expirationTime":"2020-01-06T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010421000188","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-04T17:31:47Z","modifiedDate":"2020-01-04T17:32:11Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010421000118","name":"120010421000118","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"case","lastName":"submission","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-us"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"no"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-06T14:00:00Z","expirationTime":"2020-01-06T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010421000118","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-04T07:28:29Z","modifiedDate":"2020-01-04T07:28:43Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010321000814","name":"120010321000814","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"first
+        930","lastName":"last 979","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"020","preferredTimeZone":"Eastern
+        Standard Time","country":"CAN","preferredSupportLanguage":"ja-jp"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"yes"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-03T17:36:48Z","expirationTime":"2020-01-03T19:36:48Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010321000814","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-03T17:36:23Z","modifiedDate":"2020-01-03T17:37:02Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/E2ETest637135930493717657","name":"E2ETest637135930493717657","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"first
+        738","lastName":"last 378","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"424","preferredTimeZone":"Eastern
+        Standard Time","country":"CAN","preferredSupportLanguage":"ja-jp"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"yes"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-03T14:00:00Z","expirationTime":"2020-01-03T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010324000293","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-03T04:17:45Z","modifiedDate":"2020-01-03T04:18:22Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/E2ETest637135924513915867","name":"E2ETest637135924513915867","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"first
+        459","lastName":"last 34","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"221","preferredTimeZone":"Eastern
+        Standard Time","country":"CAN","preferredSupportLanguage":"ja-jp"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"yes"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-03T14:00:00Z","expirationTime":"2020-01-03T16:00:00Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010321000136","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-03T04:07:53Z","modifiedDate":"2020-01-03T04:08:38Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/120010221000744","name":"120010221000744","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from e2e test.  do not assign and do not close. case submission team
+        will take care of closing it.","problemClassificationId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201/problemClassifications/03014459-4572-f8f0-32b0-88833f234f25","problemClassificationDisplayName":"Test
+        Support Topic 1","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"first
+        99","lastName":"last 99","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"383","preferredTimeZone":"Eastern
+        Standard Time","country":"CAN","preferredSupportLanguage":"ja-jp"},"technicalTicketDetails":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Infrastructure/providers/Microsoft.Compute/virtualMachines/ADandAADSync","consentForSharingDiagnosticInformation":"no","additionalConsents":[{"consentType":"ConsentForSharingVirtualMachineMemoryDump","consentResponse":"yes"},{"consentType":"ConsentForSharingHDInsightDiagnosticInformation","consentResponse":"no"},{"consentType":"ConsentForSharingDatabricksDiagnosticInformation","consentResponse":"no"}]},"serviceLevelAgreement":{"startTime":"2020-01-02T17:32:57Z","expirationTime":"2020-01-02T19:32:57Z","slaMinutes":120},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120010221000744","title":"test
+        ticket from e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/376afb21-6bd3-91aa-fd58-39fd84d8c201","serviceDisplayName":"Test
+        Product Case Submission - Preview","status":"Open","createdDate":"2020-01-02T17:32:31Z","modifiedDate":"2020-01-02T17:33:10Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '11586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"severity": "moderate", "contactDetails": {"preferredContactMethod": "phone",
+      "phoneNumber": "123-456-7890"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '110'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name --severity --contact-method --contact-phone-number
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20","name":"test_support_ticket_01_09_20","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test","problemClassificationId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3","problemClassificationDisplayName":"Compute-VM
+        (cores-vCPUs) subscription limit increases","severity":"Moderate","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"quotaTicketDetails":{"quotaChangeRequestVersion":"1.0","quotaChangeRequests":[{"region":"EastUS","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"},{"region":"EastUS2","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"}]},"serviceLevelAgreement":{"startTime":"2020-01-10T01:12:55Z","expirationTime":"2020-01-10T17:12:55Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120011021000114","title":"test
+        ticket from python cli e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","serviceDisplayName":"Service
+        and subscription limits (quotas)","status":"Open","problemStartTime":"2020-01-09T17:12:42Z","createdDate":"2020-01-10T01:12:55Z","modifiedDate":"2020-01-10T03:53:36Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"severity": "minimal", "contactDetails": {"preferredContactMethod": "email"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '78'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name --severity --contact-method
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20","name":"test_support_ticket_01_09_20","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test","problemClassificationId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3","problemClassificationDisplayName":"Compute-VM
+        (cores-vCPUs) subscription limit increases","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"quotaTicketDetails":{"quotaChangeRequestVersion":"1.0","quotaChangeRequests":[{"region":"EastUS","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"},{"region":"EastUS2","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"}]},"serviceLevelAgreement":{"startTime":"2020-01-10T01:12:55Z","expirationTime":"2020-01-10T17:12:55Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120011021000114","title":"test
+        ticket from python cli e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","serviceDisplayName":"Service
+        and subscription limits (quotas)","status":"Open","problemStartTime":"2020-01-09T17:12:42Z","createdDate":"2020-01-10T01:12:55Z","modifiedDate":"2020-01-10T03:53:40Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1688'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support tickets show
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --ticket-name
+      User-Agent:
+      - python/3.6.9 (Linux-4.4.0-18362-Microsoft-x86_64-with-Ubuntu-18.04-bionic)
+        msrest/0.6.10 msrest_azure/0.6.2 azure-mgmt-support/2.0.0 Azure-SDK-For-Python
+        AZURECLI/2.0.78
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20?api-version=2019-05-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Support/supportTickets/test_support_ticket_01_09_20","name":"test_support_ticket_01_09_20","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test","problemClassificationId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3","problemClassificationDisplayName":"Compute-VM
+        (cores-vCPUs) subscription limit increases","severity":"Minimal","require24X7Response":false,"enrollmentId":"","productionOutage":false,"contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"quotaTicketDetails":{"quotaChangeRequestVersion":"1.0","quotaChangeRequests":[{"region":"EastUS","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"},{"region":"EastUS2","payload":"{\"SKU\":
+        \"DSv3 Series\", \"NewLimit\": 100}"}]},"serviceLevelAgreement":{"startTime":"2020-01-10T01:12:55Z","expirationTime":"2020-01-10T17:12:55Z","slaMinutes":240},"supportEngineer":{},"supportPlanType":"Premier","supportTicketId":"120011021000114","title":"test
+        ticket from python cli e2e test. do not assign and do not close.","serviceId":"/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89","serviceDisplayName":"Service
+        and subscription limits (quotas)","status":"Open","problemStartTime":"2020-01-09T17:12:42Z","createdDate":"2020-01-10T01:12:55Z","modifiedDate":"2020-01-10T03:53:40Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1688'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 03:53:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

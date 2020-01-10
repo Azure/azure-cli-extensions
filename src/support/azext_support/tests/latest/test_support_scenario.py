@@ -5,6 +5,7 @@
 
 import os
 import unittest
+import uuid
 from datetime import date, timedelta
 
 from azure.cli.testsdk import ScenarioTest
@@ -12,6 +13,18 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 class SupportScenarioTest(ScenarioTest):
+
+    def cmd(self, command, checks=None, expect_failure=False):
+        print("Runnig... {0}\n".format(command))
+        rsp = super().cmd(command, checks=checks, expect_failure=expect_failure)
+
+        try:
+            rsp_json = rsp.get_output_in_json()
+            print("Output... {0}\n".format(str(rsp_json)))
+        except:
+            pass
+
+        return rsp
 
     def test_support_services(self):
 
@@ -60,86 +73,227 @@ class SupportScenarioTest(ScenarioTest):
                         "/providers/Microsoft.Support/services/" + list_services_result[0]["name"] +
                         "/problemClassifications/" + list_problem_classifications_result[0]["name"])
 
-    def test_support_tickets(self):
-
-        # date_suffix = date.today().strftime("%m_%d_%y")
-        # test_ticket_name = "test_ticket_" + date_suffix
-        test_ticket_name = "support_api_demo_ticket_arm_template"
-        # test_communication_name = "test_communication_" + date_suffix
-        test_communication_name = "7f24f7e3-209e-431f-93ee-718d63e41042"
-        service_name = "/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89"
+    def test_support_tickets_create_validations(self):
+        service_name = "06bfd9d3-516b-d5c6-5802-169c800dec89"
         problem_classification_name = "e12e3d1d-7fa0-af33-c6d0-3c50df9658a3"
-
-        # Create
-        base_cmd = "support tickets create "
-        base_cmd += "--description 'test ticket from python cli test' "
-        base_cmd += "--severity 'minimal' "
-        base_cmd += "--ticket-name '" + test_ticket_name + "' "
-        base_cmd += "--severity 'minimal' "
-        base_cmd += "--title 'test ticket from python cli test' "
-        base_cmd += "--contact-country 'USA' "
-        base_cmd += "--contact-email 'azengcase@microsoft.com' "
-        base_cmd += "--contact-first-name 'Foo' "
-        base_cmd += "--contact-language 'en-US' "
-        base_cmd += "--contact-last-name 'Bar' "
-        base_cmd += "--contact-method 'email' "
-        base_cmd += "--contact-timezone 'Pacific Standard Time' "
-
-        quota_cmd = "--quota-change-payload \"{\"SKU\":\"DSv3 Series\",\"NewLimit\":100}" "{\"SKU\":\"DSv3 Series\",\"NewLimit\":100}\" "
-        quota_cmd += "--quota-change-regions 'EastUS' 'EastUS2' "
-        quota_cmd += "--quota-change-version '1.0' "
-
-        # Failure scenario - invalid prefix service
-        failure_cmd = str(base_cmd)
-        failure_cmd += "--service 'abcd" + service_name + "' "
-        failure_cmd += "--problem-classification '" + service_name
-        failure_cmd += "'/problemClassifications/" + problem_classification_name + "' "
-        self.cmd(base_cmd + failure_cmd, expect_failure=True)
-
-        # Failure scenario - invalid guid service
-        failure_cmd = str(base_cmd)
-        failure_cmd += "--service '" + service_name + "-1234' "
-        failure_cmd += "--problem-classification '" + service_name
-        failure_cmd += "'/problemClassifications/" + problem_classification_name + "' "
-        rsp = self.cmd(base_cmd + failure_cmd, expect_failure=True)
-
-        # Failure scenario - invalid id service
-        failure_cmd = str(base_cmd)
-        failure_cmd += "--service '" + service_name.replace("af33", "0000") + "' "
-        failure_cmd += "--problem-classification '" + service_name
-        failure_cmd += "'/problemClassifications/" + problem_classification_name + "' "
-        rsp = self.cmd(base_cmd + failure_cmd, expect_failure=True)
+        invalid_arm_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+        invalid_arm_resource_id += "/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
+        base_cmd = self._build_base_support_tickets_create_command("test")
 
         # Failure scenario - invalid prefix problem classifications
-        failure_cmd = str(base_cmd)
-        failure_cmd += "--service 'abcd" + service_name + "' "
-        failure_cmd += "--problem-classification 'abcd" + service_name
-        failure_cmd += "'/problemClassifications/" + problem_classification_name + "' "
-        rsp = self.cmd(base_cmd + failure_cmd, expect_failure=True)
+        cmd = str(base_cmd)
+        cmd += "--problem-classification '/providers/Microsoft.Support/services/0/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}' ".format(problem_classification_name)
+        rsp = self.cmd(cmd, expect_failure=True)
+        self._validate_failure_rsp(rsp, 1)
 
         # Failure scenario - invalid guid problem classifications
-        failure_cmd = str(base_cmd)
-        failure_cmd += "--service '" + service_name + "' "
-        failure_cmd += "--problem-classification '" + service_name
-        failure_cmd += "'/problemClassifications/" + problem_classification_name + "-1234' "
-        rsp = self.cmd(base_cmd + failure_cmd, expect_failure=True)
+        cmd = str(base_cmd)
+        cmd += "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}0' ".format(problem_classification_name)
+        rsp = self.cmd(cmd, expect_failure=True)
+        self._validate_failure_rsp(rsp, 1)
 
-        # Failure scenario - invalid id problem classifications
-        failure_cmd = str(base_cmd)
-        failure_cmd += "--service '" + service_name + "' "
-        failure_cmd += "--problem-classification '" + service_name
-        failure_cmd += "'/problemClassifications/" + problem_classification_name.replace("c6d0", "0000") + "' "
-        rsp = self.cmd(base_cmd + failure_cmd, expect_failure=True)
+        # Failure scenario - invalid resource id
+        cmd = str(base_cmd)
+        cmd += "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd = cmd.replace(service_name, "cddd3eb5-1830-b494-44fd-782f691479dc")
+        cmd += "problemClassifications/{0}' ".format("ef8b3865-0c5a-247b-dcaa-d70fd7611a3c")
+        cmd += "--technical-resource '{0}' ".format(invalid_arm_resource_id)
+        rsp = self.cmd(cmd, expect_failure=True)
+        self._validate_failure_rsp(rsp, 1)
 
-        # Success scenario:
-        # validate 24x7, start time
-        # show_tickets_result = self.cmd(base_cmd + quota_cmd).get_output_in_json()
+        # Failure scenario - invalid ticket name
+        cmd = str(base_cmd)
+        cmd = cmd.replace("test", "12345")
+        cmd += "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}' ".format(problem_classification_name)
+        rsp = self.cmd(cmd, expect_failure=True)
+        self._validate_failure_rsp(rsp, 1)
 
-        # List
-        base_cmd = "support tickets list "
-        base_cmd += "--filters \"CreatedDate ge " + str(date.today() - timedelta(days=7)) + "\" "
-        # base_cmd += "--filters \"status eq 'Open' and CreatedDate ge " + str(date.today() - timedelta(7)) + "\" "
-        rsp = self.cmd(base_cmd).get_output_in_json()
+    def test_support_tickets(self):
+        date_suffix = date.today().strftime("%m_%d_%y")
+        test_ticket_name = "test_support_ticket_" + date_suffix
+        test_communication_name = "test_support_ticket_communication_" + date_suffix
+
+        """
+        # Create billing
+        base_cmd = self._build_base_support_tickets_create_command(test_ticket_name)
+        billing_cmd = self._build_support_tickets_create_billing_cmd()
+        cmd = "{0} {1}".format(base_cmd, billing_cmd)
+        rsp = self.cmd(cmd, expect_failure=True).get_output_in_json()
+        self._validate_base_support_tickets_create_command(rsp, test_ticket_name)
+        """
+
+        # Create communication 1 - invalid communication name
+        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, str(uuid.uuid4()))
+        rsp = self.cmd(cmd, expect_failure=True)
+        self._validate_failure_rsp(rsp, 1)
+
+        """
+        # Create communication 2
+        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, test_communication_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_communications_create_cmd(rsp, test_ticket_name, test_communication_name)
+        """
+
+        # List communications
+        cmd = self._build_support_tickets_communications_list_cmd(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_communications_list_cmd(rsp, test_ticket_name, test_communication_name)
+
+        # Show communication
+        cmd = self._build_support_tickets_communications_show_cmd(test_ticket_name, test_communication_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_communications_show_cmd(rsp, test_ticket_name, test_communication_name)
+
+        # List tickets
+        cmd = self._build_support_tickets_list_cmd()
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_list_cmd(rsp, test_ticket_name)
+
+        # Update severity/contact 1
+        cmd = self._build_support_tickets_update_cmd1(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_update_cmd1(rsp)
+
+        # Update severity/contact 2
+        cmd = self._build_support_tickets_update_cmd2(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_update_cmd2(rsp)
+
+        # Show
+        cmd = self._build_support_tickets_show_cmd(test_ticket_name)
+        rsp = self.cmd(cmd).get_output_in_json()
+        self._validate_support_tickets_show_cmd(rsp, test_ticket_name)
+
+    def _build_base_support_tickets_create_command(self, test_ticket_name):
+        cmd = "support tickets create "
+        cmd += "--description 'test ticket from python cli test' "
+        cmd += "--severity 'minimal' "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--severity 'minimal' "
+        cmd += "--title 'test ticket from python cli e2e test. do not assign and do not close.' "
+        cmd += "--contact-country 'USA' "
+        cmd += "--contact-email 'azengcase@microsoft.com' "
+        cmd += "--contact-first-name 'Foo' "
+        cmd += "--contact-language 'en-US' "
+        cmd += "--contact-last-name 'Bar' "
+        cmd += "--contact-method 'email' "
+        cmd += "--contact-timezone 'Pacific Standard Time' "
+
+        return cmd
+
+    def _build_support_tickets_create_quota_cmd(self):
+        service_name = "06bfd9d3-516b-d5c6-5802-169c800dec89"
+        problem_classification_name = "e12e3d1d-7fa0-af33-c6d0-3c50df9658a3"
+        cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}' ".format(problem_classification_name)
+
+        quota_payload1 = "{\\\"SKU\\\": \\\"DSv3 Series\\\", \\\"NewLimit\\\": 100}"
+        quota_payload2 = "{\\\"SKU\\\": \\\"DSv3 Series\\\", \\\"NewLimit\\\": 100}"
+        cmd += "--quota-change-payload \"{0}\" \"{1}\" ".format(quota_payload1, quota_payload2)
+        cmd += "--quota-change-regions 'EastUS' 'EastUS2' "
+        cmd += "--quota-change-version '1.0' "
+
+        return cmd
+
+    def _build_support_tickets_create_technical_cmd(self):
+        service_name = "cddd3eb5-1830-b494-44fd-782f691479dc"
+        problem_classification_name = "ef8b3865-0c5a-247b-dcaa-d70fd7611a3c"
+        cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}' ".format(problem_classification_name)
+
+        arm_resource_id = "/subscriptions/1c4eecc5-46a8-4b7f-9a0a-fa0ba47240cd"
+        arm_resource_id += "/resourceGroups/AaronTest/providers/Microsoft.AppPlatform/Spring/springtest"
+        cmd += "--technical-resource '{0}' ".format(arm_resource_id)
+
+        return cmd
+
+    def _build_support_tickets_create_billing_cmd(self):
+        service_name = "517f2da6-78fd-0498-4e22-ad26996b1dfc"
+        problem_classification_name = "e12e3d1d-7fa0-af33-c6d0-3c50df9658a3"
+        cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}' ".format(problem_classification_name)
+
+        return cmd
+
+    def _build_support_tickets_create_submgmt_cmd(self):
+        service_name = "f3dc5421-79ef-1efa-41a5-42bf3cbb52c6"
+        problem_classification_name = "eefb3e6a-0243-9fc2-9197-d2798d71a74c"
+        cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
+        cmd += "problemClassifications/{0}' ".format(problem_classification_name)
+
+        return cmd
+
+    def _validate_base_support_tickets_create_command(self, rsp, test_ticket_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
+        self.assertTrue("name" in rsp)
+        self.assertTrue("name" == test_ticket_name)
+        self.assertTrue(test_ticket_name.require24_x7_response is True)
+
+    def _build_support_tickets_communications_create_cmd(self, test_ticket_name, test_communication_name):
+        cmd = "support tickets communications create "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--communication-name '{0}' ".format(test_communication_name)
+        cmd += "--communication-sender 'nichheda@microsoft.com' "
+        cmd += "--communication-subject 'test subject for communication posted from azure python cli' "
+        cmd += "--communication-body 'test body for communication posted from azure python cli' "
+
+        return cmd
+
+    def _validate_support_tickets_communications_create_cmd(self, rsp, test_ticket_name, test_communication_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/communications")
+        self.assertTrue("name" in rsp)
+        self.assertTrue(rsp["name"] == test_communication_name)
+
+    def _build_support_tickets_communications_list_cmd(self, test_ticket_name):
+        cmd = "support tickets communications list "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+
+        return cmd
+
+    def _validate_support_tickets_communications_list_cmd(self, rsp, test_ticket_name, test_communication_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue(len(rsp) >= 1)
+        self.assertTrue("type" in rsp[0])
+        self.assertTrue(rsp[0]["type"] == "Microsoft.Support/communications")
+        self.assertTrue("name" in rsp[0])
+
+        communication_returned = False
+        for communication in rsp:
+            if communication["name"] == test_communication_name:
+                communication_returned = True
+                break
+
+        self.assertTrue(communication_returned is True)
+
+    def _build_support_tickets_communications_show_cmd(self, test_ticket_name, test_communication_name):
+        cmd = "support tickets communications show "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--communication-name '{0}' ".format(test_communication_name)
+
+        return cmd
+
+    def _validate_support_tickets_communications_show_cmd(self, rsp, test_ticket_name, test_communication_name):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/communications")
+        self.assertTrue("name" in rsp)
+        self.assertTrue(rsp["name"] == test_communication_name)
+
+    def _build_support_tickets_list_cmd(self):
+        date_filter = str(date.today() - timedelta(days=7))
+        cmd = "support tickets list "
+        cmd += "--filters \"status eq 'Open' and CreatedDate ge {0} \" ".format(date_filter)
+
+        return cmd
+
+    def _validate_support_tickets_list_cmd(self, rsp, test_ticket_name):
         self.assertTrue(rsp is not None)
         self.assertTrue(len(rsp) >= 1)
         self.assertTrue("type" in rsp[0])
@@ -151,40 +305,59 @@ class SupportScenarioTest(ScenarioTest):
             if ticket["name"] == test_ticket_name:
                 ticket_returned = True
                 break
+
         self.assertTrue(ticket_returned is True)
 
-        # Update
+    def _build_support_tickets_update_cmd1(self, test_ticket_name):
+        cmd = "support tickets update "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--severity 'moderate' "
+        cmd += "--contact-method 'phone' "
+        cmd += "--contact-phone-number '123-456-7890' "
 
-        # Show
-        base_cmd = "support tickets show "
-        base_cmd += "--ticket-name '" + test_ticket_name + "' "
-        rsp = self.cmd(base_cmd).get_output_in_json()
+        return cmd
+
+    def _validate_support_tickets_update_cmd1(self, rsp):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
+        self.assertTrue("severity" in rsp)
+        self.assertTrue("Moderate" == rsp["severity"])
+        self.assertTrue("contactDetails" in rsp)
+        self.assertTrue("123-456-7890" == rsp["contactDetails"]["phoneNumber"])
+        self.assertTrue("Phone" == rsp["contactDetails"]["preferredContactMethod"])
+
+    def _build_support_tickets_update_cmd2(self, test_ticket_name):
+        cmd = "support tickets update "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+        cmd += "--severity 'minimal' "
+        cmd += "--contact-method 'email' "
+
+        return cmd
+
+    def _validate_support_tickets_update_cmd2(self, rsp):
+        self.assertTrue(rsp is not None)
+        self.assertTrue("type" in rsp)
+        self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
+        self.assertTrue("severity" in rsp)
+        self.assertTrue("Minimal" == rsp["severity"])
+        self.assertTrue("contactDetails" in rsp)
+        self.assertTrue("Email" == rsp["contactDetails"]["preferredContactMethod"])
+
+    def _build_support_tickets_show_cmd(self, test_ticket_name):
+        cmd = "support tickets show "
+        cmd += "--ticket-name '{0}' ".format(test_ticket_name)
+
+        return cmd
+
+    def _validate_support_tickets_show_cmd(self, rsp, test_ticket_name):
         self.assertTrue(rsp is not None)
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("name" in rsp)
         self.assertTrue(rsp["name"] == test_ticket_name)
 
-        # Create communication
-
-        # List communications
-        base_cmd = "support tickets communications list "
-        base_cmd += "--ticket-name '" + test_ticket_name + "' "
-        rsp = self.cmd(base_cmd).get_output_in_json()
+    def _validate_failure_rsp(self, rsp, exit_code):
         self.assertTrue(rsp is not None)
-        self.assertTrue(len(rsp) >= 1)
-        self.assertTrue("type" in rsp[0])
-        self.assertTrue(rsp[0]["type"] == "Microsoft.Support/communications")
-        self.assertTrue("name" in rsp[0])
-        self.assertTrue("id" in rsp[0])
-
-        # Show communication
-        base_cmd = "support tickets communications show "
-        base_cmd += "--ticket-name '" + test_ticket_name + "' "
-        base_cmd += "--communication-name '" + test_communication_name + "' "
-        rsp = self.cmd(base_cmd).get_output_in_json()
-        self.assertTrue(rsp is not None)
-        self.assertTrue("type" in rsp)
-        self.assertTrue(rsp["type"] == "Microsoft.Support/communications")
-        self.assertTrue("name" in rsp)
-        self.assertTrue(rsp["name"] == test_communication_name)
+        self.assertTrue(rsp.exit_code is not None)
+        self.assertTrue(rsp.exit_code == exit_code)

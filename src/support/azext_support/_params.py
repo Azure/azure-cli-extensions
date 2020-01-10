@@ -60,7 +60,6 @@ def load_tickets_argument(self, _):
 
     with self.argument_context('support tickets create') as c:
         c.argument('ticket_name', help="Name for the ticket.", required=True)
-        c.argument('service', help="Arm resource id of the service.", required=True)
         c.argument('problem_classification', help="Arm resource id of the problem classification.", required=True)
         c.argument('title', help="Title for the ticket.", required=True)
         c.argument('description', help="Description for the ticket.", required=True)
@@ -70,6 +69,9 @@ def load_tickets_argument(self, _):
                    ' when the problem started. Default is today.')
         c.argument('require_24_by_7_response', arg_type=get_three_state_flag(invert=True),
                    help='Flag to indicate 24x7 response requirement on ticket. Default is false.')
+        c.argument('partner_tenant_id', help='Provide partner tenant id for Admin On Behalf ' +
+                   'of (AOBO) scenario. "az login" to customer tenant and "az login -t <> ' +
+                   '--allow-no-subscriptions" to partner tenant required before using this command.')
 
     with self.argument_context('support tickets create', arg_group="Contact") as c:
         c.argument('contact_first_name', help='The first name in contact details.', required=True)

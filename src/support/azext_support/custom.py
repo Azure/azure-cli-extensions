@@ -7,8 +7,10 @@
 # pylint: disable=too-many-locals
 
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
+from azext_support._utils import (get_bearer_token, is_quota_ticket,
+                                  is_technical_ticket, parse_support_area_path)
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -16,8 +18,7 @@ logger = get_logger(__name__)
 
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:
-        filters = "CreatedDate ge " + str(date.today() - timedelta(7))
-
+        filters = "CreatedDate ge " + str(date.today() - timedelta(days=7))
     return client.list_by_subscription(top=100, filter=filters)
 
 
@@ -61,7 +62,6 @@ def get_support_tickets_communications(cmd, client, ticket_name=None, communicat
 
 def create_support_tickets(cmd, client,
                            ticket_name=None,
-                           service=None,
                            problem_classification=None,
                            title=None,
                            description=None,
@@ -81,7 +81,11 @@ def create_support_tickets(cmd, client,
                            quota_change_version=None,
                            quota_change_subtype=None,
                            quota_change_regions=None,
-                           quota_change_payload=None):
+                           quota_change_payload=None,
+                           partner_tenant_id=None):
+    service_name = parse_support_area_path(problem_classification)["service_name"]
+    service = "/providers/Microsoft.Support/services/{0}".format(service_name)
+
     contactBody = {}
     contactBody["first_name"] = contact_first_name
     contactBody["last_name"] = contact_last_name
@@ -101,9 +105,11 @@ def create_support_tickets(cmd, client,
     body["title"] = title
     body["service_id"] = service
     body["require24_x7_response"] = require_24_by_7_response if require_24_by_7_response is not None else False
-    body["problem_start_time"] = start_time if start_time is not None else date.today()
+    start_date_time = start_time if start_time is not None else datetime.now()
+    start_date_time = start_date_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+    body["problem_start_time"] = start_date_time
 
-    if _is_quota_ticket(service):
+    if is_quota_ticket(service):
         quotaBody = {}
         quotaBody["quota_change_request_sub_type"] = quota_change_subtype
         quotaBody["quota_change_request_version"] = quota_change_version
@@ -112,18 +118,17 @@ def create_support_tickets(cmd, client,
             for (region, payload) in zip(quota_change_regions, quota_change_payload):
                 quota_change_requests.append({"region": region, "payload": payload})
         quotaBody["quota_change_requests"] = quota_change_requests
-
         body["quota_ticket_details"] = quotaBody
 
-    if _is_technical_ticket(service):
+    if is_technical_ticket(service):
         body["technical_ticket_details"] = {"resource_id": technical_resource}
 
     logger.debug("Sending create request with below payload: ")
     logger.debug(json.dumps(body, indent=4))
 
     custom_headers = {}
-    # if partner_tenant_id is not None:
-    #    custom_headers["x-ms-authorization-auxiliary"] = _get_bearer_token(cmd, partner_tenant_id)
+    if partner_tenant_id is not None:
+        custom_headers["x-ms-authorization-auxiliary"] = get_bearer_token(cmd, partner_tenant_id)
 
     return client.create_support_ticket_for_subscription(support_ticket_name=ticket_name,
                                                          create_support_ticket_parameters=body,
@@ -144,35 +149,3 @@ def create_support_tickets_communications(cmd, client,
     return client.create_support_ticket_communication(support_ticket_name=ticket_name,
                                                       communication_name=communication_name,
                                                       create_communication_parameters=body)
-
-
-def _is_billing_ticket(service_name):
-    return "517f2da6-78fd-0498-4e22-ad26996b1dfc" in service_name
-
-
-def _is_quota_ticket(service_name):
-    return "06bfd9d3-516b-d5c6-5802-169c800dec89" in service_name
-
-
-def _is_subscription_mgmt_ticket(service_name):
-    return "f3dc5421-79ef-1efa-41a5-42bf3cbb52c6" in service_name
-
-
-def _is_technical_ticket(service_name):
-    return (not _is_billing_ticket(service_name)) and \
-           (not _is_quota_ticket(service_name)) and \
-           (not _is_subscription_mgmt_ticket(service_name))
-
-
-# def _get_bearer_token(cmd, common_id):
-#    profile = Profile(cli_ctx=cmd.cli_ctx)
-
-#    try:
-#        creds, _, _ = profile.get_raw_token(subscription=common_id,
-#                                            resource=cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
-#    except CLIError:
-#        logger.debug(traceback.format_exc())
-#        raise CLIError("Can't find authorization for " + common_id +
-#                        "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.")
-
-#    return "Bearer " + creds[1]
