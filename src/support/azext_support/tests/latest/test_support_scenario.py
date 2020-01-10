@@ -112,30 +112,26 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_failure_rsp(rsp, 1)
 
     def test_support_tickets(self):
-        date_suffix = date.today().strftime("%m_%d_%y")
-        test_ticket_name = "test_support_ticket_" + date_suffix
-        test_communication_name = "test_support_ticket_communication_" + date_suffix
+        date_suffix = date.today().strftime("%Y_%m_%d")
+        test_ticket_name = "test_ticket_" + date_suffix
+        test_communication_name = "test_ticket_communication_" + date_suffix
 
-        """
         # Create billing
         base_cmd = self._build_base_support_tickets_create_command(test_ticket_name)
         billing_cmd = self._build_support_tickets_create_billing_cmd()
         cmd = "{0} {1}".format(base_cmd, billing_cmd)
-        rsp = self.cmd(cmd, expect_failure=True).get_output_in_json()
+        rsp = self.cmd(cmd).get_output_in_json()
         self._validate_base_support_tickets_create_command(rsp, test_ticket_name)
-        """
 
         # Create communication 1 - invalid communication name
         cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, str(uuid.uuid4()))
         rsp = self.cmd(cmd, expect_failure=True)
         self._validate_failure_rsp(rsp, 1)
 
-        """
         # Create communication 2
         cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, test_communication_name)
         rsp = self.cmd(cmd).get_output_in_json()
         self._validate_support_tickets_communications_create_cmd(rsp, test_ticket_name, test_communication_name)
-        """
 
         # List communications
         cmd = self._build_support_tickets_communications_list_cmd(test_ticket_name)
@@ -200,7 +196,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_support_tickets_create_technical_cmd(self):
         service_name = "cddd3eb5-1830-b494-44fd-782f691479dc"
-        problem_classification_name = "ef8b3865-0c5a-247b-dcaa-d70fd7611a3c"
+        problem_classification_name = "6fb3a706-abe9-0693-1544-72e848334a9f"
         cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
         cmd += "problemClassifications/{0}' ".format(problem_classification_name)
 
@@ -212,7 +208,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def _build_support_tickets_create_billing_cmd(self):
         service_name = "517f2da6-78fd-0498-4e22-ad26996b1dfc"
-        problem_classification_name = "e12e3d1d-7fa0-af33-c6d0-3c50df9658a3"
+        problem_classification_name = "44114011-6a66-e902-c00f-e419b6b4509f"
         cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
         cmd += "problemClassifications/{0}' ".format(problem_classification_name)
 
@@ -231,8 +227,9 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue("type" in rsp)
         self.assertTrue(rsp["type"] == "Microsoft.Support/supportTickets")
         self.assertTrue("name" in rsp)
-        self.assertTrue("name" == test_ticket_name)
-        self.assertTrue(test_ticket_name.require24_x7_response is True)
+        self.assertTrue(rsp["name"] == test_ticket_name)
+        self.assertTrue("require24X7Response" in rsp)
+        self.assertTrue(rsp["require24X7Response"] is False)
 
     def _build_support_tickets_communications_create_cmd(self, test_ticket_name, test_communication_name):
         cmd = "support tickets communications create "
