@@ -124,7 +124,7 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_base_support_tickets_create_command(rsp, test_ticket_name)
 
         # Create communication 1 - invalid communication name
-        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, 
+        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name,
                                                                     "00000000-0000-0000-0000-000000000000")
         rsp = self.cmd(cmd, expect_failure=True)
         self._validate_failure_rsp(rsp, 1)
