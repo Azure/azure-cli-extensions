@@ -23,33 +23,35 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_blueprint')
         g.custom_command('list', 'list_blueprint')
 
-    with self.command_group('blueprint artifact resource-group', blueprint_blueprints, client_factory=cf_blueprints) as g:
-        g.custom_command('create', 'create_blueprint_artifact_resource_group')
+    with self.command_group('blueprint resource-group', blueprint_blueprints, client_factory=cf_blueprints) as g:
+        g.custom_command('create', 'create_blueprint_resource_group')
+        g.custom_command('update', 'update_blueprint_resource_group')
+        g.custom_command('delete', 'delete_blueprint_resource_group', confirmation=True)
+        g.custom_show_command('show', 'get_blueprint_resource_group')
+        g.custom_command('list', 'list_blueprint_resource_group')
     
     from ._client_factory import cf_artifacts
     blueprint_artifacts = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._artifacts_operations#ArtifactsOperations.{}',
         client_factory=cf_artifacts)
     with self.command_group('blueprint artifact', blueprint_artifacts, client_factory=cf_artifacts) as g:
-        g.custom_command('create', 'create_blueprint_artifact')
-        g.custom_command('update', 'update_blueprint_artifact')
+        # g.custom_command('create', 'create_blueprint_artifact')
+        # g.custom_command('update', 'update_blueprint_artifact')
         g.custom_command('delete', 'delete_blueprint_artifact')
-        g.custom_command('show', 'get_blueprint_artifact')
+        g.custom_show_command('show', 'get_blueprint_artifact')
         g.custom_command('list', 'list_blueprint_artifact')
 
     with self.command_group('blueprint artifact policy', blueprint_artifacts, client_factory=cf_artifacts) as g:
         g.custom_command('create', 'create_blueprint_artifact_policy')
-        # g.custom_command('update', 'update_blueprint_artifact')
-        # g.custom_command('delete', 'delete_blueprint_artifact')
-        # g.custom_command('show', 'get_blueprint_artifact')
-        # g.custom_command('list', 'list_blueprint_artifact')
+        g.custom_command('update', 'update_blueprint_artifact_policy')
 
     with self.command_group('blueprint artifact role', blueprint_artifacts, client_factory=cf_artifacts) as g:
         g.custom_command('create', 'create_blueprint_artifact_role')
-        # g.custom_command('update', 'update_blueprint_artifact')
-        # g.custom_command('delete', 'delete_blueprint_artifact')
-        # g.custom_command('show', 'get_blueprint_artifact')
-        # g.custom_command('list', 'list_blueprint_artifact')
+        g.custom_command('update', 'update_blueprint_artifact_role')
+
+    with self.command_group('blueprint artifact arm', blueprint_artifacts, client_factory=cf_artifacts) as g:
+        g.custom_command('create', 'create_blueprint_artifact_arm')
+        # g.custom_command('update', 'update_blueprint_artifact_arm')
 
     from ._client_factory import cf_published_blueprints
     blueprint_published_blueprints = CliCommandType(
