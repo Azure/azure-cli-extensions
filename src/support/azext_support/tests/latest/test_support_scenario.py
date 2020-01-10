@@ -16,7 +16,7 @@ class SupportScenarioTest(ScenarioTest):
 
     def cmd(self, command, checks=None, expect_failure=False):
         print("Runnig... {0}\n".format(command))
-        rsp = super().cmd(command, checks=checks, expect_failure=expect_failure)
+        rsp = super(SupportScenarioTest, self).cmd(command, checks=checks, expect_failure=expect_failure)
 
         try:
             rsp_json = rsp.get_output_in_json()
