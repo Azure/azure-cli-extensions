@@ -76,7 +76,7 @@ class SupportScenarioTest(ScenarioTest):
     def test_support_tickets_create_validations(self):
         service_name = "06bfd9d3-516b-d5c6-5802-169c800dec89"
         problem_classification_name = "e12e3d1d-7fa0-af33-c6d0-3c50df9658a3"
-        invalid_arm_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+        invalid_arm_resource_id = "/subscriptions/1c4eecc5-46a8-4b7f-9a0a-fa0ba47240cd"
         invalid_arm_resource_id += "/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
         base_cmd = self._build_base_support_tickets_create_command("test")
 
@@ -112,7 +112,7 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_failure_rsp(rsp, 1)
 
     def test_support_tickets(self):
-        date_suffix = date.today().strftime("%Y_%m_%d")
+        date_suffix = date.today().strftime("%m_%d_%Y")
         test_ticket_name = "test_ticket_" + date_suffix
         test_communication_name = "test_ticket_communication_" + date_suffix
 
@@ -124,7 +124,8 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_base_support_tickets_create_command(rsp, test_ticket_name)
 
         # Create communication 1 - invalid communication name
-        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, str(uuid.uuid4()))
+        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, 
+                                                                    "00000000-0000-0000-0000-000000000000")
         rsp = self.cmd(cmd, expect_failure=True)
         self._validate_failure_rsp(rsp, 1)
 
@@ -164,7 +165,7 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_support_tickets_show_cmd(rsp, test_ticket_name)
 
     def _build_base_support_tickets_create_command(self, test_ticket_name):
-        cmd = "support tickets create "
+        cmd = "support tickets create --debug "
         cmd += "--description 'test ticket from python cli test' "
         cmd += "--severity 'minimal' "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
@@ -232,7 +233,7 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["require24X7Response"] is False)
 
     def _build_support_tickets_communications_create_cmd(self, test_ticket_name, test_communication_name):
-        cmd = "support tickets communications create "
+        cmd = "support tickets communications create --debug "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--communication-name '{0}' ".format(test_communication_name)
         cmd += "--communication-sender 'nichheda@microsoft.com' "
@@ -284,9 +285,8 @@ class SupportScenarioTest(ScenarioTest):
         self.assertTrue(rsp["name"] == test_communication_name)
 
     def _build_support_tickets_list_cmd(self):
-        date_filter = str(date.today() - timedelta(days=7))
         cmd = "support tickets list "
-        cmd += "--filters \"status eq 'Open' and CreatedDate ge {0} \" ".format(date_filter)
+        cmd += "--filters \"status eq 'Open'\" "
 
         return cmd
 

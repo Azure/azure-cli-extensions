@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
+
 from azure.cli.core._profile import Profile
 from knack.util import CLIError
-import re
 
 
 def is_billing_ticket(service_name):
