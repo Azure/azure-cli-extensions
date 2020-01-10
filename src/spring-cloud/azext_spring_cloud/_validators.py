@@ -32,7 +32,8 @@ def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
     if matchObj is None:
-        raise CLIError('--name should start with lowercase and only contain numbers and lowercases with length [4,31]')
+        raise CLIError(
+            '--name should start with lowercase and only contain numbers and lowercases with length [4,31]')
 
 
 def validate_app_name(namespace):
