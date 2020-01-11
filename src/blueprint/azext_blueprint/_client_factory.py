@@ -7,7 +7,7 @@
 def cf_blueprint(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .vendored_sdks.blueprint import BlueprintManagementClient
-    return get_mgmt_service_client(cli_ctx, BlueprintManagementClient,subscription_bound=False)
+    return get_mgmt_service_client(cli_ctx, BlueprintManagementClient, subscription_bound=False)
 
 
 def cf_blueprints(cli_ctx, *_):

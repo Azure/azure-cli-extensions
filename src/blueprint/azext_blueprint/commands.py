@@ -29,14 +29,12 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_blueprint_resource_group', confirmation=True)
         g.custom_show_command('show', 'get_blueprint_resource_group')
         g.custom_command('list', 'list_blueprint_resource_group')
-    
+
     from ._client_factory import cf_artifacts
     blueprint_artifacts = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._artifacts_operations#ArtifactsOperations.{}',
         client_factory=cf_artifacts)
     with self.command_group('blueprint artifact', blueprint_artifacts, client_factory=cf_artifacts) as g:
-        # g.custom_command('create', 'create_blueprint_artifact')
-        # g.custom_command('update', 'update_blueprint_artifact')
         g.custom_command('delete', 'delete_blueprint_artifact')
         g.custom_show_command('show', 'get_blueprint_artifact')
         g.custom_command('list', 'list_blueprint_artifact')
@@ -49,9 +47,9 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_blueprint_artifact_role')
         g.custom_command('update', 'update_blueprint_artifact_role')
 
-    with self.command_group('blueprint artifact arm', blueprint_artifacts, client_factory=cf_artifacts) as g:
-        g.custom_command('create', 'create_blueprint_artifact_arm')
-        # g.custom_command('update', 'update_blueprint_artifact_arm')
+    with self.command_group('blueprint artifact template', blueprint_artifacts, client_factory=cf_artifacts) as g:
+        g.custom_command('create', 'create_blueprint_artifact_template')
+        g.custom_command('update', 'update_blueprint_artifact_template')
 
     from ._client_factory import cf_published_blueprints
     blueprint_published_blueprints = CliCommandType(
@@ -68,7 +66,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._published_artifacts_operations#PublishedArtifactsOperations.{}',
         client_factory=cf_published_artifacts)
     with self.command_group('blueprint published artifact', blueprint_published_artifacts, client_factory=cf_published_artifacts) as g:
-        g.custom_command('get', 'get_blueprint_published_artifact')
+        g.custom_show_command('show', 'get_blueprint_published_artifact')
         g.custom_command('list', 'list_blueprint_published_artifact')
 
     from ._client_factory import cf_assignments
@@ -79,6 +77,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_blueprint_assignment')
         g.custom_command('update', 'update_blueprint_assignment')
         g.custom_command('delete', 'delete_blueprint_assignment')
-        g.custom_command('show', 'get_blueprint_assignment')
+        g.custom_show_command('show', 'get_blueprint_assignment')
         g.custom_command('list', 'list_blueprint_assignment')
         g.custom_command('who-is-blueprint', 'who_is_blueprint_blueprint_assignment')

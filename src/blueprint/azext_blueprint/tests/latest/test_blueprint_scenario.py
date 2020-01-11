@@ -21,7 +21,7 @@ class BlueprintScenarioTest(ScenarioTest):
         self.kwargs.update({
             'name': 'test1',
             'ManagementGroupId': 'CliMgmtGroup',
-            'subId':'0b1f6471-1bf0-4dda-aec3-cb9272f09590'
+            'subId': '0b1f6471-1bf0-4dda-aec3-cb9272f09590'
         })
 
         self.cmd('az blueprint list '
