@@ -9,8 +9,8 @@
 # pylint: disable=unused-argument
 
 
-from knack.util import CLIError
 import json
+from knack.util import CLIError
 
 
 def create_blueprint(cmd, client,
@@ -31,8 +31,7 @@ def create_blueprint(cmd, client,
 def update_blueprint(cmd, client,
                      name,
                      scope,
-                     description=None
-                     ):
+                     description=None):
     body = client.get(scope=scope, blueprint_name=name).as_dict()
     if description is not None:
         body['description'] = description  # str
@@ -85,8 +84,7 @@ def create_blueprint_resource_group(cmd, client,
                                     location=None,
                                     description=None,
                                     depends_on=None,
-                                    tags=None
-                                    ):
+                                    tags=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     rg_key = artifact_name
     body.setdefault('resource_groups', {})
@@ -161,8 +159,7 @@ def delete_blueprint_resource_group(cmd, client,
 def get_blueprint_resource_group(cmd, client,
                                  blueprint_name,
                                  scope,
-                                 artifact_name
-                                 ):
+                                 artifact_name):
     rgs = client.get(scope=scope, blueprint_name=blueprint_name).resource_groups
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
@@ -183,8 +180,7 @@ def create_blueprint_artifact_policy(cmd, client,
                                      display_name=None,
                                      resource_group_art=None,
                                      description=None,
-                                     depends_on=None
-                                     ):
+                                     depends_on=None):
     body = {'display_name': display_name,
             'policy_definition_id': policy_definition_id,
             'kind': 'policyAssignment',
@@ -204,8 +200,7 @@ def update_blueprint_artifact_policy(cmd, client,
                                      display_name=None,
                                      resource_group_art=None,
                                      description=None,
-                                     depends_on=None
-                                     ):
+                                     depends_on=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
     if parameters is not None:
         body['parameters'] = json.loads(parameters)
@@ -231,8 +226,7 @@ def create_blueprint_artifact_role(cmd, client,
                                    display_name=None,
                                    resource_group_art=None,
                                    description=None,
-                                   depends_on=None
-                                   ):
+                                   depends_on=None):
     body = {'display_name': display_name,
             'role_definition_id': role_definition_id,
             'kind': 'roleAssignment',
@@ -253,8 +247,7 @@ def update_blueprint_artifact_role(cmd, client,
                                    display_name=None,
                                    resource_group_art=None,
                                    description=None,
-                                   depends_on=None
-                                   ):
+                                   depends_on=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
 
     if parameters is not None:
@@ -280,8 +273,7 @@ def create_blueprint_artifact_template(cmd, client,
                                        display_name=None,
                                        resource_group_art=None,
                                        description=None,
-                                       depends_on=None
-                                       ):
+                                       depends_on=None):
     body = {'display_name': display_name,
             'template': json.loads(template),
             'kind': 'template',
@@ -302,8 +294,7 @@ def update_blueprint_artifact_template(cmd, client,
                                        display_name=None,
                                        resource_group_art=None,
                                        description=None,
-                                       depends_on=None
-                                       ):
+                                       depends_on=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
 
     if template is not None:
