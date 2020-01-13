@@ -1039,27 +1039,41 @@ def _get_app_log(url, user_name, password, exceptions):
     except ImportError:
         pass
 
+    def stream(self, amt=2 ** 16, decode_content=None):
+        if self.chunked and self.supports_chunked_reads():
+            try:
+                for line in self.read_chunked(amt, decode_content=decode_content):
+                    yield line
+            except urllib3.exceptions.ProtocolError:
+                return
+        else:
+            while not self.is_fp_closed(self._fp):
+                data = self.read(amt=amt, decode_content=decode_content)
+
+                if data:
+                    yield data
+
     http = urllib3.PoolManager(
         cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
     headers = urllib3.util.make_headers(
         basic_auth='{0}:{1}'.format(user_name, password))
-    r = http.request(
+    response = http.request(
         'GET',
         url,
         headers=headers,
         preload_content=False
     )
     try:
-        if r.status != 200:
+        if response.status != 200:
             raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(
-                url, r.status, r.reason))
+                url, response.status, response.reason))
         std_encoding = sys.stdout.encoding
 
-        for chunk in r.stream():
+        for chunk in stream(response):
             if chunk:
                 print(chunk.decode(encoding='utf-8', errors='replace')
                       .encode(std_encoding, errors='replace')
                       .decode(std_encoding, errors='replace'), end='')
-        r.release_conn()
+        response.release_conn()
     except CLIError as e:
         exceptions.append(e)
