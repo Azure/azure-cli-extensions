@@ -25,7 +25,21 @@ def check_connection_aladdin():
 
 # Replacements for core functions
 def provide_examples(help_file):
-    # Specify az to force all the examples to be for the exact command
+    return replace_examples(help_file)
+
+
+# Provide two options for changing the examples
+
+# Replace built in examples wirh Aladdin ones
+def replace_examples(help_file):
+    # Specify az to coerce the examples to be for the exact command
+    lookup_term = "az " + help_file.command
+    return get_generated_examples(lookup_term)
+
+
+# Append Aladdin examples to the built in ones
+def append_examples(help_file):
+    # Specify az to coerce the examples to be for the exact command
     lookup_term = "az " + help_file.command
     aladdin_examples = get_generated_examples(lookup_term)
     return concat_unique_examples(help_file.examples, aladdin_examples)
