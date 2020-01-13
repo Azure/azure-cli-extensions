@@ -45,11 +45,11 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='ai_examples',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools AI Examples Extension',
+    description='Add AI powered examples to help content.',
     author='Matthew Booe',
     author_email='mabooe@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ai-examples',
-    long_description='Improve the Azure CLI experience by adding AI powered examples to command help content.',
+    long_description='Improve user experince by adding AI powered examples to command help content.',
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),

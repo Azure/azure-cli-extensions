@@ -10,7 +10,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['ai-examples'] = """
     type: group
-    short-summary: AI hooks into the Azure CLI core.
+    short-summary: Add AI powered examples to help content.
 """
 
 helps['ai-examples check-connection'] = """
