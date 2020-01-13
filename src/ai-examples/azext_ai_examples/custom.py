@@ -52,7 +52,12 @@ def concat_unique_examples(first_list, second_list):
 
 
 def are_examples_equal(first, second):
-    return first.short_summary == second.short_summary or first.command == second.command
+    return clean_string(first.short_summary) == clean_string(second.short_summary) \
+        or clean_string(first.command) == clean_string(second.command)
+
+
+def clean_string(text):
+    return text.strip()
 
 
 def clean_from_http_answer(http_answer):
@@ -111,7 +116,9 @@ def call_aladdin_service(query):
         params={
             'query': query,
             'clientType': 'AzureCli',
-            'context': json.dumps(context)
+            'context': json.dumps(context),
+            'commandOnly': True,
+            'numberOfExamples': 5
         },
         headers=headers)
 
