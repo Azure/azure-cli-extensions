@@ -10,7 +10,9 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
 from ._utils import ApiType
+from knack.log import get_logger
 
+logger = get_logger(__name__)
 
 def validate_env(namespace):
     """ Extracts multiple space-separated envs in key[=value] format """
@@ -99,23 +101,29 @@ def validate_nodes_count(namespace):
 def validate_log_limit(namespace):
     temp_limit = None
     try:
-        temp_limit = int(namespace.limit)
+        temp_limit = namespace.limit
     except:
         raise CLIError('--limit must contains only digit')
-    if temp_limit < 0:
+    if temp_limit < 1:
         raise CLIError('--limit must be in the range [1,2048]')
-    namespace.limit = min(temp_limit, 2048) * 1024
+    if temp_limit > 2048:
+        temp_limit = 2048
+        logger.error("--limit can not be more than 2048, using 2048 instead")
+    namespace.limit = temp_limit * 1024
 
 
 def validate_log_lines(namespace):
     temp_lines = None
     try:
-        temp_lines = int(namespace.lines)
+        temp_lines = namespace.lines
     except:
         raise CLIError('--lines must contains only digit')
-    if temp_lines < 0:
+    if temp_lines < 1:
         raise CLIError('--lines must be in the range [1,10000]')
-    namespace.lines = min(temp_lines, 10000)
+    if temp_lines > 10000:
+        temp_lines = 10000
+        logger.error("--lines can not be more than 10000, using 10000 instead")
+    namespace.lines = temp_lines
 
 
 def validate_log_since(namespace):
