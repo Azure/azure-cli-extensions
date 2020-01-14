@@ -45,7 +45,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'app_update')
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
         g.custom_command('scale', 'app_scale', supports_no_wait=True)
-        g.custom_command('show-deploy-log', 'app_get_log')
+        g.custom_command('show-deploy-log', 'app_get_build_log')
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
         g.custom_command('delete', 'app_delete')
