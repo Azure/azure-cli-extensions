@@ -4,7 +4,7 @@ This is a extension for storage-ors-preview features.
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name storage-ors-preview
+az extension add -s https://azurecliprod.blob.core.windows.net/cli-extensions/storage_ors_preview-0.1.0-py2.py3-none-any.whl
 ```
 
 ### Included Features
