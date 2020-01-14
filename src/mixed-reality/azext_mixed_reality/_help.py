@@ -23,19 +23,19 @@ helps['mixed-reality operation list'] = """
                az mixed-reality operation list
 """
 
-helps['mixed-reality location check-name-availability'] = """
+helps['mixed-reality'] = """
     type: group
-    short-summary: Commands to manage mixed reality location check name availability.
+    short-summary: Commands to manage mixed reality.
 """
 
-helps['mixed-reality location check-name-availability check-name-availability-local'] = """
+helps['mixed-reality check-name-availability-local'] = """
     type: command
     short-summary: Check Name Availability for local uniqueness
     examples:
       - name: CheckLocalNameAvailability
         text: |-
-               az mixed-reality location check-name-availability check-name-availability-local \\
-               --location "eastus2euap" --name "MyAccount" --type "SpatialAnchorsAccount"
+               az mixed-reality check-name-availability-local --location "eastus2euap" --name \\
+               "MyAccount" --type "SpatialAnchorsAccount"
 """
 
 helps['mixed-reality remote-rendering-account'] = """

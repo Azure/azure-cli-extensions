@@ -13,10 +13,10 @@ def list_mixed_reality_operation(cmd, client):
     return client.list()
 
 
-def check_name_availability_local_mixed_reality_location_check_name_availability(cmd, client,
-                                                                                 location,
-                                                                                 name,
-                                                                                 _type):
+def check_name_availability_local_mixed_reality(cmd, client,
+                                                location,
+                                                name,
+                                                _type):
     return client.check_name_availability_local(location=location, name=name, type=_type)
 
 

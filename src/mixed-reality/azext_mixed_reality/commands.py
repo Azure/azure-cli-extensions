@@ -23,8 +23,8 @@ def load_command_table(self, _):
     mixed_reality_ = CliCommandType(
         operations_tmpl='azext_mixed_reality.vendored_sdks.mixedreality.operations.__operations#Operations.{}',
         client_factory=cf_mixed_reality)
-    with self.command_group('mixed-reality location check-name-availability', mixed_reality_, client_factory=cf_mixed_reality) as g:
-        g.custom_command('check-name-availability-local', 'check_name_availability_local_mixed_reality_location_check_name_availability')
+    with self.command_group('mixed-reality', mixed_reality_, client_factory=cf_mixed_reality) as g:
+        g.custom_command('check-name-availability-local', 'check_name_availability_local_mixed_reality')
 
     from ._client_factory import cf_remote_rendering_accounts
     mixed_reality_remote_rendering_accounts = CliCommandType(

@@ -89,7 +89,7 @@ class MixedRealityClientScenarioTest(ScenarioTest):
         #          '--name "MyAccount"',
         #          checks=[])
 
-        # self.cmd('az mixed-reality location check-name-availability check-name-availability-local '
+        # self.cmd('az mixed-reality check-name-availability-local '
         #          '--location "eastus2euap" '
         #          '--name "MyAccount" '
         #          '--type "SpatialAnchorsAccount"',

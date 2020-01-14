@@ -18,7 +18,7 @@ def load_arguments(self, _):
     with self.argument_context('mixed-reality operation list') as c:
         pass
 
-    with self.argument_context('mixed-reality location check-name-availability check-name-availability-local') as c:
+    with self.argument_context('mixed-reality check-name-availability-local') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx))
         c.argument('name', id_part=None, help='Resource Name To Verify')
         c.argument('_type', options_list=['--type'], id_part=None, help='Fully qualified resource type which includes provider namespace')
