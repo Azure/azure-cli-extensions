@@ -39,8 +39,6 @@ for src_d in os.listdir(SRC_PATH):
     cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} -- {code_dir}'
     ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
     ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
-    print("ado_branch_last_commit =", ado_branch_last_commit)
-    print("ado_target_branch =", ado_target_branch)
     if not ado_branch_last_commit or ado_branch_last_commit == '$(System.PullRequest.SourceCommitId)':
         continue
     elif not ado_target_branch or ado_target_branch == '$(System.PullRequest.TargetBranch)':
