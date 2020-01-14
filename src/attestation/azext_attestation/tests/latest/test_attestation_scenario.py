@@ -18,21 +18,27 @@ class AttestationScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_attestation')
     def test_attestation(self, resource_group):
 
-        self.kwargs.update({
-            'name': 'test1'
-        })
+        self.cmd('az attestation operation list',
+                 checks=[])
 
-        self.cmd('az attestation create '
+        self.cmd('az attestation attestation-provider create '
                  '--resource-group {rg} '
                  '--name "MyAttestationProvider"',
                  checks=[])
 
-        self.cmd('az attestation show '
+        self.cmd('az attestation attestation-provider show '
                  '--resource-group {rg} '
                  '--name "MyAttestationProvider"',
                  checks=[])
 
-        self.cmd('az attestation delete '
+        self.cmd('az attestation attestation-provider list',
+                 checks=[])
+
+        self.cmd('az attestation attestation-provider list '
+                 '--resource-group {rg}',
+                 checks=[])
+
+        self.cmd('az attestation attestation-provider delete '
                  '--resource-group {rg} '
                  '--name "MyAttestationProvider"',
                  checks=[])

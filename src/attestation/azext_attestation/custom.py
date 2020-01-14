@@ -7,32 +7,42 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-import json
 
 
-def create_attestation(cmd, client,
-                       resource_group,
-                       name,
-                       attestation_policy=None,
-                       policy_signing_certificates=None):
+def list_attestation_operation(cmd, client):
+    return client.list()
+
+
+def create_attestation_attestation_provider(cmd, client,
+                                            resource_group,
+                                            name,
+                                            attestation_policy=None,
+                                            policy_signing_certificates=None):
     return client.create(resource_group_name=resource_group, provider_name=name, attestation_policy=attestation_policy, policy_signing_certificates=policy_signing_certificates)
 
 
-def update_attestation(cmd, client,
-                       resource_group,
-                       name,
-                       attestation_policy=None,
-                       policy_signing_certificates=None):
-    return client.create(resource_group_name=resource_group, provider_name=name, creation_params=body)
+def update_attestation_attestation_provider(cmd, client,
+                                            resource_group,
+                                            name,
+                                            attestation_policy=None,
+                                            policy_signing_certificates=None):
+    return client.create(resource_group_name=resource_group, provider_name=name, attestation_policy=attestation_policy, policy_signing_certificates=policy_signing_certificates)
 
 
-def delete_attestation(cmd, client,
-                       resource_group,
-                       name):
+def delete_attestation_attestation_provider(cmd, client,
+                                            resource_group,
+                                            name):
     return client.delete(resource_group_name=resource_group, provider_name=name)
 
 
-def get_attestation(cmd, client,
-                    resource_group,
-                    name):
+def get_attestation_attestation_provider(cmd, client,
+                                         resource_group,
+                                         name):
     return client.get(resource_group_name=resource_group, provider_name=name)
+
+
+def list_attestation_attestation_provider(cmd, client,
+                                          resource_group=None):
+    if resource_group is not None:
+        return client.list_by_resource_group(resource_group_name=resource_group)
+    return client.list()
