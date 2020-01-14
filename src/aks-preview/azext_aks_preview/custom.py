@@ -643,7 +643,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
                node_osdisk_size=0,
-               node_osdisk_diskencryptionset_id='',
+               node_osdisk_diskencryptionset_id=None,
                node_count=3,
                nodepool_name="nodepool1",
                service_principal=None, client_secret=None,
