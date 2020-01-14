@@ -607,7 +607,8 @@ def aks_browse(cmd,     # pylint: disable=too-many-statements
         wait_then_open_async(dashboardURL)
     try:
         try:
-            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "proxy", "--address", listen_address, "--port", listen_port], stderr=subprocess.STDOUT)
+            subprocess.check_output(["kubectl", "--kubeconfig", browse_path, "proxy", "--address",
+                                     listen_address, "--port", listen_port], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             if err.output.find(b'unknown flag: --address'):
                 if listen_address != '127.0.0.1':
