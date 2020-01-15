@@ -123,3 +123,27 @@ jobs:
     inputs:
       targetType: 'filePath'
       filePath: scripts/ci/test_index_ref_doc.sh
+
+- job: BuildExtensionWheels
+  displayName: 'Build Extension Wheels'
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: '3.6'
+    - bash: |
+        set -ev
+
+        cd src/ip-group/
+
+        # activate python venv
+        python -m virtualenv venv/
+        . ./venv/bin/activate
+
+        python setup.py bdist_wheel -d "${BUILD_STAGINGDIRECTORY}"
+    - task: PublishPipelineArtifact@0
+      inputs:
+        TargetPath: '$(Build.ArtifactStagingDirectory)/extensions'
+        artifactName: extensions
