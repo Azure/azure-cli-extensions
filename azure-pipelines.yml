@@ -133,14 +133,15 @@ jobs:
       displayName: 'Use Python 3.6'
       inputs:
         versionSpec: '3.6'
+    - bash: pip install --upgrade pip setuptools wheel
     - bash: |
         set -ev
 
         cd src/ip-group/
 
         # activate python venv
-        python -m virtualenv venv/
-        . ./venv/bin/activate
+        # python -m virtualenv venv/
+        # . ./venv/bin/activate
 
         python setup.py bdist_wheel -d "${BUILD_STAGINGDIRECTORY}"
     - task: PublishPipelineArtifact@0
