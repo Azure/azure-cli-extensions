@@ -900,7 +900,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                                resource_group_name=resource_group_name,
                                resource_name=name,
                                parameters=mc,
-                               custom_headers=headers)
+                               custom_headers=headers).result()
             if enable_managed_identity:
                 # Attach ACR to cluster enabled managed identity
                 if created_cluster.identity_profile is None or created_cluster.identity_profile["kubeletidentity"] is None:
