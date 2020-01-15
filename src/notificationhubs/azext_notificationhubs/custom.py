@@ -70,23 +70,23 @@ def check_availability_notificationhubs_namespace(cmd, client, name):
 def list_keys_notificationhubs_namespace(cmd, client,
                                          resource_group,
                                          namespace_name,
-                                         name):
-    return client.list_keys(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name)
+                                         rule_name):
+    return client.list_keys(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=rule_name)
 
 
 def regenerate_keys_notificationhubs_namespace(cmd, client,
                                                resource_group,
                                                namespace_name,
-                                               name,
+                                               rule_name,
                                                policy_key):
-    return client.regenerate_keys(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name, policy_key=policy_key)
+    return client.regenerate_keys(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=rule_name, policy_key=policy_key)
 
 
 def get_authorization_rule_notificationhubs_namespace(cmd, client,
                                                       resource_group,
                                                       namespace_name,
-                                                      name):
-    return client.get_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name)
+                                                      rule_name):
+    return client.get_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=rule_name)
 
 
 def list_authorization_rules_notificationhubs_namespace(cmd, client,
@@ -98,18 +98,18 @@ def list_authorization_rules_notificationhubs_namespace(cmd, client,
 def create_or_update_authorization_rule_notificationhubs_namespace(cmd, client,
                                                                    resource_group,
                                                                    namespace_name,
-                                                                   name,
+                                                                   rule_name,
                                                                    rights):
     body = {}
     body['rights'] = None if rights is None else rights.split(',')
-    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name, properties=body)
+    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=rule_name, properties=body)
 
 
 def delete_authorization_rule_notificationhubs_namespace(cmd, client,
                                                          resource_group,
                                                          namespace_name,
-                                                         name):
-    return client.delete_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=name)
+                                                         rule_name):
+    return client.delete_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=rule_name)
 
 
 def create_notificationhubs_hub(cmd, client,
@@ -174,9 +174,9 @@ def regenerate_keys_notificationhubs_hub(cmd, client,
                                          resource_group,
                                          namespace_name,
                                          notification_hub_name,
-                                         name,
+                                         rule_name,
                                          policy_key):
-    return client.regenerate_keys(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name, policy_key=policy_key)
+    return client.regenerate_keys(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name, policy_key=policy_key)
 
 
 def get_pns_credentials_notificationhubs_hub(cmd, client,
@@ -190,8 +190,8 @@ def list_keys_notificationhubs_hub(cmd, client,
                                    resource_group,
                                    namespace_name,
                                    notification_hub_name,
-                                   name):
-    return client.list_keys(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name)
+                                   rule_name):
+    return client.list_keys(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name)
 
 
 def debug_send_notificationhubs_hub(cmd, client,
@@ -247,27 +247,27 @@ def get_authorization_rule_notificationhubs_hub(cmd, client,
                                                 resource_group,
                                                 namespace_name,
                                                 notification_hub_name,
-                                                name):
-    return client.get_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name)
+                                                rule_name):
+    return client.get_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name)
 
 
 def create_or_update_authorization_rule_notificationhubs_hub(cmd, client,
                                                              resource_group,
                                                              namespace_name,
                                                              notification_hub_name,
-                                                             name,
+                                                             rule_name,
                                                              rights):
     body = {}
     body['rights'] = None if rights is None else rights.split(',')
-    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name, properties=body)
+    return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name, properties=body)
 
 
 def delete_authorization_rule_notificationhubs_hub(cmd, client,
                                                    resource_group,
                                                    namespace_name,
                                                    notification_hub_name,
-                                                   name):
-    return client.delete_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=name)
+                                                   rule_name):
+    return client.delete_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name)
 
 
 def update_gcm_credential(cmd, client,
