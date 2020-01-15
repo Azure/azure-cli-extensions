@@ -145,7 +145,7 @@ jobs:
         # . ./venv/bin/activate
 
         python setup.py bdist_wheel -d "${BUILD_STAGINGDIRECTORY}"
-      disaplayName: 'Build Extensions'
+      displayName: 'Build Extensions'
     - task: PublishPipelineArtifact@0
       inputs:
         TargetPath: $(Build.ArtifactStagingDirectory)
