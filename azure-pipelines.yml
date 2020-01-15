@@ -134,6 +134,7 @@ jobs:
       inputs:
         versionSpec: '3.6'
     - bash: pip install --upgrade pip setuptools wheel
+      displayName: 'Install build tools'
     - bash: |
         set -ev
 
@@ -144,7 +145,8 @@ jobs:
         # . ./venv/bin/activate
 
         python setup.py bdist_wheel -d "${BUILD_STAGINGDIRECTORY}"
+      disaplayName: 'Build Extensions'
     - task: PublishPipelineArtifact@0
       inputs:
-        TargetPath: '$(Build.ArtifactStagingDirectory)/extensions'
+        TargetPath: $(Build.ArtifactStagingDirectory)
         artifactName: extensions
