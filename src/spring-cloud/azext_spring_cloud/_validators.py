@@ -9,10 +9,11 @@ from re import match
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
-from ._utils import ApiType
 from knack.log import get_logger
+from ._utils import ApiType
 
 logger = get_logger(__name__)
+
 
 def validate_env(namespace):
     """ Extracts multiple space-separated envs in key[=value] format """
