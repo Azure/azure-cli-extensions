@@ -32,7 +32,6 @@ def create_notificationhubs_namespace(cmd, client,
 def update_notificationhubs_namespace(cmd, client,
                                       resource_group,
                                       namespace_name,
-                                      location=None,
                                       tags=None,
                                       sku_name=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name).as_dict()
@@ -133,7 +132,6 @@ def update_notificationhubs_hub(cmd, client,
                                 resource_group,
                                 namespace_name,
                                 notification_hub_name,
-                                location=None,
                                 tags=None,
                                 sku_name=None):
     body = client.get(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name).as_dict()

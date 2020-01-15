@@ -21,8 +21,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'namespace-name': 'my-test-space',
-            'notification-hub-name': 'my-test-hub',
-            'rg': 'feng-cli-rg',
+            'notification-hub-name': 'my-test-hub'
         })
 
         self.cmd('az notificationhubs namespace check-availability '

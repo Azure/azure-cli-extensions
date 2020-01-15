@@ -21,9 +21,9 @@ helps['notificationhubs namespace'] = """
 
 helps['notificationhubs namespace create'] = """
     type: command
-    short-summary: Creates a service namespace. Once created, this namespace's resource manifest is immutable. This operation is idempotent.
+    short-summary: Create a service namespace. Once created, this namespace's resource manifest is immutable. This operation is idempotent.
     examples:
-      - name: Creates a namespace
+      - name: Create a namespace
         text: |-
                az notificationhubs namespace create --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --location "South Central US" --sku-name "Standard"
@@ -31,9 +31,9 @@ helps['notificationhubs namespace create'] = """
 
 helps['notificationhubs namespace update'] = """
     type: command
-    short-summary: Updates a service namespace. The namespace's resource manifest is immutable and cannot be modified.
+    short-summary: Update a service namespace. The namespace's resource manifest is immutable and cannot be modified.
     examples:
-      - name: Updates the namespace
+      - name: Update the namespace
         text: |-
                az notificationhubs namespace update --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --sku-name "Standard"
@@ -41,9 +41,9 @@ helps['notificationhubs namespace update'] = """
 
 helps['notificationhubs namespace delete'] = """
     type: command
-    short-summary: Deletes an existing namespace. This operation also removes all associated notificationHubs under the namespace.
+    short-summary: Delete an existing namespace. This operation also removes all associated notificationHubs under the namespace.
     examples:
-      - name: Deletes the namespace
+      - name: Delete the namespace
         text: |-
                az notificationhubs namespace delete --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns"
@@ -51,9 +51,9 @@ helps['notificationhubs namespace delete'] = """
 
 helps['notificationhubs namespace show'] = """
     type: command
-    short-summary: Returns the description for the specified namespace.
+    short-summary: Return the description for the specified namespace.
     examples:
-      - name: Gets namespace info
+      - name: Show namespace info
         text: |-
                az notificationhubs namespace show --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns"
@@ -61,21 +61,21 @@ helps['notificationhubs namespace show'] = """
 
 helps['notificationhubs namespace list'] = """
     type: command
-    short-summary: Lists available namespaces.
+    short-summary: List available namespaces.
     examples:
-      - name: Lists available namespaces within a resourceGroup
+      - name: List available namespaces within a resourceGroup
         text: |-
                az notificationhubs namespace list --resource-group MyResourceGroup
-      - name: Lists all the available namespaces within the subscription irrespective of the resourceGroups
+      - name: List all the available namespaces within the subscription irrespective of the resourceGroups
         text: |-
                az notificationhubs namespace list
 """
 
 helps['notificationhubs namespace check-availability'] = """
     type: command
-    short-summary: Checks the availability of the given service namespace across all Azure subscriptions. This is useful because the domain name is created based on the service namespace name.
+    short-summary: Check the availability of the given service namespace across all Azure subscriptions. This is useful because the domain name is created based on the service namespace name.
     examples:
-      - name: Checks name availability of namespace
+      - name: Check name availability of namespace
         text: |-
                az notificationhubs namespace check-availability --name "my-test-space"
 """
@@ -96,9 +96,9 @@ helps['notificationhubs namespace authorization-rule'] = """
 
 helps['notificationhubs namespace authorization-rule list-keys'] = """
     type: command
-    short-summary: Gets the Primary and Secondary ConnectionStrings to the namespace
+    short-summary: List the Primary and Secondary ConnectionStrings to the namespace
     examples:
-      - name: Lists keys of the namesapce authorization rule
+      - name: List keys of the namesapce authorization rule
         text: |-
                az notificationhubs namespace authorization-rule list-keys --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey"
@@ -106,9 +106,9 @@ helps['notificationhubs namespace authorization-rule list-keys'] = """
 
 helps['notificationhubs namespace authorization-rule regenerate-keys'] = """
     type: command
-    short-summary: Regenerates the Primary/Secondary Keys to the Namespace Authorization Rule
+    short-summary: Regenerate the Primary/Secondary Keys to the Namespace Authorization Rule
     examples:
-      - name: Regenerates keys of the namesapce authorization rule
+      - name: Regenerate keys of the namesapce authorization rule
         text: |-
                az notificationhubs namespace authorization-rule regenerate-keys --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --name "RootManageSharedAccessKey" --policy-key "Secondary Key"
@@ -116,9 +116,9 @@ helps['notificationhubs namespace authorization-rule regenerate-keys'] = """
 
 helps['notificationhubs namespace authorization-rule show'] = """
     type: command
-    short-summary: Gets an authorization rule for a namespace by name.
+    short-summary: Show an authorization rule for a namespace by name.
     examples:
-      - name: Shows namespace authorization rule info
+      - name: Show namespace authorization rule info
         text: |-
                az notificationhubs namespace authorization-rule show --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
@@ -128,7 +128,7 @@ helps['notificationhubs namespace authorization-rule list'] = """
     type: command
     short-summary: List the authorization rules for a namespace.
     examples:
-      - name: Lists authorization rules of the namespace
+      - name: List authorization rules of the namespace
         text: |-
                az notificationhubs namespace authorization-rule list --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns"
@@ -136,9 +136,9 @@ helps['notificationhubs namespace authorization-rule list'] = """
 
 helps['notificationhubs namespace authorization-rule create'] = """
     type: command
-    short-summary: Creates an authorization rule for a namespace
+    short-summary: Create an authorization rule for a namespace
     examples:
-      - name: Creates a namespace authorization rule
+      - name: Create a namespace authorization rule
         text: |-
                az notificationhubs namespace authorization-rule create --resource-group \\
                MyResourceGroup --namespace-name "nh-sdk-ns" --name "sdk-AuthRules-1788" --rights "Listen"
@@ -146,9 +146,9 @@ helps['notificationhubs namespace authorization-rule create'] = """
 
 helps['notificationhubs namespace authorization-rule delete'] = """
     type: command
-    short-summary: Deletes a namespace authorization rule
+    short-summary: Delete a namespace authorization rule
     examples:
-      - name: Deletes a namespace authorization rule
+      - name: Delete a namespace authorization rule
         text: |-
                az notificationhubs namespace authorization-rule delete --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --name "RootManageSharedAccessKey"
@@ -161,9 +161,9 @@ helps['notificationhubs'] = """
 
 helps['notificationhubs create'] = """
     type: command
-    short-summary: Creates a NotificationHub in a namespace.
+    short-summary: Create a NotificationHub in a namespace.
     examples:
-      - name: Creates a Notification Hub
+      - name: Create a Notification Hub
         text: |-
                az notificationhubs create --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --location "South Central US" --sku-name "Free"
@@ -171,9 +171,9 @@ helps['notificationhubs create'] = """
 
 helps['notificationhubs update'] = """
     type: command
-    short-summary: Updates a NotificationHub in a namespace.
+    short-summary: Update a NotificationHub in a namespace.
     examples:
-      - name: Updates the Notification Hub
+      - name: Update the Notification Hub
         text: |-
                az notificationhubs update --resource-group "sdkresourceGroup" --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "sdk-notificationHubs-8708"
@@ -181,9 +181,9 @@ helps['notificationhubs update'] = """
 
 helps['notificationhubs delete'] = """
     type: command
-    short-summary: Deletes a notification hub associated with a namespace.
+    short-summary: Delete a notification hub associated with a namespace.
     examples:
-      - name: Deletes a notification hub
+      - name: Delete a notification hub
         text: |-
                az notificationhubs delete --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub"
@@ -191,9 +191,9 @@ helps['notificationhubs delete'] = """
 
 helps['notificationhubs show'] = """
     type: command
-    short-summary: Lists the notification hubs associated with a namespace.
+    short-summary: List the notification hubs associated with a namespace.
     examples:
-      - name: Shows the Notification Hub info
+      - name: Show the Notification Hub info
         text: |-
                az notificationhubs show --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub"
@@ -201,18 +201,18 @@ helps['notificationhubs show'] = """
 
 helps['notificationhubs list'] = """
     type: command
-    short-summary: Lists the notification hubs associated with a namespace.
+    short-summary: List the notification hubs associated with a namespace.
     examples:
-      - name: Lists the notification hubs
+      - name: List the notification hubs
         text: |-
                az notificationhubs list --resource-group MyResourceGroup --namespace-name "nh-sdk-ns"
 """
 
 helps['notificationhubs check-availability'] = """
     type: command
-    short-summary: Checks the availability of the given notificationHub in a namespace.
+    short-summary: Check the availability of the given notificationHub in a namespace.
     examples:
-      - name: Checks the availability of the given notificationHub name
+      - name: Check the availability of the given notificationHub name
         text: |-
                az notificationhubs check-availability --resource-group MyResourceGroup \\
                --namespace-name "locp-newns" --notification-hub-name "nh-sdk-hub"
@@ -225,9 +225,9 @@ helps['notificationhubs authorization-rule'] = """
 
 helps['notificationhubs authorization-rule regenerate-keys'] = """
     type: command
-    short-summary: Regenerates the Primary/Secondary Keys to the NotificationHub Authorization Rule
+    short-summary: Regenerate the Primary/Secondary Keys to the NotificationHub Authorization Rule
     examples:
-      - name: Regenerates the Notification Hub authorization rule
+      - name: Regenerate the Notification Hub authorization rule
         text: |-
                az notificationhubs authorization-rule regenerate-keys --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
@@ -236,9 +236,9 @@ helps['notificationhubs authorization-rule regenerate-keys'] = """
 
 helps['notificationhubs credential list'] = """
     type: command
-    short-summary: Lists the PNS Credentials associated with a notification hub .
+    short-summary: List the PNS Credentials associated with a notification hub .
     examples:
-      - name: Lists the PNS Credentials
+      - name: List the PNS Credentials
         text: |-
                az notificationhubs credential list --resource-group MyResourceGroup --namespace-name \\
                "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
@@ -246,7 +246,7 @@ helps['notificationhubs credential list'] = """
 
 helps['notificationhubs authorization-rule list-keys'] = """
     type: command
-    short-summary: Gets the Primary and Secondary ConnectionStrings to the NotificationHub
+    short-summary: List the Primary and Secondary ConnectionStrings to the NotificationHub
     examples:
       - name: List connectionStrings of the authorization rule
         text: |-
@@ -277,9 +277,9 @@ helps['notificationhubs test-send'] = """
 
 helps['notificationhubs authorization-rule list'] = """
     type: command
-    short-summary: Lists the authorization rules for a NotificationHub.
+    short-summary: List the authorization rules for a NotificationHub.
     examples:
-      - name: Lists authorization rules
+      - name: List authorization rules
         text: |-
                az notificationhubs authorization-rule list --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub"
@@ -287,9 +287,9 @@ helps['notificationhubs authorization-rule list'] = """
 
 helps['notificationhubs authorization-rule show'] = """
     type: command
-    short-summary: Gets an authorization rule for a NotificationHub by name.
+    short-summary: Show an authorization rule for a NotificationHub by name.
     examples:
-      - name: Shows the authorization rule information
+      - name: Show the authorization rule information
         text: |-
                az notificationhubs authorization-rule show --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
@@ -298,9 +298,9 @@ helps['notificationhubs authorization-rule show'] = """
 
 helps['notificationhubs authorization-rule create'] = """
     type: command
-    short-summary: Creates an authorization rule for a NotificationHub
+    short-summary: Create an authorization rule for a NotificationHub
     examples:
-      - name: Creates an authorization rule
+      - name: Create an authorization rule
         text: |-
                az notificationhubs authorization-rule create --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
@@ -309,9 +309,9 @@ helps['notificationhubs authorization-rule create'] = """
 
 helps['notificationhubs authorization-rule delete'] = """
     type: command
-    short-summary: Deletes a notificationHub authorization rule
+    short-summary: Delete a notificationHub authorization rule
     examples:
-      - name: Deletes the authorization rule
+      - name: Delete the authorization rule
         text: |-
                az notificationhubs authorization-rule delete --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --name \\
@@ -354,9 +354,9 @@ helps['notificationhubs credential wns'] = """
 
 helps['notificationhubs credential gcm update'] = """
     type: command
-    short-summary: Updates the Google GCM/FCM API key.
+    short-summary: Update the Google GCM/FCM API key.
     examples:
-      - name: Updates gcm key
+      - name: Update gcm key
         text: |-
                az notificationhubs credential gcm update --resource-group MyResourceGroup \\
                --namespace-name "nh-sdk-ns" --notification-hub-name "nh-sdk-hub" --google-api-key \\
@@ -372,7 +372,7 @@ helps['notificationhubs credential apns update'] = """
     type: command
     short-summary: Update credential for Apple(APNS).
     examples:
-      - name: Updates APNS certificate
+      - name: Update APNS certificate
         text: |-
                az notificationhubs credential apns update --namespace-name "nh-sdk-ns" \\
                --notification-hub-name "nh-sdk-hub" --apns-certificate "/path/to/certificate" \\
