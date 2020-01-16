@@ -56,6 +56,7 @@ def load_command_table(self, _):
         g.custom_command('start', 'app_start', supports_no_wait=True)
         g.custom_command('stop', 'app_stop', supports_no_wait=True)
         g.custom_command('restart', 'app_restart', supports_no_wait=True)
+        g.custom_command('log tail', 'app_tail_log')
 
     with self.command_group('spring-cloud app deployment', client_factory=cf_spring_cloud) as g:
         g.custom_command('create', 'deployment_create', supports_no_wait=True)

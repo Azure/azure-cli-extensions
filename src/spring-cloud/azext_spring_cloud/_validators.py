@@ -9,7 +9,10 @@ from re import match
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
+from knack.log import get_logger
 from ._utils import ApiType
+
+logger = get_logger(__name__)
 
 
 def validate_env(namespace):
@@ -94,3 +97,45 @@ def validate_nodes_count(namespace):
     if namespace.instance_count is not None:
         if namespace.instance_count < 1 or namespace.instance_count > 20:
             raise CLIError('--instance-count must be in the range [1,20]')
+
+
+def validate_log_limit(namespace):
+    temp_limit = None
+    try:
+        temp_limit = namespace.limit
+    except:
+        raise CLIError('--limit must contains only digit')
+    if temp_limit < 1:
+        raise CLIError('--limit must be in the range [1,2048]')
+    if temp_limit > 2048:
+        temp_limit = 2048
+        logger.error("--limit can not be more than 2048, using 2048 instead")
+    namespace.limit = temp_limit * 1024
+
+
+def validate_log_lines(namespace):
+    temp_lines = None
+    try:
+        temp_lines = namespace.lines
+    except:
+        raise CLIError('--lines must contains only digit')
+    if temp_lines < 1:
+        raise CLIError('--lines must be in the range [1,10000]')
+    if temp_lines > 10000:
+        temp_lines = 10000
+        logger.error("--lines can not be more than 10000, using 10000 instead")
+    namespace.lines = temp_lines
+
+
+def validate_log_since(namespace):
+    if namespace.since:
+        last = namespace.since[-1:]
+        try:
+            namespace.since = int(
+                namespace.since[:-1]) if last in ("hms") else int(namespace.since)
+        except:
+            raise CLIError("--since contains invalid characters")
+        namespace.since *= 60 if last == "m" else 1
+        namespace.since *= 3600 if last == "h" else 1
+        if namespace.since > 3600:
+            raise CLIError("--since can not be more than 1h")
