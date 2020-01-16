@@ -5,5 +5,5 @@
 
 from azure.cli.core.profiles import CustomResourceType
 
-CUSTOM_NW_CONNECTION_MONITOR = CustomResourceType('azext_connection_monitor_preview.vendored_sdks.v2019_11_01',
+CUSTOM_NW_CONNECTION_MONITOR = CustomResourceType('azext_connection_monitor_preview.vendored_sdks',
                                                   'NetworkManagementClient')
