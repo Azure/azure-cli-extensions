@@ -20,7 +20,12 @@ from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
 from urllib import parse
+from threading import Thread
 from threading import Timer
+import certifi
+import urllib3
+import sys
+import urllib3.contrib.pyopenssl
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -361,6 +366,57 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     if deployment_properties.source.type == "Jar":
         raise CLIError("Jar deployment has no build logs.")
     return stream_logs(client.deployments, resource_group, service, name, deployment)
+
+
+def app_tail_log(cmd, client, resource_group, service, name, instance=None, follow=False, lines=50, since=None, limit=2048):
+    if not instance:
+        deployment_name = client.apps.get(
+            resource_group, service, name).properties.active_deployment_name
+        if not deployment_name:
+            raise CLIError(
+                "No production deployment found for app '{}'".format(name))
+        deployment = client.deployments.get(
+            resource_group, service, name, deployment_name)
+        if not deployment.properties.instances:
+            raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
+                deployment_name, name))
+        instances = deployment.properties.instances
+        if len(instances) > 1:
+            logger.warning("Mulitple app instances found:")
+            for temp_instance in instances:
+                logger.warning("{}".format(temp_instance.name))
+            logger.warning("Please use '-i/--instance' parameter to specify the instance name")
+            return None
+        instance = instances[0].name
+
+    primary_key = client.services.list_test_keys(
+        resource_group, service).primary_key
+    if not primary_key:
+        raise CLIError("To use the log streaming feature, please enable the test endpoint")
+
+    base_url = 'azuremicroservices.io' if cmd.cli_ctx.cloud.name == 'AzureCloud' else 'asc-test.net'
+    streaming_url = "https://{0}.{1}/api/logstream/apps/{2}/instances/{3}".format(
+        service, base_url, name, instance)
+    params = {}
+    params["tailLines"] = lines
+    params["limitBytes"] = limit
+    if since:
+        params["sinceSeconds"] = since
+    if follow:
+        params["follow"] = True
+
+    exceptions = []
+    streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
+    t = Thread(target=_get_app_log, args=(
+        streaming_url, "primary", primary_key, exceptions))
+    t.daemon = True
+    t.start()
+
+    while t.is_alive():
+        sleep(5)  # so that ctrl+c can stop the command
+
+    if exceptions:
+        raise exceptions[0]
 
 
 def app_set_deployment(cmd, client, resource_group, service, name, deployment):
@@ -975,3 +1031,50 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
     return sdk_no_wait(no_wait, client.deployments.create_or_update,
                        resource_group, service, app, name, properties)
+
+
+def _get_app_log(url, user_name, password, exceptions):
+    try:
+        urllib3.contrib.pyopenssl.inject_into_urllib3()
+    except ImportError:
+        pass
+
+    def stream(self, amt=2 ** 16, decode_content=None):
+        if self.chunked and self.supports_chunked_reads():
+            try:
+                for line in self.read_chunked(amt, decode_content=decode_content):
+                    yield line
+            except urllib3.exceptions.ProtocolError:
+                return
+        else:
+            while not self.is_fp_closed(self._fp):
+                data = self.read(amt=amt, decode_content=decode_content)
+
+                if data:
+                    yield data
+
+    http = urllib3.PoolManager(
+        cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+    headers = urllib3.util.make_headers(
+        basic_auth='{0}:{1}'.format(user_name, password))
+    response = http.request(
+        'GET',
+        url,
+        headers=headers,
+        preload_content=False
+    )
+    try:
+        if response.status != 200:
+            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(
+                url, response.status, response.reason))
+        std_encoding = sys.stdout.encoding
+
+        for chunk in stream(response):
+            if chunk:
+                logger.warning(chunk.decode(encoding='utf-8', errors='replace')
+                               .encode(std_encoding, errors='replace')
+                               .decode(std_encoding, errors='replace')
+                               .rstrip())
+        response.release_conn()
+    except CLIError as e:
+        exceptions.append(e)
