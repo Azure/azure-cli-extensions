@@ -1,5 +1,5 @@
 # Azure CLI notificationhubs Extension #
-This package is for the 'notificationhubs' extension, i.e. 'az notificationhubs'
+This package is for the 'notificationhubs' extension, i.e. 'az notificationhubs'.
 
 ### How to use ###
 Install this extension using the below CLI command
@@ -19,8 +19,7 @@ az notificationhubs namespace create \
     --resource-group groupName \
     --namespace-name spaceName \
     --location localtionName \
-    --sku-name "Basic" \
-    --sku-tier "Basic"   
+    --sku-name "Basic"
 ```
 
 ##### Create a Notification Hub
@@ -69,6 +68,15 @@ az notificationhubs test_send \
     --notification-hub-name hubName \
     --notification-format gcm \
     --payload "{\"data\":{\"message\":\"test notification\"}}"
+```
+or
+```
+az notificationhubs test_send \
+    --resource-group groupName \
+    --namespace-name spaceName \
+    --notification-hub-name hubName \
+    --notification-format gcm \
+    --payload @/path/to/json/file
 ```
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
