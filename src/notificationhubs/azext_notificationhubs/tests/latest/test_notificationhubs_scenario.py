@@ -59,7 +59,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
                  '--name "my-space-rule" '
-                 '--rights "Listen,Send"',
+                 '--rights Listen Send',
                  checks=[JMESPathCheck('name', 'my-space-rule')])
 
         self.cmd('az notificationhubs namespace authorization-rule show '

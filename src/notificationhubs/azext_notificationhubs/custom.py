@@ -101,7 +101,7 @@ def create_or_update_authorization_rule_notificationhubs_namespace(cmd, client,
                                                                    rule_name,
                                                                    rights):
     body = {}
-    body['rights'] = None if rights is None else rights.split(',')
+    body['rights'] = rights
     return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, authorization_rule_name=rule_name, properties=body)
 
 
@@ -258,7 +258,7 @@ def create_or_update_authorization_rule_notificationhubs_hub(cmd, client,
                                                              rule_name,
                                                              rights):
     body = {}
-    body['rights'] = None if rights is None else rights.split(',')
+    body['rights'] = rights
     return client.create_or_update_authorization_rule(resource_group_name=resource_group, namespace_name=namespace_name, notification_hub_name=notification_hub_name, authorization_rule_name=rule_name, properties=body)
 
 

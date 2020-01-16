@@ -76,7 +76,7 @@ def load_arguments(self, _):
         c.argument('resource_group', resource_group_name_type)
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('rights', id_part=None, help='The rights associated with the rule.')
+        c.argument('rights', id_part=None, nargs='+', help='The rights associated with the rule.')
 
     with self.argument_context('notificationhubs namespace authorization-rule delete') as c:
         c.argument('resource_group', resource_group_name_type)
@@ -162,7 +162,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', id_part=None, help='The namespace name.')
         c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
         c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('rights', id_part=None, help='The rights associated with the rule. Separated by comma.')
+        c.argument('rights', id_part=None, nargs='+', help='The rights associated with the rule. Separated by comma.')
 
     with self.argument_context('notificationhubs authorization-rule delete') as c:
         c.argument('resource_group', resource_group_name_type)
