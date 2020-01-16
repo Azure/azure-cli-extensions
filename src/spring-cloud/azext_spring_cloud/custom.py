@@ -382,10 +382,10 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
                 deployment_name, name))
         instances = deployment.properties.instances
         if len(instances) > 1:
-            print("Mulitple app instances found:")
+            logger.warning("Mulitple app instances found:")
             for temp_instance in instances:
-                print("{}".format(temp_instance.name))
-            print("Please use '-i/--instance' parameter to specify the instance name")
+                logger.warning("{}".format(temp_instance.name))
+            logger.warning("Please use '-i/--instance' parameter to specify the instance name")
             return None
         instance = instances[0].name
 
