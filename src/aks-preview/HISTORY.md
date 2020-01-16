@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.27
++++++
+* Fixed aks cluster creation error
+
 0.4.26
 +++++
 * Update to use 2020-01-01 api-version
