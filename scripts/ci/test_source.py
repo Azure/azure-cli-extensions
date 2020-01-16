@@ -36,13 +36,20 @@ for src_d in os.listdir(SRC_PATH):
         continue
 
     # Running in Azure DevOps
-    cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} {code_dir}'
+    cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} -- {code_dir}'
     ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
     ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
     if ado_branch_last_commit and ado_target_branch:
-        cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit, code_dir=src_d_full)
-        if not check_output(shlex.split(cmd)):
+        if ado_branch_last_commit == '$(System.PullRequest.SourceCommitId)':
+            # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
             continue
+        elif ado_target_branch == '$(System.PullRequest.TargetBranch)':
+            # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
+            continue
+        else:
+            cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit, code_dir=src_d_full)
+            if not check_output(shlex.split(cmd)):
+                continue
 
     # Find the package and check it has tests
     if pkg_name and os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests')):
