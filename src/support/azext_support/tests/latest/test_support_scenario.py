@@ -8,6 +8,7 @@ import unittest
 import uuid
 from datetime import date, timedelta
 
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.testsdk import ScenarioTest
 from azure_devtools.scenario_tests import AllowLargeResponse
 
@@ -74,11 +75,12 @@ class SupportScenarioTest(ScenarioTest):
                         "/problemClassifications/" + list_problem_classifications_result[0]["name"])
 
     def test_support_tickets_create_validations(self):
+        test_ticket_name = self.create_random_name(prefix='test_ticket_from_cli_', length=30)
         service_name = "06bfd9d3-516b-d5c6-5802-169c800dec89"
         problem_classification_name = "e12e3d1d-7fa0-af33-c6d0-3c50df9658a3"
         invalid_arm_resource_id = "/subscriptions/1c4eecc5-46a8-4b7f-9a0a-fa0ba47240cd"
         invalid_arm_resource_id += "/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
-        base_cmd = self._build_base_support_tickets_create_command("test")
+        base_cmd = self._build_base_support_tickets_create_command(test_ticket_name)
 
         # Failure scenario - invalid prefix problem classifications
         cmd = str(base_cmd)
@@ -105,16 +107,16 @@ class SupportScenarioTest(ScenarioTest):
 
         # Failure scenario - invalid ticket name
         cmd = str(base_cmd)
-        cmd = cmd.replace("test", "12345")
+        cmd = cmd.replace(test_ticket_name, "12345")
         cmd += "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
         cmd += "problemClassifications/{0}' ".format(problem_classification_name)
         rsp = self.cmd(cmd, expect_failure=True)
         self._validate_failure_rsp(rsp, 1)
 
     def test_support_tickets(self):
-        date_suffix = date.today().strftime("%m_%d_%Y")
-        test_ticket_name = "test_ticket_" + date_suffix
-        test_communication_name = "test_ticket_communication_" + date_suffix
+        random_guid = "12345678-1234-1234-1234-123412341234"
+        test_ticket_name = self.create_random_name(prefix='test_ticket_from_cli_', length=30)
+        test_communication_name = self.create_random_name(prefix='test_communication_from_cli_', length=40)
 
         # Create billing
         base_cmd = self._build_base_support_tickets_create_command(test_ticket_name)
@@ -124,8 +126,7 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_base_support_tickets_create_command(rsp, test_ticket_name)
 
         # Create communication 1 - invalid communication name
-        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name,
-                                                                    "00000000-0000-0000-0000-000000000000")
+        cmd = self._build_support_tickets_communications_create_cmd(test_ticket_name, random_guid)
         rsp = self.cmd(cmd, expect_failure=True)
         self._validate_failure_rsp(rsp, 1)
 
@@ -165,12 +166,13 @@ class SupportScenarioTest(ScenarioTest):
         self._validate_support_tickets_show_cmd(rsp, test_ticket_name)
 
     def _build_base_support_tickets_create_command(self, test_ticket_name):
+        test_ticket_title = "test ticket from python cli test. Do not assign and close after a day."
         cmd = "support tickets create --debug "
-        cmd += "--description 'test ticket from python cli test' "
+        cmd += "--description '{0}' ".format(test_ticket_title)
         cmd += "--severity 'minimal' "
         cmd += "--ticket-name '{0}' ".format(test_ticket_name)
         cmd += "--severity 'minimal' "
-        cmd += "--title 'test ticket from python cli e2e test. do not assign and do not close.' "
+        cmd += "--title '{0}' ".format(test_ticket_title)
         cmd += "--contact-country 'USA' "
         cmd += "--contact-email 'azengcase@microsoft.com' "
         cmd += "--contact-first-name 'Foo' "
@@ -187,9 +189,9 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
         cmd += "problemClassifications/{0}' ".format(problem_classification_name)
 
-        quota_payload1 = "{\\\"SKU\\\": \\\"DSv3 Series\\\", \\\"NewLimit\\\": 100}"
-        quota_payload2 = "{\\\"SKU\\\": \\\"DSv3 Series\\\", \\\"NewLimit\\\": 100}"
-        cmd += "--quota-change-payload \"{0}\" \"{1}\" ".format(quota_payload1, quota_payload2)
+        quota_payload1 = '{"SKU": "DSv3 Series", "NewLimit": 100}'
+        quota_payload2 = '{"SKU": "DSv3 Series", "NewLimit": 100}'
+        cmd += "--quota-change-payload '{0}' '{1}' ".format(quota_payload1, quota_payload2)
         cmd += "--quota-change-regions 'EastUS' 'EastUS2' "
         cmd += "--quota-change-version '1.0' "
 
@@ -201,7 +203,7 @@ class SupportScenarioTest(ScenarioTest):
         cmd = "--problem-classification '/providers/Microsoft.Support/services/{0}/".format(service_name)
         cmd += "problemClassifications/{0}' ".format(problem_classification_name)
 
-        arm_resource_id = "/subscriptions/1c4eecc5-46a8-4b7f-9a0a-fa0ba47240cd"
+        arm_resource_id = "/subscriptions/{0}".format(self.get_subscription_id())
         arm_resource_id += "/resourceGroups/AaronTest/providers/Microsoft.AppPlatform/Spring/springtest"
         cmd += "--technical-resource '{0}' ".format(arm_resource_id)
 

@@ -8,197 +8,198 @@ from knack.help_files import helps
 
 
 helps['support'] = """
-    type: group
-    short-summary: Manage and administer support tickets.
+type: group
+short-summary: Manage and administer support tickets.
 """
 
 helps['support services'] = """
-    type: group
-    short-summary: Commands to manage services.
+type: group
+short-summary: Commands to manage services.
 """
 
 helps['support services list'] = """
-    type: command
-    short-summary: List services.
-    examples:
-      - name: List services available for creating support ticket.
-        text: |-
-               az support services list
+type: command
+short-summary: List services.
+examples:
+  - name: List services available for creating support ticket.
+    text: |-
+          az support services list
 """
 
 helps['support services show'] = """
-    type: command
-    short-summary: Show service.
-    examples:
-      - name: Show service named 'Virtual Machine Running Windows Service'.
-        text: |-
-               az support services show --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396"
+type: command
+short-summary: Show service.
+examples:
+  - name: Show service corresponding to name "ServiceNameGuid".
+    text: |-
+          az support services show --service-name "ServiceNameGuid"
 """
 
 helps['support services problem-classifications'] = """
-    type: group
-    short-summary: Commands to manage problem classifications for service.
+type: group
+short-summary: Commands to manage problem classifications for a service.
 """
 
 helps['support services problem-classifications list'] = """
-    type: command
-    short-summary: List problem classifications for service.
-    examples:
-      - name: Show supported problem classifications for service 'Virtual Machine Running Window'.
-        text: |-
-               az support services problem-classifications list --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396"
+type: command
+short-summary: List problem classifications for a service.
+examples:
+  - name: Show supported problem classifications for a service corresponding to name "ServiceNameGuid".
+    text: |-
+          az support services problem-classifications list --service-name "ServiceNameGuid"
 """
 
 helps['support services problem-classifications show'] = """
-    type: command
-    short-summary: Show problem classification for service.
-    examples:
-      - name: Show problem classification 'VM Performance / Memory usage is higher than expected' for service 'Virtual Machine Running Window'.
-        text: >
-               az support services problem-classifications show \\
-                 --service-name "6f16735c-b0ae-b275-ad3a-03479cfa1396" \\
-                 --problem-classification-name "0cb121be-61df-48e4-5faa-b34f01c7aa16"
+type: command
+short-summary: Show a problem classification for service.
+examples:
+  - name: Show a problem classification corresponding to name "ProblemClassificationNameGuid" for a service corresponding to name "ServiceNameGuid".
+    text: |
+          az support services problem-classifications show \\
+            --service-name "ServiceNameGuid" \\
+            --problem-classification-name "ProblemClassificationNameGuid"
 """
 
 helps['support tickets'] = """
-    type: group
-    short-summary: Commands to manage support tickets.
+type: group
+short-summary: Commands to manage support tickets.
 """
 
 helps['support tickets list'] = """
-    type: command
-    short-summary: List support tickets.
-    examples:
-      - name: List support tickets that are active and created after specific date".
-        text: |-
-               az support tickets list --filters "CreatedDate ge 2019-12-01 and Status eq 'Open'"
+type: command
+short-summary: List support tickets.
+examples:
+  - name: List support tickets created after 1st January, 2020 that are still open (unresolved).
+    text: |-
+          az support tickets list --filters "CreatedDate ge 2020-01-01 and Status eq 'Open'"
 """
 
 helps['support tickets show'] = """
-    type: command
-    short-summary: Show support ticket.
-    examples:
-      - name: Show support ticket named "test_ticket_from_pythoncli".
-        text: |-
-               az support tickets show --ticket-name "test_ticket_from_pythoncli"
+type: command
+short-summary: Show support ticket.
+examples:
+  - name: Show support ticket named "TicketCreatedFromPythonCLI".
+    text: |-
+          az support tickets show --ticket-name "TicketCreatedFromPythonCLI"
 """
 
 helps['support tickets update'] = """
-    type: command
-    short-summary: Update support ticket.
-    examples:
-      - name: Update severity for support ticket named "test_ticket_from_pythoncli".
-        text: |-
-               az support tickets update --ticket-name "test_ticket_from_pythoncli" --severity "moderate"
+type: command
+short-summary: Update support ticket.
+examples:
+  - name: Update severity for support ticket named "TicketCreatedFromPythonCLI".
+    text: |-
+          az support tickets update --ticket-name "TicketCreatedFromPythonCLI" --severity "moderate"
 
-      - name: Update one or more properties of contact details for support ticket named "test_ticket_from_pythoncli".
-        text: >
-               az support tickets update --ticket-name "test_ticket_from_pythoncli" \\
-                --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
-                --contact-country "USA" \\
-                --contact-email "abc@contoso.com" \\
-                --contact-first-name "Foo" \\
-                --contact-language "en-US" \\
-                --contact-last-name "Bar" \\
-                --contact-method "phone" \\
-                --contact-phone-numbe "123-456-7890" \\
-                --contact-timezone "Pacific Standard Time"
+  - name: Update one or more properties of contact details for support ticket named "TicketCreatedFromPythonCLI".
+    text: |
+          az support tickets update --ticket-name "TicketCreatedFromPythonCLI" \\
+            --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
+            --contact-country "USA" \\
+            --contact-email "abc@contoso.com" \\
+            --contact-first-name "Foo" \\
+            --contact-language "en-US" \\
+            --contact-last-name "Bar" \\
+            --contact-method "phone" \\
+            --contact-phone-number "123-456-7890" \\
+            --contact-timezone "Pacific Standard Time"
 """
 
 helps['support tickets create'] = """
-    type: command
-    short-summary: Create support ticket.
-    examples:
-      - name: Create support ticket for technical issue.
-        text: >
-               az support tickets create \\
-                --contact-country "USA" \\
-                --contact-email "abc@contoso.com" \\
-                --contact-first-name "Foo" \\
-                --contact-language "en-US" \\
-                --contact-last-name "Bar" \\
-                --contact-method "email" \\
-                --contact-timezone "Pacific Standard Time" \\
-                --description "test ticket description" \\
-                --problem-classification "/providers/Microsoft.Support/services/cddd3eb5-1830-b494-44fd-782f691479dc/problemClassifications/ffe93180-2ece-07c9-0cd4-6ae7ccc19d7c" \\
-                --severity "minimal" \\
-                --ticket-name "test_ticket_from_pythoncli" \\
-                --title "test ticket from python cli" \\
-                --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
-                --technical-resource "/subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/test/providers/Microsoft.Compute/virtualMachines/testserver"
+type: command
+short-summary: Create support ticket.
+examples:
+  - name: Create support ticket for technical issue.
+    text: |
+          az support tickets create \\
+            --contact-country "USA" \\
+            --contact-email "abc@contoso.com" \\
+            --contact-first-name "Foo" \\
+            --contact-language "en-US" \\
+            --contact-last-name "Bar" \\
+            --contact-method "email" \\
+            --contact-timezone "Pacific Standard Time" \\
+            --description "TicketDescription" \\
+            --problem-classification "/providers/Microsoft.Support/services/TechnicalServiceNameGuid/problemClassifications/TechnicalProblemClassificationNameGuid" \\
+            --severity "minimal" \\
+            --ticket-name "TicketCreatedFromPythonCLI" \\
+            --title "TicketTitle" \\
+            --contact-additional-emails "xyz@contoso.com" "devs@contoso.com" \\
+            --technical-resource "/subscriptions/SubscriptionGuid/resourceGroups/RgName/providers/Microsoft.Compute/virtualMachines/RName"
 
-      - name: Create support ticket for billing issue.
-        text: >
-               az support tickets create \\
-                --contact-country "USA" \\
-                --contact-email "abc@contoso.com" \\
-                --contact-first-name "Foo" \\
-                --contact-language "en-US" \\
-                --contact-last-name "Bar" \\
-                --contact-method "email" \\
-                --contact-timezone "Pacific Standard Time" \\
-                --description "test ticket description" \\
-                --problem-classification "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/a8d819ba-73bd-10c2-fcd5-7059fc386df3" \\
-                --severity "minimal" \\
-                --ticket-name "test_ticket_from_pythoncli" \\
-                --title "test ticket from python cli" \\
-                --partner-tenant-id "12345678-1234-1234-1234-123456789012"
+  - name: Create support ticket for billing issue.
+    text: |
+          az support tickets create \\
+            --contact-country "USA" \\
+            --contact-email "abc@contoso.com" \\
+            --contact-first-name "Foo" \\
+            --contact-language "en-US" \\
+            --contact-last-name "Bar" \\
+            --contact-method "email" \\
+            --contact-timezone "Pacific Standard Time" \\
+            --description "TicketDescription" \\
+            --problem-classification "/providers/Microsoft.Support/services/BillingServiceNameGuid/problemClassifications/BillingProblemClassificationNameGuid" \\
+            --severity "minimal" \\
+            --ticket-name "TicketCreatedFromPythonCLI" \\
+            --title "TicketTitle" \\
+            --partner-tenant-id "CSPPartnerTenantIdGuid"
 
-      - name: Create support ticket for quota issue.
-        text: >
-               az support tickets create \\
-                --contact-country "USA" \\
-                --contact-email "abc@contoso.com" \\
-                --contact-first-name "Foo" \\
-                --contact-language "en-US" \\
-                --contact-last-name "Bar" \\
-                --contact-method "email" \\
-                --contact-timezone "Pacific Standard Time" \\
-                --description "test ticket description" \\
-                --problem-classification "/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89/problemClassifications/e12e3d1d-7fa0-af33-c6d0-3c50df9658a3" \\
-                --severity "minimal" \\
-                --ticket-name "test_ticket_from_pythoncli" \\
-                --title "test ticket from python cli" \\
-                --quota-change-payload "{\"SKU\":\"DSv3 Series\",\"NewLimit\":111}" "{\"SKU\":\"DSv3 Series\",\"NewLimit\":102}" \\
-                --quota-change-regions "EastUS" "EastUS2" \\
-                --quota-change-version "1.0"
+  - name: Create quota change support ticket for DSv3 sku in EastUS and EastUS2 regions.
+    text: |
+          az support tickets create \\
+            --contact-country "USA" \\
+            --contact-email "abc@contoso.com" \\
+            --contact-first-name "Foo" \\
+            --contact-language "en-US" \\
+            --contact-last-name "Bar" \\
+            --contact-method "email" \\
+            --contact-timezone "Pacific Standard Time" \\
+            --description "TicketDescription" \\
+            --problem-classification "/providers/Microsoft.Support/services/QuotaServiceNameGuid/problemClassifications/QuotaProblemClassificationNameGuid" \\
+            --severity "minimal" \\
+            --ticket-name "TicketCreatedFromPythonCLI" \\
+            --title "TicketTitle" \\
+            --quota-change-payload "{\"SKU\":\"DSv3 Series\",\"NewLimit\":111}" "{\"SKU\":\"DSv3 Series\",\"NewLimit\":102}" \\
+            --quota-change-regions "EastUS" "EastUS2" \\
+            --quota-change-version "1.0"
 """
 
 helps['support tickets communications'] = """
-    type: group
-    short-summary: Commands to manage support ticket communication.
-    examples:
-      - name: Show support ticket named "test_ticket_from_pythoncli".
-        text: |-
-               az support tickets communications list --ticket-name "test_ticket_from_pythoncli"
+type: group
+short-summary: Commands to manage support ticket communication.
+examples:
+  - name: Show support ticket named "TicketCreatedFromPythonCLI".
+    text: |-
+          az support tickets communications list --ticket-name "TicketCreatedFromPythonCLI"
 """
 
 helps['support tickets communications list'] = """
-    type: command
-    short-summary: List communications for support ticket.
-    examples:
-      - name: List communications for support ticket named "test_ticket_from_pythoncli".
-        text: |-
-               az support tickets communications list --ticket-name "test_ticket_from_pythoncli" --filters "CreatedDate ge 2019-12-01 and communicationType eq 'web'"
+type: command
+short-summary: List communications for support ticket.
+examples:
+  - name: List communications for support ticket named "TicketCreatedFromPythonCLI".
+    text: |-
+          az support tickets communications list --ticket-name "TicketCreatedFromPythonCLI" --filters "CreatedDate ge 2020-01-01 and communicationType eq 'Web'"
 """
 
 helps['support tickets communications show'] = """
-    type: command
-    short-summary: Show communication for support ticket.
-    examples:
-      - name: Show communication named "test_communication_from_pythoncli" for support ticket named "test_ticket_from_pythoncli"
-        text: |-
-               az support tickets communications show --ticket-name "test_ticket_from_pythoncli" --communication-name "test_communication_from_pythoncli"
+type: command
+short-summary: Show communication for support ticket.
+examples:
+  - name: Show communication named "TicketCommunicationCreatedFromPythonCLI" for support ticket named "TicketCreatedFromPythonCLI"
+    text: |-
+          az support tickets communications show --ticket-name "TicketCreatedFromPythonCLI" --communication-name "TicketCommunicationCreatedFromPythonCLI"
 """
 
 helps['support tickets communications create'] = """
-    type: command
-    short-summary: Create communication for support ticket.
-    examples:
-      - name: Create communication named "test_communication_from_pythoncli" for support ticket named "test_ticket_from_pythoncli".
-        text: >
-               az support tickets communications create --ticket-name "test_ticket_from_pythoncli" \\
-                --communication-name "message1" \\
-                --communication-body "test communication message body" \\
-                --communication-subject "message from python cli"
+type: command
+short-summary: Create communication for support ticket.
+examples:
+  - name: Create communication named "TicketCommunicationCreatedFromPythonCLI" for support ticket named "TicketCreatedFromPythonCLI".
+    text: |
+          az support tickets communications create \\
+            --ticket-name "TicketCreatedFromPythonCLI" \\
+            --communication-name "TicketCommunicationCreatedFromPythonCLI" \\
+            --communication-body "TicketCommunicationBody" \\
+            --communication-subject "TicketCommunicationSubject"
 """
