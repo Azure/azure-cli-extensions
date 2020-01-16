@@ -213,3 +213,9 @@ def validate_eviction_policy(namespace):
 def validate_acr(namespace):
     if namespace.attach_acr and namespace.detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
+
+
+def validate_user(namespace):
+    if namespace.user.lower() != "clusteruser" and \
+            namespace.user.lower() != "clustermonitoringuser":
+        raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
