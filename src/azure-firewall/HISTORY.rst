@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.8
+++++++
+* `az network firewall create`: support private-ranges
+* `az network firewall threat-intel-whitelist`:  support threat intelligence whitelist.
+
 0.1.7
 ++++++
 * `az network firewall network-rule/nat-rule/application-rule`: support ip-groups for firewall rules.

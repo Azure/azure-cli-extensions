@@ -53,6 +53,32 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_threat_intel_whitelist')
+    def test_azure_firewall_threat_intel_whitelist(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+        })
+        self.cmd('network firewall create -g {rg} -n {af} --private-ranges 10.0.0.0 10.0.0.0/24 IANAPrivateRanges', checks=[
+            self.check('"Network.SNAT.PrivateRanges"', '10.0.0.0, 10.0.0.0/24, IANAPrivateRanges')
+        ])
+        self.cmd('network firewall threat-intel-whitelist create -g {rg} -n {af} --ip-addresses 10.0.0.0 10.0.0.1 --fqdns www.bing.com *.microsoft.com *google.com', checks=[
+            self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
+            self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.0, 10.0.0.1')
+        ])
+        self.cmd('network firewall threat-intel-whitelist show -g {rg} -n {af}', checks=[
+            self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
+            self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.0, 10.0.0.1')
+        ])
+        self.cmd('network firewall threat-intel-whitelist update -g {rg} -n {af} --ip-addresses 10.0.0.1 10.0.0.0 --fqdns *google.com www.bing.com *.microsoft.com', checks=[
+            self.check('"ThreatIntel.Whitelist.FQDNs"', '*google.com, www.bing.com, *.microsoft.com'),
+            self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.1, 10.0.0.0')
+        ])
+        self.cmd('network firewall update -g {rg} -n {af} --private-ranges IANAPrivateRanges 10.0.0.1 10.0.0.0/16', checks=[
+            self.check('"Network.SNAT.PrivateRanges"', 'IANAPrivateRanges, 10.0.0.1, 10.0.0.0/16')
+        ])
+        self.cmd('network firewall threat-intel-whitelist delete -g {rg} -n {af}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_rules')
     def test_azure_firewall_rules(self, resource_group):
 

@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-branches
-def imagecopy(source_resource_group_name, source_object_name, target_location,
+def imagecopy(cmd, source_resource_group_name, source_object_name, target_location,
               target_resource_group_name, temporary_resource_group_name='image-copy-rg',
               source_type='image', cleanup='false', parallel_degree=-1, tags=None, target_name=None,
               target_subscription=None, export_as_snapshot='false', timeout=3600):
@@ -130,7 +130,7 @@ def imagecopy(source_resource_group_name, source_object_name, target_location,
             logger.debug("Starting sync process for all locations")
             for location in target_location:
                 location = location.strip()
-                create_target_image(location, transient_resource_group_name, source_type,
+                create_target_image(cmd, location, transient_resource_group_name, source_type,
                                     source_object_name, source_os_disk_snapshot_name, source_os_disk_snapshot_url,
                                     source_os_type, target_resource_group_name, azure_pool_frequency,
                                     tags, target_name, target_subscription, export_as_snapshot, timeout)
