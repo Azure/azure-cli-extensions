@@ -53,6 +53,48 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_management_ip_config')
+    def test_azure_firewall_management_ip_config(self, resource_group):
+        self.kwargs.update({
+            'af': 'af1',
+            'pubip': 'pubip',
+            'management_pubip': 'pubip2',
+            'vnet': 'myvnet',
+            'management_vnet': 'myvnet2',
+            'ipconfig': 'myipconfig1',
+            'management_ipconfig': 'myipconfig2'
+        })
+        self.cmd('network firewall create -g {rg} -n {af}')
+        self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
+        self.cmd('network public-ip create -g {rg} -n {management_pubip} --sku standard')
+        vnet_instance = self.cmd(
+            'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        subnet_id_ip_config = vnet_instance['newVNet']['subnets'][0]['id']
+
+        vnet_instance = self.cmd(
+            'network vnet create -g {rg} -n {management_vnet} --subnet-name "AzureFirewallManagementSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        subnet_id_management_ip_config = vnet_instance['newVNet']['subnets'][0]['id']
+
+        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
+            self.check('name', '{ipconfig}'),
+            self.check('subnet.id', subnet_id_ip_config)
+        ])
+
+        self.cmd(
+            'network firewall management-ip-config create -g {rg} -n {management_ipconfig} -f {af} --public-ip-address {management_pubip} --vnet-name {management_vnet}',
+            checks=[
+                self.check('name', '{management_ipconfig}'),
+                self.check('subnet.id', subnet_id_management_ip_config)
+            ])
+
+        self.cmd('network firewall management-ip-config show -g {rg} -f {af}',
+                 checks=[
+                    self.check('name', '{management_ipconfig}'),
+                    self.check('subnet.id', subnet_id_management_ip_config)
+                 ])
+
+        self.cmd('network firewall management-ip-config delete -g {rg} -f {af}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_threat_intel_whitelist')
     def test_azure_firewall_threat_intel_whitelist(self, resource_group):
 

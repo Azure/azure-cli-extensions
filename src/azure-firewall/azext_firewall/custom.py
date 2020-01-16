@@ -107,6 +107,37 @@ def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, it
     return _get_property(poller.result().ip_configurations, item_name)
 
 
+def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
+                                          public_ip_address, virtual_network_name, subnet='AzureFirewallManagementSubnet'):
+    AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    af = client.get(resource_group_name, azure_firewall_name)
+    config = AzureFirewallIPConfiguration(
+        name=item_name,
+        public_ip_address=SubResource(id=public_ip_address) if public_ip_address else None,
+        subnet=SubResource(id=subnet) if subnet else None
+    )
+    af.management_ip_configuration = config
+    poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
+    return poller.result().management_ip_configuration
+
+
+def show_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
+    AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    af = client.get(resource_group_name, azure_firewall_name)
+    return af.management_ip_configuration
+
+
+def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
+    AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    af = client.get(resource_group_name, azure_firewall_name)
+    af.management_ip_configuration = None
+    poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
+    return poller.result().management_ip_configuration
+
+
 def build_af_rule_list(item_param_name, collection_param_name):
     import sys
 
