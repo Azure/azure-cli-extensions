@@ -24,17 +24,20 @@ def create_blueprint(cmd, client,
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['target_scope'] = target_scope  # str
-    body['parameters'] = parameters  # dictionary
+    body['parameters'] = json.loads(parameters) if parameters is not None else {}  # dictionary
     return client.create_or_update(scope=scope, blueprint_name=name, blueprint=body)
 
 
 def update_blueprint(cmd, client,
                      name,
                      scope,
-                     description=None):
+                     description=None,
+                     parameters=None):
     body = client.get(scope=scope, blueprint_name=name).as_dict()
     if description is not None:
         body['description'] = description  # str
+    if parameters is not None:
+        body['parameters'] = json.loads(parameters) # dictionary
     return client.create_or_update(scope=scope, blueprint_name=name, blueprint=body)
 
 

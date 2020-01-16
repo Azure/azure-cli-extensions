@@ -134,6 +134,7 @@ helps['blueprint resource-group show'] = """
 
 helps['blueprint resource-group list'] = """
     type: command
+<<<<<<< Updated upstream
     short-summary: List blueprint resource group artifact.
     examples:
       - name: List resource group artifacts
@@ -145,6 +146,9 @@ helps['blueprint resource-group list'] = """
 helps['blueprint artifact'] = """
     type: group
     short-summary: Commands to manage blueprint artifact.
+=======
+    short-summary: Update blueprint artifact.
+>>>>>>> Stashed changes
 """
 
 # helps['blueprint artifact create'] = """
@@ -348,7 +352,7 @@ helps['blueprint artifact template update'] = """
 
 helps['blueprint published'] = """
     type: group
-    short-summary: Commands to manage blueprint published.
+    short-summary: Commands to manage published blueprint.
 """
 
 helps['blueprint published create'] = """
@@ -477,7 +481,7 @@ helps['blueprint assignment'] = """
 
 helps['blueprint assignment create'] = """
     type: command
-    short-summary: Create or update a blueprint assignment.
+    short-summary: Create a blueprint assignment.
     examples:
       - name: Assignment with system-assigned managed identity
         text: |-
@@ -497,7 +501,7 @@ helps['blueprint assignment create'] = """
 
 helps['blueprint assignment update'] = """
     type: command
-    short-summary: Create or update a blueprint assignment.
+    short-summary: Update a blueprint assignment.
 """
 
 helps['blueprint assignment delete'] = """
