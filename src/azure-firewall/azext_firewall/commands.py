@@ -25,13 +25,13 @@ def load_command_table(self, _):
     )
 
     network_firewall_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2019_09_01.operations#AzureFirewallsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_11_01.operations#AzureFirewallsOperations.{}',
         client_factory=cf_firewalls,
         min_api='2018-08-01'
     )
 
     network_firewall_fqdn_tags_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2019_09_01.operations#AzureFirewallFqdnTagsOperations.{}',
+        operations_tmpl='azext_firewall.vendored_sdks.v2019_11_01.operations#AzureFirewallFqdnTagsOperations.{}',
         client_factory=cf_firewall_fqdn_tags,
         min_api='2018-08-01'
     )

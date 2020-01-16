@@ -67,7 +67,10 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     AzureFirewall = cmd.get_models('AzureFirewall')
     firewall = AzureFirewall(location=location, tags=tags, zones=zones, additional_properties={})
-    firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
+    if private_ranges is not None:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
@@ -261,10 +264,14 @@ def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure
                                                  ip_addresses=None, fqdns=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
-    if firewall.additional_properties is None:
-        firewall.additional_properties = {}
-    firewall.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ip_addresses
-    firewall.additional_properties['ThreatIntel.Whitelist.FQDNs'] = fqdns
+    if ip_addresses is not None:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ip_addresses
+    if fqdns is not None:
+        if firewall.additional_properties is None:
+            firewall.additional_properties = {}
+        firewall.additional_properties['ThreatIntel.Whitelist.FQDNs'] = fqdns
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 

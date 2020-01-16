@@ -247,8 +247,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('length(rules)', 2)
         ])
 
-        with self.assertRaisesRegexp(CLIError, 'Unable to find status link for polling.'):
-            self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')
+        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {collectiongroup}')
 
         self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', checks=[
             self.check('length(@)', 0)
