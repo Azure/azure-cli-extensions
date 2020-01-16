@@ -3,10 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from argparse import _AppendAction  # pylint: disable=protected-access
+
 from knack.util import CLIError
 
-from azure.cli.core.commands.validators import validate_tags, get_default_location_from_resource_group
-from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 
 
@@ -30,32 +31,23 @@ def get_network_watcher_from_location(remove=False, watcher_name='watcher_name',
     return _validator
 
 
-def process_nw_cm_create_namespace(cmd, namespace):
-    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+# pylint: disable=protected-access
+class NWConnectionMonitorEndpointFilterItemAction(_AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ConnectionMonitorEndpointFilterItem = namespace._cmd.get_models('ConnectionMonitorEndpointFilterItem')
 
-    validate_tags(namespace)
+        if not namespace.filter_items:
+            namespace.filter_items = []
 
-    compute_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE).virtual_machines
-    vm_name = parse_resource_id(namespace.source_resource)['name']
-    rg = namespace.resource_group_name or parse_resource_id(namespace.source_resource).get('resource_group', None)
-    if not rg:
-        raise CLIError('usage error: --source-resource ID | --source-resource NAME --resource-group NAME')
-    vm = compute_client.get(rg, vm_name)
-    namespace.location = vm.location  # pylint: disable=no-member
-    get_network_watcher_from_location()(cmd, namespace)
+        print(option_string)
+        kwargs = {}
+        for item in values:
+            try:
+                key, val = item.split('=', 1)
+                kwargs[key] = val
+            except ValueError:
+                raise CLIError(
+                    'usage error: {} PropertyName=PropertyValue [PropertyName=PropertyValue ...]'.format(option_string))
 
-    if namespace.source_resource and not is_valid_resource_id(namespace.source_resource):
-        namespace.source_resource = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
-            resource_group=rg,
-            namespace='Microsoft.Compute',
-            type='virtualMachines',
-            name=namespace.source_resource)
-
-    if namespace.dest_resource and not is_valid_resource_id(namespace.dest_resource):
-        namespace.dest_resource = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
-            resource_group=namespace.resource_group_name,
-            namespace='Microsoft.Compute',
-            type='virtualMachines',
-            name=namespace.dest_resource)
+        filter_item = ConnectionMonitorEndpointFilterItem(**kwargs)
+        namespace.filter_items.append(filter_item)

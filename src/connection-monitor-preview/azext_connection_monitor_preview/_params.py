@@ -4,8 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands.parameters import get_enum_type, get_location_type
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.parameters import get_enum_type
+
+from ._validators import NWConnectionMonitorEndpointFilterItemAction
 
 
 def load_arguments(self, _):
@@ -16,6 +17,7 @@ def load_arguments(self, _):
     with self.argument_context('network watcher') as c:
         c.argument('network_watcher_name', name_arg_type, help='Name of the Network Watcher.')
         c.argument('location', validator=None)
+        c.ignore('watcher_rg')
         c.ignore('watcher_name')
 
     with self.argument_context('network watcher connection-monitor') as c:
@@ -34,7 +36,8 @@ def load_arguments(self, _):
                    help="The behavior of the endpoint filter. Currently only 'Include' is supported.")
         c.argument('filter_items',
                    options_list=['--filter-item'],
+                   action=NWConnectionMonitorEndpointFilterItemAction,
                    nargs='+',
-                   help="Sequence of property=value pair to define an filter item."
-                        "Property currently include: type, address."
+                   help="List of property=value pairs to define filter items. "
+                        "Property currently include: type, address. "
                         "Property type supports 'AgentAddress' only now.")
