@@ -105,7 +105,7 @@ class Website:
         if not self.__deployment_info:
             publishing_info = list_publishing_credentials(self.__cmd, resource_group_name=self.name, name=self.name)
             self.__deployment_info = type('DeploymentInfo', (object, ), {
-                'name': publishing_info.name,
+                'name': publishing_info.publishing_user_name,
                 'password': publishing_info.publishing_password,
                 'git_url': 'https://{}.scm.azurewebsites.net/{}.git'.format(self.name, self.name)
             })()
