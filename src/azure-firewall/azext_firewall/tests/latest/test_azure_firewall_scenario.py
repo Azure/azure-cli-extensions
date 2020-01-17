@@ -87,12 +87,13 @@ class AzureFirewallScenario(ScenarioTest):
                 self.check('subnet.id', subnet_id_management_ip_config)
             ])
 
-        self.cmd('network firewall management-ip-config show -g {rg} -f {af}',
-                 checks=[
-                    self.check('name', '{management_ipconfig}'),
-                    self.check('subnet.id', subnet_id_management_ip_config)
-                 ])
-
+        self.cmd(
+            'network firewall management-ip-config show -g {rg} -f {af}',
+            checks=[
+                self.check('name', '{management_ipconfig}'),
+                self.check('subnet.id', subnet_id_management_ip_config)
+            ])
+        self.cmd('network firewall ip-config delete -g {rg} -f {af} -n {ipconfig}')
         self.cmd('network firewall management-ip-config delete -g {rg} -f {af}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_threat_intel_whitelist')

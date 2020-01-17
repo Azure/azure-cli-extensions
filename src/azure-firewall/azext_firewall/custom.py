@@ -108,7 +108,8 @@ def create_af_ip_configuration(cmd, resource_group_name, azure_firewall_name, it
 
 
 def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name, item_name,
-                                          public_ip_address, virtual_network_name, subnet='AzureFirewallManagementSubnet'):
+                                          public_ip_address, virtual_network_name,  # pylint: disable=unused-argument
+                                          subnet='AzureFirewallManagementSubnet'):
     AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
@@ -123,14 +124,12 @@ def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
 
 
 def show_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
-    AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     return af.management_ip_configuration
 
 
 def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
-    AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
     af.management_ip_configuration = None
