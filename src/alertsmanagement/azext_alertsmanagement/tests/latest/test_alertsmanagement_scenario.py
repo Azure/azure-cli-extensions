@@ -18,18 +18,14 @@ class AlertsScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_alertsmanagement')
     def test_alertsmanagement(self, resource_group):
 
-        self.kwargs.update({
-            'name': 'test1'
-        })
-
-        self.cmd('az alertsmanagement create '
+        self.cmd('az alertsmanagement action-rule create '
                  '--resource-group {rg} '
                  '--name "DailySuppression" '
                  '--location "Global" '
                  '--status "Enabled"',
                  checks=[])
 
-        self.cmd('az alertsmanagement create '
+        self.cmd('az alertsmanagement smart-detector-alert-rule create '
                  '--resource-group {rg} '
                  '--name "MyAlertRule" '
                  '--description "Sample smart detector alert rule description" '
@@ -38,87 +34,87 @@ class AlertsScenarioTest(ScenarioTest):
                  '--frequency "PT5M"',
                  checks=[])
 
-        self.cmd('az alertsmanagement show '
+        self.cmd('az alertsmanagement smart-detector-alert-rule show '
                  '--resource-group {rg} '
                  '--name "MyAlertRule"',
                  checks=[])
 
-        self.cmd('az alertsmanagement show '
+        self.cmd('az alertsmanagement action-rule show '
                  '--resource-group {rg} '
                  '--name "DailySuppression"',
                  checks=[])
 
-        self.cmd('az alertsmanagement list '
+        self.cmd('az alertsmanagement smart-detector-alert-rule list '
                  '--resource-group {rg}',
                  checks=[])
 
-        self.cmd('az alertsmanagement list '
+        self.cmd('az alertsmanagement action-rule list '
                  '--resource-group {rg}',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate get_history '
+        self.cmd('az alertsmanagement alert get-history '
                  '--alert-id "66114d64-d9d9-478b-95c9-b789d6502100"',
                  checks=[])
 
-        self.cmd('az alertsmanagement change-state get_by_id '
+        self.cmd('az alertsmanagement smart-group get-by-id '
                  '--smart-group-id "603675da-9851-4b26-854a-49fc53d32715"',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate get_history '
+        self.cmd('az alertsmanagement alert get-history '
                  '--alert-id "66114d64-d9d9-478b-95c9-b789d6502100"',
                  checks=[])
 
-        self.cmd('az alertsmanagement list '
+        self.cmd('az alertsmanagement smart-detector-alert-rule list '
                  '--resource-group {rg}',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate get_by_id '
+        self.cmd('az alertsmanagement alert get-by-id '
                  '--alert-id "66114d64-d9d9-478b-95c9-b789d6502100"',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate get_summary',
+        self.cmd('az alertsmanagement alert get-summary',
                  checks=[])
 
-        self.cmd('az alertsmanagement change-state get_all',
+        self.cmd('az alertsmanagement smart-group get-all',
                  checks=[])
 
-        self.cmd('az alertsmanagement list',
+        self.cmd('az alertsmanagement action-rule list',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate get_all',
+        self.cmd('az alertsmanagement alert get-all',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate meta_data',
+        self.cmd('az alertsmanagement alert meta-data',
                  checks=[])
 
-        self.cmd('az alertsmanagement update '
+        self.cmd('az alertsmanagement smart-detector-alert-rule update '
                  '--resource-group {rg} '
                  '--name "MyAlertRule" '
                  '--description "New description for patching" '
                  '--frequency "PT1M"',
                  checks=[])
 
-        self.cmd('az alertsmanagement update '
+        self.cmd('az alertsmanagement action-rule update '
                  '--resource-group {rg} '
                  '--name "WeeklySuppression" '
                  '--status "Disabled"',
                  checks=[])
 
-        self.cmd('az alertsmanagement change-state change_state '
+        self.cmd('az alertsmanagement smart-group change-state '
                  '--smart-group-id "a808445e-bb38-4751-85c2-1b109ccc1059" '
                  '--new-state "Acknowledged"',
                  checks=[])
 
-        self.cmd('az alertsmanagement changestate get_history '
+        self.cmd('az alertsmanagement alert get-history '
                  '--alert-id "66114d64-d9d9-478b-95c9-b789d6502100"',
                  checks=[])
 
-        self.cmd('az alertsmanagement delete '
+        self.cmd('az alertsmanagement smart-detector-alert-rule delete '
                  '--resource-group {rg} '
                  '--name "MyAlertRule"',
                  checks=[])
 
-        self.cmd('az alertsmanagement delete '
+        self.cmd('az alertsmanagement action-rule delete '
                  '--resource-group {rg} '
                  '--name "DailySuppression"',
                  checks=[])
