@@ -10,7 +10,7 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(
-        resource="https://api.applicationinsights.io",
+        resource=cli_ctx.cloud.endpoints.app_insights_resource_id,
         subscription_id=subscription
     )
     return ApplicationInsightsDataClient(cred)
@@ -19,20 +19,8 @@ def applicationinsights_data_plane_client(cli_ctx, _, subscription=None):
 def applicationinsights_mgmt_plane_client(cli_ctx, _, subscription=None):
     """Initialize Log Analytics mgmt client for use with CLI."""
     from .vendored_sdks.mgmt_applicationinsights import ApplicationInsightsManagementClient
-    from azure.cli.core._profile import Profile
-    profile = Profile(cli_ctx=cli_ctx)
-    # Use subscription from resource_id where possible, otherwise use login.
-    if subscription:
-        cred, _, _ = profile.get_login_credentials(subscription_id=subscription)
-        return ApplicationInsightsManagementClient(
-            cred,
-            subscription
-        )
-    cred, sub_id, _ = profile.get_login_credentials()
-    return ApplicationInsightsManagementClient(
-        cred,
-        sub_id
-    )
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    return get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient, subscription_id=subscription)
 
 
 def cf_query(cli_ctx, _, subscription=None):
