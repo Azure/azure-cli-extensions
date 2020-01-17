@@ -171,7 +171,9 @@ def create_alertsmanagement_smart_detector_alert_rule(cmd, client,
                                                       severity=None,
                                                       frequency=None,
                                                       action_groups=None,
-                                                      throttling=None):
+                                                      throttling=None,
+                                                      detector=None,
+                                                      scope=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # unknown-primary[object]
@@ -179,8 +181,11 @@ def create_alertsmanagement_smart_detector_alert_rule(cmd, client,
     body['state'] = state  # str
     body['severity'] = severity  # str
     body['frequency'] = frequency  # unknown-primary[timeSpan]
-    body['action_groups'] = json.loads(action_groups) if isinstance(action_groups, str) else action_groups
+    # body['action_groups'] = json.loads(action_groups) if isinstance(action_groups, str) else action_groups
+    body['action_groups'] = {'groupIds': action_groups}
     body['throttling'] = json.loads(throttling) if isinstance(throttling, str) else throttling
+    body['detector'] = {'id': detector}
+    body['scope'] = scope
     return client.create_or_update(resource_group_name=resource_group, alert_rule_name=name, parameters=body)
 
 

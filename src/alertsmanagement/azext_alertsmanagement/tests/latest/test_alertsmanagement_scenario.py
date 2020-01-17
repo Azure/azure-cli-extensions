@@ -15,15 +15,14 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class AlertsScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='cli_test_alertsmanagement')
-    def test_alertsmanagement(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_alertsmanagement_alert_rule_')
+    def test_alertsmanagement_alert_rule(self, resource_group):
 
-        self.cmd('az alertsmanagement action-rule create '
-                 '--resource-group {rg} '
-                 '--name "DailySuppression" '
-                 '--location "Global" '
-                 '--status "Enabled"',
-                 checks=[])
+        ag1_id = self.cmd('monitor action-group create -g {rg} -n ag1').get_output_in_json()['id']
+
+        self.kwargs.update({
+            'ag1_id': ag1_id
+        })
 
         self.cmd('az alertsmanagement smart-detector-alert-rule create '
                  '--resource-group {rg} '
@@ -31,8 +30,22 @@ class AlertsScenarioTest(ScenarioTest):
                  '--description "Sample smart detector alert rule description" '
                  '--state "Enabled" '
                  '--severity "Sev3" '
-                 '--frequency "PT5M"',
+                 '--frequency "PT5M" '
+                 '--detector aaa '
+                 '--scope bbb '
+                 '--action-groups {ag1_id}',
                  checks=[])
+
+    @ResourceGroupPreparer()
+    def test_alertsmanagement(self, resource_group):
+        # self.cmd('az alertsmanagement action-rule create '
+        #          '--resource-group {rg} '
+        #          '--name "DailySuppression" '
+        #          '--location "Global" '
+        #          '--status "Enabled"',
+        #          checks=[])
+
+
 
         self.cmd('az alertsmanagement smart-detector-alert-rule show '
                  '--resource-group {rg} '

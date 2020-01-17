@@ -133,8 +133,10 @@ def load_arguments(self, _):
         c.argument('state', arg_type=get_enum_type(['Enabled', 'Disabled']), id_part=None, help='The alert rule state.')
         c.argument('severity', arg_type=get_enum_type(['Sev0', 'Sev1', 'Sev2', 'Sev3', 'Sev4']), id_part=None, help='The alert rule severity.')
         c.argument('frequency', id_part=None, help='The alert rule frequency in ISO8601 format. The time granularity must be in minutes and minimum value is 5 minutes.')
-        c.argument('action_groups', id_part=None, help='The alert rule actions.')
+        c.argument('action_groups', nargs='+', id_part=None, help='The Action Group resource IDs')
         c.argument('throttling', id_part=None, help='The alert rule throttling information.')
+        c.argument('detector', help='The alert rule\'s detector')
+        c.argument('scope', nargs='+', help='The alert rule resources scopes.')
 
     with self.argument_context('alertsmanagement smart-detector-alert-rule update') as c:
         c.argument('resource_group', resource_group_name_type)
