@@ -29,11 +29,17 @@ from azext_dms.vendored_sdks.datamigration.models import (Project,
                                                           MongoDbRestartCommand,
                                                           ValidateMongoDbTaskProperties,
                                                           OracleConnectionInfo,
-                                                          MigrateOracleAzureDbForPostgreSqlSyncTaskProperties)
+                                                          MigrateOracleAzureDbForPostgreSqlSyncTaskProperties,
+                                                          CheckOCIDriverTaskProperties,
+                                                          UploadOCIDriverTaskProperties,
+                                                          InstallOCIDriverTaskProperties)
 from azext_dms.scenario_inputs import (get_migrate_mysql_to_azuredbformysql_sync_input,
                                        get_migrate_postgresql_to_azuredbforpostgresql_sync_input,
                                        get_mongo_to_mongo_input,
-                                       get_migrate_oracle_to_azuredbforpostgresql_sync_input)
+                                       get_migrate_oracle_to_azuredbforpostgresql_sync_input,
+                                       get_check_oci_driver_input,
+                                       get_upload_oci_driver_input,
+                                       get_install_oci_driver_input)
 
 logger = get_logger(__name__)
 
@@ -321,6 +327,30 @@ To cancel this task do not supply the object-name parameter.")
 # endregion
 
 
+# region Service Task
+def create_service_task(
+        cmd,
+        client,
+        resource_group_name,
+        service_name,
+        task_name,
+        task_type,
+        task_options_json):
+
+    task_type = task_type.lower()
+
+    task_options_json = get_file_or_parse_json(task_options_json, "task-options-json")
+
+    task_properties = get_service_task_properties(task_options_json,
+                                                  task_type)
+
+    return client.create_or_update(group_name=resource_group_name,
+                                   service_name=service_name,
+                                   task_name=task_name,
+                                   properties=task_properties)
+# endregion
+
+
 # region Helper Methods
 def get_project_platforms(cmd, project_name, service_name, resource_group_name):
     client = dms_cf_projects(cmd.cli_ctx)
@@ -332,14 +362,13 @@ def extension_handles_scenario(
         source_platform,
         target_platform,
         task_type=""):
-    # Add scenario types to this list when moving them out of this extension (preview) and into the core CLI (GA)
+    # Remove scenario types from this list when moving them out of this extension (preview) and into the core CLI (GA)
     ExtensionScenarioTypes = [
         ScenarioType.sql_sqldb_online,
         ScenarioType.mysql_azuremysql_online,
         ScenarioType.postgres_azurepostgres_online,
         ScenarioType.mongo_mongo_offline,
         ScenarioType.mongo_mongo_online,
-        ScenarioType.oracle_azurepostgres_offline,
         ScenarioType.oracle_azurepostgres_online]
     return get_scenario_type(source_platform, target_platform, task_type) in ExtensionScenarioTypes
 
@@ -470,15 +499,41 @@ def get_task_validation_properties(
                                target_connection_info)
 
 
+def get_service_task_properties(
+        task_options_json,
+        task_type):
+    if task_type == "checkocidriver":
+        input_func = get_check_oci_driver_input
+        task_properties_type = CheckOCIDriverTaskProperties
+    elif task_type == "uploadocidriver":
+        input_func = get_upload_oci_driver_input
+        task_properties_type = UploadOCIDriverTaskProperties
+    elif task_type == "installocidriver":
+        input_func = get_install_oci_driver_input
+        task_properties_type = InstallOCIDriverTaskProperties
+    else:
+        raise CLIError("The supplied service task type is not supported.")
+
+    return get_task_properties(input_func,
+                               task_properties_type,
+                               task_options_json,
+                               None,
+                               None)
+
+
 def get_task_properties(input_func,
                         task_properties_type,
-                        database_options_json,
+                        options_json,
                         source_connection_info,
                         target_connection_info):
-    task_input = input_func(
-        database_options_json,
-        source_connection_info,
-        target_connection_info)
+    if source_connection_info is None and target_connection_info is None:
+        task_input = input_func(options_json)
+    else:
+        task_input = input_func(
+            options_json,
+            source_connection_info,
+            target_connection_info)
+    
     task_properties_params = {'input': task_input}
 
     return task_properties_type(**task_properties_params)
@@ -511,13 +566,16 @@ def get_scenario_type(source_platform, target_platform, task_type=""):
         scenario_type = ScenarioType.mysql_azuremysql_online if "online" in task_type else \
             ScenarioType.mysql_azuremysql_offline
     elif source_platform == "postgresql" and target_platform == "azuredbforpostgresql":
-        scenario_type = ScenarioType.postgres_azurepostgres_online if "online" in task_type else \
+        # PG is one of the few that doesn't have an offline scenario. But a project doesn't pass a task type so we
+        # need to accommodate for projects and making sure a task is set to online.
+        scenario_type = ScenarioType.postgres_azurepostgres_online if not task_type or "online" in task_type else \
             ScenarioType.postgres_azurepostgres_offline
     elif source_platform == "mongodb" and target_platform == "mongodb":
         scenario_type = ScenarioType.mongo_mongo_validation if "validation" in task_type else \
             ScenarioType.mongo_mongo_online if "online" in task_type else ScenarioType.mongo_mongo_offline
     elif source_platform == "oracle" and target_platform == "azuredbforpostgresql":
-        scenario_type = ScenarioType.oracle_azurepostgres_online if "online" in task_type else \
+        # Allow a project to be created for Oracle to PGSQL even though no task type is passed in
+        scenario_type = ScenarioType.oracle_azurepostgres_online if "online" in task_type or not task_type else \
             ScenarioType.oracle_azurepostgres_offline
     else:
         scenario_type = ScenarioType.unknown
