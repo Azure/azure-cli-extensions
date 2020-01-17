@@ -82,10 +82,10 @@ helps['dms task list'] = """
     examples:
         - name: List all Tasks within a DMS instance.
           text: >
-            az dms task list -g myresourcegroup --service-name mydms
+            az dms task list -g myresourcegroup -n mydms
         - name: List only the tasks that check the OCI driver compatibility within a DMS instance.
           text: >
-            az dms task list -g myresourcegroup --service-name mydms --task-type Service.Check.OCI
+            az dms task list -g myresourcegroup -n mydms --task-type Service.Check.OCI
 """
 
 helps['dms task show'] = """

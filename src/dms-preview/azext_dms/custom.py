@@ -65,27 +65,21 @@ def create_or_update_project(
         # If not an extension scenario, run CLI core method
         # TODO: We currently don't have any CLI core code to perform any validations
         # because of this we need to raise the error here.
-        try:
-            # TODO: Remove this check after validations are added to core
-            if source_platform != "sql" or target_platform != "sqldb":
-                raise CLIError("The provided source-platform, target-platform combination is not appropriate. \n\
+
+        # TODO: Remove this check after validations are added to core
+        if source_platform != "sql" or target_platform != "sqldb":
+            raise CLIError("The provided source-platform, target-platform combination is not appropriate. \n\
 Please refer to the help file 'az dms project create -h' for the supported scenarios.")
 
-            core_res = core_create_or_update_project(
-                client,
-                project_name,
-                service_name,
-                resource_group_name,
-                location,
-                source_platform,
-                target_platform,
-                tags)
-        except:
-            # TODO: We currently don't have any CLI core code to perform any validations
-            # because of this we need to raise the error here.
-            raise
-        else:
-            return core_res
+        return core_create_or_update_project(
+            client,
+            project_name,
+            service_name,
+            resource_group_name,
+            location,
+            source_platform,
+            target_platform,
+            tags)
 
     # Run extension scenario
     parameters = Project(location=location,
@@ -131,38 +125,32 @@ def create_task(
     # Validation: Test scenario eligibility
     if not scenario_handled_in_extension:
         # If not an extension scenario, run CLI core method
-        try:
-            # TODO: Remove this check after validations are added to core
-            if source_platform != "sql" or target_platform != "sqldb":
-                raise CLIError("The combination of the provided task-type and the project's \
+
+        # TODO: Remove this check after validations are added to core
+        if source_platform != "sql" or target_platform != "sqldb":
+            raise CLIError("The combination of the provided task-type and the project's \
 source-platform and target-platform is not appropriate. \n\
 Please refer to the help file 'az dms project task create -h' \
 for the supported scenarios.")
 
-            # TODO: Calling this validates our inputs. Remove this check after this function is added to core
-            transform_json_inputs(source_connection_json,
-                                  source_platform,
-                                  target_connection_json,
-                                  target_platform,
-                                  database_options_json)
+        # TODO: Calling this validates our inputs. Remove this check after this function is added to core
+        transform_json_inputs(source_connection_json,
+                              source_platform,
+                              target_connection_json,
+                              target_platform,
+                              database_options_json)
 
-            core_res = core_create_task(client,
-                                        resource_group_name,
-                                        service_name,
-                                        project_name,
-                                        task_name,
-                                        source_connection_json,
-                                        target_connection_json,
-                                        database_options_json,
-                                        enable_schema_validation,
-                                        enable_data_integrity_validation,
-                                        enable_query_analysis_validation)
-        except:
-            # TODO: We currently don't have any CLI core code to perform any validations
-            # because of this we need to raise the error here.
-            raise
-        else:
-            return core_res
+        return core_create_task(client,
+                                resource_group_name,
+                                service_name,
+                                project_name,
+                                task_name,
+                                source_connection_json,
+                                target_connection_json,
+                                database_options_json,
+                                enable_schema_validation,
+                                enable_data_integrity_validation,
+                                enable_query_analysis_validation)
 
     RequireValidationScenarios = [
         ScenarioType.mongo_mongo_offline,
@@ -175,7 +163,8 @@ for the supported scenarios.")
         if validate_only is False and validated_task_name is None:
             raise CLIError(
                 "When not validating a MongoDB task, you must supply a previously run 'validate_only' task name.")
-        elif validate_only is False and validated_task_name is not None:
+
+        if validate_only is False and validated_task_name is not None:
             # Though getting the task's properties is pretty quick, we want to let the user know something is happening
             logger.warning("Reviewing validation...")
             v_result = client.get(group_name=resource_group_name,
@@ -329,7 +318,6 @@ To cancel this task do not supply the object-name parameter.")
 
 # region Service Task
 def create_service_task(
-        cmd,
         client,
         resource_group_name,
         service_name,
@@ -416,7 +404,8 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                    password=password,
                                    server_name=server_name,
                                    port=port)
-    elif "postgres" in typeOfInfo:
+
+    if "postgres" in typeOfInfo:
         database_name = connection_info_json.get('databaseName', "postgres")
         port = connection_info_json.get('port', 5432)
         return PostgreSqlConnectionInfo(user_name=user_name,
@@ -424,7 +413,8 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
                                         server_name=server_name,
                                         database_name=database_name,
                                         port=port)
-    elif "mongo" in typeOfInfo:
+
+    if "mongo" in typeOfInfo:
         connection_string = connection_info_json['connectionString']
         # Strip out the username and password from the connection string (if they exist) to store them securely.
         rex_conn_string = re.compile(r'^(mongodb://|mongodb\+srv://|http://|https://)(.*:.*@)?(.*)')
@@ -438,14 +428,15 @@ def create_connection(connection_info_json, prompt_prefix, typeOfInfo):
         return MongoDbConnectionInfo(connection_string=connection_string,
                                      user_name=user_name,
                                      password=password)
-    elif "oracle" in typeOfInfo:
+
+    if "oracle" in typeOfInfo:
         data_source = connection_info_json['dataSource']
         return OracleConnectionInfo(user_name=user_name,
                                     password=password,
                                     data_source=data_source)
-    else:
-        # If no match, Pass the connection info through
-        return connection_info_json
+
+    # If no match, Pass the connection info through
+    return connection_info_json
 
 
 def get_task_migration_properties(
@@ -533,7 +524,7 @@ def get_task_properties(input_func,
             options_json,
             source_connection_info,
             target_connection_info)
-    
+
     task_properties_params = {'input': task_input}
 
     return task_properties_type(**task_properties_params)
