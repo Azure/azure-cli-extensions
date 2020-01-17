@@ -134,7 +134,6 @@ helps['blueprint resource-group show'] = """
 
 helps['blueprint resource-group list'] = """
     type: command
-<<<<<<< Updated upstream
     short-summary: List blueprint resource group artifact.
     examples:
       - name: List resource group artifacts
@@ -146,48 +145,7 @@ helps['blueprint resource-group list'] = """
 helps['blueprint artifact'] = """
     type: group
     short-summary: Commands to manage blueprint artifact.
-=======
-    short-summary: Update blueprint artifact.
->>>>>>> Stashed changes
 """
-
-# helps['blueprint artifact create'] = """
-#     type: command
-#     short-summary: Create or update blueprint artifact.
-#     examples:
-#       - name: MG-RoleAssignmentArtifact
-#         text: |-
-#                az blueprint artifact create --scope \\
-#                "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-#                "simpleBlueprint" --name "ownerAssignment"
-#       - name: Sub-ARMTemplateArtifact
-#         text: |-
-#                az blueprint artifact create --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-#                --blueprint-name "simpleBlueprint" --name "storageTemplate"
-#       - name: Sub-PolicyAssignmentArtifact
-#         text: |-
-#                az blueprint artifact create --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-#                --blueprint-name "simpleBlueprint" --name "costCenterPolicy"
-#       - name: Sub-RoleAssignmentArtifact
-#         text: |-
-#                az blueprint artifact create --scope "subscriptions/00000000-0000-0000-0000-000000000000" \\
-#                --blueprint-name "simpleBlueprint" --name "ownerAssignment"
-#       - name: MG-ARMTemplateArtifact
-#         text: |-
-#                az blueprint artifact create --scope \\
-#                "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-#                "simpleBlueprint" --name "storageTemplate"
-#       - name: MG-PolicyAssignmentArtifact
-#         text: |-
-#                az blueprint artifact create --scope \\
-#                "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" --blueprint-name \\
-#                "simpleBlueprint" --name "costCenterPolicy"
-# """
-
-# helps['blueprint artifact update'] = """
-#     type: command
-#     short-summary: Create or update blueprint artifact.
-# """
 
 helps['blueprint artifact delete'] = """
     type: command

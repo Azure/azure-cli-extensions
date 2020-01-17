@@ -37,7 +37,7 @@ def update_blueprint(cmd, client,
     if description is not None:
         body['description'] = description  # str
     if parameters is not None:
-        body['parameters'] = json.loads(parameters) # dictionary
+        body['parameters'] = json.loads(parameters)  # dictionary
     return client.create_or_update(scope=scope, blueprint_name=name, blueprint=body)
 
 
@@ -83,8 +83,8 @@ def create_blueprint_resource_group(cmd, client,
                                     scope,
                                     artifact_name=None,
                                     display_name=None,
-                                    name=None,
-                                    location=None,
+                                    rg_name=None,
+                                    rg_location=None,
                                     description=None,
                                     depends_on=None,
                                     tags=None):
@@ -102,8 +102,8 @@ def create_blueprint_resource_group(cmd, client,
         raise CLIError('A resource group artifact with the same name already exists.')
 
     resource_group = {
-        "name": name,
-        "location": location,
+        "name": rg_name,
+        "location": rg_location,
         "display_name": display_name,
         "description": description,
         "depends_on": depends_on,
@@ -118,8 +118,8 @@ def update_blueprint_resource_group(cmd, client,
                                     blueprint_name,
                                     scope,
                                     artifact_name,
-                                    name=None,
-                                    location=None,
+                                    rg_name=None,
+                                    rg_location=None,
                                     display_name=None,
                                     description=None,
                                     depends_on=None,
@@ -128,10 +128,10 @@ def update_blueprint_resource_group(cmd, client,
     if artifact_name not in body.setdefault('resource_groups', {}):
         raise CLIError('The specified artifact name can not be found.')
     resource_group = body['resource_groups'][artifact_name]
-    if name is not None:
-        resource_group['name'] = name
-    if location is not None:
-        resource_group['location'] = location
+    if rg_name is not None:
+        resource_group['name'] = rg_name
+    if rg_location is not None:
+        resource_group['location'] = rg_location
     if display_name is not None:
         resource_group['display_name'] = display_name
     if description is not None:
@@ -145,6 +145,7 @@ def update_blueprint_resource_group(cmd, client,
     return {k: v for k, v in rgs.items() if k == artifact_name}
 
 
+# todo test
 def delete_blueprint_resource_group(cmd, client,
                                     blueprint_name,
                                     scope,
@@ -152,9 +153,8 @@ def delete_blueprint_resource_group(cmd, client,
     body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if artifact_name not in body.setdefault('resource_groups', {}):
         raise CLIError('The specified artifact name can not be found.')
-    else:
-        deleted_rg = body['resource_groups'][artifact_name]
-        del body['resource_groups'][artifact_name]
+    deleted_rg = body['resource_groups'][artifact_name]
+    del body['resource_groups'][artifact_name]
     client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
     return deleted_rg
 
@@ -366,8 +366,7 @@ def create_blueprint_assignment(cmd, client,
                                 scope,
                                 location,
                                 identity_type,
-                                parameters,
-                                resource_groups,
+                                resource_groups=None,
                                 identity_principal_id=None,
                                 identity_tenant_id=None,
                                 identity_user_assigned_identities=None,
@@ -375,7 +374,8 @@ def create_blueprint_assignment(cmd, client,
                                 description=None,
                                 blueprint_id=None,
                                 locks_mode=None,
-                                locks_excluded_principals=None):
+                                locks_excluded_principals=None,
+                                parameters=None):
     body = {}
     body['location'] = location  # str
     body.setdefault('identity', {})['type'] = identity_type  # str
@@ -385,8 +385,8 @@ def create_blueprint_assignment(cmd, client,
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
-    body['parameters'] = parameters  # dictionary
-    body['resource_groups'] = resource_groups  # dictionary
+    body['parameters'] = json.loads(parameters) if parameters is not None else {}   # dictionary
+    body['resource_groups'] = resource_groups if resource_groups is not None else {}  # dictionary
     body.setdefault('locks', {})['mode'] = locks_mode  # str
     body.setdefault('locks', {})['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(',')
     return client.create_or_update(scope=scope, assignment_name=assignment_name, assignment=body)
@@ -425,7 +425,7 @@ def update_blueprint_assignment(cmd, client,
     if blueprint_id is not None:
         body['blueprint_id'] = blueprint_id  # str
     if parameters is not None:
-        body['parameters'] = parameters  # dictionary
+        body['parameters'] = json.loads(parameters)  # dictionary
     if resource_groups is not None:
         body['resource_groups'] = resource_groups  # dictionary
     if locks_mode is not None:

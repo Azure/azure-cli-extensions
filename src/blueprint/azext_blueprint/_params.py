@@ -9,7 +9,6 @@
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
-    resource_group_name_type,
     get_location_type
 )
 from knack.arguments import CLIArgumentType
@@ -81,13 +80,13 @@ def load_arguments(self, _):
     with self.argument_context('blueprint resource-group create') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('blueprint_name', id_part=None, help='Name of the blueprint definition.')
-        c.argument('name', id_part=None, help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
-        c.argument('location', id_part=None, help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
+        c.argument('rg_name', id_part=None, help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
+        c.argument('rg_location', id_part=None, help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
         c.argument('artifact_name', id_part=None, help='A unique name of this resource group artifact.')
         c.argument('display_name', id_part=None, help='Display name of this resource group artifact.')
         c.argument('description', id_part=None, help='Description of the blueprint artifact.')
         c.argument('depends_on', id_part=None, nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
-        c.argument('tags', tags_type, id_part=None, arg_group='Resource Group', help='Tags to be assigned to this resource group.')
+        c.argument('tags', tags_type, id_part=None, help='Tags to be assigned to this resource group.')
 
     with self.argument_context('blueprint resource-group update') as c:
         c.argument('scope', id_part=None, help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
