@@ -71,7 +71,7 @@ az notificationhubs test_send \
 ```
 or
 ```
-az notificationhubs test_send \
+az notificationhubs test-send \
     --resource-group groupName \
     --namespace-name spaceName \
     --notification-hub-name hubName \
