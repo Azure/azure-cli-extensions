@@ -46,11 +46,31 @@ def load_arguments(self, _):
                    help='Create the connection monitor but do not start it immediately.')
         # c.ignore('location')
 
+    # region ConnectionMonitorEndpoint
+    with self.argument_context('network watcher connection-monitor create',
+                               arg_group='V2 Endpoint',
+                               min_api='2019-11-01') as c:
+        c.argument('endpoint_dest_name',
+                   help='The name of the source of connection monitor endpoint')
+        c.argument('endpoint_dest_resource_id',
+                   help='Resource ID of the source of connection monitor endpoint')
+        c.argument('endpoint_dest_address',
+                   help='Address of the source of connection monitor endpoint (IP or domain name)')
+        c.argument('endpoint_source_name',
+                   help='The name of the destination of connection monitor endpoint')
+        c.argument('endpoint_source_resource_id',
+                   help='Resource ID of the destination of connection monitor endpoint')
+        c.argument('endpoint_source_address',
+                   help='Address of the destination of connection monitor endpoint (IP or domain name)')
+
     with self.argument_context('network watcher connection-monitor endpoint', arg_group='V2 Endpoint',
                                min_api='2019-11-01') as c:
         c.argument('connection_monitor_name',
                    options_list=['--connection-monitor'],
                    help='Connection monitor name.')
+        c.argument('test_group_name',
+                   options_list=['--test-group'],
+                   help='The name of test group which is referenced to')
         c.argument('name',
                    help='The name of the connection monitor endpoint')
         c.argument('resource_id',

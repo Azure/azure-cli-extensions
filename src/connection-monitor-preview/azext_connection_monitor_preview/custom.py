@@ -22,13 +22,31 @@ def create_nw_connection_monitor_v2(cmd,
                                     tags=None,
                                     do_not_start=None,
                                     monitoring_interval=None,
-                                    endpoint_name=None,
-                                    endpoint_resource_id=None,
-                                    endpoint_address=None,
-                                    endpoint_filter_type=None,
-                                    endpoint_filter_items=None):
+                                    endpoint_source_name=None,
+                                    endpoint_source_resource_id=None,
+                                    endpoint_source_address=None,
+                                    endpoint_dest_name=None,
+                                    endpoint_dest_resource_id=None,
+                                    endpoint_dest_address=None):
     print(watcher_rg)
     print(watcher_name)
+
+    v1_required_parameter_set = [
+        source_resource, source_port,
+        dest_resource, dest_address, dest_port
+    ]
+
+    v2_required_parameter_set = [
+        endpoint_source_name, endpoint_source_resource_id,
+        endpoint_dest_name, endpoint_dest_address
+    ]
+
+    if any(v1_required_parameter_set):  # V1 creation
+        pass
+    elif any(v2_required_parameter_set): # V2 creation
+        pass
+    else:
+        print('Oh!!!')
 
     ConnectionMonitor, ConnectionMonitorSource, ConnectionMonitorDestination = cmd.get_models(
         'ConnectionMonitor', 'ConnectionMonitorSource', 'ConnectionMonitorDestination')
@@ -36,6 +54,7 @@ def create_nw_connection_monitor_v2(cmd,
     ConnectionMonitorTestConfiguration, ConnectionMonitorTcpConfiguration = cmd.get_models(
         'ConnectionMonitorTestConfiguration', 'ConnectionMonitorTcpConfiguration'
     )
+
     # connection_monitor = ConnectionMonitor(
     #     location=location,
     #     tags=tags,
@@ -92,6 +111,28 @@ def create_nw_connection_monitor_v2(cmd,
         test_groups=[test_group]
     )
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+
+
+def _create_nw_connection_monidor_endpoint(cmd,
+                                           name,
+                                           resource_id=None,
+                                           address=None,
+                                           filter_type=None,
+                                           filter_items=None):
+    ConnectionMonitorEndpoint, ConnectionMonitorEndpointFilter = cmd.get_models(
+        'ConnectionMonitorEndpoint', 'ConnectionMonitorEndpointFilter')
+
+    if (filter_type and not filter_items) or (not filter_type and filter_items):
+        raise CLIError('usage error: '
+                       '--filter-type and --filter-item for endpoint filter must be present at the same time.')
+
+    endpoint = ConnectionMonitorEndpoint(name=name, resource_id=resource_id, address=address)
+
+    if filter_type and filter_items:
+        endpoint_filter = ConnectionMonitorEndpointFilter(type=filter_type, items=filter_items)
+        endpoint.filter = endpoint_filter
+
+    return endpoint
 
 
 def add_nw_connection_monitor_v2_endpoint(cmd,
