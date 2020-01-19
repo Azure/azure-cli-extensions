@@ -79,11 +79,6 @@ helps['network firewall management-ip-config create'] = """
     short-summary: Create an Azure Firewall Management IP configuration.
 """
 
-helps['network firewall management-ip-config delete'] = """
-    type: command
-    short-summary: Delete an Azure Firewall Management IP configuration.
-"""
-
 helps['network firewall management-ip-config show'] = """
     type: command
     short-summary: Get the details of an Azure Firewall Management IP configuration.

@@ -5,6 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
+from azure.cli.core.util import sdk_no_wait
 
 from ._client_factory import network_client_factory, network_client_policy_factory
 
@@ -135,6 +136,24 @@ def delete_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
     af.management_ip_configuration = None
     poller = client.create_or_update(resource_group_name, azure_firewall_name, af)
     return poller.result().management_ip_configuration
+
+
+def delete_af_ip_configuration(cmd, resource_group_name, resource_name, item_name, no_wait=False):  # pylint: disable=unused-argument
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    af = client.get(resource_group_name, resource_name)
+    keep_items = \
+        [x for x in af.ip_configurations if x.name.lower() != item_name.lower()]
+    af.ip_configurations = keep_items if keep_items else None
+    if not keep_items:
+        if af.management_ip_configuration is not None:
+            logger.warning('Management ip configuration cannot exist without regular ip config. Delete it as well.')
+            af.management_ip_configuration = None
+    if no_wait:
+        sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, af)
+    else:
+        result = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, af).result()
+        if next((x for x in getattr(result, 'ip_configurations') if x.name.lower() == item_name.lower()), None):
+            raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
 
 
 def build_af_rule_list(item_param_name, collection_param_name):
