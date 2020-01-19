@@ -62,18 +62,24 @@ def _find_item_at_path(instance, path):
 
 
 # region AzureFirewall
-def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None, tags=None, zones=None):
+def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
+                          tags=None, zones=None, private_ranges=None):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     AzureFirewall = cmd.get_models('AzureFirewall')
-    firewall = AzureFirewall(location=location, tags=tags, zones=zones)
+    firewall = AzureFirewall(location=location, tags=tags, zones=zones, additional_properties={})
+    firewall.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 
 
-def update_azure_firewall(instance, tags=None, zones=None):
+def update_azure_firewall(instance, tags=None, zones=None, private_ranges=None):
     if tags is not None:
         instance.tags = tags
     if zones is not None:
         instance.zones = zones
+    if private_ranges is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        instance.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
     return instance
 
 
@@ -174,7 +180,8 @@ def _upsert_af_rule(cmd, resource_group_name, firewall_name, collection_param_na
 
 def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
                            source_addresses, destination_ports, protocols, destination_fqdns=None,
-                           destination_addresses=None, description=None, priority=None, action=None):
+                           destination_addresses=None, description=None, priority=None, action=None,
+                           source_ip_groups=None, destination_ip_groups=None):
     AzureFirewallNetworkRule, AzureFirewallNetworkRuleCollection = cmd.get_models(
         'AzureFirewallNetworkRule', 'AzureFirewallNetworkRuleCollection')
     params = {
@@ -184,7 +191,9 @@ def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collec
         'destination_addresses': destination_addresses,
         'destination_ports': destination_ports,
         'destination_fqdns': destination_fqdns,
-        'protocols': protocols
+        'protocols': protocols,
+        'destination_ip_groups': destination_ip_groups,
+        'source_ip_groups': source_ip_groups
     }
     collection_params = {
         'name': collection_name,
@@ -198,7 +207,8 @@ def create_af_network_rule(cmd, resource_group_name, azure_firewall_name, collec
 
 def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
                        source_addresses, destination_addresses, destination_ports, protocols, translated_port,
-                       translated_address=None, translated_fqdn=None, description=None, priority=None, action=None):
+                       translated_address=None, translated_fqdn=None, description=None, priority=None, action=None,
+                       source_ip_groups=None):
     AzureFirewallNatRule, AzureFirewallNatRuleCollection = cmd.get_models(
         'AzureFirewallNatRule', 'AzureFirewallNatRuleCollection')
     params = {
@@ -210,7 +220,8 @@ def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection
         'protocols': protocols,
         'translated_address': translated_address,
         'translated_port': translated_port,
-        'translated_fqdn': translated_fqdn
+        'translated_fqdn': translated_fqdn,
+        'source_ip_groups': source_ip_groups
     }
     collection_params = {
         'name': collection_name,
@@ -224,7 +235,7 @@ def create_af_nat_rule(cmd, resource_group_name, azure_firewall_name, collection
 
 def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, collection_name, item_name,
                                protocols, description=None, source_addresses=None, target_fqdns=None,
-                               fqdn_tags=None, priority=None, action=None):
+                               fqdn_tags=None, priority=None, action=None, source_ip_groups=None):
     AzureFirewallApplicationRule, AzureFirewallApplicationRuleCollection = cmd.get_models(
         'AzureFirewallApplicationRule', 'AzureFirewallApplicationRuleCollection')
     params = {
@@ -233,7 +244,8 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
         'source_addresses': source_addresses,
         'protocols': protocols,
         'target_fqdns': target_fqdns,
-        'fqdn_tags': fqdn_tags
+        'fqdn_tags': fqdn_tags,
+        'source_ip_groups': source_ip_groups
     }
     collection_params = {
         'name': collection_name,
@@ -243,6 +255,46 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
     return _upsert_af_rule(cmd, resource_group_name, azure_firewall_name,
                            'application_rule_collections', AzureFirewallApplicationRuleCollection,
                            AzureFirewallApplicationRule, item_name, params, collection_params)
+
+
+def create_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name,
+                                                 ip_addresses=None, fqdns=None):
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
+    if firewall.additional_properties is None:
+        firewall.additional_properties = {}
+    firewall.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ip_addresses
+    firewall.additional_properties['ThreatIntel.Whitelist.FQDNs'] = fqdns
+    return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
+
+
+def update_azure_firewall_threat_intel_whitelist(instance, ip_addresses=None, fqdns=None):
+    if ip_addresses is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        instance.additional_properties['ThreatIntel.Whitelist.IpAddresses'] = ip_addresses
+    if fqdns is not None:
+        if instance.additional_properties is None:
+            instance.additional_properties = {}
+        instance.additional_properties['ThreatIntel.Whitelist.FQDNs'] = fqdns
+    return instance
+
+
+def show_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
+    if firewall.additional_properties is None:
+        firewall.additional_properties = {}
+    return firewall.additional_properties
+
+
+def delete_azure_firewall_threat_intel_whitelist(cmd, resource_group_name, azure_firewall_name):
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    firewall = client.get(resource_group_name=resource_group_name, azure_firewall_name=azure_firewall_name)
+    if firewall.additional_properties is not None:
+        firewall.additional_properties.pop('ThreatIntel.Whitelist.IpAddresses', None)
+        firewall.additional_properties.pop('ThreatIntel.Whitelist.FQDNs', None)
+    return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 # endregion
 
 
