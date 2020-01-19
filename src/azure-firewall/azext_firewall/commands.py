@@ -73,6 +73,10 @@ def load_command_table(self, _):
     with self.command_group('network firewall management-ip-config', network_util) as g:
         g.custom_command('create', 'create_af_management_ip_configuration')
         g.custom_show_command('show', 'show_af_management_ip_configuration')
+        g.generic_update_command('update', command_type=network_firewall_sdk,
+                                 custom_func_name='update_af_management_ip_configuration',
+                                 setter_type=CliCommandType(operations_tmpl='azext_firewall.custom#{}'),
+                                 setter_name='set_af_management_ip_configuration')
         # Discussed with service team to hide this command for now.
         # g.custom_command('delete', 'delete_af_management_ip_configuration')
 

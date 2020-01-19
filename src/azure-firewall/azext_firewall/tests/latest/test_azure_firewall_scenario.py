@@ -59,10 +59,12 @@ class AzureFirewallScenario(ScenarioTest):
             'af': 'af1',
             'pubip': 'pubip',
             'pubip3': 'pubip3',
+            'pubip4': 'pubip4',
             'management_pubip': 'pubip2',
             'vnet': 'myvnet',
             'vnet3': 'myvnet3',
             'management_vnet': 'myvnet2',
+            'management_vnet2': 'myvnet4',
             'ipconfig': 'myipconfig1',
             'ipconfig3': 'myipconfig3',
             'management_ipconfig': 'myipconfig2'
@@ -71,6 +73,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {management_pubip} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {pubip3} --sku standard')
+        self.cmd('network public-ip create -g {rg} -n {pubip4} --sku standard')
         vnet_instance = self.cmd(
             'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
         subnet_id_ip_config = vnet_instance['newVNet']['subnets'][0]['id']
@@ -78,6 +81,10 @@ class AzureFirewallScenario(ScenarioTest):
         vnet_instance = self.cmd(
             'network vnet create -g {rg} -n {management_vnet} --subnet-name "AzureFirewallManagementSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
         subnet_id_management_ip_config = vnet_instance['newVNet']['subnets'][0]['id']
+
+        vnet_instance = self.cmd(
+            'network vnet create -g {rg} -n {management_vnet2} --subnet-name "AzureFirewallManagementSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        subnet_id_management_ip_config_2 = vnet_instance['newVNet']['subnets'][0]['id']
 
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
             self.check('name', '{ipconfig}'),
@@ -102,6 +109,14 @@ class AzureFirewallScenario(ScenarioTest):
                 self.check('name', '{management_ipconfig}'),
                 self.check('subnet.id', subnet_id_management_ip_config)
             ])
+
+        self.cmd(
+            'network firewall management-ip-config update -g {rg} -f {af} -n {management_ipconfig} --public-ip-address {pubip4} --vnet-name {management_vnet2}',
+            checks=[
+                self.check('name', '{management_ipconfig}'),
+                self.check('subnet.id', subnet_id_management_ip_config_2)
+            ])
+
         self.cmd('network firewall ip-config delete -g {rg} -f {af} -n {ipconfig3}')
         self.cmd('network firewall ip-config delete -g {rg} -f {af} -n {ipconfig}')
 

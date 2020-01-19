@@ -124,6 +124,23 @@ def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
     return poller.result().management_ip_configuration
 
 
+def update_af_management_ip_configuration(cmd, instance, item_name,
+                                          public_ip_address=None, virtual_network_name=None,  # pylint: disable=unused-argument
+                                          subnet='AzureFirewallManagementSubnet'):
+    SubResource = cmd.get_models('SubResource')
+    if public_ip_address is not None:
+        instance.management_ip_configuration.public_ip_address = SubResource(id=public_ip_address)
+    if subnet is not None:
+        instance.management_ip_configuration.subnet = SubResource(id=subnet)
+    return instance
+
+
+def set_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name, parameters):
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    poller = client.create_or_update(resource_group_name, azure_firewall_name, parameters)
+    return poller.result().management_ip_configuration
+
+
 def show_af_management_ip_configuration(cmd, resource_group_name, azure_firewall_name):
     client = network_client_factory(cmd.cli_ctx).azure_firewalls
     af = client.get(resource_group_name, azure_firewall_name)
