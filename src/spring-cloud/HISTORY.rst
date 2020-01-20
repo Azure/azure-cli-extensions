@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.1
+++++++
+* Refine the descriptions and logic of app log tail command.
+
 0.2.0
 ++++++
 * Support the log streaming feature.
