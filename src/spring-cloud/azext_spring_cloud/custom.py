@@ -1065,8 +1065,8 @@ def _get_app_log(url, user_name, password, exceptions):
     )
     try:
         if response.status != 200:
-            raise CLIError("Failed to connect to '{}' with status code '{}' and reason '{}'".format(
-                url, response.status, response.reason))
+            raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
+                response.status, response.reason))
         std_encoding = sys.stdout.encoding
 
         for chunk in stream(response):
