@@ -25,8 +25,8 @@ helps['notificationhubs namespace create'] = """
     examples:
       - name: Create a namespace
         text: |-
-               az notificationhubs namespace create --resource-group MyResourceGroup --namespace-name \\
-               "nh-sdk-ns" --location "South Central US" --sku-name "Standard"
+               az notificationhubs namespace create --resource-group MyResourceGroup --name \\
+               "nh-sdk-ns" --location "South Central US" --sku "Standard"
 """
 
 helps['notificationhubs namespace update'] = """
@@ -35,8 +35,8 @@ helps['notificationhubs namespace update'] = """
     examples:
       - name: Update the namespace
         text: |-
-               az notificationhubs namespace update --resource-group MyResourceGroup --namespace-name \\
-               "nh-sdk-ns" --sku-name "Standard"
+               az notificationhubs namespace update --resource-group MyResourceGroup --name \\
+               "nh-sdk-ns" --sku "Standard"
 """
 
 helps['notificationhubs namespace delete'] = """
@@ -45,7 +45,7 @@ helps['notificationhubs namespace delete'] = """
     examples:
       - name: Delete the namespace
         text: |-
-               az notificationhubs namespace delete --resource-group MyResourceGroup --namespace-name \\
+               az notificationhubs namespace delete --resource-group MyResourceGroup --name \\
                "nh-sdk-ns"
 """
 
@@ -55,7 +55,7 @@ helps['notificationhubs namespace show'] = """
     examples:
       - name: Show namespace info
         text: |-
-               az notificationhubs namespace show --resource-group MyResourceGroup --namespace-name \\
+               az notificationhubs namespace show --resource-group MyResourceGroup --name \\
                "nh-sdk-ns"
 """
 
@@ -85,7 +85,7 @@ helps['notificationhubs namespace wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the Notification Hub Namesapce is met.
     examples:
         - name: Pause executing next line of CLI script until the Notification Hub Namesapce is successfully provisioned.
-          text: az notificationhubs namespace wait --resource-group MyResourceGroup --namespace-name \\
+          text: az notificationhubs namespace wait --resource-group MyResourceGroup --name \\
                "nh-sdk-ns" --created
 """
 
@@ -166,7 +166,7 @@ helps['notificationhubs create'] = """
       - name: Create a Notification Hub
         text: |-
                az notificationhubs create --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
-               --notification-hub-name "nh-sdk-hub" --location "South Central US" --sku-name "Free"
+               --name "nh-sdk-hub" --location "South Central US" --sku "Free"
 """
 
 helps['notificationhubs update'] = """
@@ -176,7 +176,7 @@ helps['notificationhubs update'] = """
       - name: Update the Notification Hub
         text: |-
                az notificationhubs update --resource-group "sdkresourceGroup" --namespace-name \\
-               "nh-sdk-ns" --notification-hub-name "sdk-notificationHubs-8708"
+               "nh-sdk-ns" --name "sdk-notificationHubs-8708"
 """
 
 helps['notificationhubs delete'] = """
@@ -186,17 +186,17 @@ helps['notificationhubs delete'] = """
       - name: Delete a notification hub
         text: |-
                az notificationhubs delete --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
-               --notification-hub-name "nh-sdk-hub"
+               --name "nh-sdk-hub"
 """
 
 helps['notificationhubs show'] = """
     type: command
-    short-summary: List the notification hubs associated with a namespace.
+    short-summary: Show the notification hub information.
     examples:
       - name: Show the Notification Hub info
         text: |-
                az notificationhubs show --resource-group MyResourceGroup --namespace-name "nh-sdk-ns" \\
-               --notification-hub-name "nh-sdk-hub"
+               --name "nh-sdk-hub"
 """
 
 helps['notificationhubs list'] = """
@@ -215,7 +215,7 @@ helps['notificationhubs check-availability'] = """
       - name: Check the availability of the given notificationHub name
         text: |-
                az notificationhubs check-availability --resource-group MyResourceGroup \\
-               --namespace-name "locp-newns" --notification-hub-name "nh-sdk-hub"
+               --namespace-name "locp-newns" --name "nh-sdk-hub"
 """
 
 helps['notificationhubs authorization-rule'] = """

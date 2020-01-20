@@ -30,29 +30,29 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         self.cmd('az notificationhubs namespace create '
                  '--resource-group {rg} '
-                 '--namespace-name {namespace-name} '
+                 '--name {namespace-name} '
                  '--location "South Central US" '
-                 '--sku-name "Free"',
+                 '--sku "Free"',
                  checks=[JMESPathCheck('name', self.kwargs.get('namespace-name', ''))])
 
         self.cmd('az notificationhubs namespace wait '
                  '--resource-group {rg} '
-                 '--namespace-name {namespace-name} '
+                 '--name {namespace-name} '
                  '--created',
                  checks=[])
 
         self.cmd('az notificationhubs check-availability '
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
-                 '--notification-hub-name {notification-hub-name}',
+                 '--name {notification-hub-name}',
                  checks=[])
 
         self.cmd('az notificationhubs create '
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
-                 '--notification-hub-name {notification-hub-name} '
+                 '--name {notification-hub-name} '
                  '--location "South Central US" '
-                 '--sku-name "Free"',
+                 '--sku "Free"',
                  checks=[JMESPathCheck('name', self.kwargs.get('notification-hub-name', ''))])
 
         self.cmd('az notificationhubs namespace authorization-rule create '
@@ -133,7 +133,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
         self.cmd('az notificationhubs show '
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
-                 '--notification-hub-name {notification-hub-name}',
+                 '--name {notification-hub-name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('notification-hub-name', ''))])
 
         self.cmd('az notificationhubs list '
@@ -143,7 +143,7 @@ class NotificationHubsScenarioTest(ScenarioTest):
 
         self.cmd('az notificationhubs namespace show '
                  '--resource-group {rg} '
-                 '--namespace-name {namespace-name}',
+                 '--name {namespace-name}',
                  checks=[JMESPathCheck('name', self.kwargs.get('namespace-name', ''))])
 
         self.cmd('az notificationhubs namespace list '
@@ -168,12 +168,12 @@ class NotificationHubsScenarioTest(ScenarioTest):
         self.cmd('az notificationhubs delete '
                  '--resource-group {rg} '
                  '--namespace-name {namespace-name} '
-                 '--notification-hub-name {notification-hub-name} '
+                 '--name {notification-hub-name} '
                  '-y',
                  checks=[])
 
         self.cmd('az notificationhubs namespace delete '
                  '--resource-group {rg} '
-                 '--namespace-name {namespace-name} '
+                 '--name {namespace-name} '
                  '-y',
                  checks=[])
