@@ -124,8 +124,7 @@ def create_af_management_ip_configuration(cmd, resource_group_name, azure_firewa
     return poller.result().management_ip_configuration
 
 
-def update_af_management_ip_configuration(cmd, instance, item_name,
-                                          public_ip_address=None, virtual_network_name=None,  # pylint: disable=unused-argument
+def update_af_management_ip_configuration(cmd, instance, public_ip_address=None, virtual_network_name=None,  # pylint: disable=unused-argument
                                           subnet='AzureFirewallManagementSubnet'):
     SubResource = cmd.get_models('SubResource')
     if public_ip_address is not None:
