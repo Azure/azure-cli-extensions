@@ -26,162 +26,162 @@ def load_arguments(self, _):
     )
 
     with self.argument_context('notificationhubs namespace create') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
+        c.argument('namespace_name', help='The namespace name.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
+        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), help='Name of the notification hub sku')
 
     with self.argument_context('notificationhubs namespace update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
+        c.argument('namespace_name', help='The namespace name.')
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
+        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), help='Name of the notification hub sku')
 
     with self.argument_context('notificationhubs namespace delete') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
 
     with self.argument_context('notificationhubs namespace show') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
 
     with self.argument_context('notificationhubs namespace list') as c:
         pass
 
     with self.argument_context('notificationhubs namespace check-availability') as c:
-        c.argument('name', id_part=None, options_list=['--name', '-n'], help='The namespace name to check.')
+        c.argument('name', options_list=['--name', '-n'], help='The namespace name to check.')
 
     with self.argument_context('notificationhubs namespace authorization-rule list-keys') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
 
     with self.argument_context('notificationhubs namespace authorization-rule regenerate-keys') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), id_part=None, help='Name of the key that has to be regenerated for the Namespace Authorization Rule.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), help='Name of the key that has to be regenerated for the Namespace Authorization Rule.')
 
     with self.argument_context('notificationhubs namespace authorization-rule show') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
+        c.argument('rule_name', id_part="child_name_1", options_list=['--name', '-n'], help='The authorization rule name.')
 
     with self.argument_context('notificationhubs namespace authorization-rule list') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
+        c.argument('namespace_name', help='The namespace name.')
 
     with self.argument_context('notificationhubs namespace authorization-rule create') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('rights', id_part=None, nargs='+', help='The rights associated with the rule.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('rights', nargs='+', help='The rights associated with the rule.')
 
     with self.argument_context('notificationhubs namespace authorization-rule delete') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
+        c.argument('rule_name', id_part="child_name_1", options_list=['--name', '-n'], help='The authorization rule name.')
 
     with self.argument_context('notificationhubs create') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
-        c.argument('registration_ttl', id_part=None, help='The RegistrationTtl of the created NotificationHub')
+        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), help='Name of the notification hub sku')
+        c.argument('registration_ttl', help='The RegistrationTtl of the created NotificationHub')
 
     with self.argument_context('notificationhubs update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
         c.argument('tags', tags_type)
-        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), id_part=None, help='Name of the notification hub sku')
+        c.argument('sku_name', arg_type=get_enum_type(['Free', 'Basic', 'Standard']), help='Name of the notification hub sku')
 
     with self.argument_context('notificationhubs delete') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
+        c.argument('notification_hub_name', id_part="child_name_1", help='The notification hub name.')
 
     with self.argument_context('notificationhubs show') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
+        c.argument('notification_hub_name', id_part="child_name_1", help='The notification hub name.')
 
     with self.argument_context('notificationhubs list') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
+        c.argument('namespace_name', help='The namespace name.')
 
     with self.argument_context('notificationhubs check-availability') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name to check.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name to check.')
 
     with self.argument_context('notificationhubs authorization-rule regenerate-keys') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), id_part=None, help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('policy_key', arg_type=get_enum_type(['Primary Key', 'Secondary Key']), help='Name of the key that has to be regenerated for the Notification Hub Authorization Rule.')
 
     with self.argument_context('notificationhubs credential list') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
 
     with self.argument_context('notificationhubs authorization-rule list-keys') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
 
     with self.argument_context('notificationhubs test-send') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('notification_format', arg_type=get_enum_type(['apple', 'baidu', 'gcm', 'template', 'windows', 'windowsphone']), id_part=None, help='The format of notification message.')
-        c.argument('message', id_part=None, help='The message body to send. If not None, payload will be ignored')
-        c.argument('title', id_part=None, help='The title of the notification.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('notification_format', arg_type=get_enum_type(['apple', 'baidu', 'gcm', 'template', 'windows', 'windowsphone']), help='The format of notification message.')
+        c.argument('message', help='The message body to send. If not None, payload will be ignored')
+        c.argument('title', help='The title of the notification.')
         c.argument('payload', arg_type=payload_type, id_part=None)
-        c.argument('tag', id_part=None, help='You can send test notifications to a specific set of registrations using this option. Leave this field empty if you like to send push notifications to 10 random registrations on the selected platform.')
+        c.argument('tag', help='You can send test notifications to a specific set of registrations using this option. Leave this field empty if you like to send push notifications to 10 random registrations on the selected platform.')
 
     with self.argument_context('notificationhubs authorization-rule list') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
 
     with self.argument_context('notificationhubs authorization-rule show') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
+        c.argument('notification_hub_name', id_part="child_name_1", help='The notification hub name.')
+        c.argument('rule_name', id_part="child_name_2", options_list=['--name', '-n'], help='The authorization rule name.')
 
     with self.argument_context('notificationhubs authorization-rule create') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
-        c.argument('rights', id_part=None, nargs='+', help='The rights associated with the rule. Separated by comma.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('rule_name', options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('rights', nargs='+', help='The rights associated with the rule. Separated by comma.')
 
     with self.argument_context('notificationhubs authorization-rule delete') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('rule_name', id_part=None, options_list=['--name', '-n'], help='The authorization rule name.')
+        c.argument('namespace_name', id_part="name", help='The namespace name.')
+        c.argument('notification_hub_name', id_part="child_name_1", help='The notification hub name.')
+        c.argument('rule_name', id_part="child_name_2", options_list=['--name', '-n'], help='The authorization rule name.')
 
     with self.argument_context('notificationhubs credential gcm update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('google_api_key', id_part=None, help='Google GCM/FCM API key.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('google_api_key', help='Google GCM/FCM API key.')
 
     with self.argument_context('notificationhubs credential adm update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('client_id', id_part=None, help='The client identifier.')
-        c.argument('client_secret', id_part=None, help='The credential secret access key.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('client_id', help='The client identifier.')
+        c.argument('client_secret', help='The credential secret access key.')
 
     with self.argument_context('notificationhubs credential apns update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('apns_certificate', type=file_type, id_part=None, help='The APNS certificate.', validator=validate_cert_file, completer=FilesCompleter())
-        c.argument('certificate_key', id_part=None, help='The certificate key.')
-        c.argument('endpoint', id_part=None, help='The endpoint of this credential. Example values:"gateway.sandbox.push.apple.com","gateway.push.apple.com"')
-        c.argument('key_id', id_part=None, help='A 10-character key identifier (kid) key, obtained from your developer account')
-        c.argument('app_name', id_part=None, help='The name of the application/bundle id.')
-        c.argument('app_id', id_part=None, help='The issuer (iss) registered claim key, whose value is your 10-character Team ID, obtained from your developer account')
-        c.argument('token', id_part=None, help='Provider Authentication Token, obtained through your developer account.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('apns_certificate', type=file_type, help='The APNS certificate.', validator=validate_cert_file, completer=FilesCompleter())
+        c.argument('certificate_key', help='The certificate key.')
+        c.argument('endpoint', help='The endpoint of this credential. Example values:"gateway.sandbox.push.apple.com","gateway.push.apple.com"')
+        c.argument('key_id', help='A 10-character key identifier (kid) key, obtained from your developer account')
+        c.argument('app_name', help='The name of the application/bundle id.')
+        c.argument('app_id', help='The issuer (iss) registered claim key, whose value is your 10-character Team ID, obtained from your developer account')
+        c.argument('token', help='Provider Authentication Token, obtained through your developer account.')
 
     with self.argument_context('notificationhubs credential baidu update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('api_key', id_part=None, help='Baidu API key.')
-        c.argument('secret_key', id_part=None, help='Baidu secret key.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('api_key', help='Baidu API key.')
+        c.argument('secret_key', help='Baidu secret key.')
 
     with self.argument_context('notificationhubs credential mpns update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('mpns_certificate', type=file_type, id_part=None, help='The MPNS certificate.', validator=validate_cert_file, completer=FilesCompleter())
-        c.argument('certificate_key', id_part=None, help='The certificate key for this credential.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('mpns_certificate', type=file_type, help='The MPNS certificate.', validator=validate_cert_file, completer=FilesCompleter())
+        c.argument('certificate_key', help='The certificate key for this credential.')
 
     with self.argument_context('notificationhubs credential wns update') as c:
-        c.argument('namespace_name', id_part=None, help='The namespace name.')
-        c.argument('notification_hub_name', id_part=None, help='The notification hub name.')
-        c.argument('package_sid', id_part=None, help='The package ID for this credential.')
-        c.argument('secret_key', id_part=None, help='The secret key.')
+        c.argument('namespace_name', help='The namespace name.')
+        c.argument('notification_hub_name', help='The notification hub name.')
+        c.argument('package_sid', help='The package ID for this credential.')
+        c.argument('secret_key', help='The secret key.')
