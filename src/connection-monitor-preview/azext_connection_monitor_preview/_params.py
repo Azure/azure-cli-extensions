@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.arguments import CLIArgumentType, ignore_type
-from azure.cli.core.commands.parameters import get_enum_type, get_location_type
+from azure.cli.core.commands.parameters import (get_enum_type,
+                                                get_location_type,
+                                                get_three_state_flag)
 
 from ._validators import get_network_watcher_from_location, NWConnectionMonitorEndpointFilterItemAction
 
@@ -12,7 +14,10 @@ from ._validators import get_network_watcher_from_location, NWConnectionMonitorE
 def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
 
-    ConnectionMonitorEndpointFilterType = self.get_models('ConnectionMonitorEndpointFilterType')
+    (ConnectionMonitorEndpointFilterType, ConnectionMonitorTestConfigurationProtocol,
+     PreferredIPVersion, HTTPConfigurationMethod) = self.get_models(
+        'ConnectionMonitorEndpointFilterType', 'ConnectionMonitorTestConfigurationProtocol',
+        'PreferredIPVersion', 'HTTPConfigurationMethod')
 
     with self.argument_context('network watcher') as c:
         c.argument('network_watcher_name', name_arg_type, help='Name of the Network Watcher.')
@@ -46,25 +51,100 @@ def load_arguments(self, _):
                    help='Create the connection monitor but do not start it immediately.')
         # c.ignore('location')
 
-    # region ConnectionMonitorEndpoint
+    # Argument Group for endpoint when create a V2 connection monitor
     with self.argument_context('network watcher connection-monitor create',
                                arg_group='V2 Endpoint',
                                min_api='2019-11-01') as c:
         c.argument('endpoint_dest_name',
-                   help='The name of the source of connection monitor endpoint')
+                   help='The name of the source of connection monitor endpoint. '
+                        'If you are creating a V2 Connection Monitor, it\'s required')
         c.argument('endpoint_dest_resource_id',
                    help='Resource ID of the source of connection monitor endpoint')
         c.argument('endpoint_dest_address',
                    help='Address of the source of connection monitor endpoint (IP or domain name)')
         c.argument('endpoint_source_name',
-                   help='The name of the destination of connection monitor endpoint')
+                   help='The name of the destination of connection monitor endpoint. '
+                        'If you are creating a V2 Connection Monitor, it\'s required')
         c.argument('endpoint_source_resource_id',
-                   help='Resource ID of the destination of connection monitor endpoint')
+                   help='Resource ID of the destination of connection monitor endpoint. '
+                        'If endpoint is intended to used as source, this option is required.')
         c.argument('endpoint_source_address',
                    help='Address of the destination of connection monitor endpoint (IP or domain name)')
 
-    with self.argument_context('network watcher connection-monitor endpoint', arg_group='V2 Endpoint',
+    # Argument Group for test configuration when create a V2 connection monitor
+    with self.argument_context('network watcher connection-monitor create',
+                               arg_group='V2 Test Configuration',
                                min_api='2019-11-01') as c:
+        c.argument('test_config_name',
+                   help='The name of the connection monitor test configuration. '
+                        'If you are creating a V2 Connection Monitor, it\'s required')
+        c.argument('test_config_frequency',
+                   options_list='--frequency',
+                   help='The frequency of test evaluation, in seconds',
+                   type=int)
+        c.argument('test_config_protocol',
+                   options_list='--protocol',
+                   help='The protocol to use in test evaluation',
+                   arg_type=get_enum_type(ConnectionMonitorTestConfigurationProtocol))
+        c.argument('test_config_preferred_ip_version',
+                   options_list='--preferred-ip-version',
+                   help='The preferred IP version to use in test evaluation. '
+                        'The connection monitor may choose to use a different version depending on other parameters',
+                   arg_type=get_enum_type(PreferredIPVersion))
+        c.argument('test_config_threshold_failed_percent',
+                   options_list='--threshold-failed-percent',
+                   help='The maximum percentage of failed checks permitted for a test to evaluate as successful',
+                   type=int)
+        c.argument('test_config_threshold_round_trip_time',
+                   options_list='--threshold-round-trip-time',
+                   help='The maximum round-trip time in milliseconds permitted for a test to evaluate as successful',
+                   type=int)
+        # TCP protocol configuration
+        c.argument('test_config_tcp_port',
+                   options_list='--tcp-port',
+                   help='The port to connect to',
+                   type=int)
+        c.argument('test_config_tcp_disable_trace_route',
+                   options_list='--tcp-disable-trace-route',
+                   help='Value indicating whether path evaluation with trace route should be disabled',
+                   arg_type=get_three_state_flag())
+        # ICMP protocol configuration
+        c.argument('test_config_icmp_disable_trace_route',
+                   options_list='--icmp-disable-trace-route',
+                   help='Value indicating whether path evaluation with trace route should be disabled',
+                   arg_type=get_three_state_flag())
+        # HTTP protocol configuration
+        c.argument('test_config_http_port',
+                   options_list='--http-port',
+                   help='The port to connect to',
+                   type=int)
+        c.argument('test_config_http_method',
+                   options_list='--http-method',
+                   help='The HTTP method to use',
+                   arg_type=get_enum_type(HTTPConfigurationMethod))
+        c.argument('test_config_http_path',
+                   options_list='--http-path',
+                   help='The path component of the URI. For instance, "/dir1/dir2"')
+        c.argument('test_config_http_valid_status_codes',
+                   options_list='--http-valid-status-codes',
+                   help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"')
+        c.argument('test_config_http_prefer_https',
+                   options_list='--https-prefer',
+                   help='Value indicating whether HTTPS is preferred '
+                        'over HTTP in cases where the choice is not explicit',
+                   arg_type=get_three_state_flag())
+
+    with self.argument_context('network watcher connection-monitor create',
+                               arg_group='V2 Test Group',
+                               min_api='2019-11-01') as c:
+        c.argument('test_group_name',
+                   help='The name of the connection monitor test group. '
+                        'If you are creating a V2 Connection Monitor, it\'s required')
+        c.argument('test_group_disable',
+                   help='Value indicating whether test group is disabled',
+                   arg_type=get_three_state_flag())
+
+    with self.argument_context('network watcher connection-monitor endpoint', min_api='2019-11-01') as c:
         c.argument('connection_monitor_name',
                    options_list=['--connection-monitor'],
                    help='Connection monitor name.')
@@ -87,7 +167,3 @@ def load_arguments(self, _):
                    help="List of property=value pairs to define filter items. "
                         "Property currently include: type, address. "
                         "Property value of type supports 'AgentAddress' only now.")
-
-    # with self.argument_context('network watcher connection-monitor create', arg_group='V2 Test Configuration',
-    #                            min_api='2019-11-01') as c:
-    #     pass

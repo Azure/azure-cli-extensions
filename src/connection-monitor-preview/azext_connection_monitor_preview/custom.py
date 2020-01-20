@@ -27,7 +27,23 @@ def create_nw_connection_monitor_v2(cmd,
                                     endpoint_source_address=None,
                                     endpoint_dest_name=None,
                                     endpoint_dest_resource_id=None,
-                                    endpoint_dest_address=None):
+                                    endpoint_dest_address=None,
+                                    test_config_name=None,
+                                    test_config_frequency=None,
+                                    test_config_protocol=None,
+                                    test_config_preferred_ip_version=None,
+                                    test_config_threshold_failed_percent=None,
+                                    test_config_threshold_round_trip_time=None,
+                                    test_config_tcp_disable_trace_route=None,
+                                    test_config_tcp_port=None,
+                                    test_config_icmp_disable_trace_route=None,
+                                    test_config_http_port=None,
+                                    test_config_http_method=None,
+                                    test_config_http_path=None,
+                                    test_config_http_valid_code_ranges=None,
+                                    test_config_http_prefer_https=None,
+                                    test_group_name=None,
+                                    test_group_disable=None):
     print(watcher_rg)
     print(watcher_name)
 
@@ -43,7 +59,7 @@ def create_nw_connection_monitor_v2(cmd,
 
     if any(v1_required_parameter_set):  # V1 creation
         pass
-    elif any(v2_required_parameter_set): # V2 creation
+    elif any(v2_required_parameter_set):  # V2 creation
         pass
     else:
         print('Oh!!!')
@@ -113,18 +129,57 @@ def create_nw_connection_monitor_v2(cmd,
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
 
-def _create_nw_connection_monidor_endpoint(cmd,
+def _create_nw_connection_monitor_v2(cmd,
+                                     client,
+                                     connection_monitor_name,
+                                     watcher_rg,
+                                     watcher_name,
+                                     resource_group_name=None,
+                                     location=None,
+                                     endpoint_source_name=None,
+                                     endpoint_source_resource_id=None,
+                                     endpoint_source_address=None,
+                                     endpoint_dest_name=None,
+                                     endpoint_dest_resource_id=None,
+                                     endpoint_dest_address=None,
+                                     test_config_name=None,
+                                     test_config_frequency=None,
+                                     test_config_protocol=None,
+                                     test_config_preferred_ip_version=None,
+                                     test_config_threshold_failed_percent=None,
+                                     test_config_threshold_round_trip_time=None,
+                                     test_config_tcp_port=None,
+                                     test_config_tcp_disable_trace_route=None,
+                                     test_config_icmp_disable_trace_route=None,
+                                     test_config_http_port=None,
+                                     test_config_http_method=None,
+                                     test_config_http_path=None,
+                                     test_config_http_valid_status_code=None,
+                                     test_config_http_prefer_https=None,
+                                     test_group_name=None,
+                                     test_group_disable=None):
+    src_endpoint = _create_nw_connection_monitor_endpoint(cmd,
+                                                          endpoint_source_name,
+                                                          endpoint_source_resource_id,
+                                                          endpoint_source_address)
+    dst_endpoint = _create_nw_connection_monitor_endpoint(cmd,
+                                                          endpoint_dest_name,
+                                                          endpoint_dest_resource_id,
+                                                          endpoint_dest_address)
+
+
+def _create_nw_connection_monitor_endpoint(cmd,
                                            name,
                                            resource_id=None,
                                            address=None,
                                            filter_type=None,
                                            filter_items=None):
-    ConnectionMonitorEndpoint, ConnectionMonitorEndpointFilter = cmd.get_models(
-        'ConnectionMonitorEndpoint', 'ConnectionMonitorEndpointFilter')
-
     if (filter_type and not filter_items) or (not filter_type and filter_items):
         raise CLIError('usage error: '
                        '--filter-type and --filter-item for endpoint filter must be present at the same time.')
+
+    ConnectionMonitorEndpoint, ConnectionMonitorEndpointFilter = cmd.get_models(
+        'ConnectionMonitorEndpoint', 'ConnectionMonitorEndpointFilter')
 
     endpoint = ConnectionMonitorEndpoint(name=name, resource_id=resource_id, address=address)
 
@@ -133,6 +188,49 @@ def _create_nw_connection_monidor_endpoint(cmd,
         endpoint.filter = endpoint_filter
 
     return endpoint
+
+
+def _create_nw_connection_monitor_test_configuration(cmd,
+                                                     name,
+                                                     test_frequency,
+                                                     protocol,
+                                                     threshold_failed_percent,
+                                                     threshold_round_trip_time,
+                                                     preferred_ip_version,
+                                                     tcp_port=None,
+                                                     tcp_disable_trace_route=None,
+                                                     icmp_disable_trace_route=None,
+                                                     http_port=None,
+                                                     http_method=None,
+                                                     http_path=None,
+                                                     http_valid_status_codes=None,
+                                                     http_prefer_https=None,
+                                                     http_request_headers=None):
+    (ConnectionMonitorTestConfigurationProtocol,
+     ConnectionMonitorTestConfiguration, ConnectionMonitorSuccessThreshold) = cmd.get_models(
+        'ConnectionMonitorTestConfigurationProtocol',
+        'ConnectionMonitorTestConfiguration', 'ConnectionMonitorSuccessThreshold')
+
+    test_config = ConnectionMonitorTestConfiguration(name=name,
+                                                     test_frequency_sec=test_frequency,
+                                                     protocol=protocol,
+                                                     preferred_ip_version=preferred_ip_version)
+
+    if threshold_failed_percent or threshold_round_trip_time:
+        threshold = ConnectionMonitorSuccessThreshold(checks_failed_percent=threshold_failed_percent,
+                                                      round_trip_time_ms=threshold_round_trip_time)
+        test_config.success_threshold = threshold
+
+    if protocol == ConnectionMonitorTestConfigurationProtocol.tcp:
+        ConnectionMonitorTcpConfiguration = cmd.get_models('ConnectionMonitorTcpConfiguration')
+    elif protocol == ConnectionMonitorTestConfiguration.icmp:
+        pass
+    elif protocol == ConnectionMonitorTestConfigurationProtocol.http:
+        pass
+    else:
+        raise CLIError('Unsupported protocol: "{}" for test configuration'.format(protocol))
+
+    return test_config
 
 
 def add_nw_connection_monitor_v2_endpoint(cmd,
