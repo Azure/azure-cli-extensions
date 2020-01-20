@@ -53,7 +53,7 @@ def load_arguments(self, _):
         c.argument('alert_id', id_part=None, help='Unique ID of an alert instance.')
 
     with self.argument_context('alertsmanagement alert get-summary') as c:
-        c.argument('groupby', id_part=None, help='This parameter allows the result set to be grouped by input fields (Maximum 2 comma separated fields supported). For example, groupby=severity or groupby=severity,alertstate.')
+        c.argument('groupby', id_part=None, help='This parameter allows the result set to be grouped by input fields (Maximum 2 comma separated fields supported). For example, groupby=severity or groupby=severity,alertstate. Possible values include: severity, alertState, monitorCondition, monitorService, signalType, alertRule')
         c.argument('include_smart_groups_count', arg_type=get_three_state_flag(), id_part=None, help='Include count of the SmartGroups as part of the summary. Default value is \'false\'.')
         c.argument('target_resource', id_part=None, help='Filter by target resource( which is full ARM ID) Default value is select all.')
         c.argument('target_resource_type', id_part=None, help='Filter by target resource type. Default value is select all.')

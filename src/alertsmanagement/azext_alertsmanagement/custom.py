@@ -57,7 +57,7 @@ def get_history_alertsmanagement_alert(cmd, client,
 
 
 def get_summary_alertsmanagement_alert(cmd, client,
-                                       groupby=None,
+                                       groupby,
                                        include_smart_groups_count=None,
                                        target_resource=None,
                                        target_resource_type=None,
