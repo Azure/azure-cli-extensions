@@ -144,7 +144,7 @@ helps['spring-cloud app show-deploy-log'] = """
 
 helps['spring-cloud app log tail'] = """
     type: command
-    short-summary: Show logs of an app or a instance, logs will be streamed when set --follow.
+    short-summary: Show logs of an app instance, logs will be streamed when setting '-f/--follow'.
 """
 
 helps['spring-cloud app set-deployment'] = """

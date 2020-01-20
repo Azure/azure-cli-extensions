@@ -1071,10 +1071,9 @@ def _get_app_log(url, user_name, password, exceptions):
 
         for chunk in stream(response):
             if chunk:
-                logger.warning(chunk.decode(encoding='utf-8', errors='replace')
-                               .encode(std_encoding, errors='replace')
-                               .decode(std_encoding, errors='replace')
-                               .rstrip())
+                sys.stdout.write(chunk.decode(encoding='utf-8', errors='replace')
+                                 .encode(std_encoding, errors='replace')
+                                 .decode(std_encoding, errors='replace'))
         response.release_conn()
     except CLIError as e:
         exceptions.append(e)
