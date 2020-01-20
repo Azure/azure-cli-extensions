@@ -6,6 +6,7 @@
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
+# pylint: disable=unused-argument
 
 from azure.cli.core.util import sdk_no_wait
 

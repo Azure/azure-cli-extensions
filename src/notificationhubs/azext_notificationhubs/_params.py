@@ -11,7 +11,6 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
-    resource_group_name_type,
     get_location_type,
     file_type
 )
