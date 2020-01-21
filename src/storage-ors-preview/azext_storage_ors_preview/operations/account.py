@@ -26,7 +26,7 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
                 rule_id=rule_id,
                 source_container=source_container,
                 destination_container=destination_container,
-                filter=ObjectReplicationPolicyFilter(prefix_match=prefix_match, tag=tag)
+                filters=ObjectReplicationPolicyFilter(prefix_match=prefix_match, tag=tag)
             )
             rules.append(rule)
         ors_policy = ObjectReplicationPolicy(source_account=source_account,
