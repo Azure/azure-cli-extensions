@@ -896,12 +896,13 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
+            print('AKS cluster is creating, please wait...') 
             created_cluster =  sdk_no_wait(no_wait, client.create_or_update,
                                resource_group_name=resource_group_name,
                                resource_name=name,
                                parameters=mc,
                                custom_headers=headers).result()
-            if enable_managed_identity:
+            if enable_managed_identity and attach_acr:
                 # Attach ACR to cluster enabled managed identity
                 if created_cluster.identity_profile is None or created_cluster.identity_profile["kubeletidentity"] is None:
                     logger.warning('Your cluster is successfully created, but we failed to attach acr to it, '
