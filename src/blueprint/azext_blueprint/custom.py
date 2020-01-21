@@ -230,6 +230,7 @@ def create_blueprint_artifact_role(cmd, client,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
+    print(parameters)
     body = {'display_name': display_name,
             'role_definition_id': role_definition_id,
             'kind': 'roleAssignment',

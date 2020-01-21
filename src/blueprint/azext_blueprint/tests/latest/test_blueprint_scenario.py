@@ -20,8 +20,6 @@ class BlueprintScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'blueprintName': 'test-bp',
-            # 'managementGroupId': 'CliMgmtGroup',
-            # 'subId': '0b1f6471-1bf0-4dda-aec3-cb9272f09590',
             'scope': 'subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590'
         })
 
@@ -39,17 +37,17 @@ class BlueprintScenarioTest(ScenarioTest):
         self.cmd('az blueprint resource-group create '
                  '--scope "{scope}" '
                  '--blueprint-name "{blueprintName}" '
-                 '--artifact-name "my-rg-art" '
-                 '--target-scope "subscription"',
+                 '--artifact-name "my-rg-art"',
                  checks=[])
 
         self.cmd('az blueprint artifact role create '
                  '--scope "{scope}" '
                  '--blueprint-name "{blueprintName}" '
                  '--artifact-name "reader-role-art" '
+                 '--display-name "[User group or application name] : Reader" '
                  '--role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
-                 '--principal-ids "[parameters(\'[Usergrouporapplicationname]:Reader_RoleAssignmentName\')]" '
-                 '--parameters "{\:q"RoleAssignmentName\":{\"value\":\"[parameters(\'[Usergrouporapplicationname]:Reader_RoleAssignmentName\')]\"}}}}"',
+                 r'''--principal-ids "[parameters('[Usergrouporapplicationname]:Reader_RoleAssignmentName')]" '''
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/role_params.json',
                  checks=[])
  
 
