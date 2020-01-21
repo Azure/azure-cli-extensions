@@ -17,9 +17,9 @@ Manage Notification Hubs and namespaces: [more info](https://docs.microsoft.com/
 ```
 az notificationhubs namespace create \
     --resource-group groupName \
-    --namespace-name spaceName \
+    --name spaceName \
     --location localtionName \
-    --sku-name "Basic"
+    --sku "Basic"
 ```
 
 ##### Create a Notification Hub
@@ -27,14 +27,14 @@ az notificationhubs namespace create \
 az notificationhubs create \
     --resource-group groupName \
     --namespace-name spaceName \
-    --notification-hub-name hubName \
+    --name hubName \
     --location "South Central US" \
-    --sku-name "Basic"
+    --name "Basic"
 ```
 
 ##### Create a Notification Hub authorization rule
 ```
-az notificationhubs authorization_rule create \
+az notificationhubs authorization-rule create \
     --resource-group groupName \
     --namespace-name spaceName \
     --notification-hub-name hubName \
@@ -44,7 +44,7 @@ az notificationhubs authorization_rule create \
 
 ##### List Notification Hub policy keys
 ```
-az notificationhubs authorization_rule list_keys \
+az notificationhubs authorization-rule list-keys \
     --resource-group groupName \
     --namespace-name spaceName \
     --notification-hub-name hubName \
@@ -61,8 +61,10 @@ az notificationhubs credential gcm update \
 ```
 
 ##### Test sending message to Android devices
+You may want to follow the [instructions](https://docs.microsoft.com/en-us/azure/notification-hubs/notification-hubs-android-push-notification-google-fcm-get-started) to set up an Android App to receive notifications.
+
 ```
-az notificationhubs test_send \
+az notificationhubs test-send \
     --resource-group groupName \
     --namespace-name spaceName \
     --notification-hub-name hubName \
