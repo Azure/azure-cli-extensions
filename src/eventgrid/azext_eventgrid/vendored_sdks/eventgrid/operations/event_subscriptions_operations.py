@@ -25,7 +25,7 @@ class EventSubscriptionsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-01-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-04-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class EventSubscriptionsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-01-01-preview"
+        self.api_version = "2020-04-01-preview"
 
         self.config = config
 
@@ -56,7 +56,7 @@ class EventSubscriptionsOperations(object):
          '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
          for an EventGrid topic.
         :type scope: str
-        :param event_subscription_name: Name of the event subscription
+        :param event_subscription_name: Name of the event subscription.
         :type event_subscription_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -82,7 +82,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -91,8 +91,8 @@ class EventSubscriptionsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.get(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+        request = self._client.get(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)
@@ -128,6 +128,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -140,9 +141,8 @@ class EventSubscriptionsOperations(object):
         body_content = self._serialize.body(event_subscription_info, 'EventSubscription')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters)
-        response = self._client.send(
-            request, header_parameters, body_content, stream=False, **operation_config)
+        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [201]:
             exp = CloudError(response)
@@ -184,7 +184,7 @@ class EventSubscriptionsOperations(object):
          should use alphanumeric letters only.
         :type event_subscription_name: str
         :param event_subscription_info: Event subscription properties
-         containing the destination and filter information
+         containing the destination and filter information.
         :type event_subscription_info:
          ~microsoft.azure.management.eventgrid.models.EventSubscription
         :param dict custom_headers: headers that will be added to the request
@@ -244,7 +244,6 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -253,8 +252,8 @@ class EventSubscriptionsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.delete(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+        request = self._client.delete(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 202, 204]:
             exp = CloudError(response)
@@ -282,7 +281,7 @@ class EventSubscriptionsOperations(object):
          '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
          for an EventGrid topic.
         :type scope: str
-        :param event_subscription_name: Name of the event subscription
+        :param event_subscription_name: Name of the event subscription.
         :type event_subscription_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
@@ -334,6 +333,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -346,9 +346,8 @@ class EventSubscriptionsOperations(object):
         body_content = self._serialize.body(event_subscription_update_parameters, 'EventSubscriptionUpdateParameters')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters)
-        response = self._client.send(
-            request, header_parameters, body_content, stream=False, **operation_config)
+        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [201]:
             exp = CloudError(response)
@@ -384,10 +383,10 @@ class EventSubscriptionsOperations(object):
          for an EventGrid topic.
         :type scope: str
         :param event_subscription_name: Name of the event subscription to be
-         updated
+         updated.
         :type event_subscription_name: str
         :param event_subscription_update_parameters: Updated event
-         subscription information
+         subscription information.
         :type event_subscription_update_parameters:
          ~microsoft.azure.management.eventgrid.models.EventSubscriptionUpdateParameters
         :param dict custom_headers: headers that will be added to the request
@@ -447,7 +446,7 @@ class EventSubscriptionsOperations(object):
          '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.EventGrid/topics/{topicName}'
          for an EventGrid topic.
         :type scope: str
-        :param event_subscription_name: Name of the event subscription
+        :param event_subscription_name: Name of the event subscription.
         :type event_subscription_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -474,7 +473,7 @@ class EventSubscriptionsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -483,8 +482,8 @@ class EventSubscriptionsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+        request = self._client.post(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)
@@ -559,7 +558,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -568,9 +567,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -597,7 +595,7 @@ class EventSubscriptionsOperations(object):
         List all global event subscriptions under an Azure subscription for a
         topic type.
 
-        :param topic_type_name: Name of the topic type
+        :param topic_type_name: Name of the topic type.
         :type topic_type_name: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -648,7 +646,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -657,9 +655,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -739,7 +736,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -748,9 +745,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -781,7 +777,7 @@ class EventSubscriptionsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param topic_type_name: Name of the topic type
+        :param topic_type_name: Name of the topic type.
         :type topic_type_name: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -833,7 +829,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -842,9 +838,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -871,7 +866,7 @@ class EventSubscriptionsOperations(object):
         List all event subscriptions from the given location under a specific
         Azure subscription.
 
-        :param location: Name of the location
+        :param location: Name of the location.
         :type location: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -922,7 +917,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -931,9 +926,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -964,7 +958,7 @@ class EventSubscriptionsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param location: Name of the location
+        :param location: Name of the location.
         :type location: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -1016,7 +1010,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1025,9 +1019,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1055,9 +1048,9 @@ class EventSubscriptionsOperations(object):
         List all event subscriptions from the given location under a specific
         Azure subscription and topic type.
 
-        :param location: Name of the location
+        :param location: Name of the location.
         :type location: str
-        :param topic_type_name: Name of the topic type
+        :param topic_type_name: Name of the topic type.
         :type topic_type_name: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -1109,7 +1102,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1118,9 +1111,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1151,9 +1143,9 @@ class EventSubscriptionsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param location: Name of the location
+        :param location: Name of the location.
         :type location: str
-        :param topic_type_name: Name of the topic type
+        :param topic_type_name: Name of the topic type.
         :type topic_type_name: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -1206,7 +1198,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1215,9 +1207,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1247,11 +1238,11 @@ class EventSubscriptionsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param provider_namespace: Namespace of the provider of the topic
+        :param provider_namespace: Namespace of the provider of the topic.
         :type provider_namespace: str
-        :param resource_type_name: Name of the resource type
+        :param resource_type_name: Name of the resource type.
         :type resource_type_name: str
-        :param resource_name: Name of the resource
+        :param resource_name: Name of the resource.
         :type resource_name: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -1305,7 +1296,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1314,9 +1305,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -1346,9 +1336,9 @@ class EventSubscriptionsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the top level domain
+        :param domain_name: Name of the top level domain.
         :type domain_name: str
-        :param topic_name: Name of the domain topic
+        :param topic_name: Name of the domain topic.
         :type topic_name: str
         :param filter: The query used to filter the search results using OData
          syntax. Filtering is permitted on the 'name' property only and with
@@ -1401,7 +1391,7 @@ class EventSubscriptionsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -1410,9 +1400,8 @@ class EventSubscriptionsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)

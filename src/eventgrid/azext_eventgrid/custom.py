@@ -28,7 +28,9 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     ServiceBusTopicEventSubscriptionDestination,
     AzureFunctionEventSubscriptionDestination,
     StorageBlobDeadLetterDestination,
-    EventSubscriptionFilter)
+    EventSubscriptionFilter,
+    TopicUpdateParameters,
+    DomainUpdateParameters)
 
 logger = get_logger(__name__)
 
@@ -85,7 +87,9 @@ def cli_topic_create_or_update(
         tags=None,
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
-        input_mapping_default_values=None):
+        input_mapping_default_values=None,
+        allow_traffic_from_all_ips=None,
+        inbound_ip_rules=None):
     final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
         input_schema,
         input_mapping_fields,
@@ -94,12 +98,50 @@ def cli_topic_create_or_update(
         location=location,
         tags=tags,
         input_schema=final_input_schema,
-        input_schema_mapping=input_schema_mapping)
+        input_schema_mapping=input_schema_mapping,
+        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
+        inbound_ip_rules=inbound_ip_rules)
 
     return client.create_or_update(
         resource_group_name,
         topic_name,
         topic_info)
+
+
+def cli_topic_update(
+        client,
+        resource_group_name,
+        topic_name,
+        tags=None,
+        allow_traffic_from_all_ips=None,
+        inbound_ip_rules=None):
+    topic_update_parameters = TopicUpdateParameters(
+        tags=tags,
+        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
+        inbound_ip_rules=inbound_ip_rules)
+
+    return client.update(
+        resource_group_name=resource_group_name,
+        topic_name=topic_name,
+        topic_update_parameters=topic_update_parameters)
+
+
+def cli_domain_update(
+        client,
+        resource_group_name,
+        domain_name,
+        tags=None,
+        allow_traffic_from_all_ips=None,
+        inbound_ip_rules=None):
+    domain_update_parameters = DomainUpdateParameters(
+        tags=tags,
+        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
+        inbound_ip_rules=inbound_ip_rules)
+
+    return client.update(
+        resource_group_name,
+        domain_name,
+        domain_update_parameters)
 
 
 def cli_domain_list(
@@ -121,7 +163,9 @@ def cli_domain_create_or_update(
         tags=None,
         input_schema=EVENTGRID_SCHEMA,
         input_mapping_fields=None,
-        input_mapping_default_values=None):
+        input_mapping_default_values=None,
+        allow_traffic_from_all_ips=None,
+        inbound_ip_rules=None):
     final_input_schema, input_schema_mapping = _get_input_schema_and_mapping(
         input_schema,
         input_mapping_fields,
@@ -130,7 +174,9 @@ def cli_domain_create_or_update(
         location=location,
         tags=tags,
         input_schema=final_input_schema,
-        input_schema_mapping=input_schema_mapping)
+        input_schema_mapping=input_schema_mapping,
+        allow_traffic_from_all_ips=allow_traffic_from_all_ips,
+        inbound_ip_rules=inbound_ip_rules)
 
     return client.create_or_update(
         resource_group_name,
