@@ -899,10 +899,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         try:
             print('AKS cluster is creating, please wait...')
             created_cluster = sdk_no_wait(no_wait, client.create_or_update,
-                                        resource_group_name=resource_group_name,
-                                        resource_name=name,
-                                        parameters=mc,
-                                        custom_headers=headers).result()
+                                          resource_group_name=resource_group_name,
+                                          resource_name=name,
+                                          parameters=mc,
+                                          custom_headers=headers).result()
             if enable_managed_identity and attach_acr:
                 # Attach ACR to cluster enabled managed identity
                 if created_cluster.identity_profile is None or \
@@ -913,9 +913,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 else:
                     kubelet_identity_client_id = created_cluster.identity_profile["kubeletidentity"].client_id
                     _ensure_aks_acr(cmd.cli_ctx,
-                                client_id=kubelet_identity_client_id,
-                                acr_name_or_id=attach_acr,
-                                subscription_id=subscription_id)
+                                    client_id=kubelet_identity_client_id,
+                                    acr_name_or_id=attach_acr,
+                                    subscription_id=subscription_id)
 
             return created_cluster
         except CloudError as ex:
