@@ -19,8 +19,7 @@ class InboundIpRule(Model):
     :type ip_mask: str
     :param action: Action to perform based on the match or no match of the
      IpMask. Possible values include: 'Allow'
-    :type action: str or
-     ~microsoft.azure.management.eventgrid.models.IpActionType
+    :type action: str or ~azext_eventgrid.models.IpActionType
     """
 
     _attribute_map = {

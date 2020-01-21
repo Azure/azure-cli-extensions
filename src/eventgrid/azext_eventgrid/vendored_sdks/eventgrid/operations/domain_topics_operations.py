@@ -58,7 +58,7 @@ class DomainTopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainTopic or ClientRawResponse if raw=true
-        :rtype: ~microsoft.azure.management.eventgrid.models.DomainTopic or
+        :rtype: ~azext_eventgrid.models.DomainTopic or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -176,9 +176,9 @@ class DomainTopicsOperations(object):
         :return: An instance of LROPoller that returns DomainTopic or
          ClientRawResponse<DomainTopic> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.DomainTopic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.DomainTopic]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.DomainTopic]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.DomainTopic]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -326,7 +326,7 @@ class DomainTopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DomainTopic
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainTopicPaged[~microsoft.azure.management.eventgrid.models.DomainTopic]
+         ~azext_eventgrid.models.DomainTopicPaged[~azext_eventgrid.models.DomainTopic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):

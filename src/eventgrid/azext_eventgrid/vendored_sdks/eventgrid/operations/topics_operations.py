@@ -56,7 +56,7 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Topic or ClientRawResponse if raw=true
-        :rtype: ~microsoft.azure.management.eventgrid.models.Topic or
+        :rtype: ~azext_eventgrid.models.Topic or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -166,7 +166,7 @@ class TopicsOperations(object):
         :param topic_name: Name of the topic.
         :type topic_name: str
         :param topic_info: Topic information.
-        :type topic_info: ~microsoft.azure.management.eventgrid.models.Topic
+        :type topic_info: ~azext_eventgrid.models.Topic
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -175,9 +175,9 @@ class TopicsOperations(object):
         :return: An instance of LROPoller that returns Topic or
          ClientRawResponse<Topic> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.Topic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Topic]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.Topic]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Topic]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -352,7 +352,7 @@ class TopicsOperations(object):
         :type topic_name: str
         :param topic_update_parameters: Topic update information.
         :type topic_update_parameters:
-         ~microsoft.azure.management.eventgrid.models.TopicUpdateParameters
+         ~azext_eventgrid.models.TopicUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -361,9 +361,9 @@ class TopicsOperations(object):
         :return: An instance of LROPoller that returns Topic or
          ClientRawResponse<Topic> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.Topic]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Topic]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.Topic]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Topic]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -420,7 +420,7 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Topic
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.TopicPaged[~microsoft.azure.management.eventgrid.models.Topic]
+         ~azext_eventgrid.models.TopicPaged[~azext_eventgrid.models.Topic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -507,7 +507,7 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Topic
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.TopicPaged[~microsoft.azure.management.eventgrid.models.Topic]
+         ~azext_eventgrid.models.TopicPaged[~azext_eventgrid.models.Topic]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -582,8 +582,7 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype:
-         ~microsoft.azure.management.eventgrid.models.TopicSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.TopicSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -650,8 +649,7 @@ class TopicsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype:
-         ~microsoft.azure.management.eventgrid.models.TopicSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.TopicSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -727,7 +725,7 @@ class TopicsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventType
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.EventTypePaged[~microsoft.azure.management.eventgrid.models.EventType]
+         ~azext_eventgrid.models.EventTypePaged[~azext_eventgrid.models.EventType]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):

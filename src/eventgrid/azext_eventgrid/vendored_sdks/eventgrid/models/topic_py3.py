@@ -34,21 +34,19 @@ class Topic(TrackedResource):
      include: 'Creating', 'Updating', 'Deleting', 'Succeeded', 'Canceled',
      'Failed'
     :vartype provisioning_state: str or
-     ~microsoft.azure.management.eventgrid.models.TopicProvisioningState
+     ~azext_eventgrid.models.TopicProvisioningState
     :ivar endpoint: Endpoint for the topic.
     :vartype endpoint: str
     :param input_schema: This determines the format that Event Grid should
      expect for incoming events published to the topic. Possible values
      include: 'EventGridSchema', 'CustomEventSchema', 'CloudEventSchemaV1_0'.
      Default value: "EventGridSchema" .
-    :type input_schema: str or
-     ~microsoft.azure.management.eventgrid.models.InputSchema
+    :type input_schema: str or ~azext_eventgrid.models.InputSchema
     :param input_schema_mapping: This enables publishing using custom event
      schemas. An InputSchemaMapping can be specified to map various properties
      of a source schema to various required properties of the EventGridEvent
      schema.
-    :type input_schema_mapping:
-     ~microsoft.azure.management.eventgrid.models.InputSchemaMapping
+    :type input_schema_mapping: ~azext_eventgrid.models.InputSchemaMapping
     :ivar metric_resource_id: Metric resource id for the topic.
     :vartype metric_resource_id: str
     :param allow_traffic_from_all_ips: This determines if IP filtering rules
@@ -57,8 +55,7 @@ class Topic(TrackedResource):
     :type allow_traffic_from_all_ips: bool
     :param inbound_ip_rules: This determines the IP filtering rules that ought
      to be applied when events are received on this topic.
-    :type inbound_ip_rules:
-     list[~microsoft.azure.management.eventgrid.models.InboundIpRule]
+    :type inbound_ip_rules: list[~azext_eventgrid.models.InboundIpRule]
     """
 
     _validation = {

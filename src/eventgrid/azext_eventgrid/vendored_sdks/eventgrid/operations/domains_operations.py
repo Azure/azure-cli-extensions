@@ -56,7 +56,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Domain or ClientRawResponse if raw=true
-        :rtype: ~microsoft.azure.management.eventgrid.models.Domain or
+        :rtype: ~azext_eventgrid.models.Domain or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -167,7 +167,7 @@ class DomainsOperations(object):
         :param domain_name: Name of the domain.
         :type domain_name: str
         :param domain_info: Domain information.
-        :type domain_info: ~microsoft.azure.management.eventgrid.models.Domain
+        :type domain_info: ~azext_eventgrid.models.Domain
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -176,9 +176,9 @@ class DomainsOperations(object):
         :return: An instance of LROPoller that returns Domain or
          ClientRawResponse<Domain> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.Domain]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Domain]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.Domain]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Domain]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -353,7 +353,7 @@ class DomainsOperations(object):
         :type domain_name: str
         :param domain_update_parameters: Domain update information.
         :type domain_update_parameters:
-         ~microsoft.azure.management.eventgrid.models.DomainUpdateParameters
+         ~azext_eventgrid.models.DomainUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -362,9 +362,9 @@ class DomainsOperations(object):
         :return: An instance of LROPoller that returns Domain or
          ClientRawResponse<Domain> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.Domain]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Domain]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.Domain]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Domain]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -421,7 +421,7 @@ class DomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Domain
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainPaged[~microsoft.azure.management.eventgrid.models.Domain]
+         ~azext_eventgrid.models.DomainPaged[~azext_eventgrid.models.Domain]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -508,7 +508,7 @@ class DomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Domain
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainPaged[~microsoft.azure.management.eventgrid.models.Domain]
+         ~azext_eventgrid.models.DomainPaged[~azext_eventgrid.models.Domain]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -583,8 +583,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.DomainSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -651,8 +650,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.DomainSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """

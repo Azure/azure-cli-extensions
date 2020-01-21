@@ -33,12 +33,12 @@ class TopicTypeInfo(Resource):
     :param resource_region_type: Region type of the resource. Possible values
      include: 'RegionalResource', 'GlobalResource'
     :type resource_region_type: str or
-     ~microsoft.azure.management.eventgrid.models.ResourceRegionType
+     ~azext_eventgrid.models.ResourceRegionType
     :param provisioning_state: Provisioning state of the topic type. Possible
      values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :type provisioning_state: str or
-     ~microsoft.azure.management.eventgrid.models.TopicTypeProvisioningState
+     ~azext_eventgrid.models.TopicTypeProvisioningState
     :param supported_locations: List of locations supported by this topic
      type.
     :type supported_locations: list[str]

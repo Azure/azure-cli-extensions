@@ -23,8 +23,7 @@ class DomainUpdateParameters(Model):
     :type allow_traffic_from_all_ips: bool
     :param inbound_ip_rules: This determines the IP filtering rules that ought
      be applied when events are received on this domain.
-    :type inbound_ip_rules:
-     list[~microsoft.azure.management.eventgrid.models.InboundIpRule]
+    :type inbound_ip_rules: list[~azext_eventgrid.models.InboundIpRule]
     """
 
     _attribute_map = {

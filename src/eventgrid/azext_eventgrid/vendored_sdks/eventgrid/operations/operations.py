@@ -51,7 +51,7 @@ class Operations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Operation
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.OperationPaged[~microsoft.azure.management.eventgrid.models.Operation]
+         ~azext_eventgrid.models.OperationPaged[~azext_eventgrid.models.Operation]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):

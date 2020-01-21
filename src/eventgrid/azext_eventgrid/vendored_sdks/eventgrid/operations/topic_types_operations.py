@@ -50,7 +50,7 @@ class TopicTypesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of TopicTypeInfo
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.TopicTypeInfoPaged[~microsoft.azure.management.eventgrid.models.TopicTypeInfo]
+         ~azext_eventgrid.models.TopicTypeInfoPaged[~azext_eventgrid.models.TopicTypeInfo]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -113,7 +113,7 @@ class TopicTypesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: TopicTypeInfo or ClientRawResponse if raw=true
-        :rtype: ~microsoft.azure.management.eventgrid.models.TopicTypeInfo or
+        :rtype: ~azext_eventgrid.models.TopicTypeInfo or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -174,7 +174,7 @@ class TopicTypesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of EventType
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.EventTypePaged[~microsoft.azure.management.eventgrid.models.EventType]
+         ~azext_eventgrid.models.EventTypePaged[~azext_eventgrid.models.EventType]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
