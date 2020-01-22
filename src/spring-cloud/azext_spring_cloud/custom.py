@@ -19,7 +19,7 @@ from azure.cli.core.util import sdk_no_wait
 from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
-from urllib import parse
+from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
 import certifi
