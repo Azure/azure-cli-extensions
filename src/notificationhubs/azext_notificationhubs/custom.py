@@ -228,7 +228,6 @@ def debug_send_notificationhubs_hub(cmd, client,
             parameters = json.loads(payload)
         else:
             parameters = payload
-    print(parameters)
     custom_headers = {"servicebusnotification-format": notification_format}
     if tag is not None:
         custom_headers['servicebusnotification-tags'] = tag
