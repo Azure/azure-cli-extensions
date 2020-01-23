@@ -10,6 +10,7 @@ import os
 import pkgutil
 import timeit
 import inspect
+import traceback
 import requests
 from knack.log import get_logger
 
@@ -59,6 +60,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     return_message = ''
     return_error_detail = ''
     return_status = ''
+    error_stack_trace = ''
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -176,24 +178,32 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Some error happened. Stop command and clean-up resources.
     except KeyboardInterrupt:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = "Command interrupted by user input."
         return_message = "Command interrupted by user input. Cleaning up resources."
     except AzCommandError as azCommandError:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(azCommandError)
         return_message = "Repair create failed. Cleaning up created resources."
     except SkuNotAvailableError as skuNotAvailableError:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(skuNotAvailableError)
         return_message = "Please check if the current subscription can create more VM resources. Cleaning up created resources."
     except UnmanagedDiskCopyError as unmanagedDiskCopyError:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(unmanagedDiskCopyError)
         return_message = "Repair create failed. Please try again at another time. Cleaning up created resources."
     except WindowsOsNotAvailableError:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = 'Compatible Windows OS image not available.'
         return_message = 'A compatible Windows OS image is not available at this time, please check subscription.'
     except Exception as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
+        if error_stack_trace:
+            logger.debug(error_stack_trace)
         # end long running op for process if not verbose
         if not is_verbose:
             cmd.cli_ctx.get_progress_controller().end()
@@ -209,15 +219,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         created_resources.append(copy_disk_id)
         return_dict = {}
         return_dict['status'] = return_status
-        return_dict['message'] = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-                                 'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
-                                 '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
-                                 'Note that the copied disk is created within the original resource group \'{rg}\'.' \
-                                 .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
+        return_dict['message'] = return_message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+                                                  'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
+                                                  '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
+                                                  'Note that the copied disk is created within the original resource group \'{rg}\'.' \
+                                                  .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
         return_dict['repair_vm_name'] = repair_vm_name
         return_dict['copied_disk_name'] = copy_disk_name
         return_dict['copied_disk_uri'] = copy_disk_id
-        return_dict['repair_resouce_group'] = repair_group_name
+        return_dict['repair_resource_group'] = repair_group_name
         return_dict['resource_tag'] = resource_tag
         return_dict['created_resources'] = created_resources
 
@@ -225,7 +235,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_command_telemetry('vm repair create', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
+    _track_command_telemetry('vm repair create', func_params, return_status, return_message, return_error_detail, error_stack_trace, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
     return return_dict
 
 
@@ -243,6 +253,7 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
     return_message = ''
     return_error_detail = ''
     return_status = ''
+    error_stack_trace = ''
 
     source_vm = get_vm(cmd, resource_group_name, vm_name)
     is_managed = _uses_managed_disk(source_vm)
@@ -291,15 +302,20 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         _clean_up_resources(repair_resource_group, confirm=not yes)
         command_succeeded = True
     except KeyboardInterrupt:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = "Command interrupted by user input."
         return_message = "Command interrupted by user input. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
     except AzCommandError as azCommandError:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(azCommandError)
         return_message = "Repair restore failed. If the restore command fails at retry, please rerun the repair process from \'az vm repair create\'."
     except Exception as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
+        if error_stack_trace:
+            logger.debug(error_stack_trace)
         # end long running op for process if not verbose
         if not is_verbose:
             cmd.cli_ctx.get_progress_controller().end()
@@ -312,15 +328,15 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         return_status = STATUS_SUCCESS
         return_dict = {}
         return_dict['status'] = return_status
-        return_dict['message'] = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
-                                 'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
-                                 .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
+        return_dict['message'] = return_message = '\'{disk}\' successfully attached to \'{n}\' as an OS disk. Please test your repairs and once confirmed, ' \
+                                                  'you may choose to delete the source OS disk \'{src_disk}\' within resource group \'{rg}\' manually if you no longer need it, to avoid any undesired costs.' \
+                                                  .format(disk=disk_name, n=vm_name, src_disk=source_disk, rg=resource_group_name)
 
         logger.info('\n%s\n', return_dict['message'])
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_command_telemetry('vm repair restore', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
+    _track_command_telemetry('vm repair restore', func_params, return_status, return_message, return_error_detail, error_stack_trace, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
     return return_dict
 
 
@@ -338,6 +354,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     return_message = ''
     return_error_detail = ''
     return_status = ''
+    error_stack_trace = ''
 
     # Overall success flag
     command_succeeded = False
@@ -444,24 +461,31 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_dict['log_full_path'] = log_fullpath
         return_dict['output'] = output
         return_dict['vm_name'] = repair_vm_name
-        return_dict['resouce_group'] = repair_resource_group
+        return_dict['resource_group'] = repair_resource_group
         command_succeeded = True
     except KeyboardInterrupt:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = "Command interrupted by user input."
         return_message = "Repair run failed. Command interrupted by user input."
     except AzCommandError as azCommandError:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(azCommandError)
         return_message = "Repair run failed."
     except requests.exceptions.RequestException as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = "Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library"
     except RunScriptNotFoundForIdError as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = "Repair run failed. Run ID not found."
     except Exception as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
     finally:
+        if error_stack_trace:
+            logger.debug(error_stack_trace)
         # end long running op for process if not verbose
         if not is_verbose:
             cmd.cli_ctx.get_progress_controller().end()
@@ -476,7 +500,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx),
+    _track_run_command_telemetry('vm repair run', func_params, return_status, return_message, return_error_detail, error_stack_trace, elapsed_time, get_subscription_id(cmd.cli_ctx),
                                  return_dict, run_id, script_status, output, script_duration)
     return return_dict
 
@@ -490,6 +514,7 @@ def list_scripts(cmd):
     return_message = ''
     return_error_detail = ''
     return_status = ''
+    error_stack_trace = ''
     return_dict = {}
     # Overall success flag
     command_succeeded = False
@@ -499,12 +524,16 @@ def list_scripts(cmd):
         return_dict['map'] = run_map
         command_succeeded = True
     except requests.exceptions.RequestException as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = "Failed to fetch run script data from GitHub. Please check this repository is reachable: https://github.com/Azure/repair-script-library"
     except Exception as exception:
+        error_stack_trace = traceback.format_exc()
         return_error_detail = str(exception)
         return_message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
-
+    finally:
+        if error_stack_trace:
+            logger.debug(error_stack_trace)
     if not command_succeeded:
         return_status = STATUS_ERROR
         return_dict = _handle_command_error(return_error_detail, return_message)
@@ -515,5 +544,5 @@ def list_scripts(cmd):
 
     # Track telemetry data
     elapsed_time = timeit.default_timer() - start_time
-    _track_command_telemetry('vm repair run-list', func_params, return_status, return_message, return_error_detail, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
+    _track_command_telemetry('vm repair run-list', func_params, return_status, return_message, return_error_detail, error_stack_trace, elapsed_time, get_subscription_id(cmd.cli_ctx), return_dict)
     return return_dict

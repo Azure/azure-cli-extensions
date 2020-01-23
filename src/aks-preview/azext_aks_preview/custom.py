@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -46,25 +47,25 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceLinuxProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterWindowsProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceNetworkProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterServicePrincipalProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceSshConfiguration
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceSshPublicKey
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedCluster
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAADProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAddonProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAgentPoolProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import AgentPool
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ContainerServiceStorageProfileTypes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfile
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ResourceReference
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterIdentity
-from .vendored_sdks.azure_mgmt_preview_aks.v2019_10_01.models import ManagedClusterAPIServerAccessProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceLinuxProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterWindowsProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceNetworkProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterServicePrincipalProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceSshConfiguration
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceSshPublicKey
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedCluster
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAADProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAddonProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAgentPoolProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import AgentPool
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ContainerServiceStorageProfileTypes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterLoadBalancerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterLoadBalancerProfileManagedOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterLoadBalancerProfileOutboundIPPrefixes
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterLoadBalancerProfileOutboundIPs
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ResourceReference
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterIdentity
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_01_01.models import ManagedClusterAPIServerAccessProfile
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -76,9 +77,6 @@ from ._helpers import _populate_api_server_access_profile, _set_load_balancer_sk
 
 
 logger = get_logger(__name__)
-
-
-# pylint:disable=too-many-lines,unused-argument
 
 
 def which(binary):
@@ -534,9 +532,13 @@ def subnet_role_assignment_exists(cli_ctx, scope):
     return False
 
 
-# pylint: disable=too-many-statements
-def aks_browse(cmd, client, resource_group_name, name, disable_browser=False,
-               listen_address='127.0.0.1', listen_port='8001'):
+def aks_browse(cmd,     # pylint: disable=too-many-statements
+               client,
+               resource_group_name,
+               name,
+               disable_browser=False,
+               listen_address='127.0.0.1',
+               listen_port='8001'):
     if not which('kubectl'):
         raise CLIError('Can not find kubectl executable in PATH')
 
@@ -628,9 +630,11 @@ def _trim_nodepoolname(nodepool_name):
     return nodepool_name[:12]
 
 
-# pylint: disable=too-many-statements
-# pylint: disable=too-many-branches
-def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint: disable=too-many-locals
+def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+               client,
+               resource_group_name,
+               name,
+               ssh_key_value,
                dns_name_prefix=None,
                location=None,
                admin_username="azureuser",
@@ -639,6 +643,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                kubernetes_version='',
                node_vm_size="Standard_DS2_v2",
                node_osdisk_size=0,
+               node_osdisk_diskencryptionset_id=None,
                node_count=3,
                nodepool_name="nodepool1",
                service_principal=None, client_secret=None,
@@ -678,6 +683,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
                enable_private_cluster=False,
                enable_managed_identity=False,
                api_server_authorized_ip_ranges=None,
+               aks_custom_headers=None,
                no_wait=False):
     if not no_ssh_key:
         try:
@@ -855,6 +861,7 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
         aad_profile=aad_profile,
         enable_pod_security_policy=bool(enable_pod_security_policy),
         identity=identity,
+        disk_encryption_set_id=node_osdisk_diskencryptionset_id,
         api_server_access_profile=api_server_access_profile)
 
     if node_resource_group:
@@ -867,13 +874,26 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
             enable_private_cluster=True
         )
 
+    headers = {}
+    if aks_custom_headers is not None:
+        if aks_custom_headers != "":
+            for pair in aks_custom_headers.split(','):
+                parts = pair.split('=')
+                if len(parts) != 2:
+                    raise CLIError('custom headers format is incorrect')
+
+                headers[parts[0]] = parts[1]
+
     # Due to SPN replication latency, we do a few retries here
     max_retry = 30
     retry_exception = Exception(None)
     for _ in range(0, max_retry):
         try:
             return sdk_no_wait(no_wait, client.create_or_update,
-                               resource_group_name=resource_group_name, resource_name=name, parameters=mc)
+                               resource_group_name=resource_group_name,
+                               resource_name=name,
+                               parameters=mc,
+                               custom_headers=headers)
         except CloudError as ex:
             retry_exception = ex
             if 'not found in Active Directory tenant' in ex.message:
@@ -883,7 +903,11 @@ def aks_create(cmd, client, resource_group_name, name, ssh_key_value,  # pylint:
     raise retry_exception
 
 
-def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler=False,
+def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
+               client,
+               resource_group_name,
+               name,
+               enable_cluster_autoscaler=False,
                disable_cluster_autoscaler=False,
                update_cluster_autoscaler=False,
                min_count=None, max_count=None, no_wait=False,
@@ -1012,7 +1036,7 @@ def aks_update(cmd, client, resource_group_name, name, enable_cluster_autoscaler
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
-def aks_show(cmd, client, resource_group_name, name):
+def aks_show(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
     mc = client.get(resource_group_name, name)
     return _remove_nulls([mc])[0]
 
@@ -1042,15 +1066,24 @@ def _remove_nulls(managed_clusters):
     return managed_clusters
 
 
-def aks_get_credentials(cmd, client, resource_group_name, name, admin=False,
+def aks_get_credentials(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        name,
+                        admin=False,
+                        user='clusterUser',
                         path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                         overwrite_existing=False):
     credentialResults = None
     if admin:
         credentialResults = client.list_cluster_admin_credentials(resource_group_name, name)
     else:
-        credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
-
+        if user.lower() == 'clusteruser':
+            credentialResults = client.list_cluster_user_credentials(resource_group_name, name)
+        elif user.lower() == 'clustermonitoringuser':
+            credentialResults = client.list_cluster_monitoring_user_credentials(resource_group_name, name)
+        else:
+            raise CLIError("The user is invalid.")
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
 
@@ -1071,7 +1104,10 @@ ADDONS = {
 
 
 # pylint: disable=line-too-long
-def aks_kollect(cmd, client, resource_group_name, name,
+def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
+                client,
+                resource_group_name,
+                name,
                 storage_account=None,
                 sas_token=None,
                 container_logs=None,
@@ -1116,7 +1152,8 @@ def aks_kollect(cmd, client, resource_group_name, name,
     readonly_sas_token = None
     if sas_token is None:
         storage_client = cf_storage(cmd.cli_ctx, parsed_storage_account['subscription'])
-        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
+        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
+                                                                         storage_account_name)
         kwargs = {
             'account_name': storage_account_name,
             'account_key': storage_account_keys.keys[0].value
@@ -1141,7 +1178,8 @@ def aks_kollect(cmd, client, resource_group_name, name,
 
     print()
     print('This will deploy a daemon set to your cluster to collect logs and diagnostic information and '
-          f'save them to the storage account {colorama.Style.BRIGHT}{colorama.Fore.GREEN}{storage_account_name}{colorama.Style.RESET_ALL} as '
+          f'save them to the storage account '
+          f'{colorama.Style.BRIGHT}{colorama.Fore.GREEN}{storage_account_name}{colorama.Style.RESET_ALL} as '
           f'outlined in {format_hyperlink("http://aka.ms/AKSPeriscope")}.')
     print()
     print('If you share access to that storage account to Azure support, you consent to the terms outlined'
@@ -1159,9 +1197,12 @@ def aks_kollect(cmd, client, resource_group_name, name,
     print("Starts collecting diag info for cluster %s " % name)
 
     sas_token = sas_token.strip('?')
-    deployment_yaml = urlopen("https://raw.githubusercontent.com/Azure/aks-periscope/v0.2/deployment/aks-periscope.yaml").read().decode()
-    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>", (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>", (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+    deployment_yaml = urlopen(
+        "https://raw.githubusercontent.com/Azure/aks-periscope/v0.2/deployment/aks-periscope.yaml").read().decode()
+    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
+                                              (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
+    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
+                                              (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
 
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
@@ -1183,23 +1224,35 @@ def aks_kollect(cmd, client, resource_group_name, name,
             print()
             print("Cleaning up aks-periscope resources if existing")
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "serviceaccount,configmap,daemonset,secret",
-                             "--all", "-n", "aks-periscope", "--ignore-not-found"], stderr=subprocess.STDOUT)
+            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+                             "serviceaccount,configmap,daemonset,secret",
+                             "--all", "-n", "aks-periscope", "--ignore-not-found"],
+                            stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "ClusterRoleBinding",
-                             "aks-periscope-role-binding", "--ignore-not-found"], stderr=subprocess.STDOUT)
+            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+                             "ClusterRoleBinding",
+                             "aks-periscope-role-binding", "--ignore-not-found"],
+                            stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "ClusterRoleBinding",
-                             "aks-periscope-role-binding-view", "--ignore-not-found"], stderr=subprocess.STDOUT)
+            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+                             "ClusterRoleBinding",
+                             "aks-periscope-role-binding-view", "--ignore-not-found"],
+                            stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "ClusterRole",
-                             "aks-periscope-role", "--ignore-not-found"], stderr=subprocess.STDOUT)
+            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+                             "ClusterRole",
+                             "aks-periscope-role", "--ignore-not-found"],
+                            stderr=subprocess.STDOUT)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "--all",
-                             "apd", "-n", "aks-periscope", "--ignore-not-found"], stderr=subprocess.DEVNULL)
+            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+                             "--all",
+                             "apd", "-n", "aks-periscope", "--ignore-not-found"],
+                            stderr=subprocess.DEVNULL)
 
-            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete", "CustomResourceDefinition",
-                             "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"], stderr=subprocess.STDOUT)
+            subprocess.call(["kubectl", "--kubeconfig", temp_kubeconfig_path, "delete",
+                             "CustomResourceDefinition",
+                             "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"],
+                            stderr=subprocess.STDOUT)
 
             print()
             print("Deploying aks-periscope")
@@ -1213,18 +1266,21 @@ def aks_kollect(cmd, client, resource_group_name, name,
     print()
     normalized_fqdn = mc.fqdn.replace('.', '-')
     token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
-    log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/{normalized_fqdn}?{token_in_storage_account_url}"
+    log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/" \
+                              f"{normalized_fqdn}?{token_in_storage_account_url}"
 
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
     print()
-    print(f'You can download Azure Stroage Explorer here {format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
+    print(f'You can download Azure Stroage Explorer here '
+          f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
           f' to check the logs by adding the storage account using the following URL:')
     print(f'{format_hyperlink(log_storage_account_url)}')
 
     print()
     if not prompt_y_n('Do you want to see analysis results now?', default="n"):
-        print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' anytime to check the analysis results.")
+        print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' "
+              f"anytime to check the analysis results.")
         return
     else:
         display_diagnostics_report(temp_kubeconfig_path)
@@ -1243,11 +1299,18 @@ def aks_kanalyze(cmd, client, resource_group_name, name):
     display_diagnostics_report(temp_kubeconfig_path)
 
 
-def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name="", no_wait=False):
+def aks_scale(cmd,  # pylint: disable=unused-argument
+              client,
+              resource_group_name,
+              name,
+              node_count,
+              nodepool_name="",
+              no_wait=False):
     instance = client.get(resource_group_name, name)
 
     if len(instance.agent_pool_profiles) > 1 and nodepool_name == "":
-        raise CLIError('There are more than one node pool in the cluster. Please specify nodepool name or use az aks nodepool command to scale node pool')
+        raise CLIError('There are more than one node pool in the cluster. '
+                       'Please specify nodepool name or use az aks nodepool command to scale node pool')
 
     if node_count == 0:
         raise CLIError("Can't scale down to 0 nodes.")
@@ -1261,8 +1324,14 @@ def aks_scale(cmd, client, resource_group_name, name, node_count, nodepool_name=
     raise CLIError('The nodepool "{}" was not found.'.format(nodepool_name))
 
 
-def aks_upgrade(cmd, client, resource_group_name, name, kubernetes_version,
-                control_plane_only=False, no_wait=False, **kwargs):  # pylint: disable=unused-argument
+def aks_upgrade(cmd,    # pylint: disable=unused-argument
+                client,
+                resource_group_name,
+                name,
+                kubernetes_version,
+                control_plane_only=False,
+                no_wait=False,
+                **kwargs):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
 
     if instance.kubernetes_version == kubernetes_version:
@@ -1683,7 +1752,7 @@ def _create_client_secret():
 def _ensure_aks_acr(cli_ctx,
                     client_id,
                     acr_name_or_id,
-                    subscription_id,
+                    subscription_id,    # pylint: disable=unused-argument
                     detach=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
     # Check if the ACR exists by resource ID.
@@ -1732,16 +1801,27 @@ def _ensure_aks_acr_role_assignment(cli_ctx,
     return
 
 
-def aks_agentpool_show(cmd, client, resource_group_name, cluster_name, nodepool_name):
+def aks_agentpool_show(cmd,     # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       cluster_name,
+                       nodepool_name):
     instance = client.get(resource_group_name, cluster_name, nodepool_name)
     return instance
 
 
-def aks_agentpool_list(cmd, client, resource_group_name, cluster_name):
+def aks_agentpool_list(cmd,     # pylint: disable=unused-argument
+                       client,
+                       resource_group_name,
+                       cluster_name):
     return client.list(resource_group_name, cluster_name)
 
 
-def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_name,
+def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-locals
+                      client,
+                      resource_group_name,
+                      cluster_name,
+                      nodepool_name,
                       kubernetes_version=None,
                       node_zones=None,
                       node_vm_size=None,
@@ -1824,7 +1904,10 @@ def aks_agentpool_add(cmd, client, resource_group_name, cluster_name, nodepool_n
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, agent_pool)
 
 
-def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
+def aks_agentpool_scale(cmd,    # pylint: disable=unused-argument
+                        client,
+                        resource_group_name,
+                        cluster_name,
                         nodepool_name,
                         node_count=3,
                         no_wait=False):
@@ -1838,7 +1921,10 @@ def aks_agentpool_scale(cmd, client, resource_group_name, cluster_name,
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_upgrade(cmd, client, resource_group_name, cluster_name,
+def aks_agentpool_upgrade(cmd,  # pylint: disable=unused-argument
+                          client,
+                          resource_group_name,
+                          cluster_name,
                           kubernetes_version,
                           nodepool_name,
                           no_wait=False):
@@ -1848,7 +1934,11 @@ def aks_agentpool_upgrade(cmd, client, resource_group_name, cluster_name,
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepool_name,
+def aks_agentpool_update(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         cluster_name,
+                         nodepool_name,
                          enable_cluster_autoscaler=False,
                          disable_cluster_autoscaler=False,
                          update_cluster_autoscaler=False,
@@ -1903,7 +1993,10 @@ def aks_agentpool_update(cmd, client, resource_group_name, cluster_name, nodepoo
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, cluster_name, nodepool_name, instance)
 
 
-def aks_agentpool_delete(cmd, client, resource_group_name, cluster_name,
+def aks_agentpool_delete(cmd,   # pylint: disable=unused-argument
+                         client,
+                         resource_group_name,
+                         cluster_name,
                          nodepool_name,
                          no_wait=False):
     agentpool_exists = False
@@ -1967,12 +2060,19 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
 
-def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):
+def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, enable, workspace_resource_id=None,
-                   subnet_name=None, no_wait=False):
+def _update_addons(cmd,
+                   instance,
+                   subscription_id,
+                   resource_group_name,
+                   addons,
+                   enable,
+                   workspace_resource_id=None,
+                   subnet_name=None,
+                   no_wait=False):  # pylint: disable=unused-argument
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
 
@@ -2035,7 +2135,7 @@ def _update_addons(cmd, instance, subscription_id, resource_group_name, addons, 
     return instance
 
 
-def aks_get_versions(cmd, client, location):
+def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_orchestrators(location, resource_type='managedClusters')
 
 
@@ -2224,11 +2324,13 @@ def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
     return None
 
 
-def display_diagnostics_report(temp_kubeconfig_path):
+def display_diagnostics_report(temp_kubeconfig_path):   # pylint: disable=too-many-statements
     if not which('kubectl'):
         raise CLIError('Can not find kubectl executable in PATH')
 
-    nodes = subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "get", "node", "--no-headers"], universal_newlines=True)
+    nodes = subprocess.check_output(
+        ["kubectl", "--kubeconfig", temp_kubeconfig_path, "get", "node", "--no-headers"],
+        universal_newlines=True)
     logger.debug(nodes)
     node_lines = nodes.splitlines()
     ready_nodes = {}
@@ -2236,11 +2338,11 @@ def display_diagnostics_report(temp_kubeconfig_path):
         columns = node_line.split()
         logger.debug(node_line)
         if columns[1] != "Ready":
-            logger.warning("Node {} is not Ready. Current state is: {}.".format(columns[0], columns[1]))
+            logger.warning("Node %s is not Ready. Current state is: %s.", columns[0], columns[1])
         else:
             ready_nodes[columns[0]] = False
 
-    logger.debug('There are {} ready nodes in the cluster'.format(len(ready_nodes)))
+    logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
 
     if not ready_nodes:
         logger.warning('No nodes are ready in the current cluster. Diagnostics info might not be available.')
@@ -2252,12 +2354,17 @@ def display_diagnostics_report(temp_kubeconfig_path):
     max_retry = 10
     for retry in range(0, max_retry):
         if not apds_created:
-            apd = subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "get", "apd", "-n", "aks-periscope", "--no-headers"], universal_newlines=True)
+            apd = subprocess.check_output(
+                ["kubectl", "--kubeconfig", temp_kubeconfig_path, "get", "apd", "-n", "aks-periscope", "--no-headers"],
+                universal_newlines=True
+            )
             apd_lines = apd.splitlines()
             if apd_lines and 'No resources found' in apd_lines[0]:
                 apd_lines.pop(0)
 
-            print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines), len(ready_nodes), '.' * retry), end='')
+            print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines),
+                                                                            len(ready_nodes),
+                                                                            '.' * retry), end='')
             if len(apd_lines) < len(ready_nodes):
                 time.sleep(3)
             else:
@@ -2269,13 +2376,22 @@ def display_diagnostics_report(temp_kubeconfig_path):
                     continue
                 apdName = "aks-periscope-diagnostic-" + node_name
                 try:
-                    network_config = subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "get", "apd", apdName, "-n", "aks-periscope", "-o=jsonpath={.spec.networkconfig}"], universal_newlines=True)
-                    logger.debug('Dns status for node {} is {}'.format(node_name, network_config))
-                    network_status = subprocess.check_output(["kubectl", "--kubeconfig", temp_kubeconfig_path, "get", "apd", apdName, "-n", "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"], universal_newlines=True)
-                    logger.debug('Network status for node {} is {}'.format(node_name, network_status))
+                    network_config = subprocess.check_output(
+                        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
+                         "get", "apd", apdName, "-n",
+                         "aks-periscope", "-o=jsonpath={.spec.networkconfig}"],
+                        universal_newlines=True)
+                    logger.debug('Dns status for node %s is %s', node_name, network_config)
+                    network_status = subprocess.check_output(
+                        ["kubectl", "--kubeconfig", temp_kubeconfig_path,
+                         "get", "apd", apdName, "-n",
+                         "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"],
+                        universal_newlines=True)
+                    logger.debug('Network status for node %s is %s', node_name, network_status)
 
                     if not network_config or not network_status:
-                        print("The diagnostics information for node {} is not ready yet. Will try again in 10 seconds.".format(node_name))
+                        print("The diagnostics information for node {} is not ready yet. "
+                              "Will try again in 10 seconds.".format(node_name))
                         time.sleep(10)
                         break
 
@@ -2293,14 +2409,16 @@ def display_diagnostics_report(temp_kubeconfig_path):
         print(tabulate(network_config_array, headers="keys", tablefmt='simple'))
         print()
     else:
-        logger.warning("Could not get network config. Please run 'az aks kanalyze' command later to get the analysis results.")
+        logger.warning("Could not get network config. "
+                       "Please run 'az aks kanalyze' command later to get the analysis results.")
 
     if network_status_array:
         print("Below are the network connectivity results for each node:")
         print()
         print(tabulate(network_status_array, headers="keys", tablefmt='simple'))
     else:
-        logger.warning("Could not get networking status. Please run 'az aks kanalyze' command later to get the analysis results.")
+        logger.warning("Could not get networking status. "
+                       "Please run 'az aks kanalyze' command later to get the analysis results.")
 
 
 def format_diag_status(diag_status):

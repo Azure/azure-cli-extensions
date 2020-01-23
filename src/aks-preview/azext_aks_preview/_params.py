@@ -20,7 +20,7 @@ from ._validators import (
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
-    validate_taints, validate_priority, validate_eviction_policy, validate_acr)
+    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user)
 
 
 def load_arguments(self, _):
@@ -83,6 +83,7 @@ def load_arguments(self, _):
         c.argument('node_resource_group')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('api_server_authorized_ip_ranges', type=str, validator=validate_ip_ranges)
+        c.argument('aks_custom_headers')
         c.argument('enable_private_cluster', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
 
@@ -141,6 +142,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)
+        c.argument('user', options_list=['--user', '-u'], default='clusterUser', validator=validate_user)
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
 

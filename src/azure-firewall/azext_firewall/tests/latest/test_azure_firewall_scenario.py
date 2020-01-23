@@ -23,6 +23,62 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall list -g {rg}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_ip_config')
+    def test_azure_firewall_ip_config(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'pubip': 'pubip',
+            'pubip2': 'pubip2',
+            'vnet': 'myvnet',
+            'subnet': 'mysubnet',
+            'ipconfig': 'myipconfig1',
+            'ipconfig2': 'myipconfig2'
+        })
+        self.cmd('network firewall create -g {rg} -n {af}')
+        self.cmd('network public-ip create -g {rg} -n {pubip} --sku standard')
+        self.cmd('network public-ip create -g {rg} -n {pubip2} --sku standard')
+        vnet_instance = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
+        subnet_id_default = vnet_instance['newVNet']['subnets'][0]['id']
+
+        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig} -f {af} --public-ip-address {pubip} --vnet-name {vnet}', checks=[
+            self.check('name', '{ipconfig}'),
+            self.check('subnet.id', subnet_id_default)
+        ])
+        self.cmd('network firewall ip-config create -g {rg} -n {ipconfig2} -f {af} --public-ip-address {pubip2}', checks=[
+            self.check('name', '{ipconfig2}'),
+            self.check('subnet', None)
+        ])
+
+        self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
+        self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_threat_intel_whitelist')
+    def test_azure_firewall_threat_intel_whitelist(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+        })
+        self.cmd('network firewall create -g {rg} -n {af} --private-ranges 10.0.0.0 10.0.0.0/24 IANAPrivateRanges', checks=[
+            self.check('"Network.SNAT.PrivateRanges"', '10.0.0.0, 10.0.0.0/24, IANAPrivateRanges')
+        ])
+        self.cmd('network firewall threat-intel-whitelist create -g {rg} -n {af} --ip-addresses 10.0.0.0 10.0.0.1 --fqdns www.bing.com *.microsoft.com *google.com', checks=[
+            self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
+            self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.0, 10.0.0.1')
+        ])
+        self.cmd('network firewall threat-intel-whitelist show -g {rg} -n {af}', checks=[
+            self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
+            self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.0, 10.0.0.1')
+        ])
+        self.cmd('network firewall threat-intel-whitelist update -g {rg} -n {af} --ip-addresses 10.0.0.1 10.0.0.0 --fqdns *google.com www.bing.com *.microsoft.com', checks=[
+            self.check('"ThreatIntel.Whitelist.FQDNs"', '*google.com, www.bing.com, *.microsoft.com'),
+            self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.1, 10.0.0.0')
+        ])
+        self.cmd('network firewall update -g {rg} -n {af} --private-ranges IANAPrivateRanges 10.0.0.1 10.0.0.0/16', checks=[
+            self.check('"Network.SNAT.PrivateRanges"', 'IANAPrivateRanges, 10.0.0.1, 10.0.0.0/16')
+        ])
+        self.cmd('network firewall threat-intel-whitelist delete -g {rg} -n {af}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_rules')
     def test_azure_firewall_rules(self, resource_group):
 
@@ -36,6 +92,30 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af}')
         self.cmd('network firewall network-rule create -g {rg} -n {network_rule1} -c {coll} --priority 10000 --action Allow -f {af} --source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP ICMP --destination-fqdns www.bing.com --destination-ports 80')
         self.cmd('network firewall nat-rule create -g {rg} -n {network_rule1} -c {coll2} --priority 10001 --action Dnat -f {af} --source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP --translated-fqdn server1.internal.com --destination-ports 96 --destination-addresses 12.36.22.14 --translated-port 95')
+        self.cmd('network firewall delete -g {rg} -n {af}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_rules_with_ipgroups')
+    def test_azure_firewall_rules_with_ipgroups(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'coll': 'rc1',
+            'coll2': 'rc2',
+            'coll3': 'rc3',
+            'network_rule1': 'network-rule1',
+            'nat_rule1': 'nat-rule1',
+            'app_rule1': 'app-rule1',
+            'source_ip_group': 'sourceipgroup',
+            'destination_ip_group': 'destinationipgroup'
+        })
+
+        self.cmd('extension add -n ip-group')
+        self.cmd('network ip-group create -n {source_ip_group} -g {rg} --ip-addresses 10.0.0.0 10.0.0.1')
+        self.cmd('network ip-group create -n {destination_ip_group} -g {rg} --ip-addresses 10.0.0.2 10.0.0.3')
+        self.cmd('network firewall create -g {rg} -n {af}')
+        self.cmd('network firewall network-rule create -g {rg} -n {network_rule1} -c {coll} --priority 10000 --action Allow -f {af} --source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP ICMP --destination-ip-groups {destination_ip_group} --destination-ports 80')
+        self.cmd('network firewall nat-rule create -g {rg} -n {network_rule1} -c {coll2} --priority 10001 --action Dnat -f {af} --source-addresses 10.0.0.0 111.1.0.0/24 --protocols UDP TCP --translated-fqdn server1.internal.com --destination-ports 96 --destination-addresses 12.36.22.14 --translated-port 95 --source-ip-groups {source_ip_group}')
+        self.cmd('network firewall application-rule create -f {af} -n {app_rule1} --protocols Http=80 Https=8080 -g {rg} -c {coll3} --priority 10000 --action Allow --source-ip-groups {source_ip_group} --target-fqdns www.bing.com')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_zones', location='eastus')

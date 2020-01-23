@@ -41,7 +41,7 @@ def _is_sdk_file(file_path):
     # don't bother opening non-python files. e.g pyc files.
     if not file_path.endswith(".py"):
         return False
-    with open(file_path) as f:
+    with open(file_path, encoding='utf-8') as f:
         for line in f:
             if SDK_FILE_MARKER in line:
                 return True
