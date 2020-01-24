@@ -20,3 +20,7 @@ Release History
 0.4.0
 ++++++
 * Added support for app level git credentials
+
+0.4.1
+++++++
+* Fixed small bugs

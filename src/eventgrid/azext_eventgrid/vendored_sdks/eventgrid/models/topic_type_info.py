@@ -18,7 +18,7 @@ class TopicTypeInfo(Resource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified identifier of the resource
+    :ivar id: Fully qualified identifier of the resource.
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
@@ -33,15 +33,17 @@ class TopicTypeInfo(Resource):
     :param resource_region_type: Region type of the resource. Possible values
      include: 'RegionalResource', 'GlobalResource'
     :type resource_region_type: str or
-     ~microsoft.azure.management.eventgrid.models.ResourceRegionType
+     ~azext_eventgrid.models.ResourceRegionType
     :param provisioning_state: Provisioning state of the topic type. Possible
      values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :type provisioning_state: str or
-     ~microsoft.azure.management.eventgrid.models.TopicTypeProvisioningState
+     ~azext_eventgrid.models.TopicTypeProvisioningState
     :param supported_locations: List of locations supported by this topic
      type.
     :type supported_locations: list[str]
+    :param source_resource_format: Source resource format.
+    :type source_resource_format: str
     """
 
     _validation = {
@@ -60,6 +62,7 @@ class TopicTypeInfo(Resource):
         'resource_region_type': {'key': 'properties.resourceRegionType', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'supported_locations': {'key': 'properties.supportedLocations', 'type': '[str]'},
+        'source_resource_format': {'key': 'properties.sourceResourceFormat', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -70,3 +73,4 @@ class TopicTypeInfo(Resource):
         self.resource_region_type = kwargs.get('resource_region_type', None)
         self.provisioning_state = kwargs.get('provisioning_state', None)
         self.supported_locations = kwargs.get('supported_locations', None)
+        self.source_resource_format = kwargs.get('source_resource_format', None)
