@@ -18,7 +18,7 @@ class EventType(Resource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified identifier of the resource
+    :ivar id: Fully qualified identifier of the resource.
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
