@@ -685,9 +685,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
-               subnet_prefix=None,
+               appgw_subnet_prefix=None,
                appgw_id=None,
-               subnet_id=None,
+               appgw_subnet_id=None,
                appgw_shared=None,
                appgw_watch_namespace=None,
                no_wait=False):
@@ -824,9 +824,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         {},
         workspace_resource_id,
         appgw_name,
-        subnet_prefix,
+        appgw_subnet_prefix,
         appgw_id,
-        subnet_id,
+        appgw_subnet_id,
         appgw_shared,
         appgw_watch_namespace
     )
@@ -2061,13 +2061,13 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
-                      subnet_name=None, appgw_name=None, subnet_prefix=None, appgw_id=None, subnet_id=None, appgw_shared=None, appgw_watch_namespace=None, no_wait=False):
+                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_shared=False, appgw_watch_namespace=None, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     service_principal_client_id = instance.service_principal_profile.client_id
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
-                              appgw_name=appgw_name, subnet_prefix=subnet_prefix, appgw_id=appgw_id, subnet_id=subnet_id, appgw_shared=appgw_shared, appgw_watch_namespace=appgw_watch_namespace, no_wait=no_wait)
+                              appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_shared=appgw_shared, appgw_watch_namespace=appgw_watch_namespace, no_wait=no_wait)
 
     if 'omsagent' in instance.addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles['omsagent'])
@@ -2119,10 +2119,10 @@ def _update_addons(cmd,
                    workspace_resource_id=None,
                    subnet_name=None,
                    appgw_name=None,
-                   subnet_prefix=None,
+                   appgw_subnet_prefix=None,
                    appgw_id=None,
-                   subnet_id=None,
-                   appgw_shared=None,
+                   appgw_subnet_id=None,
+                   appgw_shared=False,
                    appgw_watch_namespace=None,
                    no_wait=False):  # pylint: disable=unused-argument
 

@@ -194,18 +194,18 @@ helps['aks create'] = """
         - name: --appgw-name
           type: string
           short-summary: Name of the application gateway to create/use in the node resource group
-        - name: --subnet-prefix
+        - name: --appgw-subnet-prefix
           type: string
           short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
         - name: --appgw-id
           type: string
           short-summary: Resource Id of an existing Application Gateway to use with AGIC
-        - name: --subnet-id
+        - name: --appgw-subnet-id
           type: string
           short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
         - name: --appgw-shared
-          type: string
-          short-summary: This boolean flag should be defaulted to false. Set to true should you need a Shared App Gateway.
+          type: bool
+          short-summary: Use shared flag if application gateway will be shared
         - name: --appgw-watch-namespace
           type: string
           short-summary: Specify the name space, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
@@ -528,18 +528,18 @@ parameters:
   - name: --appgw-name
     type: string
     short-summary: Name of the application gateway to create/use in the node resource group
-  - name: --subnet-prefix
+  - name: --appgw-subnet-prefix
     type: string
     short-summary: Subnet Prefix to use for a new subnet created to deploy the Application Gateway
   - name: --appgw-id
     type: string
     short-summary: Resource Id of an existing Application Gateway to use with AGIC
-  - name: --subnet-id
+  - name: --appgw-subnet-id
     type: string
     short-summary: Resource Id of an existing Subnet used to deploy the Application Gateway
   - name: --appgw-shared
-    type: string
-    short-summary: This boolean flag should be defaulted to false. Set to true should you need a Shared App Gateway.
+    type: bool
+    short-summary: Use shared flag if application gateway will be shared
   - name: --appgw-watch-namespace
     type: string
     short-summary: Specify the name space, which AGIC should watch. This could be a single string value, or a comma-separated list of namespaces.
