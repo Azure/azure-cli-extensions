@@ -1400,7 +1400,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
-                        workspace_resource_id=None, appgw_name=None, subnet_prefix=None, appgw_id=None, subnet_id=None, appgw_shared=None, appgw_watch_namespace=None):
+                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_shared=None, appgw_watch_namespace=None):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -1436,9 +1436,9 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
             enabled=True,
             config={
                 'ApplicationGatewayName': appgw_name,
-                'SubnetPrefix': subnet_prefix,
+                'SubnetPrefix': appgw_subnet_prefix,
                 'ApplicationGatewayId': appgw_id,
-                'SubnetId': subnet_id,
+                'SubnetId': appgw_subnet_id,
                 'Shared': appgw_shared,
                 'WatchNamespace': appgw_watch_namespace
             })
@@ -2181,12 +2181,12 @@ def _update_addons(cmd,
                 addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
                 if appgw_name is not None:
                     addon_profile.config["ApplicationGatewayName"] = appgw_name
-                if subnet_prefix is not None:
-                    addon_profile.config["SubnetPrefix"] = subnet_prefix
+                if appgw_subnet_prefix is not None:
+                    addon_profile.config["SubnetPrefix"] = appgw_subnet_prefix
                 if appgw_id is not None:
                     addon_profile.config["ApplicationGatewayId"] = appgw_id
-                if subnet_id is not None:
-                    addon_profile.config["SubnetId"] = subnet_id
+                if appgw_subnet_id is not None:
+                    addon_profile.config["SubnetId"] = appgw_subnet_id
                 if appgw_shared is not None:
                     addon_profile.config["Shared"] = appgw_shared
                 if appgw_watch_namespace is not None:
