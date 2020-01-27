@@ -263,6 +263,22 @@ def _create_nw_connection_monitor_v2_test_configuration(cmd,
     return test_config
 
 
+def _create_nw_connection_monitor_v2_test_group(cmd,
+                                                name,
+                                                disable,
+                                                test_configurations,
+                                                source_endpoints,
+                                                destination_endpoints):
+    ConnectionMonitorTestGroup = cmd.get_models('ConnectionMonitorTestGroup')
+
+    test_group = ConnectionMonitorTestGroup(name=name,
+                                            disable=disable,
+                                            test_configurations=test_configurations,
+                                            sources=source_endpoints,
+                                            destinations=destination_endpoints)
+    return test_group
+
+
 def add_nw_connection_monitor_v2_endpoint(cmd,
                                           client,
                                           watcher_rg,
