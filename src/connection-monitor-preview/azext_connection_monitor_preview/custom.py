@@ -158,22 +158,37 @@ def _create_nw_connection_monitor_v2(cmd,
                                      test_config_http_prefer_https=None,
                                      test_group_name=None,
                                      test_group_disable=None):
-    src_endpoint = _create_nw_connection_monitor_endpoint(cmd,
-                                                          endpoint_source_name,
-                                                          endpoint_source_resource_id,
-                                                          endpoint_source_address)
-    dst_endpoint = _create_nw_connection_monitor_endpoint(cmd,
-                                                          endpoint_dest_name,
-                                                          endpoint_dest_resource_id,
-                                                          endpoint_dest_address)
+    src_endpoint = _create_nw_connection_monitor_v2_endpoint(cmd,
+                                                             endpoint_source_name,
+                                                             endpoint_source_resource_id,
+                                                             endpoint_source_address)
+    dst_endpoint = _create_nw_connection_monitor_v2_endpoint(cmd,
+                                                             endpoint_dest_name,
+                                                             endpoint_dest_resource_id,
+                                                             endpoint_dest_address)
+    test_config = _create_nw_connection_monitor_v2_test_configuration(cmd,
+                                                                      test_config_name,
+                                                                      test_config_frequency,
+                                                                      test_config_protocol,
+                                                                      test_config_threshold_failed_percent,
+                                                                      test_config_threshold_round_trip_time,
+                                                                      test_config_preferred_ip_version,
+                                                                      test_config_tcp_port,
+                                                                      test_config_tcp_disable_trace_route,
+                                                                      test_config_icmp_disable_trace_route,
+                                                                      test_config_http_port,
+                                                                      test_config_http_method,
+                                                                      test_config_http_path,
+                                                                      test_config_http_valid_status_code,
+                                                                      test_config_http_prefer_https)
 
 
-def _create_nw_connection_monitor_endpoint(cmd,
-                                           name,
-                                           resource_id=None,
-                                           address=None,
-                                           filter_type=None,
-                                           filter_items=None):
+def _create_nw_connection_monitor_v2_endpoint(cmd,
+                                              name,
+                                              resource_id=None,
+                                              address=None,
+                                              filter_type=None,
+                                              filter_items=None):
     if (filter_type and not filter_items) or (not filter_type and filter_items):
         raise CLIError('usage error: '
                        '--filter-type and --filter-item for endpoint filter must be present at the same time.')
@@ -190,22 +205,22 @@ def _create_nw_connection_monitor_endpoint(cmd,
     return endpoint
 
 
-def _create_nw_connection_monitor_test_configuration(cmd,
-                                                     name,
-                                                     test_frequency,
-                                                     protocol,
-                                                     threshold_failed_percent,
-                                                     threshold_round_trip_time,
-                                                     preferred_ip_version,
-                                                     tcp_port=None,
-                                                     tcp_disable_trace_route=None,
-                                                     icmp_disable_trace_route=None,
-                                                     http_port=None,
-                                                     http_method=None,
-                                                     http_path=None,
-                                                     http_valid_status_codes=None,
-                                                     http_prefer_https=None,
-                                                     http_request_headers=None):
+def _create_nw_connection_monitor_v2_test_configuration(cmd,
+                                                        name,
+                                                        test_frequency,
+                                                        protocol,
+                                                        threshold_failed_percent,
+                                                        threshold_round_trip_time,
+                                                        preferred_ip_version,
+                                                        tcp_port=None,
+                                                        tcp_disable_trace_route=None,
+                                                        icmp_disable_trace_route=None,
+                                                        http_port=None,
+                                                        http_method=None,
+                                                        http_path=None,
+                                                        http_valid_status_codes=None,
+                                                        http_prefer_https=None,
+                                                        http_request_headers=None):
     (ConnectionMonitorTestConfigurationProtocol,
      ConnectionMonitorTestConfiguration, ConnectionMonitorSuccessThreshold) = cmd.get_models(
         'ConnectionMonitorTestConfigurationProtocol',
@@ -223,10 +238,25 @@ def _create_nw_connection_monitor_test_configuration(cmd,
 
     if protocol == ConnectionMonitorTestConfigurationProtocol.tcp:
         ConnectionMonitorTcpConfiguration = cmd.get_models('ConnectionMonitorTcpConfiguration')
+        tcp_config = ConnectionMonitorTcpConfiguration(
+            port=tcp_port,
+            tcp_disable_trace_route=tcp_disable_trace_route
+        )
+        test_config.tcp_configuration = tcp_config
     elif protocol == ConnectionMonitorTestConfiguration.icmp:
-        pass
+        ConnectionMonitorIcmpConfiguration = cmd.get_models('ConnectionMonitorIcmpConfiguration')
+        icmp_config = ConnectionMonitorIcmpConfiguration(disable_trace_route=icmp_disable_trace_route)
+        test_config.icmp_configuration = icmp_config
     elif protocol == ConnectionMonitorTestConfigurationProtocol.http:
-        pass
+        ConnectionMonitorTestConfigurationProtocol = cmd.get_models('ConnectionMonitorTestConfigurationProtocol')
+        http_config = ConnectionMonitorTestConfigurationProtocol(
+            port=http_port,
+            method=http_method,
+            path=http_path,
+            request_headers=http_request_headers,
+            valid_status_code_ranges=http_valid_status_codes,
+            prefer_https=http_prefer_https)
+        test_config.http_configuration = http_config
     else:
         raise CLIError('Unsupported protocol: "{}" for test configuration'.format(protocol))
 
