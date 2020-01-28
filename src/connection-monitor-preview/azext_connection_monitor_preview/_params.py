@@ -51,7 +51,7 @@ def load_arguments(self, _):
                    help='Create the connection monitor but do not start it immediately.')
         # c.ignore('location')
 
-    # Argument Group for endpoint when create a V2 connection monitor
+    # Argument Group for endpoint to create a V2 connection monitor
     with self.argument_context('network watcher connection-monitor create',
                                arg_group='V2 Endpoint',
                                min_api='2019-11-01') as c:
@@ -71,7 +71,7 @@ def load_arguments(self, _):
         c.argument('endpoint_source_address',
                    help='Address of the destination of connection monitor endpoint (IP or domain name)')
 
-    # Argument Group for test configuration when create a V2 connection monitor
+    # Argument Group for test configuration to create a V2 connection monitor
     with self.argument_context('network watcher connection-monitor create',
                                arg_group='V2 Test Configuration',
                                min_api='2019-11-01') as c:
@@ -81,7 +81,8 @@ def load_arguments(self, _):
         c.argument('test_config_frequency',
                    options_list='--frequency',
                    help='The frequency of test evaluation, in seconds',
-                   type=int)
+                   type=int,
+                   default=60)
         c.argument('test_config_protocol',
                    options_list='--protocol',
                    help='The protocol to use in test evaluation',
@@ -106,12 +107,14 @@ def load_arguments(self, _):
                    type=int)
         c.argument('test_config_tcp_disable_trace_route',
                    options_list='--tcp-disable-trace-route',
-                   help='Value indicating whether path evaluation with trace route should be disabled',
+                   help='Value indicating whether path evaluation with trace route should be disabled. '
+                        'false is default.',
                    arg_type=get_three_state_flag())
         # ICMP protocol configuration
         c.argument('test_config_icmp_disable_trace_route',
                    options_list='--icmp-disable-trace-route',
-                   help='Value indicating whether path evaluation with trace route should be disabled',
+                   help='Value indicating whether path evaluation with trace route should be disabled. '
+                        'false is default.',
                    arg_type=get_three_state_flag())
         # HTTP protocol configuration
         c.argument('test_config_http_port',
@@ -134,14 +137,15 @@ def load_arguments(self, _):
                         'over HTTP in cases where the choice is not explicit',
                    arg_type=get_three_state_flag())
 
+    # Argument Group for test group to create a V2 connection monitor
     with self.argument_context('network watcher connection-monitor create',
                                arg_group='V2 Test Group',
                                min_api='2019-11-01') as c:
         c.argument('test_group_name',
                    help='The name of the connection monitor test group. '
-                        'If you are creating a V2 Connection Monitor, it\'s required')
+                        '"DefaultTestGroup" is used as default if not provided.')
         c.argument('test_group_disable',
-                   help='Value indicating whether test group is disabled',
+                   help='Value indicating whether test group is disabled. false is default.',
                    arg_type=get_three_state_flag())
 
     with self.argument_context('network watcher connection-monitor endpoint', min_api='2019-11-01') as c:

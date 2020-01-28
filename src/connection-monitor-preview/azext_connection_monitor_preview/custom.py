@@ -7,43 +7,43 @@ from knack.util import CLIError
 from ._client_factory import network_client_factory
 
 
-def create_nw_connection_monitor_v2(cmd,
-                                    client,
-                                    connection_monitor_name,
-                                    watcher_rg,
-                                    watcher_name,
-                                    resource_group_name=None,
-                                    location=None,
-                                    source_resource=None,
-                                    source_port=None,
-                                    dest_resource=None,
-                                    dest_port=None,
-                                    dest_address=None,
-                                    tags=None,
-                                    do_not_start=None,
-                                    monitoring_interval=None,
-                                    endpoint_source_name=None,
-                                    endpoint_source_resource_id=None,
-                                    endpoint_source_address=None,
-                                    endpoint_dest_name=None,
-                                    endpoint_dest_resource_id=None,
-                                    endpoint_dest_address=None,
-                                    test_config_name=None,
-                                    test_config_frequency=None,
-                                    test_config_protocol=None,
-                                    test_config_preferred_ip_version=None,
-                                    test_config_threshold_failed_percent=None,
-                                    test_config_threshold_round_trip_time=None,
-                                    test_config_tcp_disable_trace_route=None,
-                                    test_config_tcp_port=None,
-                                    test_config_icmp_disable_trace_route=None,
-                                    test_config_http_port=None,
-                                    test_config_http_method=None,
-                                    test_config_http_path=None,
-                                    test_config_http_valid_code_ranges=None,
-                                    test_config_http_prefer_https=None,
-                                    test_group_name=None,
-                                    test_group_disable=None):
+def create_nw_connection_monitor(cmd,
+                                 client,
+                                 connection_monitor_name,
+                                 watcher_rg,
+                                 watcher_name,
+                                 resource_group_name=None,
+                                 location=None,
+                                 source_resource=None,
+                                 source_port=None,
+                                 dest_resource=None,
+                                 dest_port=None,
+                                 dest_address=None,
+                                 tags=None,
+                                 do_not_start=None,
+                                 monitoring_interval=None,
+                                 endpoint_source_name=None,
+                                 endpoint_source_resource_id=None,
+                                 endpoint_source_address=None,
+                                 endpoint_dest_name=None,
+                                 endpoint_dest_resource_id=None,
+                                 endpoint_dest_address=None,
+                                 test_config_name=None,
+                                 test_config_frequency=None,
+                                 test_config_protocol=None,
+                                 test_config_preferred_ip_version=None,
+                                 test_config_threshold_failed_percent=None,
+                                 test_config_threshold_round_trip_time=None,
+                                 test_config_tcp_disable_trace_route=None,
+                                 test_config_tcp_port=None,
+                                 test_config_icmp_disable_trace_route=None,
+                                 test_config_http_port=None,
+                                 test_config_http_method=None,
+                                 test_config_http_path=None,
+                                 test_config_http_valid_code_ranges=None,
+                                 test_config_http_prefer_https=None,
+                                 test_group_name=None,
+                                 test_group_disable=None):
     print(watcher_rg)
     print(watcher_name)
 
@@ -58,19 +58,45 @@ def create_nw_connection_monitor_v2(cmd,
     ]
 
     if any(v1_required_parameter_set):  # V1 creation
-        pass
+        connection_monitor = _create_nw_connection_monitor_v1(cmd, location, tags)
     elif any(v2_required_parameter_set):  # V2 creation
-        pass
+        if location is None:
+            raise CLIError('location is required to create V2 connection monitor')
+
+        connection_monitor = _create_nw_connection_monitor_v2(cmd,
+                                                              location,
+                                                              tags,
+                                                              endpoint_source_name,
+                                                              endpoint_source_resource_id,
+                                                              endpoint_source_address,
+                                                              endpoint_dest_name,
+                                                              endpoint_dest_resource_id,
+                                                              endpoint_dest_address,
+                                                              test_config_name,
+                                                              test_config_frequency,
+                                                              test_config_protocol,
+                                                              test_config_preferred_ip_version,
+                                                              test_config_threshold_failed_percent,
+                                                              test_config_threshold_round_trip_time,
+                                                              test_config_tcp_port,
+                                                              test_config_tcp_disable_trace_route,
+                                                              test_config_icmp_disable_trace_route,
+                                                              test_config_http_port,
+                                                              test_config_http_method,
+                                                              test_config_http_path,
+                                                              test_config_http_valid_code_ranges,
+                                                              test_config_http_prefer_https,
+                                                              test_group_name,
+                                                              test_group_disable)
     else:
-        print('Oh!!!')
+        raise CLIError('')
 
-    ConnectionMonitor, ConnectionMonitorSource, ConnectionMonitorDestination = cmd.get_models(
-        'ConnectionMonitor', 'ConnectionMonitorSource', 'ConnectionMonitorDestination')
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
-    ConnectionMonitorTestConfiguration, ConnectionMonitorTcpConfiguration = cmd.get_models(
-        'ConnectionMonitorTestConfiguration', 'ConnectionMonitorTcpConfiguration'
-    )
 
+def _create_nw_connection_monitor_v1(cmd,
+                                     location=None,
+                                     tags=None):
     # connection_monitor = ConnectionMonitor(
     #     location=location,
     #     tags=tags,
@@ -86,56 +112,15 @@ def create_nw_connection_monitor_v2(cmd,
     #     auto_start=not do_not_start,
     #     monitoring_interval_in_seconds=monitoring_interval)
 
-    ConnectionMonitorEndpoint, ConnectionMonitorEndpointFilter, ConnectionMonitorEndpointFilterItem = cmd.get_models(
-        'ConnectionMonitorEndpoint', 'ConnectionMonitorEndpointFilter', 'ConnectionMonitorEndpointFilterItem')
+    ConnectionMonitor = cmd.get_models('ConnectionMonitor')
+    cmv1 = ConnectionMonitor()
 
-    endpoint_filter = ConnectionMonitorEndpointFilter(type='Include',
-                                                      items=[
-                                                          ConnectionMonitorEndpointFilterItem(type='AgentAddress', address='npmuser')
-                                                      ])
-    endpoint1 = ConnectionMonitorEndpoint(name='MyEndpoint01',
-                                          resource_id='/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/harold-test/providers/Microsoft.Compute/virtualMachines/harold-monitor-vm-01')
-    endpoint2 = ConnectionMonitorEndpoint(name='MyEndpoint02',
-                                          resource_id=None,
-                                          address='google.com')
-
-    test_tcp_config = ConnectionMonitorTcpConfiguration(port=80, disable_trace_route=False)
-    test_config01 = ConnectionMonitorTestConfiguration(name="MyTestConfig01",
-                                                       test_frequency_sec=300,
-                                                       protocol='Tcp',
-                                                       tcp_configuration=test_tcp_config)
-
-    ConnectionMonitorTestGroup = cmd.get_models('ConnectionMonitorTestGroup')
-    test_group = ConnectionMonitorTestGroup(
-        name="MyTestGroup01",
-        disable=False,
-        test_configurations=[test_config01.name],
-        sources=[endpoint1.name],
-        destinations=[endpoint2.name]
-    )
-
-    connection_monitor = ConnectionMonitor(
-        location=location,
-        tags=tags,
-        # auto_start=not do_not_start,
-        auto_start=None,
-        # source=None,
-        # destination=None,
-        monitoring_interval_in_seconds=None,
-        endpoints=[endpoint1, endpoint2],
-        test_configurations=[test_config01],
-        test_groups=[test_group]
-    )
-    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+    return cmv1
 
 
 def _create_nw_connection_monitor_v2(cmd,
-                                     client,
-                                     connection_monitor_name,
-                                     watcher_rg,
-                                     watcher_name,
-                                     resource_group_name=None,
                                      location=None,
+                                     tags=None,
                                      endpoint_source_name=None,
                                      endpoint_source_resource_id=None,
                                      endpoint_source_address=None,
@@ -149,15 +134,15 @@ def _create_nw_connection_monitor_v2(cmd,
                                      test_config_threshold_failed_percent=None,
                                      test_config_threshold_round_trip_time=None,
                                      test_config_tcp_port=None,
-                                     test_config_tcp_disable_trace_route=None,
-                                     test_config_icmp_disable_trace_route=None,
+                                     test_config_tcp_disable_trace_route=False,
+                                     test_config_icmp_disable_trace_route=False,
                                      test_config_http_port=None,
                                      test_config_http_method=None,
                                      test_config_http_path=None,
                                      test_config_http_valid_status_code=None,
                                      test_config_http_prefer_https=None,
                                      test_group_name=None,
-                                     test_group_disable=None):
+                                     test_group_disable=False):
     src_endpoint = _create_nw_connection_monitor_v2_endpoint(cmd,
                                                              endpoint_source_name,
                                                              endpoint_source_resource_id,
@@ -181,6 +166,22 @@ def _create_nw_connection_monitor_v2(cmd,
                                                                       test_config_http_path,
                                                                       test_config_http_valid_status_code,
                                                                       test_config_http_prefer_https)
+    test_group = _create_nw_connection_monitor_v2_test_group(cmd,
+                                                             test_group_name or 'DefaultTestGroup',
+                                                             test_group_disable,
+                                                             [test_config],
+                                                             [src_endpoint],
+                                                             [dst_endpoint])
+
+    ConnectionMonitor = cmd.get_models('ConnectionMonitor')
+    cmv2 = ConnectionMonitor(location=location,
+                             tags=tags,
+                             auto_start=None,
+                             monitoring_interval_in_seconds=None,
+                             endpoints=[src_endpoint, dst_endpoint],
+                             test_configurations=[test_config],
+                             test_groups=[test_group])
+    return cmv2
 
 
 def _create_nw_connection_monitor_v2_endpoint(cmd,
@@ -243,13 +244,13 @@ def _create_nw_connection_monitor_v2_test_configuration(cmd,
             tcp_disable_trace_route=tcp_disable_trace_route
         )
         test_config.tcp_configuration = tcp_config
-    elif protocol == ConnectionMonitorTestConfiguration.icmp:
+    elif protocol == ConnectionMonitorTestConfigurationProtocol.icmp:
         ConnectionMonitorIcmpConfiguration = cmd.get_models('ConnectionMonitorIcmpConfiguration')
         icmp_config = ConnectionMonitorIcmpConfiguration(disable_trace_route=icmp_disable_trace_route)
         test_config.icmp_configuration = icmp_config
     elif protocol == ConnectionMonitorTestConfigurationProtocol.http:
-        ConnectionMonitorTestConfigurationProtocol = cmd.get_models('ConnectionMonitorTestConfigurationProtocol')
-        http_config = ConnectionMonitorTestConfigurationProtocol(
+        ConnectionMonitorTcpConfiguration = cmd.get_models('ConnectionMonitorTcpConfiguration')
+        http_config = ConnectionMonitorTcpConfiguration(
             port=http_port,
             method=http_method,
             path=http_path,
@@ -273,9 +274,9 @@ def _create_nw_connection_monitor_v2_test_group(cmd,
 
     test_group = ConnectionMonitorTestGroup(name=name,
                                             disable=disable,
-                                            test_configurations=test_configurations,
-                                            sources=source_endpoints,
-                                            destinations=destination_endpoints)
+                                            test_configurations=[tc.name for tc in test_configurations],
+                                            sources=[e.name for e in source_endpoints],
+                                            destinations=[e.name for e in destination_endpoints])
     return test_group
 
 

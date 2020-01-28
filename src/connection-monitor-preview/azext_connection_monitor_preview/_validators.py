@@ -34,14 +34,9 @@ def get_network_watcher_from_location(remove=False, watcher_name='watcher_name',
     return _validator
 
 
-def process_nw_cm_v2_create_namespace(cmd, namespace):
+def _process_nw_cm_v1_create_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
 
-    # V2 parameter set
-    if namespace.source_resource is None:
-        return get_network_watcher_from_location()(cmd, namespace)
-
-    # V1 parameter set
     validate_tags(namespace)
 
     compute_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_COMPUTE).virtual_machines
@@ -72,6 +67,22 @@ def process_nw_cm_v2_create_namespace(cmd, namespace):
             'name': namespace.dest_resource
         }
         namespace.dest_resource = resource_id(**kwargs)
+
+
+def _process_nw_cm_v2_create_namespace(cmd, namespace):
+    pass
+
+
+def process_nw_cm_create_namespace(cmd, namespace):
+    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+
+    # V2 parameter set
+    if namespace.source_resource is None:
+        if namespace.location is None:
+            raise CLIError('usage error: --location is required when create V2 connection monitor')
+        return get_network_watcher_from_location()(cmd, namespace)
+    else:
+        return _process_nw_cm_v1_create_namespace(cmd, namespace)
 
 
 # pylint: disable=protected-access

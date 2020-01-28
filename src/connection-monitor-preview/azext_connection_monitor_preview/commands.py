@@ -6,7 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import cf_nw_connection_monitor
-from ._validators import get_network_watcher_from_location, process_nw_cm_v2_create_namespace
+from ._validators import get_network_watcher_from_location, process_nw_cm_create_namespace
 
 
 def load_command_table(self, _):
@@ -21,7 +21,7 @@ def load_command_table(self, _):
                             nw_connection_monitor_sdk,
                             client_factory=cf_nw_connection_monitor,
                             min_api='2018-01-01') as g:
-        g.custom_command('create', 'create_nw_connection_monitor_v2', validator=process_nw_cm_v2_create_namespace)
+        g.custom_command('create', 'create_nw_connection_monitor', validator=process_nw_cm_create_namespace)
         g.command('delete', 'delete')
         g.show_command('show', 'get')
         g.command('stop', 'stop')
