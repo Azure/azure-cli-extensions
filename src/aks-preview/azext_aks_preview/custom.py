@@ -1295,8 +1295,8 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
         print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' "
               f"anytime to check the analysis results.")
         return
-    else:
-        display_diagnostics_report(temp_kubeconfig_path)
+
+    display_diagnostics_report(temp_kubeconfig_path)
 
     return
 
