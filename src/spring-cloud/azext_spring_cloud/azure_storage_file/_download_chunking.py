@@ -7,6 +7,7 @@
 # pylint: disable=too-few-public-methods, too-many-instance-attributes
 
 import threading
+import concurrent.futures
 
 
 def _download_file_chunks(file_service, share_name, directory_name, file_name,
@@ -35,7 +36,6 @@ def _download_file_chunks(file_service, share_name, directory_name, file_name,
     )
 
     if max_connections > 1:
-        import concurrent.futures
         executor = concurrent.futures.ThreadPoolExecutor(max_connections)
         list(executor.map(downloader.process_chunk, downloader.get_chunk_offsets()))
     else:

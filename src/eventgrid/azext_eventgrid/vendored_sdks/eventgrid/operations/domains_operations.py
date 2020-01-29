@@ -25,7 +25,7 @@ class DomainsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-01-01-preview".
+    :ivar api_version: Version of the API to be used with the client request. Constant value: "2020-04-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class DomainsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-01-01-preview"
+        self.api_version = "2020-04-01-preview"
 
         self.config = config
 
@@ -48,7 +48,7 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -56,7 +56,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: Domain or ClientRawResponse if raw=true
-        :rtype: ~microsoft.azure.management.eventgrid.models.Domain or
+        :rtype: ~azext_eventgrid.models.Domain or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -75,7 +75,7 @@ class DomainsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -84,8 +84,8 @@ class DomainsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.get(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+        request = self._client.get(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)
@@ -122,6 +122,7 @@ class DomainsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -134,9 +135,8 @@ class DomainsOperations(object):
         body_content = self._serialize.body(domain_info, 'Domain')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters)
-        response = self._client.send(
-            request, header_parameters, body_content, stream=False, **operation_config)
+        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [201]:
             exp = CloudError(response)
@@ -164,10 +164,10 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
-        :param domain_info: Domain information
-        :type domain_info: ~microsoft.azure.management.eventgrid.models.Domain
+        :param domain_info: Domain information.
+        :type domain_info: ~azext_eventgrid.models.Domain
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -176,9 +176,9 @@ class DomainsOperations(object):
         :return: An instance of LROPoller that returns Domain or
          ClientRawResponse<Domain> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.Domain]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Domain]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.Domain]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Domain]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -226,7 +226,6 @@ class DomainsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -235,8 +234,8 @@ class DomainsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.delete(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+        request = self._client.delete(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [202, 204]:
             exp = CloudError(response)
@@ -256,7 +255,7 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
@@ -293,9 +292,7 @@ class DomainsOperations(object):
 
 
     def _update_initial(
-            self, resource_group_name, domain_name, tags=None, custom_headers=None, raw=False, **operation_config):
-        domain_update_parameters = models.DomainUpdateParameters(tags=tags)
-
+            self, resource_group_name, domain_name, domain_update_parameters, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
@@ -311,6 +308,7 @@ class DomainsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -323,9 +321,8 @@ class DomainsOperations(object):
         body_content = self._serialize.body(domain_update_parameters, 'DomainUpdateParameters')
 
         # Construct and send request
-        request = self._client.patch(url, query_parameters)
-        response = self._client.send(
-            request, header_parameters, body_content, stream=False, **operation_config)
+        request = self._client.patch(url, query_parameters, header_parameters, body_content)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [201]:
             exp = CloudError(response)
@@ -344,7 +341,7 @@ class DomainsOperations(object):
         return deserialized
 
     def update(
-            self, resource_group_name, domain_name, tags=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, domain_name, domain_update_parameters, custom_headers=None, raw=False, polling=True, **operation_config):
         """Update a domain.
 
         Asynchronously updates a domain with the specified parameters.
@@ -352,10 +349,11 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
-        :param tags: Tags of the domains resource
-        :type tags: dict[str, str]
+        :param domain_update_parameters: Domain update information.
+        :type domain_update_parameters:
+         ~azext_eventgrid.models.DomainUpdateParameters
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -364,15 +362,15 @@ class DomainsOperations(object):
         :return: An instance of LROPoller that returns Domain or
          ClientRawResponse<Domain> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~microsoft.azure.management.eventgrid.models.Domain]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azext_eventgrid.models.Domain]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~microsoft.azure.management.eventgrid.models.Domain]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azext_eventgrid.models.Domain]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
             domain_name=domain_name,
-            tags=tags,
+            domain_update_parameters=domain_update_parameters,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -423,7 +421,7 @@ class DomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Domain
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainPaged[~microsoft.azure.management.eventgrid.models.Domain]
+         ~azext_eventgrid.models.DomainPaged[~azext_eventgrid.models.Domain]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -450,7 +448,7 @@ class DomainsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -459,9 +457,8 @@ class DomainsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -511,7 +508,7 @@ class DomainsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Domain
         :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainPaged[~microsoft.azure.management.eventgrid.models.Domain]
+         ~azext_eventgrid.models.DomainPaged[~azext_eventgrid.models.Domain]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -539,7 +536,7 @@ class DomainsOperations(object):
 
             # Construct headers
             header_parameters = {}
-            header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+            header_parameters['Accept'] = 'application/json'
             if self.config.generate_client_request_id:
                 header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
             if custom_headers:
@@ -548,9 +545,8 @@ class DomainsOperations(object):
                 header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
             # Construct and send request
-            request = self._client.get(url, query_parameters)
-            response = self._client.send(
-                request, header_parameters, stream=False, **operation_config)
+            request = self._client.get(url, query_parameters, header_parameters)
+            response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
                 exp = CloudError(response)
@@ -579,7 +575,7 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -587,8 +583,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.DomainSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -607,7 +602,7 @@ class DomainsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -616,8 +611,8 @@ class DomainsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters)
-        response = self._client.send(request, header_parameters, stream=False, **operation_config)
+        request = self._client.post(url, query_parameters, header_parameters)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)
@@ -645,9 +640,9 @@ class DomainsOperations(object):
         :param resource_group_name: The name of the resource group within the
          user's subscription.
         :type resource_group_name: str
-        :param domain_name: Name of the domain
+        :param domain_name: Name of the domain.
         :type domain_name: str
-        :param key_name: Key name to regenerate key1 or key2
+        :param key_name: Key name to regenerate key1 or key2.
         :type key_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -655,8 +650,7 @@ class DomainsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: DomainSharedAccessKeys or ClientRawResponse if raw=true
-        :rtype:
-         ~microsoft.azure.management.eventgrid.models.DomainSharedAccessKeys or
+        :rtype: ~azext_eventgrid.models.DomainSharedAccessKeys or
          ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -677,6 +671,7 @@ class DomainsOperations(object):
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -689,9 +684,8 @@ class DomainsOperations(object):
         body_content = self._serialize.body(regenerate_key_request, 'DomainRegenerateKeyRequest')
 
         # Construct and send request
-        request = self._client.post(url, query_parameters)
-        response = self._client.send(
-            request, header_parameters, body_content, stream=False, **operation_config)
+        request = self._client.post(url, query_parameters, header_parameters, body_content)
+        response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
             exp = CloudError(response)

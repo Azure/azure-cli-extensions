@@ -15,7 +15,8 @@ from knack.arguments import CLIArgumentType
 from ._completers import get_af_subresource_completion_list
 from ._validators import (
     get_public_ip_validator, get_subnet_validator, validate_application_rule_protocols,
-    validate_firewall_policy, validate_rule_group_collection)
+    validate_firewall_policy, validate_rule_group_collection, process_private_ranges,
+    process_threat_intel_whitelist_ip_addresses, process_threat_intel_whitelist_fqdns)
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -37,11 +38,17 @@ def load_arguments(self, _):
         c.argument('destination_fqdns', nargs='+', help="Space-separated list of destination FQDNs.")
         c.argument('source_addresses', nargs='+', help="Space-separated list of source IP addresses. Use '*' to match all.")
         c.argument('destination_ports', nargs='+', help="Space-separated list of destination ports. Use '*' to match all.")
+        c.argument('source_ip_groups', nargs='+', help='Space-separated list of name or resource id of source IpGroups.')
+        c.argument('destination_ip_groups', nargs='+', help='Space-separated list of name or resource id of destination IpGroups')
         c.argument('translated_address', help='Translated address for this NAT rule.')
         c.argument('translated_port', help='Translated port for this NAT rule.')
         c.argument('translated_fqdn', help='Translated FQDN for this NAT rule.')
         c.argument('tags', tags_type)
         c.argument('zones', zones_type)
+        c.argument('private_ranges', nargs='+', validator=process_private_ranges, help='Space-separated list of SNAT private range. Validate values are single Ip, Ip prefixes or a single special value "IANAPrivateRanges"')
+    with self.argument_context('network firewall threat-intel-whitelist') as c:
+        c.argument('ip_addresses', nargs='+', validator=process_threat_intel_whitelist_ip_addresses, help='Space-separated list of IPv4 addresses.')
+        c.argument('fqdns', nargs='+', validator=process_threat_intel_whitelist_fqdns, help='Space-separated list of FQDNs.')
 
     for scope in ['network-rule', 'nat-rule']:
         with self.argument_context('network firewall {}'.format(scope)) as c:
@@ -92,7 +99,7 @@ def load_arguments(self, _):
         c.argument('resource_name', firewall_name_type)
         c.argument('azure_firewall_name', firewall_name_type)
         c.argument('subnet', validator=get_subnet_validator(), help=argparse.SUPPRESS)
-        c.argument('virtual_network_name', virtual_network_name_type)
+        c.argument('virtual_network_name', virtual_network_name_type, help='The virtual network (VNet) name. It should contain one subnet called "AzureFirewallSubnet".')
         c.argument('public_ip_address', help='Name or ID of the public IP to use.', validator=get_public_ip_validator())
         c.argument('private_ip_address', help='IP address used by the Firewall ILB as the next hop in User Defined Routes.')
 

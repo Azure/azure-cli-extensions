@@ -36,6 +36,7 @@ class EventGridTests(ScenarioTest):
         domain_name = self.create_random_name(prefix='cli', length=40)
         domain_name2 = self.create_random_name(prefix='cli', length=40)
         domain_name3 = self.create_random_name(prefix='cli', length=40)
+        domain_name4 = self.create_random_name(prefix='cli', length=40)
 
         domain_topic_name1 = self.create_random_name(prefix='cli', length=40)
         domain_topic_name2 = self.create_random_name(prefix='cli', length=40)
@@ -46,6 +47,7 @@ class EventGridTests(ScenarioTest):
             'domain_name': domain_name,
             'domain_name2': domain_name2,
             'domain_name3': domain_name3,
+            'domain_name4': domain_name4,
             'domain_topic_name1': domain_topic_name1,
             'domain_topic_name2': domain_topic_name2,
             'location': 'centraluseuap',
@@ -85,6 +87,14 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['domain_name3']),
             self.check('provisioningState', 'Succeeded'),
         ])
+
+        outputdomain = self.cmd('az eventgrid domain create --name {domain_name4} --resource-group {rg} --location {location} --allow-traffic-from-all-ips False --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow').get_output_in_json()
+        self.check(outputdomain['type'], 'Microsoft.EventGrid/domains')
+        self.check(outputdomain['name'], self.kwargs['domain_name4'])
+        self.check(outputdomain['allowTrafficFromAllIps'], 'False')
+        self.check(outputdomain['inboundIpRules'][0], '19.12.43.90/102')
+        self.check(outputdomain['inboundIpRules'][1], '19.12.43.70/81')
+        self.check(outputdomain['provisioningState'], 'Succeeded')
 
         self.cmd('az eventgrid domain update --name {domain_name} --resource-group {rg} --tags Dept=IT', checks=[
             self.check('name', self.kwargs['domain_name']),
@@ -237,12 +247,14 @@ class EventGridTests(ScenarioTest):
         topic_name = self.create_random_name(prefix='cli', length=40)
         topic_name2 = self.create_random_name(prefix='cli', length=40)
         topic_name3 = self.create_random_name(prefix='cli', length=40)
+        topic_name4 = self.create_random_name(prefix='cli', length=40)
         event_subscription_name = self.create_random_name(prefix='cli', length=40)
 
         self.kwargs.update({
             'topic_name': topic_name,
             'topic_name2': topic_name2,
             'topic_name3': topic_name3,
+            'topic_name4': topic_name4,
             'location': 'centraluseuap',
             'event_subscription_name': event_subscription_name,
             'endpoint_url': endpoint_url,
@@ -285,6 +297,14 @@ class EventGridTests(ScenarioTest):
             self.check('name', self.kwargs['topic_name3']),
             self.check('provisioningState', 'Succeeded'),
         ])
+
+        outputtopic = self.cmd('az eventgrid topic create --name {topic_name4} --resource-group {rg} --location {location} --allow-traffic-from-all-ips False --inbound-ip-rules 19.12.43.90/102 allow --inbound-ip-rules 19.12.43.70/81 allow').get_output_in_json()
+        self.check(outputtopic['type'], 'Microsoft.EventGrid/topics')
+        self.check(outputtopic['name'], self.kwargs['topic_name4'])
+        self.check(outputtopic['allowTrafficFromAllIps'], 'False')
+        self.check(outputtopic['inboundIpRules'][0], '19.12.43.90/102')
+        self.check(outputtopic['inboundIpRules'][1], '19.12.43.70/81')
+        self.check(outputtopic['provisioningState'], 'Succeeded')
 
         self.cmd('az eventgrid topic update --name {topic_name} --resource-group {rg} --tags Dept=IT', checks=[
             self.check('name', self.kwargs['topic_name']),
