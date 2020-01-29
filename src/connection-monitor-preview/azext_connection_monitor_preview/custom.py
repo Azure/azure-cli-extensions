@@ -355,6 +355,15 @@ def show_nw_connection_monitor_v2_endpoint(client,
     raise CLIError('unknown endpoint: {}'.format(name))
 
 
+def list_nw_connection_monitor_v2_endpoint(client,
+                                           watcher_rg,
+                                           watcher_name,
+                                           connection_monitor_name,
+                                           location):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+    return connection_monitor.endpoints
+
+
 def add_nw_connection_monitor_v2_test_group(cmd,
                                             client,
                                             connection_monitor_name,
