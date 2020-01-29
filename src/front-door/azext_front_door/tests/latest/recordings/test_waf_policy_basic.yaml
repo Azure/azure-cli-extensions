@@ -19,7 +19,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -27,12 +27,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -41,7 +45,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:16:57 GMT
+      - Wed, 29 Jan 2020 03:07:11 GMT
       expires:
       - '-1'
       odata-version:
@@ -57,7 +61,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -83,7 +87,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode --redirect-url
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -91,12 +95,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000004?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\"\
+        :null\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n    \
+        \  ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n      \
+        \  \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n\
+        \  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -105,7 +113,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:02 GMT
+      - Wed, 29 Jan 2020 03:07:15 GMT
       expires:
       - '-1'
       odata-version:
@@ -121,7 +129,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -147,7 +155,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode --redirect-url --custom-block-response-status-code
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -155,12 +163,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000005?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000005\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000005\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\"\
+        :null\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n    \
+        \  ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n      \
+        \  \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n\
+        \  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -169,7 +181,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:07 GMT
+      - Wed, 29 Jan 2020 03:07:19 GMT
       expires:
       - '-1'
       odata-version:
@@ -212,7 +224,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode --redirect-url --custom-block-response-status-code --custom-block-response-body
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -220,12 +232,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000006?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000006\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000006\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\"\
+        :\"YiBvZHk=\"\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\
+        \n      ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n \
+        \       \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n   \
+        \ ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -234,7 +250,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:11 GMT
+      - Wed, 29 Jan 2020 03:07:23 GMT
       expires:
       - '-1'
       odata-version:
@@ -250,7 +266,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -276,7 +292,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode --disabled
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -284,12 +300,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000007?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Disabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Disabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -298,7 +318,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:18 GMT
+      - Wed, 29 Jan 2020 03:07:26 GMT
       expires:
       - '-1'
       odata-version:
@@ -314,7 +334,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -334,7 +354,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -342,12 +362,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000007?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Disabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Disabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -356,7 +380,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:19 GMT
+      - Wed, 29 Jan 2020 03:07:27 GMT
       expires:
       - '-1'
       odata-version:
@@ -400,7 +424,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -408,12 +432,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000007?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -422,7 +450,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:20 GMT
+      - Wed, 29 Jan 2020 03:07:28 GMT
       expires:
       - '-1'
       odata-version:
@@ -442,7 +470,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -462,7 +490,7 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -470,12 +498,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -484,7 +516,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:21 GMT
+      - Wed, 29 Jan 2020 03:07:29 GMT
       expires:
       - '-1'
       odata-version:
@@ -528,7 +560,7 @@ interactions:
       ParameterSetName:
       - -g -n --tags
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -536,12 +568,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -550,7 +586,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:24 GMT
+      - Wed, 29 Jan 2020 03:07:31 GMT
       expires:
       - '-1'
       odata-version:
@@ -570,7 +606,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1193'
       x-powered-by:
       - ASP.NET
     status:
@@ -590,7 +626,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -598,12 +634,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -612,7 +652,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:24 GMT
+      - Wed, 29 Jan 2020 03:07:32 GMT
       expires:
       - '-1'
       odata-version:
@@ -656,7 +696,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -664,12 +704,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -678,7 +722,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:26 GMT
+      - Wed, 29 Jan 2020 03:07:34 GMT
       expires:
       - '-1'
       odata-version:
@@ -698,7 +742,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -718,7 +762,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode --redirect-url
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -726,12 +770,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\"\
+        :null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\
+        \n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n\
+        \    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n        \r\n \
+        \     ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n  }\r\n\
+        }"
     headers:
       cache-control:
       - no-cache
@@ -740,7 +788,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:27 GMT
+      - Wed, 29 Jan 2020 03:07:36 GMT
       expires:
       - '-1'
       odata-version:
@@ -784,7 +832,7 @@ interactions:
       ParameterSetName:
       - -g -n --mode --redirect-url
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -792,12 +840,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\"\
+        :null\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n    \
+        \  ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n      \
+        \  \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n\
+        \  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -806,7 +858,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:29 GMT
+      - Wed, 29 Jan 2020 03:07:38 GMT
       expires:
       - '-1'
       odata-version:
@@ -826,7 +878,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
       x-powered-by:
       - ASP.NET
     status:
@@ -846,7 +898,7 @@ interactions:
       ParameterSetName:
       - -g -n --custom-block-response-status-code
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -854,12 +906,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\"\
+        :null\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n    \
+        \  ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n      \
+        \  \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n\
+        \  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -868,7 +924,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:30 GMT
+      - Wed, 29 Jan 2020 03:07:38 GMT
       expires:
       - '-1'
       odata-version:
@@ -913,7 +969,7 @@ interactions:
       ParameterSetName:
       - -g -n --custom-block-response-status-code
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -921,12 +977,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\"\
+        :null\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n    \
+        \  ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n      \
+        \  \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n\
+        \  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -935,7 +995,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:31 GMT
+      - Wed, 29 Jan 2020 03:07:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -955,7 +1015,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1194'
       x-powered-by:
       - ASP.NET
     status:
@@ -975,7 +1035,7 @@ interactions:
       ParameterSetName:
       - -g -n --custom-block-response-status-code --custom-block-response-body
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -983,12 +1043,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":null\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\"\
+        :null\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n    \
+        \  ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n      \
+        \  \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n    ]\r\n\
+        \  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -997,7 +1061,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:32 GMT
+      - Wed, 29 Jan 2020 03:07:41 GMT
       expires:
       - '-1'
       odata-version:
@@ -1042,7 +1106,7 @@ interactions:
       ParameterSetName:
       - -g -n --custom-block-response-status-code --custom-block-response-body
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1050,12 +1114,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\"\
+        :\"YiBvZHk=\"\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\
+        \n      ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n \
+        \       \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n   \
+        \ ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1064,7 +1132,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:34 GMT
+      - Wed, 29 Jan 2020 03:07:43 GMT
       expires:
       - '-1'
       odata-version:
@@ -1104,7 +1172,7 @@ interactions:
       ParameterSetName:
       - -g -n --disabled
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1112,12 +1180,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Enabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\"\
+        :\"YiBvZHk=\"\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\
+        \n      ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n \
+        \       \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n   \
+        \ ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1126,7 +1198,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:34 GMT
+      - Wed, 29 Jan 2020 03:07:44 GMT
       expires:
       - '-1'
       odata-version:
@@ -1171,7 +1243,7 @@ interactions:
       ParameterSetName:
       - -g -n --disabled
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1179,12 +1251,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Disabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Disabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\"\
+        :\"YiBvZHk=\"\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\
+        \n      ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n \
+        \       \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n   \
+        \ ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1193,7 +1269,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:52 GMT
+      - Wed, 29 Jan 2020 03:07:45 GMT
       expires:
       - '-1'
       odata-version:
@@ -1213,7 +1289,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1194'
       x-powered-by:
       - ASP.NET
     status:
@@ -1233,7 +1309,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1241,12 +1317,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \   \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \     \"enabledState\":\"Disabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \   },\"customRules\":{\r\n      \"rules\":[\r\n        \r\n      ]\r\n    },\"managedRules\":{\r\n
-        \     \"managedRuleSets\":[\r\n        \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n
-        \     \r\n    ]\r\n  }\r\n}"
+      string: "{\r\n  \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n    \r\n  },\"location\":\"Global\",\"properties\":{\r\n    \"\
+        resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\"\
+        :{\r\n      \"enabledState\":\"Disabled\",\"mode\":\"Prevention\",\"redirectUrl\"\
+        :\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\"\
+        :\"YiBvZHk=\"\r\n    },\"customRules\":{\r\n      \"rules\":[\r\n        \r\
+        \n      ]\r\n    },\"managedRules\":{\r\n      \"managedRuleSets\":[\r\n \
+        \       \r\n      ]\r\n    },\"frontendEndpointLinks\":[\r\n      \r\n   \
+        \ ]\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1255,7 +1335,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:53 GMT
+      - Wed, 29 Jan 2020 03:07:46 GMT
       expires:
       - '-1'
       odata-version:
@@ -1293,7 +1373,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1301,37 +1381,58 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000002\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Disabled\",\"mode\":\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":405,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000005\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":null\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000006\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    }\r\n  ]\r\n}"
+      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"cli000002\",\"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Disabled\",\"mode\"\
+        :\"Prevention\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :405,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n        },\"customRules\"\
+        :{\r\n          \"rules\":[\r\n            \r\n          ]\r\n        },\"\
+        managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n  \
+        \        ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n    \
+        \    ]\r\n      }\r\n    },{\r\n      \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :null,\"customBlockResponseBody\":null\r\n        },\"customRules\":{\r\n\
+        \          \"rules\":[\r\n            \r\n          ]\r\n        },\"managedRules\"\
+        :{\r\n          \"managedRuleSets\":[\r\n            \r\n          ]\r\n \
+        \       },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n     \
+        \ }\r\n    },{\r\n      \"name\":\"cli000006\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :406,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n        },\"customRules\"\
+        :{\r\n          \"rules\":[\r\n            \r\n          ]\r\n        },\"\
+        managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n  \
+        \        ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n    \
+        \    ]\r\n      }\r\n    },{\r\n      \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"\
+        customBlockResponseBody\":null\r\n        },\"customRules\":{\r\n        \
+        \  \"rules\":[\r\n            \r\n          ]\r\n        },\"managedRules\"\
+        :{\r\n          \"managedRuleSets\":[\r\n            \r\n          ]\r\n \
+        \       },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n     \
+        \ }\r\n    },{\r\n      \"name\":\"cli000005\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :406,\"customBlockResponseBody\":null\r\n        },\"customRules\":{\r\n \
+        \         \"rules\":[\r\n            \r\n          ]\r\n        },\"managedRules\"\
+        :{\r\n          \"managedRuleSets\":[\r\n            \r\n          ]\r\n \
+        \       },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n     \
+        \ }\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1340,7 +1441,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:17:54 GMT
+      - Wed, 29 Jan 2020 03:07:47 GMT
       expires:
       - '-1'
       odata-version:
@@ -1380,7 +1481,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1393,7 +1494,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Wed, 13 Nov 2019 22:17:58 GMT
+      - Wed, 29 Jan 2020 03:07:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1427,7 +1528,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.6.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
+      - python/3.7.6 (Windows-10-10.0.18362-SP0) msrest/0.6.8 msrest_azure/0.6.1 azure-mgmt-frontdoor/0.1.0
         Azure-SDK-For-Python AZURECLI/2.0.68
       accept-language:
       - en-US
@@ -1435,31 +1536,48 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies?api-version=2019-10-01
   response:
     body:
-      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"cli000004\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000005\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":null\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000006\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\":406,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    },{\r\n      \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\",\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"tags\":{\r\n
-        \       \r\n      },\"location\":\"Global\",\"properties\":{\r\n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\",\"policySettings\":{\r\n
-        \         \"enabledState\":\"Enabled\",\"mode\":\"Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"customBlockResponseBody\":null\r\n
-        \       },\"customRules\":{\r\n          \"rules\":[\r\n            \r\n          ]\r\n
-        \       },\"managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n
-        \         ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n
-        \     }\r\n    }\r\n  ]\r\n}"
+      string: "{\r\n  \"value\":[\r\n    {\r\n      \"name\":\"cli000004\",\"id\"\
+        :\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :null,\"customBlockResponseBody\":null\r\n        },\"customRules\":{\r\n\
+        \          \"rules\":[\r\n            \r\n          ]\r\n        },\"managedRules\"\
+        :{\r\n          \"managedRuleSets\":[\r\n            \r\n          ]\r\n \
+        \       },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n     \
+        \ }\r\n    },{\r\n      \"name\":\"cli000007\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":null,\"customBlockResponseStatusCode\":null,\"\
+        customBlockResponseBody\":null\r\n        },\"customRules\":{\r\n        \
+        \  \"rules\":[\r\n            \r\n          ]\r\n        },\"managedRules\"\
+        :{\r\n          \"managedRuleSets\":[\r\n            \r\n          ]\r\n \
+        \       },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n     \
+        \ }\r\n    },{\r\n      \"name\":\"cli000005\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :406,\"customBlockResponseBody\":null\r\n        },\"customRules\":{\r\n \
+        \         \"rules\":[\r\n            \r\n          ]\r\n        },\"managedRules\"\
+        :{\r\n          \"managedRuleSets\":[\r\n            \r\n          ]\r\n \
+        \       },\"frontendEndpointLinks\":[\r\n          \r\n        ]\r\n     \
+        \ }\r\n    },{\r\n      \"name\":\"cli000006\",\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006\"\
+        ,\"type\":\"Microsoft.Network/frontdoorwebapplicationfirewallpolicies\",\"\
+        tags\":{\r\n        \r\n      },\"location\":\"Global\",\"properties\":{\r\
+        \n        \"resourceState\":\"Enabled\",\"provisioningState\":\"Succeeded\"\
+        ,\"policySettings\":{\r\n          \"enabledState\":\"Enabled\",\"mode\":\"\
+        Detection\",\"redirectUrl\":\"http://www.microsoft.com\",\"customBlockResponseStatusCode\"\
+        :406,\"customBlockResponseBody\":\"YiBvZHk=\"\r\n        },\"customRules\"\
+        :{\r\n          \"rules\":[\r\n            \r\n          ]\r\n        },\"\
+        managedRules\":{\r\n          \"managedRuleSets\":[\r\n            \r\n  \
+        \        ]\r\n        },\"frontendEndpointLinks\":[\r\n          \r\n    \
+        \    ]\r\n      }\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1468,7 +1586,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 13 Nov 2019 22:18:00 GMT
+      - Wed, 29 Jan 2020 03:07:51 GMT
       expires:
       - '-1'
       odata-version:

@@ -558,3 +558,137 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         result = self.cmd(cmd).get_output_in_json()
         exclusions = result
         self.assertEqual(len(exclusions), 0)
+
+    @ResourceGroupPreparer(location='westus')
+    def test_waf_policy_custom_rule_limits(self, resource_group):
+        # multi-line comment below
+        """
+Example command sequence:
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit0} --priority 10 --action log --rule-type ratelimitrule0 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit1} --priority 11 --action log --rule-type ratelimitrule1 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit2} --priority 12 --action log --rule-type ratelimitrule2 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit3} --priority 13 --action log --rule-type ratelimitrule3 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit4} --priority 14 --action log --rule-type ratelimitrule4 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit5} --priority 15 --action log --rule-type ratelimitrule5 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit6} --priority 16 --action log --rule-type ratelimitrule6 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit7} --priority 17 --action log --rule-type ratelimitrule7 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit8} --priority 18 --action log --rule-type ratelimitrule8 --rate-limit-duration 5 --rate-limit-threshold 10000 --defer
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimit9} --priority 19 --action log --rule-type ratelimitrule9 --rate-limit-duration 5 --rate-limit-threshold 10000
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany} --priority 20 --action log --rule-type ratelimitruleTooMany --rate-limit-duration 5 --rate-limit-threshold 10000
+az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}
+az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {ratelimitrule8}
+az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {ratelimitrule9}
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {regex1} --priority 20 --action log --rule-type matchrule --defer
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex1} --match-variable RequestHeaders.value --operator RegEx --values foo
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex1} --match-variable RequestHeaders.value --operator RegEx --values foo
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex1} --match-variable RequestHeaders.value --operator RegEx --values foo
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {regex2} --priority 21 --action log --rule-type matchrule --defer
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex2} --match-variable RequestHeaders.value --operator RegEx --values foo
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex2} --match-variable RequestHeaders.value --operator RegEx --values foo
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex2} --match-variable RequestHeaders.value --operator RegEx --values TooMany
+az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {regex1}
+az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {regex2}
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {ipblock600} --priority 20 --action log --rule-type matchrule --defer
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {ipblock600} --match-variable RemoteAddr --operator IPMatch --values 10.1.1.1 ... 10.1.10.60
+az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {ipblock1} --priority 21 --action log --rule-type matchrule --defer
+az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {ipblock1} --match-variable RemoteAddr --operator IPMatch --values 10.1.10.61
+az network front-door waf-policy rule match-condition list -g {resource_group} --policy-name {policyName} -n {match}
+"""
+        # TODO bomar
+        subscription = self.current_subscription()
+        policyName = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy create -g {resource_group} -n {policyName} --mode prevention'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        rateLimitTooMany = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany} --priority 10 --action log --rule-type ratelimitrule --rate-limit-duration 5 --rate-limit-threshold 10000 --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(result['customRules']['rules'][0]['rateLimitDurationInMinutes'], 5)
+        self.assertEqual(result['customRules']['rules'][0]['rateLimitThreshold'], 10000)
+
+        conditions = []
+        for i in range(10):
+            cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany} --match-variable RequestHeader.value --operator Contains --values foo boo'.format(**locals())
+            result = self.cmd(cmd).get_output_in_json()
+
+        try:
+            cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany} --match-variable RequestHeader.value --operator Contains --values foo boo'.format(**locals())
+            result = self.cmd(cmd).get_output_in_json()
+            self.fail("should throw exception")
+        except ErrorResponseException as e:
+            msg = str(vars(e.error))
+            self.assertTrue("Rule {rateLimitTooMany} exceeds 10 match conditions".format(**locals()) in msg, msg)
+
+        cmd = 'az network front-door waf-policy rule match-condition list -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 10)
+
+        cmd = 'az network front-door waf-policy rule match-condition remove -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany} --index 8'.format(**locals())
+        result = self.cmd(cmd)
+
+        cmd = 'az network front-door waf-policy rule match-condition remove -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany} --index 8'.format(**locals())
+        result = self.cmd(cmd)
+
+        cmd = 'az network front-door waf-policy rule match-condition list -g {resource_group} --policy-name {policyName} -n {rateLimitTooMany}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 8)
+
+        regex1 = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {regex1} --priority 20 --action log --rule-type matchrule --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex1} --match-variable RequestHeader.value --operator RegEx --values foo'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex1} --match-variable RequestHeader.value --operator RegEx --values foo'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex1} --match-variable RequestHeader.value --operator RegEx --values foo'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        regex2 = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {regex2} --priority 21 --action log --rule-type matchrule --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex2} --match-variable RequestHeader.value --operator RegEx --values foo'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex2} --match-variable RequestHeader.value --operator RegEx --values foo'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {regex2} --match-variable RequestHeader.value --operator RegEx --values foo'.format(**locals())
+        try:
+            result = self.cmd(cmd)
+            self.fail("should throw exception")
+        except ErrorResponseException as e:
+            msg = str(vars(e.error))
+            self.assertTrue("Policy exceeds 5 regular expressions".format(**locals()) in msg, msg)
+
+        cmd = 'az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {regex1}'.format(**locals())
+        result = self.cmd(cmd)
+
+        cmd = 'az network front-door waf-policy rule delete -g {resource_group} --policy-name {policyName} -n {regex2}'.format(**locals())
+        result = self.cmd(cmd)
+
+        ipblock600 = self.create_random_name(prefix='cli', length=24)
+        cmd = 'az network front-door waf-policy rule create -g {resource_group} --policy-name {policyName} -n {ipblock600} --priority 22 --action log --rule-type matchrule --defer'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        # create 600 IP blocks
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {ipblock600} --match-variable RemoteAddr --operator IPMatch --values '.format(**locals())
+
+        for q3 in range(1,11):
+            for q4 in range(1,61):
+                cmd = cmd + '10.1.{q3}.{q4} '.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+
+        cmd = 'az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 2)
+
+        cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {ipblock600} --match-variable RemoteAddr --operator IPMatch --values 10.1.10.61 '.format(**locals())
+
+        try:
+            result = self.cmd(cmd)
+            self.fail("should throw exception")
+        except ErrorResponseException as e:
+            msg = str(vars(e.error))
+            self.assertTrue("Policy includes a rule which exceeds 600 IPMatch values".format(**locals()) in msg, msg)
+
+        cmd = 'az network front-door waf-policy rule list -g {resource_group} --policy-name {policyName}'.format(**locals())
+        result = self.cmd(cmd).get_output_in_json()
+        self.assertEqual(len(result), 2)
