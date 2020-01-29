@@ -2,9 +2,26 @@
 
 Release History
 ===============
+0.4.27
++++++
+* Fixed aks cluster creation error
+
+0.4.26
++++++
+* Update to use 2020-01-01 api-version
+* Support cluster creation with server side encryption using customer managed key
+
+0.4.25
++++++
+* List credentials for different users via parameter `--user`
+
+0.4.24
++++++
+* added custom header support
+
 0.4.23
 +++++
-* Enable GA support of apiserver authorized IP ranges via paramater `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
+* Enable GA support of apiserver authorized IP ranges via parameter `--api-server-authorized-ip-ranges` in `az aks create` and `az aks update`
 
 0.4.21
 +++++

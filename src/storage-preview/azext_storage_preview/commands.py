@@ -114,6 +114,13 @@ The secondary cluster will become the primary cluster after failover. Please und
         client_factory=adls_blob_data_service_factory,
         resource_type=CUSTOM_DATA_STORAGE_ADLS)
 
+    # Change existing Blob Commands
+    with self.command_group('storage blob', command_type=adls_base_blob_sdk) as g:
+        from ._format import transform_blob_output
+        from ._transformers import transform_storage_list_output
+        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
+                                table_transformer=transform_blob_output)
+
     # New Blob Commands
     with self.command_group('storage blob', command_type=adls_base_blob_sdk,
                             custom_command_type=get_custom_sdk('blob', adls_blob_data_service_factory,
@@ -149,7 +156,8 @@ The secondary cluster will become the primary cluster after failover. Please und
         g.storage_command_oauth('metadata update', 'set_blob_metadata')
 
     with self.command_group('storage blob directory', is_preview=True,
-                            custom_command_type=get_custom_sdk('azcopy', blob_data_service_factory))as g:
+                            custom_command_type=get_custom_sdk('azcopy', adls_blob_data_service_factory,
+                                                               CUSTOM_DATA_STORAGE_ADLS))as g:
         g.storage_custom_command_oauth('upload', 'storage_blob_upload')
         g.storage_custom_command_oauth('download', 'storage_blob_download')
 

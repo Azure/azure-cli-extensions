@@ -16,13 +16,14 @@ tc = TelemetryClient(PROD_KEY)
 tc.context.application.ver = _get_current_vmrepair_version()
 
 
-def _track_command_telemetry(command_name, parameters, status, message, error_message, duration, subscription_id, result_json):
+def _track_command_telemetry(command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json):
     properties = {
         'command_name': command_name,
         'parameters': json.dumps(parameters),
         'command_status': status,
         'message': message,
         'error_message': error_message,
+        'error_stack_trace': error_stack_trace,
         'subscription_id': subscription_id,
         'result_json': json.dumps(result_json)
     }
@@ -31,13 +32,14 @@ def _track_command_telemetry(command_name, parameters, status, message, error_me
     tc.flush()
 
 
-def _track_run_command_telemetry(command_name, parameters, status, message, error_message, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration):
+def _track_run_command_telemetry(command_name, parameters, status, message, error_message, error_stack_trace, duration, subscription_id, result_json, script_run_id, script_status, script_output, script_duration):
     properties = {
         'command_name': command_name,
         'parameters': json.dumps(parameters),
         'command_status': status,
         'message': message,
         'error_message': error_message,
+        'error_stack_trace': error_stack_trace,
         'subscription_id': subscription_id,
         'result_json': json.dumps(result_json),
         'script_run_id': script_run_id,

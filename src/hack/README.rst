@@ -14,7 +14,7 @@ Usage
 -----
 
 ::
-    az hack create -n demo -d MySQL -r python --ai
+    az hack create -n demo -l westus2 -d MySQL -r python --ai
 
 --------
 Switches

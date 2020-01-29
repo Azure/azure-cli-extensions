@@ -11,8 +11,11 @@ import tempfile
 import uuid
 from io import open
 from re import (search, match)
+from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
+from ._client_factory import cf_resource_groups
+
 
 logger = get_logger(__name__)
 
@@ -30,7 +33,7 @@ def _get_upload_local_file(jar_path=None):
 
 
 def _pack_source_code(source_location, tar_file_path):
-    logger.warning("Packing source code into tar to upload...")
+    logger.info("Packing source code into tar to upload...")
 
     ignore_list, ignore_list_size = _load_gitignore_file(source_location)
     common_vcs_ignore_list = {'.git', '.gitignore', 'bzrignore', '.hg',
@@ -39,7 +42,7 @@ def _pack_source_code(source_location, tar_file_path):
     def _ignore_check(tarinfo, parent_ignored, parent_matching_rule_index):
         # ignore common vcs dir or file
         if tarinfo.name in common_vcs_ignore_list:
-            logger.warning(
+            logger.info(
                 "Excluding '%s' based on default ignore rules", tarinfo.name)
             return True, parent_matching_rule_index
 
@@ -179,7 +182,6 @@ class ApiType(Enum):
 
 
 def dump(obj):
-    from json import dumps
     input_dict = todict(obj)
     json_object = dumps(input_dict, ensure_ascii=False,
                         indent=2, sort_keys=True, separators=(',', ': ')) + '\n'
@@ -187,7 +189,6 @@ def dump(obj):
 
 
 def _get_rg_location(ctx, resource_group_name, subscription_id=None):
-    from ._client_factory import cf_resource_groups
     groups = cf_resource_groups(ctx, subscription_id=subscription_id)
     # Just do the get, we don't need the result, it will error out if the group doesn't exist.
     rg = groups.get(resource_group_name)
