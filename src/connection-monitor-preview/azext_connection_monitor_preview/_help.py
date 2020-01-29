@@ -122,3 +122,8 @@ examples:
       --name MyHTTPTestConfiguration
       --test-groups HTTPTestGroup DefaultTestGroup
 """
+
+helps['network watcher connection-monitor test-configuration show'] = """
+type: command
+short-summary: Show a test configuration from a connection monitor
+"""

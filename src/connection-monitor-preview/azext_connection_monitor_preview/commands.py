@@ -49,6 +49,7 @@ def load_command_table(self, _):
                             validator=process_nw_cm_v2_test_configuration_namespace) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_test_configuration')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_test_configuration')
+        c.custom_command('show', 'show_nw_connection_monitor_v2_test_configuration')
 
     with self.command_group('network watcher connection-monitor test-group',
                             nw_connection_monitor_sdk,

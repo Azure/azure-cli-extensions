@@ -436,6 +436,21 @@ def remove_nw_connection_monitor_v2_test_configuration(client,
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
 
+def show_nw_connection_monitor_v2_test_configuration(client,
+                                                     watcher_rg,
+                                                     watcher_name,
+                                                     connection_monitor_name,
+                                                     location,
+                                                     name):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    for test_config in connection_monitor.test_configurations:
+        if test_config.name == name:
+            return test_config
+
+    raise CLIError('unknown test configuration: {}'.format(name))
+
+
 def add_nw_connection_monitor_v2_test_group(cmd,
                                             client,
                                             connection_monitor_name,
