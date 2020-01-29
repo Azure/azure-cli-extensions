@@ -671,8 +671,8 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         # create 600 IP blocks
         cmd = 'az network front-door waf-policy rule match-condition add -g {resource_group} --policy-name {policyName} -n {ipblock600} --match-variable RemoteAddr --operator IPMatch --values '.format(**locals())
 
-        for q3 in range(1,11):
-            for q4 in range(1,61):
+        for q3 in range(1, 11):
+            for q4 in range(1, 61):
                 cmd = cmd + '10.1.{q3}.{q4} '.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
 
