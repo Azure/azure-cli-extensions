@@ -178,7 +178,7 @@ def load_arguments(self, _):
                                arg_group='V2 Test Group') as c:
         c.argument('test_groups',
                    nargs='+',
-                   help='Space-separated list of names of test group which only need to remove endpoint from')
+                   help='Space-separated list of names of test group which only need to be affected if specified')
         c.argument('source_test_groups',
                    nargs='+',
                    help='Space-separated list of names for test group to reference as source')
@@ -213,7 +213,7 @@ def load_arguments(self, _):
                    help='The maximum round-trip time in milliseconds permitted for a test to evaluate as successful',
                    type=int)
         c.argument('test_groups',
-                   help='Space-separated list of names for test group to be referenced to',
+                   help='Space-separated list of names of test group which only need to be affected if specified',
                    nargs='+')
         # TCP protocol configuration
         with self.argument_context('network watcher connection-monitor test-configuration',

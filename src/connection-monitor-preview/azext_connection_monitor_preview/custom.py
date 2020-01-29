@@ -325,11 +325,11 @@ def remove_nw_connection_monitor_v2_endpoint(client,
 
     # refresh test groups
     if test_groups is not None:
-        new_test_groups = [t for t in connection_monitor.test_groups if t.name in test_groups]
+        temp_test_groups = [t for t in connection_monitor.test_groups if t.name in test_groups]
     else:
-        new_test_groups = connection_monitor.test_groups
+        temp_test_groups = connection_monitor.test_groups
 
-    for test_group in new_test_groups:
+    for test_group in temp_test_groups:
         if name in test_group.sources:
             test_group.sources.remove(name)
         if name in test_group.destinations:
@@ -407,6 +407,31 @@ def add_nw_connection_monitor_v2_test_configuration(cmd,
     for test_group in connection_monitor.test_groups:
         if test_group.name in test_groups:
             test_group.test_configurations.append(new_test_config.name)
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+
+
+def remove_nw_connection_monitor_v2_test_configuration(client,
+                                                       watcher_rg,
+                                                       watcher_name,
+                                                       connection_monitor_name,
+                                                       location,
+                                                       name,
+                                                       test_groups=None):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    # refresh test configurations
+    new_test_configurations = [t for t in connection_monitor.test_configurations if t.name != name]
+    connection_monitor.test_configurations = new_test_configurations
+
+    if test_groups is not None:
+        temp_test_groups = [t for t in connection_monitor.test_groups if t.name in test_groups]
+    else:
+        temp_test_groups = connection_monitor.test_groups
+
+    # refresh test groups
+    for test_group in temp_test_groups:
+        test_group.test_configurations.remove(name)
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 

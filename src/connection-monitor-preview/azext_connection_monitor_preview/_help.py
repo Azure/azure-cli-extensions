@@ -64,6 +64,16 @@ examples:
       --test-groups DefaultTestGroup HealthCheckTestGroup
 """
 
+helps['network watcher connection-monitor endpoint show'] = """
+type: command
+short-summary: Show an endpoint from a connection monitor
+"""
+
+helps['network watcher connection-monitor endpoint list'] = """
+type: command
+short-summary: List all endpoints form a connection monitor
+"""
+
 helps['network watcher connection-monitor test-configuration'] = """
 type: group
 short-summary: Manage test configuration of a connection monitor
@@ -92,4 +102,23 @@ examples:
       --test-groups TCPTestGroup DefaultTestGroup
       --protocol Tcp
       --tcp-port 4096
+"""
+
+helps['network watcher connection-monitor test-configuration remove'] = """
+type: command
+short-summary: Remove a test configuration from a connection monitor
+examples:
+  - name: Remove a test configuration from all test groups of a connection monitor
+    text: >
+      az network watcher connection-monitor test-configuration remove
+      --connection-monitor MyConnectionMonitor
+      --location westus
+      --name MyTCPTestConfiguration
+  - name: Remove a test configuration from two test groups of a connection monitor
+    text: >
+      az network watcher connection-monitor test-configuration remove
+      --connection-monitor MyConnectionMonitor
+      --location westus
+      --name MyHTTPTestConfiguration
+      --test-groups HTTPTestGroup DefaultTestGroup
 """
