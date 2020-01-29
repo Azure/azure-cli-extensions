@@ -8,7 +8,9 @@ from azure.cli.core.commands.parameters import (get_enum_type,
                                                 get_location_type,
                                                 get_three_state_flag)
 
-from ._validators import get_network_watcher_from_location, NWConnectionMonitorEndpointFilterItemAction
+from ._validators import (get_network_watcher_from_location,
+                          NWConnectionMonitorEndpointFilterItemAction,
+                          NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction)
 
 
 def load_arguments(self, _):
@@ -183,3 +185,76 @@ def load_arguments(self, _):
         c.argument('dest_test_groups',
                    nargs='+',
                    help='Space-separated list of names for test group to reference as destination')
+
+    # Argument Group for connection monitor V2 test configuration
+    with self.argument_context('network watcher connection-monitor test-configuration',
+                               min_api='2019-11-01') as c:
+        c.argument('connection_monitor_name',
+                   options_list=['--connection-monitor'],
+                   help='Connection monitor name')
+        c.argument('name',
+                   arg_type=name_arg_type,
+                   help='The name of the connection monitor test configuration')
+        c.argument('frequency',
+                   help='The frequency of test evaluation, in seconds',
+                   type=int,
+                   default=60)
+        c.argument('protocol',
+                   help='The protocol to use in test evaluation',
+                   arg_type=get_enum_type(ConnectionMonitorTestConfigurationProtocol))
+        c.argument('preferred_ip_version',
+                   help='The preferred IP version to use in test evaluation. '
+                        'The connection monitor may choose to use a different version depending on other parameters',
+                   arg_type=get_enum_type(PreferredIPVersion))
+        c.argument('threshold_failed_percent',
+                   help='The maximum percentage of failed checks permitted for a test to evaluate as successful',
+                   type=int)
+        c.argument('threshold_round_trip_time',
+                   help='The maximum round-trip time in milliseconds permitted for a test to evaluate as successful',
+                   type=int)
+        c.argument('test_groups',
+                   help='Space-separated list of names for test group to be referenced to',
+                   nargs='+')
+        # TCP protocol configuration
+        with self.argument_context('network watcher connection-monitor test-configuration',
+                                   min_api='2019-11-01',
+                                   arg_group='TCP Protocol') as c:
+            c.argument('tcp_port',
+                       help='The port to connect to',
+                       type=int)
+            c.argument('tcp_disable_trace_route',
+                       help='Value indicating whether path evaluation with trace route should be disabled. '
+                            'false is default.',
+                       arg_type=get_three_state_flag())
+        # ICMP protocol configuration
+        with self.argument_context('network watcher connection-monitor test-configuration',
+                                   min_api='2019-11-01',
+                                   arg_group='ICMP Protocol') as c:
+            c.argument('icmp_disable_trace_route',
+                       help='Value indicating whether path evaluation with trace route should be disabled. '
+                            'false is default.',
+                       arg_type=get_three_state_flag())
+        # HTTP protocol configuration
+        with self.argument_context('network watcher connection-monitor test-configuration',
+                                   min_api='2019-11-01',
+                                   arg_group='HTTP Protocol') as c:
+            c.argument('http_port',
+                       help='The port to connect to',
+                       type=int)
+            c.argument('http_method',
+                       help='The HTTP method to use',
+                       arg_type=get_enum_type(HTTPConfigurationMethod))
+            c.argument('http_path',
+                       help='The path component of the URI. For instance, "/dir1/dir2"')
+            c.argument('http_valid_status_codes',
+                       help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"')
+            c.argument('http_prefer_https',
+                       help='Value indicating whether HTTPS is preferred '
+                            'over HTTP in cases where the choice is not explicit',
+                       arg_type=get_three_state_flag())
+            c.argument('http_request_headers',
+                       options_list=['--http-request-header'],
+                       help='The HTTP headers to transmit with the request. '
+                            'List of property=value pairs to define HTTP headers.',
+                       nargs='+',
+                       action=NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction)

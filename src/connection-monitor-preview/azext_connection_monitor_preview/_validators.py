@@ -71,7 +71,16 @@ def process_nw_cm_v1_create_namespace(cmd, namespace):
 
 def process_nw_cm_v2_create_namespace(cmd, namespace):
     if namespace.location is None:
-        raise CLIError('usage error: --location is required when create V2 connection monitor')
+        raise CLIError('usage error: --location is required to create a V2 connection monitor')
+    if namespace.test_config_protocol is None:
+        raise CLIError('usage error: --protocol is required to create a V2 connection monitor')
+
+    v2_required_parameter_set = ['endpoint_source_name', 'endpoint_dest_name', 'test_config_name']
+    for p in v2_required_parameter_set:
+        if not hasattr(namespace, p) or getattr(namespace, p) is None:
+            raise CLIError(
+                'usage error: --{} is required to create a V2 connection monitor'.format(p.replace('_', '-')))
+
     return get_network_watcher_from_location()(cmd, namespace)
 
 
@@ -85,7 +94,7 @@ def process_nw_cm_create_namespace(cmd, namespace):
         return process_nw_cm_v1_create_namespace(cmd, namespace)
 
 
-def process_nw_cm_v2_endpoint_create_namespace(cmd, namespace):
+def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
     if hasattr(namespace, 'filter_type') or hasattr(namespace, 'filter_items'):
         filter_type, filter_items = namespace.filter_type, namespace.filter_items
         if (filter_type and not filter_items) or (not filter_type and filter_items):
@@ -97,7 +106,11 @@ def process_nw_cm_v2_endpoint_create_namespace(cmd, namespace):
             raise CLIError('usage error: endpoint has to be referenced from at least one existing test group '
                            'via --dest-test-groups/--source-test-groups')
 
-    return process_nw_cm_v2_create_namespace(cmd, namespace)
+    return get_network_watcher_from_location()(cmd, namespace)
+
+
+def process_nw_cm_v2_test_configuration_namespace(cmd, namespace):
+    return get_network_watcher_from_location()(cmd, namespace)
 
 
 # pylint: disable=protected-access
@@ -124,3 +137,27 @@ class NWConnectionMonitorEndpointFilterItemAction(_AppendAction):
                     'usage error: {} PropertyName=PropertyValue [PropertyName=PropertyValue ...]'.format(option_string))
 
         namespace.filter_items.append(filter_item)
+
+
+# pylint: disable=protected-access
+class NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction(_AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        HTTPHeader = namespace._cmd.get_models('HTTPHeader')
+
+        if not namespace.http_request_headers:
+            namespace.http_request_headers = []
+
+        request_header = HTTPHeader()
+
+        for item in values:
+            try:
+                key, val = item.split('=', 1)
+                if hasattr(request_header, key):
+                    setattr(request_header, key, val)
+                else:
+                    raise CLIError("usage error: '{}' is not a value property of HTTPHeader".format(key))
+            except ValueError:
+                raise CLIError(
+                    'usage error: {} name=HTTPHeader value=HTTPHeaderValue'.format(option_string))
+
+        namespace.http_request_headers.append(request_header)

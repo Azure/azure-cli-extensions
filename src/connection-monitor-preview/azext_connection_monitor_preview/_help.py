@@ -63,3 +63,33 @@ examples:
       --name MyEndpoint
       --test-groups DefaultTestGroup HealthCheckTestGroup
 """
+
+helps['network watcher connection-monitor test-configuration'] = """
+type: group
+short-summary: Manage test configuration of a connection monitor
+"""
+
+helps['network watcher connection-monitor test-configuration add'] = """
+type: command
+short-summary: Add a test configuration to a connection monitor
+examples:
+  - name: Add a test configuration with HTTP supported
+    text: >
+      az network watcher connection-monitor test-configuration add
+      --connection-monitor MyConnectionMonitor
+      --location westus
+      --name MyHTTPTestConfiguration
+      --test-groups DefaultTestGroup
+      --protocol Http
+      --http-request-header name=Host value=bing.com
+      --http-request-header name=UserAgent value=Edge
+  - name: Add a test configuration with TCP supported
+    text: >
+      az network watcher connection-monitor test-configuration add
+      --connection-monitor MyConnectionMonitor
+      --location westus
+      --name MyHTTPTestConfiguration
+      --test-groups TCPTestGroup DefaultTestGroup
+      --protocol Tcp
+      --tcp-port 4096
+"""

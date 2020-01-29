@@ -51,15 +51,13 @@ def create_nw_connection_monitor(cmd,
 
     v2_required_parameter_set = [
         endpoint_source_name, endpoint_source_resource_id,
-        endpoint_dest_name, endpoint_dest_address
+        endpoint_dest_name, endpoint_dest_address,
+        test_config_name, test_config_protocol
     ]
 
     if any(v1_required_parameter_set):  # V1 creation
         connection_monitor = _create_nw_connection_monitor_v1(cmd, location, tags)
     elif any(v2_required_parameter_set):  # V2 creation
-        if location is None:
-            raise CLIError('location is required to create V2 connection monitor')
-
         connection_monitor = _create_nw_connection_monitor_v2(cmd,
                                                               location,
                                                               tags,
@@ -86,7 +84,7 @@ def create_nw_connection_monitor(cmd,
                                                               test_group_name,
                                                               test_group_disable)
     else:
-        raise CLIError('')
+        raise CLIError('Unknown operation')
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
@@ -246,8 +244,8 @@ def _create_nw_connection_monitor_v2_test_configuration(cmd,
         icmp_config = ConnectionMonitorIcmpConfiguration(disable_trace_route=icmp_disable_trace_route)
         test_config.icmp_configuration = icmp_config
     elif protocol == ConnectionMonitorTestConfigurationProtocol.http:
-        ConnectionMonitorTcpConfiguration = cmd.get_models('ConnectionMonitorTcpConfiguration')
-        http_config = ConnectionMonitorTcpConfiguration(
+        ConnectionMonitorHttpConfiguration = cmd.get_models('ConnectionMonitorHttpConfiguration')
+        http_config = ConnectionMonitorHttpConfiguration(
             port=http_port,
             method=http_method,
             path=http_path,
@@ -362,6 +360,55 @@ def list_nw_connection_monitor_v2_endpoint(client,
                                            location):
     connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
     return connection_monitor.endpoints
+
+
+def add_nw_connection_monitor_v2_test_configuration(cmd,
+                                                    client,
+                                                    watcher_rg,
+                                                    watcher_name,
+                                                    connection_monitor_name,
+                                                    location,
+                                                    name,
+                                                    protocol,
+                                                    test_groups,
+                                                    frequency=None,
+                                                    threshold_failed_percent=None,
+                                                    threshold_round_trip_time=None,
+                                                    preferred_ip_version=None,
+                                                    tcp_port=None,
+                                                    tcp_disable_trace_route=None,
+                                                    icmp_disable_trace_route=None,
+                                                    http_port=None,
+                                                    http_method=None,
+                                                    http_path=None,
+                                                    http_valid_status_codes=None,
+                                                    http_prefer_https=None,
+                                                    http_request_headers=None):
+    new_test_config = _create_nw_connection_monitor_v2_test_configuration(cmd,
+                                                                          name,
+                                                                          frequency,
+                                                                          protocol,
+                                                                          threshold_failed_percent,
+                                                                          threshold_round_trip_time,
+                                                                          preferred_ip_version,
+                                                                          tcp_port,
+                                                                          tcp_disable_trace_route,
+                                                                          icmp_disable_trace_route,
+                                                                          http_port,
+                                                                          http_method,
+                                                                          http_path,
+                                                                          http_valid_status_codes,
+                                                                          http_prefer_https,
+                                                                          http_request_headers)
+
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+    connection_monitor.test_configurations.append(new_test_config)
+
+    for test_group in connection_monitor.test_groups:
+        if test_group.name in test_groups:
+            test_group.test_configurations.append(new_test_config.name)
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
 
 def add_nw_connection_monitor_v2_test_group(cmd,
