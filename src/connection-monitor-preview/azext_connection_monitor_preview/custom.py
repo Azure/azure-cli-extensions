@@ -340,6 +340,21 @@ def remove_nw_connection_monitor_v2_endpoint(client,
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
 
+def show_nw_connection_monitor_v2_endpoint(client,
+                                           watcher_rg,
+                                           watcher_name,
+                                           connection_monitor_name,
+                                           location,
+                                           name):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    for endpoint in connection_monitor.endpoints:
+        if endpoint.name == name:
+            return endpoint
+
+    raise CLIError('unknown endpoint: {}'.format(name))
+
+
 def add_nw_connection_monitor_v2_test_group(cmd,
                                             client,
                                             connection_monitor_name,

@@ -34,13 +34,11 @@ def load_command_table(self, _):
     with self.command_group('network watcher connection-monitor endpoint',
                             nw_connection_monitor_sdk,
                             min_api='2019-11-01',
-                            is_preview=True) as c:
-        c.custom_command('add',
-                         'add_nw_connection_monitor_v2_endpoint',
-                         validator=process_nw_cm_v2_endpoint_create_namespace)
-        c.custom_command('remove',
-                         'remove_nw_connection_monitor_v2_endpoint',
-                         validator=process_nw_cm_v2_endpoint_create_namespace)
+                            is_preview=True,
+                            validator=process_nw_cm_v2_endpoint_create_namespace) as c:
+        c.custom_command('add', 'add_nw_connection_monitor_v2_endpoint')
+        c.custom_command('remove', 'remove_nw_connection_monitor_v2_endpoint')
+        c.custom_command('show', 'show_nw_connection_monitor_v2_endpoint')
 
     with self.command_group('network watcher connection-monitor test-group',
                             nw_connection_monitor_sdk,
