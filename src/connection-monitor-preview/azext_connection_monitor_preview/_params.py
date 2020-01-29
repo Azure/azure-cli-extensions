@@ -148,14 +148,13 @@ def load_arguments(self, _):
                    help='Value indicating whether test group is disabled. false is default.',
                    arg_type=get_three_state_flag())
 
+    # Argument Group for connection monitor V2 endpoint
     with self.argument_context('network watcher connection-monitor endpoint', min_api='2019-11-01') as c:
         c.argument('connection_monitor_name',
                    options_list=['--connection-monitor'],
                    help='Connection monitor name.')
-        c.argument('test_group_name',
-                   options_list=['--test-group'],
-                   help='The name of test group which is referenced to')
         c.argument('name',
+                   arg_type=name_arg_type,
                    help='The name of the connection monitor endpoint')
         c.argument('resource_id',
                    help='Resource ID of the connection monitor endpoint')
@@ -171,3 +170,13 @@ def load_arguments(self, _):
                    help="List of property=value pairs to define filter items. "
                         "Property currently include: type, address. "
                         "Property value of type supports 'AgentAddress' only now.")
+
+    with self.argument_context('network watcher connection-monitor endpoint',
+                               min_api='2019-11-01',
+                               arg_group='V2 Test Group') as c:
+        c.argument('source_test_groups',
+                   nargs='+',
+                   help='Space-separated list of names for test group to reference as source')
+        c.argument('dest_test_groups',
+                   nargs='+',
+                   help='Space-separated list of names for test group to reference as destination')

@@ -34,7 +34,7 @@ def get_network_watcher_from_location(remove=False, watcher_name='watcher_name',
     return _validator
 
 
-def _process_nw_cm_v1_create_namespace(cmd, namespace):
+def process_nw_cm_v1_create_namespace(cmd, namespace):
     from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
 
     validate_tags(namespace)
@@ -69,20 +69,33 @@ def _process_nw_cm_v1_create_namespace(cmd, namespace):
         namespace.dest_resource = resource_id(**kwargs)
 
 
-def _process_nw_cm_v2_create_namespace(cmd, namespace):
-    pass
+def process_nw_cm_v2_create_namespace(cmd, namespace):
+    if namespace.location is None:
+        raise CLIError('usage error: --location is required when create V2 connection monitor')
+    return get_network_watcher_from_location()(cmd, namespace)
 
 
 def process_nw_cm_create_namespace(cmd, namespace):
-    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
 
-    # V2 parameter set
     if namespace.source_resource is None:
-        if namespace.location is None:
-            raise CLIError('usage error: --location is required when create V2 connection monitor')
-        return get_network_watcher_from_location()(cmd, namespace)
+        # V2 parameter set
+        return process_nw_cm_v2_create_namespace(cmd, namespace)
     else:
-        return _process_nw_cm_v1_create_namespace(cmd, namespace)
+        # V1 parameter set
+        return process_nw_cm_v1_create_namespace(cmd, namespace)
+
+
+def process_nw_cm_v2_endpoint_create_namespace(cmd, namespace):
+    filter_type, filter_items = namespace.filter_type, namespace.filter_items
+    if (filter_type and not filter_items) or (not filter_type and filter_items):
+        raise CLIError('usage error: --filter-type and --filter-item must be present at the same time.')
+
+    dest_test_groups, source_test_groups = namespace.dest_test_groups, namespace.source_test_groups
+    if dest_test_groups is None and source_test_groups is None:
+        raise CLIError('usage error: endpoint has to be referenced in at least one existing test group '
+                       'via --dest-test-groups/--source-test-groups')
+
+    return process_nw_cm_v2_create_namespace(cmd, namespace)
 
 
 # pylint: disable=protected-access

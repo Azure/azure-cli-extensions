@@ -287,20 +287,14 @@ def add_nw_connection_monitor_v2_endpoint(cmd,
                                           connection_monitor_name,
                                           location,
                                           name,
+                                          source_test_groups=None,
+                                          dest_test_groups=None,
                                           resource_id=None,
                                           address=None,
                                           filter_type=None,
                                           filter_items=None):
-    if filter_items:
-        from pprint import pprint
-        for item in filter_items:
-            pprint(vars(item))
-
     ConnectionMonitorEndpoint, ConnectionMonitorEndpointFilter = cmd.get_models(
         'ConnectionMonitorEndpoint', 'ConnectionMonitorEndpointFilter')
-
-    if (filter_type and not filter_items) or (not filter_type and filter_items):
-        raise CLIError('usage error: --filter-type and --filter-item must be present at the same time.')
 
     endpoint = ConnectionMonitorEndpoint(name=name, resource_id=resource_id, address=address)
 
@@ -309,9 +303,14 @@ def add_nw_connection_monitor_v2_endpoint(cmd,
         endpoint.filter = endpoint_filter
 
     connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
-
     connection_monitor.endpoints.append(endpoint)
-    connection_monitor.test_groups[0].destinations.append(endpoint.name)
+
+    src_test_groups, dst_test_groups = set(source_test_groups or []), set(dest_test_groups or [])
+    for test_group in connection_monitor.test_groups:
+        if test_group.name in src_test_groups:
+            test_group.sources.append(endpoint.name)
+        if test_group.name in dst_test_groups:
+            test_group.destinations.append(endpoint.name)
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 
