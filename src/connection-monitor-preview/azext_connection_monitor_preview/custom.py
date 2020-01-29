@@ -44,9 +44,6 @@ def create_nw_connection_monitor(cmd,
                                  test_config_http_prefer_https=None,
                                  test_group_name=None,
                                  test_group_disable=None):
-    print(watcher_rg)
-    print(watcher_name)
-
     v1_required_parameter_set = [
         source_resource, source_port,
         dest_resource, dest_address, dest_port
@@ -311,6 +308,34 @@ def add_nw_connection_monitor_v2_endpoint(cmd,
             test_group.sources.append(endpoint.name)
         if test_group.name in dst_test_groups:
             test_group.destinations.append(endpoint.name)
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+
+
+def remove_nw_connection_monitor_v2_endpoint(client,
+                                             watcher_rg,
+                                             watcher_name,
+                                             connection_monitor_name,
+                                             location,
+                                             name,
+                                             test_groups=None):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    # refresh endpoints
+    new_endpoints = [endpoint for endpoint in connection_monitor.endpoints if endpoint.name != name]
+    connection_monitor.endpoints = new_endpoints
+
+    # refresh test groups
+    if test_groups is not None:
+        new_test_groups = [t for t in connection_monitor.test_groups if t.name in test_groups]
+    else:
+        new_test_groups = connection_monitor.test_groups
+
+    for test_group in new_test_groups:
+        if name in test_group.sources:
+            test_group.sources.remove(name)
+        if name in test_group.destinations:
+            test_group.destinations.remove(name)
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
 

@@ -86,14 +86,16 @@ def process_nw_cm_create_namespace(cmd, namespace):
 
 
 def process_nw_cm_v2_endpoint_create_namespace(cmd, namespace):
-    filter_type, filter_items = namespace.filter_type, namespace.filter_items
-    if (filter_type and not filter_items) or (not filter_type and filter_items):
-        raise CLIError('usage error: --filter-type and --filter-item must be present at the same time.')
+    if hasattr(namespace, 'filter_type') or hasattr(namespace, 'filter_items'):
+        filter_type, filter_items = namespace.filter_type, namespace.filter_items
+        if (filter_type and not filter_items) or (not filter_type and filter_items):
+            raise CLIError('usage error: --filter-type and --filter-item must be present at the same time.')
 
-    dest_test_groups, source_test_groups = namespace.dest_test_groups, namespace.source_test_groups
-    if dest_test_groups is None and source_test_groups is None:
-        raise CLIError('usage error: endpoint has to be referenced in at least one existing test group '
-                       'via --dest-test-groups/--source-test-groups')
+    if hasattr(namespace, 'dest_test_groups') or hasattr(namespace, 'source_test_groups'):
+        dest_test_groups, source_test_groups = namespace.dest_test_groups, namespace.source_test_groups
+        if dest_test_groups is None and source_test_groups is None:
+            raise CLIError('usage error: endpoint has to be referenced from at least one existing test group '
+                           'via --dest-test-groups/--source-test-groups')
 
     return process_nw_cm_v2_create_namespace(cmd, namespace)
 

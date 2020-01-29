@@ -38,6 +38,9 @@ def load_command_table(self, _):
         c.custom_command('add',
                          'add_nw_connection_monitor_v2_endpoint',
                          validator=process_nw_cm_v2_endpoint_create_namespace)
+        c.custom_command('remove',
+                         'remove_nw_connection_monitor_v2_endpoint',
+                         validator=process_nw_cm_v2_endpoint_create_namespace)
 
     with self.command_group('network watcher connection-monitor test-group',
                             nw_connection_monitor_sdk,

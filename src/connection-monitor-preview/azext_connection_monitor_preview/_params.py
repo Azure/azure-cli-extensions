@@ -174,6 +174,9 @@ def load_arguments(self, _):
     with self.argument_context('network watcher connection-monitor endpoint',
                                min_api='2019-11-01',
                                arg_group='V2 Test Group') as c:
+        c.argument('test_groups',
+                   nargs='+',
+                   help='Space-separated list of names of test group which only need to remove endpoint from')
         c.argument('source_test_groups',
                    nargs='+',
                    help='Space-separated list of names for test group to reference as source')

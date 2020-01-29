@@ -44,3 +44,22 @@ examples:
       --filter-item type=AgentAddress address=npmuser
       --filter-item type=AgentAddress address=pypiuser
 """
+
+helps['network watcher connection-monitor endpoint remove'] = """
+type: command
+short-summary: Remove an endpoint from a connection monitor
+examples:
+  - name: Remove endpoint from all test groups of a connection monitor
+    text: >
+      az network watcher connection-monitor endpoint remove
+      --connection-monitor MyConnectionMonitor
+      --location westus
+      --name MyEndpoint
+  - name: Remove endpoint from two test groups of a connection monitor
+    text: >
+      az network watcher connection-monitor endpoint remove
+      --connection-monitor MyConnectionMonitor
+      --location westus
+      --name MyEndpoint
+      --test-groups DefaultTestGroup HealthCheckTestGroup
+"""
