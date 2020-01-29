@@ -1400,7 +1400,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument
 
 
 def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, addon_profiles=None,
-                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_shared=None, appgw_watch_namespace=None):
+                        workspace_resource_id=None, appgw_name=None, appgw_subnet_prefix=None, appgw_id=None, appgw_subnet_id=None, appgw_shared=False, appgw_watch_namespace=None):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -1432,16 +1432,18 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
         addon_profiles['azurepolicy'] = ManagedClusterAddonProfile(enabled=True)
         addons.remove('azure-policy')
     if 'ingress-appgw' in addons:
-        addon_profiles['IngressApplicationGateway'] = ManagedClusterAddonProfile(
-            enabled=True,
-            config={
-                'ApplicationGatewayName': appgw_name,
-                'SubnetPrefix': appgw_subnet_prefix,
-                'ApplicationGatewayId': appgw_id,
-                'SubnetId': appgw_subnet_id,
-                'Shared': appgw_shared,
-                'WatchNamespace': appgw_watch_namespace
-            })
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
+        if appgw_name is not None:
+            addon_profile.config["applicationGatewayName"] = appgw_name
+        if appgw_subnet_prefix is not None:
+            addon_profile.config["subnetPrefix"] = appgw_subnet_prefix
+        if appgw_id is not None:
+            addon_profile.config["applicationGatewayId"] = appgw_id
+        if appgw_subnet_id is not None:
+            addon_profile.config["subnetId"] = appgw_subnet_id
+        if appgw_shared:
+            addon_profile.config["shared"] = "true"
+        addon_profiles['IngressApplicationGateway'] = addon_profile
         addons.remove('ingress-appgw')
     # error out if any (unrecognized) addons remain
     if addons:
@@ -2182,17 +2184,17 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    'before enabling it again.')
                 addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
                 if appgw_name is not None:
-                    addon_profile.config["ApplicationGatewayName"] = appgw_name
+                    addon_profile.config["applicationGatewayName"] = appgw_name
                 if appgw_subnet_prefix is not None:
-                    addon_profile.config["SubnetPrefix"] = appgw_subnet_prefix
+                    addon_profile.config["subnetPrefix"] = appgw_subnet_prefix
                 if appgw_id is not None:
-                    addon_profile.config["ApplicationGatewayId"] = appgw_id
+                    addon_profile.config["applicationGatewayId"] = appgw_id
                 if appgw_subnet_id is not None:
-                    addon_profile.config["SubnetId"] = appgw_subnet_id
-                if appgw_shared is not None:
-                    addon_profile.config["Shared"] = appgw_shared
+                    addon_profile.config["subnetId"] = appgw_subnet_id
+                if appgw_shared:
+                    addon_profile.config["shared"] = "true"
                 if appgw_watch_namespace is not None:
-                    addon_profile.config["WatchNamespace"] = appgw_watch_namespace
+                    addon_profile.config["watchNamespace"] = appgw_watch_namespace
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
