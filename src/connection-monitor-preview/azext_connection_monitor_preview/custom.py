@@ -451,6 +451,15 @@ def show_nw_connection_monitor_v2_test_configuration(client,
     raise CLIError('unknown test configuration: {}'.format(name))
 
 
+def list_nw_connection_monitor_v2_test_configuration(client,
+                                                     watcher_rg,
+                                                     watcher_name,
+                                                     connection_monitor_name,
+                                                     location):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+    return connection_monitor.test_configurations
+
+
 def add_nw_connection_monitor_v2_test_group(cmd,
                                             client,
                                             connection_monitor_name,

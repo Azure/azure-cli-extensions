@@ -127,3 +127,8 @@ helps['network watcher connection-monitor test-configuration show'] = """
 type: command
 short-summary: Show a test configuration from a connection monitor
 """
+
+helps['network watcher connection-monitor test-configuration list'] = """
+type: command
+short-summary: List all test configurations of a connection monitor
+"""
