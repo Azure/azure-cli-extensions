@@ -219,3 +219,9 @@ def validate_user(namespace):
     if namespace.user.lower() != "clusteruser" and \
             namespace.user.lower() != "clustermonitoringuser":
         raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
+
+
+def validate_vnet_subnet_id(namespace):
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(namespace.vnet_subnet_id):
+        raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
