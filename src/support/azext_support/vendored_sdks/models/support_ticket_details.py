@@ -22,30 +22,35 @@ class SupportTicketDetails(Model):
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
-    :ivar type: Type of the resource 'Microsoft.Support/supportTickets
+    :ivar type: Type of the resource 'Microsoft.Support/supportTickets'
     :vartype type: str
-    :param support_ticket_id: System generated support ticket name.
+    :param support_ticket_id: System generated support ticket id that is
+     unique.
     :type support_ticket_id: str
-    :param description: Description of the support ticket.
+    :param description: Detailed description of the question or issue.
     :type description: str
-    :param problem_classification_id: This is the resource id of
-     ProblemClassification resource associated with the support ticket. This is
-     the issue or the problem that the support ticket is opened for.
+    :param problem_classification_id: Each Azure service has its own set of
+     issue category called problem classification that corresponds to the type
+     of problem you're experiencing. This parameter is the resource id of
+     ProblemClassification resource.
     :type problem_classification_id: str
     :ivar problem_classification_display_name: Localized name of problem
      classification.
     :vartype problem_classification_display_name: str
-    :param severity: Severity of the support ticket. Possible values include:
-     'minimal', 'moderate', 'critical'
+    :param severity: A value that indicates the urgency of the case, which in
+     turn determines the response time according to the service level agreement
+     of the technical support plan you have with Azure. Possible values
+     include: 'minimal', 'moderate', 'critical'
     :type severity: str or ~azure.mgmt.support.models.SeverityLevel
     :ivar enrollment_id: Enrollment ID associated with the support ticket.
     :vartype enrollment_id: str
-    :ivar production_outage: Indicates if this is a production outage.
+    :ivar production_outage: Indicates if this issue is a production outage.
     :vartype production_outage: bool
-    :param require24_x7_response: Indicates if this is a 24x7 support ticket.
+    :param require24_x7_response: Indicates if this requires a 24x7 response
+     from Azure.
     :type require24_x7_response: bool
-    :param contact_details: User information associated with the support
-     ticket.
+    :param contact_details: Contact information of the user requesting to
+     create a support ticket.
     :type contact_details: ~azure.mgmt.support.models.ContactProfile
     :param service_level_agreement: Service Level Agreement information for
      this support ticket.
@@ -62,9 +67,8 @@ class SupportTicketDetails(Model):
     :param problem_start_time: Time in UTC (ISO 8601 format) when the problem
      started.
     :type problem_start_time: datetime
-    :param service_id: This is the resource id of Service resource associated
-     with the support ticket. This is the Azure service for which the support
-     ticket was opened.
+    :param service_id: This is the resource id of the Azure service resource
+     associated with the support ticket.
     :type service_id: str
     :ivar service_display_name: Localized name of Azure service.
     :vartype service_display_name: str

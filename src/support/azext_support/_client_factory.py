@@ -23,10 +23,6 @@ def cf_support_tickets(cli_ctx, *_):
     return cf_support(cli_ctx).support_tickets
 
 
-def cf_support_ticket_subscription(cli_ctx, *_):
-    return cf_support(cli_ctx).support_ticket_subscription
-
-
 def cf_communications(cli_ctx, *_):
     return cf_support(cli_ctx).communications
 

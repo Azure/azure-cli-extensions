@@ -13,30 +13,40 @@ from msrest.serialization import Model
 
 
 class UpdateContactProfile(Model):
-    """Update to the contact information associated with support ticket.
+    """Contact information associated with the support ticket.
 
-    :param first_name: First name.
+    :param first_name: First name
     :type first_name: str
-    :param last_name: Last name.
+    :param last_name: Last name
     :type last_name: str
     :param preferred_contact_method: Preferred contact method. Possible values
      include: 'email', 'phone'
     :type preferred_contact_method: str or
      ~azure.mgmt.support.models.PreferredContactMethod
-    :param primary_email_address: Primary email address.
+    :param primary_email_address: Primary email address
     :type primary_email_address: str
-    :param additional_email_addresses: Additional email addresses.
+    :param additional_email_addresses: Email addresses listed will be copied
+     on any correspondence about the support ticket
     :type additional_email_addresses: list[str]
     :param phone_number: Phone number. This is required if preferred contact
      method is phone.
     :type phone_number: str
-    :param preferred_time_zone: Time zone of the user. This is the
-     System.TimeZoneInfo.Id value
+    :param preferred_time_zone: Time zone of the user. This is the name of the
+     time zone from <a  target='_blank'
+     href='https://support.microsoft.com/en-us/help/973627/microsoft-time-zone-index-values'>Microsoft
+     Time Zone Index Values</a>.
     :type preferred_time_zone: str
-    :param country: Country of the user. This is the ISO Alpha-3 code
+    :param country: Country of the user. This is the ISO 3166-1 alpha-3 code.
     :type country: str
-    :param preferred_support_language: Language of the user. This is the
-     standard country-language code.
+    :param preferred_support_language: Preferred language of support from
+     Azure. Support languages vary based on the severity you choose for your
+     support ticket. Learn more at <a  target='_blank'
+     href='https://azure.microsoft.com/support/plans/response/'>Azure Severity
+     and responsiveness</a>. Use the standard language-country code. Valid
+     values are 'en-us' for English, 'zh-hans' for Chinese, 'es-es' for
+     Spanish, 'fr-fr' for French, 'ja-jp' for Japanese, 'ko-kr' for Korean,
+     'ru-ru' for Russian, 'pt-br' for Portuguese, 'it-it' for Italian, 'zh-tw'
+     for Chinese and 'de-de' for German.
     :type preferred_support_language: str
     """
 

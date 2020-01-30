@@ -13,11 +13,11 @@ from msrest.serialization import Model
 
 
 class QuotaChangeRequest(Model):
-    """Quota change request information.
+    """This property is required for providing the region and new quota limits.
 
-    :param region: Region for which the quota change request is being made.
+    :param region: Region for which the quota increase request is being made.
     :type region: str
-    :param payload: The payload of the quota change request.
+    :param payload: Payload of the quota increase request.
     :type payload: str
     """
 

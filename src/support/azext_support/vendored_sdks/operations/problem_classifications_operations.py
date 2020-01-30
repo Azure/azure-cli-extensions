@@ -38,11 +38,14 @@ class ProblemClassificationsOperations(object):
 
     def list(
             self, service_name, custom_headers=None, raw=False, **operation_config):
-        """Lists all the problem classifications available for a specific Azure
-        service.
+        """Lists all the problem classifications (categories) available for a
+        specific Azure service.<br/><br/> Always use the service and problem
+        classifications obtained programmatically. This practice ensures that
+        you always have the most recent set of service and problem
+        classification Ids.
 
-        :param service_name: Name of Azure service available for support for
-         which all the problem classifications will be retrieved.
+        :param service_name: Name of Azure service for which the problem
+         classifications need to be retrieved.
         :type service_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

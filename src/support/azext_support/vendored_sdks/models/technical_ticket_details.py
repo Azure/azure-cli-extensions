@@ -15,8 +15,9 @@ from msrest.serialization import Model
 class TechnicalTicketDetails(Model):
     """Additional information for technical support ticket.
 
-    :param resource_id: This is the resource id of the technical resource for
-     which the support ticket is being created.
+    :param resource_id: This is the resource id of the Azure service resource
+     (For example: A virtual machine resource or an HDInsight resource) for
+     which the support ticket is created.
     :type resource_id: str
     """
 

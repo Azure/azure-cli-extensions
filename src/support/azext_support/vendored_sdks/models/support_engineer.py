@@ -18,7 +18,8 @@ class SupportEngineer(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar email_address: Support engineer email address.
+    :ivar email_address: Email address of the Azure Support engineer assigned
+     to the support ticket.
     :vartype email_address: str
     """
 

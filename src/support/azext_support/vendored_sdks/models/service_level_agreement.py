@@ -18,9 +18,11 @@ class ServiceLevelAgreement(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar start_time: Time in UTC (ISO 8601 format) when SLA started.
+    :ivar start_time: Time in UTC (ISO 8601 format) when service level
+     agreement starts.
     :vartype start_time: datetime
-    :ivar expiration_time: Time in UTC (ISO 8601 format) when SLA expires.
+    :ivar expiration_time: Time in UTC (ISO 8601 format) when service level
+     agreement expires.
     :vartype expiration_time: datetime
     :ivar sla_minutes: Service Level Agreement in minutes
     :vartype sla_minutes: int

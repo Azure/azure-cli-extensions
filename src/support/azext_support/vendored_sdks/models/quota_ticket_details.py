@@ -13,14 +13,20 @@ from msrest.serialization import Model
 
 
 class QuotaTicketDetails(Model):
-    """Additional information for quota support ticket.
+    """Additional set of information required for quota increase support ticket
+    for certain quota types, e.g.: Virtual machine cores. Get complete details
+    about Quota payload support request along with examples at <a target=''
+    href='https://aka.ms/supportrpquotarequestpayload'>Support quota
+    request</a>.
 
-    :param quota_change_request_sub_type: This is the quota sub type for which
-     the quota request is being made and is optional for some quota types.
+    :param quota_change_request_sub_type: Required for certain quota types
+     when there is a sub type that you are requesting quota increase for.
+     Example: Batch
     :type quota_change_request_sub_type: str
     :param quota_change_request_version: Quota change request version
     :type quota_change_request_version: str
-    :param quota_change_requests: Quota change requests.
+    :param quota_change_requests: This property is required for providing the
+     region and new quota limits.
     :type quota_change_requests:
      list[~azure.mgmt.support.models.QuotaChangeRequest]
     """

@@ -13,7 +13,7 @@ from msrest.serialization import Model
 
 
 class UpdateSupportTicket(Model):
-    """Updates support ticket.
+    """Updates severity and contact details in the support ticket.
 
     :param severity: Severity level. Possible values include: 'minimal',
      'moderate', 'critical'

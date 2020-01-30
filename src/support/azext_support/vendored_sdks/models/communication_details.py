@@ -22,7 +22,7 @@ class CommunicationDetails(Model):
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
-    :ivar type: Type of the resource 'Microsoft.Support/communications
+    :ivar type: Type of the resource 'Microsoft.Support/communications'
     :vartype type: str
     :ivar communication_type: Communication type. Possible values include:
      'web', 'phone'
@@ -32,11 +32,11 @@ class CommunicationDetails(Model):
      include: 'inbound', 'outbound'
     :vartype communication_direction: str or
      ~azure.mgmt.support.models.CommunicationDirection
-    :param sender: Sender of the communication.
+    :param sender: Email address of the sender
     :type sender: str
-    :param subject: Subject of the communication.
+    :param subject: Subject of the communication
     :type subject: str
-    :param body: Body of the communication.
+    :param body: Body of the communication
     :type body: str
     :ivar created_date: Time in UTC (ISO 8601 format) when the communication
      was created.

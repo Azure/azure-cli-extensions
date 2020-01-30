@@ -19,11 +19,11 @@ logger = get_logger(__name__)
 def list_support_tickets(cmd, client, filters=None):
     if filters is None:
         filters = "CreatedDate ge " + str(date.today() - timedelta(days=7))
-    return client.list_by_subscription(top=100, filter=filters)
+    return client.list(top=100, filter=filters)
 
 
 def get_support_tickets(cmd, client, ticket_name=None):
-    return client.get_by_subscription(support_ticket_name=ticket_name)
+    return client.get(support_ticket_name=ticket_name)
 
 
 def update_support_tickets(cmd, client,
@@ -53,11 +53,11 @@ def update_support_tickets(cmd, client,
 
 
 def list_support_tickets_communications(cmd, client, ticket_name=None, filters=None):
-    return client.list_by_subscription_ticket(support_ticket_name=ticket_name, filter=filters)
+    return client.list(support_ticket_name=ticket_name, filter=filters)
 
 
 def get_support_tickets_communications(cmd, client, ticket_name=None, communication_name=None):
-    return client.get_by_subscription_ticket(support_ticket_name=ticket_name, communication_name=communication_name)
+    return client.get(support_ticket_name=ticket_name, communication_name=communication_name)
 
 
 def create_support_tickets(cmd, client,
@@ -130,9 +130,8 @@ def create_support_tickets(cmd, client,
     if partner_tenant_id is not None:
         custom_headers["x-ms-authorization-auxiliary"] = get_bearer_token(cmd, partner_tenant_id)
 
-    return client.create_support_ticket_for_subscription(support_ticket_name=ticket_name,
-                                                         create_support_ticket_parameters=body,
-                                                         custom_headers=custom_headers)
+    return client.create(support_ticket_name=ticket_name, create_support_ticket_parameters=body,
+                         custom_headers=custom_headers)
 
 
 def create_support_tickets_communications(cmd, client,
@@ -146,6 +145,5 @@ def create_support_tickets_communications(cmd, client,
     body["subject"] = communication_subject
     body["body"] = communication_body
 
-    return client.create_support_ticket_communication(support_ticket_name=ticket_name,
-                                                      communication_name=communication_name,
-                                                      create_communication_parameters=body)
+    return client.create(support_ticket_name=ticket_name, communication_name=communication_name,
+                         create_communication_parameters=body)

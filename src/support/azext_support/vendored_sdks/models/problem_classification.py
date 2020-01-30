@@ -13,17 +13,16 @@ from msrest.serialization import Model
 
 
 class ProblemClassification(Model):
-    """Object that represents a ProblemClassification resource.
+    """ProblemClassification resource object.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Id of the resource.
+    :ivar id: Id of the resource
     :vartype id: str
-    :ivar name: Name of the resource.
+    :ivar name: Name of the resource
     :vartype name: str
-    :ivar type: Type of the resource
-     'Microsoft.Support/problemClassification'.
+    :ivar type: Type of the resource 'Microsoft.Support/problemClassification'
     :vartype type: str
     :param display_name: Localized name of problem classification.
     :type display_name: str

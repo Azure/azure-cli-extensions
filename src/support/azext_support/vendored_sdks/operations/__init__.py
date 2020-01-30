@@ -13,7 +13,6 @@ from .operations import Operations
 from .services_operations import ServicesOperations
 from .problem_classifications_operations import ProblemClassificationsOperations
 from .support_tickets_operations import SupportTicketsOperations
-from .support_ticket_subscription_operations import SupportTicketSubscriptionOperations
 from .communications_operations import CommunicationsOperations
 
 __all__ = [
@@ -21,6 +20,5 @@ __all__ = [
     'ServicesOperations',
     'ProblemClassificationsOperations',
     'SupportTicketsOperations',
-    'SupportTicketSubscriptionOperations',
     'CommunicationsOperations',
 ]

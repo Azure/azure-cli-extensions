@@ -1,6 +1,6 @@
 # Microsoft Azure CLI 'support' Extension #
 
-Create and manage Azure Support tickets using Azure CLI. [Learn more](https://aka.ms/supportapi) about operations and scenarios we support programmatically. 
+Create and manage Azure Support tickets using Azure CLI. [Learn more](https://aka.ms/supportticketAPI) about operations and scenarios we support programmatically. 
 
 ## How to use ##
 

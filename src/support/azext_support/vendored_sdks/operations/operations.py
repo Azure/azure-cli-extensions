@@ -38,9 +38,7 @@ class Operations(object):
 
     def list(
             self, custom_headers=None, raw=False, **operation_config):
-        """Lists all the available operations.
-
-        This lists all the available Microsoft Support REST API operations.
+        """This lists all the available Microsoft Support REST API operations.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

@@ -7,7 +7,7 @@ import traceback
 import uuid
 from datetime import datetime
 
-from azext_support._client_factory import cf_resource, cf_support
+from azext_support._client_factory import cf_resource, cf_support_tickets, cf_communications
 from azext_support._utils import is_technical_ticket, parse_support_area_path
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
@@ -42,19 +42,17 @@ def validate_communication_create(cmd, namespace):
 
 
 def _validate_communication_name(cmd, ticket_name, communication_name):
-    client = cf_support(cmd.cli_ctx)
-    rsp = client.check_name_availability_for_support_ticket_communication(support_ticket_name=ticket_name,
-                                                                          name=communication_name,
-                                                                          type="Microsoft.Support/communications")
+    client = cf_communications(cmd.cli_ctx)
+    rsp = client.check_name_availability(support_ticket_name=ticket_name, name=communication_name,
+                                         type="Microsoft.Support/communications")
     if not rsp.name_available:
         raise CLIError("'Support ticket communication name '{0}' not available. ".format(communication_name) +
                        "Please try again with another name.")
 
 
 def _validate_ticket_name(cmd, ticket_name):
-    client = cf_support(cmd.cli_ctx)
-    rsp = client.check_name_availability_with_subscription(name=ticket_name,
-                                                           type="Microsoft.Support/supportTickets")
+    client = cf_support_tickets(cmd.cli_ctx)
+    rsp = client.check_name_availability(name=ticket_name, type="Microsoft.Support/supportTickets")
     if not rsp.name_available:
         raise CLIError("Support ticket name '{0}' not available. ".format(ticket_name) +
                        "'Please try again with another name.")

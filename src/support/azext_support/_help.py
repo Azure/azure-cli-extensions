@@ -213,7 +213,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"SKU\":\"DSv3 Series\", \"NewLimit\":104}" \\
+            --quota-change-payload "{\\\"SKU\\\":\\\"DSv3 Series\\\", \\\"NewLimit\\\":104}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0"
 
@@ -232,7 +232,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"AccountName\":\"test\", \"NewLimit\":200, \"Type\":\"LowPriority\"}" \\
+            --quota-change-payload "{\\\"AccountName\\\":\\\"test\\\", \\\"NewLimit\\\":200, \\\"Type\\\":\\\"LowPriority\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Account"
@@ -252,7 +252,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"AccountName\":\"test\", \"VMFamily\":\"standardA0_A7Family\", \"NewLimit\":200, \"Type\":\"Dedicated\"}" \\
+            --quota-change-payload "{\\\"AccountName\\\":\\\"test\\\", \\\"VMFamily\\\":\\\"standardA0_A7Family\\\", \\\"NewLimit\\\":200, \\\"Type\\\":\\\"Dedicated\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Account"
@@ -272,7 +272,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"AccountName\":\"test\", \"NewLimit\":200, \"Type\":\"Pools\"}" \\
+            --quota-change-payload "{\\\"AccountName\\\":\\\"test\\\", \\\"NewLimit\\\":200, \\\"Type\\\":\\\"Pools\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Account"
@@ -292,7 +292,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"AccountName\":\"test\", \"NewLimit\":200, \"Type\":\"Jobs\"}" \\
+            --quota-change-payload "{\\\"AccountName\\\":\\\"test\\\", \\\"NewLimit\\\":200, \\\"Type\\\":\\\"Jobs\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Account"
@@ -312,7 +312,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"NewLimit\":200, \"Type\":\"Account\"}" \\
+            --quota-change-payload "{\\\"NewLimit\\\":200, \\\"Type\\\":\\\"Account\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Subscription"
@@ -332,7 +332,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"ServerName\":\"testserver\", \"NewLimit\":54000}" \\
+            --quota-change-payload "{\\\"ServerName\\\":\\\"testserver\\\", \\\"NewLimit\\\":54000}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "DTUs"
@@ -352,7 +352,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"NewLimit\":54000}" \\
+            --quota-change-payload "{\\\"NewLimit\\\":54000}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Servers"
@@ -372,7 +372,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"ServerName\":\"testserver\", \"NewLimit\":54000}" \\
+            --quota-change-payload "{\\\"ServerName\\\":\\\"testserver\\\", \\\"NewLimit\\\":54000}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "DTUs"
@@ -392,7 +392,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"NewLimit\":200}" \\
+            --quota-change-payload "{\\\"NewLimit\\\":200}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Servers"
@@ -412,7 +412,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"VMFamily\":\"standardA0_A7Family\", \"NewLimit\":200, \"Type\":\"Dedicated\"}" \\
+            --quota-change-payload "{\\\"VMFamily\\\":\\\"standardA0_A7Family\\\", \\\"NewLimit\\\":200, \\\"Type\\\":\\\"Dedicated\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Account"
@@ -432,7 +432,7 @@ examples:
             --severity "minimal" \\
             --ticket-name "QuotaTestTicketName" \\
             --title "QuotaTicketTitle" \\
-            --quota-change-payload "{\"NewLimit\":200, \"Type\":\"LowPriority\"}" \\
+            --quota-change-payload "{\\\"NewLimit\\\":200, \\\"Type\\\":\\\"LowPriority\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
             --quota-change-subtype "Account"

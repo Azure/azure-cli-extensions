@@ -38,19 +38,20 @@ class ServicesOperations(object):
 
     def list(
             self, custom_headers=None, raw=False, **operation_config):
-        """List all the Azure services available for support.
-
-        List all the Azure services available for support. This includes
-        **Billing**, **Subscription Management**, **Service and subscription
-        limits (quotas)** and all **technical** services. User must provide the
-        id of the Azure service when creating a support ticket. <br/>For
-        Billing, the id is
-        '/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc'.
-        <br/>For Subscription Management, the id is
-        '/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6'.
-        <br/>For Quota, the id is
-        '/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89'
-        and rest of the ids are for technical services.
+        """Lists all the Azure services available for support ticket creation.
+        Here are the Service Ids for **Billing**, **Subscription Management**,
+        and **Service and subscription limits (Quotas)** issues:
+        <br/><table><tr><td><u>Issue type</u></td><td><u>Service
+        Id</u></td></tr><tr><td>Billing</td><td>'/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc'</td></tr><tr><td>Subscription
+        Management</td><td>'/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6'</td></tr><tr><td>Quota</td><td>'/providers/Microsoft.Support/services/06bfd9d3-516b-d5c6-5802-169c800dec89'</td></tr></table>
+        <br/><br/> For **Technical** issues, select the Service Id that maps to
+        the Azure service/product as displayed in the **Services** drop-down
+        list on the Azure portal's <a target='_blank'
+        href='https://portal.azure.com/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/overview'>New
+        support request</a> page. <br/><br/> Always use the service and it's
+        corresponding problem classification(s) obtained programmatically for
+        support ticket creation. This practice ensures that you always have the
+        most recent set of service and problem classification Ids.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -110,9 +111,9 @@ class ServicesOperations(object):
 
     def get(
             self, service_name, custom_headers=None, raw=False, **operation_config):
-        """Gets a specific Azure service available for support.
+        """Gets a specific Azure service for support ticket creation.
 
-        :param service_name: Name of Azure service available for support
+        :param service_name: Name of Azure service
         :type service_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the

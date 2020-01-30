@@ -15,7 +15,7 @@ from msrest.serialization import Model
 class CheckNameAvailabilityInput(Model):
     """Input of CheckNameAvailability API.
 
-    :param name: The resource name to validate.
+    :param name: The resource name to validate
     :type name: str
     :param type: The type of resource. Possible values include:
      'Microsoft.Support/supportTickets', 'Microsoft.Support/communications'

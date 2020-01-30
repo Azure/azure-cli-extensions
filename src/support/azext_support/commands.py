@@ -6,7 +6,6 @@
 from azext_support._client_factory import (cf_communications,
                                            cf_problem_classifications,
                                            cf_services, cf_support,
-                                           cf_support_ticket_subscription,
                                            cf_support_tickets)
 from azext_support._validators import validate_tickets_create
 from azure.cli.core.commands import CliCommandType
@@ -25,9 +24,6 @@ def load_command_table(self, _):
     support_tickets = CliCommandType(
         operations_tmpl='azext_support.vendored_sdks.operations#SupportTicketsOperations.{}',
         client_factory=cf_support_tickets)
-    support_support_ticket_subscription = CliCommandType(
-        operations_tmpl='azext_support.vendored_sdks.operations#SupportTicketSubscriptionOperations.{}',
-        client_factory=cf_support_ticket_subscription)
     support_communications = CliCommandType(
         operations_tmpl='azext_support.vendored_sdks.operations#CommunicationsOperations.{}',
         client_factory=cf_communications)
@@ -47,18 +43,11 @@ def load_command_table(self, _):
                             client_factory=cf_support_tickets, is_preview=True) as g:
         g.custom_command('list', 'list_support_tickets')
         g.custom_command('show', 'get_support_tickets')
-
-    with self.command_group('support tickets', support_support_ticket_subscription,
-                            client_factory=cf_support_ticket_subscription, is_preview=True) as g:
+        g.custom_command('create', 'create_support_tickets', supports_no_wait=False, validator=validate_tickets_create)
         g.custom_command('update', 'update_support_tickets')
 
     with self.command_group('support tickets communications', support_communications,
                             client_factory=cf_communications, is_preview=True) as g:
         g.custom_command('list', 'list_support_tickets_communications')
         g.custom_command('show', 'get_support_tickets_communications')
-
-    with self.command_group('support tickets', support, client_factory=cf_support, is_preview=True) as g:
-        g.custom_command('create', 'create_support_tickets', supports_no_wait=False, validator=validate_tickets_create)
-
-    with self.command_group('support tickets communications', support, client_factory=cf_support, is_preview=True) as g:
         g.custom_command('create', 'create_support_tickets_communications', supports_no_wait=False)

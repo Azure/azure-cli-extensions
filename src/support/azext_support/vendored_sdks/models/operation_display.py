@@ -18,14 +18,14 @@ class OperationDisplay(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar description: The description of the operation.
+    :ivar description: The description of the operation
     :vartype description: str
     :ivar operation: The action that users can perform, based on their
-     permission level.
+     permission level
     :vartype operation: str
-    :ivar provider: Service provider: Microsoft Support.
+    :ivar provider: Service provider: Microsoft Support
     :vartype provider: str
-    :ivar resource: Resource on which the operation is performed.
+    :ivar resource: Resource on which the operation is performed
     :vartype resource: str
     """
 
