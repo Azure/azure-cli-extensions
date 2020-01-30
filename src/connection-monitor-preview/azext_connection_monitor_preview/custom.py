@@ -599,3 +599,12 @@ def show_nw_connection_monitor_v2_test_group(client,
             return t
 
     raise CLIError('unknown test group: {}'.format(name))
+
+
+def list_nw_connection_monitor_v2_test_group(client,
+                                             watcher_rg,
+                                             watcher_name,
+                                             connection_monitor_name,
+                                             location):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+    return connection_monitor.test_groups

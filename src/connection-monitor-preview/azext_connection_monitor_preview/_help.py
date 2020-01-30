@@ -180,3 +180,13 @@ helps['network watcher connection-monitor test-group remove'] = """
 type: command
 short-summary: Remove test group from a connection monitor
 """
+
+helps['network watcher connection-monitor test-group show'] = """
+type: command
+short-summary: Show a test group of a connection monitor
+"""
+
+helps['network watcher connection-monitor test-group list'] = """
+type: command
+short-summary: List all test groups of a connection monitor
+"""
