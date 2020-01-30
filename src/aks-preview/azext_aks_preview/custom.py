@@ -1443,6 +1443,8 @@ def _handle_addons_args(cmd, addons_str, subscription_id, resource_group_name, a
             addon_profile.config["subnetId"] = appgw_subnet_id
         if appgw_shared:
             addon_profile.config["shared"] = "true"
+        if appgw_watch_namespace is not None:
+            addon_profile.config["watchNamespace"] = appgw_watch_namespace
         addon_profiles['IngressApplicationGateway'] = addon_profile
         addons.remove('ingress-appgw')
     # error out if any (unrecognized) addons remain
