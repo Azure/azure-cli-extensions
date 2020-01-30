@@ -109,10 +109,6 @@ def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
     return get_network_watcher_from_location()(cmd, namespace)
 
 
-def process_nw_cm_v2_test_configuration_namespace(cmd, namespace):
-    return get_network_watcher_from_location()(cmd, namespace)
-
-
 # pylint: disable=protected-access
 class NWConnectionMonitorEndpointFilterItemAction(_AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):

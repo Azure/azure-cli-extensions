@@ -54,7 +54,7 @@ def load_arguments(self, _):
         # c.ignore('location')
 
     # Argument Group for endpoint to create a V2 connection monitor
-    with self.argument_context('network watcher connection-monitor create',
+    with self.argument_context('network watcher connection-monitor',
                                arg_group='V2 Endpoint',
                                min_api='2019-11-01') as c:
         c.argument('endpoint_dest_name',
@@ -74,7 +74,7 @@ def load_arguments(self, _):
                    help='Address of the destination of connection monitor endpoint (IP or domain name)')
 
     # Argument Group for test configuration to create a V2 connection monitor
-    with self.argument_context('network watcher connection-monitor create',
+    with self.argument_context('network watcher connection-monitor',
                                arg_group='V2 Test Configuration',
                                min_api='2019-11-01') as c:
         c.argument('test_config_name',
@@ -130,7 +130,7 @@ def load_arguments(self, _):
         c.argument('test_config_http_path',
                    options_list='--http-path',
                    help='The path component of the URI. For instance, "/dir1/dir2"')
-        c.argument('test_config_http_valid_status_codes',
+        c.argument('test_config_http_valid_status_ranges',
                    options_list='--http-valid-status-codes',
                    help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"')
         c.argument('test_config_http_prefer_https',
@@ -140,12 +140,12 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag())
 
     # Argument Group for test group to create a V2 connection monitor
-    with self.argument_context('network watcher connection-monitor create',
+    with self.argument_context('network watcher connection-monitor',
                                arg_group='V2 Test Group',
                                min_api='2019-11-01') as c:
         c.argument('test_group_name',
-                   help='The name of the connection monitor test group. '
-                        '"DefaultTestGroup" is used as default if not provided.')
+                   help='The name of the connection monitor test group',
+                   default='DefaultTestGroup')
         c.argument('test_group_disable',
                    help='Value indicating whether test group is disabled. false is default.',
                    arg_type=get_three_state_flag())
@@ -258,3 +258,14 @@ def load_arguments(self, _):
                             'List of property=value pairs to define HTTP headers.',
                        nargs='+',
                        action=NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction)
+
+    with self.argument_context('network watcher connection-monitor test-group') as c:
+        c.argument('connection_monitor_name',
+                   options_list=['--connection-monitor'],
+                   help='Connection monitor name.')
+        c.argument('name',
+                   arg_type=name_arg_type,
+                   help='The name of the connection monitor test group')
+        c.argument('disable',
+                   help='Value indicating whether test group is disabled. false is default.',
+                   arg_type=get_three_state_flag())

@@ -40,7 +40,7 @@ def create_nw_connection_monitor(cmd,
                                  test_config_http_port=None,
                                  test_config_http_method=None,
                                  test_config_http_path=None,
-                                 test_config_http_valid_code_ranges=None,
+                                 test_config_http_valid_status_ranges=None,
                                  test_config_http_prefer_https=None,
                                  test_group_name=None,
                                  test_group_disable=None):
@@ -79,7 +79,7 @@ def create_nw_connection_monitor(cmd,
                                                               test_config_http_port,
                                                               test_config_http_method,
                                                               test_config_http_path,
-                                                              test_config_http_valid_code_ranges,
+                                                              test_config_http_valid_status_ranges,
                                                               test_config_http_prefer_https,
                                                               test_group_name,
                                                               test_group_disable)
@@ -134,7 +134,7 @@ def _create_nw_connection_monitor_v2(cmd,
                                      test_config_http_port=None,
                                      test_config_http_method=None,
                                      test_config_http_path=None,
-                                     test_config_http_valid_status_code=None,
+                                     test_config_http_valid_status_ranges=None,
                                      test_config_http_prefer_https=None,
                                      test_group_name=None,
                                      test_group_disable=False):
@@ -159,10 +159,10 @@ def _create_nw_connection_monitor_v2(cmd,
                                                                       test_config_http_port,
                                                                       test_config_http_method,
                                                                       test_config_http_path,
-                                                                      test_config_http_valid_status_code,
+                                                                      test_config_http_valid_status_ranges,
                                                                       test_config_http_prefer_https)
     test_group = _create_nw_connection_monitor_v2_test_group(cmd,
-                                                             test_group_name or 'DefaultTestGroup',
+                                                             test_group_name,
                                                              test_group_disable,
                                                              [test_config],
                                                              [src_endpoint],
@@ -465,11 +465,82 @@ def add_nw_connection_monitor_v2_test_group(cmd,
                                             connection_monitor_name,
                                             watcher_rg,
                                             watcher_name,
-                                            resource_group_name=None,
-                                            location=None,
-                                            endpoint_name=None,
-                                            endpoint_resource_id=None,
-                                            endpoint_address=None,
-                                            endpoint_filter_type=None,
-                                            endpoint_filter_items=None):
-    pass
+                                            location,
+                                            name,
+                                            endpoint_source_name,
+                                            endpoint_dest_name,
+                                            test_config_name,
+                                            disable=False,
+                                            endpoint_source_resource_id=None,
+                                            endpoint_source_address=None,
+                                            endpoint_dest_resource_id=None,
+                                            endpoint_dest_address=None,
+                                            test_config_frequency=None,
+                                            test_config_protocol=None,
+                                            test_config_preferred_ip_version=None,
+                                            test_config_threshold_failed_percent=None,
+                                            test_config_threshold_round_trip_time=None,
+                                            test_config_tcp_disable_trace_route=None,
+                                            test_config_tcp_port=None,
+                                            test_config_icmp_disable_trace_route=None,
+                                            test_config_http_port=None,
+                                            test_config_http_method=None,
+                                            test_config_http_path=None,
+                                            test_config_http_valid_status_ranges=None,
+                                            test_config_http_prefer_https=None):
+    new_test_configuration_creation_requirements = [
+        test_config_protocol, test_config_preferred_ip_version,
+        test_config_threshold_failed_percent, test_config_threshold_round_trip_time,
+        test_config_tcp_disable_trace_route, test_config_tcp_port,
+        test_config_icmp_disable_trace_route,
+        test_config_http_port, test_config_http_method,
+        test_config_http_path, test_config_http_valid_status_ranges, test_config_http_prefer_https
+    ]
+
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    new_test_group = _create_nw_connection_monitor_v2_test_group(cmd,
+                                                                 name,
+                                                                 disable,
+                                                                 [], [], [])
+
+    # deal with endpoint
+    if any([endpoint_source_address, endpoint_source_resource_id]):
+        src_endpoint = _create_nw_connection_monitor_v2_endpoint(cmd,
+                                                                 endpoint_source_name,
+                                                                 endpoint_source_resource_id,
+                                                                 endpoint_source_address)
+        connection_monitor.endpoints.append(src_endpoint)
+    if any([endpoint_dest_address, endpoint_dest_resource_id]):
+        dst_endpoint = _create_nw_connection_monitor_v2_endpoint(cmd,
+                                                                 endpoint_dest_name,
+                                                                 endpoint_dest_resource_id,
+                                                                 endpoint_dest_address)
+        connection_monitor.endpoints.append(dst_endpoint)
+
+    new_test_group.sources.append(endpoint_source_name)
+    new_test_group.destinations.append(endpoint_dest_name)
+
+    # deal with test configuration
+    if any(new_test_configuration_creation_requirements):
+        test_config = _create_nw_connection_monitor_v2_test_configuration(cmd,
+                                                                          test_config_name,
+                                                                          test_config_frequency,
+                                                                          test_config_protocol,
+                                                                          test_config_threshold_failed_percent,
+                                                                          test_config_threshold_round_trip_time,
+                                                                          test_config_preferred_ip_version,
+                                                                          test_config_tcp_port,
+                                                                          test_config_tcp_disable_trace_route,
+                                                                          test_config_icmp_disable_trace_route,
+                                                                          test_config_http_port,
+                                                                          test_config_http_method,
+                                                                          test_config_http_path,
+                                                                          test_config_http_valid_status_ranges,
+                                                                          test_config_http_prefer_https)
+        connection_monitor.test_configurations.append(test_config)
+    new_test_group.test_configurations.append(test_config_name)
+
+    connection_monitor.test_groups.append(new_test_group)
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)

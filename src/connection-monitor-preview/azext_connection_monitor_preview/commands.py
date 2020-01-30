@@ -8,8 +8,7 @@ from azure.cli.core.commands import CliCommandType
 from ._client_factory import cf_nw_connection_monitor
 from ._validators import (get_network_watcher_from_location,
                           process_nw_cm_create_namespace,
-                          process_nw_cm_v2_endpoint_namespace,
-                          process_nw_cm_v2_test_configuration_namespace)
+                          process_nw_cm_v2_endpoint_namespace)
 
 
 def load_command_table(self, _):
@@ -46,7 +45,7 @@ def load_command_table(self, _):
                             nw_connection_monitor_sdk,
                             min_api='2019-11-01',
                             is_preview=True,
-                            validator=process_nw_cm_v2_test_configuration_namespace) as c:
+                            validator=get_network_watcher_from_location()) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_test_configuration')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_test_configuration')
         c.custom_command('show', 'show_nw_connection_monitor_v2_test_configuration')
@@ -55,5 +54,6 @@ def load_command_table(self, _):
     with self.command_group('network watcher connection-monitor test-group',
                             nw_connection_monitor_sdk,
                             min_api='2019-11-01',
-                            is_preview=True) as c:
-        c.custom_command('add', 'add_nw_connection_monitor_v2_test_group', validator=get_network_watcher_from_location())
+                            is_preview=True,
+                            validator=get_network_watcher_from_location()) as c:
+        c.custom_command('add', 'add_nw_connection_monitor_v2_test_group')
