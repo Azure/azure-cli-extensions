@@ -58,3 +58,4 @@ def load_command_table(self, _):
                             validator=get_network_watcher_from_location()) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_test_group')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_test_group')
+        c.custom_command('show', 'show_nw_connection_monitor_v2_test_group')

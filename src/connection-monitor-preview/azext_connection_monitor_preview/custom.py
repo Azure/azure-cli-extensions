@@ -584,3 +584,18 @@ def remove_nw_connection_monitor_v2_test_group(client,
                                               if c.name not in removed_test_configurations]
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+
+
+def show_nw_connection_monitor_v2_test_group(client,
+                                             watcher_rg,
+                                             watcher_name,
+                                             connection_monitor_name,
+                                             location,
+                                             name):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    for t in connection_monitor.test_groups:
+        if t.name == name:
+            return t
+
+    raise CLIError('unknown test group: {}'.format(name))
