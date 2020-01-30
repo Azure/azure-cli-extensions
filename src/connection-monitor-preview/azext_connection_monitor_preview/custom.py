@@ -544,3 +544,43 @@ def add_nw_connection_monitor_v2_test_group(cmd,
     connection_monitor.test_groups.append(new_test_group)
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+
+
+def remove_nw_connection_monitor_v2_test_group(client,
+                                               watcher_rg,
+                                               watcher_name,
+                                               connection_monitor_name,
+                                               location,
+                                               name):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    new_test_groups, removed_test_group = [], None
+    for t in connection_monitor.test_groups:
+        if t.name == name:
+            removed_test_group = t
+        else:
+            new_test_groups.append(t)
+
+    if removed_test_group is None:
+        raise CLIError('test group: "{}" not exist'.format(name))
+    else:
+        connection_monitor.test_groups = new_test_groups
+
+    # deal with endpoints which are only referenced by this removed test group
+    removed_endpoints = []
+    for e in removed_test_group.sources + removed_test_group.destinations:
+        tmp = [t for t in connection_monitor.test_groups if (e in t.sources or e in t.destinations)]
+        if not tmp:
+            removed_endpoints.append(e)
+    connection_monitor.endpoints = [e for e in connection_monitor.endpoints if e.name not in removed_endpoints]
+
+    # deal with test configurations which are only referenced by this remove test group
+    removed_test_configurations = []
+    for c in removed_test_group.test_configurations:
+        tmp = [t for t in connection_monitor.test_groups if c in t.test_configurations]
+        if not tmp:
+            removed_test_configurations.append(c)
+    connection_monitor.test_configurations = [c for c in connection_monitor.test_configurations
+                                              if c.name not in removed_test_configurations]
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)

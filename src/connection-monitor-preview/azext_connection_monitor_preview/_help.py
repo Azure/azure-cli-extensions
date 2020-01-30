@@ -138,7 +138,6 @@ type: group
 short-summary: Manage a test group of a connection monitor
 """
 
-
 helps['network watcher connection-monitor test-group add'] = """
 type: command
 short-summary: Add a test group along with new-added/existing endpoint and test configuration to a connection monitor
@@ -175,4 +174,9 @@ examples:
       --test-config-name MyNewTestConfiguration
       --protocol Tcp
       --tcp-port 4096
+"""
+
+helps['network watcher connection-monitor test-group remove'] = """
+type: command
+short-summary: Remove test group from a connection monitor
 """
