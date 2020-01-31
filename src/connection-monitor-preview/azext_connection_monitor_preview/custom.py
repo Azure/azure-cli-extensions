@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from ._client_factory import network_client_factory
 
 
 def create_nw_connection_monitor(cmd,

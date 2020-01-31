@@ -13,14 +13,13 @@ class NWConnectionMonitorCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from ._client_factory import cf_nw_connection_monitor
         from .profiles import CUSTOM_NW_CONNECTION_MONITOR
 
         register_resource_type('latest', CUSTOM_NW_CONNECTION_MONITOR, '2019-11-01')
 
         nw_connection_monitor = CliCommandType(
-            operations_tmpl='azext_connection_monitor_preview.custom#{}',
-            client_factory=cf_nw_connection_monitor)
+            operations_tmpl='azext_connection_monitor_preview.custom#{}')
+        print(nw_connection_monitor)
 
         super(NWConnectionMonitorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                                 custom_command_type=nw_connection_monitor,
