@@ -47,8 +47,8 @@ def get_bearer_token(cmd, tenant_id):
 
     try:
         logger.debug("Retrieving access token for tenant %s", tenant_id)
-        # creds, _, _ = client.get_raw_token(tenant=tenant_id)
         creds, _, _ = client.get_raw_token(subscription=tenant_id)
+        # creds, _, _ = client.get_raw_token(tenant=tenant_id)
     except CLIError:
         raise CLIError("Can't find authorization for {0}. ".format(tenant_id) +
                        "Run \'az login -t <tenant_name> --allow-no-subscriptions\' and try again.")
