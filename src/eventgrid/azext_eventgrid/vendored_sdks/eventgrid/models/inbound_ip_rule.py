@@ -12,23 +12,22 @@
 from msrest.serialization import Model
 
 
-class DomainRegenerateKeyRequest(Model):
-    """Domain regenerate share access key request.
+class InboundIpRule(Model):
+    """InboundIpRule.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param key_name: Required. Key name to regenerate key1 or key2.
-    :type key_name: str
+    :param ip_mask: IP Address in CIDR notation e.g., 10.0.0.0/8.
+    :type ip_mask: str
+    :param action: Action to perform based on the match or no match of the
+     IpMask. Possible values include: 'Allow'
+    :type action: str or ~azext_eventgrid.models.IpActionType
     """
 
-    _validation = {
-        'key_name': {'required': True},
-    }
-
     _attribute_map = {
-        'key_name': {'key': 'keyName', 'type': 'str'},
+        'ip_mask': {'key': 'ipMask', 'type': 'str'},
+        'action': {'key': 'action', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
-        super(DomainRegenerateKeyRequest, self).__init__(**kwargs)
-        self.key_name = kwargs.get('key_name', None)
+        super(InboundIpRule, self).__init__(**kwargs)
+        self.ip_mask = kwargs.get('ip_mask', None)
+        self.action = kwargs.get('action', None)
