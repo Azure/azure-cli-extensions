@@ -6,6 +6,7 @@
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.profiles import register_resource_type
 
+from ._client_factory import cf_nw_connection_monitor
 from ._help import helps  # pylint: disable=unused-import
 
 
@@ -18,8 +19,9 @@ class NWConnectionMonitorCommandsLoader(AzCommandsLoader):
         register_resource_type('latest', CUSTOM_NW_CONNECTION_MONITOR, '2019-11-01')
 
         nw_connection_monitor = CliCommandType(
-            operations_tmpl='azext_connection_monitor_preview.custom#{}')
-        print(nw_connection_monitor)
+            operations_tmpl='azext_connection_monitor_preview.custom#{}',
+            client_factory=cf_nw_connection_monitor
+        )
 
         super(NWConnectionMonitorCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                                 custom_command_type=nw_connection_monitor,
