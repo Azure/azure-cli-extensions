@@ -32,11 +32,13 @@ def load_arguments(self, _):
         c.argument('connection_monitor_name', name_arg_type, help='Connection monitor name.')
 
     with self.argument_context('network watcher connection-monitor', arg_group='V1 Source') as c:
-        c.argument('source_resource', help='Name or ID of the resource from which to originate traffic.')
+        c.argument('source_resource', help='Name or ID of the resource from which to originate traffic. '
+                                           'Currently only Virtual Machines are supported.')
         c.argument('source_port', help='Port number from which to originate traffic.')
 
     with self.argument_context('network watcher connection-monitor', arg_group='V1 Destination') as c:
-        c.argument('dest_resource', help='Name of ID of the resource to receive traffic.')
+        c.argument('dest_resource', help='Name of ID of the resource to receive traffic. '
+                                         'Currently only Virtual Machines are supported.')
         c.argument('dest_port', help='Port number on which to receive traffic.')
         c.argument('dest_address', help='The IP address or URI at which to receive traffic.')
 
@@ -48,7 +50,7 @@ def load_arguments(self, _):
             c.argument('resource_group_name', arg_type=ignore_type, validator=nw_validator)
 
     with self.argument_context('network watcher connection-monitor create', arg_group='V1') as c:
-        c.argument('monitoring_interval', help='Monitoring interval in seconds.', type=int)
+        c.argument('monitoring_interval', help='Monitoring interval in seconds.', type=int, default=60)
         c.argument('do_not_start', action='store_true',
                    help='Create the connection monitor but do not start it immediately.')
         # c.ignore('location')

@@ -55,7 +55,22 @@ def create_nw_connection_monitor(cmd,
     ]
 
     if any(v1_required_parameter_set):  # V1 creation
-        connection_monitor = _create_nw_connection_monitor_v1(cmd, location, tags)
+        connection_monitor = _create_nw_connection_monitor_v1(cmd,
+                                                              connection_monitor_name,
+                                                              watcher_rg,
+                                                              watcher_name,
+                                                              source_resource,
+                                                              resource_group_name,
+                                                              source_port,
+                                                              location,
+                                                              dest_resource,
+                                                              dest_port,
+                                                              dest_address,
+                                                              tags,
+                                                              do_not_start,
+                                                              monitoring_interval)
+        from ._client_factory import cf_nw_connection_monitor_v1
+        client = cf_nw_connection_monitor_v1(cmd.cli_ctx).connection_monitors   # overwrite to use 2019-06-01 API
     elif any(v2_required_parameter_set):  # V2 creation
         connection_monitor = _create_nw_connection_monitor_v2(cmd,
                                                               location,
@@ -89,25 +104,42 @@ def create_nw_connection_monitor(cmd,
 
 
 def _create_nw_connection_monitor_v1(cmd,
+                                     connection_monitor_name,
+                                     watcher_rg,
+                                     watcher_name,
+                                     source_resource,
+                                     resource_group_name=None,
+                                     source_port=None,
                                      location=None,
-                                     tags=None):
-    # connection_monitor = ConnectionMonitor(
-    #     location=location,
-    #     tags=tags,
-    #     source=ConnectionMonitorSource(
-    #         resource_id=source_resource,
-    #         port=source_port
-    #     ),
-    #     destination=ConnectionMonitorDestination(
-    #         resource_id=dest_resource,
-    #         port=dest_port,
-    #         address=dest_address
-    #     ),
-    #     auto_start=not do_not_start,
-    #     monitoring_interval_in_seconds=monitoring_interval)
+                                     dest_resource=None,
+                                     dest_port=None,
+                                     dest_address=None,
+                                     tags=None,
+                                     do_not_start=None,
+                                     monitoring_interval=60):
+    ConnectionMonitor, ConnectionMonitorSource, ConnectionMonitorDestination = cmd.get_models(
+        'ConnectionMonitor', 'ConnectionMonitorSource', 'ConnectionMonitorDestination')
 
-    ConnectionMonitor = cmd.get_models('ConnectionMonitor')
-    cmv1 = ConnectionMonitor()
+    cmv1 = ConnectionMonitor(
+        location=location,
+        tags=tags,
+        source=ConnectionMonitorSource(
+            resource_id=source_resource,
+            port=source_port
+        ),
+        destination=ConnectionMonitorDestination(
+            resource_id=dest_resource,
+            port=dest_port,
+            address=dest_address
+        ),
+        auto_start=not do_not_start,
+        monitoring_interval_in_seconds=monitoring_interval,
+        endpoints=None,
+        test_configurations=None,
+        test_groups=None,
+        outputs=None,
+        nots=None
+    )
 
     return cmv1
 
