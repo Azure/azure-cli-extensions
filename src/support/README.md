@@ -386,7 +386,7 @@ az extension add --name support
         --quota-change-payload "{\"VMFamily\":\"standardA0_A7Family\", \"NewLimit\":200, \"Type\":\"Dedicated\"}" \
         --quota-change-regions "EastUS" \
         --quota-change-version "1.0" \
-        --quota-change-subtype "Account"
+        --quota-change-subtype "BatchAml"
         
     # Create a ticket to request Quota increase for Low-priority cores for Machine Learning service.
      az support tickets create \
@@ -405,7 +405,7 @@ az extension add --name support
         --quota-change-payload "{\"NewLimit\":200, \"Type\":\"LowPriority\"}" \
         --quota-change-regions "EastUS" \
         --quota-change-version "1.0" \
-        --quota-change-subtype "Account"
+        --quota-change-subtype "BatchAml"
     ```
 
 ### *"Communications"* commands ###

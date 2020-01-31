@@ -3,9 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azext_support._completers import (get_supported_languages_for_create,
+                                       get_supported_languages_for_update,
+                                       get_supported_timezones_for_create,
+                                       get_supported_timezones_for_update)
 from azext_support._validators import datetime_type
 from azure.cli.core.commands.parameters import (get_enum_type,
                                                 get_three_state_flag)
+from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
@@ -34,6 +39,24 @@ def load_problem_classifications_argument(self, _):
 
 
 def load_tickets_argument(self, _):
+
+    language_type_for_create = CLIArgumentType(options_list=('--contact-language',),
+                                               help='Preferred language of support from Azure. Support languages ' +
+                                               'vary based on the severity you choose for your support ticket. This ' +
+                                               'is the standard country-language code.',
+                                               completer=get_supported_languages_for_create, required=True)
+    language_type_for_update = CLIArgumentType(options_list=('--contact-language',),
+                                               help='Preferred language of support from Azure. Support languages ' +
+                                               'vary based on the severity you choose for your support ticket. This ' +
+                                               'is the standard country-language code.',
+                                               completer=get_supported_languages_for_update)
+    timezone_type_for_create = CLIArgumentType(options_list=('--contact-timezone',), help='Time zone of the user. ' +
+                                               'This is the name of the time zone from Microsoft Time Zone Index ' +
+                                               'Values', completer=get_supported_timezones_for_create, required=True)
+    timezone_type_for_update = CLIArgumentType(options_list=('--contact-timezone',), help='Time zone of the user. ' +
+                                               'This is the name of the time zone from Microsoft Time Zone Index ' +
+                                               'Values', completer=get_supported_timezones_for_update)
+
     with self.argument_context('support tickets list') as c:
         c.argument('filters', help='The filter to apply on the operation. We support OData v4.0 semtantics. ' +
                    'Filter can be specified on "Status" property using eq operator or on "CreatedDate" using gt/ge. ' +
@@ -56,12 +79,9 @@ def load_tickets_argument(self, _):
         c.argument('contact_additional_emails', nargs='+', help='Space seperated list of additional email addresses. ' +
                    'Additional email addresses will be copied on any correspondence about the support ticket.')
         c.argument('contact_phone_number', help='Phone number. This is required if preferred contact method is phone.')
-        c.argument('contact_timezone', help='Time zone of the user. ' +
-                   'This is the name of the time zone from Microsoft Time Zone Index Values')
+        c.argument('contact_timezone', arg_type=timezone_type_for_update)
         c.argument('contact_country', help='Country of the user. This is the ISO Alpha-3 code')
-        c.argument('contact_language', help='Preferred language of support from Azure. ' +
-                   'Support languages vary based on the severity you choose for your support ticket. ' +
-                   'This is the standard country-language code.')
+        c.argument('contact_language', arg_type=language_type_for_update)
 
     with self.argument_context('support tickets create') as c:
         c.argument('ticket_name', help="Support ticket name", required=True)
@@ -91,12 +111,9 @@ def load_tickets_argument(self, _):
         c.argument('contact_additional_emails', nargs='+', help='Space seperated list of additional email addresses. ' +
                    'Additional email addresses will be copied on any correspondence about the support ticket.')
         c.argument('contact_phone_number', help='Phone number. This is required if preferred contact method is phone.')
-        c.argument('contact_timezone', help='Time zone of the user. ' +
-                   'This is the name of the time zone from Microsoft Time Zone Index Values', required=True)
+        c.argument('contact_timezone', arg_type=timezone_type_for_create)
         c.argument('contact_country', help='Country of the user. This is the ISO Alpha-3 code', required=True)
-        c.argument('contact_language', help='Preferred language of support from Azure. ' +
-                   'Support languages vary based on the severity you choose for your support ticket. ' +
-                   'This is the standard country-language code.', required=True)
+        c.argument('contact_language', arg_type=language_type_for_create)
 
     with self.argument_context('support tickets create', arg_group="Technical Ticket Details") as c:
         c.argument('technical_resource', help='This is the resource id of the Azure service resource ' +
@@ -111,9 +128,6 @@ def load_tickets_argument(self, _):
         c.argument('quota_change_payload', nargs='+', help='Space seperated list of serialized payload of the ' +
                    'quota increase request corresponding to regions. Visit ' +
                    'https://aka.ms/supportrpquotarequestpayload for details.')
-
-    with self.argument_context('support tickets wait') as c:
-        c.argument('ticket_name', help='Support ticket name', required=True)
 
 
 def load_communications_argument(self, _):
@@ -135,7 +149,3 @@ def load_communications_argument(self, _):
         c.argument('communication_body', help='Text of the communication.', required=True)
         c.argument('communication_subject', help='Subject of the communication.', required=True)
         c.argument('communication_sender', help='Email address of the sender.')
-
-    with self.argument_context('support tickets communications wait') as c:
-        c.argument('ticket_name', help='Support ticket name', required=True)
-        c.argument('communication_name', help='Communication name', required=True)

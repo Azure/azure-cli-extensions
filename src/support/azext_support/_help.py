@@ -415,7 +415,7 @@ examples:
             --quota-change-payload "{\\\"VMFamily\\\":\\\"standardA0_A7Family\\\", \\\"NewLimit\\\":200, \\\"Type\\\":\\\"Dedicated\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
-            --quota-change-subtype "Account"
+            --quota-change-subtype "BatchAml"
 
   - name: Create a ticket to request Quota increase for Low-priority cores for Machine Learning service.
     text: |
@@ -435,7 +435,7 @@ examples:
             --quota-change-payload "{\\\"NewLimit\\\":200, \\\"Type\\\":\\\"LowPriority\\\"}" \\
             --quota-change-regions "EastUS" \\
             --quota-change-version "1.0" \\
-            --quota-change-subtype "Account"
+            --quota-change-subtype "BatchAml"
 """
 
 helps['support tickets communications'] = """
