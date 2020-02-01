@@ -2090,8 +2090,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 logger.warning('Could not create a role assignment for Monitoring addon. '
                                'Are you an Owner on this subscription?')
     if 'IngressApplicationGateway' in instance.addon_profiles:
-        if "ApplicationGatewayId" in instance.addon_profiles["IngressApplicationGateway"].config:
-            appgw_id = instance.addon_profiles["IngressApplicationGateway"].config["ApplicationGatewayId"]
+        if "applicationGatewayId" in instance.addon_profiles["IngressApplicationGateway"].config:
+            appgw_id = instance.addon_profiles["IngressApplicationGateway"].config["applicationGatewayId"]
             from msrestazure.tools import parse_resource_id, resource_id
             appgw_id_dict = parse_resource_id(appgw_id)
             appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
@@ -2099,8 +2099,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                                         service_principal_client_id, scope=appgw_group_id):
                 logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
                                'Are you an Owner on this subscription?')
-        if "SubnetId" in instance.addon_profiles["IngressApplicationGateway"].config:
-            subnet_id = instance.addon_profiles["IngressApplicationGateway"].config["SubnetId"]
+        if "subnetId" in instance.addon_profiles["IngressApplicationGateway"].config:
+            subnet_id = instance.addon_profiles["IngressApplicationGateway"].config["subnetId"]
             from msrestazure.tools import parse_resource_id, resource_id
             if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
                                         service_principal_client_id, scope=subnet_id):
