@@ -52,6 +52,28 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
             self.cmd(cmd)
 
+    def _prepare_connection_monitor_v2_env(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'location': 'westus',
+            'cmv2': 'CMv2-01',
+            'test_group': 'DefaultTestGroup'
+        })
+
+        vm1_info = self._prepare_vm(resource_group, 'vm1')
+        vm2_info = self._prepare_vm(resource_group, 'vm2')
+
+        self.kwargs.update({
+            'vm1_id': vm1_info['id'],
+            'vm2_id': vm2_info['id'],
+        })
+
+        # create a connection monitor v2 with TCP monitoring
+        self._create_default_connection_monitor_v2(location=self.kwargs['location'],
+                                                   connection_monitor=self.kwargs['cmv2'],
+                                                   source_name='vm01',
+                                                   source_resource_id=vm1_info['id'])
+
     @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v2_creation(self, resource_group):
@@ -80,26 +102,97 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v2_endpoint(self, resource_group):
-        self.kwargs.update({
-            'rg': resource_group,
-            'location': 'westus',
-            'cmv2': 'CMv2-01'
-        })
-
-        vm1_info = self._prepare_vm(resource_group, 'vm1')
-        vm2_info = self._prepare_vm(resource_group, 'vm2')
-
-        self.kwargs.update({
-            'vm1_id': vm1_info['id'],
-            'vm2_id': vm2_info['id'],
-        })
+        self._prepare_connection_monitor_v2_env(resource_group)
 
         # add an endpoint as source
-        self.cmd('network connection-monitor endpoint add '
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor endpoint add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--source-test-groups {test_group} '
+                     '--name vm02 '
+                     '--resource-id {vm2_id} '
+                     '--filter-type Include '
+                     '--filter-item type=AgentAddress address=10.0.0.1 '
+                     '--filter-item type=AgentAddress address=10.0.0.2 ')
+
+        # add an endpoint as destination
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor endpoint add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--dest-test-groups {test_group} '
+                     '--name Github '
+                     '--address github.com ')
+
+        self.cmd('network watcher connection-monitor endpoint list --connection-monitor {cmv2} --location {location}',
+                 checks=self.check('length(@)', 4))
+        self.cmd('network watcher connection-monitor endpoint show '
                  '--connection-monitor {cmv2} '
                  '--location {location} '
-                 '--name vm02 '
-                 '--resource-id {vm2_id} '
-                 '--filter-type Include '
-                 '--filter-item type=AgentAddress address=10.0.0.1 '
-                 '--filter-item type=AgentAddress address=10.0.0.2 ')
+                 '--name Github')
+
+        # remove one
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor endpoint remove '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name vm02 '
+                     '--test-groups DefaultTestGroup ')
+        self.cmd('network watcher connection-monitor endpoint list --connection-monitor {cmv2} --location {location}',
+                 checks=self.check('length(@)', 3))
+
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_')
+    @AllowLargeResponse()
+    def test_nw_connection_monitor_v2_test_configuration(self, resource_group):
+        self._prepare_connection_monitor_v2_env(resource_group)
+
+        # add a HTTP test configuration
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-configuration add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name HTTPConfig '
+                     '--test-groups DefaultTestGroup '
+                     '--protocol HTTP '
+                     '--frequency 90 '
+                     '--http-method Get '
+                     '--http-path "/" '
+                     '--http-valid-status-codes 200 '
+                     '--http-request-header name=Host value=azure.com '
+                     '--http-request-header name=UserAgent value=AzureCLITest ')
+        self.cmd('network watcher connection-monitor test-configuration list '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} ',
+                 checks=self.check('length(@)', 2))
+        self.cmd('network watcher connection-monitor test-configuration show '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} '
+                 '--name HTTPConfig ')
+
+        # add a ICMP test configuration
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-configuration add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name ICMPConfig '
+                     '--test-groups DefaultTestGroup '
+                     '--protocol DefaultTestGroup ')
+        self.cmd('network watcher connection-monitor test-configuration list '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} ',
+                 checks=self.check('length(@', 3))
+        self.cmd('network watcher connection-monitor test-configuration show '
+                 '--connection-monitor {cmv2} '
+                 '--location-monitor {location} '
+                 '--name ICMPConfig ')
+
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-configuration remove '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name HTTPConfig ')
+        self.cmd('network watcher connection-monitor test-configuration list '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} ',
+                 checks=self.check('length(@', 2))

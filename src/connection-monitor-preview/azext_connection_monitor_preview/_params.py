@@ -134,7 +134,8 @@ def load_arguments(self, _):
                    help='The path component of the URI. For instance, "/dir1/dir2"')
         c.argument('test_config_http_valid_status_ranges',
                    options_list='--http-valid-status-codes',
-                   help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"')
+                   help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"',
+                   type=str)
         c.argument('test_config_http_prefer_https',
                    options_list='--https-prefer',
                    help='Value indicating whether HTTPS is preferred '
