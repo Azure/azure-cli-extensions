@@ -68,6 +68,28 @@ helps['network firewall ip-config show'] = """
 """
 # endregion
 
+# region AzureFirewall Management IP Configurations
+helps['network firewall management-ip-config'] = """
+    type: group
+    short-summary: Manage and configure Azure Firewall Management IP configurations.
+"""
+
+helps['network firewall management-ip-config create'] = """
+    type: command
+    short-summary: Create an Azure Firewall Management IP configuration.
+"""
+
+helps['network firewall management-ip-config update'] = """
+    type: command
+    short-summary: Update an Azure Firewall Management IP configuration.
+"""
+
+helps['network firewall management-ip-config show'] = """
+    type: command
+    short-summary: Get the details of an Azure Firewall Management IP configuration.
+"""
+# endregion
+
 # region AzureFirewall Threat Intelligence Whitelist
 helps['network firewall threat-intel-whitelist'] = """
     type: group
