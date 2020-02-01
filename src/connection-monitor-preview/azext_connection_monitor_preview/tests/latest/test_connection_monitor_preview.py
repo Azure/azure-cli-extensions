@@ -1,0 +1,105 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
+from knack.util import CLIError
+
+from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+
+
+class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
+
+    def _prepare_vm(self, resource_group, vm):
+        vm_create_cmd_tpl = 'vm create -g {rg} --name {vm} ' \
+                            '--image UbuntuLTS ' \
+                            '--authentication-type password ' \
+                            '--admin-username deploy ' \
+                            '--admin-password PassPass10!) ' \
+                            '--nsg {vm} '
+        vm_info = self.cmd(vm_create_cmd_tpl.format(rg=resource_group, vm=vm)).get_output_in_json()
+
+        vm_enable_ext_tpl = 'vm extension set -g {rg} ' \
+                            '--vm-name {vm} ' \
+                            '--name NetworkWatcherAgentLinux ' \
+                            '--publisher Microsoft.Azure.NetworkWatcher '
+        self.cmd(vm_enable_ext_tpl.format(rg=resource_group, vm=vm))
+
+        return vm_info
+
+    def _create_default_connection_monitor_v2(self,
+                                              location,
+                                              connection_monitor,
+                                              source_name,
+                                              source_resource_id):
+        cmd_tpl = 'network watcher connection-monitor create ' \
+                  '--location {location} ' \
+                  '--name {cmv2} ' \
+                  '--endpoint-source-name {src_resource_name} ' \
+                  '--endpoint-source-resource-id {src_resource_id} ' \
+                  '--endpoint-dest-name bing ' \
+                  '--endpoint-dest-address bing.com ' \
+                  '--test-config-name DefaultTestConfig ' \
+                  '--protocol Tcp ' \
+                  '--tcp-port 2048 '
+        cmd = cmd_tpl.format(cmv2=connection_monitor,
+                             location=location,
+                             src_resource_name=source_name,
+                             src_resource_id=source_resource_id)
+
+        # connection monitor V2 is in preview stage
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd(cmd)
+
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_')
+    @AllowLargeResponse()
+    def test_nw_connection_monitor_v2_creation(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'location': 'westus',
+            'cmv2': 'CMv2-01'
+        })
+
+        vm1_info = self._prepare_vm(resource_group, 'vm1')
+        vm2_info = self._prepare_vm(resource_group, 'vm2')
+
+        self.kwargs.update({
+            'vm1_id': vm1_info['id'],
+            'vm2_id': vm2_info['id'],
+        })
+
+        # create a connection monitor v2 with TCP monitoring
+        self._create_default_connection_monitor_v2(location=self.kwargs['location'],
+                                                   connection_monitor=self.kwargs['cmv2'],
+                                                   source_name='vm01',
+                                                   source_resource_id=vm1_info['id'])
+        self.cmd('network watcher connection-monitor list -l {location}')
+        self.cmd('network watcher connection-monitor show -l {location} -n {cmv2}')
+
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_')
+    @AllowLargeResponse()
+    def test_nw_connection_monitor_v2_endpoint(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'location': 'westus',
+            'cmv2': 'CMv2-01'
+        })
+
+        vm1_info = self._prepare_vm(resource_group, 'vm1')
+        vm2_info = self._prepare_vm(resource_group, 'vm2')
+
+        self.kwargs.update({
+            'vm1_id': vm1_info['id'],
+            'vm2_id': vm2_info['id'],
+        })
+
+        # add an endpoint as source
+        self.cmd('network connection-monitor endpoint add '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} '
+                 '--name vm02 '
+                 '--resource-id {vm2_id} '
+                 '--filter-type Include '
+                 '--filter-item type=AgentAddress address=10.0.0.1 '
+                 '--filter-item type=AgentAddress address=10.0.0.2 ')
