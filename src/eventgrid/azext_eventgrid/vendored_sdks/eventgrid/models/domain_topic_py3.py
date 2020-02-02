@@ -18,7 +18,7 @@ class DomainTopic(Resource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified identifier of the resource
+    :ivar id: Fully qualified identifier of the resource.
     :vartype id: str
     :ivar name: Name of the resource
     :vartype name: str
@@ -28,7 +28,7 @@ class DomainTopic(Resource):
      Possible values include: 'Creating', 'Updating', 'Deleting', 'Succeeded',
      'Canceled', 'Failed'
     :type provisioning_state: str or
-     ~microsoft.azure.management.eventgrid.models.DomainTopicProvisioningState
+     ~azext_eventgrid.models.DomainTopicProvisioningState
     """
 
     _validation = {
