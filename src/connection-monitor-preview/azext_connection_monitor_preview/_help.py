@@ -22,7 +22,7 @@ examples:
       --connection-monitor MyConnectionMonitor
       --location westus
       --name MyEndpoint
-      --address "bing.com" 
+      --address "bing.com"
       --dest-test-groups DefaultTestGroup
   - name: Add an endpoint as source
     text: >
