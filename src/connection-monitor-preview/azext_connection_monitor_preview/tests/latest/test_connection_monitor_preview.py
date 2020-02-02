@@ -196,3 +196,91 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--connection-monitor {cmv2} '
                  '--location {location} ',
                  checks=self.check('length(@)', 2))
+
+    @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_')
+    @AllowLargeResponse()
+    def test_connection_monitor_v2_test_group(self, resource_group):
+        self._prepare_connection_monitor_v2_env(resource_group)
+
+        # add an endpoint as source for later use
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor endpoint add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--source-test-groups {test_group} '
+                     '--name vm02 '
+                     '--resource-id {vm2_id} '
+                     '--filter-type Include '
+                     '--filter-item type=AgentAddress address=10.0.0.1 '
+                     '--filter-item type=AgentAddress address=10.0.0.2 ')
+
+        # add an endpoint as destination for later use
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor endpoint add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--dest-test-groups {test_group} '
+                     '--name Github '
+                     '--address github.com ')
+
+        # add a HTTP test configuration for later use
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-configuration add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name HTTPConfig '
+                     '--test-groups DefaultTestGroup '
+                     '--protocol Http '
+                     '--frequency 90 '
+                     '--http-method Get '
+                     '--http-path "/" '
+                     '--http-valid-status-codes 200 301 '
+                     '--http-request-header name=Host value=azure.com '
+                     '--http-request-header name=UserAgent value=AzureCLITest ')
+
+        # add a ICMP test configuration
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-configuration add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name ICMPConfig '
+                     '--test-groups DefaultTestGroup '
+                     '--protocol Icmp ')
+        self.cmd('network watcher connection-monitor test-configuration list '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} ',
+                 checks=self.check('length(@)', 3))
+        self.cmd('network watcher connection-monitor test-configuration show '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} '
+                 '--name ICMPConfig ')
+
+        # add a test group with existing source endpoint, new-added destination endpoints and existing test config
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-group add '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name RouteTestGroup '
+                     '--disable false '
+                     '--endpoint-source-name vm01 '
+                     '--endpoint-dest-name aks.ms '
+                     '--endpoint-dest-address aks.ms '
+                     '--test-config-name ICMPConfig ')
+        self.cmd('network watcher connection-monitor test-group list '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} ',
+                 checks=self.check('length(@)', 2))
+        self.cmd('network watcher connection-monitor test-group show '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} '
+                 '--name RouteTestGroup ')
+
+        with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
+            self.cmd('network watcher connection-monitor test-group remove '
+                     '--connection-monitor {cmv2} '
+                     '--location {location} '
+                     '--name DefaultTestGroup ')
+        self.cmd('network watcher connection-monitor test-group list '
+                 '--connection-monitor {cmv2} '
+                 '--location {location} ',
+                 checks=self.check('length(@)', 1))
