@@ -695,3 +695,15 @@ def add_nw_connection_monitor_v2_output(cmd,
     connection_monitor.outputs.append(output)
 
     return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)
+
+
+def remove_nw_connection_monitor_v2_output(cmd,
+                                           client,
+                                           watcher_rg,
+                                           watcher_name,
+                                           connection_monitor_name,
+                                           location):
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+    connection_monitor.outputs = []
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)

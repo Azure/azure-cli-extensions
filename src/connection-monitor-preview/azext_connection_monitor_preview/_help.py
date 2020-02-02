@@ -197,6 +197,11 @@ short-summary: Manage output of connection monitor
 """
 
 helps['network watcher connection-monitor output add'] = """
-type: group
+type: command
 short-summary: Add an output to a connection monitor
+"""
+
+helps['network watcher connection-monitor output remove'] = """
+type: command
+short-summary: Remove all outputs from a connection monitor
 """

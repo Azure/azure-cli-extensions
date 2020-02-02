@@ -117,7 +117,7 @@ def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
 
 def process_nw_cm_v2_output_namespace(cmd, namespace):
     v2_output_optional_parameter_set = ['workspace_id']
-    if namespace.out_type is not None:
+    if hasattr(namespace, 'out_type') and namespace.out_type is not None:
         tmp = [p for p in v2_output_optional_parameter_set if getattr(namespace, p) is None]
         if v2_output_optional_parameter_set == tmp:
             raise CLIError('usage error: --type is specified but no other resource id provided')
