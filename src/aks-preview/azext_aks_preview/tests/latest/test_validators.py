@@ -76,6 +76,10 @@ class TestVNetSubnetId(unittest.TestCase):
             validators.validate_vnet_subnet_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
+    def test_valid_vnet_subnet_id(self):
+        invalid_vnet_subnet_id = "/subscriptions/testid/resourceGroups/MockedResourceGroup/providers/Microsoft.Network/virtualNetworks/MockedNetworkId/subnets/MockedSubNetId"
+        namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
+        validators.validate_vnet_subnet_id(namespace)
 
 class VnetSubnetIdNamespace:
     def __init__(self, vnet_subnet_id):
