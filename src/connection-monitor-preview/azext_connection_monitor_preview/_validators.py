@@ -72,14 +72,20 @@ def process_nw_cm_v1_create_namespace(cmd, namespace):
 def process_nw_cm_v2_create_namespace(cmd, namespace):
     if namespace.location is None:
         raise CLIError('usage error: --location is required to create a V2 connection monitor')
-    if namespace.test_config_protocol is None:
-        raise CLIError('usage error: --protocol is required to create a V2 connection monitor')
 
     v2_required_parameter_set = ['endpoint_source_name', 'endpoint_dest_name', 'test_config_name']
     for p in v2_required_parameter_set:
         if not hasattr(namespace, p) or getattr(namespace, p) is None:
             raise CLIError(
                 'usage error: --{} is required to create a V2 connection monitor'.format(p.replace('_', '-')))
+    if namespace.test_config_protocol is None:
+        raise CLIError('usage error: --protocol is required to create a test configuration for V2 connection monitor')
+
+    v2_optional_parameter_set = ['workspace_ids']
+    if namespace.output_type is not None:
+        tmp = [p for p in v2_optional_parameter_set if getattr(namespace, p) is None]
+        if v2_optional_parameter_set == tmp:
+            raise CLIError('usage error: --output-type is specified but no other resource provided')
 
     return get_network_watcher_from_location()(cmd, namespace)
 

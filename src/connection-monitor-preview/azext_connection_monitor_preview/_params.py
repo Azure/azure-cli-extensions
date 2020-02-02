@@ -17,9 +17,12 @@ def load_arguments(self, _):
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
 
     (ConnectionMonitorEndpointFilterType, ConnectionMonitorTestConfigurationProtocol,
-     PreferredIPVersion, HTTPConfigurationMethod) = self.get_models(
+     PreferredIPVersion, HTTPConfigurationMethod,
+     OutputType) = self.get_models(
         'ConnectionMonitorEndpointFilterType', 'ConnectionMonitorTestConfigurationProtocol',
-        'PreferredIPVersion', 'HTTPConfigurationMethod')
+        'PreferredIPVersion', 'HTTPConfigurationMethod',
+        'OutputType'
+    )
 
     with self.argument_context('network watcher') as c:
         c.argument('network_watcher_name', name_arg_type, help='Name of the Network Watcher.')
@@ -54,6 +57,9 @@ def load_arguments(self, _):
         c.argument('do_not_start', action='store_true',
                    help='Create the connection monitor but do not start it immediately.')
         # c.ignore('location')
+
+    with self.argument_context('network watcher connection-monitor', min_api='2019-11-01') as c:
+        c.argument('notes', help='Optional notes to be associated with the connection monitor')
 
     # Argument Group for endpoint to create a V2 connection monitor
     with self.argument_context('network watcher connection-monitor',
@@ -153,6 +159,17 @@ def load_arguments(self, _):
         c.argument('test_group_disable',
                    help='Value indicating whether test group is disabled. false is default.',
                    arg_type=get_three_state_flag())
+
+    # Argument Group for output to create a V2 connection monitor
+    with self.argument_context('network watcher connection-monitor',
+                               arg_group='V2 Output',
+                               min_api='2019-11-01') as c:
+        c.argument('output_type',
+                   help='Connection monitor output destination type. Currently, only "Workspace" is supported',
+                   arg_type=get_enum_type(OutputType))
+        c.argument('workspace_ids',
+                   help='Space-separated list of resource ids of log analytics workspace',
+                   nargs='+')
 
     # Argument Group for connection monitor V2 endpoint
     with self.argument_context('network watcher connection-monitor endpoint', min_api='2019-11-01') as c:
@@ -265,7 +282,7 @@ def load_arguments(self, _):
                        nargs='+',
                        action=NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction)
 
-    with self.argument_context('network watcher connection-monitor test-group') as c:
+    with self.argument_context('network watcher connection-monitor test-group', min_api='2019-11-01') as c:
         c.argument('connection_monitor_name',
                    options_list=['--connection-monitor'],
                    help='Connection monitor name.')

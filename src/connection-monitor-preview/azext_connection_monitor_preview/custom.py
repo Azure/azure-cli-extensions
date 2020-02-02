@@ -42,7 +42,10 @@ def create_nw_connection_monitor(cmd,
                                  test_config_http_valid_status_codes=None,
                                  test_config_http_prefer_https=None,
                                  test_group_name=None,
-                                 test_group_disable=None):
+                                 test_group_disable=None,
+                                 output_type=None,
+                                 workspace_ids=None,
+                                 notes=None):
     v1_required_parameter_set = [
         source_resource, source_port,
         dest_resource, dest_address, dest_port
@@ -51,7 +54,8 @@ def create_nw_connection_monitor(cmd,
     v2_required_parameter_set = [
         endpoint_source_name, endpoint_source_resource_id,
         endpoint_dest_name, endpoint_dest_address,
-        test_config_name, test_config_protocol
+        test_config_name, test_config_protocol,
+        output_type, workspace_ids,
     ]
 
     if any(v1_required_parameter_set):  # V1 creation
@@ -96,7 +100,10 @@ def create_nw_connection_monitor(cmd,
                                                               test_config_http_valid_status_codes,
                                                               test_config_http_prefer_https,
                                                               test_group_name,
-                                                              test_group_disable)
+                                                              test_group_disable,
+                                                              output_type,
+                                                              workspace_ids,
+                                                              notes)
     else:
         raise CLIError('Unknown operation')
 
@@ -168,7 +175,10 @@ def _create_nw_connection_monitor_v2(cmd,
                                      test_config_http_valid_status_codes=None,
                                      test_config_http_prefer_https=None,
                                      test_group_name=None,
-                                     test_group_disable=False):
+                                     test_group_disable=False,
+                                     output_type=None,
+                                     workspace_ids=None,
+                                     notes=None):
     src_endpoint = _create_nw_connection_monitor_v2_endpoint(cmd,
                                                              endpoint_source_name,
                                                              endpoint_source_resource_id,
@@ -198,6 +208,14 @@ def _create_nw_connection_monitor_v2(cmd,
                                                              [test_config],
                                                              [src_endpoint],
                                                              [dst_endpoint])
+    if output_type:
+        outputs = []
+        if workspace_ids:
+            for workspace_id in workspace_ids:
+                output = _create_nw_connection_monitor_v2_output(cmd, output_type, workspace_id)
+                outputs.append(output)
+    else:
+        outputs = []
 
     ConnectionMonitor = cmd.get_models('ConnectionMonitor')
     cmv2 = ConnectionMonitor(location=location,
@@ -206,7 +224,9 @@ def _create_nw_connection_monitor_v2(cmd,
                              monitoring_interval_in_seconds=None,
                              endpoints=[src_endpoint, dst_endpoint],
                              test_configurations=[test_config],
-                             test_groups=[test_group])
+                             test_groups=[test_group],
+                             outputs=outputs,
+                             notes=notes)
     return cmv2
 
 
@@ -304,6 +324,22 @@ def _create_nw_connection_monitor_v2_test_group(cmd,
                                             sources=[e.name for e in source_endpoints],
                                             destinations=[e.name for e in destination_endpoints])
     return test_group
+
+
+def _create_nw_connection_monitor_v2_output(cmd,
+                                            output_type,
+                                            workspace_id=None):
+    ConnectionMonitorOutput, OutputType = cmd.get_models('ConnectionMonitorOutput', 'OutputType')
+    output = ConnectionMonitorOutput(type=output_type)
+
+    if output_type == OutputType.workspace:
+        ConnectionMonitorWorkspaceSettings = cmd.get_models('ConnectionMonitorWorkspaceSettings')
+        workspace = ConnectionMonitorWorkspaceSettings(workspace_resource_id=workspace_id)
+        output.workspace_settings = workspace
+    else:
+        raise CLIError('Unsupported output type: "{}"'.format(output_type))
+
+    return output
 
 
 def add_nw_connection_monitor_v2_endpoint(cmd,
