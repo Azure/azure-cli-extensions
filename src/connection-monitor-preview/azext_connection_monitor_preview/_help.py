@@ -190,3 +190,13 @@ helps['network watcher connection-monitor test-group list'] = """
 type: command
 short-summary: List all test groups of a connection monitor
 """
+
+helps['network watcher connection-monitor output'] = """
+type: group
+short-summary: Manage output of connection monitor
+"""
+
+helps['network watcher connection-monitor output add'] = """
+type: group
+short-summary: Add an output to a connection monitor
+"""

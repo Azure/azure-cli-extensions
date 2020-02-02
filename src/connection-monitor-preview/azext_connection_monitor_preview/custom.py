@@ -675,3 +675,23 @@ def list_nw_connection_monitor_v2_test_group(client,
                                              location):
     connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
     return connection_monitor.test_groups
+
+
+def add_nw_connection_monitor_v2_output(cmd,
+                                        client,
+                                        watcher_rg,
+                                        watcher_name,
+                                        connection_monitor_name,
+                                        location,
+                                        out_type,
+                                        workspace_id=None):
+    output = _create_nw_connection_monitor_v2_output(cmd, out_type, workspace_id)
+
+    connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
+
+    if connection_monitor.outputs is None:
+        connection_monitor.outputs = []
+
+    connection_monitor.outputs.append(output)
+
+    return client.create_or_update(watcher_rg, watcher_name, connection_monitor_name, connection_monitor)

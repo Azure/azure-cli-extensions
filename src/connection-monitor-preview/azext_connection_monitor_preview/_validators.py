@@ -85,7 +85,7 @@ def process_nw_cm_v2_create_namespace(cmd, namespace):
     if namespace.output_type is not None:
         tmp = [p for p in v2_optional_parameter_set if getattr(namespace, p) is None]
         if v2_optional_parameter_set == tmp:
-            raise CLIError('usage error: --output-type is specified but no other resource provided')
+            raise CLIError('usage error: --output-type is specified but no other resource id provided')
 
     return get_network_watcher_from_location()(cmd, namespace)
 
@@ -111,6 +111,16 @@ def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
         if dest_test_groups is None and source_test_groups is None:
             raise CLIError('usage error: endpoint has to be referenced from at least one existing test group '
                            'via --dest-test-groups/--source-test-groups')
+
+    return get_network_watcher_from_location()(cmd, namespace)
+
+
+def process_nw_cm_v2_output_namespace(cmd, namespace):
+    v2_output_optional_parameter_set = ['workspace_id']
+    if namespace.out_type is not None:
+        tmp = [p for p in v2_output_optional_parameter_set if getattr(namespace, p) is None]
+        if v2_output_optional_parameter_set == tmp:
+            raise CLIError('usage error: --type is specified but no other resource id provided')
 
     return get_network_watcher_from_location()(cmd, namespace)
 
