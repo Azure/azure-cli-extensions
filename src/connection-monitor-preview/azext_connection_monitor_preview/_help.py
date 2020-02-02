@@ -205,3 +205,8 @@ helps['network watcher connection-monitor output remove'] = """
 type: command
 short-summary: Remove all outputs from a connection monitor
 """
+
+helps['network watcher connection-monitor output list'] = """
+type: command
+short-summary: List all output from a connection monitor
+"""

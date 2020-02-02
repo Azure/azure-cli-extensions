@@ -71,3 +71,4 @@ def load_command_table(self, _):
                             validator=process_nw_cm_v2_output_namespace) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_output')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_output')
+        c.custom_command('list', 'list_nw_connection_monitor_v2_output')
