@@ -16,7 +16,8 @@ from ._validators import (get_network_watcher_from_location,
 def load_command_table(self, _):
 
     nw_connection_monitor_sdk = CliCommandType(
-        operations_tmpl='azext_connection_monitor_preview.vendored_sdks.v2019_11_01.operations#ConnectionMonitorsOperations.{}',
+        operations_tmpl='azext_connection_monitor_preview.vendored_sdks.v2019_11_01.'
+                        'operations#ConnectionMonitorsOperations.{}',
         client_factory=cf_nw_connection_monitor,
         resource_type=CUSTOM_NW_CONNECTION_MONITOR,
         min_api='2019-11-01'

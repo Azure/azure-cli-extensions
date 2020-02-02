@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument,too-many-locals
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -270,8 +271,8 @@ def _create_nw_connection_monitor_v2_test_configuration(cmd,
                                                         http_request_headers=None):
     (ConnectionMonitorTestConfigurationProtocol,
      ConnectionMonitorTestConfiguration, ConnectionMonitorSuccessThreshold) = cmd.get_models(
-        'ConnectionMonitorTestConfigurationProtocol',
-        'ConnectionMonitorTestConfiguration', 'ConnectionMonitorSuccessThreshold')
+         'ConnectionMonitorTestConfigurationProtocol',
+         'ConnectionMonitorTestConfiguration', 'ConnectionMonitorSuccessThreshold')
 
     test_config = ConnectionMonitorTestConfiguration(name=name,
                                                      test_frequency_sec=test_frequency,
@@ -630,8 +631,7 @@ def remove_nw_connection_monitor_v2_test_group(client,
 
     if removed_test_group is None:
         raise CLIError('test group: "{}" not exist'.format(name))
-    else:
-        connection_monitor.test_groups = new_test_groups
+    connection_monitor.test_groups = new_test_groups
 
     # deal with endpoints which are only referenced by this removed test group
     removed_endpoints = []

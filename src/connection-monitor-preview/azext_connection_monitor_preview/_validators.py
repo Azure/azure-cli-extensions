@@ -91,13 +91,12 @@ def process_nw_cm_v2_create_namespace(cmd, namespace):
 
 
 def process_nw_cm_create_namespace(cmd, namespace):
-
+    # V2 parameter set
     if namespace.source_resource is None:
-        # V2 parameter set
         return process_nw_cm_v2_create_namespace(cmd, namespace)
-    else:
-        # V1 parameter set
-        return process_nw_cm_v1_create_namespace(cmd, namespace)
+
+    # V1 parameter set
+    return process_nw_cm_v1_create_namespace(cmd, namespace)
 
 
 def process_nw_cm_v2_endpoint_namespace(cmd, namespace):
@@ -125,7 +124,7 @@ def process_nw_cm_v2_output_namespace(cmd, namespace):
     return get_network_watcher_from_location()(cmd, namespace)
 
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access,too-few-public-methods
 class NWConnectionMonitorEndpointFilterItemAction(_AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         ConnectionMonitorEndpointFilterItem = namespace._cmd.get_models('ConnectionMonitorEndpointFilterItem')
@@ -151,7 +150,7 @@ class NWConnectionMonitorEndpointFilterItemAction(_AppendAction):
         namespace.filter_items.append(filter_item)
 
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access,too-few-public-methods
 class NWConnectionMonitorTestConfigurationHTTPRequestHeaderAction(_AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         HTTPHeader = namespace._cmd.get_models('HTTPHeader')
