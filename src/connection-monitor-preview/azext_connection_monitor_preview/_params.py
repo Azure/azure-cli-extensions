@@ -132,10 +132,11 @@ def load_arguments(self, _):
         c.argument('test_config_http_path',
                    options_list='--http-path',
                    help='The path component of the URI. For instance, "/dir1/dir2"')
-        c.argument('test_config_http_valid_status_ranges',
+        c.argument('test_config_http_valid_status_codes',
                    options_list='--http-valid-status-codes',
-                   help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"',
-                   type=str)
+                   help='Space-separated list of HTTP status codes to consider successful. '
+                        'For instance, "2xx 301-304 418"',
+                   nargs='+')
         c.argument('test_config_http_prefer_https',
                    options_list='--https-prefer',
                    help='Value indicating whether HTTPS is preferred '
@@ -250,7 +251,9 @@ def load_arguments(self, _):
             c.argument('http_path',
                        help='The path component of the URI. For instance, "/dir1/dir2"')
             c.argument('http_valid_status_codes',
-                       help='HTTP status codes to consider successful. For instance, "2xx,301-304,418"')
+                       nargs='+',
+                       help='Space-separated list of HTTP status codes to consider successful. '
+                            'For instance, "2xx 301-304 418"')
             c.argument('http_prefer_https',
                        help='Value indicating whether HTTPS is preferred '
                             'over HTTP in cases where the choice is not explicit',

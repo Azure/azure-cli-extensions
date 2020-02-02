@@ -39,7 +39,7 @@ def create_nw_connection_monitor(cmd,
                                  test_config_http_port=None,
                                  test_config_http_method=None,
                                  test_config_http_path=None,
-                                 test_config_http_valid_status_ranges=None,
+                                 test_config_http_valid_status_codes=None,
                                  test_config_http_prefer_https=None,
                                  test_group_name=None,
                                  test_group_disable=None):
@@ -93,7 +93,7 @@ def create_nw_connection_monitor(cmd,
                                                               test_config_http_port,
                                                               test_config_http_method,
                                                               test_config_http_path,
-                                                              test_config_http_valid_status_ranges,
+                                                              test_config_http_valid_status_codes,
                                                               test_config_http_prefer_https,
                                                               test_group_name,
                                                               test_group_disable)
@@ -165,7 +165,7 @@ def _create_nw_connection_monitor_v2(cmd,
                                      test_config_http_port=None,
                                      test_config_http_method=None,
                                      test_config_http_path=None,
-                                     test_config_http_valid_status_ranges=None,
+                                     test_config_http_valid_status_codes=None,
                                      test_config_http_prefer_https=None,
                                      test_group_name=None,
                                      test_group_disable=False):
@@ -190,7 +190,7 @@ def _create_nw_connection_monitor_v2(cmd,
                                                                       test_config_http_port,
                                                                       test_config_http_method,
                                                                       test_config_http_path,
-                                                                      test_config_http_valid_status_ranges,
+                                                                      test_config_http_valid_status_codes,
                                                                       test_config_http_prefer_https)
     test_group = _create_nw_connection_monitor_v2_test_group(cmd,
                                                              test_group_name,
@@ -517,7 +517,7 @@ def add_nw_connection_monitor_v2_test_group(cmd,
                                             test_config_http_port=None,
                                             test_config_http_method=None,
                                             test_config_http_path=None,
-                                            test_config_http_valid_status_ranges=None,
+                                            test_config_http_valid_status_codes=None,
                                             test_config_http_prefer_https=None):
     new_test_configuration_creation_requirements = [
         test_config_protocol, test_config_preferred_ip_version,
@@ -525,7 +525,7 @@ def add_nw_connection_monitor_v2_test_group(cmd,
         test_config_tcp_disable_trace_route, test_config_tcp_port,
         test_config_icmp_disable_trace_route,
         test_config_http_port, test_config_http_method,
-        test_config_http_path, test_config_http_valid_status_ranges, test_config_http_prefer_https
+        test_config_http_path, test_config_http_valid_status_codes, test_config_http_prefer_https
     ]
 
     connection_monitor = client.get(watcher_rg, watcher_name, connection_monitor_name)
@@ -567,7 +567,7 @@ def add_nw_connection_monitor_v2_test_group(cmd,
                                                                           test_config_http_port,
                                                                           test_config_http_method,
                                                                           test_config_http_path,
-                                                                          test_config_http_valid_status_ranges,
+                                                                          test_config_http_valid_status_codes,
                                                                           test_config_http_prefer_https)
         connection_monitor.test_configurations.append(test_config)
     new_test_group.test_configurations.append(test_config_name)

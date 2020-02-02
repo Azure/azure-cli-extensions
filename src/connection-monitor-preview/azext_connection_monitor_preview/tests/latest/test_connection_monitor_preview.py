@@ -154,11 +154,11 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                      '--location {location} '
                      '--name HTTPConfig '
                      '--test-groups DefaultTestGroup '
-                     '--protocol HTTP '
+                     '--protocol Http '
                      '--frequency 90 '
                      '--http-method Get '
                      '--http-path "/" '
-                     '--http-valid-status-codes 200 '
+                     '--http-valid-status-codes 200 301 '
                      '--http-request-header name=Host value=azure.com '
                      '--http-request-header name=UserAgent value=AzureCLITest ')
         self.cmd('network watcher connection-monitor test-configuration list '
@@ -177,14 +177,14 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                      '--location {location} '
                      '--name ICMPConfig '
                      '--test-groups DefaultTestGroup '
-                     '--protocol DefaultTestGroup ')
+                     '--protocol Icmp ')
         self.cmd('network watcher connection-monitor test-configuration list '
                  '--connection-monitor {cmv2} '
                  '--location {location} ',
-                 checks=self.check('length(@', 3))
+                 checks=self.check('length(@)', 3))
         self.cmd('network watcher connection-monitor test-configuration show '
                  '--connection-monitor {cmv2} '
-                 '--location-monitor {location} '
+                 '--location {location} '
                  '--name ICMPConfig ')
 
         with self.assertRaisesRegexp(CLIError, 'Deployment failed'):
@@ -195,4 +195,4 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
         self.cmd('network watcher connection-monitor test-configuration list '
                  '--connection-monitor {cmv2} '
                  '--location {location} ',
-                 checks=self.check('length(@', 2))
+                 checks=self.check('length(@)', 2))
