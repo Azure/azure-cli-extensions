@@ -11,3 +11,6 @@ Then, call the help to find out usage:
 ```
 az network watcher connection-monitor -h
 ```
+
+## Requirements ##
+This extension requires `azure-cli >= 2.0.80`.
