@@ -5,7 +5,8 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.arguments import CLIArgumentType, ignore_type
-from azure.cli.core.commands.parameters import (get_enum_type,
+from azure.cli.core.commands.parameters import (tags_type,
+                                                get_enum_type,
                                                 get_location_type,
                                                 get_three_state_flag)
 
@@ -23,6 +24,9 @@ def load_arguments(self, _):
          'ConnectionMonitorEndpointFilterType', 'ConnectionMonitorTestConfigurationProtocol',
          'PreferredIPVersion', 'HTTPConfigurationMethod',
          'OutputType')
+
+    with self.argument_context('network') as c:
+        c.argument('tags', tags_type)
 
     with self.argument_context('network watcher') as c:
         c.argument('network_watcher_name', name_arg_type, help='Name of the Network Watcher.')
