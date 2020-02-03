@@ -42,7 +42,7 @@ def load_command_table(self, _):
                             validator=process_nw_cm_v2_endpoint_namespace) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_endpoint')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_endpoint')
-        c.custom_command('show', 'show_nw_connection_monitor_v2_endpoint')
+        c.custom_show_command('show', 'show_nw_connection_monitor_v2_endpoint')
         c.custom_command('list', 'list_nw_connection_monitor_v2_endpoint')
 
     with self.command_group('network watcher connection-monitor test-configuration',
@@ -52,7 +52,7 @@ def load_command_table(self, _):
                             validator=get_network_watcher_from_location()) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_test_configuration')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_test_configuration')
-        c.custom_command('show', 'show_nw_connection_monitor_v2_test_configuration')
+        c.custom_show_command('show', 'show_nw_connection_monitor_v2_test_configuration')
         c.custom_command('list', 'list_nw_connection_monitor_v2_test_configuration')
 
     with self.command_group('network watcher connection-monitor test-group',
@@ -62,7 +62,7 @@ def load_command_table(self, _):
                             validator=get_network_watcher_from_location()) as c:
         c.custom_command('add', 'add_nw_connection_monitor_v2_test_group')
         c.custom_command('remove', 'remove_nw_connection_monitor_v2_test_group')
-        c.custom_command('show', 'show_nw_connection_monitor_v2_test_group')
+        c.custom_show_command('show', 'show_nw_connection_monitor_v2_test_group')
         c.custom_command('list', 'list_nw_connection_monitor_v2_test_group')
 
     with self.command_group('network watcher connection-monitor output',

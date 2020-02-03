@@ -9,5 +9,5 @@ az extension add --name connection-monitor-preview
 
 Then, call the help to find out usage:
 ```
-az network watcher connection-monitor-preview -h
+az network watcher connection-monitor -h
 ```
