@@ -20,7 +20,9 @@ class BlueprintScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'blueprintName': 'test-bp',
-            'scope': 'subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590'
+            'scope': 'subscriptions/00000000-0000-0000-0000-000000000000',
+            'subscription': '00000000-0000-0000-0000-000000000000',
+            'assignmentName': 'Assignment-test-bp'
         })
 
         self.cmd('az blueprint create '
@@ -45,11 +47,26 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--blueprint-name "{blueprintName}" '
                  '--artifact-name "reader-role-art" '
                  '--display-name "[User group or application name] : Reader" '
+                 '--resource-group-art "my-rg-art" '
                  '--role-definition-id "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7" '
-                 r'''--principal-ids "[parameters('[Usergrouporapplicationname]:Reader_RoleAssignmentName')]" '''
-                 '--parameters @src/blueprint/azext_blueprint/tests/latest/role_params.json',
+                 r'''--principal-ids "[parameters('[Usergrouporapplicationname]:Reader_RoleAssignmentName')]"''',
                  checks=[])
- 
+
+        self.cmd('az blueprint artifact policy create '
+                 '--scope "{scope}" '
+                 '--blueprint-name "{blueprintName}" '
+                 '--artifact-name "policy-audit-win-vm-art" '
+                 '--display-name "Audit Windows VMs in which the Administrators group does not contain only the specified members" '
+                 '--policy-definition-id "/providers/Microsoft.Authorization/policySetDefinitions/06122b01-688c-42a8-af2e-fa97dd39aa3b" '
+                 '--resource-group-art "my-rg-art" '
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/policy_params.json',
+                 checks=[])
+
+        self.cmd('az blueprint update '
+                 '--scope "{scope}" '
+                 '--name "{blueprintName}" '
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/blueprint_params.json',
+                 checks=[])
 
         self.cmd('az blueprint published create '
                  '--scope "{scope}" '
@@ -58,246 +75,58 @@ class BlueprintScenarioTest(ScenarioTest):
                  '--change-notes "First release"',
                  checks=[])
 
+        self.cmd('az blueprint assignment create '
+                 '--scope "{scope}" '
+                 '--assignment-name "{assignmentName}" '
+                 '--location "westus2" '
+                 '--identity-type "SystemAssigned" '
+                 '--blueprint-id "/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/providers/Microsoft.Blueprint/blueprints/test-bp/versions/1.0" '
+                 '--locks-mode "None" '
+                 '--resource-groups @src/blueprint/azext_blueprint/tests/latest/resource_group_params.json '
+                 '--parameters @src/blueprint/azext_blueprint/tests/latest/assignment_params.json',
+                 checks=[])
+
+        self.cmd('az blueprint assignment wait '
+                 '--scope "{scope}" '
+                 '--assignment-name "{assignmentName}" '
+                 '''--custom "provisioningState=='succeeded'" '''
+                 '--created',
+                 checks=[])
+
+        self.cmd('az blueprint assignment show '
+                 '--scope "{scope}" '
+                 '--assignment-name "{assignmentName}"',
+                 checks=[])
+
+        self.cmd('az blueprint assignment delete '
+                 '--scope "{scope}" '
+                 '--assignment-name "{assignmentName}" '
+                 '-y',
+                 checks=[])
+
+        self.cmd('az blueprint assignment wait '
+                 '--scope "{scope}" '
+                 '--assignment-name "{assignmentName}" '
+                 '''--custom "provisioningState=='succeeded'" '''
+                 '--deleted',
+                 checks=[])
+
         self.cmd('az blueprint published delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint published list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint published list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint published list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint published list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
-
-        self.cmd('az blueprint who_is_blueprint '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--name "assignSimpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "ownerAssignment"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "storageTemplate"',
-                 checks=[])
-
-        self.cmd('az blueprint artifact delete '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--blueprint-name "simpleBlueprint" '
-                 '--name "costCenterPolicy"',
-                 checks=[])
-
-        self.cmd('az blueprint published list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--name "simpleBlueprint"',
-                 checks=[])
-
-        self.cmd('az blueprint published list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup" '
-                 '--name "simpleBlueprint"',
+                 '--scope "{scope}" '
+                 '--blueprint-name "{blueprintName}" '
+                 '--version "1.0" '
+                 '-y',
                  checks=[])
 
         self.cmd('az blueprint delete '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000" '
-                 '--name "assignSimpleBlueprint"',
+                 '--scope "{scope}" '
+                 '--name "{blueprintName}" '
+                 '-y',
                  checks=[])
 
-        self.cmd('az blueprint list '
-                 '--scope "providers/Microsoft.Management/managementGroups/ContosoOnlineGroup"',
-                 checks=[])
-
-        self.cmd('az blueprint list '
-                 '--scope "subscriptions/00000000-0000-0000-0000-000000000000"',
-                 checks=[])
+        # delete a blueprint assignment will not delete the resources created in the target scope
+        # delete the resource group that contains the created resources to clean up
+        self.cmd('az group delete '
+                 '--subscription "{subscription}" '
+                 '--name "blueprint-rg" '
+                 '-y')

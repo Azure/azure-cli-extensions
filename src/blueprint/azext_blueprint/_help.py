@@ -447,14 +447,14 @@ helps['blueprint assignment create'] = """
                "assignSimpleBlueprint" --location "eastus" --identity-type "SystemAssigned" \\
                --description "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." \\
                --blueprint-id "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup/provid \\
-               ers/Microsoft.Blueprint/blueprints/simpleBlueprint"
+               ers/Microsoft.Blueprint/blueprints/simpleBlueprint/versions/1.0"
       - name: Assignment with user-assigned managed identity
         text: |-
                az blueprint assignment create --scope "subscriptions/00000000-0000-0000-0000-000000000000" --name \\
                "assignSimpleBlueprint" --location "eastus" --identity-type "UserAssigned" --description \\
                "enforce pre-defined simpleBlueprint to this XXXXXXXX subscription." --blueprint-id "/prov \\
                iders/Microsoft.Management/managementGroups/ContosoOnlineGroup/providers/Microsoft.Bluepri \\
-               nt/blueprints/simpleBlueprint"
+               nt/blueprints/simpleBlueprint/versions/1.0"
 """
 
 helps['blueprint assignment update'] = """
@@ -489,6 +489,16 @@ helps['blueprint assignment list'] = """
       - name: Assignment
         text: |-
                az blueprint assignment list --scope "subscriptions/00000000-0000-0000-0000-000000000000"
+"""
+
+helps['blueprint assignment wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the Blueprint Assignment is met.
+    examples:
+        - name: Pause executing next line of CLI script until the Blueprint Assignment is successfully provisioned.
+          text: az blueprint assignment wait --scope \\
+               "subscriptions/00000000-0000-0000-0000-000000000000" --assignment-name "assignSimpleBlueprint" \\
+               --created
 """
 
 helps['blueprint assignment who-is-blueprint'] = """

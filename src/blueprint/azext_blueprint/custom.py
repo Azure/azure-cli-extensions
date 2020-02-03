@@ -225,18 +225,16 @@ def create_blueprint_artifact_role(cmd, client,
                                    role_definition_id,
                                    principal_ids,
                                    artifact_name,
-                                   parameters=None,
                                    display_name=None,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
-    print(parameters)
+
     body = {'display_name': display_name,
             'role_definition_id': role_definition_id,
             'kind': 'roleAssignment',
             'description': description,
             'depends_on': depends_on,
-            'parameters': json.loads(parameters) if parameters is not None else {},
             'resource_group': resource_group_art,
             'principal_ids': principal_ids
             }
@@ -247,15 +245,12 @@ def update_blueprint_artifact_role(cmd, client,
                                    blueprint_name,
                                    scope,
                                    artifact_name,
-                                   parameters=None,
                                    display_name=None,
                                    resource_group_art=None,
                                    description=None,
                                    depends_on=None):
     body = client.get(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name).as_dict()
 
-    if parameters is not None:
-        body['parameters'] = json.loads(parameters)
     if display_name is not None:
         body['display_name'] = display_name
     if resource_group_art is not None:
@@ -365,8 +360,8 @@ def list_blueprint_published_artifact(cmd, client,
 def create_blueprint_assignment(cmd, client,
                                 assignment_name,
                                 scope,
-                                location,
                                 identity_type,
+                                location=None,
                                 resource_groups=None,
                                 identity_principal_id=None,
                                 identity_tenant_id=None,
@@ -387,7 +382,7 @@ def create_blueprint_assignment(cmd, client,
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
     body['parameters'] = json.loads(parameters) if parameters is not None else {}   # dictionary
-    body['resource_groups'] = resource_groups if resource_groups is not None else {}  # dictionary
+    body['resource_groups'] = json.loads(resource_groups) if resource_groups is not None else {}  # dictionary
     body.setdefault('locks', {})['mode'] = locks_mode  # str
     body.setdefault('locks', {})['excluded_principals'] = None if locks_excluded_principals is None else locks_excluded_principals.split(',')
     return client.create_or_update(scope=scope, assignment_name=assignment_name, assignment=body)
@@ -428,7 +423,7 @@ def update_blueprint_assignment(cmd, client,
     if parameters is not None:
         body['parameters'] = json.loads(parameters)  # dictionary
     if resource_groups is not None:
-        body['resource_groups'] = resource_groups  # dictionary
+        body['resource_groups'] = json.loads(resource_groups)  # dictionary
     if locks_mode is not None:
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:

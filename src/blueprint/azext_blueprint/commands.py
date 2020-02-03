@@ -16,7 +16,7 @@ def load_command_table(self, _):
     blueprint_blueprints = CliCommandType(
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._blueprints_operations#BlueprintsOperations.{}',
         client_factory=cf_blueprints)
-    with self.command_group('blueprint', blueprint_blueprints, client_factory=cf_blueprints) as g:
+    with self.command_group('blueprint', blueprint_blueprints, client_factory=cf_blueprints, is_preview=True) as g:
         g.custom_command('create', 'create_blueprint')
         g.custom_command('update', 'update_blueprint')
         g.custom_command('delete', 'delete_blueprint', confirmation=True)
@@ -35,7 +35,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_blueprint.vendored_sdks.blueprint.operations._artifacts_operations#ArtifactsOperations.{}',
         client_factory=cf_artifacts)
     with self.command_group('blueprint artifact', blueprint_artifacts, client_factory=cf_artifacts) as g:
-        g.custom_command('delete', 'delete_blueprint_artifact')
+        g.custom_command('delete', 'delete_blueprint_artifact', confirmation=True)
         g.custom_show_command('show', 'get_blueprint_artifact')
         g.custom_command('list', 'list_blueprint_artifact')
 
@@ -57,7 +57,7 @@ def load_command_table(self, _):
         client_factory=cf_published_blueprints)
     with self.command_group('blueprint published', blueprint_published_blueprints, client_factory=cf_published_blueprints) as g:
         g.custom_command('create', 'create_blueprint_published')
-        g.custom_command('delete', 'delete_blueprint_published')
+        g.custom_command('delete', 'delete_blueprint_published', confirmation=True)
         g.custom_command('show', 'get_blueprint_published')
         g.custom_command('list', 'list_blueprint_published')
 
@@ -76,7 +76,8 @@ def load_command_table(self, _):
     with self.command_group('blueprint assignment', blueprint_assignments, client_factory=cf_assignments) as g:
         g.custom_command('create', 'create_blueprint_assignment')
         g.custom_command('update', 'update_blueprint_assignment')
-        g.custom_command('delete', 'delete_blueprint_assignment')
+        g.custom_command('delete', 'delete_blueprint_assignment', confirmation=True)
         g.custom_show_command('show', 'get_blueprint_assignment')
         g.custom_command('list', 'list_blueprint_assignment')
+        g.wait_command('wait')
         g.custom_command('who-is-blueprint', 'who_is_blueprint_blueprint_assignment')

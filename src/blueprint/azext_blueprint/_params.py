@@ -80,8 +80,8 @@ def load_arguments(self, _):
     with self.argument_context('blueprint resource-group update') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('blueprint_name', help='Name of the blueprint definition.')
-        c.argument('name', help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
-        c.argument('location', help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
+        c.argument('rg_name', help='Name of this resource group. Leave empty if the resource group name will be specified during the blueprint assignment.')
+        c.argument('rg_location', help='Location of this resource group. Leave empty if the resource group location will be specified during the blueprint assignment.')
         c.argument('artifact_name', help='A unique name of this resource group artifact.')
         c.argument('display_name', help='Display name of this resource group artifact.')
         c.argument('description', help='Description of the blueprint artifact.')
@@ -132,8 +132,7 @@ def load_arguments(self, _):
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('role_definition_id', help='Azure resource ID of the RoleDefinition.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('principal_ids', nargs='+', help='Array of user or group identities in Azure Active Directory. The roleDefinition will apply to each identity.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None)
+        c.argument('principal_ids', help='Array of user or group identities in Azure Active Directory. The roleDefinition will apply to each identity.')
 
     with self.argument_context('blueprint artifact role update') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -143,7 +142,6 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None)
 
     with self.argument_context('blueprint artifact template create') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -225,6 +223,10 @@ def load_arguments(self, _):
 
     with self.argument_context('blueprint assignment list') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
+
+    with self.argument_context('blueprint assignment wait') as c:
+        c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
+        c.argument('assignment_name', help='Name of the blueprint assignment.')
 
     with self.argument_context('blueprint assignment who-is-blueprint') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
