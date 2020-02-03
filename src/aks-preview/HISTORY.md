@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.28
++++++
+* Add the func list_cluster_monitoring_user_credentials in the vendored sdk for the version `v2020_01_01`
+
 0.4.27
 +++++
 * Fixed aks cluster creation error
