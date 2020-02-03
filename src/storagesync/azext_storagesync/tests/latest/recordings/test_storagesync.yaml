@@ -1,0 +1,500 @@
+interactions:
+- request:
+    body: '{"location": "WestUS"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storagesync storage-sync-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --location
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storagesync/0.2.0 Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storagesync000001/providers/Microsoft.StorageSync/storageSyncServices/SampleStorageSyncService_1?api-version=2019-06-01
+  response:
+    body:
+      string: '{"error":{"code":"MissingSubscriptionRegistration","message":"The subscription
+        is not registered to use namespace ''Microsoft.StorageSync''. See https://aka.ms/rps-not-found
+        for how to register subscriptions.","details":[{"code":"MissingSubscriptionRegistration","target":"Microsoft.StorageSync","message":"The
+        subscription is not registered to use namespace ''Microsoft.StorageSync''.
+        See https://aka.ms/rps-not-found for how to register subscriptions."}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '454'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 07:53:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 409
+      message: Conflict
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync/register?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync","namespace":"Microsoft.StorageSync","authorizations":[{"applicationId":"9469b9f5-6722-4481-a2b2-14ed560b706f"}],"resourceTypes":[{"resourceType":"storageSyncServices","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove"},{"resourceType":"storageSyncServices/syncGroups","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/cloudEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/serverEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/registeredServers","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/workflows","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"operations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"locations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/checkNameAvailability","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","North Central US","South
+        Central US","Brazil South","Japan East","Japan West","West Central US","West
+        US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/workflows","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","West Central US","West
+        US 2","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5882'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 07:54:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync","namespace":"Microsoft.StorageSync","authorizations":[{"applicationId":"9469b9f5-6722-4481-a2b2-14ed560b706f"}],"resourceTypes":[{"resourceType":"storageSyncServices","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove"},{"resourceType":"storageSyncServices/syncGroups","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/cloudEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/serverEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/registeredServers","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/workflows","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"operations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"locations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/checkNameAvailability","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","North Central US","South
+        Central US","Brazil South","Japan East","Japan West","West Central US","West
+        US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/workflows","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","West Central US","West
+        US 2","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5882'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 07:54:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync","namespace":"Microsoft.StorageSync","authorizations":[{"applicationId":"9469b9f5-6722-4481-a2b2-14ed560b706f"}],"resourceTypes":[{"resourceType":"storageSyncServices","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove"},{"resourceType":"storageSyncServices/syncGroups","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/cloudEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/serverEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/registeredServers","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/workflows","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"operations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"locations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/checkNameAvailability","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","North Central US","South
+        Central US","Brazil South","Japan East","Japan West","West Central US","West
+        US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/workflows","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","West Central US","West
+        US 2","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]}],"registrationState":"Registering"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5882'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 07:54:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync?api-version=2016-02-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StorageSync","namespace":"Microsoft.StorageSync","authorizations":[{"applicationId":"9469b9f5-6722-4481-a2b2-14ed560b706f"}],"resourceTypes":[{"resourceType":"storageSyncServices","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove"},{"resourceType":"storageSyncServices/syncGroups","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/cloudEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/syncGroups/serverEndpoints","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/registeredServers","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"storageSyncServices/workflows","locations":["West
+        Central US","West US","West Europe","North Europe","Southeast Asia","East
+        Asia","Australia East","Australia Southeast","East US","Canada Central","Canada
+        East","Central US","East US 2","UK South","UK West","Central India","South
+        India","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","West US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"operations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02","2018-01-01-preview","2017-06-05-preview"]},{"resourceType":"locations","locations":[],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/checkNameAvailability","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","North Central US","South
+        Central US","Brazil South","Japan East","Japan West","West Central US","West
+        US 2","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]},{"resourceType":"locations/workflows","locations":["West
+        US","West Europe","North Europe","Southeast Asia","East Asia","Australia East","Australia
+        Southeast","East US","Canada Central","Canada East","Central US","East US
+        2","UK South","UK West","Central India","South India","West Central US","West
+        US 2","North Central US","South Central US","Brazil South","Japan East","Japan
+        West","Korea Central","Korea South","France Central","France South","South
+        Africa North","South Africa West","UAE North","UAE Central"],"apiVersions":["2019-06-01","2019-03-01","2019-02-01","2018-10-01","2018-07-01","2018-04-02"]}],"registrationState":"Registered"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5881'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 07:54:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "WestUS"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storagesync storage-sync-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - --resource-group --name --location
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-storagesync/0.2.0 Azure-SDK-For-Python AZURECLI/2.0.79
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storagesync000001/providers/Microsoft.StorageSync/storageSyncServices/SampleStorageSyncService_1?api-version=2019-06-01
+  response:
+    body:
+      string: '{"error":{"code":"MgmtBadArgument","message":"Resource property ''Tags''
+        has invalid value. Details: Argument is null","target":"Validation","details":{"httpErrorCode":"BadRequest","exceptionType":"Kailani.Hfs.V1.ErrorCodes.Exceptions.HfsBackendException","hashedMessage":"Resource
+        property ''Tags'' has invalid value. Details: Argument is null","httpMethod":"PUT","requestUri":"http://10.0.1.1:8082/2019-06-01/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_storagesync000001/providers/Microsoft.StorageSync/storageSyncServices/SampleStorageSyncService_1?api-version=2019-06-01"},"innererror":{"callStack":"   at
+        Microsoft.Kailani.Common.Diagnostics.HfsTracer.TraceAndThrow(Exception ex,
+        EventLevel level, String msg, UseInterpolatedStringOrStringDotFormat guard,
+        String file, String member, Int32 line) in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Common.Diagnostics\\HfsTracer.cs:line
+        214\r\n   at Kailani.Hfs.V1.Actions.Services.BaseResourceProvider`1.ThrowValidationError(String
+        parameter, String errorMessage) in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\Services\\BaseResourceProvider.cs:line
+        985\r\n   at Kailani.Hfs.V1.Common.Validations.DictionaryValidator`2.Validate(IDictionary`2
+        value, Action`1 errorAction) in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Common\\Validators\\DictionaryValidator.cs:line
+        39\r\n   at Kailani.Hfs.V1.Actions.Services.StorageSyncServiceProvider.<Validate>d__19.MoveNext()
+        in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\Services\\StorageSyncServiceProvider.cs:line
+        562\r\n--- End of stack trace from previous location where exception was thrown
+        ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\r\n   at Kailani.Hfs.V1.Actions.Services.BaseResourceProvider`1.<CreateOrUpdate>d__30.MoveNext()
+        in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\Services\\BaseResourceProvider.cs:line
+        795\r\n--- End of stack trace from previous location where exception was thrown
+        ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\r\n   at Kailani.Hfs.V1.Actions.CloudActions.NewStorageSyncServiceAction.<ExecuteAction>d__5.MoveNext()
+        in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\CloudActions\\StorageSyncService\\NewStorageSyncServiceAction.cs:line
+        94\r\n--- End of stack trace from previous location where exception was thrown
+        ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\r\n   at Kailani.Hfs.V1.Actions.CloudActions.PutTemplateAction`1.<ExecuteAsync>d__6.MoveNext()
+        in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\CloudActions\\ActionTemplates\\PutTemplateAction.cs:line
+        0\r\n--- End of stack trace from previous location where exception was thrown
+        ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\r\n   at Kailani.Hfs.V1.Actions.CloudActions.CloudActionBase`1.<ExecuteRequestAsync>d__10.MoveNext()
+        in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\CloudActions\\CloudResourceActionBase.cs:line
+        77\r\n--- End of stack trace from previous location where exception was thrown
+        ---\r\n   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()\r\n   at
+        System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task
+        task)\r\n   at Kailani.Hfs.V1.Actions.CloudActions.CloudActionBase.<ExecuteAsync>d__15.MoveNext()
+        in X:\\bt\\1037716\\repo\\src\\Kailani\\Kailani.Hfs.Actions\\CloudActions\\CloudActionBase.cs:line
+        119","message":"Resource property ''Tags'' has invalid value. Details: Argument
+        is null"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4045'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 Jan 2020 07:54:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-ms-request-error:
+      - '0x80C87001'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
