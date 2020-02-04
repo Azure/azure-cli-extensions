@@ -31,6 +31,7 @@ class DevspacesExtCommandLoader(AzCommandsLoader):  # pylint:disable=too-few-pub
             c.argument('cluster_name', options_list=['--name', '-n'])
             c.argument('update', options_list=['--update'], action='store_true')
             c.argument('space_name', options_list=['--space', '-s'])
+            c.argument('endpoint_type', options_list=['--endpoint', '-e'])
             c.argument('do_not_prompt', options_list=['--yes', '-y'],
                        action='store_true', help='Do not prompt for confirmation. Requires --space.')
 
