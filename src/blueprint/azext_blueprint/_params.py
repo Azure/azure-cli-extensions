@@ -29,7 +29,7 @@ def load_arguments(self, _):
 
     with self.argument_context('blueprint create') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
-        c.argument('name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
+        c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
         c.argument('display_name', help='One-liner string explain this resource.')
         c.argument('description', help='Multi-line explain this resource.')
         c.argument('target_scope', arg_type=get_enum_type(['subscription', 'managementGroup']), help='The scope where this blueprint definition can be assigned.')
@@ -37,17 +37,17 @@ def load_arguments(self, _):
 
     with self.argument_context('blueprint update') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
-        c.argument('name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
+        c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
         c.argument('description', help='Multi-line explain this resource.')
         c.argument('parameters', arg_type=parameter_type, help='Parameters required by this blueprint definition.')
 
     with self.argument_context('blueprint delete') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
-        c.argument('name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
+        c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
 
     with self.argument_context('blueprint show') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
-        c.argument('name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
+        c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition.')
 
     with self.argument_context('blueprint list') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -58,6 +58,7 @@ def load_arguments(self, _):
         c.argument('artifact_name', help='Name of the blueprint artifact.')
 
     with self.argument_context('blueprint artifact show') as c:
+        c.argument('name_place_holder', id_part='name')
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
         c.argument('blueprint_name', help='Name of the blueprint definition.')
         c.argument('artifact_name', help='Name of the blueprint artifact.')
@@ -111,7 +112,7 @@ def load_arguments(self, _):
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('policy_definition_id', help='Azure resource ID of the policy definition.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None)
+        c.argument('parameters', arg_type=parameter_type)
 
     with self.argument_context('blueprint artifact policy update') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -121,7 +122,7 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None)
+        c.argument('parameters', arg_type=parameter_type)
 
     with self.argument_context('blueprint artifact role create') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -151,8 +152,8 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None)
-        c.argument('template', arg_type=template_type, id_part=None)
+        c.argument('parameters', arg_type=parameter_type)
+        c.argument('template', arg_type=template_type)
 
     with self.argument_context('blueprint artifact template update') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')
@@ -162,8 +163,8 @@ def load_arguments(self, _):
         c.argument('description', help='Description of the blueprint artifact.')
         c.argument('depends_on', nargs='+', help='Artifacts which need to be deployed before the specified artifact.')
         c.argument('resource_group_art', help='Name of the resource group artifact to which the policy will be assigned.')
-        c.argument('parameters', arg_type=parameter_type, id_part=None)
-        c.argument('template', arg_type=template_type, id_part=None)
+        c.argument('parameters', arg_type=parameter_type)
+        c.argument('template', arg_type=template_type)
 
     with self.argument_context('blueprint published create') as c:
         c.argument('scope', help='The scope of the resource. Valid scopes are: management group (format: \'/providers/Microsoft.Management/managementGroups/{managementGroup}\'), subscription (format: \'/subscriptions/{subscriptionId}\'). For blueprint assignments management group scope is reserved for future use.')

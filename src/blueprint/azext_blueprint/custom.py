@@ -14,7 +14,7 @@ from knack.util import CLIError
 
 
 def create_blueprint(cmd, client,
-                     name,
+                     blueprint_name,
                      scope,
                      display_name=None,
                      description=None,
@@ -25,32 +25,32 @@ def create_blueprint(cmd, client,
     body['description'] = description  # str
     body['target_scope'] = target_scope  # str
     body['parameters'] = json.loads(parameters) if parameters is not None else {}  # dictionary
-    return client.create_or_update(scope=scope, blueprint_name=name, blueprint=body)
+    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
 
 
 def update_blueprint(cmd, client,
-                     name,
+                     blueprint_name,
                      scope,
                      description=None,
                      parameters=None):
-    body = client.get(scope=scope, blueprint_name=name).as_dict()
+    body = client.get(scope=scope, blueprint_name=blueprint_name).as_dict()
     if description is not None:
         body['description'] = description  # str
     if parameters is not None:
         body['parameters'] = json.loads(parameters)  # dictionary
-    return client.create_or_update(scope=scope, blueprint_name=name, blueprint=body)
+    return client.create_or_update(scope=scope, blueprint_name=blueprint_name, blueprint=body)
 
 
 def delete_blueprint(cmd, client,
-                     name,
+                     blueprint_name,
                      scope):
-    return client.delete(scope=scope, blueprint_name=name)
+    return client.delete(scope=scope, blueprint_name=blueprint_name)
 
 
 def get_blueprint(cmd, client,
-                  name,
+                  blueprint_name,
                   scope):
-    return client.get(scope=scope, blueprint_name=name)
+    return client.get(scope=scope, blueprint_name=blueprint_name)
 
 
 def list_blueprint(cmd, client,
@@ -190,8 +190,7 @@ def create_blueprint_artifact_policy(cmd, client,
             'description': description,
             'depends_on': depends_on,
             'parameters': json.loads(parameters) if parameters is not None else {},
-            'resource_group': resource_group_art
-            }
+            'resource_group': resource_group_art}
     return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
 
 
@@ -236,8 +235,7 @@ def create_blueprint_artifact_role(cmd, client,
             'description': description,
             'depends_on': depends_on,
             'resource_group': resource_group_art,
-            'principal_ids': principal_ids
-            }
+            'principal_ids': principal_ids}
     return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
 
 
@@ -279,8 +277,7 @@ def create_blueprint_artifact_template(cmd, client,
             'description': description,
             'depends_on': depends_on,
             'parameters': json.loads(parameters) if parameters is not None else {},
-            'resource_group': resource_group_art
-            }
+            'resource_group': resource_group_art}
     return client.create_or_update(scope=scope, blueprint_name=blueprint_name, artifact_name=artifact_name, artifact=body)
 
 
