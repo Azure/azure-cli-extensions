@@ -10,6 +10,7 @@ az extension add -s https://azurecliprod.blob.core.windows.net/cli-extensions/st
 ### Included Features
 #### ORS Policy:
 Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts)\
+
 *Examples:*
 
 ##### Create ORS Policy on destination storage account
