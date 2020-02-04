@@ -111,7 +111,7 @@ class AzureFirewallScenario(ScenarioTest):
             ])
 
         self.cmd(
-            'network firewall management-ip-config update -g {rg} -f {af} -n {management_ipconfig} --public-ip-address {pubip4} --vnet-name {management_vnet2}',
+            'network firewall management-ip-config update -g {rg} -f {af} --public-ip-address {pubip4} --vnet-name {management_vnet2}',
             checks=[
                 self.check('name', '{management_ipconfig}'),
                 self.check('subnet.id', subnet_id_management_ip_config_2)
