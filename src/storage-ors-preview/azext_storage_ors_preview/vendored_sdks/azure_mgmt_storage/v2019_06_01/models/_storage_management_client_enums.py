@@ -51,6 +51,12 @@ class Reason(str, Enum):
     already_exists = "AlreadyExists"
 
 
+class KeyType(str, Enum):
+
+    service = "Service"
+    account = "Account"
+
+
 class KeySource(str, Enum):
 
     microsoft_storage = "Microsoft.Storage"
@@ -89,6 +95,7 @@ class DirectoryServiceOptions(str, Enum):
 
     none = "None"
     aadds = "AADDS"
+    ad = "AD"
 
 
 class AccessTier(str, Enum):
@@ -103,11 +110,24 @@ class LargeFileSharesState(str, Enum):
     enabled = "Enabled"
 
 
+class RoutingChoice(str, Enum):
+
+    microsoft_routing = "MicrosoftRouting"
+    internet_routing = "InternetRouting"
+
+
 class GeoReplicationStatus(str, Enum):
 
     live = "Live"
     bootstrap = "Bootstrap"
     unavailable = "Unavailable"
+
+
+class BlobRestoreProgressStatus(str, Enum):
+
+    in_progress = "InProgress"
+    complete = "Complete"
+    failed = "Failed"
 
 
 class ProvisioningState(str, Enum):
@@ -239,3 +259,9 @@ class ImmutabilityPolicyUpdateType(str, Enum):
 class StorageAccountExpand(str, Enum):
 
     geo_replication_stats = "geoReplicationStats"
+    blob_restore_status = "blobRestoreStatus"
+
+
+class ListKeyExpand(str, Enum):
+
+    kerb = "kerb"

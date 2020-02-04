@@ -71,7 +71,7 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
     new_ors_rule = ObjectReplicationPolicyRule(
         source_container=source_container,
         destination_container=destination_container,
-        filter=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)
+        filters=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)
     )
     policy_properties.rules.append(new_ors_rule)
     return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
