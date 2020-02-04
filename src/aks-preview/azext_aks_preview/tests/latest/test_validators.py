@@ -91,6 +91,7 @@ class TestVNetSubnetId(unittest.TestCase):
         namespace = VnetSubnetIdNamespace(invalid_vnet_subnet_id)
         validators.validate_vnet_subnet_id(namespace)
 
+
 class VnetSubnetIdNamespace:
     def __init__(self, vnet_subnet_id):
         self.vnet_subnet_id = vnet_subnet_id
