@@ -832,6 +832,24 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     )
     if 'omsagent' in addon_profiles:
         _ensure_container_insights_for_monitoring(cmd, addon_profiles['omsagent'])
+    if 'IngressApplicationGateway' in addon_profiles:
+        if "applicationGatewayId" in addon_profiles["IngressApplicationGateway"].config:
+            appgw_id = addon_profiles["IngressApplicationGateway"].config["applicationGatewayId"]
+            from msrestazure.tools import parse_resource_id, resource_id
+            appgw_id_dict = parse_resource_id(appgw_id)
+            appgw_group_id = resource_id(subscription=appgw_id_dict["subscription"], resource_group=appgw_id_dict["resource_group"])
+            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                        service_principal_profile.client_id, scope=appgw_group_id):
+                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                               'Are you an Owner on this subscription?')
+        if "subnetId" in addon_profiles["IngressApplicationGateway"].config:
+            subnet_id = addon_profiles["IngressApplicationGateway"].config["subnetId"]
+            from msrestazure.tools import parse_resource_id, resource_id
+            if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                        service_principal_profile.client_id, scope=subnet_id):
+                logger.warning('Could not create a role assignment for IngressApplicationGateway addon. '
+                               'Are you an Owner on this subscription?')
+
     aad_profile = None
     if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret, aad_tenant_id]):
         aad_profile = ManagedClusterAADProfile(
