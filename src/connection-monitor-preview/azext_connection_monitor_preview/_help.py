@@ -28,8 +28,8 @@ examples:
   - name: Create a V2 connection monitor
     text: >
       az network watcher connection-monitor create
-      -l westus
       --name MyV2ConnectionMonitor
+      --location westus
       --endpoint-source-name "vm01"
       --endpoint-source-resource-id MyVM01ResourceID
       --endpoint-dest-name bing
