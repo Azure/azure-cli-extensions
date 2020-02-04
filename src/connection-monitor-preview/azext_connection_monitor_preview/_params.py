@@ -30,7 +30,7 @@ def load_arguments(self, _):
 
     with self.argument_context('network watcher') as c:
         c.argument('network_watcher_name', name_arg_type, help='Name of the Network Watcher.')
-        c.argument('location', validator=None)
+        c.argument('location', get_location_type(self.cli_ctx), validator=None)
         c.ignore('watcher_rg')
         c.ignore('watcher_name')
 
