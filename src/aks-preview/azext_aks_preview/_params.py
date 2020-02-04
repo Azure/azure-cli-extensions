@@ -20,7 +20,8 @@ from ._validators import (
     validate_ssh_key, validate_max_pods, validate_nodes_count, validate_ip_ranges,
     validate_nodepool_name, validate_vm_set_type, validate_load_balancer_sku,
     validate_load_balancer_outbound_ips, validate_load_balancer_outbound_ip_prefixes,
-    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user)
+    validate_taints, validate_priority, validate_eviction_policy, validate_acr, validate_user,
+    validate_outbound_type)
 
 
 def load_arguments(self, _):
@@ -60,6 +61,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('outbound_type', type=str, validator=validate_outbound_type)
         c.argument('enable_addons', options_list=['--enable-addons', '-a'])
         c.argument('disable_rbac', action='store_true')
         c.argument('enable_rbac', action='store_true', options_list=['--enable-rbac', '-r'],

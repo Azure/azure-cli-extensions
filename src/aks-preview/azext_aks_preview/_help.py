@@ -108,6 +108,10 @@ helps['aks create'] = """
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
           long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
+        - name: --outbound-type
+          type: string
+          short-summary: How outbound traffic will be configured for a cluster.
+          long-summary: Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --network-plugin to be azure and a standard load balancer SKU.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -214,7 +218,10 @@ helps['aks create'] = """
         - name: Create a kubernetes cluster with authorized apiserver IP ranges.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 193.168.1.0/24,194.168.1.0/24,195.168.1.0
         - name: Create a kubernetes cluster with server side encryption using your owned key.
+        - name: Create a kubernetes cluster with server side encryption using your owned key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-diskencryptionset-id <disk-encryption-set-resource-id>
+        - name: Create a kubernetes cluster with userDefinedRouting, standard load balancer SKU and the azure network plugin
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --outbound-type userDefinedRouting --network-plugin azure --load-balancer-sku standard
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 

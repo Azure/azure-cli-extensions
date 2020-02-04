@@ -73,7 +73,7 @@ from ._client_factory import cf_resources
 from ._client_factory import get_resource_by_name
 from ._client_factory import cf_container_registry_service
 from ._client_factory import cf_storage
-from ._helpers import _populate_api_server_access_profile, _set_load_balancer_sku, _set_vm_set_type
+from ._helpers import _populate_api_server_access_profile, _set_load_balancer_sku, _set_vm_set_type, _set_outbound_type
 
 
 logger = get_logger(__name__)
@@ -664,6 +664,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                load_balancer_managed_outbound_ip_count=None,
                load_balancer_outbound_ips=None,
                load_balancer_outbound_ip_prefixes=None,
+               outbound_type=None,
                enable_addons=None,
                workspace_resource_id=None,
                min_count=None,
@@ -781,6 +782,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         load_balancer_outbound_ips,
         load_balancer_outbound_ip_prefixes)
 
+    outbound_type = _set_outbound_type(outbound_type, network_plugin, load_balancer_sku, load_balancer_profile)
+
     network_profile = None
     if any([network_plugin,
             pod_cidr,
@@ -801,6 +804,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             network_policy=network_policy,
             load_balancer_sku=load_balancer_sku.lower(),
             load_balancer_profile=load_balancer_profile,
+            outbound_type=outbound_type
         )
     else:
         if load_balancer_sku.lower() == "standard" or load_balancer_profile:
@@ -808,6 +812,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 network_plugin="kubenet",
                 load_balancer_sku=load_balancer_sku.lower(),
                 load_balancer_profile=load_balancer_profile,
+                outbound_type=outbound_type,
             )
 
     addon_profiles = _handle_addons_args(

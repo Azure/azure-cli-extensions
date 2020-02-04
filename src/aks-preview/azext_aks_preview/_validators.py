@@ -15,6 +15,8 @@ from knack.log import get_logger
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
+from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+
 logger = get_logger(__name__)
 
 
@@ -77,7 +79,8 @@ def validate_linux_host_name(namespace):
     in the CLI pre-flight.
     """
     # https://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-    rfc1123_regex = re.compile(r'^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$')  # pylint:disable=line-too-long
+    rfc1123_regex = re.compile(
+        r'^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$')  # pylint:disable=line-too-long
     found = rfc1123_regex.findall(namespace.name)
     if not found:
         raise CLIError('--name cannot exceed 63 characters and can only contain '
@@ -179,7 +182,8 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
 def validate_taints(namespace):
     """Validates that provided taint is a valid format"""
 
-    regex = re.compile(r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
+    regex = re.compile(
+        r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
     if namespace.node_taints is not None and namespace.node_taints != '':
         for taint in namespace.node_taints.split(','):
@@ -219,3 +223,13 @@ def validate_user(namespace):
     if namespace.user.lower() != "clusteruser" and \
             namespace.user.lower() != "clustermonitoringuser":
         raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
+
+
+def validate_outbound_type(namespace):
+    if not namespace.outbound_type:
+        return
+
+    if namespace.outbound_type not in [CONST_OUTBOUND_TYPE_LOAD_BALANCER, CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING]:
+        raise CLIError("Invalid --outbound-type '{0}'. --outbound-type can only be set to'{1}' or '{2}'".format(
+            namespace.outbound_type, CONST_OUTBOUND_TYPE_LOAD_BALANCER,
+            CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING))
