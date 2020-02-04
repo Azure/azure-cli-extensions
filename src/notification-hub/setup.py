@@ -57,5 +57,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_notificationhubs': ['azext_metadata.json']},
+    package_data={'azext_notification_hub': ['azext_metadata.json']},
 )

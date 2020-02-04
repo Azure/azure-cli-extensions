@@ -15,7 +15,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_namespaces
     notificationhubs_namespaces = CliCommandType(
-        operations_tmpl='azext_notificationhubs.vendored_sdks.notificationhubs.operations.namespaces_operations#NamespacesOperations.{}',
+        operations_tmpl='azext_notification_hub.vendored_sdks.notificationhubs.operations.namespaces_operations#NamespacesOperations.{}',
         client_factory=cf_namespaces)
     with self.command_group('notification-hub namespace', notificationhubs_namespaces, client_factory=cf_namespaces, is_preview=True) as g:
         g.custom_command('create', 'create_notificationhubs_namespace')
@@ -34,7 +34,7 @@ def load_command_table(self, _):
 
     from ._client_factory import cf_notification_hubs
     notificationhubs_notification_hubs = CliCommandType(
-        operations_tmpl='azext_notificationhubs.vendored_sdks.notificationhubs.operations.notification_hubs_operations#NotificationHubsOperations.{}',
+        operations_tmpl='azext_notification_hub.vendored_sdks.notificationhubs.operations.notification_hubs_operations#NotificationHubsOperations.{}',
         client_factory=cf_notification_hubs)
     with self.command_group('notification-hub', notificationhubs_notification_hubs, client_factory=cf_notification_hubs, is_preview=True) as g:
         g.custom_command('create', 'create_notificationhubs_hub')
