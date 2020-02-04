@@ -113,9 +113,22 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='eastus')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v2_creation(self, resource_group, resource_group_location):
+        # create a V2 connection monitor with --location and TCP configuration
         self._prepare_connection_monitor_v2_env(resource_group, resource_group_location)
+
+        # create a v2 connection monitor without --location and ICMP configuration
+        self.cmd('network watcher connection-monitor create '
+                 '--name cmv2-01 '
+                 '--endpoint-source-name vm2 '
+                 '--endpoint-source-resource-id {vm2_id} '
+                 '--endpoint-dest-name bing '
+                 '--endpoint-dest-address bing.com '
+                 '--test-config-name DefaultIcmp '
+                 '--protocol Icmp ')
+
         self.cmd('network watcher connection-monitor list -l {location}')
         self.cmd('network watcher connection-monitor show -l {location} -n {cmv2}')
+        self.cmd('network watcher connection-monitor show -l {location} -n cmv2-01')
 
     @ResourceGroupPreparer(name_prefix='connection_monitor_v2_test_', location='eastus')
     @AllowLargeResponse()
