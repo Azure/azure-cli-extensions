@@ -29,7 +29,6 @@ examples:
     text: >
       az network watcher connection-monitor create
       --name MyV2ConnectionMonitor
-      --location westus
       --endpoint-source-name "vm01"
       --endpoint-source-resource-id MyVM01ResourceID
       --endpoint-dest-name bing
@@ -37,6 +36,7 @@ examples:
       --test-config-name TCPTestConfig
       --protocol Tcp
       --tcp-port 2048
+      --location westus
 """
 
 
