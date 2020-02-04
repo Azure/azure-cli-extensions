@@ -31,7 +31,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_ors_policy', validator=validate_ors_policy)
         g.generic_update_command('update', setter_name='update_ors_policy', setter_type=ors_policy_custom_type)
         g.command('remove', 'delete')
-        g.custom_command('set', 'set_ors_policy')
 
     with self.command_group('storage account ors-policy rule', ors_policy_sdk, is_preview=True,
                             resource_type=CUSTOM_MGMT_STORAGE_ORS, min_api='2019-06-01',

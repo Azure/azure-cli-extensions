@@ -28,6 +28,11 @@ def load_arguments(self, _):
         help='Rule Id is auto-generated for each new rule on destination account. It is required '
              'for put policy on source account.'
     )
+    prefix_math_type = CLIArgumentType(
+        nargs='+',
+        help='Optional. Filter the results to replicate only blobs whose names begin with the specified '
+             'prefix.'
+    )
 
     with self.argument_context('storage account ors-policy') as c:
         c.argument('account_name', acct_name_type, id_part=None)
@@ -48,10 +53,7 @@ def load_arguments(self, _):
                        help='The source storage container name. Required when no --policy provided.')
             c.argument('destination_container', options_list=['--destination-container'],
                        help='The destination storage container name. Required when no --policy provided.')
-            c.argument('tag', nargs='*', help='Optional. Filter the results to replicate blobs with the tag.')
-            c.argument('prefix_match', nargs='*',
-                       help='Optional. Filter the results to replicate only blobs whose names begin with the specified '
-                            'prefix.')
+            c.argument('prefix_match', prefix_math_type)
 
     with self.argument_context('storage account ors-policy update') as c:
         c.argument('account_name', acct_name_type, id_part=None)
@@ -63,8 +65,5 @@ def load_arguments(self, _):
                    help='The source storage container name.')
         c.argument('destination_container', options_list=['--destination-container', '-d'],
                    help='The destination storage container name.')
-        c.argument('tag', nargs='*', help='Optional. Filter the results to replicate blobs with the tag.')
-        c.argument('prefix_match', nargs='*',
-                   help='Optional. Filter the results to replicate only blobs whose names begin with the specified '
-                        'prefix.')
+        c.argument('prefix_match', prefix_math_type)
         c.argument('rule_id', rule_id_type)

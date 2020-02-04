@@ -26,7 +26,7 @@ def create_ors_policy(cmd, client, resource_group_name, account_name, properties
                 rule_id=rule_id,
                 source_container=source_container,
                 destination_container=destination_container,
-                filters=ObjectReplicationPolicyFilter(prefix_match=prefix_match, tag=tag)
+                filters=ObjectReplicationPolicyFilter(prefix_match=prefix_match)
             )
             rules.append(rule)
         ors_policy = ObjectReplicationPolicy(source_account=source_account,
@@ -59,14 +59,8 @@ def get_ors_policy(client, resource_group_name, account_name, policy_id='default
                       object_replication_policy_id=policy_id)
 
 
-def set_ors_policy(client, resource_group_name, account_name, policy_id):
-    ors_policy = get_ors_policy(client, resource_group_name, account_name, policy_id)
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   object_replication_policy_id=policy_id, properties=ors_policy)
-
-
 def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
-                 source_container, destination_container, tag=None, prefix_match=None):
+                 source_container, destination_container, prefix_match=None):
     """
     Initialize rule for ORS policy
     """
@@ -77,7 +71,7 @@ def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
     new_ors_rule = ObjectReplicationPolicyRule(
         source_container=source_container,
         destination_container=destination_container,
-        filters=ObjectReplicationPolicyFilter(predix_match=prefix_match, tag=tag)
+        filters=ObjectReplicationPolicyFilter(predix_match=prefix_match)
     )
     policy_properties.rules.append(new_ors_rule)
     return client.create_or_update(resource_group_name, account_name, policy_id, policy_properties)
@@ -113,7 +107,7 @@ def list_ors_rules(client, resource_group_name, account_name, policy_id):
 
 
 def update_ors_rule(client, resource_group_name, account_name, policy_id, rule_id, source_container=None,
-                    destination_container=None, tag=None, prefix_match=None):
+                    destination_container=None, prefix_match=None):
     policy_properties = client.get(resource_group_name, account_name, policy_id)
 
     for i, rule in enumerate(policy_properties.rules):
@@ -122,10 +116,8 @@ def update_ors_rule(client, resource_group_name, account_name, policy_id, rule_i
                 policy_properties.rules[i].destination_container = destination_container
             if source_container is not None:
                 policy_properties.rules[i].source_container = source_container
-            if tag is not None:
-                policy_properties.rules[i].filter.tag = tag
             if prefix_match is not None:
-                policy_properties.rules[i].filter.prefix_match = prefix_match
+                policy_properties.rules[i].filters.prefix_match = prefix_match
 
     client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                             object_replication_policy_id=policy_id, properties=policy_properties)
