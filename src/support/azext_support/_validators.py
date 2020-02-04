@@ -46,7 +46,7 @@ def _validate_communication_name(cmd, ticket_name, communication_name):
     rsp = client.check_name_availability(support_ticket_name=ticket_name, name=communication_name,
                                          type="Microsoft.Support/communications")
     if not rsp.name_available:
-        raise CLIError("'Support ticket communication name '{0}' not available. ".format(communication_name) +
+        raise CLIError("Support ticket communication name '{0}' not available. ".format(communication_name) +
                        "Please try again with another name.")
 
 
@@ -55,25 +55,26 @@ def _validate_ticket_name(cmd, ticket_name):
     rsp = client.check_name_availability(name=ticket_name, type="Microsoft.Support/supportTickets")
     if not rsp.name_available:
         raise CLIError("Support ticket name '{0}' not available. ".format(ticket_name) +
-                       "'Please try again with another name.")
+                       "Please try again with another name.")
 
 
 def _validate_problem_classification_name(problem_classification_id):
     if parse_support_area_path(problem_classification_id) is None:
-        raise CLIError("'Problem classification id value is invalid. Please use " +
-                       "'az support services problem-classifications list' to find correct value and try again.")
+        raise CLIError("Problem classification id is invalid. Please use 'az support services " +
+                       "problem-classifications list' to get the most recent set of problem classification " +
+                       "ids for your service.")
 
 
 def _validate_resource_name(cmd, resource_id):
     client = cf_resource(cmd.cli_ctx)
-    base_error_msg = "Technical resource argument {0} is not valid.".format(resource_id)
+    base_error_msg = "Technical resource argument {0} is invalid.".format(resource_id)
     if not is_valid_resource_id(resource_id):
         raise CLIError(base_error_msg)
 
     parsed_resource = parse_resource_id(resource_id)
     subid = parsed_resource["subscription"]
     if not _is_guid(subid):
-        raise CLIError(base_error_msg + "Subscription id {0} is not valid.".format(subid))
+        raise CLIError(base_error_msg + "Subscription id {0} is invalid.".format(subid))
 
     session_subid = get_subscription_id(cmd.cli_ctx)
     if subid != session_subid:
