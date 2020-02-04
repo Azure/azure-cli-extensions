@@ -201,6 +201,21 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall create -g {rg} -n {af} --zones 1 3')
         self.cmd('network firewall update -g {rg} -n {af} --zones 1')
 
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_virtual_hub', location='eastus')
+    def test_azure_firewall_virtual_hub(self, resource_group):
+
+        self.kwargs.update({
+            'af': 'af1',
+            'coll': 'rc1',
+            'vwan': 'clitestvwan',
+            'vhub': 'clitestvhub',
+            'rg': resource_group
+        })
+        self.cmd('extension add -n virtual-wan')
+        self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
+        self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus --sku Standard')
+        self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --vhub clitestvhub')
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westcentralus')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
         from knack.util import CLIError
