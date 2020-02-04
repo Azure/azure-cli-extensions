@@ -36,7 +36,6 @@ examples:
       --test-config-name TCPTestConfig
       --protocol Tcp
       --tcp-port 2048
-      --location westus
 """
 
 
