@@ -59,6 +59,12 @@ def get_ors_policy(client, resource_group_name, account_name, policy_id='default
                       object_replication_policy_id=policy_id)
 
 
+def set_ors_policy(client, resource_group_name, account_name, policy_id):
+    ors_policy = get_ors_policy(client, resource_group_name, account_name, policy_id)
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   object_replication_policy_id=policy_id, properties=ors_policy)
+
+
 def add_ors_rule(cmd, client, resource_group_name, account_name, policy_id,
                  source_container, destination_container, tag=None, prefix_match=None):
     """

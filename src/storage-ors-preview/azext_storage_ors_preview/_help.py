@@ -34,10 +34,18 @@ examples:
 
 helps['storage account ors-policy remove'] = """
 type: command
-short-summary: Remove Object Replication Service Policy associated with the specified storage account.
+short-summary: Remove specified Object Replication Service Policy associated with the specified storage account.
 examples:
   - name: Remove Object Replication Service Policy associated with the specified storage account.
     text: az storage account ors-policy remove -g ResourceGroupName -n StorageAccountName --policy-id "04344ea7-aa3c-4846-bfb9-e908e32d3bf8"
+"""
+
+helps['storage account ors-policy set'] = """
+type: command
+short-summary: Set existing specified Object Replication Service Policy properties to specified storage account.
+examples:
+  - name: Set existing specified Object Replication Service Policy properties to specified storage account.
+    text: az storage account ors-policy set -g ResourceGroupName -n storageAccountName --policy-id "3496e652-4cea-4581-b2f7-c86b3971ba92"
 """
 
 helps['storage account ors-policy show'] = """
