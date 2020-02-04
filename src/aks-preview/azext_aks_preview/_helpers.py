@@ -27,16 +27,6 @@ def _populate_api_server_access_profile(api_server_authorized_ip_ranges, instanc
     return profile
 
 
-def _set_load_balancer_sku(load_balancer_sku, kubernetes_version):
-    if load_balancer_sku:
-        return load_balancer_sku
-    if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.13.0"):
-        print('Setting load_balancer_sku to basic as it is not specified and kubernetes \
-        version(%s) less than 1.13.0 only supports basic load balancer SKU\n' % (kubernetes_version))
-        return "basic"
-    return "standard"
-
-
 def _set_vm_set_type(vm_set_type, kubernetes_version):
     if not vm_set_type:
         if kubernetes_version and StrictVersion(kubernetes_version) < StrictVersion("1.12.9"):
